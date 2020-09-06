@@ -5,23 +5,23 @@ const PREFIX = ctx + "mc/plan";
 //var row = $("input[name='row']");
 //var tier = $("input[name='tier']");
 //var area = $("input[name='area']");
-var block = $("#block").val();
-var bay = $("#bay").val();
-var row = $("#row").val();
-var tier = $("#tier").val();
-var area = $("#area").val();
+var block;
+var bay;
+var row;
+var tier;
+var area;
 // Clear data and toggle disable attribute of area
 function toggleDisableArea() {
   let isDisabled =
-    !isNullOrEmpty(block.val()) ||
-    !isNullOrEmpty(bay.val()) ||
-    !isNullOrEmpty(row.val()) ||
-    !isNullOrEmpty(tier.val());
-  area.val(null);
-  area.prop("disabled", isDisabled);
+    !isNullOrEmpty($("#block").val()) ||
+    !isNullOrEmpty($("#bay").val()) ||
+    !isNullOrEmpty($("#row").val()) ||
+    !isNullOrEmpty($("#tier").val());
+  $("#area").val(null);
+  $("#area").prop("disabled", isDisabled);
 
   if (isDisabled) {
-    area.removeClass("error");
+	$("#area").removeClass("error");
   }
 }
 
@@ -145,50 +145,51 @@ $(document).ready(function () {
         area = $("#area").val();
     });
   // Display yard position if current pickup has been planned
-  if (pickupHistory.status > 0) {
+//  if (pickupHistory.status > 0) {
     if (pickupHistory.block) {
-      block.val(pickupHistory.block);
-      bay.val(pickupHistory.bay);
-      row.val(pickupHistory.line);
-      tier.val(pickupHistory.tier);
-      area.prop("disabled", true);;
+      $('#block').append(new Option(pickupHistory.block, pickupHistory.block, false, false));
+      $("#bay").append(new Option(pickupHistory.bay, pickupHistory.bay, false, false));
+      $("#row").append(new Option(pickupHistory.line, pickupHistory.line, false, false));
+      $("#tier").append(new Option(pickupHistory.tier, pickupHistory.tier, false, false));
+      $("#area").prop("disabled", true);
     } else {
-      area.val(pickupHistory.area);
-      block.prop("disabled", true);
-      bay.prop("disabled", true);
-      row.prop("disabled", true);
-      tier.prop("disabled", true);
+      $("#area").append(new Option(pickupHistory.area, pickupHistory.area, false, false))
+      $("#block").prop("disabled", true);
+      $("#bay").prop("disabled", true);
+      $("#row").prop("disabled", true);
+      $("#tier").prop("disabled", true);
     }
-  }
+//  }
 
-  block.change(toggleDisableArea);
+  $("#block").change(toggleDisableArea);
 
-  bay.change(toggleDisableArea);
+  $("#bay").change(toggleDisableArea);
 
-  row.change(toggleDisableArea);
+  $("#row").change(toggleDisableArea);
 
-  tier.change(toggleDisableArea);
+  $("#tier").change(toggleDisableArea);
 
-  area.change(function () {
-    let isDisabled = !isNullOrEmpty(area.val());
-    block.val(null);
-    block.prop("disabled", isDisabled);
-    bay.val(null);
-    bay.prop("disabled", isDisabled);
-    row.val(null);
-    row.prop("disabled", isDisabled);
-    tier.val(null);
-    tier.prop("disabled", isDisabled);
+  $("#area").change(function () {
+    let isDisabled = !isNullOrEmpty($("#area").val());
+    $("#block").val(null);
+    $("#block").prop("disabled", isDisabled);
+    $("#bay").val(null);
+    $("#bay").prop("disabled", isDisabled);
+    $("#row").val(null);
+    $("#row").prop("disabled", isDisabled);
+    $("#tier").val(null);
+    $("#tier").prop("disabled", isDisabled);
     if (isDisabled) {
-      block.removeClass("error");
-      bay.removeClass("error");
-      row.removeClass("error");
-      tier.removeClass("error");
+      $("#block").removeClass("error");
+      $("#bay").removeClass("error");
+      $("#row").removeClass("error");
+      $("#tier").removeClass("error");
     }
   });
 });
 
 function submitHandler(index, layero) {
+	console.log(block,bay,row,tier)
   if ($.validate.form()) {
     $.ajax({
       cache: true,

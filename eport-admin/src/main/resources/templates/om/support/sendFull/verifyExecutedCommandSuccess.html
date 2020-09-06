@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <th:block th:include="include :: header('Verify Executed Command')" />
+    <th:block th:include="include :: bootstrap-toggle-css" />
+    <link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
+    <link th:href="@{/eport/css/orderRegistrationSupport/style.css}" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="content-body">
+       <form class="form-horizontal m" id="form-verify">
+        <section class="header">
+          <div class="col-sm 3">
+          <i>Xác nhận đã làm lệnh trên hệ thống CATOS thành công.<br>
+             Khách hàng có thể tiếp tục thực hiện các bước tiếp theo.
+          </i>
+          </div>
+        </section>
+        <label><b>Ghi chú đến khách hàng:</b></label>
+        <textarea id="remarkToLogistic"  rows="4" cols="50"></textarea>
+       </form>
+      </div>
+<!--       <div class="layui-layer-btn footer">
+        <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+        <a class="layui-layer-btn1" onclick="$opera.exit()">Đóng</a>
+      </div> -->
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: bootstrap-toggle-js" />
+    <script type="text/javascript" th:inline="javascript">
+      var processOrderId = /*[[${processOrderId}]]*/;
+      var PREFIX = ctx + "om/support/send-full";
+      function submitHandler() {
+          if ($.validate.form()) {
+        	  $.modal.loading("Đang xử lý...");
+        	  $.ajax({
+        	    url: PREFIX + "/executed-the-command-catos-success",
+        	    method: "POST",
+        	    data: {
+        	      processOrderId: processOrderId,
+        	    },
+        	    success: function (data) {
+        	      $.modal.closeLoading();
+        	      if (data.code == 0) {
+        	    	  parent.msgSuccess("Xác nhận thành công");
+        	      } else {
+        	    	  parent.msgError("Xác nhận thất bại.");
+        	      }
+        	      $.modal.close();
+        	    },
+        	    error: function (data) {
+        	    	parent.msgError("Xác nhận thất bại.");
+        	      $.modal.closeLoading();
+              	  $.modal.close();
+        	    }
+        	  });
+          }
+      }
+    </script>
+  </body>
+</html>

@@ -705,6 +705,45 @@ var table = {
           },
         });
       },
+      openVerifyExecutedSuccess: function (title, url, width, height, callback) {
+          if ($.common.isMobile()) {
+            width = "auto";
+            height = "auto";
+          }
+          if ($.common.isEmpty(title)) {
+            title = false;
+          }
+          if ($.common.isEmpty(url)) {
+            url = "/404.html";
+          }
+          if ($.common.isEmpty(width)) {
+            width = 800;
+          }
+          if ($.common.isEmpty(height)) {
+            height = $(window).height() - 50;
+          }
+          if ($.common.isEmpty(callback)) {
+            callback = function (index, layero) {
+              var iframeWin = layero.find("iframe")[0];
+              iframeWin.contentWindow.submitHandler(index, layero);
+            };
+          }
+          layer.open({
+            type: 2,
+            area: [width + "px", height + "px"],
+            fix: false,
+            maxmin: true,
+            shade: 0.3,
+            title: title,
+            content: url,
+            btn: ["Xác Nhận", "Đóng"],
+            shadeClose: false,
+            yes: callback,
+            cancel: function (index) {
+              return true;
+            },
+          });
+        },
       openCustomForm: function (title, url, width, height, callback) {
 				//如果是移动端，就使用自适应大小弹窗
 				if ($.common.isMobile()) {
@@ -784,6 +823,45 @@ var table = {
           },
         });
       },
+      openShipmentDetailsInfo: function (title, url, width, height, callback) {
+          if ($.common.isMobile()) {
+            width = "auto";
+            height = "auto";
+          }
+          if ($.common.isEmpty(title)) {
+            title = false;
+          }
+          if ($.common.isEmpty(url)) {
+            url = "/404.html";
+          }
+          if ($.common.isEmpty(width)) {
+            width = 800;
+          }
+          if ($.common.isEmpty(height)) {
+            height = $(window).height() - 50;
+          }
+          // if ($.common.isEmpty(callback)) {
+          //   callback = function (index, layero) {
+          //     var iframeWin = layero.find("iframe")[0];
+          //     iframeWin.contentWindow.submitHandler(index, layero);
+          //   };
+          // }
+          layer.open({
+            type: 2,
+            area: [width + "px", height + "px"],
+            fix: false,
+            maxmin: true,
+            shade: 0.3,
+            title: title,
+            content: url,
+            btn: ["Đóng"],
+            shadeClose: false,
+            // yes: callback
+            cancel: function (index) {
+              return true;
+            },
+          });
+        },
       openWithOneButton: function (title, url, width, height /*, callback, text*/) {
         if ($.common.isMobile()) {
           width = "auto";
