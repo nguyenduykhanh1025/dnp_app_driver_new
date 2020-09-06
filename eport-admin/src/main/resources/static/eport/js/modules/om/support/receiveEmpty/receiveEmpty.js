@@ -1,7 +1,7 @@
-const PREFIX = ctx + "om/support/send-full";
+const PREFIX = ctx + "om/support/receive-empty";
 var bill;
 var processOrder = new Object();
-processOrder.serviceType = 4;
+processOrder.serviceType = 3;
 var shipmentDetails = new Object();
 var currentLeftWidth = $(".table-left").width();
 var currentRightWidth = $(".table-right").width();
