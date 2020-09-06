@@ -536,14 +536,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where id = #{id}
     </update>
-    
-        <update id="updateShipmentDetailForOMSupport" parameterType="ShipmentDetail">
+    <!--updateShipmentDetailForOMSupport is used for OM reset process status. Not use with another purpose-->
+    <update id="updateShipmentDetailForOMSupport" parameterType="ShipmentDetail">
         update shipment_detail
         <trim prefix="SET" suffixOverrides=",">
             <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
             <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
-            process_order_id = #{processOrderId},
-            register_no = #{registerNo}
+            process_order_id = null,
+            register_no = null,
             <if test="containerNo != null  and containerNo != ''">container_no = #{containerNo},</if>
             <if test="containerStatus != null  and containerStatus != ''">container_status = #{containerStatus},</if>
             <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
