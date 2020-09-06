@@ -81,4 +81,37 @@ public interface EportConstants {
 	/** Container supply status request accepted */
 	public static final String CONTAINER_SUPPLY_STATUS_FINISH = "Y";
 	
+	// Result status for gate in order
+	/** Status success for gate in order */
+	public static final String GATE_RESULT_SUCCESS = "success";
+	/** Status failed for gate in order */
+	public static final String GATE_RESULT_FAIL = "fail";
+	
+	// Pickup history status
+	/** Pickup history status waiting to gate in */
+	public static final Integer PICKUP_HISTORY_STATUS_WAITING = 0;
+	/** Pickup history status gate in to gate in */
+	public static final Integer PICKUP_HISTORY_STATUS_GATE_IN = 1;
+	/** Pickup history status finish to gate in */
+	public static final Integer PICKUP_HISTORY_STATUS_FINISH = 2;
+	
+	// Notification status
+	/** Notification status draft */
+	public static final Long NOTIFICATION_STATUS_DRAFT = 0L;
+	/** Notification status active */
+	public static final Long NOTIFICATION_STATUS_ACTIVE = 1L;
+	
+	// Notification user type for receive notification */
+	/** User type logistic */
+	public static final Long USER_TYPE_LOGISTIC = 1L;
+	/** User type driver */
+	public static final Long USER_TYPE_DRIVER = 2L;
+	/** User type admin */
+	public static final Long USER_TYPE_ADMIN = 3L;
+	
+	// Notification level
+	/** Notification general with time delay */
+	public static final Long NOTIFICATION_LEVEL_GENERAL = 1L;
+	/** Notification instant with time instant */
+	public static final Long NOTIIFCATION_LEVEL_INSTANT = 2L;
 }

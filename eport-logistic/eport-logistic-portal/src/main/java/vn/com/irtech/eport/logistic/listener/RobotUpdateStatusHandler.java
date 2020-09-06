@@ -103,6 +103,8 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 			return;
 		}
 
+		
+		
 		// Get status
 		String status = map.get("status") == null ? null : map.get("status").toString();
 		// Get ip
@@ -171,6 +173,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 				
 		SysRobot sysRobot = new SysRobot();
 		sysRobot.setUuId(uuId);
+		
+		
+		
 		sysRobot.setStatus(status);
 		sysRobot.setIpAddress(ipAddress);
 		sysRobot.setIsReceiveContFullOrder(isReceiveContFullOrder);
@@ -183,151 +188,157 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		sysRobot.setIsGateInOrder(isGateInOrder);
 		sysRobot.setIsExtensionDateOrder(isExtensionDateOrder);
 
-		// if robot is busying
-		if (EportConstants.ROBOT_STATUS_BUSY.equals(status)) {
-			try {
-				// Parsing process order id and save history time start of order
-				Long receiptId = map.get("receiptId") == null ? 0L : Long.parseLong(map.get("receiptId").toString());
-				ProcessOrder processOrder = processOrderService.selectProcessOrderById(receiptId);
-				if(processOrder != null) {
-					this.addProcessHistory(receiptId.toString(), uuId, processOrder.getServiceType());
-				}
-			} catch (Exception ex) {
-				logger.error("Error when update history for order when start: " + ex);
-				return;
-			}
-			// Robot is available
-		} else if (EportConstants.ROBOT_STATUS_AVAILABLE.equals(status)) {
-			
-			// Get list process order has been assigned to robot to check if process order is failed when robot indicate available
-			List<ProcessOrder> processOrders = processOrderService.getProcessingProcessOrderByUuid(uuId);
-
-			// ProcessOrders is not empty -> there is error happen when robot indicate available
-			if (processOrders != null && !processOrders.isEmpty()) {
-				for (ProcessOrder processOrder : processOrders) {
-					// Update status error for process was failed
-					processOrder.setStatus(0); // TODO Vi sao update lai status=0? dung de chay lai?
-					processOrderService.updateProcessOrder(processOrder);
-
-					// Update error status for shipment detail 
-					List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrder.getId().toString());
-					updateErrorShipmentDetail(shipmentDetails);
-
-					// Send notification to logistics
-					AjaxResult ajaxResult= null;
-					ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
-					webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
-
-					// Send notification for OM
-					try {
-						mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
-					} catch (Exception e) {
-						logger.warn("Error when send notification error order for om: " + e);
+		// check if robot is exists but be disabled then just update robot infor but not validate or assign new order to robot
+		SysRobot robotExist = robotService.selectRobotByUuId(uuId);
+		if (robotExist != null && robotExist.getDisabled()) {
+			robotService.updateRobot(sysRobot);
+		} else {
+			// if robot is busying
+			if (EportConstants.ROBOT_STATUS_BUSY.equals(status)) {
+				try {
+					// Parsing process order id and save history time start of order
+					Long receiptId = map.get("receiptId") == null ? 0L : Long.parseLong(map.get("receiptId").toString());
+					ProcessOrder processOrder = processOrderService.selectProcessOrderById(receiptId);
+					if(processOrder != null) {
+						this.addProcessHistory(receiptId.toString(), uuId, processOrder.getServiceType());
 					}
+				} catch (Exception ex) {
+					logger.error("Error when update history for order when start: " + ex);
+					return;
 				}
-			}
-			
-			// check robot exists in db
-			if (robotService.selectRobotByUuId(uuId) == null) {
-				// insert robot to db
-				robotService.insertRobot(sysRobot);
-			} else {
-				// update status of robot
-				robotService.updateRobotByUuId(sysRobot);
-			}
+				// Robot is available
+			} else if (EportConstants.ROBOT_STATUS_AVAILABLE.equals(status)) {
+				
+				// Get list process order has been assigned to robot to check if process order is failed when robot indicate available
+				List<ProcessOrder> processOrders = processOrderService.getProcessingProcessOrderByUuid(uuId);
 
-			// Find process order for this robot support serviceTypes
-			ProcessOrder reqProcessOrder = processOrderService.findProcessOrderForRobot(serviceTypes);
-			if (reqProcessOrder != null) {
-				reqProcessOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_PROCESSING);
-				reqProcessOrder.setRobotUuid(sysRobot.getUuId());
-				// Update process order to processing
-				if (processOrderService.updateProcessOrder(reqProcessOrder) == 1) {
-					ShipmentDetail shipmentDetail = new ShipmentDetail();
-					shipmentDetail.setProcessOrderId(reqProcessOrder.getId());
-					// Get list of shipment details for current processOrder
-					List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-					ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(reqProcessOrder, shipmentDetails);
-
-					// update status of robot to BUZY
-					sysRobot.setStatus(EportConstants.ROBOT_STATUS_BUSY);
-					robotService.updateRobotByUuId(sysRobot);
-					// Send message to robot
-					switch (reqProcessOrder.getServiceType()) {
-						case EportConstants.SERVICE_PICKUP_FULL:
-							mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_FULL, uuId);
-							break;
-						case EportConstants.SERVICE_DROP_EMPTY:
-							mqttService.publicMessageToDemandRobot(req, EServiceRobot.SEND_CONT_EMPTY, uuId);
-							break;
-						case EportConstants.SERVICE_PICKUP_EMPTY:
-							mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_EMPTY, uuId);
-							break;
-						case EportConstants.SERVICE_DROP_FULL:
-							mqttService.publicMessageToDemandRobot(req, EServiceRobot.SEND_CONT_FULL, uuId);
-							break;
-						case EportConstants.SERVICE_SHIFTING:
-							sendShiftingOrderToRobot(reqProcessOrder, uuId);
-							break;
-						case EportConstants.SERVICE_CREATE_BOOKING:
-							mqttService.publicBookingOrderToDemandRobot(reqProcessOrder, EServiceRobot.CREATE_BOOKING, uuId);
-							break;
-						case EportConstants.SERVICE_GATE_IN:
-							sendGateInOrderToRobot(reqProcessOrder, sysRobot.getUuId());
-							break;
-						case EportConstants.SERVICE_CHANGE_VESSEL:
-							sendChangeVesselOrderToRobot(reqProcessOrder, uuId);
-							break;
-						case EportConstants.SERVICE_EXTEND_DATE:
-							sendExtendDateOrderToRobot(reqProcessOrder, uuId);
-							break;
-					}
-				}
-			}
-
-			// Case robot indicate offline need to check process order has been assigned to robot before
-		} else if (EportConstants.ROBOT_STATUS_OFFLINE.equals(status)) {
-			List<ProcessOrder> processOrders = processOrderService.getProcessingProcessOrderByUuid(uuId);
-			
-			// If process order exists then there would be a error before, need to send notification to om
-			if (processOrders != null && !processOrders.isEmpty()) {
-				for (ProcessOrder processOrder : processOrders) {
-					// Update failed process order and shipment detail
-					if (processOrder != null) {
-						processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_FINISHED);
-						processOrder.setResult(EportConstants.PROCESS_ORDER_RESULT_FAILED);
+				// ProcessOrders is not empty -> there is error happen when robot indicate available
+				if (processOrders != null && !processOrders.isEmpty()) {
+					for (ProcessOrder processOrder : processOrders) {
+						// Update status error for process was failed
+						processOrder.setStatus(0); // TODO Vi sao update lai status=0? dung de chay lai?
 						processOrderService.updateProcessOrder(processOrder);
+
+						// Update error status for shipment detail 
 						List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrder.getId().toString());
 						updateErrorShipmentDetail(shipmentDetails);
 
 						// Send notification to logistics
 						AjaxResult ajaxResult= null;
-						ajaxResult = AjaxResult.error("Làm lệnh thất bại!");
+						ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
 						webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
-						// Send notification for om
+
+						// Send notification for OM
 						try {
 							mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
 						} catch (Exception e) {
-							logger.warn("Error when send notification to om: " + e);
+							logger.warn("Error when send notification error order for om: " + e);
 						}
 					}
 				}
-			}
-			// Something went wrong with robot bc offline Send notification for IT
-			try {
-				mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + sysRobot.getUuId(), configService.getKey("domain.admin.name") + "/system/robot/edit/" + sysRobot.getId());
-			} catch (Exception e) {
-				logger.warn(e.getMessage());
-			}
-			// check robot exists in db
-			if (robotService.selectRobotByUuId(uuId) == null) {
-				// insert robot to db
-				robotService.insertRobot(sysRobot);
-			} else {
-				// update status of robot
-				robotService.updateRobotByUuId(sysRobot);
-			}
-		}	
+				
+				// check robot exists in db
+				if (robotService.selectRobotByUuId(uuId) == null) {
+					// insert robot to db
+					robotService.insertRobot(sysRobot);
+				} else {
+					// update status of robot
+					robotService.updateRobotByUuId(sysRobot);
+				}
+
+				// Find process order for this robot support serviceTypes
+				ProcessOrder reqProcessOrder = processOrderService.findProcessOrderForRobot(serviceTypes);
+				if (reqProcessOrder != null) {
+					reqProcessOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_PROCESSING);
+					reqProcessOrder.setRobotUuid(sysRobot.getUuId());
+					// Update process order to processing
+					if (processOrderService.updateProcessOrder(reqProcessOrder) == 1) {
+						ShipmentDetail shipmentDetail = new ShipmentDetail();
+						shipmentDetail.setProcessOrderId(reqProcessOrder.getId());
+						// Get list of shipment details for current processOrder
+						List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+						ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(reqProcessOrder, shipmentDetails);
+
+						// update status of robot to BUZY
+						sysRobot.setStatus(EportConstants.ROBOT_STATUS_BUSY);
+						robotService.updateRobotByUuId(sysRobot);
+						// Send message to robot
+						switch (reqProcessOrder.getServiceType()) {
+							case EportConstants.SERVICE_PICKUP_FULL:
+								mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_FULL, uuId);
+								break;
+							case EportConstants.SERVICE_DROP_EMPTY:
+								mqttService.publicMessageToDemandRobot(req, EServiceRobot.SEND_CONT_EMPTY, uuId);
+								break;
+							case EportConstants.SERVICE_PICKUP_EMPTY:
+								mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_EMPTY, uuId);
+								break;
+							case EportConstants.SERVICE_DROP_FULL:
+								mqttService.publicMessageToDemandRobot(req, EServiceRobot.SEND_CONT_FULL, uuId);
+								break;
+							case EportConstants.SERVICE_SHIFTING:
+								sendShiftingOrderToRobot(reqProcessOrder, uuId);
+								break;
+							case EportConstants.SERVICE_CREATE_BOOKING:
+								mqttService.publicBookingOrderToDemandRobot(reqProcessOrder, EServiceRobot.CREATE_BOOKING, uuId);
+								break;
+							case EportConstants.SERVICE_GATE_IN:
+								sendGateInOrderToRobot(reqProcessOrder, sysRobot.getUuId());
+								break;
+							case EportConstants.SERVICE_CHANGE_VESSEL:
+								sendChangeVesselOrderToRobot(reqProcessOrder, uuId);
+								break;
+							case EportConstants.SERVICE_EXTEND_DATE:
+								sendExtendDateOrderToRobot(reqProcessOrder, uuId);
+								break;
+						}
+					}
+				}
+
+				// Case robot indicate offline need to check process order has been assigned to robot before
+			} else if (EportConstants.ROBOT_STATUS_OFFLINE.equals(status)) {
+				List<ProcessOrder> processOrders = processOrderService.getProcessingProcessOrderByUuid(uuId);
+				
+				// If process order exists then there would be a error before, need to send notification to om
+				if (processOrders != null && !processOrders.isEmpty()) {
+					for (ProcessOrder processOrder : processOrders) {
+						// Update failed process order and shipment detail
+						if (processOrder != null) {
+							processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_FINISHED);
+							processOrder.setResult(EportConstants.PROCESS_ORDER_RESULT_FAILED);
+							processOrderService.updateProcessOrder(processOrder);
+							List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrder.getId().toString());
+							updateErrorShipmentDetail(shipmentDetails);
+
+							// Send notification to logistics
+							AjaxResult ajaxResult= null;
+							ajaxResult = AjaxResult.error("Làm lệnh thất bại!");
+							webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
+							// Send notification for om
+							try {
+								mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
+							} catch (Exception e) {
+								logger.warn("Error when send notification to om: " + e);
+							}
+						}
+					}
+				}
+				// Something went wrong with robot bc offline Send notification for IT
+				try {
+					mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + sysRobot.getUuId(), configService.getKey("domain.admin.name") + "/system/robot/edit/" + sysRobot.getId());
+				} catch (Exception e) {
+					logger.warn(e.getMessage());
+				}
+				// check robot exists in db
+				if (robotService.selectRobotByUuId(uuId) == null) {
+					// insert robot to db
+					robotService.insertRobot(sysRobot);
+				} else {
+					// update status of robot
+					robotService.updateRobotByUuId(sysRobot);
+				}
+			}	
+		}
 	}
 
 	/**

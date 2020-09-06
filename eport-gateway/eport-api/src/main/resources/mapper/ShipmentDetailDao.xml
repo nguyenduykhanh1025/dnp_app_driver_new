@@ -519,7 +519,9 @@
            BLOCK AS block,
            ROWW AS roww,
            BAY AS bay,
-           TIER AS tier
+           TIER AS tier,
+		   JOB_ODR_NO2 AS orderNo,
+		   REMARK AS remark
         FROM DNP_UAT.TB_INVENTORY
 	    <where>
 	       <if test="containerNo != null  and containerNo != ''"> and CNTR_NO = #{containerNo}</if>
@@ -530,6 +532,8 @@
 	       <if test="vslNm != null  and vslNm != ''"> and VSL_CD = #{vslNm}</if>
 	       <if test="voyNo != null  and voyNo != ''"> and CALL_SEQ = #{voyNo}</if>
 	       <if test="opeCode != null  and opeCode != ''"> and PTNR_CODE = #{opeCode}</if>
+	       <if test="block != null  and block != ''"> and BLOCK = #{block}</if>
+	       <if test="bay != null  and bay != ''"> and BAY = #{bay}</if>
 	       AND CNTR_STATE = 'Y'
 	   </where>
         ORDER BY CNTR_NO ASC
