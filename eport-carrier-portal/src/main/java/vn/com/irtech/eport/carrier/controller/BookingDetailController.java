@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.carrier.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,11 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentService;
+
 
 /**
  * Booking DetailController
@@ -33,6 +39,16 @@ public class BookingDetailController extends CarrierBaseController
 {
     private String prefix = "carrier/booking/detail";
 
+    @Autowired
+	private IShipmentService shipmentService;
+
+	@Autowired
+	private IShipmentDetailService shipmentDetailService;
+
+
+	@Autowired
+    private ICatosApiService catosApiService;
+    
     @Autowired
     private IBookingDetailService bookingDetailService;
 
@@ -135,8 +151,28 @@ public class BookingDetailController extends CarrierBaseController
     }
 
     @GetMapping("/pickupContainer")
-    public String pickupContainer()
+    public String pickupContainer(ModelMap mmap)
     {
+        String blNo = "032A503121";
+        ShipmentDetail shipmentDt = new ShipmentDetail();
+		// shipmentDt.setBlNo(blNo);
+        shipmentDt.setFe("E");
+        shipmentDt.setOpeCode("CMA");
+        shipmentDt.setSztp("45G0");
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
+
+		//Get coordinate from catos
+		List<ShipmentDetail> coordinateOfList = catosApiService.selectCoordinateOfContainersByShipmentDetail(shipmentDt);
+		List<ShipmentDetail[][]> bayList = new ArrayList<>();
+		try {
+			bayList = shipmentDetailService.getContPosition(coordinateOfList, shipmentDetails);
+		} catch (Exception e) {
+			logger.warn("Can't get container yard position!");
+        }
+        mmap.put("bayList", bayList);
+		// if (shipmentDetails.size() > 0) {
+			
+		// }
         return prefix + "/pickupContainer";
     }
 }
