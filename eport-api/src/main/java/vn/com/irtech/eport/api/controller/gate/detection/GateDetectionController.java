@@ -96,7 +96,7 @@ public class GateDetectionController extends BaseController {
 	@Transactional
 	private void updateData(DetectionInfo detectionInfo) {
 		PickupHistory pickupHistory = new PickupHistory();
-		pickupHistory.setTruckNo(detectionInfo.getChassisNo());
+		pickupHistory.setTruckNo(detectionInfo.getTruckNo());
 		pickupHistory.setChassisNo(detectionInfo.getChassisNo());
 		pickupHistory.setStatus(0);
 		List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistory);

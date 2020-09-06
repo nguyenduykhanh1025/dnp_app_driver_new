@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -123,6 +124,7 @@ public class GatePassHandler implements IMqttMessageListener {
 		
 		GateInFormData gateInFormData = new Gson().fromJson(dataString, GateInFormData.class);
 		if (gateInFormData != null && gateInFormData.getReceiptId() != null) {
+			robotService.updateRobotStatusByUuId(uuId, status);
 			this.updatePickupHistory(gateInFormData, result, uuId, status, pickupInResult, pickupOutResult);
 		}
 	}
@@ -141,15 +143,20 @@ public class GatePassHandler implements IMqttMessageListener {
 		
 		// Declare process order to update status
 		ProcessOrder processOrder = processOrderService.selectProcessOrderById(gateInFormData.getReceiptId());
-		processOrder.setStatus(2);
+		processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_FINISHED);
 		
 		// Declare process history to save history
 		ProcessHistory history = new ProcessHistory();
 		history.setProcessOrderId(gateInFormData.getReceiptId());
-		history.setRobotUuid(gateInFormData.getGateId());
+		history.setRobotUuid(uuId);
 		history.setServiceType(EportConstants.SERVICE_GATE_IN);
+		
+		// Find history record when start time of this process order is set to update finish time
+		List<ProcessHistory> processHistories = processHistoryService.selectProcessHistoryList(history);
+		if (CollectionUtils.isNotEmpty(processHistories)) {
+			history.setId(processHistories.get(0).getId());
+		}
 		history.setStatus(EportConstants.PROCESS_HISTORY_STATUS_FINISHED);
-		history.setStartTime(new Date());
 		
 		// If Robot return success
 		if ("success".equalsIgnoreCase(result)) {
@@ -161,36 +168,24 @@ public class GatePassHandler implements IMqttMessageListener {
 					if (pickupInResult != null) {
 						try {
 							List<PickupRobotResult> pickupRobotResults = getListRobotResultPickupFromString(pickupInResult);
-							pickupHistory = setYardPosition(pickupRobotResults, pickupHistory);
+							updatePickupHistoryData(pickupRobotResults, pickupHistory);
 						} catch (Exception e) {
 							logger.error("Error when parsing pickup result from robot: " + pickupInResult);;
 						}
 					}
+					
 					pickupHistory.setGateinDate(new Date());
-					pickupHistory.setStatus(1);
+					pickupHistory.setStatus(EportConstants.PICKUP_HISTORY_STATUS_GATE_IN);
 					pickupHistoryService.updatePickupHistory(pickupHistory);
 					
-					ShipmentDetail shipmentDetail = new ShipmentDetail();
-					shipmentDetail.setId(pickupHistory.getShipmentDetailId());
-					shipmentDetail.setFinishStatus("Y");
-					shipmentDetailService.updateShipmentDetail(shipmentDetail);
-					// Update shipment status if all shipment detail is finish
-					shipmentDetail.setId(null);
-					shipmentDetail.setFinishStatus("N");
-					if (CollectionUtils.isEmpty(shipmentDetailService.selectShipmentDetailList(shipmentDetail))) {
-						Shipment shipment = new Shipment();
-						shipment.setStatus("4");
-						shipment.setId(pickupHistory.getShipmentId());
-						shipmentService.updateShipment(shipment);
-					}
-					
-					
+					// Data to send response to driver app when having session id
 					DriverDataRes driverData = new DriverDataRes();
 					driverData.setPickupHistoryId(pickupHistory.getId());
 					driverData.setContNo(pickupHistory.getContainerNo());
 					driverData.setYardPosition(pickupHistory.getBlock()+"-"+pickupHistory.getBay()
 					+"-"+pickupHistory.getLine()+"-"+pickupHistory.getTier());
-					if (pickupHistory.getShipment().getServiceType() == 2) {
+					if (pickupHistory.getShipment().getServiceType() == EportConstants.SERVICE_PICKUP_EMPTY ||
+							pickupHistory.getShipment().getServiceType() == EportConstants.SERVICE_DROP_EMPTY) {
 						driverData.setFe("E");
 					} else {
 						driverData.setFe("F");
@@ -200,48 +195,45 @@ public class GatePassHandler implements IMqttMessageListener {
 					driverData.setChassisNo(pickupHistory.getChassisNo());
 					driverData.setWgt(gateInFormData.getWgt());
 					driverDataRes.add(driverData);
-					
-					sendNotificationToDriver(pickupHistory, shipmentDetail);
 				}
 			}
 			
 			if (CollectionUtils.isNotEmpty(gateInFormData.getPickupOut())) {
-				
 				// Iterate pickup out list
 				for (PickupHistory pickupHistory : gateInFormData.getPickupOut()) {
-					if (pickupInResult != null) {
+					if (pickupOutResult != null) {
 						try {
 							List<PickupRobotResult> pickupRobotResults = getListRobotResultPickupFromString(pickupOutResult);
-							pickupHistory = setYardPosition(pickupRobotResults, pickupHistory);
+							PickupHistory pickupUpdated = updatePickupHistoryData(pickupRobotResults, pickupHistory);
+							if (pickupUpdated != null) {
+								pickupHistory = pickupUpdated;
+							}
 						} catch (Exception e) {
-							logger.error("Error when parsing pickup result from robot: " + pickupOutResult);;
+							logger.error("Error when update pickup result from robot: " + pickupOutResult);;
 						}
+						
+						pickupHistory.setGateinDate(new Date());
+						pickupHistory.setStatus(EportConstants.PICKUP_HISTORY_STATUS_GATE_IN);
+						pickupHistoryService.updatePickupHistory(pickupHistory);
+						
+						// Data to send response to driver app when having session id
+						DriverDataRes driverData = new DriverDataRes();
+						driverData.setPickupHistoryId(pickupHistory.getId());
+						driverData.setContNo(pickupHistory.getContainerNo());
+						driverData.setYardPosition(pickupHistory.getBlock()+"-"+pickupHistory.getBay()
+						+"-"+pickupHistory.getLine()+"-"+pickupHistory.getTier());
+						if (pickupHistory.getShipment().getServiceType() == EportConstants.SERVICE_PICKUP_EMPTY ||
+								pickupHistory.getShipment().getServiceType() == EportConstants.SERVICE_DROP_EMPTY) {
+							driverData.setFe("E");
+						} else {
+							driverData.setFe("F");
+						}
+						driverData.setSztp(pickupHistory.getSztp());
+						driverData.setTruckNo(pickupHistory.getTruckNo());
+						driverData.setChassisNo(pickupHistory.getChassisNo());
+						driverData.setWgt(gateInFormData.getWgt());
+						driverDataRes.add(driverData);
 					}
-					pickupHistory.setStatus(1);
-					pickupHistory.setGateinDate(new Date());
-					pickupHistoryService.updatePickupHistory(pickupHistory);
-					ShipmentDetail shipmentDetail = new ShipmentDetail();
-					shipmentDetail.setId(pickupHistory.getShipmentDetailId());
-					shipmentDetail.setFinishStatus("Y");
-					shipmentDetailService.updateShipmentDetail(shipmentDetail);
-					DriverDataRes driverData = new DriverDataRes();
-					driverData.setPickupHistoryId(pickupHistory.getId());
-					driverData.setContNo(pickupHistory.getContainerNo());
-					driverData.setYardPosition(pickupHistory.getBlock()+"-"+pickupHistory.getBay()
-					+"-"+pickupHistory.getLine()+"-"+pickupHistory.getTier());
-					if (pickupHistory.getShipment().getServiceType() == 1) {
-						driverData.setFe("F");
-					} else {
-						driverData.setFe("E");
-					}
-					driverData.setSztp(pickupHistory.getSztp());
-					driverData.setTruckNo(pickupHistory.getTruckNo());
-					driverData.setChassisNo(pickupHistory.getChassisNo());
-					driverData.setWgt(gateInFormData.getWgt());
-					driverDataRes.add(driverData);
-					
-
-					sendNotificationToDriver(pickupHistory, shipmentDetail);
 				}
 			}
 			
@@ -263,10 +255,10 @@ public class GatePassHandler implements IMqttMessageListener {
 			} catch (Exception e) {
 				logger.error("Error send result gate in for smart app: " + e);
 			}
-			
-			robotService.updateRobotStatusByUuId(uuId, status);
+		
 		} else if("position_failed".equalsIgnoreCase(result)) {
 			//gateInFormData 
+			int yardPositionCount = 0;
 			int count = 0;
 			for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
 				if (!checkPickupHistoryHasPosition(pickupHistory)) {
@@ -295,46 +287,102 @@ public class GatePassHandler implements IMqttMessageListener {
 						if (StringUtils.isEmpty(pickupHistory.getBlock())) {
 							pickupHistory.setBlock("");
 						}
-						gateInFormData.getPickupIn().set(count, pickupHistory);
 						if (checkPickupHistoryHasPosition(pickupHistory)) {
+							
+							yardPositionCount++;
 							logger.debug("Pickup has been updated position. Continue to gate-in");
 							break;
 						}
 					}
 					count++;
 				} else {
+					yardPositionCount++;
 					count++;
+				}
+				// Set bay to fit format of catos (02 -> 01/02)
+				if (StringUtils.isNotEmpty(pickupHistory.getBay())) {
+					try {
+						Integer bay = Integer.parseInt(pickupHistory.getBay());
+						
+						// Check bay is even then need to add odd number before current bay (02 -> even -> 01/02)
+						if (bay%2 == 0) {
+							Integer oddNumber = bay - 1;
+							String oddString = "";
+							if (oddNumber < 10) {
+								oddString = "0" + oddNumber.toString();
+							} else {
+								oddString = oddNumber.toString();
+							}
+							pickupHistory.setBay(oddString+"/"+pickupHistory.getBay());
+						} else {
+							Integer evenNumber = bay + 1;
+							String evenString = "";
+							if (evenNumber < 10) {
+								evenString = "0" + evenNumber.toString();
+							} else {
+								evenString = evenNumber.toString();
+							}
+							pickupHistory.setBay(pickupHistory.getBay() + "/" + evenString);
+						}
+					} catch (Exception e) {
+						logger.error("Failed to parsing bay string to Integer: " + pickupHistory.getBay());
+					}
+				}
+				gateInFormData.getPickupIn().set(count-1, pickupHistory);
+			}
+			
+			// Get yard position success then send new process order to robot to gate in again
+			if (yardPositionCount == gateInFormData.getPickupIn().size()) {
+				// re-try gate order with yard position
+				// Create new process order
+				ProcessOrder processOrderNew = new ProcessOrder();
+				processOrderNew.setShipmentId(processOrder.getShipmentId());
+				processOrderNew.setServiceType(8);
+				processOrderNew.setLogisticGroupId(processOrder.getLogisticGroupId());
+				processOrderNew.setStatus(EportConstants.PROCESS_ORDER_STATUS_NEW);
+				processOrderService.insertProcessOrder(processOrderNew);
+				
+				// Set new process order just created to update 
+				gateInFormData.setReceiptId(processOrder.getId());
+				for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
+					pickupHistory.setProcessOrderId(processOrderNew.getId());
+					pickupHistoryService.updatePickupHistory(pickupHistory);
+				}
+				
+				// Parse data to string to send to robot
+				String msg = new Gson().toJson(gateInFormData);
+				
+				// Set up robot param to find robot provide gate in service
+				SysRobot robot = new SysRobot();
+				robot.setStatus(EportConstants.ROBOT_STATUS_AVAILABLE);
+				robot.setIsGateInOrder(true);
+				robot.setDisabled(false);
+				SysRobot sysRobot = robotService.findFirstRobot(robot);
+				
+				// If find robot success then send to otherwise put process order on hold
+				if (sysRobot != null) {
+					processOrderNew.setStatus(EportConstants.PROCESS_ORDER_STATUS_PROCESSING);
+					processOrderNew.setRobotUuid(sysRobot.getUuId());
+					processOrderNew.setProcessData(msg);
+					processOrderService.updateProcessOrder(processOrderNew);
+					robotService.updateRobotStatusByUuId(sysRobot.getUuId(), EportConstants.ROBOT_STATUS_BUSY);
+					logger.debug("Send request to robot: " + sysRobot.getUuId() + ", content: " + msg);
+					try {
+						mqttService.sendMessageToRobot(msg, sysRobot.getUuId());
+					} catch (MqttException e) {
+						logger.error("Error send gate order to robot: " + e);
+					}
+				} else {
+					logger.debug("No GateRobot is available: " + msg);
 				}
 			}
 			
-			// re-try gate order with yard position
-			ProcessOrder processOrderNew = new ProcessOrder();
-			processOrderNew.setShipmentId(processOrder.getShipmentId());
-			processOrderNew.setServiceType(8);
-			processOrderNew.setLogisticGroupId(processOrder.getLogisticGroupId());
-			processOrderNew.setStatus(0);
-			processOrderService.insertProcessOrder(processOrderNew);
-			
-			gateInFormData.setReceiptId(processOrder.getId());
-			for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
-				pickupHistory.setProcessOrderId(processOrderNew.getId());
-				pickupHistoryService.updatePickupHistory(pickupHistory);
-			}
-			String msg = new Gson().toJson(gateInFormData);
-			processOrderNew.setStatus(1);
-			processOrderNew.setRobotUuid(uuId);
-			processOrderNew.setProcessData(msg);
-			processOrderService.updateProcessOrder(processOrderNew);
-			logger.debug("Send request to robot after failed location: " + uuId + ", content: " + msg);
-			try {
-				mqttService.sendMessageToRobot(msg, uuId);
-			} catch (MqttException e) {
-				logger.error("Error send gate order to robot: " + e);
-			}
+			// Set current process order to failed 
 			processOrder.setResult("F");
 			
 		} else {
 			
+			// Case gate-in failed 
 			if (CollectionUtils.isNotEmpty(gateInFormData.getPickupIn())) {
 				
 				// Iterate pickup in list
@@ -343,6 +391,7 @@ public class GatePassHandler implements IMqttMessageListener {
 					shipmentDetail.setId(pickupHistory.getShipmentDetailId());
 					shipmentDetail.setFinishStatus("E");
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
+					
 				}
 			}
 			
@@ -350,10 +399,12 @@ public class GatePassHandler implements IMqttMessageListener {
 				
 				// Iterate pickup out list
 				for (PickupHistory pickupHistory : gateInFormData.getPickupOut()) {
-					ShipmentDetail shipmentDetail = new ShipmentDetail();
-					shipmentDetail.setId(pickupHistory.getShipmentDetailId());
-					shipmentDetail.setFinishStatus("E");
-					shipmentDetailService.updateShipmentDetail(shipmentDetail);
+					if (!pickupHistory.getJobOrderFlg()) {
+						ShipmentDetail shipmentDetail = new ShipmentDetail();
+						shipmentDetail.setId(pickupHistory.getShipmentDetailId());
+						shipmentDetail.setFinishStatus("E");
+						shipmentDetailService.updateShipmentDetail(shipmentDetail);
+					}
 				}
 			}
 			
@@ -373,19 +424,24 @@ public class GatePassHandler implements IMqttMessageListener {
 			}
 			processOrder.setResult("F");
 			history.setResult("F");
-			robotService.updateRobotStatusByUuId(uuId, status);
 		}
 		
 		// Update process order (S or F)
 		processOrderService.updateProcessOrder(processOrder);
 		
-		// Update History robot
-		processHistoryService.insertProcessHistory(history);
+		// Update if history has id (possible to update finish time) History robot
+		// Insert when history doesn't have id (that's mean something went wrong and couldn't get the id
+		if (history.getId() == null) {
+			processHistoryService.insertProcessHistory(history);
+		} else {
+			processHistoryService.updateProcessHistory(history);
+		}
+		 
 	}
 	
 	
 	/**
-	 * Response checkin result to smart gate
+	 * Response check in result to smart gate
 	 * 
 	 * @param result
 	 * @throws Exception
@@ -400,7 +456,7 @@ public class GatePassHandler implements IMqttMessageListener {
 	}
 	
 	/**
-	 * Response checkin result to driver
+	 * Response check in result to driver
 	 * 
 	 * @param driverRes
 	 * @param sessionId
@@ -416,18 +472,20 @@ public class GatePassHandler implements IMqttMessageListener {
 		if (pickupHistory.getDriverId() != null) {
 			SysNotification sysNotification = new SysNotification();
 			sysNotification.setTitle("Thông báo vào cổng.");
-			sysNotification.setNotifyLevel(2L);
+			sysNotification.setNotifyLevel(EportConstants.NOTIIFCATION_LEVEL_INSTANT);
 			sysNotification.setContent("Xác thực tại cổng thành công cho container  " + shipmentDetail.getContainerNo());
 			sysNotification.setNotifyLink("");
-			sysNotification.setStatus(1L);
+			sysNotification.setStatus(EportConstants.NOTIFICATION_STATUS_ACTIVE);
 			sysNotificationService.insertSysNotification(sysNotification);
 			
 			// Notification receiver
 			SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
 			sysNotificationReceiver.setUserId(pickupHistory.getDriverId());
 			sysNotificationReceiver.setNotificationId(sysNotification.getId());
-			sysNotificationReceiver.setUserType(2L);
+			sysNotificationReceiver.setUserType(EportConstants.USER_TYPE_DRIVER);
 			sysNotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
+			
+			// TODO : Send notification by fire-base push notification
 		}
 	}
 	
@@ -449,10 +507,48 @@ public class GatePassHandler implements IMqttMessageListener {
 		return false;
 	}
 	
-	private PickupHistory setYardPosition(List<PickupRobotResult> pickupRobotResults, PickupHistory pickupHistory) {
+	/**
+	 * Set yard position (block-bay-row-tier) 
+	 * and update container again for case receive cont with job order no
+	 * 
+	 * @param pickupRobotResults
+	 * @param pickupHistory
+	 * @return
+	 */
+	@Transactional
+	private PickupHistory updatePickupHistoryData(List<PickupRobotResult> pickupRobotResults, PickupHistory pickupHistory) {
+		// Iterate pickup robot result (list pickup result (include pickup history id, container no, yard position, result: success, fail)
 		for (PickupRobotResult pickupRobotResult: pickupRobotResults) {
+			
+			// Check if Said pickup history is match with result robot return to update 
 			if (pickupRobotResult.getId().equals(pickupHistory.getId())) {
+				
+				// Check if pickup history is pickup by job order no to update container no and shipment detail id
+				if (pickupHistory.getJobOrderFlg() && StringUtils.isNotEmpty(pickupRobotResult.getContainerNo())) {
+					
+					// Update container no 
+					pickupHistory.setContainerNo(pickupRobotResult.getContainerNo());
+					
+					// Get shipment detail list by shipment id from pickup history
+					ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+					shipmentDetailParam.setShipmentId(pickupHistory.getShipmentId());
+					List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetailParam);
+					
+					// Iterate list to find shipment detail id match container no with robot result
+					// Set shipment detail id for pickup history 
+					for(ShipmentDetail shipmentDetail : shipmentDetails) {
+						if (shipmentDetail.getContainerNo().equalsIgnoreCase(pickupRobotResult.getContainerNo())) {
+							pickupHistory.setShipmentDetailId(shipmentDetail.getId());
+							break;
+						}
+					}
+				}
+				
+				// Check if robot result data has yard position to update back ward for pick up history
+				// Update this information for driver can see it in app mobile
 				if (StringUtils.isNotEmpty(pickupRobotResult.getYardPosition())) {
+					
+					// The yard position data in format (block-bay-row-tier)
 					String[] yardPositionArr = pickupRobotResult.getYardPosition().split("-");
 					if (yardPositionArr.length > 3) {
 						pickupHistory.setBlock(yardPositionArr[0]);
@@ -461,11 +557,55 @@ public class GatePassHandler implements IMqttMessageListener {
 						pickupHistory.setTier(yardPositionArr[3]);
 					}
 				}
+				
+				// After update all the information robot return above
+				// Update pickup history and corresponding shipment detail
+				// Initialize shipment detail with id to update 
+				ShipmentDetail shipmentDetail = new ShipmentDetail();
+				shipmentDetail.setId(pickupHistory.getShipmentDetailId());
+				shipmentDetail.setShipmentId(pickupHistory.getShipmentId());
+				
+				// Check result up gate in order for said pickup history
+				if (EportConstants.GATE_RESULT_SUCCESS.equalsIgnoreCase(pickupRobotResult.getResult())) {
+					// Sucess case update status pickup is gate in
+					pickupHistory.setStatus(EportConstants.PICKUP_HISTORY_STATUS_GATE_IN);
+					// Update status shipment detail finished
+					shipmentDetail.setFinishStatus("Y");
+				} else {
+					
+					// Case fail to gate in update shipment detail finish status Error
+					shipmentDetail.setFinishStatus("E");
+				}
+				
+				pickupHistoryService.updatePickupHistory(pickupHistory);
+				if (pickupHistory.getShipmentDetailId() != null) {
+					shipmentDetailService.updateShipmentDetail(shipmentDetail);
+				}
+				
+				// Update shipment status if all shipment detail is finish
+				shipmentDetail.setId(null);
+				shipmentDetail.setFinishStatus("N");
+				if (CollectionUtils.isEmpty(shipmentDetailService.selectShipmentDetailList(shipmentDetail))) {
+					Shipment shipment = new Shipment();
+					shipment.setStatus(EportConstants.SHIPMENT_STATUS_FINISH);
+					shipment.setId(pickupHistory.getShipmentId());
+					shipmentService.updateShipment(shipment);
+				}
+				
+				// Send notification to driver after done update pickup history, shipment detail and shipment
+				sendNotificationToDriver(pickupHistory, shipmentDetail);
+				return pickupHistory;
 			}
 		}
-		return pickupHistory;
+		return null;
 	}
 	
+	/**
+	 * Parsing json string of robot result data to List robot result object
+	 * 
+	 * @param pickupResult
+	 * @return List robot result object
+	 */
 	private List<PickupRobotResult> getListRobotResultPickupFromString(String pickupResult) {                        
 		Type listType = new TypeToken<ArrayList<PickupRobotResult>>() {}.getType();
 		ArrayList<PickupRobotResult> pickupRobotResults = new Gson().fromJson(pickupResult , listType);
