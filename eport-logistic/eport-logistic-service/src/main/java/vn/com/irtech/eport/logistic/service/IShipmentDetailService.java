@@ -242,7 +242,15 @@ public interface IShipmentDetailService
     public List<ShipmentDetail> selectShipmentDetailListReport(ShipmentDetail shipmentDetail);
     
     /**
-     * updateShipmentDetailForOMSupport : OM support orderRegister (reset process status) (special)
+     * updateShipmentDetailForOMSupport is used for OM reset process status. Not use with another purpose
      */
     public int updateShipmentDetailForOMSupport(ShipmentDetail shipmentDetail);
+    
+    /**
+     * Get List container with coordinate for carrier
+     * 
+     * @param ShipmentDetail
+     * @return List shipment detail with container, sztp, yard position include
+     */
+    public ShipmentDetail[][] getListContainerForCarrier(ShipmentDetail shipmentDetail);
 }

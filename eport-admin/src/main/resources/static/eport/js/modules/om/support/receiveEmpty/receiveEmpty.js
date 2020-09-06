@@ -1,7 +1,7 @@
-const PREFIX = ctx + "om/support/send-full";
+const PREFIX = ctx + "om/support/receive-empty";
 var bill;
 var processOrder = new Object();
-processOrder.serviceType = 4;
+processOrder.serviceType = 3;
 var shipmentDetails = new Object();
 var currentLeftWidth = $(".table-left").width();
 var currentRightWidth = $(".table-right").width();
@@ -110,6 +110,18 @@ function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
+function dateOfIssueRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+    $(td).html("");
+    return td;
+}
+function emptyExpireDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'emptyExpireDem' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+}
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
     $(td).attr('id', 'consignee' + row).addClass("htMiddle");
@@ -119,12 +131,6 @@ function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) 
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
     $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
-}
-function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'wgt' + row).addClass("htMiddle");
     $(td).html(value);
     return td;
 }
@@ -146,10 +152,22 @@ function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
+function paymentStatusTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'paymentStatus' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+}
 function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
     $(td).attr('id', 'payer' + row).addClass("htMiddle");
     $(td).html(value);
+    return td;
+}
+function personOfContainerRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'orderNo' + row).addClass("htMiddle");
+    $(td).html("");
     return td;
 }
 function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -179,6 +197,7 @@ function configHandson() {
         manualRowResize: true,
         renderAllRows: true,
         rowHeaders: true,
+        wordWrap: false,
         className: "htMiddle",
         colHeaders: function (col) {
             switch (col) {
@@ -187,26 +206,32 @@ function configHandson() {
                 case 1:
                     return "Sztp";
                 case 2:
-                    return "Chủ hàng";
+                    return "Cấp từ<br> ngày";
                 case 3:
-                    return "Tàu - Chuyến";
+                    return "Ngày hết<br> hạn";
                 case 4:
-                    return "Trọng lượng";
+                    return "Chủ hàng";
                 case 5:
-                    return "Loại hàng";
+                    return "Tàu - Chuyến";
                 case 6:
-                	return "Cảng Dở Hàng";
+                    return "Loại hàng";
                 case 7:
-                    return "PTTT";
+                	return "Cảng Dở Hàng";
                 case 8:
-                    return "Payer";
+                    return "T.Toán";
                 case 9:
-                    return "Số Tham Chiếu";
+                    return "TT T.Toán";
                 case 10:
+                    return "Payer";
+                case 11:
+                    return "Người Cấp <br>Container";
+                case 12:
+                    return "Số Tham Chiếu";
+                case 13:
                     return "Ghi Chú";
             }
         },
-        colWidths: [ 100, 50, 200, 280, 100, 100, 100, 100, 100, 150, 100],
+        colWidths: [ 100, 50, 150, 150, 200, 250, 100, 100, 100, 100, 100, 100, 150, 150],
         filter: "true",
         columns: [
             {
@@ -218,6 +243,14 @@ function configHandson() {
                 renderer: sztpRenderer
             },
             {
+                data: "emptyExpireDem",
+                renderer: emptyExpireDemRenderer
+            },
+            {
+                data: "sztp",
+                renderer: dateOfIssueRenderer
+            },
+            {
                 data: "consignee",
                 renderer: consigneeRenderer
             },
@@ -225,10 +258,6 @@ function configHandson() {
             {
                 data: "vslNm",
                 renderer: vslNmRenderer
-            },
-            {
-                data: "wgt",
-                renderer: wgtRenderer
             },
             {
                 data: "cargoType",
@@ -243,8 +272,16 @@ function configHandson() {
                 renderer: payTypeRenderer
             },
             {
+                data: "paymentStatus",
+                renderer: paymentStatusTypeRenderer
+            },
+            {
                 data: "payer",
                 renderer: payerRenderer
+            },
+            {
+                data: "sztp",
+                renderer: personOfContainerRenderer
             },
             {
                 data: "orderNo",
@@ -335,6 +372,12 @@ function formatBlBooking(value, row) {
   return "";
 }
 
+function formatType(value, row, index) {
+	if(value == 1){
+		return "Hãng Tàu Cấp";
+	}
+	return "Cảng Cấp";
+}
 function formatBatch(value, row, index) {
 	  return '<a onclick="shipmentDetailsInfo(' + row.shipmentId + ")\"> " + value + "</a>";
 	}

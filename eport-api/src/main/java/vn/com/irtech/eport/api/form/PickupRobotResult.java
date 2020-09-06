@@ -11,6 +11,8 @@ public class PickupRobotResult implements Serializable {
 	private String containerNo;
 	
 	private String yardPosition;
+	
+	private String result;
 
 	public Long getId() {
 		return id;
@@ -34,6 +36,14 @@ public class PickupRobotResult implements Serializable {
 
 	public void setYardPosition(String yardPosition) {
 		this.yardPosition = yardPosition;
+	}
+
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
 	}
 	
 }

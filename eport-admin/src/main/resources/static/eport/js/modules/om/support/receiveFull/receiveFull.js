@@ -152,6 +152,12 @@ function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
+function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'orderNo' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+}
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
     $(td).attr('id', 'remark' + row).addClass("htMiddle");
@@ -195,10 +201,12 @@ function configHandson() {
                 case 8:
                     return "Payer";
                 case 9:
+                    return "Số Tham Chiếu";
+                case 10:
                     return "Ghi Chú";
             }
         },
-        // colWidths: [ 100, 100, 100, 120, 100, 100, 100, 150, 100, 120, 100, 80, 80, 80, 150],
+         colWidths: [ 100, 50, 200, 280, 100, 100, 100, 100, 100, 150, 100],
         filter: "true",
         columns: [
             {
@@ -237,6 +245,10 @@ function configHandson() {
             {
                 data: "payer",
                 renderer: payerRenderer
+            },
+            {
+                data: "orderNo",
+                renderer: orderNoRenderer
             },
             {
                 data: "remark",
@@ -287,6 +299,11 @@ function loadTableByContainer(processOrderId) {
         success: function (data) {
             if (data.code == 0) {
                 sourceData = data.shipmentDetails;
+                if(sourceData){
+                	for(let i = 0; i < sourceData.length;i++){
+                		sourceData[i].vslNm = sourceData[i].vslNm + " - " + sourceData[i].vslName + " - " + sourceData[i].voyCarrier;
+                	}
+                }
                 hot.destroy();
                 configHandson();
                 hot = new Handsontable(dogrid, config);

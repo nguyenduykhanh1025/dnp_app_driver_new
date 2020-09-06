@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.carrier.domain.BookingDetail;
 import vn.com.irtech.eport.carrier.service.IBookingDetailService;
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -40,6 +43,8 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 @RequestMapping("/carrier/booking/detail")
 public class BookingDetailController extends CarrierBaseController
 {
+	public static final Logger logger = LoggerFactory.getLogger(BookingDetailController.class);
+	
     private String prefix = "carrier/booking/detail";
 
     @Autowired
@@ -47,7 +52,6 @@ public class BookingDetailController extends CarrierBaseController
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
-
 
 	@Autowired
     private ICatosApiService catosApiService;
@@ -219,4 +223,20 @@ public class BookingDetailController extends CarrierBaseController
 		}
 		return AjaxResult.warn("Không tìm thấy tàu/chuyến nào cho hãng tàu này.");
 	}
+    
+    @PostMapping("/container/position")
+    @ResponseBody
+    public AjaxResult getListContainerInBay(@RequestBody ShipmentDetail shipmentDetail) {
+    	AjaxResult ajaxResult = AjaxResult.success();
+    	shipmentDetail.setOpeCode(getUserGroup().getGroupCode());
+    	shipmentDetail.setFe("E");
+    	try {
+    		ShipmentDetail[][] shipmentDetails = shipmentDetailService.getListContainerForCarrier(shipmentDetail);
+    		ajaxResult.put("shipmentDetails", shipmentDetails);
+		} catch (Exception e) {
+			logger.error("Error when get yard position for carrier: " + e);
+			return error();
+		}
+    	return ajaxResult;
+    }
 }
