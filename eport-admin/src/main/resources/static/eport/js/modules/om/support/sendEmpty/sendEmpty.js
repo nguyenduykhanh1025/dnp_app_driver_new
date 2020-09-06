@@ -348,12 +348,11 @@ function logisticInfo(id, logistics) {
 }
 function executedSuccess() {
   $.modal.open("Xác nhận", PREFIX + "/verify-executed-command-success/process-order/" + processOrderSelected.id , 400, 270);
-  loadTable(processOrder);
 }
 
 function msgSuccess(msg) {
 	$.modal.alertSuccess(msg);
-	
+	loadTable(processOrder);
 }
 function msgError(msg) {
 	$.modal.alertError(msg);

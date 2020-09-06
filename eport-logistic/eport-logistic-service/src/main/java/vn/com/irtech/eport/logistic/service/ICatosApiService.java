@@ -196,4 +196,10 @@ public interface ICatosApiService {
 	 * Get InvoiceNo by OrderNo for OM support orderRegister
 	 */
 	public String getInvoiceNoByOrderNo(String orderNo);
+	
+	/**
+	 * 
+	 * getCoordinateOfContainers for Carrier
+	 */
+	public List<ShipmentDetail> selectCoordinateOfContainersByShipmentDetail(ShipmentDetail shipmentDetail);
 }

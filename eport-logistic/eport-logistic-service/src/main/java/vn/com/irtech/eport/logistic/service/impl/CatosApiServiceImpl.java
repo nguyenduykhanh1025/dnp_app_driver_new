@@ -728,5 +728,27 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+	/**
+	 * 
+	 * getCoordinateOfContainers for Carrier
+	 */
+
+	@Override
+	public List<ShipmentDetail> selectCoordinateOfContainersByShipmentDetail(ShipmentDetail shipmentDetail) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetai/inventory/position";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
+			List<ShipmentDetail> coordinates = response.getBody();
+			return coordinates;
+		}catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			return null;
+		}
+	}
+	
 	
 }

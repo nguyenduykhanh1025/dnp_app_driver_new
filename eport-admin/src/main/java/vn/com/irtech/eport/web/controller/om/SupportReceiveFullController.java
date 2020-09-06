@@ -1,5 +1,4 @@
 package vn.com.irtech.eport.web.controller.om;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +38,9 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
 @Controller
-@RequestMapping("/om/support/send-full")
-public class SupportSendFullController extends BaseController{
-    private final String PREFIX = "om/support/sendFull"; 
+@RequestMapping("/om/support/receive-full")
+public class SupportReceiveFullController extends BaseController{
+    private final String PREFIX = "om/support/receiveFull"; 
     
     @Autowired
     private IProcessOrderService processOrderService;
@@ -78,7 +77,7 @@ public class SupportSendFullController extends BaseController{
 	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
 	    logisticGroups.add(0, logisticGroup);
 	    mmap.put("logisticsGroups", logisticGroups);
-        return PREFIX + "/sendFull";
+        return PREFIX + "/receiveFull";
     }
     
     @GetMapping("/verify-executed-command-success/process-order/{processOrderId}")
@@ -102,7 +101,7 @@ public class SupportSendFullController extends BaseController{
             processOrder = new ProcessOrder();
         }
 		processOrder.setResult("F");
-		processOrder.setServiceType(Constants.SEND_CONT_FULL);
+		processOrder.setServiceType(Constants.RECEIVE_CONT_FULL);
 		List<ProcessOrder> processOrders = processOrderService.selectProcessOrderListWithLogisticName(processOrder);
         TableDataInfo dataList = getDataTable(processOrders);
 		return dataList;
@@ -202,14 +201,14 @@ public class SupportSendFullController extends BaseController{
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setProcessOrderId(processOrderId);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		//update shipment detail 2 truong processOrderId, registerNo processStatus, status
+		//update shipment detail 2 truong processOrderId, registerNo processStatus, status, userVerifyStatus
 		try {
 			if(shipmentDetails.size() > 0) {
 				for(ShipmentDetail i: shipmentDetails) {
 					i.setProcessOrderId(null);
 					i.setRegisterNo(null);
 					i.setProcessStatus("N");
-					i.setStatus(1);
+					i.setStatus(2);
 					i.setUserVerifyStatus("N");
 					shipmentDetailService.updateShipmentDetailForOMSupport(i);
 				}
@@ -221,5 +220,11 @@ public class SupportSendFullController extends BaseController{
 			e.getStackTrace();
 			return error();
 		}
+    }
+    
+    @PostMapping("/abc")
+    @ResponseBody
+    public List<ShipmentDetail> abc(@RequestBody ShipmentDetail shipmentDetail){
+    	return catosService.selectCoordinateOfContainersByShipmentDetail(shipmentDetail);
     }
 }
