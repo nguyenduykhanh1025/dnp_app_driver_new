@@ -2,6 +2,8 @@ package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.GetMapping;
+
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -180,4 +182,24 @@ public interface ICatosApiService {
 	 * @return List Booking info object
 	 */
 	public List<BookingInfo> getBookingInfo(String bookingNo, String userVoy);
+	
+	/**
+	 * Get orderNo in Inventory from catos by shipmentDetail for OM support orderRegister
+	 */
+	public String getOrderNoInInventoryByShipmentDetail(ShipmentDetail shipmentDetail);
+	/**
+	 * Get orderNo in Reserve from catos by shipmentDetail for OM support orderRegister
+	 */
+	public String getOrderNoInReserveByShipmentDetail(ShipmentDetail shipmentDetail);
+	
+	/**
+	 * Get InvoiceNo by OrderNo for OM support orderRegister
+	 */
+	public String getInvoiceNoByOrderNo(String orderNo);
+	
+	/**
+	 * 
+	 * getCoordinateOfContainers for Carrier
+	 */
+	public List<ShipmentDetail> selectCoordinateOfContainersByShipmentDetail(ShipmentDetail shipmentDetail);
 }

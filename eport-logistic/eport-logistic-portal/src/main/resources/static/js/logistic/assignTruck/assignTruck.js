@@ -593,13 +593,13 @@ config = {
             case 0:
                 return "Đơn vị chủ quản";
             case 1:
-                return '<span>Số điện thoại</span><span style="color: red;">(*)</span>';
+                return '<span class="required">Số điện thoại</span>';
             case 2:
-                return '<span>Họ và tên</span><span style="color: red;">(*)</span>';
+                return '<span class="required">Họ và tên</span>';
             case 3:
-                return '<span>Xe đầu kéo</span><span style="color: red;">(*)</span>';
+                return '<span class="required">Xe đầu kéo</span>';
             case 4:
-                return '<span>Xe rơ mooc</span><span style="color: red;">(*)</span>';
+                return '<span class="required">Xe rơ mooc</span>';
         }
     },
     colWidths: [200, 100, 150, 100, 100],

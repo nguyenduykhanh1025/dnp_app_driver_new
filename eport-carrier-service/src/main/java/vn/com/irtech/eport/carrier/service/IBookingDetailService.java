@@ -58,4 +58,6 @@ public interface IBookingDetailService
      * @return result
      */
     public int deleteBookingDetailById(Long id);
+
+    public BookingDetail selectBookingDetailByBookingNo(Long bookingId);
 }

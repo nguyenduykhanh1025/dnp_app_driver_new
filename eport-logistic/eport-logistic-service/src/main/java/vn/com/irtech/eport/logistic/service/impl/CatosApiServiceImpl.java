@@ -679,4 +679,76 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+	/**
+	 * Get orderNo in Inventory from catos by shipmentDetail for OM support orderRegister
+	 */
+	@Override
+	public String getOrderNoInInventoryByShipmentDetail(ShipmentDetail shipmentDetail) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/inventory/order-no";
+			logger.debug("Call CATOS API get orderNo:{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			String orderNo = restTemplate.postForObject(url, shipmentDetail, String.class);
+			return  orderNo;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api get OrderNo Inventory: ", e);
+			return null;
+		}
+	}
+	/**
+	 * Get orderNo in Reserve from catos by shipmentDetail for OM support orderRegister
+	 */
+	@Override
+	public String getOrderNoInReserveByShipmentDetail(ShipmentDetail shipmentDetail) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/reserve/order-no";
+			logger.debug("Call CATOS API get orderNo:{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			String orderNo = restTemplate.postForObject(url, shipmentDetail, String.class);
+			return  orderNo;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api get OrderNo Reserve: ", e);
+			return null;
+		}
+	}
+	/**
+	 * Get InvoiceNo by OrderNo for OM support orderRegister
+	 */
+
+	@Override
+	public String getInvoiceNoByOrderNo(String orderNo) {
+		try {
+			String url = Global.getApiUrl() + "/order-no/" + orderNo +"/get/invoice-no";
+			logger.debug("Call CATOS API get invoiceNo:{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			String invoiceNo = restTemplate.getForObject(url, String.class);
+			return  invoiceNo;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api get invoiceNo: ", e);
+			return null;
+		}
+	}
+	/**
+	 * 
+	 * getCoordinateOfContainers for Carrier
+	 */
+
+	@Override
+	public List<ShipmentDetail> selectCoordinateOfContainersByShipmentDetail(ShipmentDetail shipmentDetail) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetai/inventory/position";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
+			List<ShipmentDetail> coordinates = response.getBody();
+			return coordinates;
+		}catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			return null;
+		}
+	}
+	
+	
 }

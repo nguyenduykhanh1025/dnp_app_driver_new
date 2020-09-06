@@ -94,4 +94,10 @@ public class BookingServiceImpl implements IBookingService
     {
         return bookingMapper.deleteBookingById(id);
     }
+
+    @Override
+    public Booking selectBookingByBookingNo(String bookingNo)
+    {
+        return bookingMapper.selectBookingByBookingNo(bookingNo);
+    }
 }

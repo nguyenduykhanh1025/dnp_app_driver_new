@@ -146,4 +146,19 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return List of booking info
 	 */
 	public List<BookingInfo> getBookingInfo(@Param("bookingNo") String bookingNo, @Param("userVoy") String userVoy);
+	
+	/**
+	 * get OrderNo in Inventory by shipmentDetail
+	 */
+	public String getOrderNoInInventoryByShipmentDetail(ShipmentDetailEntity shipmentDetailEntity);
+	/**
+	 * get OrderNo in Reserve by shipmentDetail
+	 */
+	public String getOrderNoInReserveByShipmentDetail(ShipmentDetailEntity shipmentDetailEntity);
+	
+	/**
+	 * 
+	 * getCoordinateOfContainers for Carrier
+	 */
+	public List<ShipmentDetailEntity> selectCoordinateOfContainersByShipmentDetail(ShipmentDetailEntity shipmentDetailEntity);
 }

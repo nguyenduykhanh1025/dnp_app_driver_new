@@ -248,4 +248,19 @@ public class ApiShipmentDetailController {
 	public List<BookingInfo> getBookingInfo(@PathVariable("bookingNo") String bookingNo, @PathVariable("userVoy") String userVoy) {
 		return shipmentDetailDao.getBookingInfo(bookingNo, userVoy);
 	}
+	
+	@PostMapping("/shipmentDetail/inventory/order-no")
+	public String getOrderNoInInventoryByShipmentDetail(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
+		return shipmentDetailDao.getOrderNoInInventoryByShipmentDetail(shipmentDetailEntity);
+	}
+	
+	@PostMapping("/shipmentDetail/reserve/order-no")
+	public String getOrderNoInReserveByShipmentDetail(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
+		return shipmentDetailDao.getOrderNoInReserveByShipmentDetail(shipmentDetailEntity);
+	}
+	
+	@PostMapping("/shipmentDetai/inventory/position")
+	public List<ShipmentDetailEntity> selectCoordinateOfContainersByShipmentDetail(@RequestBody ShipmentDetailEntity shipmentDetailEntity){
+		return shipmentDetailDao.selectCoordinateOfContainersByShipmentDetail(shipmentDetailEntity);
+	}
 }

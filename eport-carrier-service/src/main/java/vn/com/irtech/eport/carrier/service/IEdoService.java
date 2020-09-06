@@ -2,6 +2,7 @@ package vn.com.irtech.eport.carrier.service;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -131,4 +132,6 @@ public interface IEdoService {
 	 * @return List<Edo>
 	 */
 	public List<Edo> selectListEdoWithHouseBill(EdoWithoutHouseBillReq edo);  
+
+	public Map<String, String> getReportByCarrierGroup(String[] codes);
 }

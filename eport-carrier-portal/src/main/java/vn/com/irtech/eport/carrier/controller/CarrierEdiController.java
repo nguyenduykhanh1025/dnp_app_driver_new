@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.dto.EdiHashcodeReq;
@@ -43,6 +44,8 @@ import vn.com.irtech.eport.framework.web.exception.EdiApiException;
 public class CarrierEdiController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CarrierEdiController.class);
+	
+	private static final String DATE_FORMAT_GSON = "yyyy-MM-dd HH:mm:ss";
 	
 	@Autowired
 	private ICarrierGroupService carrierGroupService;
@@ -66,7 +69,7 @@ public class CarrierEdiController {
 			throw new EdiApiException(EdiRes.error(HttpServletResponse.SC_PRECONDITION_FAILED, "Partner code is not exist", transactionId, ediReq.getData()));
 		}
 		// Authentication
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT_GSON).create();
 		String plainText = gson.toJson(ediReq.getData());
 		PublicKey publicKey = SignatureUtils.getPublicKey(carrierGroup.getApiPublicKey());
 		
@@ -120,7 +123,7 @@ public class CarrierEdiController {
 	@ResponseBody
 	public ResponseEntity<String> getHashcode(@RequestBody EdiHashcodeReq ediHashcodeReq) {
 		String hashCode = null;
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT_GSON).create();
 		String plainText = gson.toJson(ediHashcodeReq.getData());
 		PrivateKey pk = SignatureUtils.getPrivateKey(ediHashcodeReq.getPrivateKey());
 		hashCode = SignatureUtils.sign(plainText, pk);

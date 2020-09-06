@@ -495,23 +495,23 @@ function configHandson() {
                 case 1:
                     return "Trạng Thái";
                 case 2:
-                    return '<span>Container No</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Container No</span>';
                 case 3:
-                    return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Kích Thước</span>';
                 case 4:
-                    return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Chủ Hàng</span>';
                 case 5:
-                    return '<span>Tàu và Chuyến</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Tàu và Chuyến</span>';
                 case 6:
                     return "Nhiệt Độ";
                 // case 8:
                 //     return "Chi tiết";
                 case 7:
-                    return '<span>Trọng Lượng</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Trọng Lượng</span>';
                 case 8:
-                    return '<span>Loại Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Loại Hàng</span>';
                 case 9:
-                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Cảng Dỡ Hàng</span>';
                 case 10:
                     return "Ghi Chú";
             }

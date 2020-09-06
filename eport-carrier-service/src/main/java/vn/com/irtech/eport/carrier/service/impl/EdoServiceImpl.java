@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -434,4 +435,9 @@ public class EdoServiceImpl implements IEdoService
 	public List<Edo> selectListEdoWithHouseBill(EdoWithoutHouseBillReq edo) {
 		return edoMapper.selectListEdoWithHouseBill(edo);
 	}
+
+	public Map<String, String> getReportByCarrierGroup(String[] codes) {
+		return edoMapper.getReportByCarrierGroup(codes);
+	}
+	
 }
