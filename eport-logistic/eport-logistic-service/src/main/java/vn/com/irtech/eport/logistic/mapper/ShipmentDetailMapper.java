@@ -152,4 +152,9 @@ public interface ShipmentDetailMapper
     public List<ShipmentDetail> selectEdoListByBlNo(String blNo);
     
     public List<ShipmentDetail> selectShipmentDetailListReport(ShipmentDetail shipmentDetail);
+    
+    /**
+     * updateShipmentDetailForOMSupport : OM support orderRegister (reset process status) (special)
+     */
+    public int updateShipmentDetailForOMSupport(ShipmentDetail shipmentDetail);
 }

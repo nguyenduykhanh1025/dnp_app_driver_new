@@ -17,12 +17,15 @@ import com.google.gson.Gson;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.service.IEdoService;
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
@@ -117,7 +120,7 @@ public class SupportSendEmptyController extends BaseController{
         }
 		return error();
     }
-    
+    @Log(title = "Xác nhận làm lệnh OK(OM)", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
     @PostMapping("/executed-the-command-catos-success")
     @ResponseBody
     public AjaxResult executedTheCommandCatosSuccess(Long processOrderId ) {
@@ -184,6 +187,7 @@ public class SupportSendEmptyController extends BaseController{
 		}
     	return success();
     }
+    @Log(title = "Reset Proccess Status(OM)", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
     @PostMapping("/reset-process-status")
     @Transactional
     @ResponseBody
@@ -206,7 +210,7 @@ public class SupportSendEmptyController extends BaseController{
 					i.setProcessStatus("N");
 					i.setStatus(1);
 					i.setUserVerifyStatus("N");
-					shipmentDetailService.updateShipmentDetail(i);
+					shipmentDetailService.updateShipmentDetailForOMSupport(i);
 				}
 			}
 			//delete record table process_order

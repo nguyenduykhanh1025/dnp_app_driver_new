@@ -1208,4 +1208,12 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     public List<ShipmentDetail> selectShipmentDetailListReport(ShipmentDetail shipmentDetail) {
         return shipmentDetailMapper.selectShipmentDetailListReport(shipmentDetail);
     }
+    
+    /**
+     * updateShipmentDetailForOMSupport : OM support orderRegister (reset process status) (special)
+     */
+	@Override
+	public int updateShipmentDetailForOMSupport(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.updateShipmentDetailForOMSupport(shipmentDetail);
+	}
 }

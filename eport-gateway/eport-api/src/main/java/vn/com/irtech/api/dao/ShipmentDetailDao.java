@@ -155,4 +155,10 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * get OrderNo in Reserve by shipmentDetail
 	 */
 	public String getOrderNoInReserveByShipmentDetail(ShipmentDetailEntity shipmentDetailEntity);
+	
+	/**
+	 * 
+	 * getCoordinateOfContainers for Carrier
+	 */
+	public List<ShipmentDetailEntity> selectCoordinateOfContainersByShipmentDetail(ShipmentDetailEntity shipmentDetailEntity);
 }
