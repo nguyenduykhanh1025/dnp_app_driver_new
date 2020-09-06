@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.ShipmentCommentMapper">
+    
+    <resultMap type="ShipmentComment" id="ShipmentCommentResult">
+        <result property="id"    column="id"    />
+        <result property="shipmentId"    column="shipment_id"    />
+        <result property="logisticGroupId"    column="logistic_group_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userType"    column="user_type"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userAlias"    column="user_alias"    />
+        <result property="commentTime"    column="comment_time"    />
+        <result property="content"    column="content"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="column1"    column="column1"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updatedBy"    column="updated_by"    />
+    </resultMap>
+
+    <sql id="selectShipmentCommentVo">
+        select id, shipment_id, logistic_group_id, user_id, user_type, user_name, user_alias, comment_time, content, create_time, column1, update_time, updated_by from shipment_comment
+    </sql>
+
+    <select id="selectShipmentCommentList" parameterType="ShipmentComment" resultMap="ShipmentCommentResult">
+        <include refid="selectShipmentCommentVo"/>
+        <where>  
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userType != null  and userType != ''"> and user_type = #{userType}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat(concat('%', #{userName}), '%')</if>
+            <if test="userAlias != null  and userAlias != ''"> and user_alias = #{userAlias}</if>
+            <if test="commentTime != null "> and comment_time = #{commentTime}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="column1 != null  and column1 != ''"> and column1 = #{column1}</if>
+            <if test="updatedBy != null  and updatedBy != ''"> and updated_by = #{updatedBy}</if>
+        </where>
+    </select>
+    
+    <select id="selectShipmentCommentById" parameterType="Long" resultMap="ShipmentCommentResult">
+        <include refid="selectShipmentCommentVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertShipmentComment" parameterType="ShipmentComment">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT seq_shipment_comment.NEXTVAL as id FROM DUAL
+        </selectKey>
+        insert into shipment_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="shipmentId != null">shipment_id,</if>
+            <if test="logisticGroupId != null">logistic_group_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userType != null">user_type,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="userAlias != null and userAlias != ''">user_alias,</if>
+            <if test="commentTime != null">comment_time,</if>
+            <if test="content != null">content,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="column1 != null">column1,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updatedBy != null">updated_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="shipmentId != null">#{shipmentId},</if>
+            <if test="logisticGroupId != null">#{logisticGroupId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userType != null">#{userType},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="userAlias != null and userAlias != ''">#{userAlias},</if>
+            <if test="commentTime != null">#{commentTime},</if>
+            <if test="content != null">#{content},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="column1 != null">#{column1},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updatedBy != null">#{updatedBy},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShipmentComment" parameterType="ShipmentComment">
+        update shipment_comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shipmentId != null">shipment_id = #{shipmentId},</if>
+            <if test="logisticGroupId != null">logistic_group_id = #{logisticGroupId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userType != null">user_type = #{userType},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="userAlias != null and userAlias != ''">user_alias = #{userAlias},</if>
+            <if test="commentTime != null">comment_time = #{commentTime},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="column1 != null">column1 = #{column1},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updatedBy != null">updated_by = #{updatedBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteShipmentCommentById" parameterType="Long">
+        delete from shipment_comment where id = #{id}
+    </delete>
+
+    <delete id="deleteShipmentCommentByIds" parameterType="String">
+        delete from shipment_comment where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

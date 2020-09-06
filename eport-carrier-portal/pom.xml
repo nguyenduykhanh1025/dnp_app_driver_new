@@ -53,6 +53,10 @@
             <artifactId>jasperreports-fonts</artifactId>
             <version>6.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>vn.com.irtech.eport</groupId>
+            <artifactId>eport-logistic-service</artifactId>
+        </dependency>
     </dependencies>
     <repositories>
         <!-- Repository for ORACLE ojdbc7. -->

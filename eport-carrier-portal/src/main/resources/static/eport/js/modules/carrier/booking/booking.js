@@ -229,7 +229,7 @@ function formatStatus(value) {
 
 function pickupContainer(id) {
     // $.modal.openWithOneButton('Cấp container', PREFIX + "/pickupContainer/", 1000, 400);
-    $.modal.openWithOneButton("Bốc container chỉ định", PREFIX + "/pickupContainer/", 1000, 600);
+    $.modal.openWithOneButton("Bốc container chỉ định", PREFIX2 + "/pickupContainer/", 1000, 600);
 }
 
 function addBooking(id) {

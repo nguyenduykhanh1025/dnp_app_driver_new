@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('Edit Shipment Comment')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-comment-edit" th:object="${shipmentComment}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">Shipment ID：</label>
+                <div class="col-sm-8">
+                    <input name="shipmentId" th:field="*{shipmentId}" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">Logistic ID：</label>
+                <div class="col-sm-8">
+                    <input name="logisticGroupId" th:field="*{logisticGroupId}" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Commentor ID：</label>
+                <div class="col-sm-8">
+                    <input name="userId" th:field="*{userId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">User Type:S: DNP StaftL: LogisticC:CarrierD:Driver：</label>
+                <div class="col-sm-8">
+                    <select name="userType" class="form-control m-b">
+                        <option value="">All</option>
+                    </select>
+                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> Code generation please select dictionary attributes</span>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Commentor Name：</label>
+                <div class="col-sm-8">
+                    <input name="userName" th:field="*{userName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">User Alias Name：</label>
+                <div class="col-sm-8">
+                    <input name="userAlias" th:field="*{userAlias}" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Comment Time：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="commentTime" th:value="${#dates.format(shipmentComment.commentTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Content：</label>
+                <div class="col-sm-8">
+                    <input name="content" th:field="*{content}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Create By：</label>
+                <div class="col-sm-8">
+                    <input name="column1" th:field="*{column1}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Update By：</label>
+                <div class="col-sm-8">
+                    <input name="updatedBy" th:field="*{updatedBy}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "shipment/comment";
+        $("#form-comment-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-comment-edit').serialize());
+            }
+        }
+
+        $("input[name='commentTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+package vn.com.irtech.eport.logistic.domain;
+
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import vn.com.irtech.eport.common.annotation.Excel;
+import vn.com.irtech.eport.common.core.domain.BaseEntity;
+import java.util.Date;
+
+/**
+ * Shipment Comment Object shipment_comment
+ * 
+ * @author IRTech
+ * @date 2020-09-06
+ */
+public class ShipmentComment extends BaseEntity
+{
+    private static final long serialVersionUID = 1L;
+
+    /** ID */
+    private Long id;
+
+    /** Shipment ID */
+    @Excel(name = "Shipment ID")
+    private Long shipmentId;
+
+    /** Logistic ID */
+    @Excel(name = "Logistic ID")
+    private Long logisticGroupId;
+
+    /** Commentor ID */
+    @Excel(name = "Commentor ID")
+    private Long userId;
+
+    /** User Type:S: DNP StaftL: LogisticC:CarrierD:Driver */
+    @Excel(name = "User Type:S: DNP StaftL: LogisticC:CarrierD:Driver")
+    private String userType;
+
+    /** Commentor Name */
+    @Excel(name = "Commentor Name")
+    private String userName;
+
+    /** User Alias Name */
+    @Excel(name = "User Alias Name")
+    private String userAlias;
+
+    /** Comment Time */
+    @Excel(name = "Comment Time", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date commentTime;
+
+    /** Content */
+    @Excel(name = "Content")
+    private String content;
+
+    /** Create By */
+    @Excel(name = "Create By")
+    private String column1;
+
+    /** Update By */
+    @Excel(name = "Update By")
+    private String updatedBy;
+
+    public void setId(Long id) 
+    {
+        this.id = id;
+    }
+
+    public Long getId() 
+    {
+        return id;
+    }
+    public void setShipmentId(Long shipmentId) 
+    {
+        this.shipmentId = shipmentId;
+    }
+
+    public Long getShipmentId() 
+    {
+        return shipmentId;
+    }
+    public void setLogisticGroupId(Long logisticGroupId) 
+    {
+        this.logisticGroupId = logisticGroupId;
+    }
+
+    public Long getLogisticGroupId() 
+    {
+        return logisticGroupId;
+    }
+    public void setUserId(Long userId) 
+    {
+        this.userId = userId;
+    }
+
+    public Long getUserId() 
+    {
+        return userId;
+    }
+    public void setUserType(String userType) 
+    {
+        this.userType = userType;
+    }
+
+    public String getUserType() 
+    {
+        return userType;
+    }
+    public void setUserName(String userName) 
+    {
+        this.userName = userName;
+    }
+
+    public String getUserName() 
+    {
+        return userName;
+    }
+    public void setUserAlias(String userAlias) 
+    {
+        this.userAlias = userAlias;
+    }
+
+    public String getUserAlias() 
+    {
+        return userAlias;
+    }
+    public void setCommentTime(Date commentTime) 
+    {
+        this.commentTime = commentTime;
+    }
+
+    public Date getCommentTime() 
+    {
+        return commentTime;
+    }
+    public void setContent(String content) 
+    {
+        this.content = content;
+    }
+
+    public String getContent() 
+    {
+        return content;
+    }
+    public void setColumn1(String column1) 
+    {
+        this.column1 = column1;
+    }
+
+    public String getColumn1() 
+    {
+        return column1;
+    }
+    public void setUpdatedBy(String updatedBy) 
+    {
+        this.updatedBy = updatedBy;
+    }
+
+    public String getUpdatedBy() 
+    {
+        return updatedBy;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+            .append("id", getId())
+            .append("shipmentId", getShipmentId())
+            .append("logisticGroupId", getLogisticGroupId())
+            .append("userId", getUserId())
+            .append("userType", getUserType())
+            .append("userName", getUserName())
+            .append("userAlias", getUserAlias())
+            .append("commentTime", getCommentTime())
+            .append("content", getContent())
+            .append("createTime", getCreateTime())
+            .append("column1", getColumn1())
+            .append("updateTime", getUpdateTime())
+            .append("updatedBy", getUpdatedBy())
+            .toString();
+    }
+}
