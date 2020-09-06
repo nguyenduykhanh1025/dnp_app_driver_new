@@ -61,5 +61,5 @@ function loadPostion(shipmentDetails) {
         str += '</div>';
     }
     str += '</div><div style="margin-bottom: 10px;"><b>' + 'Z1-17' + '</b></div>';
-    $(".contListPosition").append(str);
+    $(".contListPosition").html(str);
 }
