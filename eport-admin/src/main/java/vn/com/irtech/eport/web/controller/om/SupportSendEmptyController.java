@@ -34,11 +34,10 @@ import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
-
 @Controller
-@RequestMapping("/om/support/send-full")
-public class SupportSendFullController extends BaseController{
-    private final String PREFIX = "om/support/sendFull"; 
+@RequestMapping("/om/support/send-empty")
+public class SupportSendEmptyController extends BaseController{
+    private final String PREFIX = "om/support/sendEmpty"; 
     
     @Autowired
     private IProcessOrderService processOrderService;
@@ -75,7 +74,7 @@ public class SupportSendFullController extends BaseController{
 	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
 	    logisticGroups.add(0, logisticGroup);
 	    mmap.put("logisticsGroups", logisticGroups);
-        return PREFIX + "/sendFull";
+        return PREFIX + "/sendEmpty";
     }
     
     @GetMapping("/verify-executed-command-success/process-order/{processOrderId}")
@@ -99,7 +98,7 @@ public class SupportSendFullController extends BaseController{
             processOrder = new ProcessOrder();
         }
 		processOrder.setResult("F");
-		processOrder.setServiceType(Constants.SEND_CONT_FULL);
+		processOrder.setServiceType(Constants.SEND_CONT_EMPTY);
 		List<ProcessOrder> processOrders = processOrderService.selectProcessOrderListWithLogisticName(processOrder);
         TableDataInfo dataList = getDataTable(processOrders);
 		return dataList;

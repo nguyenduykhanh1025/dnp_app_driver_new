@@ -5,7 +5,6 @@ $(document).ready(function () {
 	loadTableByContainer(shipmentDetail);
 });
 function loadTableByContainer(shipmentDetail) {
-	console.log(shipmentDetail)
   $("#dg").datagrid({
     url: PREFIX + "/shipmentDetails",
     method: "POST",
@@ -36,6 +35,11 @@ function loadTableByContainer(shipmentDetail) {
           data: shipmentDetail,
         }),
         success: function (data) {
+        	let rs =JSON.parse(data);
+        	$("#bookingNo").text(rs.rows[0].bookingNo);
+        	$("#vslNm").text(rs.rows[0].vslNm + " - " + rs.rows[0].vslName + " - " + rs.rows[0].voyCarrier);
+        	$("#opeCode").text(rs.rows[0].opeCode);
+        	$("#consignee").text(rs.rows[0].consignee);
           success(JSON.parse(data));
         },
         error: function () {

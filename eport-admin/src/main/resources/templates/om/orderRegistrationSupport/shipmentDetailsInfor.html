@@ -8,8 +8,29 @@
   </head>
   <body class="logistics-info-body">
     <div class="wrapper">
-        <div class="form-horizontal">
-	      <table id="dg">
+      <div class="content">
+        <div class="title-top">
+            <div class="left-info-col-sm-12-row" style="width: 100%; height: 20px">
+              <div class="col-sm-3" id="bookingNoDiv">
+                <label class="label-title"><b>Booking No:</b> </label>
+                <span id="bookingNo"></span>
+              </div>
+              <div class="col-sm-2" style="padding: 0 0; width: 100px">
+                <label class="label-title"><b>Hãng tàu: </b></label>
+                <span id="opeCode"></span>
+              </div>
+              <div class="col-sm-4" style="width: 300px">
+                <label class="label-title"><b>Tàu - chuyến: </b></label>
+                <span id="vslNm"></span>
+              </div>
+              <div class="col-sm-4">
+                <label class="label-title"><b>Khách hàng:</b></label>
+                <span id="consignee"></span>
+              </div>
+            </div>
+        </div>
+        <div class="content" style="height: cal(100% - 20px)">
+	      <table id="dg" style="width: 100%">
 	        <thead>
 	            <tr>
 	              <th data-options="field:'containerNo',align:'center',fixed:true" width="100">
@@ -58,6 +79,7 @@
 	        </thead>
 	      </table>
         </div>
+      </div>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
