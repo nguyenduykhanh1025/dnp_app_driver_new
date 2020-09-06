@@ -7032,3 +7032,13 @@ nav .logo {
 	z-index: 9998;
 	margin: 0;
 }
+/** Style for handsontable required column*/
+.required:after{
+    content:"\f069";
+    font-family:FontAwesome;
+    position:absolute;
+    top:3px;
+    right:3px;
+    font-size:7px;
+    color: red;
+}
