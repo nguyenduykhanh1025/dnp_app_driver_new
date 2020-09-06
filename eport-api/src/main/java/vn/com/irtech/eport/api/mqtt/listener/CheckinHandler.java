@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
@@ -32,6 +31,7 @@ import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.exception.BusinessException;
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -55,20 +55,14 @@ public class CheckinHandler implements IMqttMessageListener {
 
 	@Autowired
 	private IPickupHistoryService pickupHistoryService;
+	
 	@Autowired
 	private ISysRobotService robotService;
-	@Autowired
-	private IShipmentDetailService shipmentDetailService;
-	@Autowired
-	private ICatosApiService catosApiService;
+	
 	@Autowired
 	@Qualifier("threadPoolTaskExecutor")
-	private TaskExecutor executor;
 	
-	// time wait mc input postion
-	private static final Long TIME_OUT_WAIT_MC = 2000L;
-	// loop for 2 minutes
-	private static final Integer RETRY_WAIT_MC = 60;
+	private TaskExecutor executor;
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -214,7 +208,6 @@ public class CheckinHandler implements IMqttMessageListener {
 	 */
 	private List<DriverDataRes> getDriverDataResponse(CheckinReq checkinReq) throws Exception {
 		List<DriverDataRes> result = new ArrayList<>();
-		List<DriverDataRes> dataWithoutYardPostion = new ArrayList<>();
 
 		for (PickupHistoryDataRes pickupHistoryDataRes : checkinReq.getData()) {
 			PickupHistory pickupHistory = pickupHistoryService
@@ -223,25 +216,6 @@ public class CheckinHandler implements IMqttMessageListener {
 			// pickup is not exist
 			if (pickupHistory == null) {
 				throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0007));
-			}
-
-			ShipmentDetail shipmentDetail = null;
-			// Get position for send container case
-			if (pickupHistory.getShipment().getServiceType() == 1) {
-				// Get position
-				if (pickupHistory.getShipmentDetailId() == null) {
-					// Auto pickup
-					// TODO cho nay logic ntn
-//					shipmentDetail = shipmentDetailService.getContainerWithYardPosition(pickupHistory.getShipmentId());
-//					pickupHistory.setContainerNo(shipmentDetail.getContainerNo());
-//					pickupHistory.setShipmentDetailId(shipmentDetail.getId());
-//					pickupHistory.setSztp(shipmentDetail.getSztp());
-//					pickupHistory.setBlock(shipmentDetail.getBlock());
-//					pickupHistory.setBay(shipmentDetail.getBay());
-//					pickupHistory.setLine(String.valueOf(shipmentDetail.getRow()));
-//					pickupHistory.setTier(String.valueOf(shipmentDetail.getTier()));
-//					pickupHistoryService.updatePickupHistory(pickupHistory);
-				}
 			}
 
 			DriverDataRes driverDataRes = new DriverDataRes();
@@ -372,7 +346,7 @@ public class CheckinHandler implements IMqttMessageListener {
 			for (DriverDataRes driverDataRes : driverDatareses) {
 				pickupTemp = pickupHistoryService.selectPickupHistoryById(driverDataRes.getPickupHistoryId());
 				// TODO chinh sua logic cho nay lai %2?
-				if (pickupTemp.getShipment().getServiceType() % 2 == 1) {
+				if (pickupTemp.getShipment().getServiceType() == 1 || pickupTemp.getShipment().getServiceType() == 3) {
 					pickupOut.add(pickupTemp);
 				} else {
 					if (pickupTemp.getBlock() == null) {
@@ -381,6 +355,37 @@ public class CheckinHandler implements IMqttMessageListener {
 					if (pickupTemp.getArea() == null) {
 						pickupTemp.setArea("");
 					}
+					
+					// Set bay to fit format of catos (02 -> 01/02)
+					if (StringUtils.isNotEmpty(pickupTemp.getBay())) {
+						try {
+							Integer bay = Integer.parseInt(pickupTemp.getBay());
+							
+							// Check bay is even then need to add odd number before current bay (02 -> even -> 01/02)
+							if (bay%2 == 0) {
+								Integer oddNumber = bay - 1;
+								String oddString = "";
+								if (oddNumber < 10) {
+									oddString = "0" + oddNumber.toString();
+								} else {
+									oddString = oddNumber.toString();
+								}
+								pickupTemp.setBay(oddString+"/"+pickupTemp.getBay());
+							} else {
+								Integer evenNumber = bay + 1;
+								String evenString = "";
+								if (evenNumber < 10) {
+									evenString = "0" + evenNumber.toString();
+								} else {
+									evenString = evenNumber.toString();
+								}
+								pickupTemp.setBay(pickupTemp.getBay() + "/" + evenString);
+							}
+						} catch (Exception e) {
+							logger.error("Failed to parsing bay string to Integer: " + pickupTemp.getBay());
+						}
+					}
+					
 					pickupIn.add(pickupTemp);
 				}
 				if (driverDataRes.getWgt() != null) {
