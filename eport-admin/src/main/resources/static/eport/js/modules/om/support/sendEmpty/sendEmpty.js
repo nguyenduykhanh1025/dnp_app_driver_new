@@ -1,7 +1,7 @@
-const PREFIX = ctx + "om/support/send-full";
+const PREFIX = ctx + "om/support/send-empty";
 var bill;
 var processOrder = new Object();
-processOrder.serviceType = 4;
+processOrder.serviceType = 2;
 var shipmentDetails = new Object();
 var currentLeftWidth = $(".table-left").width();
 var currentRightWidth = $(".table-right").width();
@@ -100,61 +100,67 @@ loadTableByContainer();
 //FORMAT HANDSONTABLE COLUMN
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'containerNo' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
     $(td).html(value);
     return td;
 }
 function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'sztp' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).attr('id', 'sztp' + row).addClass("htMiddle");
     $(td).html(value);
     return td;
 }
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'consignee' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).attr('id', 'consignee' + row).addClass("htMiddle");
     $(td).html(value);
     return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'vslNm' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
     $(td).html(value);
     return td;
 }
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'wgt' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).attr('id', 'wgt' + row).addClass("htMiddle");
     $(td).html(value);
     return td;
 }
 function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'cargoType' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
     $(td).html(value);
     return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'dischargePort' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+}
+function emptyExpiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'emptyExpiredDem' + row).addClass("htMiddle");
     $(td).html(value);
     return td;
 }
 function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'payType' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).attr('id', 'payType' + row).addClass("htMiddle");
     $(td).html(value);
     return td;
 }
 function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'payer' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).attr('id', 'payer' + row).addClass("htMiddle");
     $(td).html(value);
     return td;
 }
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'remark' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).attr('id', 'remark' + row).addClass("htMiddle");
     $(td).html(value);
     return td;
 }
@@ -191,10 +197,12 @@ function configHandson() {
                 case 6:
                 	return "Cảng Dở Hàng";
                 case 7:
-                    return "PTTT";
+                	return "Hạn Trả Vỏ";
                 case 8:
-                    return "Payer";
+                    return "PTTT";
                 case 9:
+                    return "Payer";
+                case 10:
                     return "Ghi Chú";
             }
         },
@@ -229,6 +237,10 @@ function configHandson() {
             {
                 data: "dischargePort",
                 renderer: dischargePortRenderer
+            },
+            {
+                data: "emptyExpiredDem",
+                renderer: emptyExpiredDemRenderer
             },
             {
                 data: "payType",
