@@ -2,6 +2,9 @@ package vn.com.irtech.api.entity;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 /**
@@ -108,6 +111,7 @@ public class ShipmentDetailEntity extends BaseEntity
     private String doStatus;
 
     /** Ngay Nhan DO Goc */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date doReceivedTime;
 
     /** Xac Thuc (Y,N) */

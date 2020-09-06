@@ -240,4 +240,9 @@ public interface IShipmentDetailService
     public List<ProcessOrder> createBookingIfNeed(List<ServiceSendFullRobotReq> receiveEmptyReqs);
     
     public List<ShipmentDetail> selectShipmentDetailListReport(ShipmentDetail shipmentDetail);
+    
+    /**
+     * updateShipmentDetailForOMSupport : OM support orderRegister (reset process status) (special)
+     */
+    public int updateShipmentDetailForOMSupport(ShipmentDetail shipmentDetail);
 }

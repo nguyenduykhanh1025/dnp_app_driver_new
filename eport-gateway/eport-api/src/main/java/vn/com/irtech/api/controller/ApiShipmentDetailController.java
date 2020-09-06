@@ -258,4 +258,9 @@ public class ApiShipmentDetailController {
 	public String getOrderNoInReserveByShipmentDetail(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
 		return shipmentDetailDao.getOrderNoInReserveByShipmentDetail(shipmentDetailEntity);
 	}
+	
+	@PostMapping("/shipmentDetai/inventory/position")
+	public List<ShipmentDetailEntity> selectCoordinateOfContainersByShipmentDetail(@RequestBody ShipmentDetailEntity shipmentDetailEntity){
+		return shipmentDetailDao.selectCoordinateOfContainersByShipmentDetail(shipmentDetailEntity);
+	}
 }
