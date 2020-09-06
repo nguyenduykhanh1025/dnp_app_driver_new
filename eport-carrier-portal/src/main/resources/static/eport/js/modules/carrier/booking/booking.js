@@ -6,6 +6,34 @@ var bookingSelected;
 var dogrid = document.getElementById("container-grid"), hot;
 var coutCheck = 0;
 var rowAmount = 0;
+var consigneeList;
+var sizeList = [];
+var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
+var vslNmList;
+var berthplanList;
+
+$.ajax({
+    type: "GET",
+    url: ctx  + "carrier/booking/detail/size/container/list",
+    success(data) {
+        if(data.code == 0){
+            data.data.forEach(element => {
+                sizeList.push(element['dictLabel'])
+            })
+        }
+    }
+})
+
+$.ajax({
+    url: ctx + "carrier/booking/detail/berthplan/ope-code/vessel-voyage/list",
+    method: "GET",
+    success: function (data) {
+        if (data.code == 0) {
+            berthplanList = data.berthplanList;
+            vslNmList = data.vesselAndVoyages;
+        }
+    }
+});
 
 
 
@@ -146,16 +174,14 @@ function configHandson() {
                 case 5:
                     return "Loại hàng";
                 case 6:
-                    return "Tàu";
+                    return "Tàu - Chuyến";
                 case 7:
-                    return "Chuyến";
-                case 8:
                     return "Cảng dỡ";
-                case 9:
+                case 8:
                     return "Ghi chú";
             }
         },
-        colWidths: [ 100, 100, 100, 120, 100, 100, 100, 150, 100, 150],
+        colWidths: [ 100, 200, 100, 120, 100, 100, 150, 100, 150],
         filter: "true",
         columns: [
             {
@@ -163,6 +189,10 @@ function configHandson() {
             },
             {
                 data: "sztp",
+                type: "autocomplete",
+                source: sizeList,
+                strict: true,
+                // renderer: sizeRenderer
             },
             {
                 data: "yardPosition",
@@ -185,12 +215,16 @@ function configHandson() {
             },
             {
                 data: "cargoType",
-            },
-            {
-                data: "userVoy", 
+                type: "autocomplete",
+                source: cargoTypeList,
+                strict: true,
+                renderer: cargoTypeRenderer
             },
             {
                 data: "userVoy",
+                type: "autocomplete",
+                source: vslNmList,
+                strict: true,
             },
             {
                 data: "pod", 
@@ -422,4 +456,31 @@ function saveInput() {
     var reGoodDate = /^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|(([1][26]|[2468][048]|[3579][26])00))))$/g;
     return reGoodDate.test(dt);
   }
+
+//   source for Handsontable
+
+
+//dictionary sizeList
+
+
+function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).css("background-color", "#C6EFCE");
+    $(td).css("color", "#006100");
+    $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+  }
+
+  function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
+    if (value != null && value != '') {
+        value = value.split(':')[0];
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }
+    $(td).html(value);
+    return td;
+}
 
