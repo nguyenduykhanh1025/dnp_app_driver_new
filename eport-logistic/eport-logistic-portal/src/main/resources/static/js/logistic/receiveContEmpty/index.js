@@ -507,23 +507,23 @@ function configHandson() {
                 case 2:
                     return "Container No";
                 case 3:
-                    return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Kích Thước</span>';
                 case 4:
-                    return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Hạn Lệnh</span>';
                 case 5:
-                    return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Chủ Hàng</span>';
                 case 6:
-                    return '<span>Ngày Dự <br>Kiến Bốc</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Ngày Dự <br>Kiến Bốc</span>';
                 case 7:
-                    return '<span>Loại Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Loại Hàng</span>';
                 case 8:
                     return 'Yêu Cầu <br>Chất Lượng';
                 case 9:
-                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Hãng Tàu</span>';
                 case 10:
-                    return '<span>Tàu và Chuyến</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Tàu và Chuyến</span>';
                 case 11:
-                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span class="required">Cảng Dỡ Hàng</span>';
                 case 12:
                     return 'Cấp Container <br>Ghi Chú';
                 case 13:
