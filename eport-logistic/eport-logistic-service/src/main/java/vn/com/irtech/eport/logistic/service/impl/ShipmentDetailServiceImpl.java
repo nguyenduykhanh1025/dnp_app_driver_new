@@ -1216,4 +1216,22 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public int updateShipmentDetailForOMSupport(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.updateShipmentDetailForOMSupport(shipmentDetail);
 	}
+	
+	 /**
+     * Get List container with coordinate for carrier
+     * 
+     * @param ShipmentDetail
+     * @return List shipment detail with container, sztp, yard position include
+     */
+	@Override
+    public ShipmentDetail[][] getListContainerForCarrier(ShipmentDetail shipmentDetail) {
+		List<ShipmentDetail> shipmentDetails = catosApiService.selectCoordinateOfContainersByShipmentDetail(shipmentDetail);
+        
+        ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][12];
+        
+        for (ShipmentDetail shipmentDt : shipmentDetails) {
+        	shipmentDetailMatrix[shipmentDt.getTier() - 1][shipmentDt.getRow() - 1] = shipmentDt;
+        }
+        return shipmentDetailMatrix;
+	}
 }

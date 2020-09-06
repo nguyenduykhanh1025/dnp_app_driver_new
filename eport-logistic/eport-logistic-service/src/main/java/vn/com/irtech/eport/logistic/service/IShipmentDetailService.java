@@ -245,4 +245,12 @@ public interface IShipmentDetailService
      * updateShipmentDetailForOMSupport : OM support orderRegister (reset process status) (special)
      */
     public int updateShipmentDetailForOMSupport(ShipmentDetail shipmentDetail);
+    
+    /**
+     * Get List container with coordinate for carrier
+     * 
+     * @param ShipmentDetail
+     * @return List shipment detail with container, sztp, yard position include
+     */
+    public ShipmentDetail[][] getListContainerForCarrier(ShipmentDetail shipmentDetail);
 }

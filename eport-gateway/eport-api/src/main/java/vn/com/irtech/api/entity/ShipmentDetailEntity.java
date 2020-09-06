@@ -130,7 +130,7 @@ public class ShipmentDetailEntity extends BaseEntity
     private String block;
 
     /** Bay*/
-    private Integer bay;
+    private String bay;
     
     /** Roww*/
     private Integer roww;
@@ -144,6 +144,8 @@ public class ShipmentDetailEntity extends BaseEntity
     private String year;
     
     private String vslAndVoy;
+    
+    private String orderNo;
     
     public void setCargoType(String cargoType) {
         this.cargoType = cargoType;
@@ -169,11 +171,11 @@ public class ShipmentDetailEntity extends BaseEntity
 		this.block = block;
 	}
 
-	public Integer getBay() {
+	public String getBay() {
 		return bay;
 	}
 
-	public void setBay(Integer bay) {
+	public void setBay(String bay) {
 		this.bay = bay;
 	}
 
@@ -523,6 +525,14 @@ public class ShipmentDetailEntity extends BaseEntity
 		this.vslAndVoy = vslAndVoy;
 	}
 
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -573,6 +583,7 @@ public class ShipmentDetailEntity extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("orderNo", getOrderNo())
             .toString();
     }
 }
