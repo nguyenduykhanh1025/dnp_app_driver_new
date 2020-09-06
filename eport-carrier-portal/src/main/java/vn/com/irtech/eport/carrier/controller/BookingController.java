@@ -165,9 +165,4 @@ public class BookingController extends CarrierBaseController
         return toAjax(bookingService.deleteBookingByIds(ids));
     }
 
-    @GetMapping("/pickupContainer")
-    public String pickupContainer()
-    {
-        return prefix + "/pickupContainer";
-    }
 }

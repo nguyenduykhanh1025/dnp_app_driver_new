@@ -133,4 +133,10 @@ public class BookingDetailController extends CarrierBaseController
     {
         return toAjax(bookingDetailService.deleteBookingDetailByIds(ids));
     }
+
+    @GetMapping("/pickupContainer")
+    public String pickupContainer()
+    {
+        return prefix + "/pickupContainer";
+    }
 }
