@@ -391,7 +391,9 @@ function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties)
 }
 function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
+//  $(td).css("background-color", "rgb(232, 232, 232)");
+  $(td).css("background-color", "#C6EFCE");
+  $(td).css("color", "#006100");
   $(td).attr('id', 'opeCode' + row).addClass("htMiddle");
   $(td).html(value);
 //  if (value != null && value != '') {
@@ -404,7 +406,9 @@ function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
+  //$(td).css("background-color", "rgb(232, 232, 232)");
+  $(td).css("background-color", "#C6EFCE");
+  $(td).css("color", "#006100");
   $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
   $(td).html(value);
 //  if (value != null && value != '') {
@@ -417,7 +421,9 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
+//  $(td).css("background-color", "rgb(232, 232, 232)");
+  $(td).css("background-color", "#C6EFCE");
+  $(td).css("color", "#006100");
   $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
   $(td).html(value);
 //  if (value != null && value != '') {
@@ -430,7 +436,9 @@ function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
+//  $(td).css("background-color", "rgb(232, 232, 232)");
+  $(td).css("background-color", "#C6EFCE");
+  $(td).css("color", "#006100");
   $(td).attr('id', 'sztp' + row).addClass("htMiddle");
 //  if (value != null && value != '') {
 //    value = value.split(':')[0];
@@ -444,7 +452,9 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
+//  $(td).css("background-color", "rgb(232, 232, 232)");
+  $(td).css("background-color", "#C6EFCE");
+  $(td).css("color", "#006100");
   $(td).attr('id', 'sztp' + row).addClass("htMiddle");
 //  if (value != null && value != '') {
 //    value = value.split(':')[0];
@@ -458,7 +468,9 @@ function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
+//  $(td).css("background-color", "rgb(232, 232, 232)");
+  $(td).css("background-color", "#C6EFCE");
+  $(td).css("color", "#006100");
   $(td).attr('id', 'wgt' + row).addClass("htMiddle");
   $(td).html(value);
 //  if (value != null && value != '') {
@@ -471,7 +483,9 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
+//  $(td).css("background-color", "rgb(232, 232, 232)");
+  $(td).css("background-color", "#C6EFCE");
+  $(td).css("color", "#006100");
   $(td).attr('id', 'loadingPort' + row).addClass("htMiddle");
 //  if (value != null && value != '') {
 //    value = value.split(':')[0];
@@ -485,7 +499,9 @@ function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
+//  $(td).css("background-color", "rgb(232, 232, 232)");
+  $(td).css("background-color", "#C6EFCE");
+  $(td).css("color", "#006100");
   $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
 //  if (value != null && value != '') {
 //    value = value.split(':')[0];
@@ -540,29 +556,29 @@ function configHandson() {
         case 1:
           return "Trạng Thái";
         case 2:
-          return '<span>Container No</span><span style="color: red;"> *</span>';
+          return '<span class="required">Container No</span>';
         case 3:
-          return '<span>Hạn Lệnh</span><span style="color: red;"> *</span>';
+          return '<span class="required">Hạn Lệnh</span>';
         case 4:
           return 'Ngày Miễn<br>Lưu Bãi';
         case 5:
-          return '<span>Chủ Hàng</span><span style="color: red;"> *</span>';
+          return '<span class="required">Chủ Hàng</span>';
         case 6:
-          return '<span>Nơi Hạ Vỏ</span><span style="color: red;"> *</span>';
+          return '<span class="required">Nơi Hạ Vỏ</span>';
         case 7:
             return "Kích Thước";
         case 8:
-          return '<span>Hãng Tàu</span><span style="color: red;"> *</span>';
+          return '<span class="required">Hãng Tàu</span>';
         case 9:
-          return '<span>Tàu</span><span style="color: red;"> *</span>';
+          return '<span class="required">Tàu</span>';
         case 10:
-          return '<span>Chuyến</span><span style="color: red;"> *</span>';
+          return '<span class="required">Chuyến</span>';
         case 11:
           return "Seal No";
         case 12:
           return "Trọng Tải";
         case 13:
-          return '<span>Cảng Xếp Hàng</span><span style="color: red;"> *</span>';
+          return '<span class="required">Cảng Xếp Hàng</span>';
         case 14:
           return "Cảng Dỡ Hàng";
         case 15:
