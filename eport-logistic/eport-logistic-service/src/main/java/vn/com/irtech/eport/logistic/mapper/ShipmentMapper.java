@@ -99,4 +99,9 @@ public interface ShipmentMapper
      * @return List shipment object
      */
     public List<Shipment> selectShipmentListByWithShipmentDetailFilter(Shipment shipment);
+    /**
+     * input: serviceType(bat buoc)
+     * getShipmentsForSupportCustom in OM SupportCustomReceiveFull, SupportCustomSendFull
+     */
+    public List<Shipment> getShipmentsForSupportCustom(Shipment shipment);
 }

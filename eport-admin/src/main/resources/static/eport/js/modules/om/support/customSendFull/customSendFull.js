@@ -1,7 +1,7 @@
-const PREFIX = ctx + "om/support/custom-receive-full";
+const PREFIX = ctx + "om/support/custom-send-full";
 var bill;
 var shipment = new Object();
-shipment.serviceType = 1;
+shipment.serviceType = 4;
 var shipmentDetails = new Object();
 var currentLeftWidth = $(".table-left").width();
 var currentRightWidth = $(".table-right").width();
@@ -122,24 +122,6 @@ function customStatusRenderer(instance, td, row, col, prop, value, cellPropertie
     $(td).html(value);
     return td;
 }
-function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'expiredDem' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
-}
-function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'emptyDepot' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
-}
-function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'detFreeTime' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
-}
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
     $(td).attr('id', 'consignee' + row).addClass("htMiddle");
@@ -203,26 +185,20 @@ function configHandson() {
                 case 3:
                     return "T.T.T.Quan";
                 case 4:
-                    return "Hạn Lệnh";
-                case 5:
-                    return "Nơi Trả Vỏ";
-                case 6:
-                    return "Ngày <br> Miễn <br>Lưu";
-                case 7:
                     return "Chủ hàng";
-                case 8:
+                case 5:
                     return "Tàu - Chuyến";
-                case 9:
+                case 6:
                     return "Trọng lượng";
-                case 10:
+                case 7:
                     return "Loại hàng";
-                case 11:
+                case 8:
                 	return "Cảng Dở Hàng";
-                case 12:
+                case 9:
                     return "Ghi Chú";
             }
         },
-         colWidths: [ 100, 50, 100, 100, 150, 200, 70, 200, 250, 100, 100, 100, 150],
+         colWidths: [ 100, 50, 100, 100, 200, 250, 100, 100, 100, 150],
         filter: "true",
         columns: [
             {
@@ -240,18 +216,6 @@ function configHandson() {
             {
                 data: "customStatus",
                 renderer: customStatusRenderer
-            },
-            {
-                data: "expiredDem",
-                renderer: expiredDemRenderer
-            },
-            {
-                data: "emptyDepot",
-                renderer: emptyDepotRenderer
-            },
-            {
-                data: "detFreeTime",
-                renderer: detFreeTimeRenderer
             },
             {
                 data: "consignee",
@@ -357,12 +321,6 @@ function formatBlBooking(value, row) {
     return row.bookingNo;
   }
   return "";
-}
-function formatType(value, row, index) {
-	if (value == 1){
-		return "eDO";
-	}
-	return "DO";
 }
 function formatLogistic(value, row, index) {
   return '<a onclick="logisticInfo(' + row.logisticGroupId + "," + "'" + value + "')\"> " + value + "</a>";

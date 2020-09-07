@@ -355,4 +355,54 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
         order by update_time desc
     </select>
+    <select id="getShipmentsForSupportCustom" parameterType="Shipment" resultType="Shipment">
+        select id,
+         logistic_account_id as logisticAccountId,
+         logistic_group_id as logisticGroupId, 
+         service_type as serviceType,
+         bl_no as blNo, 
+         booking_no as bookingNo, 
+         ope_code as opeCode, 
+         tax_code as taxCode, 
+         group_name as groupName, 
+         address, 
+         container_amount as containerAmount, 
+         edo_flg as edoFlg, 
+         specific_cont_flg as specificContFlg, 
+         cont_supply_status as contSupplyStatus, 
+         reference_no as referenceNo, 
+         status, 
+         remark, 
+         order_number as orderNumber, 
+         house_bill as houseBill, 
+         create_by as createBy, 
+         create_time as createTime, 
+         update_by as updateBy, 
+         update_time as updateTime,
+        (SELECT MIN(CUSTOM_SCAN_TIME) FROM SHIPMENT_DETAIL SH WHERE SH.SHIPMENT_ID = S.ID AND CUSTOM_STATUS = 'Y' AND SH.CUSTOM_SCAN_TIME IS NOT NULL) as customScanTime,
+        (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as logisticName
+        from shipment S
+        <where>  
+            S.ID IN ((SELECT SHIPMENT_ID FROM SHIPMENT_DETAIL WHERE CUSTOM_STATUS = 'Y' GROUP BY SHIPMENT_ID))
+            <if test="logisticAccountId != null "> and S.logistic_account_id = #{logisticAccountId}</if>
+            <if test="logisticGroupId != null "> and S.logistic_group_id = #{logisticGroupId}</if>
+            <if test="serviceType != null "> and S.service_type = #{serviceType}</if>
+            <if test="blNo != null and blNo != ''"> and upper(S.bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> and upper(S.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+            <if test="opeCode != null  and opeCode != ''"> and S.ope_code = #{opeCode}</if>
+            <if test="taxCode != null  and taxCode != ''"> and S.tax_code = #{taxCode}</if>
+            <if test="groupName != null  and groupName != ''"> and S.group_name like concat(concat('%', #{groupName}), '%')</if>
+            <if test="address != null  and address != ''"> and S.address like concat(concat('%', #{address}), '%')</if>
+            <if test="containerAmount != null "> and S.container_amount = #{containerAmount}</if>
+            <if test="edoFlg != null  and edoFlg != ''"> and S.edo_flg = #{edoFlg}</if>
+            <if test="specificContFlg != null"> and S.specific_cont_flg = #{specificContFlg}</if>
+            <if test="contSupplyStatus != null"> and S.cont_supply_status = #{contSupplyStatus}</if>
+            <if test="referenceNo != null  and referenceNo != ''"> and S.reference_no = #{referenceNo}</if>
+            <if test="status != null  and status != ''"> and S.status = #{status}</if>
+            <if test="remark != null  and remark != ''"> and S.remark = #{remark}</if>
+            <if test="fromDate != null">and S.create_time &gt;= #{fromDate}</if>
+            <if test="toDate != null">and S.create_time &lt;= #{toDate}</if>
+        </where>
+        ORDER BY customScanTime ASC
+    </select>
 </mapper>

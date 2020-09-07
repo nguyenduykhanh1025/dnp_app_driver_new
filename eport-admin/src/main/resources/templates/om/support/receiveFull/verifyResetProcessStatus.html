@@ -47,12 +47,12 @@
         	      if (data.code == 0) {
         	    	  parent.msgSuccess("Xác nhận thành công");
         	      } else {
-        	    	  parent.msgError("Xác nhận thất bại.");
+        	    	  parent.msgError("Xác nhận reset thất bại.");
         	      }
         	      $.modal.close();
         	    },
         	    error: function (data) {
-        	    	parent.msgError("Xác nhận thất bại.");
+        	    	parent.msgError("Xác nhận reset thất bại.");
         	      $.modal.closeLoading();
               	  $.modal.close();
         	    }

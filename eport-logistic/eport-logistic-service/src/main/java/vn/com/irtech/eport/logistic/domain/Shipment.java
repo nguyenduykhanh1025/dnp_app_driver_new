@@ -111,6 +111,10 @@ public class Shipment extends BaseEntity
     
     private String consignee;
     
+    /** Thời gian quét hải quan bi loi som nhat*/
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date customScanTime;
+    
     public void setId(Long id) {
         this.id = id;
     }
@@ -319,6 +323,14 @@ public class Shipment extends BaseEntity
 		this.consignee = consignee;
 	}
 
+	public Date getCustomScanTime() {
+		return customScanTime;
+	}
+
+	public void setCustomScanTime(Date customScanTime) {
+		this.customScanTime = customScanTime;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -352,6 +364,7 @@ public class Shipment extends BaseEntity
             .append("houseBill",getHouseBill())
             .append("amountBill", getAmountBill())
             .append("consignee", getConsignee())
+            .append("customScanTime", getCustomScanTime())
             .append("params", getParams())
             .toString();
     }
