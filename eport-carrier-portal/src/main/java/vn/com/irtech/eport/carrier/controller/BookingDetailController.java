@@ -248,12 +248,16 @@ public class BookingDetailController extends CarrierBaseController
     	return ajaxResult;
     }
     
-    @GetMapping("/sztp/{sztp}/blocks")
+    @PostMapping("/sztp/blocks")
     @ResponseBody
-    public AjaxResult getBlocks(@PathVariable("sztp") String sztp) {
+    public AjaxResult getBlocks(String keyString,String boxSztp) {
+        if(boxSztp == null || boxSztp.equals(""))
+        {
+			return error(); 
+        }
     	AjaxResult ajaxResult = AjaxResult.success();
     	ShipmentDetail shipmentDetail = new ShipmentDetail();
-    	shipmentDetail.setSztp(sztp);
+    	shipmentDetail.setSztp(boxSztp);
     	shipmentDetail.setOpeCode(getUserGroup().getGroupCode());
     	shipmentDetail.setFe("E");
     	try {
@@ -266,13 +270,17 @@ public class BookingDetailController extends CarrierBaseController
     	return ajaxResult;
     }
     
-    @GetMapping("/sztp/{sztp}/block/{block}/bays")
+    @PostMapping("/sztp/block/bays")
     @ResponseBody
-    public AjaxResult getBays(@PathVariable("sztp") String sztp, @PathVariable("block") String block) {
+    public AjaxResult getBays(String keyString, String boxSztp, String boxBlock) {
+        if(boxBlock == null || boxBlock.equals(""))
+        {
+			return error(); 
+        }
     	AjaxResult ajaxResult = AjaxResult.success();
     	ShipmentDetail shipmentDetail = new ShipmentDetail();
-    	shipmentDetail.setSztp(sztp);
-    	shipmentDetail.setBlock(block);
+    	shipmentDetail.setSztp(boxSztp);
+    	shipmentDetail.setBlock(boxBlock);
     	shipmentDetail.setOpeCode(getUserGroup().getGroupCode());
     	shipmentDetail.setFe("E");
     	try {
