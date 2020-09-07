@@ -352,6 +352,7 @@ public class Shipment extends BaseEntity
             .append("houseBill",getHouseBill())
             .append("amountBill", getAmountBill())
             .append("consignee", getConsignee())
+            .append("params", getParams())
             .toString();
     }
 }
