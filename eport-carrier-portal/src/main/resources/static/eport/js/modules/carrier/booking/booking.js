@@ -383,6 +383,7 @@ function delBooking() {
 // HANDLE WHEN SELECT A SHIPMENT
 function getSelectedRow() {
     let row = $("#dg-left").datagrid("getSelected");
+    let readOnly = false;
     if(row.bookStatus == 'H')
     {
         $('#pickupContainer').prop('disabled', false);
@@ -398,11 +399,12 @@ function getSelectedRow() {
         $('#editBooking').prop('disabled', true);
         $('#delBooking').prop('disabled', true);
         $('#releaseStatusTitle').text("Trạng thái : Đã phát hành")
+        readOnly = true;
     }
     if (row) {
         rowAmount = row.bookQty;
         bookingSelected = row;
-        loadShipmentDetail(row.id);
+        loadShipmentDetail(row.id ,readOnly);
     }
 }
 
@@ -415,7 +417,7 @@ function loadShipmentDetailPickContainer(pickedContainers)
     hot.render();
 }
 
-function loadShipmentDetail(id) {
+function loadShipmentDetail(id, readOnly) {
     bookingDetail.bookingId = id;
     $.ajax({
         url: PREFIX2 + "/list",
@@ -427,6 +429,10 @@ function loadShipmentDetail(id) {
                 hot.destroy();
                 configHandson();
                 hot = new Handsontable(dogrid, config);
+                hot.updateSettings({
+                    readOnly: readOnly, // make table cells read-only
+                });
+                hot.render();
                 hot.loadData(sourceData);
                 hot.render();
             }

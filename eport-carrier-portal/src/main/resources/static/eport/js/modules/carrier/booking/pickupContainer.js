@@ -1,10 +1,11 @@
 var PREFIX = ctx + "carrier/booking/detail";
 var shipmentDetails = [];
 var pickedContainers = [];
+var boxSztp;
+var boxBlock;
+
 
 $( document ).ready(function() {
-    loadContainerList();
-
     $("#dg").datagrid({
         height: window.innerHeight - 350,
         rownumbers:true
@@ -12,8 +13,8 @@ $( document ).ready(function() {
 });
 
 // Call when changing block, bay, sztp to search what block, bay and sztp carrier want to get
-function loadContainerList() {
-    let reqData = {
+function loadContainerList(reqData) {
+    let reqData2 = {
         block: "Z1",
         bay: "17",
         sztp: "22G0"
@@ -144,4 +145,135 @@ function confirm() {
 function closeForm() {
     $.modal.close();
 }
+
+$(".c-search-box-sztp").on("select2:open", function(e) {
+     $(".c-search-box-sztp").text(null)
+     $(".c-search-box-block").text(null)
+     $(".c-search-box-bays").text(null)
+  });
+$(".c-search-box-sztp").select2({
+    theme: "bootstrap",
+    allowClear: true,
+    delay: 250,
+    ajax: {
+        url: PREFIX + "/size/container/list",
+        method: "GET",
+        dataType : 'json',
+      data: function (params) {
+        return {
+          keyString: params.term,
+        };
+      },
+      processResults: function (data) {
+        let results = []
+        data.data.forEach(function (element, i) {
+          let obj = {};
+          obj.id = i;
+          obj.text = element.dictValue;
+          results.push(obj);
+        })
+        return {
+          results: results,
+        };
+      },
+    },
+    placeholder: "Sztp",
+  });
+
+
+  $(".c-search-box-block").on("select2:open", function(e) {
+    $(".c-search-box-block").text(null)
+    $(".c-search-box-bays").text(null)
+    boxSztp = $(".c-search-box-sztp").text().trim();
+    if(boxSztp == null || boxSztp == "")
+    {
+        $.modal.alertWarning("Vui lòng chọn Size / Type trước");
+        return;
+    }
+
+  });
+
+  $(".c-search-box-block").select2({
+    theme: "bootstrap",
+    allowClear: true,
+    delay: 250,
+    ajax: {
+        url: PREFIX + "/sztp/blocks",
+        method: "POST",
+        dataType: "json",
+        data: function (params) {
+        return {
+            keyString: params.term,
+            boxSztp: boxSztp,
+        };
+      },
+      processResults: function (data) {
+        let results = []
+        data.blocks.forEach(function (element, i) {
+          let obj = {};
+          obj.id = i;
+          obj.text = element;
+          results.push(obj);
+        })
+        return {
+          results: results,
+        };
+      },
+    },
+    placeholder: "Block",
+  });
+
+
+  $(".c-search-box-bays").on("select2:open", function(e) {
+    boxBlock = $(".c-search-box-block").text().trim();
+    if(boxBlock == null || boxBlock == "")
+    {
+        $.modal.alertWarning("Vui lòng chọn block trước");
+        return;
+    }
+  });
+
+  $(".c-search-box-bays").select2({
+    theme: "bootstrap",
+    allowClear: true,
+    delay: 250,
+    ajax: {
+        url: PREFIX + "/sztp/block/bays",
+        method: "POST",
+        dataType: "json",
+        data: function (params) {
+        return {
+            keyString: params.term,
+            boxSztp : boxSztp,
+            boxBlock: boxBlock
+        };
+      },
+      processResults: function (data) {
+      console.log("TCL: data", data)
+        let results = []
+        data.bays.forEach(function (element, i) {
+          let obj = {};
+          obj.id = i;
+          obj.text = element;
+          results.push(obj);
+        })
+        return {
+          results: results,
+        };        
+      },
+    },
+    placeholder: "Bays",
+  });
+
+  $(".c-search-box-bays").change(function () {
+    let reqData = new Object();
+    reqData.sztp = $(".c-search-box-sztp").text().trim();
+    reqData.block = $(".c-search-box-block").text().trim();
+    reqData.bay = $(".c-search-box-bays").text().trim();
+    loadContainerList(reqData);
+  });
+
+
+
+
 
