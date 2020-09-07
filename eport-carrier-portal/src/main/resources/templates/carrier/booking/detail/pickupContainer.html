@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:include="include :: header('Boc Cont Chi Dinh')" />
+    <th:block th:include="include :: easyui-css" />
+
 </head>
 <style type="text/css">
     .container {
@@ -73,50 +75,23 @@
         background-color: grey;
     }
 
-    table tbody,
-    table thead {
-        display: block;
-    }
-
-    table tbody {
-        overflow: auto;
-        height: 120px;
-    }
-
-    table {
-        margin-bottom: 0 !important;
-    }
-
-    .payment-type-form {
-        display: flex;
-        margin-top: 10px;
-        justify-content: center;
-    }
-
-    .cont-shifting {
-        margin-top: 10px;
-    }
+    
 </style>
 
 <body>
     <div class="container">
         <div class="content">
             <div class="contListPosition"></div>
-            <div class="contListPicked" style="overflow-x:auto;margin: 0 auto;">
-                <div style="margin: 5px;">
-                    <b>Danh sách container chỉ dịnh</b>
-                </div>
-                <table id="pickedContTable" class="table w-auto" border="1" align="left">
-                    <thead>
-                        <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
-                            <th width="330px">Container No</th>
-                            <th width="165px">Kích thước</th>
-                            <th width="165px">Tọa độ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pickedContList"></tbody>
-                </table>
-            </div>
+            <table id="dg" style="width: 100%;" fitcolumns="true">
+                <thead>
+                    <tr>
+                        <th data-options="field:'containerNo', halign:'center', halign:'center', resizable:true, fixed:true" width="100">Container No</th>
+                        <th data-options="field:'sztp', halign:'center', halign:'center', resizable:true, fixed:true" sortable="true" width="80">Kích Thước</th>
+                        <th data-options="field:'yardPosition', align:'center', halign:'center', formatter: formatYardPosition, resizable:true, fixed:true" width="80">Tọa Độ</th>
+                        <th data-options="field:'remark', align:'left', halign:'center', resizable:true" width="300" >Tình Trạng Container</th>
+                    </tr>
+                </thead>
+            </table>
             <div class="cont-shifting">
                 <b>Số container dịch chuyển: <span id="shiftingContAmount"></span></b>
             </div>
@@ -128,6 +103,7 @@
     </div>
 </body>
 <th:block th:include="include :: footer" />
+<th:block th:include="include :: easyui-js" />
 <script th:src="@{/eport/js/modules/carrier/booking/pickupContainer.js}"></script>
 
 </html>

@@ -90,4 +90,13 @@ public interface ShipmentMapper
      * @return List shipment
      */
     public List<Shipment> getShipmentListForContSupply(Shipment shipment);
+    
+    /**
+     * Select shipment list with searching field form both shipment and shipment detail
+     * including vslnm, voyno, container no , do status,... from shipment detail
+     * 
+     * @param shipment
+     * @return List shipment object
+     */
+    public List<Shipment> selectShipmentListByWithShipmentDetailFilter(Shipment shipment);
 }

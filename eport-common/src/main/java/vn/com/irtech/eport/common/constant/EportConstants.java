@@ -114,4 +114,14 @@ public interface EportConstants {
 	public static final Long NOTIFICATION_LEVEL_GENERAL = 1L;
 	/** Notification instant with time instant */
 	public static final Long NOTIIFCATION_LEVEL_INSTANT = 2L;
+	
+	// User type for shipment comment
+	/** DNP Staff commentor */
+	public static final String COMMENTOR_DNP_STAFF = "S";
+	/** Logistics commentor */
+	public static final String COMMENTOR_LOGISTIC = "L";
+	/** Carrier commentor */
+	public static final String COMMENTOR_CARRIER = "C";
+	/** Driver commentor */
+	public static final String COMMENTOR_DRIVER = "D";
 }

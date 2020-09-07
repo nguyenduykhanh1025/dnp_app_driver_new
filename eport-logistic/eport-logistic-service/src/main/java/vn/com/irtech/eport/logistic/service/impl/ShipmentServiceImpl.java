@@ -144,4 +144,16 @@ public class ShipmentServiceImpl implements IShipmentService {
     public List<Shipment> getShipmentListForContSupply(Shipment shipment) {
 		return shipmentMapper.getShipmentListForContSupply(shipment);
 	}
+	
+	/**
+     * Select shipment list with searching field form both shipment and shipment detail
+     * including vslnm, voyno, container no , do status,... from shipment detail
+     * 
+     * @param shipment
+     * @return List shipment object
+     */
+	@Override
+    public List<Shipment> selectShipmentListByWithShipmentDetailFilter(Shipment shipment) {
+		return shipmentMapper.selectShipmentListByWithShipmentDetailFilter(shipment);
+	}
 }
