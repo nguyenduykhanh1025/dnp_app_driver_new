@@ -30,9 +30,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="carrierGroupId != null "> and carrier_group_id = #{carrierGroupId}</if>
             <if test="carrierAccountId != null "> and carrier_account_id = #{carrierAccountId}</if>
             <if test="opr != null  and opr != ''"> and opr = #{opr}</if>
-            <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
+            <if test="bookingNo != null  and bookingNo != ''"> and upper(booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
             <if test="bookQty != null "> and book_qty = #{bookQty}</if>
-            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="consignee != null  and consignee != ''">and upper(consignee) like concat(concat('%', #{consignee}), '%')</if>
             <if test="consigneeTaxcode != null  and consigneeTaxcode != ''"> and consignee_taxcode = #{consigneeTaxcode}</if>
             <if test="bookStatus != null  and bookStatus != ''"> and book_status = #{bookStatus}</if>
             <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>

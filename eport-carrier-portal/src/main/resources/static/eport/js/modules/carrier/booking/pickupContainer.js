@@ -6,7 +6,7 @@ $( document ).ready(function() {
     loadContainerList();
 
     $("#dg").datagrid({
-        height: window.innerHeight - 300,
+        height: window.innerHeight - 350,
         rownumbers:true
     });
 });
@@ -82,7 +82,7 @@ function addOrRemove(col, row) {
         $.modal.alertWarning("Container " + shipmentDetail.containerNo + " Đã được làm lệnh cấp rỗng, quý khách vui lòng chọn container khác.");
     } else {
         if (row+1 < 6 && shipmentDetails[row+1][col].preorderPickup == 'N' && !shipmentDetails[row+1][col].orderNo) {
-            $.modal.alertWarning("Cảnh báo container " + shipmentDetail.containerNo + " bởi container " + shipmentDetails[row+1][col].containerNo); 
+            // $.modal.alertWarning("Cảnh báo container " + shipmentDetail.containerNo + " bởi container " + shipmentDetails[row+1][col].containerNo); 
         }
         if ('Y' == shipmentDetail.preorderPickup) {
             shipmentDetails[row][col].preorderPickup = 'N';
@@ -100,7 +100,7 @@ function addOrRemove(col, row) {
 
 function loadTable() {
     $("#dg").datagrid({
-        height: window.innerHeight - 300,
+        height: window.innerHeight - 350,
         singleSelect: true,
         collapsible: true,
         clientPaging: false,
@@ -126,5 +126,22 @@ function removePickedContainer(containerNo) {
 
 function formatYardPosition(value, row) {
     return row.block + '-' + row.bay + '-' + row.row + '-' + row.tier;
+}
+
+
+function confirm() {
+    layer.confirm("Xác nhận lấy thông tin container trên bãi?", {
+        icon: 3,
+        title: "Xác Nhận",
+        btn: ['Đồng Ý', 'Hủy Bỏ']
+    }, function () {
+        parent.loadShipmentDetailPickContainer(pickedContainers);
+        $.modal.close();
+    }, function () {
+    });   
+}
+
+function closeForm() {
+    $.modal.close();
 }
 
