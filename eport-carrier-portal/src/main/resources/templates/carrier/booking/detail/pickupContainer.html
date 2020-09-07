@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:include="include :: header('Boc Cont Chi Dinh')" />
     <th:block th:include="include :: easyui-css" />
-
+    <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet" />
+    <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet" />
 </head>
 <style type="text/css">
     .container {
@@ -81,24 +82,36 @@
 <body>
     <div class="container">
         <div class="content">
-            <div class="contListPosition"></div>
-<<<<<<< HEAD
-            
-            <div class="contListPicked" style="overflow-x:auto;margin: 0 auto;">
-                <div style="margin: 5px;">
-                    <b>Danh sách container chỉ dịnh</b>
+            <div class="flex__right w-80 justify-content-around align-items-center d-flex">
+                <div class="flex__left w-20 text-uppercase">
+                    <h3 class="mt-10">Sơ đồ bãi</h3>
+                  </div>
+                <div class="form-group">
+                  <label class="sr-only col-md-12" for="block">Block </label>
+                  <div class="input-group width150" style="width: 170px;">
+                    <select class="c-search-box-block">
+                        <option>Default</option>
+                    </select>
+                  </div>
                 </div>
-                <table id="pickedContTable" class="table w-auto" border="1" align="left">
-                    <thead>
-                        <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
-                            <th width="330px">Container No</th>
-                            <th width="165px">Kích thước</th>
-                            <th width="165px">Tọa độ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pickedContList"></tbody>
-                </table>
-=======
+                <div class="form-group">
+                    <label class="sr-only col-md-12" for="bays">Bay </label>
+                    <div class="input-group width150" style="width: 170px;">
+                      <select class="c-search-box-bays">
+                        <option>Default</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="sr-only col-md-12" for="sztp">Sztp</label>
+                    <div class="input-group width150" style="width: 170px;">
+                      <select class="c-search-box-sztp">
+                          <option>Default</option>
+                      </select>
+                    </div>
+                  </div>
+              </div>
+            <div class="contListPosition"></div>
             <table id="dg" style="width: 100%;" fitcolumns="true">
                 <thead>
                     <tr>
@@ -111,7 +124,6 @@
             </table>
             <div class="cont-shifting">
                 <b>Số container dịch chuyển: <span id="shiftingContAmount"></span></b>
->>>>>>> d76d92b29b00172d3e84ee4d2fd681c68d30a86c
             </div>
         </div>
         <div class="layui-layer-btn footer">
@@ -122,6 +134,6 @@
 </body>
 <th:block th:include="include :: footer" />
 <th:block th:include="include :: easyui-js" />
+<script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
 <script th:src="@{/eport/js/modules/carrier/booking/pickupContainer.js}"></script>
-
 </html>

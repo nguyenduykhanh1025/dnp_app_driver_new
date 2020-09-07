@@ -20,46 +20,36 @@
             </div>
             <div class="flex__right w-80 justify-content-around align-items-center d-flex">
               <div class="form-group searchBill" style="width: 170px;">
-                <label class="sr-only" for="searchBillNo">Tìm kiếm Container</label>
+                <label class="sr-only" for="searchBillNo">Booking No</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" name="searchContainer" id="searchContainer"
-                  placeholder="Tìm kiếm Container" />
+                  <input type="text" class="form-control" name="bookingNo" id="bookingNo"
+                  placeholder="Booking No" />
                 </div>
               </div>
               <div class="form-group searchBill" style="width: 170px;">
-                <label class="sr-only" for="searchBillNo">Tìm kiếm Chủ hàng</label>
+                <label class="sr-only" for="searchBillNo">Container No</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" name="searchBillNo" id="searchBillNo"
-                  placeholder="Tìm kiếm Chủ hàng" />
+                  <input type="text" class="form-control" name="ContainerNo" id="ContainerNo"
+                  placeholder="Container No" />
                 </div>
               </div>
               <div class="form-group searchBill" style="width: 170px;">
-                <label class="sr-only" for="searchBillNo">Tìm kiếm Chủ hàng</label>
+                <label class="sr-only" for="consignee">Chủ hàng</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" name="searchBillNo" id="searchBillNo"
-                  placeholder="Tìm kiếm Chủ hàng" />
-                </div>
-              </div>
-              <div class="form-group searchBill" style="width: 170px;">
-                <label class="sr-only" for="searchBillNo">Tìm kiếm Chủ hàng</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" name="searchBillNo" id="searchBillNo"
-                  placeholder="Tìm kiếm Chủ hàng" />
+                  <input type="text" class="form-control" name="consignee" id="consignee"
+                  placeholder="Chủ hàng" />
                 </div>
               </div>
               <div class="form-group">
-                <label class="sr-only" for="voyNo">Tàu Chuyến</label>
-                <select class="form-control" id="sel2">
-                  <option selected>Tàu Chuyến 0</option>
-                  <option>Tàu Chuyến 1</option>
-                  <option>Tàu Chuyến 2</option>
-                  <option>Tàu Chuyến 3</option>
-                  <option>Tàu Chuyến 4</option>
-                </select>
-              </div>  
+                <label class="sr-only col-md-12" for="vessel-voyage">Tàu Chuyến </label>
+                <div class="input-group width150" style="width: 170px;">
+                  <select class="c-search-box-vessel-voyage">
+                  </select>
+                </div>
+              </div>
               <div class="main-body__search-wrapper--btn-group d-flex justify-content-end">
-                <button class="btn btn-success">Tìm kiếm</button>
-                <button class="btn btn-success btn-outline ml-10 mr-10">Làm mới</button>
+                <button class="btn btn-success" onclick="searchInfoBooking()">Tìm kiếm</button>
+                <button class="btn btn-success btn-outline ml-10 mr-10" onclick="freshBooking()">Làm mới</button>
               </div>
             </div>
           </div>
@@ -69,6 +59,7 @@
           <div class="left-side" data-options="region:'west',split:true" style="width: 30%;">
             <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
             <div class="datagrid-toolbar">
+              
               <table cellspacing="0" cellpadding="0">
                 <tbody>
                   <tr>
@@ -82,19 +73,15 @@
                       >
                     </td>
                     <td>
-                      <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""
-                        ><span class=""
-                          ><span class=""
-                            ><button id="editBooking" class="btn btn-sm btn-primary" onclick="editBooking()">Sửa booking</button></span
-                          ></span
-                        ></a
-                      >
+                      
+                    <button id="editBooking" class="btn btn-sm btn-primary" onclick="editBooking()">Sửa booking</button>
+                          
                     </td>
                     <td>
                       <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""
                         ><span class=""
                           ><span class=""
-                            ><button id="editBooking" class="btn btn-sm btn-primary" onclick="delBooking()">Xóa booking</button></span
+                            ><button id="delBooking" class="btn btn-sm btn-primary" onclick="delBooking()">Xóa booking</button></span
                           ></span
                         ></a
                       >
@@ -167,9 +154,8 @@
     </script>
     <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: handsontable-js" />
+    <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
     <script th:src="@{/eport/js/modules/carrier/booking/booking.js}"></script>
-    <!-- <script th:src="@{/eport/js/test/layout2-handsond.js?v=3}"></script>
-     -->
   </body>
 </html>
 

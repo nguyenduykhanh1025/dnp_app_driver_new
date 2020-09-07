@@ -14,8 +14,8 @@ var coutCheck = 0;
 var rowAmount = 0;
 var consigneeList;
 var sizeList = [];
-var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
 var vslNmList;
+var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
 var berthplanList;
 
 $.ajax({
@@ -99,9 +99,9 @@ var toolbar = [
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
-    $('#searchBookingNo').keyup(function (event) {
+    $('#bookingNo').keyup(function (event) {
         if (event.keyCode == 13) {
-            bookingNo = $('#searchBookingNo').val().toUpperCase();
+            bookingNo = $('#bookingNo').val().toUpperCase();
           if (bookingNo == "" || bookingNo == undefined) {
             loadTable(bookingNo);
           }
@@ -110,14 +110,40 @@ $(document).ready(function () {
           loadTable(booking);
         }
       });
+      $('#consignee').keyup(function (event) {
+        if (event.keyCode == 13) {
+            consignee = $('#consignee').val().toUpperCase();
+          if (consignee == "" || consignee == undefined) {
+            loadTable(booking);
+          }
+          booking = new Object();
+          booking.consignee = consignee;
+          loadTable(booking);
+        }
+      });
+
+    
 });
+function searchInfoBooking() {
+    booking = new Object();
+    booking.consignee = $('#consignee').val().toUpperCase();
+    booking.bookingNo = $('#bookingNo').val().toUpperCase();
+    loadTable(booking);
+}
+
+function freshBooking() {
+    $('#consignee').val(null);
+    $('#bookingNo').val(null);
+    $('#containerNo').val(null);
+}
+
 
 function loadTable(booking) {
     $("#dg-left").datagrid({
       url: PREFIX + "/list",
       method: "POST",
       singleSelect: true,
-      height: $('.main-body').height() - 65,
+      height: window.innerHeight - 107,
       clientPaging: true,
       pagination: true,
       pageSize: 20,
@@ -174,7 +200,7 @@ function configHandson() {
       };
     config = {
         stretchH: "all",
-        height: document.documentElement.clientHeight - 100,
+        height: $('.main-body').height() - 110,
         minRows: rowAmount,
         maxRows: rowAmount,
         width: "100%",
@@ -290,15 +316,15 @@ function formatStatus(value) {
 
 function pickupContainer(id) {
     // $.modal.openWithOneButton('Cấp container', PREFIX + "/pickupContainer/", 1000, 400);
-    $.modal.openWithOneButton("Bốc container chỉ định", PREFIX2 + "/pickupContainer/", 1000, 600);
+    $.modal.openWithOneButton("Bốc container chỉ định", PREFIX2 + "/pickupContainer/", 1000, 610);
 }
 
 function addBooking(id) {
-    $.modal.open('Cấp container', PREFIX + "/add/", 1000, 400);
+    $.modal.open('Cấp Container', PREFIX + "/add/", 400, 450);
 }
 
 function releaseBooking() {
-    let row = $('#dg').datagrid('getSelected');
+    let row = $('#dg-left').datagrid('getSelected');
     layer.confirm("Bạn có muốn phát hành Booking này?", {
         icon: 3,
         title: "Xác Nhận",
@@ -323,13 +349,13 @@ function releaseBooking() {
 }
 
 function editBooking() {
-    let row = $('#dg').datagrid('getSelected');
-    $.modal.open('Sửa booking', PREFIX + "/edit/" + row.id, 1000, 400);
+    let row = $('#dg-left').datagrid('getSelected');
+    $.modal.open('Sửa booking', PREFIX + "/edit/" + row.id,  400, 450);
 }
 
 
 function delBooking() {
-    var row = $('#dg').datagrid('getSelected');
+    var row = $('#dg-left').datagrid('getSelected');
     layer.confirm("Xác nhận xóa xóa booking.", {
         icon: 3,
         title: "Xác Nhận",
@@ -364,7 +390,6 @@ function getSelectedRow() {
         $('#releaseBooking').prop('disabled', false);
         $('#editBooking').prop('disabled', false);
         $('#delBooking').prop('disabled', false);
-
         $('#releaseStatusTitle').text("Trạng thái : Chưa phát hành")
     }else {
         $('#pickupContainer').prop('disabled', true);
@@ -380,6 +405,16 @@ function getSelectedRow() {
         loadShipmentDetail(row.id);
     }
 }
+
+function loadShipmentDetailPickContainer(pickedContainers)
+{
+    hot.destroy();
+    configHandson();
+    hot = new Handsontable(dogrid, config);
+    hot.loadData(pickedContainers);
+    hot.render();
+}
+
 function loadShipmentDetail(id) {
     bookingDetail.bookingId = id;
     $.ajax({
@@ -400,7 +435,7 @@ function loadShipmentDetail(id) {
 }
 
 function getDataFromTable() {
-    let row = $('#dg').datagrid('getSelected');
+    let row = $('#dg-left').datagrid('getSelected');
     let myTableData = hot.getSourceData();
     let errorFlg = false;
     let cleanedGridData = [];
@@ -515,6 +550,36 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
+
+$(".c-search-box-vessel-voyage").select2({
+    theme: "bootstrap",
+    allowClear: true,
+    delay: 250,
+    ajax: {
+        url: ctx + "carrier/booking/detail/berthplan/ope-code/vessel-voyage/list",
+        method: "GET",
+        dataType : 'json',
+      data: function (params) {
+        return {
+          keyString: params.term,
+        };
+      },
+      processResults: function (data) {
+      console.log("TCL: data", data)
+        let results = []
+        data.vesselAndVoyages.forEach(function (element, i) {
+          let obj = {};
+          obj.id = i;
+          obj.text = element;
+          results.push(obj);
+        })
+        return {
+          results: results,
+        };
+      },
+    },
+    placeholder: "Vessel",
+  });
 
 $("#dg-right").find("table").addClass("zebraStyle");
 
