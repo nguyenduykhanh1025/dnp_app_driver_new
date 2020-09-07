@@ -1,12 +1,14 @@
 package vn.com.irtech.eport.logistic.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import vn.com.irtech.eport.common.annotation.Excel;
-import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import vn.com.irtech.eport.common.annotation.Excel;
+import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
 /**
  * Shipment Details Object shipment_detail
@@ -210,7 +212,7 @@ public class ShipmentDetail extends BaseEntity
     
     /** Create time */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date customsScanTime;
+    private Date customScanTime;
     
     /** Container supply status */
     @Excel(name = "Cont Supply Status")
@@ -768,12 +770,12 @@ public class ShipmentDetail extends BaseEntity
 		this.customsNo = customsNo;
 	}
 	
-	public Date getCustomsScanTime() {
-		return customsScanTime;
+	public Date getCustomScanTime() {
+		return customScanTime;
 	}
 
-	public void setCustomsScanTime(Date customsScanTime) {
-		this.customsScanTime = customsScanTime;
+	public void setCustomScanTime(Date customScanTime) {
+		this.customScanTime = customScanTime;
 	}
 
 	public String getContSupplyStatus() {
@@ -814,14 +816,6 @@ public class ShipmentDetail extends BaseEntity
 
 	public void setContSupplyRemark(String contSupplyRemark) {
 		this.contSupplyRemark = contSupplyRemark;
-	}
-
-	public Date getCustomScanTime() {
-		return customScanTime;
-	}
-
-	public void setCustomScanTime(Date customScanTime) {
-		this.customScanTime = customScanTime;
 	}
 
 	@Override
