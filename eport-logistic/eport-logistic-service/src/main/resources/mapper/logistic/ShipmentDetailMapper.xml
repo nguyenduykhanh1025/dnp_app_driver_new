@@ -69,7 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="payerName"    column="payer_name"   />
         <result property="assignNumber"    column="assign_number"   />
         <result property="serviceType"    column="service_type"   />
-        <result property="customScanTime"    column="custom_scan_time"   />
+        <result property="customsScanTime"    column="customs_scan_time"   />
     </resultMap>
 
     <sql id="selectShipmentDetailVo">

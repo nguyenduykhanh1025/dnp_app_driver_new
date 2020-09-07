@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.web.controller.om;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,18 +32,20 @@ import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
+import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
 @Controller
 @RequestMapping("/om/support/receive-empty")
-public class SupportReceiveEmptyController extends BaseController{
+public class SupportReceiveEmptyController extends OmBaseController{
 	protected final Logger logger = LoggerFactory.getLogger(SupportReceiveEmptyController.class);
     private final String PREFIX = "om/support/receiveEmpty"; 
     
@@ -66,6 +69,9 @@ public class SupportReceiveEmptyController extends BaseController{
     
     @Autowired
     private IEdoService edoService;
+    
+    @Autowired
+    private IShipmentCommentService shipmentCommentService;
     
     @GetMapping("/view")
     public String getViewSupportReceiveFull(ModelMap mmap)
@@ -127,7 +133,7 @@ public class SupportReceiveEmptyController extends BaseController{
     @Log(title = "Xác nhận làm lệnh OK(OM)", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
     @PostMapping("/executed-the-command-catos-success")
     @ResponseBody
-    public AjaxResult executedTheCommandCatosSuccess(Long processOrderId ) {
+    public AjaxResult executedTheCommandCatosSuccess(Long processOrderId, String content ) {
     	ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
 		if(processOrder == null) {
 			// Co loi bat thuong xay ra. order khong ton tai
@@ -189,13 +195,31 @@ public class SupportReceiveEmptyController extends BaseController{
 				}
 			}
 		}
+		//notify msg to Logistic
+		if(content != null && content != "") {
+			ShipmentComment shipmentComment = new ShipmentComment();
+	    	Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
+	    	shipmentComment.setShipmentId(shipment.getId());
+	    	shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
+	    	shipmentComment.setUserId(getUserId());
+	    	shipmentComment.setUserType("S");// S: DNP Staff
+	    	shipmentComment.setUserName(getUser().getUserName());
+	    	shipmentComment.setUserAlias(getUser().getUserName());//TODO get tạm username
+	    	shipmentComment.setCommentTime(new Date());
+	    	shipmentComment.setContent(content);
+	    	shipmentComment.setCreateTime(new Date());
+	    	shipmentComment.setCreateBy(getUser().getUserName());
+	    	//TODO
+	    	//setTopic
+	    	shipmentCommentService.insertShipmentComment(shipmentComment);
+		}
     	return success();
     }
     @Log(title = "Reset Proccess Status(OM)", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
     @PostMapping("/reset-process-status")
     @Transactional
     @ResponseBody
-    public AjaxResult resetProcessStatus(Long processOrderId) {
+    public AjaxResult resetProcessStatus(Long processOrderId, String content) {
     	ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
 		if(processOrder == null) {
 			// Co loi bat thuong xay ra. order khong ton tai
@@ -219,6 +243,24 @@ public class SupportReceiveEmptyController extends BaseController{
 			}
 			//delete record table process_order
 			processOrderService.deleteProcessOrderById(processOrderId);
+			//notify msg to Logistic
+			if(content != null && content != "") {
+				ShipmentComment shipmentComment = new ShipmentComment();
+		    	Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
+		    	shipmentComment.setShipmentId(shipment.getId());
+		    	shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
+		    	shipmentComment.setUserId(getUserId());
+		    	shipmentComment.setUserType("S");// S: DNP Staff
+		    	shipmentComment.setUserName(getUser().getUserName());
+		    	shipmentComment.setUserAlias(getUser().getUserName());//TODO get tạm username
+		    	shipmentComment.setCommentTime(new Date());
+		    	shipmentComment.setContent(content);
+		    	shipmentComment.setCreateTime(new Date());
+		    	shipmentComment.setCreateBy(getUser().getUserName());
+		    	//TODO
+		    	//setTopic
+		    	shipmentCommentService.insertShipmentComment(shipmentComment);
+			}
 	    	return success();
 		} catch (Exception e) {
 			logger.error(e.getMessage());

@@ -41,6 +41,7 @@
         	    method: "POST",
         	    data: {
         	      processOrderId: processOrderId,
+        	      content: $("#remarkToLogistic").val() != null ? $("#remarkToLogistic").val() : "",
         	    },
         	    success: function (data) {
         	      $.modal.closeLoading();

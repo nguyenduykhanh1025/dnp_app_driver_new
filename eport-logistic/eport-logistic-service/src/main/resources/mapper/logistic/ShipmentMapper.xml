@@ -379,7 +379,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          create_time as createTime, 
          update_by as updateBy, 
          update_time as updateTime,
-        (SELECT MIN(CUSTOM_SCAN_TIME) FROM SHIPMENT_DETAIL SH WHERE SH.SHIPMENT_ID = S.ID AND CUSTOM_STATUS = 'Y' AND SH.CUSTOM_SCAN_TIME IS NOT NULL) as customScanTime,
+        (SELECT MIN(CUSTOMS_SCAN_TIME) FROM SHIPMENT_DETAIL SH WHERE SH.SHIPMENT_ID = S.ID AND CUSTOM_STATUS = 'Y' AND SH.CUSTOMS_SCAN_TIME IS NOT NULL) as customsScanTime,
         (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as logisticName
         from shipment S
         <where>  
@@ -403,6 +403,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fromDate != null">and S.create_time &gt;= #{fromDate}</if>
             <if test="toDate != null">and S.create_time &lt;= #{toDate}</if>
         </where>
-        ORDER BY customScanTime ASC
+        ORDER BY customsScanTime ASC
     </select>
 </mapper>
