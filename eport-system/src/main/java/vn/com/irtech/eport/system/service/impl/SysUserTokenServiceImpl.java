@@ -116,4 +116,6 @@ public class SysUserTokenServiceImpl implements ISysUserTokenService
     public List<String> getListDeviceTokenByUserId(Long userId) {
     	return sysUserTokenMapper.getListDeviceTokenByUserId(userId);
     }
+    
+
 }

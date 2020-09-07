@@ -129,19 +129,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
-    <select id="getNotificationListNotSentYet" parameterType="SysNotificationReceiver" resultType="SysNotificationReceiver">
+    <select id="getNotificationListNotSentYet" resultMap="SysNotificationReceiverResult">
         select *
         from sys_notification_receiver r
         left join sys_notification n on r.notification_id = n.id
         <where>
-            <if test="userId != null "> and r.user_id = #{userId}</if>
-            <if test="userType != null "> and r.user_type = #{userType}</if>
-            <if test="notificationId != null "> and r.notification_id = #{notificationId}</if>
-            <if test="notificationType != null  and notificationType != ''"> and r.notification_type = #{notificationType}</if>
-            <if test="seenFlg != null "> and r.seen_flg = #{seenFlg}</if>
-            <if test="sentFlg != null"> and sent_flg = #{sentFlg}</if>
-            <if test="sysNotification.status != null"> and n.status = #{sysNotification.status}</if>
-            <if test="createTime != null "> and TO_CHAR(n.createTime, 'DD/MM/YYYY') = #{createTime}</if>
+            <if test="sysNotiReceiver.userId != null "> and r.user_id = #{sysNotiReceiver.userId}</if>
+            <if test="sysNotiReceiver.userType != null "> and r.user_type = #{sysNotiReceiver.userType}</if>
+            <if test="sysNotiReceiver.notificationId != null "> and r.notification_id = #{sysNotiReceiver.notificationId}</if>
+            <if test="sysNotiReceiver.notificationType != null  and sysNotiReceiver.notificationType != ''"> and r.notification_type = #{sysNotiReceiver.notificationType}</if>
+            <if test="sysNotiReceiver.seenFlg != null "> and r.seen_flg = #{sysNotiReceiver.seenFlg}</if>
+            <if test="sysNotiReceiver.sentFlg != null"> and sent_flg = #{sysNotiReceiver.sentFlg}</if>
+            <if test="sysNotiReceiver.sysNotification.status != null"> and n.status = #{sysNotiReceiver.sysNotification.status}</if>
+            <if test="sysNotiReceiver.createTime != null "> and TO_CHAR(n.createTime, 'DD/MM/YYYY') = #{sysNotiReceiver.createTime}</if>
         </where>
+        fetch next #{notificaitonNumber} rows only
     </select>
+
 </mapper>

@@ -202,4 +202,20 @@ public interface ICatosApiService {
 	 * getCoordinateOfContainers for Carrier
 	 */
 	public List<ShipmentDetail> selectCoordinateOfContainersByShipmentDetail(ShipmentDetail shipmentDetail);
+	
+	/**
+	 * Get block list for carrier where container of carrier is exist in depot
+	 * 
+	 * @param shipmentDetail
+	 * @return List string block
+	 */
+	public List<String> getBlocksForCarrier(ShipmentDetail shipmentDetail);
+	
+	/**
+	 * Get bay list for carrier where container of carrier is exist in depot
+	 * 
+	 * @param shipmentDetail
+	 * @return List string bay
+	 */
+	public List<String> getBaysForCarrier(ShipmentDetail shipmentDetail);
 }
