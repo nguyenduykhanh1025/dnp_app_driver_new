@@ -3,6 +3,7 @@ package vn.com.irtech.eport.carrier.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -61,6 +63,9 @@ public class BookingDetailController extends CarrierBaseController
     
     @Autowired
     private DictService dictService;
+
+    @Autowired
+	private DictService dictDataService;
 
     @GetMapping()
     public String detail()
@@ -188,6 +193,44 @@ public class BookingDetailController extends CarrierBaseController
         
         return prefix + "/pickupContainer";
     }
+
+	@GetMapping("/source/taxCode/consignee")
+	@ResponseBody
+	public AjaxResult getConsigneeList() {
+		AjaxResult ajaxResult = success();
+		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeListTaxCode");
+		if (listConsignee == null) {
+			listConsignee = shipmentDetailService.getConsigneeList();
+			CacheUtils.put("consigneeListTaxCode", listConsignee);
+		}
+		ajaxResult.put("consigneeList", listConsignee);
+		return ajaxResult;
+    }
+
+    @GetMapping("/size/container/list")
+	@ResponseBody
+	public AjaxResult getSztps()
+	{
+		return AjaxResult.success(dictDataService.getType("sys_size_container_eport"));
+    }
+    
+    @GetMapping("/berthplan/ope-code/vessel-voyage/list")
+	@ResponseBody
+	public AjaxResult getVesselVoyageList() {
+        String opeCode = super.getUserGroup().getGroupCode();
+		AjaxResult ajaxResult = success();
+		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlan(opeCode);
+		if(CollectionUtils.isNotEmpty(berthplanList)) {
+			List<String> vesselAndVoyages = new ArrayList<>();
+			for(ShipmentDetail i : berthplanList) {
+				vesselAndVoyages.add(i.getVslAndVoy());
+			}
+			ajaxResult.put("berthplanList", berthplanList);
+			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
+			return ajaxResult;
+		}
+		return AjaxResult.warn("Không tìm thấy tàu/chuyến nào cho hãng tàu này.");
+	}
     
     @PostMapping("/container/position")
     @ResponseBody
