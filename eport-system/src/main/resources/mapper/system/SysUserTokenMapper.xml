@@ -107,4 +107,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select device_token from sys_user_token
         where user_id = #{userId} and (expire_flg = 0 or expire_time &lt; sysdate)
     </select>
+
 </mapper>

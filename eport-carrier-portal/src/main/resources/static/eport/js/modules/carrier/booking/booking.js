@@ -1,27 +1,107 @@
+const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 const PREFIX = ctx + "carrier/booking";
 const PREFIX2 = ctx + "carrier/booking/detail";
+
+
+var dogrid = document.getElementById("dg-right"),
+  hot;
+var interval, currentPercent, timeout;
+
 var booking = new Object();
 var bookingDetail = new Object();
 var bookingSelected;
-var dogrid = document.getElementById("container-grid"), hot;
 var coutCheck = 0;
 var rowAmount = 0;
+var consigneeList;
+var sizeList = [];
+var vslNmList;
+var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
+var berthplanList;
 
+$.ajax({
+    type: "GET",
+    url: ctx  + "carrier/booking/detail/size/container/list",
+    success(data) {
+        if(data.code == 0){
+            data.data.forEach(element => {
+                sizeList.push(element['dictLabel'])
+            })
+        }
+    }
+})
+
+$.ajax({
+    url: ctx + "carrier/booking/detail/berthplan/ope-code/vessel-voyage/list",
+    method: "GET",
+    success: function (data) {
+        if (data.code == 0) {
+            berthplanList = data.berthplanList;
+            vslNmList = data.vesselAndVoyages;
+        }
+    }
+});
+
+
+var toolbar = [
+    {
+      text: '<a href="#" class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Thêm</a>',
+      handler: function () {
+        alert("them");
+      },
+    },
+    {
+      text: '<a href="#" class="btn btn-sm btn-default"><i class="fa fa-trash text-danger"></i> Xóa</a>',
+      handler: function () {
+        alert("sua");
+      },
+    },
+    {
+      text: '<a href="#" class="btn btn-sm btn-default"><i class="fa fa-refresh text-success"></i> Làm mới</a>',
+      handler: function () {
+        alert("xoa");
+      },
+    },
+  ];
+  
+  $(".main-body").layout();
+  
+  loadTable();
+  $(".collapse").click(function () {
+    $(".main-body__search-wrapper").height(15);
+    $(".main-body__search-wrapper--container").hide();
+    $(this).hide();
+    $(".uncollapse").show();
+  });
+  
+  $(".uncollapse").click(function () {
+    $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
+    $(".main-body__search-wrapper--container").show();
+    $(this).hide();
+    $(".collapse").show();
+  });
+  
+  $(".left-side__collapse").click(function () {
+    $("#main-layout").layout("collapse", "west");
+    setTimeout(() => {
+      hot.render();
+    }, 200);
+  });
+  
+  
+  $('#main-layout').layout({
+    onExpand: function(region){
+        if (region == "west") {
+          hot.render();
+        }
+    }
+  })
 
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
-    loadTable();
-    $(".left-side").css("height", $(document).height());
-    $("#btn-collapse").click(function () {
-        handleCollapse(true);
-    });
-    $("#btn-uncollapse").click(function () {
-        handleCollapse(false);
-    });
-    $('#searchBookingNo').keyup(function (event) {
+    $('#bookingNo').keyup(function (event) {
         if (event.keyCode == 13) {
-            bookingNo = $('#searchBookingNo').val().toUpperCase();
+            bookingNo = $('#bookingNo').val().toUpperCase();
           if (bookingNo == "" || bookingNo == undefined) {
             loadTable(bookingNo);
           }
@@ -30,39 +110,40 @@ $(document).ready(function () {
           loadTable(booking);
         }
       });
-});
+      $('#consignee').keyup(function (event) {
+        if (event.keyCode == 13) {
+            consignee = $('#consignee').val().toUpperCase();
+          if (consignee == "" || consignee == undefined) {
+            loadTable(booking);
+          }
+          booking = new Object();
+          booking.consignee = consignee;
+          loadTable(booking);
+        }
+      });
 
-function handleCollapse(status) {
-    if (status) {
-        $(".left-side").css("width", "0.5%");
-        $(".left-side").children().hide();
-        $("#btn-collapse").hide();
-        $("#btn-uncollapse").show();
-        $(".right-side").css("width", "99%");
-        setTimeout(function () {
-            hot.render();
-        }, 500);
-        return;
-    }
-    $(".left-side").css("width", "33%");
-    $(".left-side").children().show();
-    $("#btn-collapse").show();
-    $("#btn-uncollapse").hide();
-    $(".right-side").css("width", "67%");
-    setTimeout(function () {
-        hot.render();
-    }, 500);
+    
+});
+function searchInfoBooking() {
+    booking = new Object();
+    booking.consignee = $('#consignee').val().toUpperCase();
+    booking.bookingNo = $('#bookingNo').val().toUpperCase();
+    loadTable(booking);
+}
+
+function freshBooking() {
+    $('#consignee').val(null);
+    $('#bookingNo').val(null);
+    $('#containerNo').val(null);
 }
 
 
-loadTable();
-
 function loadTable(booking) {
-    $("#dg").datagrid({
+    $("#dg-left").datagrid({
       url: PREFIX + "/list",
       method: "POST",
       singleSelect: true,
-      height: $(document).height() - 75,
+      height: window.innerHeight - 107,
       clientPaging: true,
       pagination: true,
       pageSize: 20,
@@ -119,7 +200,7 @@ function configHandson() {
       };
     config = {
         stretchH: "all",
-        height: document.documentElement.clientHeight - 100,
+        height: $('.main-body').height() - 110,
         minRows: rowAmount,
         maxRows: rowAmount,
         width: "100%",
@@ -146,16 +227,14 @@ function configHandson() {
                 case 5:
                     return "Loại hàng";
                 case 6:
-                    return "Tàu";
+                    return "Tàu - Chuyến";
                 case 7:
-                    return "Chuyến";
-                case 8:
                     return "Cảng dỡ";
-                case 9:
+                case 8:
                     return "Ghi chú";
             }
         },
-        colWidths: [ 100, 100, 100, 120, 100, 100, 100, 150, 100, 150],
+        colWidths: [ 100, 200, 100, 120, 100, 100, 150, 100, 150],
         filter: "true",
         columns: [
             {
@@ -163,6 +242,10 @@ function configHandson() {
             },
             {
                 data: "sztp",
+                type: "autocomplete",
+                source: sizeList,
+                strict: true,
+                // renderer: sizeRenderer
             },
             {
                 data: "yardPosition",
@@ -185,12 +268,16 @@ function configHandson() {
             },
             {
                 data: "cargoType",
-            },
-            {
-                data: "userVoy", 
+                type: "autocomplete",
+                source: cargoTypeList,
+                strict: true,
+                renderer: cargoTypeRenderer
             },
             {
                 data: "userVoy",
+                type: "autocomplete",
+                source: vslNmList,
+                strict: true,
             },
             {
                 data: "pod", 
@@ -229,15 +316,15 @@ function formatStatus(value) {
 
 function pickupContainer(id) {
     // $.modal.openWithOneButton('Cấp container', PREFIX + "/pickupContainer/", 1000, 400);
-    $.modal.openWithOneButton("Bốc container chỉ định", PREFIX2 + "/pickupContainer/", 1000, 600);
+    $.modal.openWithOneButton("Bốc container chỉ định", PREFIX2 + "/pickupContainer/", 1000, 610);
 }
 
 function addBooking(id) {
-    $.modal.open('Cấp container', PREFIX + "/add/", 1000, 400);
+    $.modal.open('Cấp Container', PREFIX + "/add/", 400, 450);
 }
 
 function releaseBooking() {
-    let row = $('#dg').datagrid('getSelected');
+    let row = $('#dg-left').datagrid('getSelected');
     layer.confirm("Bạn có muốn phát hành Booking này?", {
         icon: 3,
         title: "Xác Nhận",
@@ -262,13 +349,13 @@ function releaseBooking() {
 }
 
 function editBooking() {
-    let row = $('#dg').datagrid('getSelected');
-    $.modal.open('Sửa booking', PREFIX + "/edit/" + row.id, 1000, 400);
+    let row = $('#dg-left').datagrid('getSelected');
+    $.modal.open('Sửa booking', PREFIX + "/edit/" + row.id,  400, 450);
 }
 
 
 function delBooking() {
-    var row = $('#dg').datagrid('getSelected');
+    var row = $('#dg-left').datagrid('getSelected');
     layer.confirm("Xác nhận xóa xóa booking.", {
         icon: 3,
         title: "Xác Nhận",
@@ -295,18 +382,22 @@ function delBooking() {
 
 // HANDLE WHEN SELECT A SHIPMENT
 function getSelectedRow() {
-    let row = $("#dg").datagrid("getSelected");
+    let row = $("#dg-left").datagrid("getSelected");
     if(row.bookStatus == 'H')
     {
         $('#pickupContainer').prop('disabled', false);
         $('#saveInput').prop('disabled', false);
         $('#releaseBooking').prop('disabled', false);
-        $('#releaseStatusTitle').text("Chưa phát hành!")
+        $('#editBooking').prop('disabled', false);
+        $('#delBooking').prop('disabled', false);
+        $('#releaseStatusTitle').text("Trạng thái : Chưa phát hành")
     }else {
         $('#pickupContainer').prop('disabled', true);
         $('#saveInput').prop('disabled', true);
         $('#releaseBooking').prop('disabled', true);
-        $('#releaseStatusTitle').text("Đã phát hành!")
+        $('#editBooking').prop('disabled', true);
+        $('#delBooking').prop('disabled', true);
+        $('#releaseStatusTitle').text("Trạng thái : Đã phát hành")
     }
     if (row) {
         rowAmount = row.bookQty;
@@ -314,6 +405,16 @@ function getSelectedRow() {
         loadShipmentDetail(row.id);
     }
 }
+
+function loadShipmentDetailPickContainer(pickedContainers)
+{
+    hot.destroy();
+    configHandson();
+    hot = new Handsontable(dogrid, config);
+    hot.loadData(pickedContainers);
+    hot.render();
+}
+
 function loadShipmentDetail(id) {
     bookingDetail.bookingId = id;
     $.ajax({
@@ -334,7 +435,7 @@ function loadShipmentDetail(id) {
 }
 
 function getDataFromTable() {
-    let row = $('#dg').datagrid('getSelected');
+    let row = $('#dg-left').datagrid('getSelected');
     let myTableData = hot.getSourceData();
     let errorFlg = false;
     let cleanedGridData = [];
@@ -422,4 +523,64 @@ function saveInput() {
     var reGoodDate = /^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|(([1][26]|[2468][048]|[3579][26])00))))$/g;
     return reGoodDate.test(dt);
   }
+
+//   source for Handsontable
+
+
+//dictionary sizeList
+
+
+function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).css("background-color", "#C6EFCE");
+    $(td).css("color", "#006100");
+    $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+  }
+
+  function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
+    if (value != null && value != '') {
+        value = value.split(':')[0];
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }
+    $(td).html(value);
+    return td;
+}
+
+$(".c-search-box-vessel-voyage").select2({
+    theme: "bootstrap",
+    allowClear: true,
+    delay: 250,
+    ajax: {
+        url: ctx + "carrier/booking/detail/berthplan/ope-code/vessel-voyage/list",
+        method: "GET",
+        dataType : 'json',
+      data: function (params) {
+        return {
+          keyString: params.term,
+        };
+      },
+      processResults: function (data) {
+      console.log("TCL: data", data)
+        let results = []
+        data.vesselAndVoyages.forEach(function (element, i) {
+          let obj = {};
+          obj.id = i;
+          obj.text = element;
+          results.push(obj);
+        })
+        return {
+          results: results,
+        };
+      },
+    },
+    placeholder: "Vessel",
+  });
+
+$("#dg-right").find("table").addClass("zebraStyle");
+
 

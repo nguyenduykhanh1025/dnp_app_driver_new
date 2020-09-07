@@ -263,4 +263,26 @@ public class ApiShipmentDetailController {
 	public List<ShipmentDetailEntity> selectCoordinateOfContainersByShipmentDetail(@RequestBody ShipmentDetailEntity shipmentDetailEntity){
 		return shipmentDetailDao.selectCoordinateOfContainersByShipmentDetail(shipmentDetailEntity);
 	}
+	
+	/**
+	 * Get block list for carrier where carrier's container is exists in danang port
+	 * 
+	 * @param shipmentDetailEntity
+	 * @return
+	 */
+	@PostMapping("/carrier/blocks")
+	public List<String> getBlocksForCarrier(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
+		return shipmentDetailDao.selectListBlockBySztpOpeCode(shipmentDetailEntity);
+	}
+	
+	/**
+	 * Get bay list for carrier where carrier's container is exists in danang port
+	 * 
+	 * @param shipmentDetailEntity
+	 * @return
+	 */
+	@PostMapping("/carrier/bays")
+	public List<String> getBaysForCarrier(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
+		return shipmentDetailDao.selectListBayBySztpOpeCode(shipmentDetailEntity);
+	}
 }

@@ -1,6 +1,7 @@
 "use strict";
 var notiContent = CKEDITOR.replace("content");
 const PREFIX = ctx + "notifications";
+var regexRemoveHtml = /(<([^>]+)>)/ig;
 
 $("input[type=checkbox]").change(function () {
   let selected = $(this).val();
@@ -57,7 +58,7 @@ $(".btn-send").click(function () {
     url: PREFIX,
     data: {
       title: title.val(),
-      content: content,
+      content: content.replace(regexRemoveHtml, ""),
       receiverGroups: receivers
     },
     success: function(result){

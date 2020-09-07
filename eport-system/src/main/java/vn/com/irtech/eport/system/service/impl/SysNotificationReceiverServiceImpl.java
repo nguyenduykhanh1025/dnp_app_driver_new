@@ -114,7 +114,7 @@ public class SysNotificationReceiverServiceImpl implements ISysNotificationRecei
      * @return List<SysNotificationReceiver
      */
     @Override
-    public List<SysNotificationReceiver> getNotificationListNotSentYet(SysNotificationReceiver sysNotificationReceiver) {
-    	return sysNotificationReceiverMapper.getNotificationListNotSentYet(sysNotificationReceiver);
+    public List<SysNotificationReceiver> getNotificationListNotSentYet(SysNotificationReceiver sysNotificationReceiver, Integer notificationNumber) {
+    	return sysNotificationReceiverMapper.getNotificationListNotSentYet(sysNotificationReceiver, notificationNumber);
     }
 }

@@ -74,4 +74,6 @@ public interface ISysUserTokenService
      * @return List<String>
      */
     public List<String> getListDeviceTokenByUserId(Long userId); 
+    
+
 }

@@ -74,5 +74,5 @@ public interface ISysNotificationReceiverService
      * @param sysNotificationReceiver
      * @return List<SysNotificationReceiver
      */
-    public List<SysNotificationReceiver> getNotificationListNotSentYet(SysNotificationReceiver sysNotificationReceiver);
+    public List<SysNotificationReceiver> getNotificationListNotSentYet(SysNotificationReceiver sysNotificationReceiver, Integer notificationNumber);
 }

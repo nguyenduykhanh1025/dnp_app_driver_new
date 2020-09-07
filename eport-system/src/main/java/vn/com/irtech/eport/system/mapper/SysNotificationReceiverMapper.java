@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.system.mapper;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
 import vn.com.irtech.eport.system.dto.NotificationRes;
 
@@ -74,5 +77,5 @@ public interface SysNotificationReceiverMapper
      * @param sysNotificationReceiver
      * @return List<SysNotificationReceiver
      */
-    public List<SysNotificationReceiver> getNotificationListNotSentYet(SysNotificationReceiver sysNotificationReceiver);
+    public List<SysNotificationReceiver> getNotificationListNotSentYet(@Param("sysNotiReceiver") SysNotificationReceiver sysNotificationReceiver, @Param("notificaitonNumber") Integer notificationNumber);
 }

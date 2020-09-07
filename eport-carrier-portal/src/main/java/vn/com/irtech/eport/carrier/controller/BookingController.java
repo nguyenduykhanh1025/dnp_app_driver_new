@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 
 /**
  * BookingController
@@ -34,6 +36,8 @@ public class BookingController extends CarrierBaseController
 {
     private String prefix = "carrier/booking";
 
+    @Autowired
+    private ICatosApiService catosApiService;
 
     @Autowired
     private IBookingDetailService bookingDetailService;
@@ -145,13 +149,18 @@ public class BookingController extends CarrierBaseController
     @Log(title = "Booking", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
+    @Transactional
     public AjaxResult editSave(Booking booking)
-    {
-        booking.setCarrierAccountId(super.getUserId());
-        booking.setCarrierGroupId(super.getUserGroup().getId());
-        booking.setOpr(super.getUserGroup().getGroupCode());
-        booking.setBookStatus('1');
-        return toAjax(bookingService.updateBooking(booking));
+    {  
+        if('H' == bookingService.selectBookingById(booking.getId()).getBookStatus())
+        {
+            booking.setCarrierAccountId(super.getUserId());
+            booking.setCarrierGroupId(super.getUserGroup().getId());
+            booking.setOpr(super.getUserGroup().getGroupCode());
+            booking.setBookStatus('1');
+            return toAjax(bookingService.updateBooking(booking));
+        }
+        return error("Có lỗi xảy ra, Booking này không thể chỉnh sửa!");
     }
 
     /**
@@ -160,9 +169,33 @@ public class BookingController extends CarrierBaseController
     @Log(title = "Booking", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
+    @Transactional
+    public AjaxResult remove(Long ids)
     {
-        return toAjax(bookingService.deleteBookingByIds(ids));
+        if('H' == bookingService.selectBookingById(ids).getBookStatus())
+        {
+            //del booking detail
+            return toAjax(bookingService.deleteBookingByIds(ids.toString()));
+        }
+        return error("Có lỗi xảy ra, Booking này không thể xóa!");
     }
+
+
+    @GetMapping( "/getTaxCode/{taxCode}")
+    @ResponseBody
+    public AjaxResult getTaxCode(@PathVariable("taxCode") String taxCode)
+    {
+        AjaxResult ajaxResult = AjaxResult.success();
+        String groupName = "";
+        if(taxCode != null){
+            groupName = catosApiService.getGroupNameByTaxCode(taxCode).getGroupName();
+            if(groupName == null){
+                return error("Mã số thuế không tồn tại");
+            }
+        }
+        ajaxResult.put("groupName", groupName);
+        return ajaxResult;
+    }
+   
 
 }

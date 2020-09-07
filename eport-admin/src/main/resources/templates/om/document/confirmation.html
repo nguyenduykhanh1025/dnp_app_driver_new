@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Document Confirmation')" />
+    <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+    <link th:href="@{/eport/css/om/document/style.css}" rel="stylesheet" />
+</head>
+
+<body style="overflow: hidden;">
+    <div>
+        <div class="form-group mt-10">
+            <div class="row ml-10">
+                <input type="radio" name="acceptFlg" value="Y" checked />
+                <label>Đã nhận đầy đủ chứng từ gốc của lô hàng</label>
+            </div>
+            <div class="row ml-10">
+                <input type="radio" name="acceptFlg" value="N" style="background: red;"/>
+                <label><span style="color: red;">CHƯA</span> nhận đầy đủ chứng từ gốc của lô hàng</label>
+            </div>
+        </div>
+        <div class="form-group mt-10">
+            <b class="ml-10">Thông báo đến khách hàng</b>
+        </div>
+        <div class="form-group" style="padding: 0 10px 0 10px;">
+            <textarea rows="3" type="textarea" class="form-control" id="message"></textarea>
+        </div>
+    </div>
+</body>
+
+</html>

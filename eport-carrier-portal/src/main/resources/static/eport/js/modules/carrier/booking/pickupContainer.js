@@ -1,7 +1,14 @@
 var PREFIX = ctx + "carrier/booking/detail";
+var shipmentDetails = [];
+var pickedContainers = [];
 
 $( document ).ready(function() {
     loadContainerList();
+
+    $("#dg").datagrid({
+        height: window.innerHeight - 350,
+        rownumbers:true
+    });
 });
 
 // Call when changing block, bay, sztp to search what block, bay and sztp carrier want to get
@@ -26,8 +33,8 @@ function loadContainerList() {
         success: function (result) {
             $.modal.closeLoading();
             if (result.code == web_status.SUCCESS) {
-                console.log(result.shipmentDetails);
-                loadPostion(result.shipmentDetails);
+                shipmentDetails = result.shipmentDetails
+                loadPostion();
             } else if (result.code == web_status.WARNING) {
                 $.modal.alertWarning(result.msg);
             } else {
@@ -37,7 +44,7 @@ function loadContainerList() {
     });
 }
 
-function loadPostion(shipmentDetails) {
+function loadPostion() {
     let str = '<div class="bayPosition">';
     for (let col = 0; col < 12; col++) {
         str += '<div class="columnDiv">';
@@ -46,12 +53,17 @@ function loadPostion(shipmentDetails) {
 
                 // Position is empty
                 if (shipmentDetails[row][col].containerNo == null) {
-                    str += '<div id="cell' + shipmentDetails[row][col].containerNo + '" class="cellDiv" style="background-color: #dbcfcf;>CONT</div>';
+                    str += '<div id="cell' + col + '-' + row + '" class="cellDiv" style="background-color: #dbcfcf;>CONT</div>';
 
                     // Container must be make into an order
                 } else {
-
-                    str += '<div style="background-color: #72ecea;" class="cellDiv">' + shipmentDetails[row][col].containerNo + '</div>';
+                    shipmentDetails[row][col].preorderPickup = 'N';
+                    if (shipmentDetails[row][col].orderNo) {
+                        str += '<div style="background-color: #d5e05d;" class="cellDiv" onclick="addOrRemove(' + col + ',' + row + ')">' + shipmentDetails[row][col].containerNo + '</div>';
+                    } else {
+                        str += '<div id="container' + col + '-' + row + '" style="background-color: #72ecea;" class="cellDiv" onclick="addOrRemove(' + col + ',' + row + ')">' + shipmentDetails[row][col].containerNo + '</div>';
+                    }
+                    
 
                 }
             } else {
@@ -63,3 +75,73 @@ function loadPostion(shipmentDetails) {
     str += '</div><div style="margin-bottom: 10px;"><b>' + 'Z1-17' + '</b></div>';
     $(".contListPosition").html(str);
 }
+
+function addOrRemove(col, row) {
+    let shipmentDetail = shipmentDetails[row][col];
+    if (shipmentDetail.orderNo) {
+        $.modal.alertWarning("Container " + shipmentDetail.containerNo + " Đã được làm lệnh cấp rỗng, quý khách vui lòng chọn container khác.");
+    } else {
+        if (row+1 < 6 && shipmentDetails[row+1][col].preorderPickup == 'N' && !shipmentDetails[row+1][col].orderNo) {
+            // $.modal.alertWarning("Cảnh báo container " + shipmentDetail.containerNo + " bởi container " + shipmentDetails[row+1][col].containerNo); 
+        }
+        if ('Y' == shipmentDetail.preorderPickup) {
+            shipmentDetails[row][col].preorderPickup = 'N';
+            removePickedContainer(shipmentDetail.containerNo);
+            $('#container' + col + '-' + row).css('background-color', '#72ecea');
+        } else {
+            shipmentDetails[row][col].preorderPickup = 'Y';
+            pickedContainers.push(shipmentDetail);
+            $('#container' + col + '-' + row).css('background-color', '#279c9a');
+        }
+        loadTable();
+    }
+
+}
+
+function loadTable() {
+    $("#dg").datagrid({
+        height: window.innerHeight - 350,
+        singleSelect: true,
+        collapsible: true,
+        clientPaging: false,
+        rownumbers:true,
+        pagination: false,
+        nowrap: false,
+        striped: true,
+        loadMsg: " Đang xử lý...",
+        loader: function (param, success, error) {
+            success(pickedContainers);
+        },
+    });
+}
+
+function removePickedContainer(containerNo) {
+    pickedContainers.forEach(function iterate(element, index, array) {
+        if (element.containerNo == containerNo) {
+            pickedContainers.splice(index, 1);
+            return false;
+        }
+    }); 
+}
+
+function formatYardPosition(value, row) {
+    return row.block + '-' + row.bay + '-' + row.row + '-' + row.tier;
+}
+
+
+function confirm() {
+    layer.confirm("Xác nhận lấy thông tin container trên bãi?", {
+        icon: 3,
+        title: "Xác Nhận",
+        btn: ['Đồng Ý', 'Hủy Bỏ']
+    }, function () {
+        parent.loadShipmentDetailPickContainer(pickedContainers);
+        $.modal.close();
+    }, function () {
+    });   
+}
+
+function closeForm() {
+    $.modal.close();
+}
+

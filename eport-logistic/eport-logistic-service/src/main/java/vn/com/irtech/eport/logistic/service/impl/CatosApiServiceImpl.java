@@ -750,5 +750,47 @@ public class CatosApiServiceImpl implements ICatosApiService {
 		}
 	}
 	
+	/**
+	 * Get block list for carrier where container of carrier is exist in depot
+	 * 
+	 * @param shipmentDetail
+	 * @return List string block
+	 */
+	@Override
+	public List<String> getBlocksForCarrier(ShipmentDetail shipmentDetail) {
+		try {
+			String url = Global.getApiUrl() + "/carrier/blocks";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<String>>() {});
+			List<String> blocks = response.getBody();
+			return blocks;
+		}catch (Exception e) {
+			logger.error("Error while call CATOS Api get blocks", e);
+			return null;
+		}
+	}
 	
+	/**
+	 * Get bay list for carrier where container of carrier is exist in depot
+	 * 
+	 * @param shipmentDetail
+	 * @return List string bay
+	 */
+	@Override
+	public List<String> getBaysForCarrier(ShipmentDetail shipmentDetail) {
+		try {
+			String url = Global.getApiUrl() + "/carrier/bays";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<String>>() {});
+			List<String> bays = response.getBody();
+			return bays;
+		}catch (Exception e) {
+			logger.error("Error while call CATOS Api get bays", e);
+			return null;
+		}
+	}
 }
