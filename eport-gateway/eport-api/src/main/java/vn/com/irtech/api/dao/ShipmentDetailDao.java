@@ -161,4 +161,22 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * getCoordinateOfContainers for Carrier
 	 */
 	public List<ShipmentDetailEntity> selectCoordinateOfContainersByShipmentDetail(ShipmentDetailEntity shipmentDetailEntity);
+	
+	/**
+	 * Select list block by sztp and ope code
+	 * 
+	 * @param sztp
+	 * @param opeCode
+	 * @return List string of block
+	 */
+	public List<String> selectListBlockBySztpOpeCode(ShipmentDetailEntity shipmentDetailEntity);
+	
+	/**
+	 * Select list bay by sztp and ope code
+	 * 
+	 * @param sztp
+	 * @param opeCode
+	 * @return List string of block
+	 */
+	public List<String> selectListBayBySztpOpeCode(ShipmentDetailEntity shipmentDetailEntity);
 }

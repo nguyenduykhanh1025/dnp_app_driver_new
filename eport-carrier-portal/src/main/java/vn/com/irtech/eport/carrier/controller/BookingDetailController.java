@@ -31,6 +31,8 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysDictData;
+import vn.com.irtech.eport.system.domain.SysDictType;
 
 
 /**
@@ -58,6 +60,9 @@ public class BookingDetailController extends CarrierBaseController
     
     @Autowired
     private IBookingDetailService bookingDetailService;
+    
+    @Autowired
+    private DictService dictService;
 
     @Autowired
 	private DictService dictDataService;
@@ -183,6 +188,9 @@ public class BookingDetailController extends CarrierBaseController
 		// if (shipmentDetails.size() > 0) {
 			
 		// }
+        List<SysDictData> sztpList = dictService.getType("sys_size_container_eport");
+        mmap.put("sztpList", sztpList);
+        
         return prefix + "/pickupContainer";
     }
 
@@ -235,6 +243,43 @@ public class BookingDetailController extends CarrierBaseController
     		ajaxResult.put("shipmentDetails", shipmentDetails);
 		} catch (Exception e) {
 			logger.error("Error when get yard position for carrier: " + e);
+			return error();
+		}
+    	return ajaxResult;
+    }
+    
+    @GetMapping("/sztp/{sztp}/blocks")
+    @ResponseBody
+    public AjaxResult getBlocks(@PathVariable("sztp") String sztp) {
+    	AjaxResult ajaxResult = AjaxResult.success();
+    	ShipmentDetail shipmentDetail = new ShipmentDetail();
+    	shipmentDetail.setSztp(sztp);
+    	shipmentDetail.setOpeCode(getUserGroup().getGroupCode());
+    	shipmentDetail.setFe("E");
+    	try {
+    		List<String> blocks = catosApiService.getBlocksForCarrier(shipmentDetail);
+    		ajaxResult.put("blocks", blocks);
+		} catch (Exception e) {
+			logger.error("Error when get blocks for carrier: " + e);
+			return error();
+		}
+    	return ajaxResult;
+    }
+    
+    @GetMapping("/sztp/{sztp}/block/{block}/bays")
+    @ResponseBody
+    public AjaxResult getBays(@PathVariable("sztp") String sztp, @PathVariable("block") String block) {
+    	AjaxResult ajaxResult = AjaxResult.success();
+    	ShipmentDetail shipmentDetail = new ShipmentDetail();
+    	shipmentDetail.setSztp(sztp);
+    	shipmentDetail.setBlock(block);
+    	shipmentDetail.setOpeCode(getUserGroup().getGroupCode());
+    	shipmentDetail.setFe("E");
+    	try {
+    		List<String> bays = catosApiService.getBaysForCarrier(shipmentDetail);
+    		ajaxResult.put("bays", bays);
+		} catch (Exception e) {
+			logger.error("Error when get bays for carrier: " + e);
 			return error();
 		}
     	return ajaxResult;
