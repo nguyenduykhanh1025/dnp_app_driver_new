@@ -1,13 +1,13 @@
-const PREFIX = ctx + "om/support/send-empty";
+const PREFIX = ctx + "om/support/custom-send-full";
 var bill;
-var processOrder = new Object();
-processOrder.serviceType = 2;
+var shipment = new Object();
+shipment.serviceType = 4;
 var shipmentDetails = new Object();
 var currentLeftWidth = $(".table-left").width();
 var currentRightWidth = $(".table-right").width();
 var dogrid = document.getElementById("container-grid"), hot;
 var rowAmount = 0;
-var processOrderSelected;
+var shipmentSelected;
 var sourceData;
 
 $(document).ready(function () {
@@ -17,7 +17,7 @@ $(document).ready(function () {
   $("#btn-uncollapse").click(function () {
     handleCollapse(false);
   });
-  loadTable(processOrder);
+  loadTable(shipment);
   $('#checkCustomStatusByProcessOrderId').attr("disabled", true);
   $('#checkProcessStatusByProcessOrderId').attr("disabled", true);
 
@@ -25,10 +25,10 @@ $(document).ready(function () {
     if (event.keyCode == 13) {
       blNo = $("#searchInfoProcessOrder").val().toUpperCase();
       if (blNo == "") {
-        loadTable(processOrder);
+        loadTable(shipment);
       }
-      processOrder.blNo = blNo;
-      loadTable(processOrder);
+      shipment.blNo = blNo;
+      loadTable(shipment);
     }
   });
 
@@ -51,9 +51,9 @@ function handleCollapse(status) {
   return;
 }
 
-function loadTable(processOrder) {
+function loadTable(shipment) {
   $("#dg").datagrid({
-    url: PREFIX + "/orders",
+    url: PREFIX + "/shipments",
     method: "POST",
     singleSelect: true,
     height: $(document).height() - 60,
@@ -81,7 +81,7 @@ function loadTable(processOrder) {
           pageSize: param.rows,
           orderByColumn: param.sort,
           isAsc: param.order,
-          data: processOrder,
+          data: shipment,
         }),
         dataType: "json",
         success: function (data) {
@@ -107,6 +107,18 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
 function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+}
+function customsNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'customsNo' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+}
+function customStatusRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'customStatus' + row).addClass("htMiddle");
     $(td).html(value);
     return td;
 }
@@ -140,30 +152,6 @@ function dischargePortRenderer(instance, td, row, col, prop, value, cellProperti
     $(td).html(value);
     return td;
 }
-function emptyExpiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'emptyExpiredDem' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
-}
-function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'payType' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
-}
-function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'payer' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
-}
-function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'orderNo' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
-}
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
     $(td).attr('id', 'remark' + row).addClass("htMiddle");
@@ -193,28 +181,24 @@ function configHandson() {
                 case 1:
                     return "Sztp";
                 case 2:
-                    return "Chủ hàng";
+                    return "Số Tờ Khai HQ";
                 case 3:
-                    return "Tàu - Chuyến";
+                    return "T.T.T.Quan";
                 case 4:
-                    return "Trọng lượng";
+                    return "Chủ hàng";
                 case 5:
-                    return "Loại hàng";
+                    return "Tàu - Chuyến";
                 case 6:
-                	return "Cảng Dở Hàng";
+                    return "Trọng lượng";
                 case 7:
-                	return "Hạn Trả Vỏ";
+                    return "Loại hàng";
                 case 8:
-                    return "PTTT";
+                	return "Cảng Dở Hàng";
                 case 9:
-                    return "Payer";
-                case 10:
-                    return "Số Tham Chiếu";
-                case 11:
                     return "Ghi Chú";
             }
         },
-        colWidths: [ 100, 50, 200, 150, 100, 100, 100, 150, 100, 100, 150, 100],
+         colWidths: [ 100, 50, 100, 100, 200, 250, 100, 100, 100, 150],
         filter: "true",
         columns: [
             {
@@ -224,6 +208,14 @@ function configHandson() {
             {
                 data: "sztp",
                 renderer: sztpRenderer
+            },
+            {
+                data: "customsNo",
+                renderer: customsNoRenderer
+            },
+            {
+                data: "customStatus",
+                renderer: customStatusRenderer
             },
             {
                 data: "consignee",
@@ -245,22 +237,6 @@ function configHandson() {
             {
                 data: "dischargePort",
                 renderer: dischargePortRenderer
-            },
-            {
-                data: "emptyExpiredDem",
-                renderer: emptyExpiredDemRenderer
-            },
-            {
-                data: "payType",
-                renderer: payTypeRenderer
-            },
-            {
-                data: "payer",
-                renderer: payerRenderer
-            },
-            {
-                data: "orderNo",
-                renderer: orderNoRenderer
             },
             {
                 data: "remark",
@@ -304,13 +280,18 @@ configHandson();
 
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
-function loadTableByContainer(processOrderId) {
+function loadTableByContainer(shipmentId) {
     $.ajax({
-        url:  PREFIX + "/processOrderId/" + processOrderId + "/shipmentDetails",
+        url:  PREFIX + "/shipmentId/" + shipmentId + "/shipmentDetails",
         method: "GET",
         success: function (data) {
             if (data.code == 0) {
                 sourceData = data.shipmentDetails;
+                if(sourceData){
+                	for(let i = 0; i < sourceData.length;i++){
+                		sourceData[i].vslNm = sourceData[i].vslNm + " - " + sourceData[i].vslName + " - " + sourceData[i].voyCarrier;
+                	}
+                }
                 hot.destroy();
                 configHandson();
                 hot = new Handsontable(dogrid, config);
@@ -323,9 +304,9 @@ function loadTableByContainer(processOrderId) {
 function getSelectedRow() {
   var row = $("#dg").datagrid("getSelected");
   if (row) {
-	processOrderSelected = row;
-	rowAmount = processOrderSelected.contAmount;
-    shipmentDetails.processOrderId = row.id;
+	shipmentSelected = row;
+	rowAmount = shipmentSelected.contAmount;
+    shipmentDetails.shipmentId = row.id;
     $('#checkCustomStatusByProcessOrderId').attr("disabled", false);
     $('#checkProcessStatusByProcessOrderId').attr("disabled", false);
     loadTableByContainer(row.id);
@@ -341,15 +322,6 @@ function formatBlBooking(value, row) {
   }
   return "";
 }
-
-function formatBatch(value, row, index) {
-	  return '<a onclick="shipmentDetailsInfo(' + row.shipmentId + ")\"> " + value + "</a>";
-	}
-function shipmentDetailsInfo(shipmentId) {
-  $.modal.openShipmentDetailsInfo("Thông Tin Lô: " + shipmentId, ctx + "om/support/shipment/" + shipmentId + "/shipmentDetails/info", 1100, 470, function () {
-    $.modal.close();
-  });
-}
 function formatLogistic(value, row, index) {
   return '<a onclick="logisticInfo(' + row.logisticGroupId + "," + "'" + value + "')\"> " + value + "</a>";
 }
@@ -358,21 +330,19 @@ function logisticInfo(id, logistics) {
   $.modal.openLogisticInfo("Thông tin: " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function () {
   });
 }
-function executedSuccess() {
-  $.modal.open("Xác nhận", PREFIX + "/verify-executed-command-success/process-order/" + processOrderSelected.id , 400, 270);
+
+function notifyResult() {
+  $.modal.open("Xác nhận", PREFIX + "/confirm-result-notification/shipmentId/" + shipmentSelected.id , 400, 330);
 }
 
 function msgSuccess(msg) {
 	$.modal.alertSuccess(msg);
-	loadTable(processOrder);
+	loadTable(shipment);
 }
 function msgError(msg) {
 	$.modal.alertError(msg);
 }
 
-function resetProcessStatus() {
-	$.modal.open("Xác nhận", PREFIX + "/reset-process-status/process-order/" + processOrderSelected.id , 400, 270);
-}
 
 //function formatVessel(value, row) {
 //  return row.vslNm + " - " + row.vslName + " - " + row.voyNo;
@@ -380,17 +350,20 @@ function resetProcessStatus() {
 
 $('#logistic').change(function () {
   if (0 != $('#logistic option:selected').val()) {
-    processOrder.logisticGroupId = $('#logistic option:selected').val();
+    shipment.logisticGroupId = $('#logistic option:selected').val();
   } else {
-    processOrder.logisticGroupId = '';
+    shipment.logisticGroupId = '';
   }
-  loadTable(processOrder);
+  loadTable(shipment);
 });
 
-function formatUpdateTime(value) {
-  let updateTime = new Date(value);
+function formatUpdateTime(value, row, index) {
+  if(!row.customScanTime){
+	  return null
+  }
+  let customScanTime = new Date(row.customScanTime);
   let now = new Date();
-  let offset = now.getTime() - updateTime.getTime();
+  let offset = now.getTime() - customScanTime.getTime();
   let totalMinutes = Math.round(offset / 1000 / 60);
   var toHHMMSS = (secs) => {
 	    var sec_num = parseInt(secs, 10)
@@ -403,6 +376,6 @@ function formatUpdateTime(value) {
 	        .filter((v,i) => v !== "00" || i > 0)
 	        .join(":")
 	}
-return toHHMMSS(totalMinutes*60);
+  return toHHMMSS(totalMinutes*60);
 }
 
