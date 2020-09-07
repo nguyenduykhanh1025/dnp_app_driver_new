@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.web.controller.om;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.firebase.auth.GetUsersResult;
 import com.google.gson.Gson;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
@@ -31,27 +33,24 @@ import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
+import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.web.controller.AdminBaseController;
 
 @Controller
 @RequestMapping("/om/support/custom-receive-full")
-public class SupportCustomReiceiveFullController  extends BaseController{
+public class SupportCustomReiceiveFullController  extends OmBaseController{
 	protected final Logger logger = LoggerFactory.getLogger(SupportCustomReiceiveFullController.class);
     private final String PREFIX = "om/support/customReceiveFull"; 
     
-    @Autowired
-    private IProcessOrderService processOrderService;
-    
-    @Autowired
-    private IProcessBillService processBillService;
-
     @Autowired
     private IShipmentDetailService shipmentDetailService;
     
@@ -59,13 +58,9 @@ public class SupportCustomReiceiveFullController  extends BaseController{
     private ILogisticGroupService logisticGroupService;
     
     @Autowired
-    private ICatosApiService catosService;
-    
-    @Autowired
     private IShipmentService shipmentService;
     
-    @Autowired
-    private IEdoService edoService;
+    @Autowired IShipmentCommentService shipmentCommentService;
     
     @GetMapping("/view")
     public String getViewSupportReceiveFull(ModelMap mmap)
@@ -84,18 +79,6 @@ public class SupportCustomReiceiveFullController  extends BaseController{
         return PREFIX + "/customReceiveFull";
     }
     
-    @GetMapping("/verify-executed-command-success/process-order/{processOrderId}")
-    public String verifyExecutedCommandSuccess(@PathVariable Long processOrderId, ModelMap mmap) {
-  	  mmap.put("processOrderId", processOrderId);
-  	  return PREFIX + "/verifyExecutedCommandSuccess";
-    }
-    
-    @GetMapping("/reset-process-status/process-order/{processOrderId}")
-    public String resetProcessStatus(@PathVariable Long processOrderId, ModelMap mmap) {
-  	  mmap.put("processOrderId", processOrderId);
-  	  return PREFIX + "/verifyResetProcessStatus";
-    }
-    
     @PostMapping("/shipments")
 	@ResponseBody
 	public TableDataInfo getListOrder(@RequestBody PageAble<Shipment> param) {
@@ -105,8 +88,7 @@ public class SupportCustomReiceiveFullController  extends BaseController{
         	shipment = new Shipment();
         }
         shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
-        shipment.setStatus("1");
-		List<Shipment> shipments = shipmentService.getShipmentListForContSupply(shipment);
+		List<Shipment> shipments = shipmentService.getShipmentsForSupportCustom(shipment);
         TableDataInfo dataList = getDataTable(shipments);
 		return dataList;
     }
@@ -123,5 +105,33 @@ public class SupportCustomReiceiveFullController  extends BaseController{
         	return ajaxResult;
         }
 		return error();
+    }
+    @GetMapping("/confirm-result-notification/shipmentId/{shipmentId}")
+    public String confirmResultNotification(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
+    	mmap.put("shipmentId", shipmentId);
+    	return PREFIX + "/confirmResultNotification";
+    }
+    @PostMapping("/confirm-result-notification")
+    @ResponseBody
+    public AjaxResult sendNotification(@RequestBody ShipmentComment shipmentComment) {
+    	if(shipmentComment == null || shipmentComment.getContent() == null ||
+    			shipmentComment.getContent() == "") {
+    		return error();
+    	}
+    	Shipment shipment = shipmentService.selectShipmentById(shipmentComment.getShipmentId());
+    	shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
+    	shipmentComment.setUserId(getUserId());
+    	shipmentComment.setUserType("S");// S: DNP Staff
+    	shipmentComment.setUserName(getUser().getUserName());
+    	shipmentComment.setUserAlias(getUser().getUserName());//TODO get tạm username
+    	shipmentComment.setCommentTime(new Date());
+    	shipmentComment.setCreateTime(new Date());
+    	shipmentComment.setCreateBy(getUser().getUserName());
+    	//TODO
+    	//setTopic
+    	if(shipmentCommentService.insertShipmentComment(shipmentComment) == 1) {
+    		return success();
+    	}
+    	return error();
     }
 }

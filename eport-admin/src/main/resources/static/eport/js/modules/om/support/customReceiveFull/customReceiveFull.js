@@ -373,21 +373,18 @@ function logisticInfo(id, logistics) {
   });
 }
 
-function executedSuccess() {
-  $.modal.open("Xác nhận", PREFIX + "/verify-executed-command-success/process-order/" + processOrderSelected.id , 400, 270);
+function notifyResult() {
+  $.modal.open("Xác nhận", PREFIX + "/confirm-result-notification/shipmentId/" + shipmentSelected.id , 400, 330);
 }
 
 function msgSuccess(msg) {
 	$.modal.alertSuccess(msg);
-	loadTable(processOrder);
+	loadTable(shipment);
 }
 function msgError(msg) {
 	$.modal.alertError(msg);
 }
 
-function resetProcessStatus() {
-	$.modal.open("Xác nhận", PREFIX + "/reset-process-status/process-order/" + processOrderSelected.id , 400, 270);
-}
 
 //function formatVessel(value, row) {
 //  return row.vslNm + " - " + row.vslName + " - " + row.voyNo;
@@ -402,11 +399,25 @@ $('#logistic').change(function () {
   loadTable(shipment);
 });
 
-function formatUpdateTime(value) {
-  let updateTime = new Date(value);
+function formatUpdateTime(value, row, index) {
+  if(!row.customScanTime){
+	  return null
+  }
+  let customScanTime = new Date(row.customScanTime);
   let now = new Date();
-  let offset = now.getTime() - updateTime.getTime();
+  let offset = now.getTime() - customScanTime.getTime();
   let totalMinutes = Math.round(offset / 1000 / 60);
-  return totalMinutes;
+  var toHHMMSS = (secs) => {
+	    var sec_num = parseInt(secs, 10)
+	    var hours   = Math.floor(sec_num / 3600)
+	    var minutes = Math.floor(sec_num / 60) % 60
+	    var seconds = sec_num % 60
+
+	    return [hours,minutes]
+	        .map(v => v < 10 ? "0" + v : v)
+	        .filter((v,i) => v !== "00" || i > 0)
+	        .join(":")
+	}
+  return toHHMMSS(totalMinutes*60);
 }
 
