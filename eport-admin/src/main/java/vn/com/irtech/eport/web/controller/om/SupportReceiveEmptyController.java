@@ -39,11 +39,12 @@ import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+
 @Controller
-@RequestMapping("/om/support/send-empty")
-public class SupportSendEmptyController extends BaseController{
-	protected final Logger logger = LoggerFactory.getLogger(SupportSendEmptyController.class);
-    private final String PREFIX = "om/support/sendEmpty"; 
+@RequestMapping("/om/support/receive-empty")
+public class SupportReceiveEmptyController extends BaseController{
+	protected final Logger logger = LoggerFactory.getLogger(SupportReceiveEmptyController.class);
+    private final String PREFIX = "om/support/receiveEmpty"; 
     
     @Autowired
     private IProcessOrderService processOrderService;
@@ -80,7 +81,7 @@ public class SupportSendEmptyController extends BaseController{
 	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
 	    logisticGroups.add(0, logisticGroup);
 	    mmap.put("logisticsGroups", logisticGroups);
-        return PREFIX + "/sendEmpty";
+        return PREFIX + "/receiveEmpty";
     }
     
     @GetMapping("/verify-executed-command-success/process-order/{processOrderId}")
@@ -104,7 +105,7 @@ public class SupportSendEmptyController extends BaseController{
             processOrder = new ProcessOrder();
         }
 		processOrder.setResult("F");
-		processOrder.setServiceType(Constants.SEND_CONT_EMPTY);
+		processOrder.setServiceType(Constants.RECEIVE_CONT_EMPTY);
 		List<ProcessOrder> processOrders = processOrderService.selectProcessOrderListWithLogisticName(processOrder);
         TableDataInfo dataList = getDataTable(processOrders);
 		return dataList;

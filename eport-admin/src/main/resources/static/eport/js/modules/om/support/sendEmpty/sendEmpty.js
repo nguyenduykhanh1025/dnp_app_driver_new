@@ -158,6 +158,12 @@ function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
+function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'orderNo' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+}
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
     $(td).attr('id', 'remark' + row).addClass("htMiddle");
@@ -203,10 +209,12 @@ function configHandson() {
                 case 9:
                     return "Payer";
                 case 10:
+                    return "Số Tham Chiếu";
+                case 11:
                     return "Ghi Chú";
             }
         },
-        // colWidths: [ 100, 100, 100, 120, 100, 100, 100, 150, 100, 120, 100, 80, 80, 80, 150],
+        colWidths: [ 100, 50, 200, 150, 100, 100, 100, 150, 100, 100, 150, 100],
         filter: "true",
         columns: [
             {
@@ -249,6 +257,10 @@ function configHandson() {
             {
                 data: "payer",
                 renderer: payerRenderer
+            },
+            {
+                data: "orderNo",
+                renderer: orderNoRenderer
             },
             {
                 data: "remark",

@@ -3,6 +3,7 @@
   <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
+    <th:block th:include="include :: handsontable-css" />
     <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet"/>
     <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet"/>
     <link th:href="@{/eport/css/eport.css}" rel="stylesheet"/>
@@ -30,17 +31,17 @@
             class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
         </div>
         <div class="form-group margin-input">
-            <label class="sr-only"> Đồng Bộ Hải Quan</label>
+            <label class="sr-only"> Xác Nhận Làm Lệnh OK</label>
             <div class="input-group">
-              <button class="btn btn-success btn-sm" id="checkCustomStatusByProcessOrderId" onclick="checkCustomStatusByProcessOrderId() "><i
-                  class="fa fa-pencil-square-o"></i> Đồng Bộ Hải Quan</button>
+              <button class="btn btn-success btn-sm" id="checkCustomStatusByProcessOrderId" onclick="executedSuccess()"><i
+                  class="fa fa-pencil-square-o"></i>Xác Nhận Làm Lệnh OK</button>
             </div>
           </div>
           <div class="form-group margin-input">
-            <label class="sr-only">Đồng Bộ Trạng Thái Làm Lệnh</label>
+            <label class="sr-only">Reset Trạng Thái Làm Lệnh</label>
             <div class="input-group">
-              <button class="btn btn-success btn-sm" id="checkProcessStatusByProcessOrderId" onclick="checkCustomStatusByProcessOrderId() "><i
-                  class="fa fa-pencil-square-o"></i> Đồng Bộ Trạng Thái Làm Lệnh</button>
+              <button class="btn btn-success btn-sm" id="checkProcessStatusByProcessOrderId" onclick="resetProcessStatus() "><i
+                  class="fa fa-pencil-square-o"></i> Reset Trạng Thái Làm Lệnh</button>
             </div>
           </div>
       </div> <!-- //end form -->
@@ -55,68 +56,40 @@
               <th data-options="field:'updateTime',align:'center', formatter: formatUpdateTime" width="70">
                 Số phút
               </th>
-              <th data-options="field:'id',align:'center'" width="70">
-                Số lệnh
+              <th data-options="field:'shipmentId',align:'center', formatter: formatBatch" width="50">
+                Mã Lô
               </th>
-              <th data-options="field: 'logisticName', halign: 'center', align: 'left', resizable: true, formatter: formatLogistic" width="120" sortable="true">
+              <th data-options="field: 'logisticName', halign: 'center', resizable: true, formatter: formatLogistic" width="120" sortable="true">
                 Logistics
               </th>
-              <th data-options="field: 'blNo', halign: 'center', align:'center', resizable:true" width="110">
-                Bill of landing
+              <th data-options="field: 'bookingNo', halign: 'center', resizable:true" width="110">
+                Booking No
               </th>
-              <th data-options="field:'contNumber',align:'center'" width="90">
-                Số lượng cont
+              <th data-options="field:'contNumber',align:'center'" width="40">
+                SL
               </th>
-              <th data-options="field:'createTime',align:'left'" width="130">
-                Ngày tạo
+              <th data-options="field:'opr',align:'center'" width="40">
+                OPR
+              </th>
+              <th data-options="field:'specificContFlg',align:'center', formatter: formatType" width="150">
+                Loại
+              </th>
+              <th data-options="field:'createTime',align:'left'" width="150">
+                Thời gian thực hiện
               </th>
             </tr>
         </thead>
       </table>
     </section>
     <section class="right ml10">
-      <table id="dgContainer">
-        <thead frozen="true">
-          <tr>
-            <th data-options="field:'containerNo',align:'left'" width="120">
-              Số cont
-            </th>
-          </tr>
-      </thead>
-        <thead>
-            <th data-options="field:'sztp',align:'left'" width="50">
-              Sztp
-            </th>
-            <th data-options="field:'customStatus',align:'center',formatter: formatCustomStatus" width="100">
-              Trại thái <br> hải quan
-            </th>
-            <th data-options="field:'processStatus',align:'center', formatter: formatStatus" width="100">
-                Trại thái <br> làm lệnh
-            </th>
-            <th data-options="field:'consignee',align:'left'" width="230">
-              Chủ hàng
-            </th>
-            <th data-options="field:'detFreeTime',align:'center'" width="80">
-              Hạn lệnh
-            </th>
-            <th data-options="field:'vessel',align:'left',formatter: formatVessel" width="215">
-                Tàu / Chuyến
-            </th>
-            <th data-options="field:'emptyDepot',align:'left'" width="110">
-                Nơi trả vỏ
-            </th>
-            <th data-options="field:'loadingPort',align:'left'" width="90">
-                Cảng xếp
-            </th>
-          </tr>
-        </thead>
-      </table>
+      <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
     </section>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: handsontable-js" />
     <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
-    <script th:src="@{/eport/js/modules/om/support/receiveContEmpty.js}"></script>
+    <script th:src="@{/eport/js/modules/om/support/receiveEmpty/receiveEmpty.js}"></script>
   </body>
 
 </html>

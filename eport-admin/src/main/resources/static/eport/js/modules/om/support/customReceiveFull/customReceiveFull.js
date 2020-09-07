@@ -1,13 +1,13 @@
-const PREFIX = ctx + "om/support/send-full";
+const PREFIX = ctx + "om/support/custom-receive-full";
 var bill;
-var processOrder = new Object();
-processOrder.serviceType = 4;
+var shipment = new Object();
+shipment.serviceType = 1;
 var shipmentDetails = new Object();
 var currentLeftWidth = $(".table-left").width();
 var currentRightWidth = $(".table-right").width();
 var dogrid = document.getElementById("container-grid"), hot;
 var rowAmount = 0;
-var processOrderSelected;
+var shipmentSelected;
 var sourceData;
 
 $(document).ready(function () {
@@ -17,7 +17,7 @@ $(document).ready(function () {
   $("#btn-uncollapse").click(function () {
     handleCollapse(false);
   });
-  loadTable(processOrder);
+  loadTable(shipment);
   $('#checkCustomStatusByProcessOrderId').attr("disabled", true);
   $('#checkProcessStatusByProcessOrderId').attr("disabled", true);
 
@@ -25,10 +25,10 @@ $(document).ready(function () {
     if (event.keyCode == 13) {
       blNo = $("#searchInfoProcessOrder").val().toUpperCase();
       if (blNo == "") {
-        loadTable(processOrder);
+        loadTable(shipment);
       }
-      processOrder.blNo = blNo;
-      loadTable(processOrder);
+      shipment.blNo = blNo;
+      loadTable(shipment);
     }
   });
 
@@ -51,9 +51,9 @@ function handleCollapse(status) {
   return;
 }
 
-function loadTable(processOrder) {
+function loadTable(shipment) {
   $("#dg").datagrid({
-    url: PREFIX + "/orders",
+    url: PREFIX + "/shipments",
     method: "POST",
     singleSelect: true,
     height: $(document).height() - 60,
@@ -81,7 +81,7 @@ function loadTable(processOrder) {
           pageSize: param.rows,
           orderByColumn: param.sort,
           isAsc: param.order,
-          data: processOrder,
+          data: shipment,
         }),
         dataType: "json",
         success: function (data) {
@@ -107,6 +107,36 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
 function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+}
+function customsNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'customsNo' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+}
+function customStatusRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'customStatus' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+}
+function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'expiredDem' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+}
+function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'emptyDepot' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+}
+function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'detFreeTime' + row).addClass("htMiddle");
     $(td).html(value);
     return td;
 }
@@ -140,24 +170,6 @@ function dischargePortRenderer(instance, td, row, col, prop, value, cellProperti
     $(td).html(value);
     return td;
 }
-function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'payType' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
-}
-function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'payer' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
-}
-function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'orderNo' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
-}
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
     $(td).attr('id', 'remark' + row).addClass("htMiddle");
@@ -187,26 +199,30 @@ function configHandson() {
                 case 1:
                     return "Sztp";
                 case 2:
-                    return "Chủ hàng";
+                    return "Số Tờ Khai HQ";
                 case 3:
-                    return "Tàu - Chuyến";
+                    return "T.T.T.Quan";
                 case 4:
-                    return "Trọng lượng";
+                    return "Hạn Lệnh";
                 case 5:
-                    return "Loại hàng";
+                    return "Nơi Trả Vỏ";
                 case 6:
-                	return "Cảng Dở Hàng";
+                    return "Ngày <br> Miễn <br>Lưu";
                 case 7:
-                    return "PTTT";
+                    return "Chủ hàng";
                 case 8:
-                    return "Payer";
+                    return "Tàu - Chuyến";
                 case 9:
-                    return "Số Tham Chiếu";
+                    return "Trọng lượng";
                 case 10:
+                    return "Loại hàng";
+                case 11:
+                	return "Cảng Dở Hàng";
+                case 12:
                     return "Ghi Chú";
             }
         },
-        colWidths: [ 100, 50, 200, 280, 100, 100, 100, 100, 100, 150, 100],
+         colWidths: [ 100, 50, 100, 100, 150, 200, 70, 200, 250, 100, 100, 100, 150],
         filter: "true",
         columns: [
             {
@@ -216,6 +232,26 @@ function configHandson() {
             {
                 data: "sztp",
                 renderer: sztpRenderer
+            },
+            {
+                data: "customsNo",
+                renderer: customsNoRenderer
+            },
+            {
+                data: "customStatus",
+                renderer: customStatusRenderer
+            },
+            {
+                data: "expiredDem",
+                renderer: expiredDemRenderer
+            },
+            {
+                data: "emptyDepot",
+                renderer: emptyDepotRenderer
+            },
+            {
+                data: "detFreeTime",
+                renderer: detFreeTimeRenderer
             },
             {
                 data: "consignee",
@@ -237,18 +273,6 @@ function configHandson() {
             {
                 data: "dischargePort",
                 renderer: dischargePortRenderer
-            },
-            {
-                data: "payType",
-                renderer: payTypeRenderer
-            },
-            {
-                data: "payer",
-                renderer: payerRenderer
-            },
-            {
-                data: "orderNo",
-                renderer: orderNoRenderer
             },
             {
                 data: "remark",
@@ -292,9 +316,9 @@ configHandson();
 
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
-function loadTableByContainer(processOrderId) {
+function loadTableByContainer(shipmentId) {
     $.ajax({
-        url:  PREFIX + "/processOrderId/" + processOrderId + "/shipmentDetails",
+        url:  PREFIX + "/shipmentId/" + shipmentId + "/shipmentDetails",
         method: "GET",
         success: function (data) {
             if (data.code == 0) {
@@ -316,9 +340,9 @@ function loadTableByContainer(processOrderId) {
 function getSelectedRow() {
   var row = $("#dg").datagrid("getSelected");
   if (row) {
-	processOrderSelected = row;
-	rowAmount = processOrderSelected.contAmount;
-    shipmentDetails.processOrderId = row.id;
+	shipmentSelected = row;
+	rowAmount = shipmentSelected.contAmount;
+    shipmentDetails.shipmentId = row.id;
     $('#checkCustomStatusByProcessOrderId').attr("disabled", false);
     $('#checkProcessStatusByProcessOrderId').attr("disabled", false);
     loadTableByContainer(row.id);
@@ -334,14 +358,11 @@ function formatBlBooking(value, row) {
   }
   return "";
 }
-
-function formatBatch(value, row, index) {
-	  return '<a onclick="shipmentDetailsInfo(' + row.shipmentId + ")\"> " + value + "</a>";
+function formatType(value, row, index) {
+	if (value == 1){
+		return "eDO";
 	}
-function shipmentDetailsInfo(shipmentId) {
-  $.modal.openShipmentDetailsInfo("Thông Tin Lô: " + shipmentId, ctx + "om/support/shipment/" + shipmentId + "/shipmentDetails/info", 1100, 470, function () {
-    $.modal.close();
-  });
+	return "DO";
 }
 function formatLogistic(value, row, index) {
   return '<a onclick="logisticInfo(' + row.logisticGroupId + "," + "'" + value + "')\"> " + value + "</a>";
@@ -351,9 +372,9 @@ function logisticInfo(id, logistics) {
   $.modal.openLogisticInfo("Thông tin: " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function () {
   });
 }
+
 function executedSuccess() {
   $.modal.open("Xác nhận", PREFIX + "/verify-executed-command-success/process-order/" + processOrderSelected.id , 400, 270);
-
 }
 
 function msgSuccess(msg) {
@@ -374,11 +395,11 @@ function resetProcessStatus() {
 
 $('#logistic').change(function () {
   if (0 != $('#logistic option:selected').val()) {
-    processOrder.logisticGroupId = $('#logistic option:selected').val();
+    shipment.logisticGroupId = $('#logistic option:selected').val();
   } else {
-    processOrder.logisticGroupId = '';
+    shipment.logisticGroupId = '';
   }
-  loadTable(processOrder);
+  loadTable(shipment);
 });
 
 function formatUpdateTime(value) {

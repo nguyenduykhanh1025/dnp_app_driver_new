@@ -2,6 +2,8 @@ package vn.com.irtech.eport.web.controller.om;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +43,8 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 @Controller
 @RequestMapping("/om/support/send-full")
 public class SupportSendFullController extends BaseController{
+	protected final Logger logger = LoggerFactory.getLogger(SupportSendFullController.class);
+	
     private final String PREFIX = "om/support/sendFull"; 
     
     @Autowired
@@ -218,6 +222,7 @@ public class SupportSendFullController extends BaseController{
 			processOrderService.deleteProcessOrderById(processOrderId);
 	    	return success();
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			e.getStackTrace();
 			return error();
 		}

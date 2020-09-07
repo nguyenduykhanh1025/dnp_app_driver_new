@@ -1210,7 +1210,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
     
     /**
-     * updateShipmentDetailForOMSupport : OM support orderRegister (reset process status) (special)
+     * updateShipmentDetailForOMSupport is used for OM reset process status. Not use with another purpose
      */
 	@Override
 	public int updateShipmentDetailForOMSupport(ShipmentDetail shipmentDetail) {
