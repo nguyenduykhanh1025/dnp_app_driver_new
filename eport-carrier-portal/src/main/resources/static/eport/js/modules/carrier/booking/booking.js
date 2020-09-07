@@ -1,9 +1,15 @@
+const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 const PREFIX = ctx + "carrier/booking";
 const PREFIX2 = ctx + "carrier/booking/detail";
+
+
+var dogrid = document.getElementById("dg-right"),
+  hot;
+var interval, currentPercent, timeout;
+
 var booking = new Object();
 var bookingDetail = new Object();
 var bookingSelected;
-var dogrid = document.getElementById("container-grid"), hot;
 var coutCheck = 0;
 var rowAmount = 0;
 var consigneeList;
@@ -36,17 +42,63 @@ $.ajax({
 });
 
 
+var toolbar = [
+    {
+      text: '<a href="#" class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Thêm</a>',
+      handler: function () {
+        alert("them");
+      },
+    },
+    {
+      text: '<a href="#" class="btn btn-sm btn-default"><i class="fa fa-trash text-danger"></i> Xóa</a>',
+      handler: function () {
+        alert("sua");
+      },
+    },
+    {
+      text: '<a href="#" class="btn btn-sm btn-default"><i class="fa fa-refresh text-success"></i> Làm mới</a>',
+      handler: function () {
+        alert("xoa");
+      },
+    },
+  ];
+  
+  $(".main-body").layout();
+  
+  loadTable();
+  $(".collapse").click(function () {
+    $(".main-body__search-wrapper").height(15);
+    $(".main-body__search-wrapper--container").hide();
+    $(this).hide();
+    $(".uncollapse").show();
+  });
+  
+  $(".uncollapse").click(function () {
+    $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
+    $(".main-body__search-wrapper--container").show();
+    $(this).hide();
+    $(".collapse").show();
+  });
+  
+  $(".left-side__collapse").click(function () {
+    $("#main-layout").layout("collapse", "west");
+    setTimeout(() => {
+      hot.render();
+    }, 200);
+  });
+  
+  
+  $('#main-layout').layout({
+    onExpand: function(region){
+        if (region == "west") {
+          hot.render();
+        }
+    }
+  })
+
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
-    loadTable();
-    $(".left-side").css("height", $(document).height());
-    $("#btn-collapse").click(function () {
-        handleCollapse(true);
-    });
-    $("#btn-uncollapse").click(function () {
-        handleCollapse(false);
-    });
     $('#searchBookingNo').keyup(function (event) {
         if (event.keyCode == 13) {
             bookingNo = $('#searchBookingNo').val().toUpperCase();
@@ -60,37 +112,12 @@ $(document).ready(function () {
       });
 });
 
-function handleCollapse(status) {
-    if (status) {
-        $(".left-side").css("width", "0.5%");
-        $(".left-side").children().hide();
-        $("#btn-collapse").hide();
-        $("#btn-uncollapse").show();
-        $(".right-side").css("width", "99%");
-        setTimeout(function () {
-            hot.render();
-        }, 500);
-        return;
-    }
-    $(".left-side").css("width", "33%");
-    $(".left-side").children().show();
-    $("#btn-collapse").show();
-    $("#btn-uncollapse").hide();
-    $(".right-side").css("width", "67%");
-    setTimeout(function () {
-        hot.render();
-    }, 500);
-}
-
-
-loadTable();
-
 function loadTable(booking) {
-    $("#dg").datagrid({
+    $("#dg-left").datagrid({
       url: PREFIX + "/list",
       method: "POST",
       singleSelect: true,
-      height: $(document).height() - 75,
+      height: $('.main-body').height() - 65,
       clientPaging: true,
       pagination: true,
       pageSize: 20,
@@ -329,18 +356,23 @@ function delBooking() {
 
 // HANDLE WHEN SELECT A SHIPMENT
 function getSelectedRow() {
-    let row = $("#dg").datagrid("getSelected");
+    let row = $("#dg-left").datagrid("getSelected");
     if(row.bookStatus == 'H')
     {
         $('#pickupContainer').prop('disabled', false);
         $('#saveInput').prop('disabled', false);
         $('#releaseBooking').prop('disabled', false);
-        $('#releaseStatusTitle').text("Chưa phát hành!")
+        $('#editBooking').prop('disabled', false);
+        $('#delBooking').prop('disabled', false);
+
+        $('#releaseStatusTitle').text("Trạng thái : Chưa phát hành")
     }else {
         $('#pickupContainer').prop('disabled', true);
         $('#saveInput').prop('disabled', true);
         $('#releaseBooking').prop('disabled', true);
-        $('#releaseStatusTitle').text("Đã phát hành!")
+        $('#editBooking').prop('disabled', true);
+        $('#delBooking').prop('disabled', true);
+        $('#releaseStatusTitle').text("Trạng thái : Đã phát hành")
     }
     if (row) {
         rowAmount = row.bookQty;
@@ -483,4 +515,7 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
+
+$("#dg-right").find("table").addClass("zebraStyle");
+
 
