@@ -62,14 +62,11 @@
               <th data-options="field: 'logisticName', halign: 'center', resizable: true, formatter: formatLogistic" width="120" sortable="true">
                 Logistics
               </th>
-              <th data-options="field: 'blNo', halign: 'center', resizable:true" width="110">
-                BL No
+              <th data-options="field: 'bookingNo', halign: 'center', resizable:true" width="110">
+                Booking No
               </th>
               <th data-options="field:'opeCode',align:'center'" width="40">
                 OPR
-              </th>
-              <th data-options="field:'edoFlg',align:'center', formatter: formatType" width="40">
-                Loại
               </th>
               <th data-options="field:'containerAmount',align:'center'" width="40">
                 SL
@@ -89,7 +86,7 @@
     <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: handsontable-js" />
     <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
-    <script th:src="@{/eport/js/modules/om/support/customReceiveFull/customReceiveFull.js}"></script>
+    <script th:src="@{/eport/js/modules/om/support/customSendFull/customSendFull.js}"></script>
   </body>
 
 </html>
