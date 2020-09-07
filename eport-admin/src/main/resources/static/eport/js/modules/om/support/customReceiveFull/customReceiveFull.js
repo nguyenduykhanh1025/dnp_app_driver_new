@@ -400,12 +400,12 @@ $('#logistic').change(function () {
 });
 
 function formatUpdateTime(value, row, index) {
-  if(!row.customScanTime){
+  if(!row.customsScanTime){
 	  return null
   }
-  let customScanTime = new Date(row.customScanTime);
+  let customsScanTime = new Date(row.customsScanTime);
   let now = new Date();
-  let offset = now.getTime() - customScanTime.getTime();
+  let offset = now.getTime() - customsScanTime.getTime();
   let totalMinutes = Math.round(offset / 1000 / 60);
   var toHHMMSS = (secs) => {
 	    var sec_num = parseInt(secs, 10)

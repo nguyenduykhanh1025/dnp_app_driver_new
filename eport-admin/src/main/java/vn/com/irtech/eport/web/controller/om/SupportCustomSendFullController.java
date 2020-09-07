@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
@@ -43,7 +46,8 @@ public class SupportCustomSendFullController extends OmBaseController{
     @Autowired
     private IShipmentService shipmentService;
     
-    @Autowired IShipmentCommentService shipmentCommentService;
+    @Autowired
+    private IShipmentCommentService shipmentCommentService;
     
     @GetMapping("/view")
     public String getViewSupportReceiveFull(ModelMap mmap)
@@ -94,6 +98,8 @@ public class SupportCustomSendFullController extends OmBaseController{
     	mmap.put("shipmentId", shipmentId);
     	return PREFIX + "/confirmResultNotification";
     }
+    
+    @Log(title = "Gửi thông báo Hỗ trợ Hải Quan Hạ Hàng(OM)", businessType = BusinessType.INSERT, operatorType = OperatorType.MANAGE)
     @PostMapping("/confirm-result-notification")
     @ResponseBody
     public AjaxResult sendNotification(@RequestBody ShipmentComment shipmentComment) {

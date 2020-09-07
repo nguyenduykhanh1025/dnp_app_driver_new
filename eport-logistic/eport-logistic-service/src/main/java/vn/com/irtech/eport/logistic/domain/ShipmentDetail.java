@@ -259,7 +259,7 @@ public class ShipmentDetail extends BaseEntity
 	
     /** Thoi gian quet hai quan */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date customScanTime;
+    private Date customsScanTime;
     
     public void setFromDate(Date fromDate) {
 		this.fromDate = fromDate;
@@ -788,12 +788,12 @@ public class ShipmentDetail extends BaseEntity
 		this.contSupplyRemark = contSupplyRemark;
 	}
 
-	public Date getCustomScanTime() {
-		return customScanTime;
+	public Date getCustomsScanTime() {
+		return customsScanTime;
 	}
 
-	public void setCustomScanTime(Date customScanTime) {
-		this.customScanTime = customScanTime;
+	public void setCustomsScanTime(Date customsScanTime) {
+		this.customsScanTime = customsScanTime;
 	}
 
 	@Override
@@ -866,7 +866,7 @@ public class ShipmentDetail extends BaseEntity
             .append("planningDate", getPlanningDate())
             .append("qualityRequirement", getQualityRequirement())
             .append("contSupplyRemark", getContSupplyRemark())
-            .append("customScanTime", getCustomScanTime())
+            .append("customsScanTime", getCustomsScanTime())
             .toString();
     }
 }

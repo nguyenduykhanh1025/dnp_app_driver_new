@@ -111,6 +111,7 @@ public class SupportCustomReiceiveFullController  extends OmBaseController{
     	mmap.put("shipmentId", shipmentId);
     	return PREFIX + "/confirmResultNotification";
     }
+    @Log(title = "Gửi thông báo Hỗ trợ Hải Quan Bốc Hàng(OM)", businessType = BusinessType.INSERT, operatorType = OperatorType.MANAGE)
     @PostMapping("/confirm-result-notification")
     @ResponseBody
     public AjaxResult sendNotification(@RequestBody ShipmentComment shipmentComment) {

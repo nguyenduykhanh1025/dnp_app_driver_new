@@ -65,7 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="payType"    column="pay_type"   />
         <result property="assignNumber"    column="assign_number"   />
         <result property="serviceType"    column="service_type"   />
-        <result property="customScanTime"    column="custom_scan_time"   />
+        <result property="customsScanTime"    column="customs_scan_time"   />
     </resultMap>
 
     <sql id="selectShipmentDetailVo">
@@ -75,7 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         empty_depot, empty_depot_location, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, 
         pre_pickup_payment_status, custom_status, payment_status, process_status, do_status, do_received_time, 
         user_verify_status, finish_status, status, order_no, tax_code, consignee_by_tax_code, cont_supply_status, 
-        planning_date, quality_requirement, cont_supply_remark, custom_scan_time, remark, create_by, create_time, update_by, update_time from shipment_detail
+        planning_date, quality_requirement, cont_supply_remark, customs_scan_time, remark, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
      <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail
@@ -414,7 +414,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="planningDate != null">planning_date,</if>
             <if test="qualityRequirement != null and qualityRequirement != 'qualityRequirement'">quality_requirement,</if>
             <if test="contSupplyRemark != null and contSupplyRemark != 'contSupplyRemark'">cont_supply_remark,</if>
-            <if test="customScanTime != null">custom_scan_time,</if>
+            <if test="customsScanTime != null">customs_scan_time,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -472,7 +472,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="planningDate != null">#{planningDate},</if>
             <if test="qualityRequirement != null and qualityRequirement != 'qualityRequirement'">#{qualityRequirement},</if>
             <if test="contSupplyRemark != null and contSupplyRemark != 'contSupplyRemark'">#{contSupplyRemark},</if>
-            <if test="customScanTime != null">#{customScanTime},</if>
+            <if test="customsScanTime != null">#{customsScanTime},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -533,7 +533,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="planningDate != null">planning_date = #{planningDate},</if>
             <if test="qualityRequirement != null and qualityRequirement != 'qualityRequirement'">quality_requirement = #{qualityRequirement},</if>
             <if test="contSupplyRemark != null and contSupplyRemark != 'contSupplyRemark'">cont_supply_remark = #{contSupplyRemark},</if>
-            <if test="customScanTime != null">custom_scan_time = #{customScanTime},</if>
+            <if test="customsScanTime != null">customs_scan_time = #{customsScanTime},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
