@@ -13,10 +13,20 @@
         <div class="content">
             <div class="form-group row">
                 <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">
-                    <span style="color: red;">*</span>Hạn lệnh mới</label>
+                    Hạn lệnh cũ:</label>
+                <div class="col-md-10 col-sm-9 col-xs-7">
+                    <input name="expiredDem" type="text" th:value=${expiredDem} class="form-control" placeholder="dd/MM/yyyy"  readonly/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">
+                    Hạn lệnh mới:<span style="color: red;">*</span></label>
                 <div class="col-md-10 col-sm-9 col-xs-7">
                     <input name="expiredDem"  id="expiredDem" type="text" class="form-control" onfocus="removeExpiredDemError()" placeholder="dd/MM/yyyy" readonly/>
                 </div>
+            </div>
+            <div class="form-group row remark-style">
+                <p><i><b>Ghi chú: </b>Đối với việc gia hạn lệnh thì quý công ty cần phải nộp giấy gia hạn gốc của Hãng tàu cho Cảng để xác minh và giao nhận container.</i></p>
             </div>
         </div>
         <div class="layui-layer-btn footer">
