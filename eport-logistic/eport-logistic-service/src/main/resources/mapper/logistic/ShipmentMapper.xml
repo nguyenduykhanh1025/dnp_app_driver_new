@@ -346,6 +346,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="params.vslNm != null and params.vslNm != ''">and sh.vsl_nm = #{params.vslNm}</if>
             <if test="params.voyNo != null and params.voyNo != ''">and sh.voy_no = #{params.voyNo}</if>
             <if test="params.doStatus != null and params.doStatus != ''">and sh.do_status = #{params.doStatus}</if>
+            <if test="params.blOrBooking != null and params.blOrBooking != ''">
+                and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
+            </if>
         </where>
 
         group by s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, 

@@ -103,7 +103,7 @@ $( document ).ready(function() {
   });
   // $('#doStatus').combobox('select', 'null');
 
-  loadTable();
+  // loadTable();
 });
 
 
@@ -144,13 +144,13 @@ function loadTable() {
           } else {
             success([]);
           }
-          if (res.shipments.length > 0) {
-            $("#dg").datagrid('checkRow', 0);
-            shipmentSelected = res.shipments[0];
-            rowAmount = shipmentSelected.containerAmount;
-            shipmentDetail.shipmentId = shipmentSelected.id;
-            loadShipmentDetails(shipmentSelected.id);
-          }
+          // if (res.shipments.length > 0) {
+          //   $("#dg").datagrid('checkRow', 0);
+          //   shipmentSelected = res.shipments[0];
+          //   rowAmount = shipmentSelected.containerAmount;
+          //   shipmentDetail.shipmentId = shipmentSelected.id;
+          //   loadShipmentDetails(shipmentSelected.id);
+          // }
         },
         error: function () {
           error.apply(this, arguments);
@@ -273,87 +273,129 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
 }
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value || value == null) {
+    value = '';
+  }
   if (value != null && value != '') {
     if (value.substring(2, 3) != "/") {
       value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
     }
-  } else {
-    $(td).html('');
   }
-  return td;
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '--';
+  }
   if (sourceData[row] && sourceData[row].vslNm && sourceData[row].voyNo) {
-    $(td).html('<div style="width: 100%;">' + sourceData[row].vslNm + ' - ' + sourceData[row].voyNo + '</div>');
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + sourceData[row].vslNm + ' - ' + sourceData[row].voyNo + '</div>');
   }
   return td;
 }
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function invoiceNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  $(td).html('<div style="width: 100%;">' + value + '</div>');
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 
@@ -414,7 +456,7 @@ function configHandson() {
           return "Ghi Chú";
       }
     },
-    colWidths: [ 50, 120, 100, 60, 100, 100, 100, 150, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+    colWidths: [ 50, 120, 100, 60, 100, 100, 100, 200, 150, 100, 100, 100, 100, 100, 130, 130, 100],
     filter: "true",
     columns: [
       {
@@ -438,7 +480,7 @@ function configHandson() {
       {
         data: "expiredDem",
         type: "date",
-        dateFormat: "-YYYY-MM-DD",
+        dateFormat: "DD-MM-YYYY",
         defaultDate: new Date(),
         renderer: expiredDemRenderer
       },
@@ -644,7 +686,7 @@ function getDataSelectedFromTable() {
 }
 
 function search() {
-
+  loadTable();
 }
 
 function clearInput() {
@@ -705,6 +747,12 @@ function confirm(index, layero) {
       layer.close(index);
       $.modal.closeLoading();
     }
+  });
+}
+
+function logisticInfo(id, logistics) {
+  $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function() {
+    $.modal.close();
   });
 }
 
