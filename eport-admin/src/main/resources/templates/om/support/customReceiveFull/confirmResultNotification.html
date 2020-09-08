@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <th:block th:include="include :: header('Verify Reset Process Status')" />
+    <th:block th:include="include :: header('Verify Executed Command')" />
     <th:block th:include="include :: bootstrap-toggle-css" />
     <link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
     <link th:href="@{/eport/css/orderRegistrationSupport/style.css}" rel="stylesheet" />
@@ -13,13 +13,13 @@
        <form class="form-horizontal m" id="form-verify">
         <section class="header">
           <div class="col-sm 3">
-          <i>Xác nhận đã kiểm tra/xóa dữ liệu trên hệ thống CATOS. <br>
-             Cho phép khách hàng thực hiện làm lệnh lại từ đầu.
-</i>
+          <i>Hãy nhập nội dung thông báo kết quả và nhấn "Gửi Thông Báo" để thông báo cho khách hàng.
+          </i>
           </div>
         </section>
+        <br>
         <label><b>Ghi chú đến khách hàng:</b></label>
-        <textarea id="remarkToLogistic"  rows="4" cols="50"></textarea>
+        <textarea id="remarkToLogistic"  rows="5" cols="50"></textarea>
        </form>
       </div>
 <!--       <div class="layui-layer-btn footer">
@@ -31,29 +31,32 @@
     <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: bootstrap-toggle-js" />
     <script type="text/javascript" th:inline="javascript">
-      var processOrderId = /*[[${processOrderId}]]*/;
-      var PREFIX = ctx + "om/support/send-empty";
+      var shipmentId = /*[[${shipmentId}]]*/;
+      var PREFIX = ctx + "om/support/custom-receive-full";
+	  var shipmentComment = new Object();
       function submitHandler() {
+    	  shipmentComment.shipmentId = shipmentId;
+    	  if($("#remarkToLogistic").val() != null){
+    		  shipmentComment.content = $("#remarkToLogistic").val();
+    	  }
           if ($.validate.form()) {
         	  $.modal.loading("Đang xử lý...");
         	  $.ajax({
-        	    url: PREFIX + "/reset-process-status",
+        	    url: PREFIX + "/confirm-result-notification",
         	    method: "POST",
-        	    data: {
-        	      processOrderId: processOrderId,
-        	      content: $("#remarkToLogistic").val() != null ? $("#remarkToLogistic").val() : "",
-        	    },
+                contentType: "application/json",
+                data: JSON.stringify(shipmentComment),
         	    success: function (data) {
         	      $.modal.closeLoading();
         	      if (data.code == 0) {
-        	    	  parent.msgSuccess("Xác nhận thành công");
+        	    	  parent.msgSuccess("Xác nhận gửi thành công");
         	      } else {
-        	    	  parent.msgError("Xác nhận reset thất bại.");
+        	    	  parent.msgError("Xác nhận gửi không thành công");
         	      }
         	      $.modal.close();
         	    },
         	    error: function (data) {
-        	    	parent.msgError("Xác nhận reset thất bại.");
+        	    	parent.msgError("Có lỗi xảy ra liên hệ Admin");
         	      $.modal.closeLoading();
               	  $.modal.close();
         	    }

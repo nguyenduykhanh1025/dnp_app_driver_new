@@ -49,6 +49,10 @@ public class ShipmentComment extends BaseEntity
     private Date commentTime;
 
     /** Content */
+    @Excel(name = "Topic")
+    private String topic;
+
+    /** Content */
     @Excel(name = "Content")
     private String content;
 
@@ -132,7 +136,15 @@ public class ShipmentComment extends BaseEntity
     {
         return commentTime;
     }
-    public void setContent(String content) 
+    public String getTopic() {
+		return topic;
+	}
+
+	public void setTopic(String topic) {
+		this.topic = topic;
+	}
+
+	public void setContent(String content) 
     {
         this.content = content;
     }

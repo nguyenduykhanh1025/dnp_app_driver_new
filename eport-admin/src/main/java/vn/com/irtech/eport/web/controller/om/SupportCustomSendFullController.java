@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,40 +15,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.firebase.auth.GetUsersResult;
-import com.google.gson.Gson;
-
-import vn.com.irtech.eport.carrier.domain.Edo;
-import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
-import vn.com.irtech.eport.common.constant.EportConstants;
-import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
-import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
-import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
-import vn.com.irtech.eport.logistic.service.IProcessBillService;
-import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
-import vn.com.irtech.eport.web.controller.AdminBaseController;
 
 @Controller
-@RequestMapping("/om/support/custom-receive-full")
-public class SupportCustomReiceiveFullController  extends OmBaseController{
+@RequestMapping("/om/support/custom-send-full")
+public class SupportCustomSendFullController extends OmBaseController{
 	protected final Logger logger = LoggerFactory.getLogger(SupportCustomReiceiveFullController.class);
-    private final String PREFIX = "om/support/customReceiveFull"; 
+    private final String PREFIX = "om/support/customSendFull"; 
     
     @Autowired
     private IShipmentDetailService shipmentDetailService;
@@ -60,7 +46,8 @@ public class SupportCustomReiceiveFullController  extends OmBaseController{
     @Autowired
     private IShipmentService shipmentService;
     
-    @Autowired IShipmentCommentService shipmentCommentService;
+    @Autowired
+    private IShipmentCommentService shipmentCommentService;
     
     @GetMapping("/view")
     public String getViewSupportReceiveFull(ModelMap mmap)
@@ -76,7 +63,7 @@ public class SupportCustomReiceiveFullController  extends OmBaseController{
 	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
 	    logisticGroups.add(0, logisticGroup);
 	    mmap.put("logisticsGroups", logisticGroups);
-        return PREFIX + "/customReceiveFull";
+        return PREFIX + "/customSendFull";
     }
     
     @PostMapping("/shipments")
@@ -87,7 +74,7 @@ public class SupportCustomReiceiveFullController  extends OmBaseController{
         if (shipment == null) {
         	shipment = new Shipment();
         }
-        shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
+        shipment.setServiceType(Constants.SEND_CONT_FULL);
 		List<Shipment> shipments = shipmentService.getShipmentsForSupportCustom(shipment);
         TableDataInfo dataList = getDataTable(shipments);
 		return dataList;
@@ -111,7 +98,8 @@ public class SupportCustomReiceiveFullController  extends OmBaseController{
     	mmap.put("shipmentId", shipmentId);
     	return PREFIX + "/confirmResultNotification";
     }
-    @Log(title = "Gửi thông báo Hỗ trợ Hải Quan Bốc Hàng(OM)", businessType = BusinessType.INSERT, operatorType = OperatorType.MANAGE)
+    
+    @Log(title = "Gửi thông báo Hỗ trợ Hải Quan Hạ Hàng(OM)", businessType = BusinessType.INSERT, operatorType = OperatorType.MANAGE)
     @PostMapping("/confirm-result-notification")
     @ResponseBody
     public AjaxResult sendNotification(@RequestBody ShipmentComment shipmentComment) {
