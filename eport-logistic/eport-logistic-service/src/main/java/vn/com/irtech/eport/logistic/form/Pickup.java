@@ -1,8 +1,12 @@
 package vn.com.irtech.eport.logistic.form;
 
-public class Pickup {
+import java.io.Serializable;
 
-    private Long pickupId;
+public class Pickup implements Serializable {
+
+	private static final long serialVersionUID = 5918642569027193881L;
+
+	private Long pickupId;
 
     private Integer serviceType;
 
@@ -17,6 +21,22 @@ public class Pickup {
     private Long batchCode;
 
     private Integer status;
+    
+	/** Block */
+	private String block;
+
+	/** Bay */
+	private String bay;
+
+	/** Line */
+	private String line;
+
+	/** Tier */
+	private String tier;
+
+	/** Area */
+	private String area;
+
 
     public Long getPickupId() {
         return this.pickupId;
@@ -81,5 +101,45 @@ public class Pickup {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+	public String getBlock() {
+		return block;
+	}
+
+	public void setBlock(String block) {
+		this.block = block;
+	}
+
+	public String getBay() {
+		return bay;
+	}
+
+	public void setBay(String bay) {
+		this.bay = bay;
+	}
+
+	public String getLine() {
+		return line;
+	}
+
+	public void setLine(String line) {
+		this.line = line;
+	}
+
+	public String getTier() {
+		return tier;
+	}
+
+	public void setTier(String tier) {
+		this.tier = tier;
+	}
+
+	public String getArea() {
+		return area;
+	}
+
+	public void setArea(String area) {
+		this.area = area;
+	}
 
 }

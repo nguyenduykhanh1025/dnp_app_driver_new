@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +19,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
+
 import vn.com.irtech.eport.api.consts.BusinessConsts;
 import vn.com.irtech.eport.api.consts.MessageConsts;
 import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.api.util.SecurityUtils;
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -51,6 +57,8 @@ import vn.com.irtech.eport.system.service.ISysNotificationReceiverService;
 @RestController
 @RequestMapping("/transport")
 public class TransportController extends BaseController {
+	
+	protected final Logger logger = LoggerFactory.getLogger(TransportController.class);
 
 	@Autowired 
 	private IPickupHistoryService pickupHistoryService;
@@ -365,7 +373,7 @@ public class TransportController extends BaseController {
 		if (location == null) {
 			return error();
 		}
-		logger.debug("Receive GPS location: " + location);
+		logger.debug(">>>>>>>>>>>>>>>>>>.. Receive GPS location: {} : {} , {}", location, location.get("x"), location.get("y"));
 		
 		double distanceRequire = Double.parseDouble(configService.selectConfigByKey("driver.distance.port"));
 		double latEport = Double.parseDouble(configService.selectConfigByKey("location.port.lat"));
@@ -374,29 +382,31 @@ public class TransportController extends BaseController {
 		Double x = location.get("x");
 		Double y = location.get("y");
 		
-		if (x!= null && y != null && x != 0 && y != 0) {
+		if (x != null && y != null && x != 0 && y != 0) {
 			// Update location to cache
 			CacheUtils.put("driver-" + SecurityUtils.getCurrentUser().getUser().getUserId(), location);
+			double distance = distance(x, latEport, y, lonEport, 0.0, 0.0);
+			logger.debug(">>>>>>>>>>>>>>>>>>..Distance from DNP: {}", distance);
 			// Check distance to request MC request yard position
 			if (distanceRequire > distance(x, latEport, y, lonEport, 0.0, 0.0)) {
 				List<Pickup> pickups = pickupHistoryService.selectPickupListByDriverId(SecurityUtils.getCurrentUser().getUser().getUserId());
-				
+
 				for (Pickup pickup : pickups) {
 					// Check if service is send cont
-					if (pickup.getServiceType()%2 == 0) {
-						// Check if cont has position
-						if (!checkContHasPosition(pickup)) {
+					if (pickup.getServiceType().intValue() == EportConstants.SERVICE_DROP_EMPTY
+							|| pickup.getServiceType().intValue() == EportConstants.SERVICE_DROP_FULL) {
+						// Check if cont has not position
+						if (pickup.getStatus() < 2 && !checkContHasPosition(pickup)) {
 							// Send to mc
 							Map<String, Object> map = new HashMap<>();
 							map.put("pickupHistoryId", pickup.getPickupId().toString());
-//							try {
+							try {
 							logger.debug("Received GPS location. Request MC to plan for pickupId " + pickup.getPickupId());
-								// FIXME Tam thoi khong bung len
-								// mqttService.sendMessageToMc(new Gson().toJson(map));
-//							} catch (MqttException e) {
-//								logger.error("Api Driver Error Update Location: " + e);
-//							}
-						}					
+							 mqttService.sendMessageToMc(new Gson().toJson(map));
+							} catch (MqttException e) {
+								logger.error("Api Driver Error Update Location: " + e);
+							}
+						}
 					}
 				}
 			}
@@ -455,11 +465,11 @@ public class TransportController extends BaseController {
 	 * @return Boolean
 	 */
 	private Boolean checkContHasPosition(Pickup pickup) {
-		PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(pickup.getPickupId());
+		// PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(pickup.getPickupId());
 
-		if (StringUtils.isNotBlank(pickupHistory.getArea()) || StringUtils.isNotBlank(pickupHistory.getBlock())
-				&& StringUtils.isNotBlank(pickupHistory.getBay()) && StringUtils.isNotBlank(pickupHistory.getLine())
-				&& StringUtils.isNotBlank(pickupHistory.getTier())) {
+		if (StringUtils.isNotBlank(pickup.getArea()) || StringUtils.isNotBlank(pickup.getBlock())
+				&& StringUtils.isNotBlank(pickup.getBay()) && StringUtils.isNotBlank(pickup.getLine())
+				&& StringUtils.isNotBlank(pickup.getTier())) {
 			return true;
 		}
 		return false;
