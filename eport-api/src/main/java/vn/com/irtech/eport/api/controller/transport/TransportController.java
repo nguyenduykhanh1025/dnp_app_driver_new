@@ -416,6 +416,7 @@ public class TransportController extends BaseController {
 		ajaxResult.put("domain", configService.selectConfigByKey("driver.connection.domain"));
 		ajaxResult.put("port", configService.selectConfigByKey("driver.connection.port"));
 		ajaxResult.put("topic", configService.selectConfigByKey("driver.topic").replace("+", getSession().getId()));
+		ajaxResult.put("locationUpdatePeriod", configService.selectConfigByKey("driver.location.period"));
 		return ajaxResult;
 	}
 	

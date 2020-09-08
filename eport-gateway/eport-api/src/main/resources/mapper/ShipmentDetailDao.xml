@@ -538,4 +538,29 @@
 	   </where>
         ORDER BY CNTR_NO ASC
     </select>
+
+	<select id="selectListBlockBySztpOpeCode" parameterType="ShipmentDetailEntity" resultType="String">
+		SELECT BLOCK 
+		FROM DNP_UAT.TB_INVENTORY
+		<where>
+	       <if test="sztp != null  and sztp != ''"> and SZTP2 = #{sztp}</if>
+	       <if test="fe != null  and fe != ''"> and FE = #{fe}</if>
+	       <if test="opeCode != null  and opeCode != ''"> and PTNR_CODE = #{opeCode}</if>
+	       AND CNTR_STATE = 'Y'
+	   </where>
+		GROUP BY BLOCK
+	</select>
+
+	<select id="selectListBayBySztpOpeCode" parameterType="ShipmentDetailEntity" resultType="String">
+		SELECT BAY 
+		FROM DNP_UAT.TB_INVENTORY
+		<where>
+	       <if test="sztp != null  and sztp != ''"> and SZTP2 = #{sztp}</if>
+	       <if test="fe != null  and fe != ''"> and FE = #{fe}</if>
+	       <if test="opeCode != null  and opeCode != ''"> and PTNR_CODE = #{opeCode}</if>
+		   <if test="block != null  and block != ''"> and BLOCK = #{block}</if>
+	       AND CNTR_STATE = 'Y'
+	   </where>
+		GROUP BY BAY
+	</select>
 </mapper>

@@ -11,6 +11,7 @@ var shipmentSearch = new Object;
 shipmentSearch.serviceType = 1;
 var sizeList = [];
 var voyCarrier;
+var onChangeFlg = false, currentIndexRow = 0, rejectChange = false;
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
@@ -169,8 +170,8 @@ function loadTable(msg) {
     clientPaging: false,
     rownumbers:true,
     pagination: true,
-    onClickRow: function () {
-      getSelected();
+    onBeforeSelect: function (index, row) {
+      getSelected(index, row);
     },
     pageSize: 50,
     nowrap: false,
@@ -231,33 +232,86 @@ function handleRefresh() {
 }
 
 // HANDLE WHEN SELECT A SHIPMENT
-function getSelected() {
-  let row = $("#dg").datagrid("getSelected");
-  if (row) {
-    shipmentSelected = row;
-    $(function () {
-      let options = {
-        createUrl: prefix + "/shipment/add",
-        updateUrl: prefix + "/shipment/" + shipmentSelected.id,
-        modalName: " Lô"
-      };
-      $.table.init(options);
-    });
-    $("#loCode").text(row.id);
-    $("#taxCode").text(row.taxCode);
-    $("#quantity").text(row.containerAmount);
-    if (row.edoFlg == "0") {
-      $("#dotype").text("DO");
-      $("#deleteBtn").show();
+function getSelected(index, row) {
+  if (rejectChange) {
+    rejectChange = false;
+    return true;
+  } else {
+    if (onChangeFlg) {
+      layer.confirm("Thông tin khái báo chưa được lưu, quý khách có muốn di chuyển qua trang khác?", {
+        icon: 3,
+        title: "Xác Nhận",
+        btn: ['Đồng Ý', 'Hủy Bỏ']
+      }, function () {
+        layer.close(layer.index);
+        currentIndexRow = index;
+        if (row) {
+          shipmentSelected = row;
+          $(function () {
+            let options = {
+              createUrl: prefix + "/shipment/add",
+              updateUrl: prefix + "/shipment/" + shipmentSelected.id,
+              modalName: " Lô"
+            };
+            $.table.init(options);
+          });
+          $("#loCode").text(row.id);
+          $("#taxCode").text(row.taxCode);
+          $("#quantity").text(row.containerAmount);
+          if (row.edoFlg == "0") {
+            $("#dotype").text("DO");
+            $("#deleteBtn").show();
+          } else {
+            $("#dotype").text("eDO");
+            $("#deleteBtn").hide();
+          }
+          $("#blNo").text(row.blNo);
+          rowAmount = row.containerAmount;
+          checkList = Array(rowAmount).fill(0);
+          allChecked = false;
+          loadShipmentDetail(row.id);
+          onChangeFlg = false;
+          currentIndexRow = index;
+        }
+        return true;
+      }, function () {
+        layer.close(layer.index);
+        rejectChange = true;
+        $('#dg').datagrid('selectRow', currentIndexRow);
+        return false;
+      });
     } else {
-      $("#dotype").text("eDO");
-      $("#deleteBtn").hide();
+      currentIndexRow = index;
+      if (row) {
+        shipmentSelected = row;
+        $(function () {
+          let options = {
+            createUrl: prefix + "/shipment/add",
+            updateUrl: prefix + "/shipment/" + shipmentSelected.id,
+            modalName: " Lô"
+          };
+          $.table.init(options);
+        });
+        $("#loCode").text(row.id);
+        $("#taxCode").text(row.taxCode);
+        $("#quantity").text(row.containerAmount);
+        if (row.edoFlg == "0") {
+          $("#dotype").text("DO");
+          $("#deleteBtn").show();
+        } else {
+          $("#dotype").text("eDO");
+          $("#deleteBtn").hide();
+        }
+        $("#blNo").text(row.blNo);
+        rowAmount = row.containerAmount;
+        checkList = Array(rowAmount).fill(0);
+        allChecked = false;
+        loadShipmentDetail(row.id);
+        onChangeFlg = false;
+        currentIndexRow = index;
+      }
+      return true;
     }
-    $("#blNo").text(row.blNo);
-    rowAmount = row.containerAmount;
-    checkList = Array(rowAmount).fill(0);
-    allChecked = false;
-    loadShipmentDetail(row.id);
   }
 }
 
@@ -684,6 +738,10 @@ function configHandson() {
     ],
     afterChange: function (changes, src) {
       //Get data change in cell to render another column
+      if (!changes) {
+        return;
+      }
+      onChangeFlg = true;
       if (src !== "loadData") {
         changes.forEach(function interate(change) {
           if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
@@ -936,6 +994,7 @@ function loadShipmentDetail(id) {
         hot.loadData(sourceData);
         hot.render();
         setLayoutRegisterStatus();
+        onChangeFlg = false;
 //        if (!saved) {
 //          $.modal.alert("Thông tin container đã được hệ thống tự<br>động điền, quý khách vui lòng kiểm tra lại<br>thông tin và lưu khai báo.");
 //        }

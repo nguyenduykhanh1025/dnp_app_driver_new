@@ -90,4 +90,26 @@ public interface ShipmentMapper
      * @return List shipment
      */
     public List<Shipment> getShipmentListForContSupply(Shipment shipment);
+    
+    /**
+     * Select shipment list with searching field form both shipment and shipment detail
+     * including vslnm, voyno, container no , do status,... from shipment detail
+     * 
+     * @param shipment
+     * @return List shipment object
+     */
+    public List<Shipment> selectShipmentListByWithShipmentDetailFilter(Shipment shipment);
+    /**
+     * input: serviceType(bat buoc)
+     * getShipmentsForSupportCustom in OM SupportCustomReceiveFull, SupportCustomSendFull
+     */
+    public List<Shipment> getShipmentsForSupportCustom(Shipment shipment);
+    
+    /**
+     * Select list shipment where shipment detail is exists with condition for extension date
+     * 
+     * @param shipment
+     * @return List shipment object
+     */
+    public List<Shipment> selectShipmentListForExtensionDate(Shipment shipment);
 }

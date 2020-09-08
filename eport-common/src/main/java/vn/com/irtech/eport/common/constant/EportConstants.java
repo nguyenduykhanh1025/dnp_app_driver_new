@@ -38,8 +38,10 @@ public interface EportConstants {
 	public static final String SHIPMENT_STATUS_SAVE = "2";
 	/** Lo dang trong qua trinh lam lenh*/
 	public static final String SHIPMENT_STATUS_PROCESSING = "3";
+	/** Lo dang trong qua trinh thanh toan*/
+	public static final String SHIPMENT_STATUS_PAYMENT = "4";
 	/** Lo da hoan thanh toan bo container*/
-	public static final String SHIPMENT_STATUS_FINISH = "4";
+	public static final String SHIPMENT_STATUS_FINISH = "5";
 	
 	// Robot Status
 	/** Robot is available */
@@ -114,4 +116,14 @@ public interface EportConstants {
 	public static final Long NOTIFICATION_LEVEL_GENERAL = 1L;
 	/** Notification instant with time instant */
 	public static final Long NOTIIFCATION_LEVEL_INSTANT = 2L;
+	
+	// User type for shipment comment
+	/** DNP Staff commentor */
+	public static final String COMMENTOR_DNP_STAFF = "S";
+	/** Logistics commentor */
+	public static final String COMMENTOR_LOGISTIC = "L";
+	/** Carrier commentor */
+	public static final String COMMENTOR_CARRIER = "C";
+	/** Driver commentor */
+	public static final String COMMENTOR_DRIVER = "D";
 }

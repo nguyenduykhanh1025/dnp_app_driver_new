@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -71,6 +73,11 @@ public class LogisticExtensionOrderController extends LogisticBaseController {
 	 */
 	@GetMapping("/shipment-detail-ids/{shipmentDetailIds}/form")
 	public String getExtensionForm(@PathVariable String shipmentDetailIds, ModelMap mmap) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			mmap.put("expiredDem", format.format(shipmentDetails.get(0).getExpiredDem()));
+		}
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		return PREFIX + "/extensionForm";	
 	}
@@ -106,10 +113,11 @@ public class LogisticExtensionOrderController extends LogisticBaseController {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
-		shipment.setServiceType(1);
-		shipment.setStatus("3");
+		shipment.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
+		shipment.setStatus(EportConstants.SHIPMENT_STATUS_PROCESSING);
+		shipment.setEdoFlg("0");
 		shipment.setLogisticGroupId(user.getGroupId());
-		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
+		List<Shipment> shipments = shipmentService.selectShipmentListForExtensionDate(shipment);
 		return getDataTable(shipments);
 	}
 

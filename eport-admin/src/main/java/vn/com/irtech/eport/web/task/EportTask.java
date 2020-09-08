@@ -3,6 +3,7 @@ package vn.com.irtech.eport.web.task;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,13 +17,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.SendResponse;
 
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.domain.EdoHistory;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.framework.firebase.service.FirebaseService;
 import vn.com.irtech.eport.framework.mail.service.MailService;
@@ -175,23 +180,36 @@ public class EportTask {
      * Send Notification
      * 
      */
-    public void sendNotification() {
+    @Transactional
+    public void sendNotification(Integer notificationNumber) {
     	SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
     	sysNotificationReceiver.setSentFlg(false);
     	SysNotification sysNotification = new SysNotification();
-    	sysNotification.setStatus(1L);
+    	sysNotification.setStatus(EportConstants.NOTIFICATION_STATUS_ACTIVE);
     	sysNotificationReceiver.setSysNotification(sysNotification);
-        List<SysNotificationReceiver> notificationReceivers = sysNotificationReceiverService.getNotificationListNotSentYet(sysNotificationReceiver);
+        List<SysNotificationReceiver> notificationReceivers = sysNotificationReceiverService.getNotificationListNotSentYet(sysNotificationReceiver, notificationNumber);
         if (CollectionUtils.isNotEmpty(notificationReceivers)) {
         	for (SysNotificationReceiver sysNotificationReceiver2 : notificationReceivers) {
         		SysUserToken sysUserToken = new SysUserToken();
 				sysUserToken.setUserId(sysNotificationReceiver2.getUserId());;
-				sysNotificationReceiver2.setSentFlg(true);
+				sysNotificationReceiver2.setSentFlg(false);
         		sysNotificationReceiverService.updateSysNotificationReceiver(sysNotificationReceiver2);
 				List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(sysNotificationReceiver2.getUserId());
 				if (CollectionUtils.isNotEmpty(sysUserTokens)) {
 					try {
-						firebaseService.sendNotification(sysNotification.getTitle(), sysNotification.getContent(), sysUserTokens);
+						BatchResponse response = firebaseService.sendNotification(sysNotificationReceiver2.getTitle(), sysNotificationReceiver2.getContent(), sysUserTokens);
+						if (response.getFailureCount() > 0) {
+							List<SendResponse> responses = response.getResponses();
+							List<String> failedTokens = new ArrayList<>();
+							for (int i = 0; i < responses.size(); i++) {
+								if (!responses.get(i).isSuccessful()) {
+									// The order of responses corresponds to the order of the registration tokens.
+									failedTokens.add(sysUserTokens.get(i));
+								}
+							}
+
+							logger.error("List of tokens that caused failures: " + failedTokens);
+						}
 					} catch (FirebaseMessagingException e) {
 						logger.error("Error send notification: " + e);
 					}

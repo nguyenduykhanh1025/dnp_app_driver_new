@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.system.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import vn.com.irtech.eport.system.domain.SysUserToken;
 
@@ -74,4 +75,5 @@ public interface SysUserTokenMapper
      * @return List<String>
      */
     public List<String> getListDeviceTokenByUserId(Long userId); 
+    
 }

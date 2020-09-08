@@ -3,6 +3,7 @@ package vn.com.irtech.eport.carrier.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,15 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
+import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysDictData;
+import vn.com.irtech.eport.system.domain.SysDictType;
 
 
 /**
@@ -55,6 +60,12 @@ public class BookingDetailController extends CarrierBaseController
     
     @Autowired
     private IBookingDetailService bookingDetailService;
+    
+    @Autowired
+    private DictService dictService;
+
+    @Autowired
+	private DictService dictDataService;
 
     @GetMapping()
     public String detail()
@@ -177,8 +188,49 @@ public class BookingDetailController extends CarrierBaseController
 		// if (shipmentDetails.size() > 0) {
 			
 		// }
+        List<SysDictData> sztpList = dictService.getType("sys_size_container_eport");
+        mmap.put("sztpList", sztpList);
+        
         return prefix + "/pickupContainer";
     }
+
+	@GetMapping("/source/taxCode/consignee")
+	@ResponseBody
+	public AjaxResult getConsigneeList() {
+		AjaxResult ajaxResult = success();
+		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeListTaxCode");
+		if (listConsignee == null) {
+			listConsignee = shipmentDetailService.getConsigneeList();
+			CacheUtils.put("consigneeListTaxCode", listConsignee);
+		}
+		ajaxResult.put("consigneeList", listConsignee);
+		return ajaxResult;
+    }
+
+    @GetMapping("/size/container/list")
+	@ResponseBody
+	public AjaxResult getSztps()
+	{
+		return AjaxResult.success(dictDataService.getType("sys_size_container_eport"));
+    }
+    
+    @GetMapping("/berthplan/ope-code/vessel-voyage/list")
+	@ResponseBody
+	public AjaxResult getVesselVoyageList() {
+        String opeCode = super.getUserGroup().getGroupCode();
+		AjaxResult ajaxResult = success();
+		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlan(opeCode);
+		if(CollectionUtils.isNotEmpty(berthplanList)) {
+			List<String> vesselAndVoyages = new ArrayList<>();
+			for(ShipmentDetail i : berthplanList) {
+				vesselAndVoyages.add(i.getVslAndVoy());
+			}
+			ajaxResult.put("berthplanList", berthplanList);
+			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
+			return ajaxResult;
+		}
+		return AjaxResult.warn("Không tìm thấy tàu/chuyến nào cho hãng tàu này.");
+	}
     
     @PostMapping("/container/position")
     @ResponseBody
@@ -191,6 +243,51 @@ public class BookingDetailController extends CarrierBaseController
     		ajaxResult.put("shipmentDetails", shipmentDetails);
 		} catch (Exception e) {
 			logger.error("Error when get yard position for carrier: " + e);
+			return error();
+		}
+    	return ajaxResult;
+    }
+    
+    @PostMapping("/sztp/blocks")
+    @ResponseBody
+    public AjaxResult getBlocks(String keyString,String boxSztp) {
+        if(boxSztp == null || boxSztp.equals(""))
+        {
+			return error(); 
+        }
+    	AjaxResult ajaxResult = AjaxResult.success();
+    	ShipmentDetail shipmentDetail = new ShipmentDetail();
+    	shipmentDetail.setSztp(boxSztp);
+    	shipmentDetail.setOpeCode(getUserGroup().getGroupCode());
+    	shipmentDetail.setFe("E");
+    	try {
+    		List<String> blocks = catosApiService.getBlocksForCarrier(shipmentDetail);
+    		ajaxResult.put("blocks", blocks);
+		} catch (Exception e) {
+			logger.error("Error when get blocks for carrier: " + e);
+			return error();
+		}
+    	return ajaxResult;
+    }
+    
+    @PostMapping("/sztp/block/bays")
+    @ResponseBody
+    public AjaxResult getBays(String keyString, String boxSztp, String boxBlock) {
+        if(boxBlock == null || boxBlock.equals(""))
+        {
+			return error(); 
+        }
+    	AjaxResult ajaxResult = AjaxResult.success();
+    	ShipmentDetail shipmentDetail = new ShipmentDetail();
+    	shipmentDetail.setSztp(boxSztp);
+    	shipmentDetail.setBlock(boxBlock);
+    	shipmentDetail.setOpeCode(getUserGroup().getGroupCode());
+    	shipmentDetail.setFe("E");
+    	try {
+    		List<String> bays = catosApiService.getBaysForCarrier(shipmentDetail);
+    		ajaxResult.put("bays", bays);
+		} catch (Exception e) {
+			logger.error("Error when get bays for carrier: " + e);
 			return error();
 		}
     	return ajaxResult;

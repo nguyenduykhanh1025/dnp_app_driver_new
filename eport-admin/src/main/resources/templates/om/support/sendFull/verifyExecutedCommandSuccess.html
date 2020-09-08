@@ -41,18 +41,19 @@
         	    method: "POST",
         	    data: {
         	      processOrderId: processOrderId,
+        	      content: $("#remarkToLogistic").val() != null ? $("#remarkToLogistic").val() : "",
         	    },
         	    success: function (data) {
         	      $.modal.closeLoading();
         	      if (data.code == 0) {
         	    	  parent.msgSuccess("Xác nhận thành công");
         	      } else {
-        	    	  parent.msgError("Xác nhận thất bại.");
+        	    	  parent.msgError("Xác nhận không thành công: không thể tìm kiếm thông tin lệnh đã làm trong hệ thống Catos.Hãy kiểm tra và xác nhận lại");
         	      }
         	      $.modal.close();
         	    },
         	    error: function (data) {
-        	    	parent.msgError("Xác nhận thất bại.");
+        	    	parent.msgError("Xác nhận không thành công: không thể tìm kiếm thông tin lệnh đã làm trong hệ thống Catos.Hãy kiểm tra và xác nhận lại");
         	      $.modal.closeLoading();
               	  $.modal.close();
         	    }
