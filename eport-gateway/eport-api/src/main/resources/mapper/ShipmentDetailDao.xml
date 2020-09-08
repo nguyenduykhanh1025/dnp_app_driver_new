@@ -157,7 +157,7 @@
 	    WHERE PTNR_TYPE = 'SHP' AND PTNR_CODE NOT IN ('000','OWN')
 	</select>
 	
-	<select id="getGroupNameByTaxCode" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentEntity">
+	<select id="getGroupNameByTaxCode" parameterType="String" resultType="vn.com.irtech.api.dto.PartnerInfoDto">
 		SELECT
 	    	ENG_SNM as groupName,
 	    	ADDR as address
@@ -384,7 +384,7 @@
 		WHERE BOOKING_NO = #{bookingNo} AND FE = 'E' AND SZTP2 = #{sztp} AND JOB_ODR_NO2 IS NOT NULL
 	</select>
 	
-	<select id="selectConsigneeTaxCode" parameterType="ShipmentEntity" resultType="vn.com.irtech.api.entity.ShipmentEntity">
+	<select id="selectConsigneeTaxCode" parameterType="PartnerInfoDto" resultType="vn.com.irtech.api.dto.PartnerInfoDto">
 		SELECT
 	    	CONCAT(REG_NO ,CONCAT(': ',ENG_LNM)) as groupName,
 	    	REG_NO AS taxCode
@@ -394,7 +394,6 @@
 			<if test="groupName != null  and groupName != ''"> AND UPPER(CONCAT(REG_NO ,CONCAT(': ',ENG_LNM))) LIKE CONCAT(CONCAT('%', #{groupName}), '%')</if>
 		</where>
 		GROUP BY ENG_LNM, REG_NO
-		<!-- FETCH NEXT #{containerAmount} ROWS ONLY -->
 	</select>
 
 	<select id="getSztpByContainerNoMaster" parameterType="String" resultType="String">
@@ -427,7 +426,7 @@
 		FETCH NEXT 1 ROWS ONLY
 	</select>
 
-	<select id="getConsigneeByTaxCode" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentEntity">
+	<select id="getConsigneeByTaxCode" parameterType="String" resultType="vn.com.irtech.api.dto.PartnerInfoDto">
 		SELECT
 	    	ENG_SNM as groupName,
 	    	ADDR as address

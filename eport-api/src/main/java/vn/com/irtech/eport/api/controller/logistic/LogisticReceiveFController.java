@@ -190,16 +190,6 @@ public class LogisticReceiveFController extends LogisticBaseController {
 			return error("Quý khách chưa nhập số bill.");
 		}
 		
-		// Check tax code 
-		if (StringUtils.isEmpty(shipment.getTaxCode())) {
-			return error("Quý khách chưa nhập mã số thuế.");
-		} else {
-			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
-			if(groupName == null){
-				error("Mã số thuế không tồn tại");
-			}
-		}
-		
 		// check order number
 		if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
 			if (edoHouseBillService.getContainerAmountWithOrderNumber(shipment.getHouseBill(), shipment.getOrderNumber()) == 0) {
@@ -371,7 +361,7 @@ public class LogisticReceiveFController extends LogisticBaseController {
 			shipmentDetail.setDoStatus("N");
 			shipmentDetail.setPreorderPickup("N");
 			shipmentDetail.setFinishStatus("N");
-			shipmentDetail.setTaxCode(taxCode);
+			// shipmentDetail.setTaxCode(taxCode); // FIXME
 			shipmentDetail.setConsigneeByTaxCode(shipmentDetail.getConsignee());
 			if ("VN".equalsIgnoreCase(shipmentDetail.getLoadingPort().substring(0, 2))) {
 				shipmentDetail.setCustomStatus("R");

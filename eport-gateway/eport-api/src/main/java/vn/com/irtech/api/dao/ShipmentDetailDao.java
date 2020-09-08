@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-import vn.com.irtech.api.entity.ProcessOrderEntity;
+import vn.com.irtech.api.dto.PartnerInfoDto;
 import vn.com.irtech.api.entity.ShipmentDetailEntity;
 import vn.com.irtech.api.entity.ShipmentEntity;
 import vn.com.irtech.api.form.BookingInfo;
@@ -37,7 +37,7 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	
 	public List<String> selectOpeCodeList();
 	
-	public ShipmentEntity getGroupNameByTaxCode(String taxCode);
+	public PartnerInfoDto getGroupNameByTaxCode(String taxCode);
 	
 	public List<String> checkContReservedByContainerNos(String[] containerNos);
 	
@@ -78,10 +78,10 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	/**
 	 * Select Consignee And TaxCode List
 	 * 
-	 * @param shipmentEntity
-	 * @return	List<ShipmentEntity>
+	 * @param partnerInfo
+	 * @return	List<PartnerInfoDto>
 	 */
-	public List<ShipmentEntity> selectConsigneeTaxCode(ShipmentEntity shipmentEntity);
+	public List<PartnerInfoDto> selectConsigneeTaxCode(PartnerInfoDto partnerInfo);
 	
 	/**
 	 * Get sztp by container no from table TB_MASTER
@@ -121,7 +121,7 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @param taxCode
 	 * @return ShipmentEntity
 	 */
-	public ShipmentEntity getConsigneeByTaxCode(String taxCode);
+	public PartnerInfoDto getConsigneeByTaxCode(String taxCode);
 	
 	/**
 	 * Get opr code list

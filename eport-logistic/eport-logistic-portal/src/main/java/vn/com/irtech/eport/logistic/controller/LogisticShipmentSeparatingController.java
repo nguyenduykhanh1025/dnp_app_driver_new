@@ -30,8 +30,8 @@ import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 
 @Controller
 @RequestMapping("/logistic/shipmentSeparating")
@@ -107,11 +107,11 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
     edoHouseBill.setHouseBillNo2(req.getHouseBill());
     edoHouseBill.setLogisticGroupId(getUser().getGroupId());
 
-    Shipment shipment = catosApiService.getGroupNameByTaxCode(req.getConsignee2TaxCode());
-    if (shipment == null || shipment.getGroupName() == null) {
+    PartnerInfoDto partner = catosApiService.getGroupNameByTaxCode(req.getConsignee2TaxCode());
+    if (partner == null || partner.getGroupName() == null) {
     	return error("Mã số thuế không tồn tại.");
     }
-    req.setConsignee2(shipment.getGroupName());
+    req.setConsignee2(partner.getGroupName());
     
     if (edoHouseBillService.checkExistHouseBill(edoHouseBill) > 0){
       return error("House bill đã tồn tại, vui lòng nhập giá trị khác!");
@@ -163,15 +163,14 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
   @GetMapping("/consignees")
   @ResponseBody
   public List<JSONObject> getConsignees(String searchKey) {
-	  Shipment shipment = new Shipment();
-	  shipment.setGroupName(searchKey);
-	  shipment.setContainerAmount(10L);
-	  List<Shipment> shipments = catosApiService.getListConsigneeWithTaxCode(shipment);
+	  PartnerInfoDto partnerReq = new PartnerInfoDto();
+	  partnerReq.setGroupName(searchKey);
+	  List<PartnerInfoDto> partners = catosApiService.getListConsigneeWithTaxCode(partnerReq);
 	  List<JSONObject> jsonObjects = new ArrayList<>();
-	  for (Shipment shipment2 : shipments) {
+	  for (PartnerInfoDto partner : partners) {
 		  JSONObject jsonObject = new JSONObject();
-		  jsonObject.put("id", shipment2.getTaxCode());
-		  jsonObject.put("text", shipment2.getGroupName());
+		  jsonObject.put("id", partner.getTaxCode());
+		  jsonObject.put("text", partner.getGroupName());
 		  jsonObjects.add(jsonObject);
 	  }
 	  return jsonObjects;
@@ -180,8 +179,8 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
   @GetMapping("/taxcode/{taxCode}/consignee")
   @ResponseBody
   public AjaxResult getConsgineeByTaxCode(@PathVariable String taxCode) {
-	  Shipment shipment = catosApiService.getGroupNameByTaxCode(taxCode);
-	  if (shipment != null && shipment.getGroupName() != null) {
+	  PartnerInfoDto partner = catosApiService.getGroupNameByTaxCode(taxCode);
+	  if (partner != null && partner.getGroupName() != null) {
 		  return success();
 	  }
 	  return error();
