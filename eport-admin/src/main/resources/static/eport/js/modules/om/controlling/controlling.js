@@ -9,14 +9,14 @@ $( document ).ready(function() {
   $(".main-body").layout();
 
   $(".collapse").click(function () {
-    $(".main-body__search-wrapper").height(15);
+    $(".main-body__search-wrapper").height(0);
     $(".main-body__search-wrapper--container").hide();
     $(this).hide();
     $(".uncollapse").show();
   });
 
   $(".uncollapse").click(function () {
-    $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
+    $(".main-body__search-wrapper").height(SEARCH_HEIGHT + 20);
     $(".main-body__search-wrapper--container").show();
     $(this).hide();
     $(".collapse").show();
