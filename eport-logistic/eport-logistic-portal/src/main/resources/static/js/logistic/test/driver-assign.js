@@ -15,6 +15,15 @@ var toolbar = [
   },
 ];
 
+var addTruck = [
+    {
+        text: '<a href="#" class="btn btn-sm btn-default" style="padding: 2px 3px; border-radius: 0;"><i class="fa fa-plus text-success"></i> Thêm xe</a>',
+        handler: function () {
+          alert("Thêm xe");
+        },
+    }
+]
+
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
     //DEFAULT SEARCH FOLLOW DATE
@@ -273,7 +282,9 @@ function getSelectedShipment() {
 $("#dgShipmentDetail").datagrid({
     toolbar: toolbar,
 });
-$("#driverTable").datagrid({});
+$("#driverTable").datagrid({
+    toolbar: addTruck,
+});
 $("#driverTable2").datagrid({});
 
 function loadShipmentDetail(id) {

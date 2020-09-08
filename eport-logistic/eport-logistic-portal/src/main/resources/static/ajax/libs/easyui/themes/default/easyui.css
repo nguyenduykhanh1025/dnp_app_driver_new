@@ -805,8 +805,8 @@
   filter: none;
 }
 .l-btn-plain {
-  background: transparent;
-  border-width: 0;
+  background: transparent !important;
+  border-width: 0 !important;
   filter: none;
 }
 .l-btn-outline {
@@ -815,12 +815,9 @@
   padding: 0;
 }
 .l-btn-plain:hover {
-  background: #e6e6e6;
-  color: #00438a;
-  border: 1px solid #ddd;
-  -moz-border-radius: 5px 5px 5px 5px;
-  -webkit-border-radius: 5px 5px 5px 5px;
-  border-radius: 5px 5px 5px 5px;
+  background: transparent;
+  border-width: 0;
+  filter: none;
 }
 .l-btn-disabled,
 .l-btn-disabled:hover {
