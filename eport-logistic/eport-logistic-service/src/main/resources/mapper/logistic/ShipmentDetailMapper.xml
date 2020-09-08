@@ -53,7 +53,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="taxCode"    column="tax_code"    />
         <result property="consigneeByTaxCode"    column="consignee_by_tax_code"    />
         <result property="customsNo"    column="customs_no"    />
-        <result property="customScanTime"    column="custom_scan_time"    />
         <result property="contSupplyStatus"    column="cont_supply_status"    />
         <result property="planningDate"    column="planning_date"    />
         <result property="qualityRequirement"    column="quality_requirement"    />
@@ -79,7 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         empty_depot, empty_depot_location, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, 
         pre_pickup_payment_status, custom_status, payment_status, process_status, do_status, do_received_time, 
         user_verify_status, finish_status, status, order_no, tax_code, consignee_by_tax_code, cont_supply_status, 
-        planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, remark, pay_type, payer, payer_name, customs_no, custom_scan_time, create_by, create_time, update_by, update_time from shipment_detail
+        planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, remark, pay_type, payer, payer_name, customs_no, customs_scan_time, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
      <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail
@@ -303,7 +302,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	carrier_name, loading_port, discharge_port, transport_type,
         	empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status,
         	custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, finish_status,
-            cont_supply_status, planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, pay_type, payer, payer_name, customs_no, custom_scan_time, 
+            cont_supply_status, planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, pay_type, payer, payer_name, customs_no, customs_scan_time, 
         	status, remark, create_by, create_time, update_by, update_time from shipment_detail
         <where>  
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
@@ -416,7 +415,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxCode != null and taxCode != ''">tax_code,</if>
             <if test="consigneeByTaxCode != null and consigneeByTaxCode != ''">consignee_by_tax_code,</if>
             <if test="customsNo != null and customsNo != ''">customs_no,</if>
-            <if test="customScanTime != null and customScanTime != ''">custom_scan_time,</if>
+            <if test="customsScanTime != null and customsScanTime != ''">customs_scan_time,</if>
             <if test="contSupplyStatus != null and contSupplyStatus != 'contSupplyStatus'">cont_supply_status,</if>
             <if test="planningDate != null">planning_date,</if>
             <if test="qualityRequirement != null and qualityRequirement != 'qualityRequirement'">quality_requirement,</if>
@@ -478,7 +477,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxCode != null and taxCode != ''">#{taxCode},</if>
             <if test="consigneeByTaxCode != null and consigneeByTaxCode != ''">#{consigneeByTaxCode},</if>
             <if test="customsNo != null and customsNo != ''">#{customsNo},</if>
-            <if test="customScanTime != null and customScanTime != ''">#{customScanTime},</if>
+            <if test="customsScanTime != null and customsScanTime != ''">#{customsScanTime},</if>
             <if test="contSupplyStatus != null and contSupplyStatus != 'contSupplyStatus'">#{contSupplyStatus},</if>
             <if test="planningDate != null">#{planningDate},</if>
             <if test="qualityRequirement != null and qualityRequirement != 'qualityRequirement'">#{qualityRequirement},</if>
@@ -543,7 +542,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxCode != null and taxCode != ''">tax_code = #{taxCode},</if>
             <if test="consigneeByTaxCode != null and consigneeByTaxCode != ''">consignee_by_tax_code = #{consigneeByTaxCode},</if>
             <if test="customsNo != null and customsNo != ''">customs_no = #{customsNo},</if>
-            <if test="customScanTime != null and customScanTime != ''">custom_scan_time = #{customScanTime},</if>
+            <if test="customsScanTime != null and customsScanTime != ''">customs_scan_time = #{customsScanTime},</if>
             <if test="contSupplyStatus != null and contSupplyStatus != 'contSupplyStatus'">cont_supply_status = #{contSupplyStatus},</if>
             <if test="planningDate != null">planning_date = #{planningDate},</if>
             <if test="qualityRequirement != null and qualityRequirement != 'qualityRequirement'">quality_requirement = #{qualityRequirement},</if>
@@ -609,7 +608,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxCode != null and taxCode != ''">tax_code = #{taxCode},</if>
             <if test="consigneeByTaxCode != null and consigneeByTaxCode != ''">consignee_by_tax_code = #{consigneeByTaxCode},</if>
             <if test="customsNo != null and customsNo != ''">customs_no = #{customsNo},</if>
-            <if test="customScanTime != null and customScanTime != ''">custom_scan_time = #{customScanTime},</if>
+            <if test="customsScanTime != null and customsScanTime != ''">customs_scan_time = #{customsScanTime},</if>
             <if test="contSupplyStatus != null and contSupplyStatus != 'contSupplyStatus'">cont_supply_status = #{contSupplyStatus},</if>
             <if test="planningDate != null">planning_date = #{planningDate},</if>
             <if test="qualityRequirement != null and qualityRequirement != 'qualityRequirement'">quality_requirement = #{qualityRequirement},</if>

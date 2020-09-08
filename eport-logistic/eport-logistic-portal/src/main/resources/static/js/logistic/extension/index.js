@@ -502,7 +502,7 @@ function finishForm(result) {
 
 function changeExpiredDem() {
     if (getDataSelectedFromTable()) {
-        $.modal.openCustomForm("Gia hạn lệnh", prefix + "/shipment-detail-ids/" + shipmentDetailIds + "/form", 800, 400);
+        $.modal.openCustomForm("Gia hạn lệnh", prefix + "/shipment-detail-ids/" + shipmentDetailIds + "/form", 600, 400);
     }
 }
 

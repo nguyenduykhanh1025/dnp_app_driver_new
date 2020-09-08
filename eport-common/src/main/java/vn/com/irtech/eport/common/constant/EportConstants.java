@@ -38,8 +38,10 @@ public interface EportConstants {
 	public static final String SHIPMENT_STATUS_SAVE = "2";
 	/** Lo dang trong qua trinh lam lenh*/
 	public static final String SHIPMENT_STATUS_PROCESSING = "3";
+	/** Lo dang trong qua trinh thanh toan*/
+	public static final String SHIPMENT_STATUS_PAYMENT = "4";
 	/** Lo da hoan thanh toan bo container*/
-	public static final String SHIPMENT_STATUS_FINISH = "4";
+	public static final String SHIPMENT_STATUS_FINISH = "5";
 	
 	// Robot Status
 	/** Robot is available */
