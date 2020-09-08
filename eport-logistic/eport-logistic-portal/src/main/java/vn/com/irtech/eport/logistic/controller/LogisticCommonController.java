@@ -52,6 +52,7 @@ import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 
 @Controller
 @RequestMapping("/logistic")
@@ -97,9 +98,9 @@ public class LogisticCommonController extends LogisticBaseController {
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		Shipment shipment = catosApiService.getGroupNameByTaxCode(taxCode);
-		String groupName = shipment.getGroupName();
-		String address = shipment.getAddress();
+		PartnerInfoDto partner = catosApiService.getGroupNameByTaxCode(taxCode);
+		String groupName = partner.getGroupName();
+		String address = partner.getAddress();
 		if (address != null) {
 			ajaxResult.put("address", address);
 		}

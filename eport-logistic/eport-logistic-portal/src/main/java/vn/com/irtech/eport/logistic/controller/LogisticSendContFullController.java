@@ -29,10 +29,8 @@ import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
-import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
-import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -40,9 +38,7 @@ import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
-import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
-import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -76,18 +72,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@Autowired
 	private ICatosApiService catosApiService;
 	
-	@Autowired
-	private IDriverAccountService driverAccountService;
-	
-	@Autowired
-	private IPickupAssignService pickupAssignService;
-	
-//	@Autowired
-//	private INapasApiService napasApiService;
-//	
-//	@Autowired
-//	private ConfigService configService;
-
     @GetMapping()
 	public String sendContFull() {
 		return PREFIX + "/index";
@@ -185,13 +169,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@Transactional
     @ResponseBody
     public AjaxResult addShipment(Shipment shipment) {
-		//check MST 
-		if(shipment.getTaxCode() != null){
-			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
-			if(groupName == null){
-				error("Mã số thuế không tồn tại");
-			}
-		}
 		LogisticAccount user = getUser();
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
@@ -243,13 +220,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@PostMapping("/shipment/{shipmentId}")
     @ResponseBody
     public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
-		//check MST 
-		if(shipment.getTaxCode() != null){
-			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
-			if(groupName == null){
-				error("Mã số thuế không tồn tại");
-			}
-		}
 		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {

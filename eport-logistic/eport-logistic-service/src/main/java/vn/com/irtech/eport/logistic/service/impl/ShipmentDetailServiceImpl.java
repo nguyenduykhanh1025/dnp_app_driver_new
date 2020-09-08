@@ -41,6 +41,7 @@ import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysDictData;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 import vn.com.irtech.eport.system.service.ISysDictTypeService;
 
 
@@ -406,7 +407,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     public ServiceSendFullRobotReq groupShipmentDetailByShiftingContOrder(List<ShipmentDetail> shipmentDetails, Shipment shipment, Boolean isCredit, List<Long> prePickupContIds) {
         ProcessOrder processOrder = new ProcessOrder();
-        processOrder.setTaxCode(shipment.getTaxCode());
+        // FIXME
+        processOrder.setTaxCode(shipmentDetails.get(0).getPayer());
         processOrder.setShipmentId(shipment.getId());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         processOrder.setServiceType(5);
@@ -665,7 +667,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public Shipment getGroupNameByTaxCode(String taxCode) throws Exception {
+    public PartnerInfoDto getGroupNameByTaxCode(String taxCode) throws Exception {
         // String apiUrl = "https://thongtindoanhnghiep.co/api/company/";
         // String methodName = "GET";
         // String readLine = null;
@@ -698,7 +700,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         // return convertedObject.get("Title").toString().replace("\"", "");
         String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/" + taxCode;
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(url, Shipment.class);
+        return restTemplate.getForObject(url, PartnerInfoDto.class);
     }
 
     @Override

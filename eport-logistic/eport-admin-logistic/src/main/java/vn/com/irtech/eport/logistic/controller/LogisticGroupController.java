@@ -33,11 +33,11 @@ import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticDelegated;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
-import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
 import vn.com.irtech.eport.logistic.service.ILogisticDelegatedService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 
 /**
  * Logistic GroupController
@@ -259,9 +259,9 @@ public class LogisticGroupController extends BaseController
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		Shipment shipment = catosApiService.getGroupNameByTaxCode(taxCode);
-		String groupName = shipment.getGroupName();
-		String address = shipment.getAddress();
+		PartnerInfoDto partner = catosApiService.getGroupNameByTaxCode(taxCode);
+		String groupName = partner.getGroupName();
+		String address = partner.getAddress();
 		if (address != null) {
 			ajaxResult.put("address", address);
 		}
@@ -280,9 +280,9 @@ public class LogisticGroupController extends BaseController
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		Shipment shipment = catosApiService.getConsigneeNameByTaxCode(taxCode);
-		String groupName = shipment.getGroupName();
-		String address = shipment.getAddress();
+		PartnerInfoDto partner = catosApiService.getConsigneeNameByTaxCode(taxCode);
+		String groupName = partner.getGroupName();
+		String address = partner.getAddress();
 		if (address != null) {
 			ajaxResult.put("address", address);
 		}

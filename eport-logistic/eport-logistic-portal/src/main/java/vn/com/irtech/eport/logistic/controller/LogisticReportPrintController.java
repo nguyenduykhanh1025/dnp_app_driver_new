@@ -1,6 +1,5 @@
 package vn.com.irtech.eport.logistic.controller;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -217,10 +216,10 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
 		if(shipmentDetails.size() > 0 && shipment != null) {
 			final Map<String, Object> parameters = new HashMap<>();
-			parameters.put("customer", shipment.getGroupName());
-			parameters.put("mst", shipment.getTaxCode());
 			parameters.put("shipmentId", shipment.getId());
-			parameters.put("address", shipment.getAddress());
+			parameters.put("customer", ""); // FIXME	Payer
+			parameters.put("mst", "");	// FIXME		Taxcode
+			parameters.put("address", "");  // FIXME	Payer Address
 			parameters.put("list", shipmentDetails);
 //			try {
 //				File file = new File("target/classes/static/img/logo_gray.jpeg");

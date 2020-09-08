@@ -19,6 +19,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.BookingInfo;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 @Service
 public class CatosApiServiceImpl implements ICatosApiService {
 	
@@ -33,12 +34,12 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	}
 
 	@Override
-	public Shipment getGroupNameByTaxCode(String taxCode) {
+	public PartnerInfoDto getGroupNameByTaxCode(String taxCode) {
     	String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/"+taxCode;
 		logger.debug("Call CATOS API :{}", url);
 		RestTemplate restTemplate = new RestTemplate();
-		Shipment shipment = restTemplate.getForObject(url, Shipment.class);
-		return  shipment;
+		PartnerInfoDto result = restTemplate.getForObject(url, PartnerInfoDto.class);
+		return  result;
 	}
 
 	@Override
@@ -489,19 +490,19 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	/**
 	 * Get list consignee with tax code
 	 * 
-	 * @param shipment
+	 * @param partnerReq
 	 * @return	List<shipment>
 	 */
 	@Override
-	public List<Shipment> getListConsigneeWithTaxCode(Shipment shipment) {
+	public List<PartnerInfoDto> getListConsigneeWithTaxCode(PartnerInfoDto partnerReq) {
 		try {
 			String url = Global.getApiUrl() + "/consignee/list";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<Shipment>(shipment);
-			ResponseEntity<List<Shipment>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<Shipment>>() {});
-			List<Shipment> shipments= response.getBody();
-			return shipments;
+			HttpEntity httpEntity = new HttpEntity<PartnerInfoDto>(partnerReq);
+			ResponseEntity<List<PartnerInfoDto>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<PartnerInfoDto>>() {});
+			List<PartnerInfoDto> partners= response.getBody();
+			return partners;
 		} catch (Exception e) {
 			logger.error("Error while call CATOS Api", e);
 			e.printStackTrace();
@@ -613,12 +614,12 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	 * @return Shipment
 	 */
 	@Override
-	public Shipment getConsigneeNameByTaxCode(String taxCode) {
+	public PartnerInfoDto getConsigneeNameByTaxCode(String taxCode) {
 		String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeNameByTaxCode/"+taxCode;
 		logger.debug("Call CATOS API :{}", url);
 		RestTemplate restTemplate = new RestTemplate();
-		Shipment shipment = restTemplate.getForObject(url, Shipment.class);
-		return  shipment;
+		PartnerInfoDto partner = restTemplate.getForObject(url, PartnerInfoDto.class);
+		return  partner;
 	}
 	
 	/**

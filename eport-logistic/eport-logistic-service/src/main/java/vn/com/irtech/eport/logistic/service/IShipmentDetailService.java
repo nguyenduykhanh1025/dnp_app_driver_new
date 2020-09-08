@@ -9,7 +9,7 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
-import vn.com.irtech.eport.logistic.form.ShipmentForm;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 
 /**
  * Shipment DetailsService Interface
@@ -99,7 +99,7 @@ public interface IShipmentDetailService
 
 //    public boolean checkCustomStatus(String userVoy,String cntrNo) throws IOException;
 
-    public Shipment getGroupNameByTaxCode(String taxCode) throws Exception;
+    public PartnerInfoDto getGroupNameByTaxCode(String taxCode) throws Exception;
 
     public ProcessOrder getYearBeforeAfter(String vessel, String voyage);
     
