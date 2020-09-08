@@ -861,11 +861,10 @@
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
+  margin-bottom: 5px !important;
   margin: 0;
   padding: 0;
-  -moz-border-radius: 5px 5px 5px 5px;
-  -webkit-border-radius: 5px 5px 5px 5px;
-  border-radius: 5px 5px 5px 5px;
+  border-radius: 0;
 }
 .textbox .textbox-text {
   font-size: 12px;
