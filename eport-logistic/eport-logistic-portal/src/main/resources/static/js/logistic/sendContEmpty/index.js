@@ -10,6 +10,7 @@ var rowAmount = 0;
 var shipmentSearch = new Object;
 shipmentSearch.serviceType = 2;
 var sizeList = [];
+var onChangeFlg = false, currentIndexRow = 0, rejectChange = false;
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
@@ -161,8 +162,8 @@ function loadTable(msg) {
         clientPaging: false,
         pagination: true,
         rownumbers:true,
-        onClickRow: function () {
-            getSelected();
+        onBeforeSelect: function (index, row) {
+            getSelected(index, row);
         },
         pageSize: 50,
         nowrap: false,
@@ -215,26 +216,72 @@ function handleRefresh() {
 }
 
 // HANDLE WHEN SELECT A SHIPMENT
-function getSelected() {
-    var row = $("#dg").datagrid("getSelected");
-    if (row) {
-        shipmentSelected = row;
-        $(function () {
-            var options = {
-                createUrl: prefix + "/shipment/add",
-                updateUrl: prefix + "/shipment/" + shipmentSelected.id,
-                modalName: " Lô"
-            };
-            $.table.init(options);
-        });
-        $("#loCode").text(row.id);
-        $("#taxCode").text(row.taxCode);
-        $("#quantity").text(row.containerAmount);
-        rowAmount = row.containerAmount;
-        checkList = Array(rowAmount).fill(0);
-        sztpListDisable = Array(rowAmount).fill(0);
-        allChecked = false;
-        loadShipmentDetail(row.id);
+function getSelected(index, row) {
+    if (rejectChange) {
+        rejectChange = false;
+        return true;
+    } else {
+        if (onChangeFlg) {
+            layer.confirm("Thông tin khái báo chưa được lưu, quý khách có muốn di chuyển qua trang khác?", {
+                icon: 3,
+                title: "Xác Nhận",
+                btn: ['Đồng Ý', 'Hủy Bỏ']
+            }, function () {
+                layer.close(layer.index);
+                currentIndexRow = index;
+                if (row) {
+                    shipmentSelected = row;
+                    $(function () {
+                        var options = {
+                            createUrl: prefix + "/shipment/add",
+                            updateUrl: prefix + "/shipment/" + shipmentSelected.id,
+                            modalName: " Lô"
+                        };
+                        $.table.init(options);
+                    });
+                    $("#loCode").text(row.id);
+                    $("#taxCode").text(row.taxCode);
+                    $("#quantity").text(row.containerAmount);
+                    rowAmount = row.containerAmount;
+                    checkList = Array(rowAmount).fill(0);
+                    sztpListDisable = Array(rowAmount).fill(0);
+                    allChecked = false;
+                    loadShipmentDetail(row.id);
+                    onChangeFlg = false;
+                    currentIndexRow = index;
+                }
+                return true;
+            }, function () {
+                layer.close(layer.index);
+                rejectChange = true;
+                $('#dg').datagrid('selectRow', currentIndexRow);
+                return false;
+            });
+        } else {
+            currentIndexRow = index;
+            if (row) {
+                shipmentSelected = row;
+                $(function () {
+                    var options = {
+                        createUrl: prefix + "/shipment/add",
+                        updateUrl: prefix + "/shipment/" + shipmentSelected.id,
+                        modalName: " Lô"
+                    };
+                    $.table.init(options);
+                });
+                $("#loCode").text(row.id);
+                $("#taxCode").text(row.taxCode);
+                $("#quantity").text(row.containerAmount);
+                rowAmount = row.containerAmount;
+                checkList = Array(rowAmount).fill(0);
+                sztpListDisable = Array(rowAmount).fill(0);
+                allChecked = false;
+                loadShipmentDetail(row.id);
+                onChangeFlg = false;
+                currentIndexRow = index;
+            }
+            return true;
+        }
     }
 }
 
@@ -512,6 +559,7 @@ function onChange(changes, source) {
     if (!changes) {
         return;
     }
+    onChangeFlg = true;
     changes.forEach(function (change) {
         if (change[1] == "opeCode") {
             if (change[3] && hot.getDataAtCell(change[0], 3)) {
@@ -714,6 +762,7 @@ function loadShipmentDetail(id) {
                 hot = new Handsontable(dogrid, config);
                 hot.loadData(sourceData);
                 hot.render();
+                onChangeFlg = false;
             }
         },
         error: function (data) {

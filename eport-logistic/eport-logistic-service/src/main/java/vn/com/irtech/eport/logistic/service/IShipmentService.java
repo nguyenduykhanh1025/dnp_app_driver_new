@@ -102,4 +102,12 @@ public interface IShipmentService {
      * getShipmentsForSupportCustom in OM SupportCustomReceiveFull, SupportCustomSendFull
      */
     public List<Shipment> getShipmentsForSupportCustom(Shipment shipment);
+    
+    /**
+     * Select list shipment where shipment detail is exists with condition for extension date
+     * 
+     * @param shipment
+     * @return List shipment object
+     */
+    public List<Shipment> selectShipmentListForExtensionDate(Shipment shipment);
 }

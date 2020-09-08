@@ -165,4 +165,14 @@ public class ShipmentServiceImpl implements IShipmentService {
 		return shipmentMapper.getShipmentsForSupportCustom(shipment);
 	}
 	
+	/**
+     * Select list shipment where shipment detail is exists with condition for extension date
+     * 
+     * @param shipment
+     * @return List shipment object
+     */
+	@Override
+    public List<Shipment> selectShipmentListForExtensionDate(Shipment shipment) {
+		return shipmentMapper.selectShipmentListForExtensionDate(shipment);
+	}
 }

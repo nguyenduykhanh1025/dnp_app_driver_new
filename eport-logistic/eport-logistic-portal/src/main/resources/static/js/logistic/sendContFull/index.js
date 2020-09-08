@@ -11,6 +11,7 @@ var shipmentSearch = new Object;
 shipmentSearch.serviceType = 4;
 var sizeList = [];
 var berthplanList;// get infor
+var onChangeFlg = false, currentIndexRow = 0, rejectChange = false;
 //dictionary sizeList
 $.ajax({
     type: "GET",
@@ -169,8 +170,8 @@ function loadTable(msg) {
         clientPaging: false,
         pagination: true,
         rownumbers:true,
-        onClickRow: function () {
-            getSelected();
+        onBeforeSelect: function (index, row) {
+            getSelected(index, row);
         },
         pageSize: 50,
         nowrap: false,
@@ -245,6 +246,80 @@ function getSelected() {
         sztpListDisable = Array(rowAmount).fill(0);
         allChecked = false;
         loadShipmentDetail(row.id);
+    }
+}
+
+// HANDLE WHEN SELECT A SHIPMENT
+function getSelected(index, row) {
+    if (rejectChange) {
+        rejectChange = false;
+        return true;
+    } else {
+        if (onChangeFlg) {
+            layer.confirm("Thông tin khái báo chưa được lưu, quý khách có muốn di chuyển qua trang khác?", {
+                icon: 3,
+                title: "Xác Nhận",
+                btn: ['Đồng Ý', 'Hủy Bỏ']
+            }, function () {
+                layer.close(layer.index);
+                currentIndexRow = index;
+                if (row) {
+                    shipmentSelected = row;
+                    $(function () {
+                        let options = {
+                            createUrl: prefix + "/shipment/add",
+                            updateUrl: prefix + "/shipment/" + shipmentSelected.id,
+                            modalName: " Lô"
+                        };
+                        $.table.init(options);
+                    });
+                    $("#loCode").text(row.id);
+                    $("#taxCode").text(row.taxCode);
+                    $("#quantity").text(row.containerAmount);
+                    $("#bookingNo").text(row.bookingNo);
+                    rowAmount = row.containerAmount;
+                    checkList = Array(rowAmount).fill(0);
+                    temperatureDisable = Array(rowAmount).fill(1);
+                    sztpListDisable = Array(rowAmount).fill(0);
+                    allChecked = false;
+                    loadShipmentDetail(row.id);
+                    onChangeFlg = false;
+                    currentIndexRow = index;
+                }
+                return true;
+            }, function () {
+                layer.close(layer.index);
+                rejectChange = true;
+                $('#dg').datagrid('selectRow', currentIndexRow);
+                return false;
+            });
+        } else {
+            currentIndexRow = index;
+            if (row) {
+                shipmentSelected = row;
+                $(function () {
+                    let options = {
+                        createUrl: prefix + "/shipment/add",
+                        updateUrl: prefix + "/shipment/" + shipmentSelected.id,
+                        modalName: " Lô"
+                    };
+                    $.table.init(options);
+                });
+                $("#loCode").text(row.id);
+                $("#taxCode").text(row.taxCode);
+                $("#quantity").text(row.containerAmount);
+                $("#bookingNo").text(row.bookingNo);
+                rowAmount = row.containerAmount;
+                checkList = Array(rowAmount).fill(0);
+                temperatureDisable = Array(rowAmount).fill(1);
+                sztpListDisable = Array(rowAmount).fill(0);
+                allChecked = false;
+                loadShipmentDetail(row.id);
+                onChangeFlg = false;
+                currentIndexRow = index;
+            }
+            return true;
+        }
     }
 }
 
@@ -631,6 +706,7 @@ function onChange(changes, source) {
     if (!changes) {
         return;
     }
+    onChangeFlg = true;
     changes.forEach(function (change) {
 
         // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
@@ -882,6 +958,7 @@ function loadShipmentDetail(id) {
                 hot.loadData(sourceData);
                 isDestroy = false;
                 hot.render();
+                onChangeFlg = false;
             }
         },
         error: function (data) {

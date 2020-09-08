@@ -117,7 +117,7 @@ public class LogisticExtensionOrderController extends LogisticBaseController {
 		shipment.setStatus(EportConstants.SHIPMENT_STATUS_PROCESSING);
 		shipment.setEdoFlg("0");
 		shipment.setLogisticGroupId(user.getGroupId());
-		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
+		List<Shipment> shipments = shipmentService.selectShipmentListForExtensionDate(shipment);
 		return getDataTable(shipments);
 	}
 
