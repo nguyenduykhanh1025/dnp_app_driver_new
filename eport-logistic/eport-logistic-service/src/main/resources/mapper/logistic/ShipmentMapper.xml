@@ -345,12 +345,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="referenceNo != null  and referenceNo != ''"> and s.reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and s.status = #{status}</if>
             <if test="remark != null  and remark != ''"> and s.remark = #{remark}</if>
-            <if test="fromDate != null">and s.create_time &gt;= #{fromDate}</if>
-            <if test="toDate != null">and s.create_time &lt;= #{toDate}</if>
+            <if test="params.fromDate != null">and s.create_time &gt;= #{params.fromDate}</if>
+            <if test="params.toDate != null">and s.create_time &lt;= #{params.toDate}</if>
             <if test="params.containerNo != null and params.containerNo != ''">and sh.container_no like concat(concat('%', #{params.containerNo}), '%')</if>
             <if test="params.vslNm != null and params.vslNm != ''">and sh.vsl_nm = #{params.vslNm}</if>
             <if test="params.voyNo != null and params.voyNo != ''">and sh.voy_no = #{params.voyNo}</if>
             <if test="params.doStatus != null and params.doStatus != ''">and sh.do_status = #{params.doStatus}</if>
+            <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
             <if test="params.blOrBooking != null and params.blOrBooking != ''">
                 and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
             </if>

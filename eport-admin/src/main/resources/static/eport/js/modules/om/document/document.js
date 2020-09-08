@@ -382,14 +382,6 @@ function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
-function invoiceNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '--';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (!value) {
@@ -451,12 +443,10 @@ function configHandson() {
         case 14:
           return "Số Tham Chiếu";
         case 15:
-          return "Số Invoice";
-        case 16:
           return "Ghi Chú";
       }
     },
-    colWidths: [ 50, 120, 100, 60, 100, 100, 100, 200, 150, 100, 100, 100, 100, 100, 130, 130, 100],
+    colWidths: [ 50, 120, 100, 60, 100, 100, 100, 200, 150, 100, 100, 100, 100, 100, 130, 100],
     filter: "true",
     columns: [
       {
@@ -523,10 +513,6 @@ function configHandson() {
       {
         data: "orderNo",
         renderer: orderNoRenderer
-      },
-      {
-        data: "invoiceNo",
-        renderer: invoiceNoRenderer
       },
       {
         data: "remark",
