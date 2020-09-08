@@ -426,7 +426,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<select id="selectPickupListByDriverId" parameterType="Long" resultType="vn.com.irtech.eport.logistic.form.Pickup">
 		select p.id as pickupId, p.container_no as containerNo, p.shipment_id as batchCode, p.truck_no as truckNo, 
-		p.status as status, p.chassis_no as chassisNo, s.service_type as serviceType, sh.sztp as sztp
+		p.status as status, p.chassis_no as chassisNo, p.block, p.bay, p.line, p.tier, p.area, s.service_type as serviceType, sh.sztp as sztp
 		from pickup_history p
 		left join shipment s on p.shipment_id = s.id
 		left join shipment_detail sh on p.shipment_detail_id = sh.id
