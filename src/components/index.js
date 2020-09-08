@@ -13,7 +13,7 @@ import { Modal } from './modal';
 import MenuItem from './menuitem';
 import { HeaderPopUp, HeaderList, HeaderSearch } from './header';
 import { DanhSach } from './danhsach';
-import Checkbox from './checkbox';
+import Checkbox from './checkbox/checkbox'
 import { FlashMessage, ErrorMessage } from './flashmessage';
 import { LoadingBase } from './loading';
 import TextDuo from './TextDuo';

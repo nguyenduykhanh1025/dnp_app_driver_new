@@ -39,13 +39,8 @@ import {
     login,
     loginSupplier
 } from '@/modules/auth/action';
-import {
-    Checkbox
-} from '@/components/checkbox';
 import { screen } from '@/utils';
 import {
-    getAccount,
-    getPassword,
     saveAccount,
     savePassword,
     saveToken
@@ -80,8 +75,6 @@ class LoginContainer extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            // loginname: this.props.loginname != undefined || this.props.loginname != null ? this.props.loginname : '',
-            // pwd: this.props.pwd != undefined || this.props.pwd != null ? this.props.pwd : '',
             loginname: '',
             pwd: '',
             showpassword: 1,
@@ -93,10 +86,7 @@ class LoginContainer extends PureComponent {
         this.token = null;
     }
 
-    componentDidMount = async () => {
-        const account = await getAccount();
-        const pwd = await getPassword();
-    }
+    componentDidMount = async () => {}
 
     _saveIP = async (a) => {
         try {

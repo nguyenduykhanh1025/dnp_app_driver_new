@@ -15,6 +15,7 @@ import {
   homeStack,
   mainStack
 } from '@/config/navigator';
+import Toast from 'react-native-tiny-toast'
 import {
   commonStyles,
   sizeHeight,
@@ -76,6 +77,7 @@ export default class DetailScreen extends Component {
   }
 
   onGetTruckList = async () => {
+    Toast.showLoading()
     var token = await getToken()
     const params = {
       api: 'truck',
@@ -85,7 +87,6 @@ export default class DetailScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    // console.log('result', result)
     if (result.code == 0) {
       await this.setState({
         truckNoList: result.data.truckNoList,
@@ -95,31 +96,36 @@ export default class DetailScreen extends Component {
     else {
       Alert.alert('Thông báo!', result.msg)
     }
+    Toast.hide()
   }
 
   onSelectService = async (value) => {
-    switch (value) {
-      case 1:
-        NavigationService.navigate(mainStack.detail1, { serviceType: 1 })
-        break;
-      case 2:
-        NavigationService.navigate(mainStack.detail1, { serviceType: 2 })
-        break;
-      case 3:
-        NavigationService.navigate(mainStack.detail1, { serviceType: 3 })
-        break;
-      case 4:
-        NavigationService.navigate(mainStack.detail1, { serviceType: 4 })
-        break;
-      default:
-        break;
+    if (this.state.truckNoList.length <= 0) {
+      Toast.show('Vui lòng chọn xe để tiếp tục')
+    } else {
+      switch (value) {
+        case 1:
+          NavigationService.navigate(mainStack.detail1, { serviceType: 1 })
+          break;
+        case 2:
+          NavigationService.navigate(mainStack.detail1, { serviceType: 2 })
+          break;
+        case 3:
+          NavigationService.navigate(mainStack.detail1, { serviceType: 3 })
+          break;
+        case 4:
+          NavigationService.navigate(mainStack.detail1, { serviceType: 4 })
+          break;
+        default:
+          break;
+      }
     }
+
   }
 
   render() {
     return (
       <ScrollView style={styles.Container}>
-
         <HeaderMain
           renderLeft={(
             <Image source={lefticon} style={styles.Lefticon} />

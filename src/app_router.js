@@ -1,10 +1,11 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
     View,
     Alert,
     Platform,
     AppState,
     BackHandler,
+    StatusBar,
     DeviceEventEmitter,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -19,7 +20,7 @@ import {
     mainStack,
     homeTab,
 } from '@/config/navigator';
-import { getGPSEnable, getToken, getAccount, getPassword } from '@/stores';
+import { getGPSEnable, getToken } from '@/stores';
 
 import { CheckInternetEvery } from '@/utils';
 import BackgroundTimer from 'react-native-background-timer';
@@ -27,8 +28,8 @@ import PushNotification from 'react-native-push-notification';
 import firebase from 'react-native-firebase';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import * as Actions from '@/modules/notifications/constants';
-import {useDispatch} from 'react-redux';
-import {setNoti} from '@/modules/notifications/action'
+import { useDispatch } from 'react-redux';
+import { setNoti } from '@/modules/notifications/action'
 
 
 class AppAppContainer extends React.Component {
@@ -39,10 +40,11 @@ class AppAppContainer extends React.Component {
             isConnected: true,
             appState: AppState.currentState,
             GPSEnable: false,
+            timerLocation: '',
         };
         this.token = null;
     }
-    
+
 
     checkPermission = async () => {
         const enabled = await firebase.messaging().hasPermission();
@@ -55,8 +57,8 @@ class AppAppContainer extends React.Component {
 
     requestPermission = async () => {
         try {
-          await firebase.messaging().requestPermission();
-          // User has authorised
+            await firebase.messaging().requestPermission();
+            // User has authorised
         } catch (error) {
             // User has rejected permissions
         }
@@ -65,38 +67,22 @@ class AppAppContainer extends React.Component {
     messageListener = async () => {
         this.notificationListener = firebase.notifications().onNotification((notification) => {
             const { title, body } = notification;
-
-            //console.log(notification)
-            //this.showAlert(title, body);
         });
-      
+
         this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
             const { title, body } = notificationOpen.notification;
-            //console.log(notificationOpen.notification)
-            //this.props.dispatch(setNoti(5))
             NavigationService.navigate(homeTab.notification)
         });
-      
+
         const notificationOpen = await firebase.notifications().getInitialNotification();
         if (notificationOpen) {
             const { title, body } = notificationOpen.notification;
-            //this.showAlert(title, body);
+            NavigationService.navigate(homeTab.notification)
         }
-      
+
         this.messageListener = firebase.messaging().onMessage((message) => {
         });
     }
-
-    showAlert = (title, message) => {
-        Alert.alert(
-          title,
-          message,
-          [
-            {text: 'OK', onPress: () => console.log('OK Pressed')},
-          ],
-          {cancelable: false},
-        );
-      }
 
     onPushLocation = async (x, y) => {
         const params = {
@@ -113,50 +99,66 @@ class AppAppContainer extends React.Component {
         console.log('App-router.resultonPushLocation', result)
     }
 
+    getTimerLocation = async () => {
+        const params = {
+            api: 'connection/info',
+            param: '',
+            token: this.token,
+            method: 'GET'
+        }
+        var result = undefined;
+        result = await callApi(params);
+        console.log('resultonGetURLMqtt', result)
+        if (result.code == 0) {
+            this.setState({
+                timerLocation: result.locationUpdatePeriod,
+            })
+        }
+    }
+
     componentDidMount = async () => {
+
         this.checkPermission();
         // Must be outside of any component LifeCycle (such as `componentDidMount`).
         PushNotification.configure({
             // (optional) Called when Token is generated (iOS and Android)
-            onRegister: function (token) {
-            console.log("TOKEN:", token);
-            },
-        
+            onRegister: function (token) { },
+
             // (required) Called when a remote is received or opened, or local notification is opened
             onNotification: (notification) => {
-            //this.props.dispatch(setNoti(5))
-            //console.log("NOTIFICATION:", notification);
-            //NavigationService.navigate(homeTab.notification)
-        
-            // process the notification
-        
-            // (required) Called when a remote is received or opened, or local notification is opened
-            //notification.finish(PushNotificationIOS.FetchResult.NoData);
+                //this.props.dispatch(setNoti(5))
+                console.log("NOTIFICATION:", notification);
+                NavigationService.navigate(homeTab.notification)
+
+                // process the notification
+
+                // (required) Called when a remote is received or opened, or local notification is opened
+                //notification.finish(PushNotificationIOS.FetchResult.NoData);
             },
-        
+
             // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
             onAction: function (notification) {
-            console.log("ACTION:", notification.action);
-            console.log("NOTIFICATION:", notification);
-            // process the action
+                console.log("ACTION:", notification.action);
+                console.log("NOTIFICATION:", notification);
+                // process the action
             },
-        
+
             // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
-            onRegistrationError: function(err) {
-            console.error(err.message, err);
+            onRegistrationError: function (err) {
+                console.error(err.message, err);
             },
-        
+
             // IOS ONLY (optional): default: all - Permissions to register.
             permissions: {
-            alert: true,
-            badge: true,
-            sound: true,
+                alert: true,
+                badge: true,
+                sound: true,
             },
-        
+
             // Should the initial notification be popped automatically
             // default: true
             popInitialNotification: true,
-        
+
             /**
              * (optional) default: true
              * - Specified if permissions (ios) and token (android and ios) will requested or not,
@@ -173,6 +175,12 @@ class AppAppContainer extends React.Component {
         CheckInternetEvery();
         // var GPSEnable = await getGPSEnable();
         // console.log('GPSEnable', GPSEnable)
+
+        // get time send location
+        { this.token != null ? this.getTimerLocation() : null }
+
+        /*---------------------------------------------*/
+
         Geolocation.setRNConfiguration({
             authorizationLevel: 'always'
         });
@@ -244,14 +252,14 @@ class AppAppContainer extends React.Component {
                 this.onPushLocation(x, y)
                 :
                 null
-        },
-            120000);
+        }, this.state.timerLocation == '' ? 120000 : Number(this.state.timerLocation));
         // }
     }
 
     componentWillMount() {
         PushNotification.popInitialNotification(notification => {
-            // console.log('Initial notification: ', notification);
+            console.log('Initial notification: ', notification);
+
         });
         LocationServicesDialogBox.stopListener()
     }
@@ -259,6 +267,7 @@ class AppAppContainer extends React.Component {
     render() {
         return (
             <View style={{ flex: 1 }}>
+                <StatusBar barStyle="dark-content" />
                 <AppContainer
                     ref={navigatorRef => {
                         NavigationService.setTopLevelNavigator(navigatorRef);
@@ -279,3 +288,4 @@ const mapStateToProps = state => {
 export default compose(
     connect(mapStateToProps),
 )(AppAppContainer);
+

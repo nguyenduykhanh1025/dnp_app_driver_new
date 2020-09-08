@@ -30,6 +30,13 @@
             {
               "client_id": "202345796819-tiavn49u5ftiiel7plj4igpc7avvb01s.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "202345796819-3dmhr16i29mqek2ts4107vpecldpnt4h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "vn.com.irtech.mobile.eport.driver"
+              }
             }
           ]
         }

@@ -2,7 +2,7 @@ import { fromJS } from 'immutable';
 
 import * as types from './constants';
 // import appState from '../contants/initialState';
-import { getAccount, getPassword, getUserID } from '@/stores';
+import { getUserID } from '@/stores';
 import { FlashMessage } from '@/components';
 
 const login = fromJS({

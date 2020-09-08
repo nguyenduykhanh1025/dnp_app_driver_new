@@ -18,6 +18,7 @@ export const sizes = {
     h1: sizeWidth(6.5),
     h2: sizeWidth(5.93),
     h3: sizeWidth(4.97),
+    h35: sizeWidth(4.0),
     h4: sizeWidth(3.7),
     h5: sizeWidth(2.8),
     h6: sizeWidth(2.13),

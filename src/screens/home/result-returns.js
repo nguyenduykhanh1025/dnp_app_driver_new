@@ -59,7 +59,7 @@ export default class ResultScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    console.log('resultonGetDetailInfo', result)
+    // console.log('resultonGetDetailInfo', result)
     if (result.code == 0) {
       await this.setState({
         data: result.data
@@ -146,12 +146,15 @@ export default class ResultScreen extends Component {
             paddingVertical: 2
           }}>{
             this.state.data.status == 0 ?
-              'Sẵn sàng'
+              'Chưa có tọa độ'
               :
               this.state.data.status == 1 ?
-                'Gate in'
+                'Sẵn sàng'
                 :
-                ''
+                this.state.data.status == 2 ?
+                  'Gate in'
+                  :
+                  ''
           }</Text>
       </View>
     )
@@ -180,26 +183,19 @@ export default class ResultScreen extends Component {
                 height: sizeHeight(20),
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginTop: sizeHeight(2)
+                marginTop: - sizeHeight(1)
               }}>
               <View style={styles.frame}>
                 <View style={{
-                  width: ws(170),
-                  height: hs(106),
-                  marginLeft: ws(26),
-                  marginRight: ws(32),
+                  flexDirection: 'column',
                 }}>
-                  <View style={{
-                    flexDirection: 'column',
-                    // marginLeft: sizeWidth(5)
-                  }}>
+                  {this.props.navigation.state.params.serviceType ?
                     <Text
                       style={{
                         fontSize: fs(16),
                         color: Colors.white,
                         fontWeight: 'bold',
-                        marginTop: hs(31),
-                        width: ws(345),
+                        textAlign: 'left',
                       }}>
                       {
                         this.props.navigation.state.params.serviceType == 1 ?
@@ -216,119 +212,124 @@ export default class ResultScreen extends Component {
                                 :
                                 ''
                       }
-                    </Text>
+                    </Text> : null
+                  }
+                  <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: ws(320),
+                  }}>
                     <View style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      width: ws(320),
+                      width: ws(150),
                     }}>
-                      <View style={{
-                        width: ws(150)
-                      }}>
-                        <View style={styles.frame1}>
-                          <Text style={styles.txtLabel}>Xe</Text>
-                          <Text style={styles.txtValue}>{this.state.data.truckNo}</Text>
-                        </View>
-                        <View style={styles.frame1}>
-                          <Text style={styles.txtLabel}>ML</Text>
-                          <Text style={styles.txtValue}>{this.state.data.batchId}</Text>
-                        </View>
-                        <View style={styles.frame1}>
-                          <Text style={styles.txtLabel}></Text>
-                          <Text style={styles.txtValue}></Text>
-                        </View>
+                      <View style={styles.frame1}>
+                        <Text style={styles.txtLabel}>Cont</Text>
+                        <Text style={styles.txtValue}>{this.state.data.containerNo}</Text>
                       </View>
-                      <View style={{
-                        marginRight: ws(18),
-                        width: ws(150),
-                      }}>
-                        <View style={styles.frame1}>
-                          <Text style={styles.txtLabel}>Đầu kéo</Text>
-                          <Text style={styles.txtValue}>{this.state.data.chassisNo}</Text>
-                        </View>
-                        <View style={styles.frame1}>
-                          <Text style={styles.txtLabel}>Size</Text>
-                          <Text style={styles.txtValue}>{this.state.data.sztp}</Text>
-                        </View>
-                        <View style={styles.frame1}>
-                          <Text style={styles.txtLabel}>Cont</Text>
-                          <Text style={styles.txtValue}>{this.state.data.containerNo}</Text>
-                        </View>
+                      <View style={styles.frame1}>
+                        <Text style={[styles.txtLabel]}>T/L</Text>
+                        <Text style={styles.txtValue}>{this.state.data.wgt}</Text>
                       </View>
+                      <View style={styles.frame1}>
+                        <Text style={[styles.txtLabel]}>Xe</Text>
+                        <Text style={styles.txtValue}>{this.state.data.truckNo}</Text>
+                      </View>
+                      {/* <View style={styles.frame1}>
+                        <Text style={styles.txtLabel}></Text>
+                        <Text style={styles.txtValue}></Text>
+                      </View> */}
                     </View>
+                    <View style={{
+                      marginRight: ws(18),
+                      width: ws(150),
+                    }}>
+                      <View style={styles.frame1}>
+                        <Text style={styles.txtLabel}></Text>
+                        <Text style={styles.txtValue}></Text>
+                      </View>
+                      <View style={styles.frame1}>
+                        <Text style={styles.txtLabel}>Kích thước</Text>
+                        <Text style={styles.txtValue}>{this.state.data.sztp}</Text>
+                      </View>
+                      <View style={styles.frame1}>
+                        <Text style={styles.txtLabel}>Loại hàng</Text>
+                        <Text style={styles.txtValue}>{this.state.data.cargoType}</Text>
+                      </View>
 
+                    </View>
                   </View>
-                </View>
-                <View style={{}}>
 
                 </View>
               </View>
-            </View>
-            <View
-              style={{
-                height: hs(110),
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: hs(25)
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-around',
-                  width: sizeWidth(96),
-                }}>
-                <View style={styles.frame2}>
-                  <Text style={[
-                    styles.txtLabel,
-                    {
-                      width: null
-                    }]}>
-                    Position
-                  </Text>
-                  <Text style={styles.txtValue1}>{this.state.data.yardPosition}</Text>
-                </View>
-                <View style={styles.frame2}>
-                  <Text style={[styles.txtLabel, { width: null }]}>Gate Pass</Text>
-                  <Text style={styles.txtValue1}>{this.state.data.gatePass}</Text>
-                </View>
+              <View style={{}}>
+
               </View>
             </View>
-            <View style={{
-              marginTop: sizeHeight(2.5),
+          </View>
+          <View
+            style={{
+              height: hs(110),
               alignItems: 'center',
               justifyContent: 'center',
-              marginBottom: sizeHeight(5)
+              marginTop: hs(25)
             }}>
-              <View style={{
-                flexDirection: 'column',
-                width: ws(333),
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-around',
+                width: sizeWidth(96),
               }}>
-                <Text style={{
-                  fontSize: fs(16),
-                  color: '#15307A',
-                  fontWeight: 'bold',
-                  marginBottom: hs(25),
-                }}>
-                  Thông tin khác
+              <View style={styles.frame2}>
+                <Text style={[
+                  styles.txtLabel,
+                  {
+                    width: null, fontSize: fs(17), marginTop: -hs(5), marginBottom: hs(10)
+                  }]}>
+                  Position
+                  </Text>
+                <Text style={styles.txtValue1}>{this.state.data.yardPosition}</Text>
+              </View>
+              <View style={styles.frame2}>
+                <Text style={[styles.txtLabel, { width: null, fontSize: fs(17), marginTop: -hs(5), marginBottom: hs(10) }]}>Gate Pass</Text>
+                <Text style={styles.txtValue1}>{this.state.data.gatePass}</Text>
+              </View>
+            </View>
+          </View>
+          <View style={{
+            marginTop: sizeHeight(2.5),
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: sizeHeight(5)
+          }}>
+            <View style={{
+              flexDirection: 'column',
+              width: ws(333),
+            }}>
+              <Text style={{
+                fontSize: fs(16),
+                color: '#15307A',
+                fontWeight: 'bold',
+                marginBottom: hs(25),
+              }}>
+                Thông tin chi tiết
                 </Text>
-                <View style={styles.Line}>
-                  <Text style={styles.txtLabel1} >Khách hàng</Text>
-                  <Text style={styles.txtValue2}>{this.state.data.consignee}</Text>
-                </View>
-                <View style={styles.Line}>
-                  <Text style={styles.txtLabel1} >Địa chỉ</Text>
-                  <Text style={styles.txtValue2}>{this.state.data.address}</Text>
-                </View>
-                <View style={styles.Line}>
-                  <Text style={styles.txtLabel1} >Điện thoại</Text>
-                  <Text style={styles.txtValue2}>{this.state.data.mobileNumber}</Text>
-                </View>
-                <View style={styles.Line}>
-                  <Text style={styles.txtLabel1} >Ghi chú</Text>
-                  <Text style={[styles.txtValue2, { fontSize: 15, fontWeight: null }]}>{this.state.data.remark}</Text>
-                </View>
+              <View style={styles.Line}>
+                <Text style={styles.txtLabel1} >Khách hàng</Text>
+                <Text style={styles.txtValue2}>{this.state.data.consignee}</Text>
+              </View>
+              <View style={styles.Line}>
+                <Text style={styles.txtLabel1} >Đ/c giao</Text>
+                <Text style={styles.txtValue2}>{this.state.data.address}</Text>
+              </View>
+              <View style={styles.Line}>
+                <Text style={styles.txtLabel1} >ĐT giao</Text>
+                <Text style={styles.txtValue2}>{this.state.data.mobileNumber}</Text>
+              </View>
+              <View style={styles.Line}>
+                <Text style={styles.txtLabel1} >Ghi chú</Text>
+                <Text style={[styles.txtValue2, { fontSize: 15, fontWeight: null }]}>{this.state.data.remark}</Text>
               </View>
             </View>
           </View>
@@ -341,6 +342,7 @@ export default class ResultScreen extends Component {
                 }}
               >
                 <Button
+                  styleBtn={{ fontSize: fs(22)}}
                   value={
                     this.state.data.status == 0 ?
                       'Hủy'
@@ -419,6 +421,7 @@ const styles = StyleSheet.create({
     height: hs(156),
     marginTop: hs(20),
     backgroundColor: Colors.blue,
+    flexDirection: 'column',
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: {
@@ -429,7 +432,8 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
     elevation: 2,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   image: {
     width: ws(106.03),
@@ -441,8 +445,8 @@ const styles = StyleSheet.create({
     fontSize: fs(13),
     color: Colors.tinyTextGrey,
     marginBottom: hs(5),
-    marginRight: ws(4),
-    width: ws(42)
+    // width: ws(50)
+    marginRight: ws(10)
   },
   txtValue: {
     fontSize: fs(15),
@@ -469,7 +473,7 @@ const styles = StyleSheet.create({
   txtLabel1: {
     fontSize: fs(14),
     color: Colors.tinyTextGrey,
-    width: ws(73),
+    width: ws(85),
     marginRight: ws(19),
   },
   txtValue2: {

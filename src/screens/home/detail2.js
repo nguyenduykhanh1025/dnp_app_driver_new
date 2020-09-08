@@ -64,6 +64,7 @@ export default class DetailScreen extends Component {
   }
 
   renderItem = (item, index) => (
+    console.log('item',item),
     <Item
       data={item.item}
     />
@@ -136,7 +137,7 @@ export default class DetailScreen extends Component {
                 </View>
               </View>
             </View>
-            <Text style={styles.TitleLine}>Cont</Text>
+            <Text style={styles.TitleLine}> </Text>
             {/*
   ---------------------------------------------------- 
  */}

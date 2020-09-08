@@ -20,6 +20,7 @@ import { righticon } from '@/assets/icons';
 export default class Item extends Component {
   render() {
     var { data, onPress } = this.props;
+    console.log(data)
     return (
       <TouchableOpacity onPress={onPress}>
         <View style={styles.Container}>
@@ -30,20 +31,7 @@ export default class Item extends Component {
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}>
-                  <Text style={[styles.TextLabel, { width: ws(32) }]}>
-                    Mã lô
-                  </Text>
-                  <Text style={styles.TextValue1}>
-                    {data.batchId}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.Line}>
-                <View style={{
-                  flexDirection: 'row',
-                  alignItems: 'center'
-                }}>
-                  <Text style={[styles.TextLabel, { width: ws(32) }]}>
+                  <Text style={[styles.TextLabel]}>
                     Số bill
                   </Text>
                   <Text style={styles.TextValue2}>
@@ -54,36 +42,35 @@ export default class Item extends Component {
               <View style={styles.Line}>
                 <View style={{
                   flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <Text style={[styles.TextLabel,{ width: ws(70)}]}>
+                    Chủ hàng
+                  </Text>
+                  <Text style={styles.TextValue2}>
+                    {data.consignee}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.Line}>
+                <View style={{
+                  flexDirection: 'row',
                   alignItems: 'center',
                 }}>
-                  <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                  }}>
-                    <Text style={styles.TextLabel}>
-                      FE
+                  <View style={styles.rowline}>
+                    <Text style={[styles.TextLabel]}>Mã lô</Text>
+                    <Text style={styles.TextValue1}>
+                      {data.batchId}
                     </Text>
+                  </View>
+                  <View style={styles.rowline}>
+                    <Text style={styles.TextLabel, { width: ws(30) }}>FE</Text>
                     <Text style={styles.TextValue2}>
                       {data.fe}
                     </Text>
                   </View>
-                  {/* <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                  }}>
-                    <Text style={styles.TextLabel}>
-                      SizeType
-                    </Text>
-                    <Text style={styles.TextValue2}>
-                      {data.sztp}
-                    </Text>
-                  </View> */}
-                  <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                  }}>
-                    <Text style={styles.TextLabel}>
+                  <View style={styles.rowline}>
+                    <Text style={[styles.TextLabel, { width: ws(60) }]}>
                       Số lượng
                     </Text>
                     <Text style={[styles.TextValue2, { width: ws(140) }]}>
@@ -93,7 +80,7 @@ export default class Item extends Component {
                 </View>
               </View>
             </View>
-            <Image source={righticon} style={styles.righticon} />
+            { <Image source={righticon} style={styles.righticon} /> }
           </View>
         </View>
       </TouchableOpacity>
@@ -106,6 +93,11 @@ const styles = StyleSheet.create({
     width: ws(375),
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  rowline: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
   ItemContainer: {
     width: ws(345),
@@ -134,16 +126,17 @@ const styles = StyleSheet.create({
   },
   LeftView: {
     flexDirection: 'column',
-    marginLeft: ws(25),
+    marginLeft: ws(15),
     justifyContent: 'space-between'
   },
   Line: {
-    width: ws(270)
+    width: ws(275)
   },
   TextLabel: {
     fontSize: fs(13),
     color: Colors.tinyTextGrey,
-    marginRight: ws(18),
+    marginRight: ws(7),
+    width: ws(40)
   },
   TextValue1: {
     fontSize: fs(15),

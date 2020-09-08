@@ -24,7 +24,7 @@ export default class HeaderMain extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      labels: ["Chọn xe", "Chọn lệnh", "Hoàn thành"],
+      labels: ["Chọn xe", "Chọn container", "Hoàn thành"],
     }
   }
 

@@ -30,6 +30,7 @@ import {
   down_arrow,
   cont2_icon,
   cont3_icon,
+  command_icon,
   cont4_icon,
   cont5_icon
 } from '@/assets/icons'
@@ -39,10 +40,12 @@ import { getToken, saveUpEnable, saveDownEnable } from '@/stores';
 import { hasSystemFeature } from 'react-native-device-info';
 import Toast from 'react-native-tiny-toast';
 import { update } from 'immutable';
-
+import { DropDownProfile } from '@/components'
 const icUser = require('@/assets/icons/account/user.png')
 const icCont1 = require('@/assets/icons/cont2_icon.png')
-const icCont2 = require('@/assets/icons/cont4_icon.png')
+const icCont2 = require('@/assets/icons/cont3_icon.png')
+const icCont3 = require('@/assets/icons/cont4_icon.png')
+const icCont4 = require('@/assets/icons/cont5_icon.png')
 
 export default class HomeScreen extends Component {
   constructor(props) {
@@ -50,6 +53,8 @@ export default class HomeScreen extends Component {
     this.state = {
       PickupList: [],
       HistoryList: [],
+      dataTruckNo: [],
+      dataNoList: [],
       pageNum: 1,
       pageSize: 10,
       truckNo: '',
@@ -162,6 +167,8 @@ export default class HomeScreen extends Component {
     if (result.code == 0) {
       await this.setState({
         userName: result.data.driverName,
+        dataTruckNo: result.data.truckNoList,
+        dataNoList: result.data.chassisNoList,
       })
     }
     else {
@@ -267,21 +274,16 @@ export default class HomeScreen extends Component {
                 </View>
               </View>
             </View>
-            {
-              !this.state.PickupList.length < 1 ?
-                <TouchableOpacity
-                  onPress={() => {
-                    this.onGoCheckIn()
-                  }}
-                >
-                  <View style={styles.HeaderButton}>
-                    <Text style={styles.HeaderButtonText}>Check in</Text>
-                  </View>
-                </TouchableOpacity>
-                :
-                null
-            }
-
+            {!this.state.PickupList.length < 1 ?
+              <TouchableOpacity
+                onPress={() => {
+                  this.onGoCheckIn()
+                }}
+              >
+                <View style={styles.HeaderButton}>
+                  <Text style={styles.HeaderButtonText}>Check in</Text>
+                </View>
+              </TouchableOpacity> : null}
           </View>
           {
             this.state.PickupList.length < 1 ?
@@ -290,7 +292,15 @@ export default class HomeScreen extends Component {
                 alignItems: 'center',
               }}>
                 <View style={styles.PortersTagEmpty}>
-                  <Text>Bạn chưa nhận cont nào!</Text>
+                  <Text style={styles.txtEmpty}>Hãy chọn nhận cuốc</Text>
+                  <Text style={styles.txtEmpty}>để bắt đầu giao nhận container!</Text>
+                  <View style={styles.bgRound}>
+                    <Image
+                      source={command_icon}
+                      style={[styles.iconBgRound]}
+                      resizeMode='contain'
+                    />
+                  </View>
                 </View>
               </View>
               :
@@ -299,12 +309,26 @@ export default class HomeScreen extends Component {
                   <View style={styles.LicensePlateTag}>
                     <View style={styles.LicensePlate}>
                       <Text style={styles.LicensePlateTextUp}>Biển số xe đầu kéo</Text>
-                      <Text style={styles.LicensePlateTextDown}>{this.state.truckNo}</Text>
+                      <DropDownProfile
+                        line
+                        data={this.state.dataTruckNo}
+                        style={styles.dropdownStyle}
+                        PickerStyle={styles.pickerStyle}
+                        onSelect={(item) => { this.setState({ truckNo: item }) }}
+                      />
+                      {/* <Text style={styles.LicensePlateTextDown}>{this.state.truckNo}</Text> */}
                     </View>
                     <View style={styles.LicensePlateLine} />
                     <View style={styles.LicensePlate}>
                       <Text style={styles.LicensePlateTextUp}>Biển số xe Romooc</Text>
-                      <Text style={styles.LicensePlateTextDown}>{this.state.chassisNo}</Text>
+                      <DropDownProfile
+                        line
+                        data={this.state.dataNoList}
+                        style={styles.dropdownStyle}
+                        PickerStyle={[styles.pickerStyle]}
+                        onSelect={(item) => { this.setState({ chassisNo: item }) }}
+                      />
+                      {/* <Text style={styles.LicensePlateTextDown}>{this.state.chassisNo}</Text> */}
                     </View>
                   </View>
                 </View>
@@ -371,10 +395,13 @@ export default class HomeScreen extends Component {
                             <View style={styles.PorterItemContainer}>
                               <View style={styles.PorterItemLeft}>
                                 {
-                                  item.serviceType % 2 == 0 ?
-                                    <Image source={icCont2} style={styles.PorterIcon} />
-                                    :
+                                  item.serviceType == 1 ?
                                     <Image source={icCont1} style={styles.PorterIcon} />
+                                    : item.serviceType == 2 ?
+                                      <Image source={icCont4} style={styles.PorterIcon} />
+                                      : item.serviceType == 3 ?
+                                        <Image source={icCont3} style={styles.PorterIcon} />
+                                        : <Image source={icCont2} style={styles.PorterIcon} />
                                 }
                               </View>
                               <View style={styles.PorterItemRight}>
@@ -384,7 +411,7 @@ export default class HomeScreen extends Component {
                                 </View>
                                 <View style={[styles.PorterItemRightDown, { marginTop: hs(10) }]}>
                                   <View style={styles.PorterItemRightUp}>
-                                    <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
+                                    <Text style={styles.PorterItemLabel}>Kích cỡ:</Text>
                                     <Text style={styles.PorterItemValue}>{item.sztp}</Text>
                                   </View>
                                   <Text style={styles.PorterItemRightDownStatus}>{
@@ -458,6 +485,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white
   },
+  pickerStyle: {
+    width: ws(148),
+    color: Colors.blue,
+    fontFamily: null,
+    fontSize: fs(20),
+    fontWeight: 'bold',
+  },
   Header: {
     width: ws(375),
     height: hs(37),
@@ -480,6 +514,21 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: Colors["FFAA00"],
     marginRight: ws(20)
+  },
+  bgRound: {
+    width: ws(70),
+    height: ws(70),
+    borderRadius: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.maincolor,
+    borderWidth: ws(5), borderColor:
+      Colors.bgGrey
+  },
+  iconBgRound: {
+    width: ws(42),
+    height: hs(28),
+    tintColor: Colors.white
   },
   HeaderIcon: {
     backgroundColor: Colors.white,
@@ -574,16 +623,20 @@ const styles = StyleSheet.create({
   },
   PortersTagEmpty: {
     width: ws(345),
-    height: hs(52),
-    backgroundColor: 'rgba(255, 15, 15, 0.24)',
+    height: hs(170),
+    backgroundColor: Colors["E4EBF7"],
     shadowColor: '0px 2px 8px rgba(0, 0, 0, 0.2), 0px 2px 4px rgba(0, 0, 0, 0.05)',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: hs(12),
-    borderColor: 'rgba(255, 15, 15, 0.64)',
     borderWidth: 1,
+    borderColor: Colors["E4EBF7"],
     borderStyle: 'solid'
+  },
+  txtEmpty: {
+    fontSize: sizes.h35,
+    fontWeight: '500'
   },
   PortersHeader: {
     flexDirection: 'column',
@@ -670,8 +723,8 @@ const styles = StyleSheet.create({
     fontFamily: null,
     fontSize: fs(13),
     color: Colors.BAC9F3,
-    width: ws(49),
-    marginRight: ws(9),
+    width: ws(60),
+    marginRight: ws(4),
 
   },
   PorterItemValue: {
@@ -706,5 +759,25 @@ const styles = StyleSheet.create({
     fontSize: fs(18),
     fontWeight: 'bold',
     color: Colors.black,
+  },
+  style_modal_dropdown: {
+    paddingRight: sizeWidth(3)
+  },
+  dropdownStyle: {
+    width: ws(150),
+    height: hs(30)
+  },
+  dropdownTextStyle: {
+    fontSize: sizeWidth(3.5),
+    color: Colors.colorWhite,
+    backgroundColor: Colors.blackColor,
+    fontWeight: 'bold',
+    borderRadius: 10
+  },
+  Picker: {
+    width: ws(315),
+  },
+  DropdownItemText: {
+    fontSize: fs(16)
   },
 })

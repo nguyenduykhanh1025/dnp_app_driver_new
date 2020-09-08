@@ -39,12 +39,13 @@ export default class Button extends Component {
             value,
             style,
             onPress,
+            styleBtn
         } = this.props;
         return (
             <View style={[styles.Container, style]}>
                 <TouchableOpacity onPress={onPress}>
                     <View style={styles.ButtonContainer}>
-                        <Text style={styles.ButtonText}>
+                        <Text style={[styles.ButtonText, styleBtn]}>
                             {value}
                         </Text>
                     </View>

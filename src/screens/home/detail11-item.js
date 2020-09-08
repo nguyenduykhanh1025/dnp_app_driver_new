@@ -24,20 +24,38 @@ export default class Item extends Component {
     return (
       <TouchableOpacity onPress={onPress} disabled={disabled}>
         <View style={styles.Container}>
-          <View style={[styles.ItemContainer, disabled ? { backgroundColor: 'rgba(0, 0, 0, 0.1)' } : null]}>
+          <View style={[styles.ItemContainer, disabled ? { backgroundColor: '#f1f1f1' } : null]}>
             <View style={styles.LeftView}>
               <View style={styles.Line}>
                 <View style={{
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}>
-                  <Text style={[styles.TextLabel, { width: ws(70) }]}>
-                    Số container
+                  <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}>
+                    <Text style={[styles.TextLabel]}>
+                     Số Container
                   </Text>
-                  <Text style={styles.TextValue1}>
-                    {data.containerNo}
-                  </Text>
+                    <Text style={styles.TextValue1}>
+                      {data.containerNo}
+                    </Text>
+                  </View>
+                  <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    left: ws(10)
+                  }}>
+                    <Text style={[styles.TextLabel,{ width: ws(30)}]}>
+                      K/T
+                    </Text>
+                    <Text style={styles.TextValue2}>
+                      {data.sztp}
+                    </Text>
+                  </View>
                 </View>
+
               </View>
               <View style={styles.Line}>
                 <View style={{
@@ -50,33 +68,29 @@ export default class Item extends Component {
                     alignItems: 'center'
                   }}>
                     <Text style={styles.TextLabel}>
-                      Size
+                      Trọng lượng
                     </Text>
                     <Text style={styles.TextValue2}>
-                      {data.sztp}
+                      {data.wgt? data.wgt.toFixed().replace(/\d(?=(\d{3})+(?!\d))/g, '$&,') : ''} {data.wgt? 'Kg' : ''}
                     </Text>
                   </View>
-                  {
-                    data.wgt ?
+                  {/* { data.cargoType ?  */}
                       <View style={{
                         flexDirection: 'row',
                         alignItems: 'center'
                       }}>
-                        <Text style={styles.TextLabel}>
-                          Số booking
+                        <Text style={[styles.TextLabel,{ width: ws(30) ,left: -ws(27)}]}>
+                          L/H
                       </Text>
                         <Text style={styles.TextValue2}>
-                          {data.wgt}
+                          {data.cargoType}
                         </Text>
                       </View>
-                      :
-                      null
-                  }
-
+                      {/* : null } */}
                 </View>
               </View>
             </View>
-            <Image source={righticon} style={styles.righticon} />
+            { disabled ? null : <Image source={righticon} style={styles.righticon} /> }
           </View>
         </View>
       </TouchableOpacity>
@@ -101,7 +115,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
-    elevation: 6,
+    elevation: 1,
     borderRadius: 10,
     marginBottom: hs(13),
     marginTop: hs(2),
@@ -113,11 +127,12 @@ const styles = StyleSheet.create({
   righticon: {
     width: ws(10.29),
     height: ws(18),
-    marginRight: ws(11),
+    right: ws(11),
+    position: 'absolute',
   },
   LeftView: {
     flexDirection: 'column',
-    marginLeft: ws(23),
+    marginLeft: ws(0),
     justifyContent: 'space-between'
   },
   Line: {
@@ -127,6 +142,9 @@ const styles = StyleSheet.create({
     fontSize: fs(13),
     color: Colors.tinyTextGrey,
     marginRight: ws(18),
+    marginVertical: ws(4), 
+    textAlign: 'right',
+    width: ws(80),
   },
   TextValue1: {
     fontSize: fs(15),

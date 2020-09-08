@@ -8,7 +8,7 @@ import {
 
 import { authStack, mainStack, scanQRStack, rootSwitch, carrierStack, supplierStack } from '../../config/navigator';
 import NavigationService from '@/utils/navigation';
-import { saveAccount, savePassword, saveUserID, getAccount, saveName } from '@/stores';
+import { saveAccount, savePassword, saveUserID, saveName } from '@/stores';
 import { ErrorMessage } from '@/components';
 
 function* login(action) {

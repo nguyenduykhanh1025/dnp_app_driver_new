@@ -36,16 +36,6 @@ import {
     sizeHeight,
 } from '@/commons';
 import {
-    login,
-    loginSupplier
-} from '@/modules/auth/action';
-import {
-    Checkbox
-} from '@/components/checkbox';
-import { screen } from '@/utils';
-import {
-    getAccount,
-    getPassword,
     saveAccount,
     savePassword,
     saveToken
@@ -68,9 +58,6 @@ import NavigationService from '@/utils/navigation';
 import {
     callApi
 } from '@/requests';
-import {
-    FaceDetector
-} from 'react-native-camera';
 import Geolocation from '@react-native-community/geolocation';
 
 const ibg = require('@/assets/images/auth_bg.png');
@@ -94,8 +81,6 @@ class LoginContainer extends PureComponent {
     }
 
     componentDidMount = async () => {
-        const account = await getAccount();
-        const pwd = await getPassword();
     }
 
     _saveIP = async (a) => {
@@ -131,7 +116,7 @@ class LoginContainer extends PureComponent {
         const fcmToken = await firebase.messaging().getToken();
         console.log('token', fcmToken)
         const { loginname, pwd } = this.state;
-        if (!loginname == '' || !pwd == '') {
+        if (!loginname == '' && !pwd == '') {
             Toast.showLoading()
             const params = {
                 api: 'login',
@@ -149,8 +134,6 @@ class LoginContainer extends PureComponent {
                 Toast.hide()
                 this.token = result.token;
                 this.onShareLocation()
-                saveAccount(loginname);
-                savePassword(pwd);
                 saveToken(result.token)
                 FlashMessage('Đăng nhập thành công', 'success')
                 NavigationService.navigate(mainStack.home_tab)
@@ -175,9 +158,9 @@ class LoginContainer extends PureComponent {
         });
         Geolocation.getCurrentPosition(
             info => {
-                // Alert.alert('GPS location', JSON.stringify(info))
+                Alert.alert('GPS location', JSON.stringify(info))
                 var GPS = info.coords;
-                // console.log('GPS', GPS)
+                console.log('GPS', GPS)
                 x = GPS.latitude;
                 y = GPS.longitude;
                 speed = GPS.speed;

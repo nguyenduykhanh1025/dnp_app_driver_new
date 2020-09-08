@@ -17,6 +17,7 @@ import {
   mainStack,
   homeTab
 } from '@/config/navigator';
+import Icon from 'react-native-vector-icons/FontAwesome'
 import {
   commonStyles,
   sizeHeight,
@@ -30,6 +31,7 @@ import {
   HeaderMain,
   DropDown,
   Button,
+  Checkbox
 } from '@/components';
 import {
   righticon,
@@ -62,6 +64,9 @@ export default class DetailScreen extends Component {
     this.state = {
       data: [],
       refreshing: false,
+      container: '',
+      douCont: false,
+      cont4: 0,
     };
     this.token = null;
     this.upEnable = null;
@@ -92,12 +97,24 @@ export default class DetailScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    // console.log('resultonGetPickupList', result)
     if (result.code == 0) {
       if (result.data.length > 0) {
         await this.setState({
           data: result.data,
         })
+        const dataCheck = result.data[0].sztp.slice(0, 1)
+        const a = result.data.map(e => e.sztp.slice(0, 1) == dataCheck)
+        const b = a.find(e => e == false)
+        if (b == undefined && dataCheck == '2') {
+          this.setState({ container: 'Container 20' })
+        } else if (b == undefined && dataCheck == '4') {
+          this.setState({ container: 'Container 40' })
+        } else {
+          this.setState({
+            container: 'Container 20/40',
+            douCont: true
+          })
+        }
       }
       else {
         Alert.alert(
@@ -127,7 +144,7 @@ export default class DetailScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    // console.log('resultonAutoPickup', result)
+    console.log('resultonAutoPickup', result)
     if (result.code == 0) {
       // NavigationService.navigate(homeTab.home)
       NavigationService.navigate(mainStack.detail2, {
@@ -157,6 +174,18 @@ export default class DetailScreen extends Component {
     />
   )
 
+  onSelectCont = async () => {
+    this.setState({
+      cont4: (this.state.cont4 + 1) % 2
+    })
+  }
+
+  closePopupCheckBox = async () => {
+    await this.setState({
+      douCont: false,
+    })
+  }
+
   render() {
     return (
       <View style={styles.Container}>
@@ -180,7 +209,9 @@ export default class DetailScreen extends Component {
               />
             }
           >
-            {/* <Text style={styles.TitleLine}>Cont chung</Text> */}
+            <Text style={styles.TextMaster}>Số bill: <Text style={{ color: Colors.subColor, fontWeight: 'bold', }}> {this.props.navigation.state.params.blNo} </Text></Text>
+            <Text style={[styles.TextMaster, { marginTop: hs(5) }]}>Chủ hàng: <Text style={{ color: Colors.subColor, fontWeight: 'bold', }}> {this.props.navigation.state.params.consignee} </Text></Text>
+            <Text style={{ position: 'absolute', right: ws(20), top: hs(20), color: Colors.blue, fontSize: fs(16), fontWeight: 'bold'}}>{this.state.container}</Text>
             {/* <ItemSingle
               data={this.state.data[0]}
               onPress={() => {
@@ -191,7 +222,7 @@ export default class DetailScreen extends Component {
               styles.TitleLine,
               { marginTop: hs(25) }
             ]}>
-              Container chỉ định
+              Danh sách container
           </Text>
             {/*
             ---------------------------------------------------- 
@@ -214,10 +245,14 @@ export default class DetailScreen extends Component {
                 }}
               >
                 <Button
-                  value={'Chọn theo lô'}
+                  value={'Bốc container theo lô'}
                   onPress={
                     () => {
-                      this.onAutoPickup()
+                      if (this.state.douCont == false) {
+                        this.onAutoPickup()
+                      } else {
+                        this.setState({ SelectContainer: true })
+                      }
                     }
                   }
                 />
@@ -226,6 +261,41 @@ export default class DetailScreen extends Component {
               null
           }
         </View>
+        {
+          this.state.douCont ?
+            <View style={{ backgroundColor: 'red', height: hs(812), width: ws(375), position: 'absolute', bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)', }}>
+              <View style={{ backgroundColor: '#fff', height: hs(250), width: ws(375), position: 'absolute', bottom: 0, borderRadius: hs(20), padding: hs(10) }}>
+                <View style={{ flexDirection: 'row' }}>
+                  <TouchableOpacity style={{ width: ws(30), justifyContent: 'center', alignItems: 'center' }} onPress={() => this.closePopupCheckBox()}>
+                    <Icon name='remove' size={fs(25)} color='gray' />
+                  </TouchableOpacity>
+                  <Text style={{ flex: 1, color: Colors.blue, textAlign: 'center', fontSize: fs(16), }}> Chọn Loại Container</Text>
+                </View>
+                <View style={{ padding: hs(25) }}>
+
+                  <TouchableOpacity style={styles.btnCheckBox} onPress={() => this.onSelectCont()}>
+                    <Checkbox
+                      value={1}
+                      onSelect={() => { this.onSelectCont() }}
+                      selectedValue={this.state.cont4}
+                    />
+                    <Text style={styles.textCheckbox}> Container 40 fit </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.btnCheckBox} onPress={() => this.onSelectCont()}>
+                    <Checkbox
+                      value={0}
+                      onSelect={() => { this.onSelectCont() }}
+                      selectedValue={this.state.cont4}
+                    />
+                    <Text style={styles.textCheckbox}> Container 20 fit </Text>
+                  </TouchableOpacity>
+                </View>
+                <Button
+                  value={'Xác nhận'}
+                  onPress={() => { this.onAutoPickup() }}
+                />
+              </View>
+            </View> : null}
       </View>
     )
   }
@@ -241,6 +311,15 @@ const styles = StyleSheet.create({
     height: hs(20),
     marginLeft: ws(36.86)
   },
+  btnCheckBox: {
+    flexDirection: 'row',
+    paddingVertical: hs(10)
+  },
+  textCheckbox: {
+    color: Colors.blue,
+    fontSize: fs(16),
+    fontWeight: 'bold'
+  },
   Body: {
     width: ws(375),
     height: hs(629),
@@ -252,6 +331,13 @@ const styles = StyleSheet.create({
     marginLeft: ws(15),
     marginTop: hs(35),
     marginBottom: hs(22),
+  },
+  TextMaster: {
+    color: Colors.black,
+    fontSize: fs(15),
+    fontWeight: '500',
+    marginLeft: ws(15),
+    marginTop: hs(20),
   },
   SelectIconContainer: {
     width: ws(242),

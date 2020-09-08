@@ -117,6 +117,8 @@ export default class DetailScreen extends Component {
         NavigationService.navigate(mainStack.detail11, {
           shipmentId: item.item.batchId,
           serviceType: this.props.navigation.state.params.serviceType,
+          blNo: item.item.blNo,
+          consignee: item.item.consignee
         })
       }}
     />

@@ -48,7 +48,10 @@ export default class DropDown extends Component {
             TitleTextStyle,
             PickerStyle,
             onSelect,
+            itemTextStyle,
             data,
+            line,
+            textStyle
         } = this.props;
         return (
             <View style={[styles.Container, style]}>
@@ -63,7 +66,7 @@ export default class DropDown extends Component {
                     placeholderStyle={{ color: "#bfc6ea" }}
                     placeholderIconColor="#007aff"
                     style={[styles.Picker, PickerStyle]}
-                    itemTextStyle={styles.DropdownItemText}
+                    itemTextStyle={[styles.DropdownItemText, itemTextStyle]}
                     selectedValue={this.state.selected}
                     onValueChange={this.onValueChange.bind(this)}
                 >
@@ -74,7 +77,7 @@ export default class DropDown extends Component {
                     }
 
                 </Picker>
-                <View style={styles.Line} />
+                {line ? null :  <View style={styles.Line} /> }
             </View>
         )
     }
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
         color: '#BEC2CE',
     },
     DropdownItemText: {
-        fontSize: fs(16)
+        fontSize: fs(16),
     },
     Line: {
         borderTopColor: "#EFF1F5",

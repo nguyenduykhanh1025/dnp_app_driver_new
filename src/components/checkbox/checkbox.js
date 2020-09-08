@@ -25,13 +25,13 @@ export default class Checkbox extends Component {
 
 const styles = StyleSheet.create({
     checkbox: {
-        width: 18,
-        height: 18,
+        width: 20,
+        height: 20,
         borderColor: '#ddd',
         borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 3,
+        borderRadius: 10,
         backgroundColor: '#F0F1F5',
         marginRight: sizeWidth(3)
     },

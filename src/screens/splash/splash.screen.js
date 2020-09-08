@@ -22,8 +22,6 @@ import {
 import { connect } from 'react-redux';
 import {
     getToken,
-    getAccount,
-    getPassword,
     saveToken,
 } from '@/stores';
 import {
@@ -44,32 +42,32 @@ class ProfileScreen extends Component {
         this.token = null;
     };
 
-    onLogin = async (loginname, pwd) => {
-        const fcmToken = await firebase.messaging().getToken();
-        console.log('splash.fcmtoken', fcmToken)
-        const params = {
-            api: 'login',
-            param: {
-                userName: loginname,
-                passWord: pwd,
-                deviceToken: fcmToken
-            },
-            token: '',
-            method: 'POST'
-        }
-        var result = undefined;
-        result = await callApi(params);
-        console.log('autologin', result)
-        if (result.code == 0) {
-            saveToken(result.token)
-            this.token = result.token;
-            this.onShareLocation()
-            NavigationService.navigate(homeTab.home, {})
-        }
-        else {
-            NavigationService.navigate(authStack.login, {})
-        }
-    }
+    // onLogin = async (loginname, pwd) => {
+    //     const fcmToken = await firebase.messaging().getToken();
+    //     console.log('splash.fcmtoken', fcmToken)
+    //     const params = {
+    //         api: 'login',
+    //         param: {
+    //             userName: loginname,
+    //             passWord: pwd,
+    //             deviceToken: fcmToken
+    //         },
+    //         token: '',
+    //         method: 'POST'
+    //     }
+    //     var result = undefined;
+    //     result = await callApi(params);
+    //     console.log('autologin', result)
+    //     if (result.code == 0) {
+    //         saveToken(result.token)
+    //         this.token = result.token;
+    //         this.onShareLocation()
+    //         NavigationService.navigate(homeTab.home, {})
+    //     }
+    //     else {
+    //         NavigationService.navigate(authStack.login, {})
+    //     }
+    // }
 
     onShareLocation = async () => {
         Geolocation.setRNConfiguration({
@@ -110,18 +108,18 @@ class ProfileScreen extends Component {
         }
         var result = undefined;
         result = await callApi(params);
-        console.log('splash.resultonPushLocation', result)
+        // console.log('splash.resultonPushLocation 11', result)
     }
 
     componentDidMount = async () => {
         var token = await getToken();
-        var account = await getAccount();
-        var password = await getPassword();
         if (token == null) {
             NavigationService.navigate(authStack.login, {})
         }
         else {
-            this.onLogin(account, password)
+            // this.onLogin(account, password)
+            this.onShareLocation()
+            NavigationService.navigate(homeTab.home, {})
         }
     };
 
