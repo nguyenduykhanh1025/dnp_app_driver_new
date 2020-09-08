@@ -902,7 +902,7 @@ public class ShipmentDetail extends BaseEntity
             .append("planningDate", getPlanningDate())
             .append("qualityRequirement", getQualityRequirement())
             .append("contSupplyRemark", getContSupplyRemark())
-            .append("customsScanTime", getCustomsScanTime())
+            .append("customScanTime", getCustomScanTime())
             .toString();
     }
 }
