@@ -1229,7 +1229,7 @@ var table = {
 			// add shipment
             addShipmentSendEmpty: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 350);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 400);
 			},
 			// add shipment
             addShipmentReceiveEmpty: function(id) {
@@ -1302,7 +1302,7 @@ var table = {
             editShipmentSendEmpty: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
-					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 350);
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 400);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}

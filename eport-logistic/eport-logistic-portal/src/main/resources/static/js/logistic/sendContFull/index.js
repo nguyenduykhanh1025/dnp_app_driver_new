@@ -11,7 +11,7 @@ var shipmentSearch = new Object;
 shipmentSearch.serviceType = 4;
 var sizeList = [];
 var berthplanList;// get infor
-var onChangeFlg = false, currentIndexRow = 0, rejectChange = false;
+var onChangeFlg = false, currentIndexRow, rejectChange = false, dischargePortList = [], currentVesselVoyage = '';
 //dictionary sizeList
 $.ajax({
     type: "GET",
@@ -194,6 +194,9 @@ function loadTable(msg) {
                 success: function (data) {
                     success(data);
                     $("#dg").datagrid("hideColumn", "id");
+                    if (currentIndexRow != null) {
+                        $("#dg").datagrid("selectRow", currentIndexRow);
+                    }
                 },
                 error: function () {
                     error.apply(this, arguments);
@@ -468,6 +471,7 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function temperatureRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'temperature' + row).addClass("htMiddle");
+    $(td).html(value);
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
@@ -475,6 +479,7 @@ function temperatureRenderer(instance, td, row, col, prop, value, cellProperties
         }
     }  
     if (temperatureDisable[row] == 1) {
+        $(td).html('');
         cellProperties.readOnly = 'true';
         $(td).css("background-color", "rgb(232, 232, 232)");
     }
@@ -537,6 +542,31 @@ function dischargePortRenderer(instance, td, row, col, prop, value, cellProperti
     $(td).html(value);
     return td;
 }
+
+function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'payType' + row).addClass("htMiddle");
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+
+function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'payer' + row).addClass("htMiddle");
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+
+function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'payerNamer' + row).addClass("htMiddle");
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'remark' + row).addClass("htMiddle");
     $(td).html(value);
@@ -578,16 +608,22 @@ function configHandson() {
                 case 5:
                     return '<span class="required">Tàu và Chuyến</span>';
                 case 6:
-                    return "Nhiệt Độ";
+                    return "Nhiệt Độ (c)";
                 // case 8:
                 //     return "Chi tiết";
                 case 7:
-                    return '<span class="required">Trọng Lượng</span>';
+                    return '<span class="required">Trọng Lượng (kg)</span>';
                 case 8:
                     return '<span class="required">Loại Hàng</span>';
                 case 9:
                     return '<span class="required">Cảng Dỡ Hàng</span>';
                 case 10:
+                    return 'PTTT';
+                case 11:
+                    return 'MST Người Trả Tiền';
+                case 12:
+                    return 'Tên Cty Thanh Toán';
+                case 13:
                     return "Ghi Chú";
             }
         },
@@ -662,6 +698,18 @@ function configHandson() {
                 renderer: dischargePortRenderer
             },
             {
+                data: "payType",
+                renderer: payTypeRenderer
+            },
+            {
+                data: "payer",
+                renderer: payerRenderer
+            },
+            {
+                data: "payerName",
+                renderer: payerNameRenderer
+            },
+            {
                 data: "remark",
                 renderer: remarkRenderer
             },
@@ -683,7 +731,7 @@ function configHandson() {
                     break;
                 // Arrow Right
                 case 39:
-                    if (selected[3] == 12) {
+                    if (selected[3] == 13) {
                         e.stopImmediatePropagation();
                     } 
                     break
@@ -697,10 +745,15 @@ function configHandson() {
                     break;
             }
         },
-        afterChange: onChange
+        afterChange: onChange,
+        afterBeginEditing: onBeginEdit
     };
 }
 configHandson();
+
+function onBeginEdit(row, column) {
+    console.log(row,column);
+}
 
 function onChange(changes, source) {
     if (!changes) {
@@ -714,33 +767,37 @@ function onChange(changes, source) {
             let vesselAndVoy = hot.getDataAtCell(change[0], 5);
             //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
             if (vesselAndVoy) {
-                let shipmentDetail = new Object();
-                for (let i = 0; i < berthplanList.length; i++) {
-                    if (vesselAndVoy == berthplanList[i].vslAndVoy) {
-                        shipmentDetail.vslNm = berthplanList[i].vslNm;
-                        shipmentDetail.voyNo = berthplanList[i].voyNo;
-                        shipmentDetail.year = berthplanList[i].year;
-                        $.modal.loading("Đang xử lý ...");
-                        $.ajax({
-                            url: ctx + "/logistic/pods",
-                            method: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify(shipmentDetail),
-                            success: function (data) {
-                                $.modal.closeLoading();
-                                if (data.code == 0) {
-                                    hot.updateSettings({
-                                        cells: function (row, col, prop) {
-                                            if (row == change[0] && col == 9) {
-                                                let cellProperties = {};
-                                                cellProperties.source = data.dischargePorts;
-                                                return cellProperties;
+                if (currentVesselVoyage != vesselAndVoy) {
+                    currentVesselVoyage = vesselAndVoy;
+                    let shipmentDetail = new Object();
+                    for (let i = 0; i < berthplanList.length; i++) {
+                        if (vesselAndVoy == berthplanList[i].vslAndVoy) {
+                            shipmentDetail.vslNm = berthplanList[i].vslNm;
+                            shipmentDetail.voyNo = berthplanList[i].voyNo;
+                            shipmentDetail.year = berthplanList[i].year;
+                            $.modal.loading("Đang xử lý ...");
+                            $.ajax({
+                                url: ctx + "/logistic/pods",
+                                method: "POST",
+                                contentType: "application/json",
+                                data: JSON.stringify(shipmentDetail),
+                                success: function (data) {
+                                    $.modal.closeLoading();
+                                    if (data.code == 0) {
+                                        hot.updateSettings({
+                                            cells: function (row, col, prop) {
+                                                if (col == 9) {
+                                                    let cellProperties = {};
+                                                    dischargePortList = data.dischargePorts;
+                                                    cellProperties.source = dischargePortList;
+                                                    return cellProperties;
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 }
             }
@@ -951,6 +1008,11 @@ function loadShipmentDetail(id) {
                 if (rowAmount < sourceData.length) {
                     sourceData = sourceData.slice(0, rowAmount);
                 }
+                sourceData.forEach(function (element, index) {
+                    if (element.sztp && element.sztp.length > 3 && element.sztp.substring(0, 4).includes("R")) {
+                        temperatureDisable[index] = 0;
+                    }
+                });
                 hot.destroy();
                 isDestroy = true;
                 configHandson();
@@ -969,6 +1031,8 @@ function loadShipmentDetail(id) {
 
 function reloadShipmentDetail() {
     checkList = Array(rowAmount).fill(0);
+    temperatureDisable = Array(rowAmount).fill(1);
+    sztpListDisable = Array(rowAmount).fill(0);
     allChecked = false;
     $('.checker').prop('checked', false);
     for (let i=0; i<checkList.length; i++) {
@@ -1118,6 +1182,11 @@ function getDataFromTable(isValidate) {
         }
         contList.push(object["containerNo"]);
         let sizeType = object["sztp"].split(": ");
+        if (sizeType[0] && sizeType[0].length > 3 && sizeType[0].substring(0, 4).includes("R") && !object["temperature"]) {
+            $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập nhiệt độ!");
+            errorFlg = true;
+            return false;
+        }
         shipmentDetail.sztp = sizeType[0];
         shipmentDetail.sztpDefine = sizeType[1];
         shipmentDetail.temperature = object["temperature"];
@@ -1199,7 +1268,7 @@ function saveShipmentDetail() {
                             reloadShipmentDetail();
                         } else {
                             if (result.conts != null) {
-                                $.modal.alertError("Lưu thất bại: Không thể làm lệnh đối với các container: "+result.conts);
+                                $.modal.alertError("Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>"+result.conts);
                             } else {
                                 $.modal.alertError(result.msg);
                             }
