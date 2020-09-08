@@ -29,16 +29,21 @@ body {
       overflow: hidden;
       margin-bottom: 0;
       .btn-collapse {
-        position: absolute;
-        top: 0;
-        right: 0;
+        position: fixed;
+        top: 5px;
+        right: 5px;
         font-size: 1.5em;
         width: 25px;
         height: 25px;
+        line-height: 20px;
         text-align: center;
+        z-index: 1406;
+        border: 1px solid #ccc;
+        background: #fff;
         cursor: pointer;
         &:hover {
           border: 1px solid #ccc;
+          background: #ccc;
         }
       }
       .uncollapse {
@@ -48,6 +53,11 @@ body {
         display: block;
       }
       .main-body__search-wrapper--container {
+        div.flex__left {
+          h3 {
+            font-size: 13px;
+          }
+        }
         display: flex;
         form {
           display: inline-block;
@@ -81,14 +91,11 @@ body {
         .main-body__search-wrapper--btn-group {
           float: right;
           width: 20%;
-          .btn {
-            font-size: 12px;
-            margin-bottom: 5px;
-          }
         }
       }
-
-      .main-body__table-wrapper {
+      .btn {
+        font-size: 12px;
+        padding: 3px;
       }
     }
     .main-body__table-wrapper {

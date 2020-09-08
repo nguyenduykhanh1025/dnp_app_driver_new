@@ -500,9 +500,23 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setShipmentId(shipment.getId());
         processOrder.setServiceType(1);
         processOrderService.insertProcessOrder(processOrder);
+        String payer = taxCode;
+        String payerName = "";
+        try {
+			payerName = getGroupNameByTaxCode(taxCode).getTaxCode();
+		} catch (Exception e) {
+			logger.error("Error when get payer name for " + payer + ": " + e);
+		}
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessOrderId(processOrder.getId());
             shipmentDetail.setRegisterNo(registerNo.toString());
+            shipmentDetail.setPayer(payer);
+            shipmentDetail.setPayerName(payerName);
+            if (creditFlag) {
+                shipmentDetail.setPayType("Credit");
+            } else {
+                shipmentDetail.setPayType("Cash");
+            }
             shipmentDetail.setUserVerifyStatus("Y");
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
         }
@@ -583,9 +597,23 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setRunnable(false);
         processOrder.setServiceType(3);
         processOrderService.insertProcessOrder(processOrder);
+        String payer = taxCode;
+        String payerName = "";
+        try {
+			payerName = getGroupNameByTaxCode(taxCode).getTaxCode();
+		} catch (Exception e) {
+			logger.error("Error when get payer name for " + payer + ": " + e);
+		}
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessOrderId(processOrder.getId());
             shipmentDetail.setRegisterNo(registerNo.toString());
+            shipmentDetail.setPayer(payer);
+            shipmentDetail.setPayerName(payerName);
+            if (creditFlag) {
+                shipmentDetail.setPayType("Credit");
+            } else {
+                shipmentDetail.setPayType("Cash");
+            }
             shipmentDetail.setUserVerifyStatus("Y");
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
         }
@@ -628,13 +656,26 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setPayType("Cash");
         }
         processOrderService.insertProcessOrder(processOrder);
+        
+        String payer = taxCode;
+        String payerName = "";
+        try {
+			payerName = getGroupNameByTaxCode(taxCode).getTaxCode();
+		} catch (Exception e) {
+			logger.error("Error when get payer name for " + payer + ": " + e);
+		}
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessOrderId(processOrder.getId());
             shipmentDetail.setRegisterNo(detail.getId().toString());
             shipmentDetail.setUserVerifyStatus("Y");
-            if (processOrder.getServiceType() == EportConstants.SERVICE_DROP_FULL) {
-            	shipmentDetail.setOpeCode(shipment.getOpeCode());
+            shipmentDetail.setPayer(payer);
+            shipmentDetail.setPayerName(payerName);
+            if (creditFlag) {
+                shipmentDetail.setPayType("Credit");
+            } else {
+                shipmentDetail.setPayType("Cash");
             }
+            shipmentDetail.setOpeCode(shipment.getOpeCode());
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             if (processOrder.getServiceType() == 2) {
             	shipmentDetail.setRemark("Ha vo " + shipmentDetail.getEmptyDepotLocation());

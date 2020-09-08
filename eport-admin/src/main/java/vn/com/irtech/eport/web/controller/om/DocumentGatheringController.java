@@ -1,7 +1,9 @@
 package vn.com.irtech.eport.web.controller.om;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +93,9 @@ public class DocumentGatheringController extends AdminBaseController  {
 			shipment = new Shipment();
 		}
 		shipment.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
+		Map<String, Object> params = new HashMap<>();
+		params.put("processStatus", "Y");
+		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
 		return ajaxResult;

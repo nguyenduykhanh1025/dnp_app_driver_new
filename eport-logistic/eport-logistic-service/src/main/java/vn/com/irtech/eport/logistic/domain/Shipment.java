@@ -105,6 +105,9 @@ public class Shipment extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date customsScanTime;
     
+    /** send cont empty type 0 ha vao cang, 1 ha len tau */
+    private String sendContEmptyType;
+    
     public void setId(Long id) {
         this.id = id;
     }
@@ -320,6 +323,14 @@ public class Shipment extends BaseEntity
 	public void setCustomsScanTime(Date customsScanTime) {
 		this.customsScanTime = customsScanTime;
 	}
+	
+	public String getSendContEmptyType() {
+		return sendContEmptyType;
+	}
+
+	public void setSendContEmptyType(String sendContEmptyType) {
+		this.sendContEmptyType = sendContEmptyType;
+	}
 
 	@Override
     public String toString() {
@@ -356,6 +367,7 @@ public class Shipment extends BaseEntity
             .append("consignee", getConsignee())
             .append("customsScanTime", getCustomsScanTime())
             .append("params", getParams())
+            .append("sendContEmptyType", getSendContEmptyType())
             .toString();
     }
 }

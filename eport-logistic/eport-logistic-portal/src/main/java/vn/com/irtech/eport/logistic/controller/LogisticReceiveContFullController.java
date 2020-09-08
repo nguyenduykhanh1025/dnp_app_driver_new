@@ -379,6 +379,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				} else {
 					updateShipment = false;
 					shipmentDetail.setUpdateBy(user.getFullName());
+					shipmentDetail.setTaxCode(taxCode);
+					shipmentDetail.setConsigneeByTaxCode(shipmentDetail.getConsignee());
 					shipmentDetail.setUpdateTime(new Date());
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());

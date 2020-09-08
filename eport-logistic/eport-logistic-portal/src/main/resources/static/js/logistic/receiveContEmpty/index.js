@@ -12,7 +12,7 @@ var shipmentSearch = new Object;
 shipmentSearch.serviceType = 3;
 var sizeList = [];
 var berthplanList;
-var onChangeFlg = false, currentIndexRow = 0, rejectChange = false;
+var onChangeFlg = false, currentIndexRow, rejectChange = false;
 //dictionary sizeList
 var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
 
@@ -196,6 +196,9 @@ function loadTable(msg) {
                 success: function (data) {
                     success(data);
                     $("#dg").datagrid("hideColumn", "id");
+                    if (currentIndexRow != null) {
+                        $("#dg").datagrid("selectRow", currentIndexRow);
+                    }
                 },
                 error: function () {
                     error.apply(this, arguments);
@@ -520,6 +523,31 @@ function contSupplyRemarkRenderer(instance, td, row, col, prop, value, cellPrope
     $(td).html(value);
     return td;
 }
+
+function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'payType' + row).addClass("htMiddle");
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+
+function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'payer' + row).addClass("htMiddle");
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+
+function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'payerNamer' + row).addClass("htMiddle");
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'remark' + row).addClass("htMiddle");
     $(td).html(value);
@@ -575,6 +603,12 @@ function configHandson() {
                 case 12:
                     return 'Cấp Container <br>Ghi Chú';
                 case 13:
+                    return 'PTTT';
+                case 14:
+                    return 'MST Người Trả Tiền';
+                case 15:
+                    return 'Tên Cty Thanh Toán';
+                case 16:
                     return "Ghi Chú";
             }
         },
@@ -661,6 +695,18 @@ function configHandson() {
                 renderer: contSupplyRemarkRenderer
             },
             {
+                data: "payType",
+                renderer: payTypeRenderer
+            },
+            {
+                data: "payer",
+                renderer: payerRenderer
+            },
+            {
+                data: "payerName",
+                renderer: payerNameRenderer
+            },
+            {
                 data: "remark",
                 renderer: remarkRenderer
             },
@@ -685,7 +731,7 @@ function configHandson() {
                     break;
                 // Arrow Right
                 case 39:
-                    if (selected[3] == 13) {
+                    if (selected[3] == 16) {
                         e.stopImmediatePropagation();
                     }
                     break

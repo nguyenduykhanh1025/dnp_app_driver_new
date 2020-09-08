@@ -19,7 +19,9 @@ $("#form-add-shipment").validate({
 
 async function submitHandler() {
     if ($.validate.form()) {
-        if ($("#blNo").val()) {
+        if ($("#opeCode option:selected").text() == 'Chọn OPR') {
+            $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
+        } else if ($("#blNo").val()) {
             let res = await getBillNoUnique();
             if (res.code == 500) {
                 $.modal.alertError(res.msg);
