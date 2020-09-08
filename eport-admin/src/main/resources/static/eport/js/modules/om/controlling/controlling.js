@@ -239,9 +239,7 @@ function formatStatus(value, row) {
       return 'Khai Báo';
     case '3':
       return 'Làm Lệnh';
-    case '4':
-      return 'Thanh Toán';
-    case '5': 
+    case '4': 
       return 'Kết Thúc';
     default:
       '';
@@ -585,12 +583,10 @@ function configHandson() {
         case 17:
           return "Số Tham Chiếu";
         case 18:
-          return "Số Invoice";
-        case 19:
           return "Ghi Chú";
       }
     },
-    colWidths: [ 50, 50, 120, 100, 60, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 130, 130, 100],
+    colWidths: [ 50, 50, 120, 100, 60, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 130, 100],
     filter: "true",
     columns: [
       {
@@ -673,10 +669,6 @@ function configHandson() {
       {
         data: "orderNo",
         renderer: orderNoRenderer
-      },
-      {
-        data: "invoiceNo",
-        renderer: invoiceNoRenderer
       },
       {
         data: "remark",
