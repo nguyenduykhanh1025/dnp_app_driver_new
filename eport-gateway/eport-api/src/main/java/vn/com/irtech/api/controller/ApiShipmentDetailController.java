@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import vn.com.irtech.api.common.utils.Convert;
-import vn.com.irtech.api.common.utils.R;
 import vn.com.irtech.api.common.utils.StringUtils;
 import vn.com.irtech.api.dao.ShipmentDetailDao;
+import vn.com.irtech.api.dto.PartnerInfoDto;
 import vn.com.irtech.api.entity.ShipmentDetailEntity;
 import vn.com.irtech.api.entity.ShipmentEntity;
 import vn.com.irtech.api.form.BookingInfo;
@@ -80,7 +80,7 @@ public class ApiShipmentDetailController {
 	}
 	
 	@GetMapping("/shipmentDetail/getGroupNameByTaxCode/{taxCode}")
-	public ShipmentEntity getGroupNameByTaxCode(@PathVariable String taxCode) {
+	public PartnerInfoDto getGroupNameByTaxCode(@PathVariable String taxCode) {
 		return shipmentDetailDao.getGroupNameByTaxCode(taxCode);
 	}
 	
@@ -205,8 +205,8 @@ public class ApiShipmentDetailController {
 	}
 	
 	@PostMapping("/consignee/list")
-	public List<ShipmentEntity> getconsigneeList(@RequestBody ShipmentEntity shipmentEntity) {
-		return shipmentDetailDao.selectConsigneeTaxCode(shipmentEntity);
+	public List<PartnerInfoDto> getconsigneeList(@RequestBody PartnerInfoDto partnerInfo) {
+		return shipmentDetailDao.selectConsigneeTaxCode(partnerInfo);
 	}
 	
 	@GetMapping("/containerNo/{containerNo}/sztp")
@@ -229,7 +229,7 @@ public class ApiShipmentDetailController {
 	}
 	
 	@GetMapping("/shipmentDetail/getConsigneeNameByTaxCode/{taxCode}")
-	public ShipmentEntity getConsigneeByTaxCode(@PathVariable String taxCode) {
+	public PartnerInfoDto getConsigneeByTaxCode(@PathVariable String taxCode) {
 		return shipmentDetailDao.getConsigneeByTaxCode(taxCode);
 	}
 	

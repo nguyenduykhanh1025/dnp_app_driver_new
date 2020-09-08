@@ -199,7 +199,7 @@ public class ShipmentDetail extends BaseEntity
     private String orderNo;
     
     /** Tax Code */
-    @Excel(name = "Tax Code")
+    @Excel(name = "Consignee Tax Code")
     private String taxCode;
     
     /** Consignee By Tax Code */
@@ -895,7 +895,7 @@ public class ShipmentDetail extends BaseEntity
             .append("vslAndVoy", getVslAndVoy())
             .append("invoiceNo", getInvoiceNo())
             .append("vatAfterFee", getVatAfterFee())
-            .append("taxCode", getTaxCode())
+//            .append("consigneeTaxCode", getTaxCode())
             .append("consigneeByTaxCode", getConsigneeByTaxCode())
             .append("customsNo", getCustomsNo())
             .append("contSupplyStatus", getContSupplyStatus())

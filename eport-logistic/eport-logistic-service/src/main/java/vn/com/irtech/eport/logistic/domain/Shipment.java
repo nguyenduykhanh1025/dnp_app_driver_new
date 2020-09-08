@@ -1,14 +1,16 @@
 package vn.com.irtech.eport.logistic.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Shipment Object shipment
@@ -47,18 +49,6 @@ public class Shipment extends BaseEntity
     @Excel(name = "Mã hãng tàu")
     private String opeCode;
 
-    /** MST */
-    @Excel(name = "MST")
-    private String taxCode;
-
-    /** Tên cty theo MST */
-    @Excel(name = "Tên công ty")
-    private String groupName;
-
-    /** Địa chỉ theo MST */
-    @Excel(name = "Địa chỉ")
-    private String address;
-
     /** So Luong Container */
     @Excel(name = "So Luong Container")
     private Long containerAmount;
@@ -74,10 +64,6 @@ public class Shipment extends BaseEntity
     /** Cont Supply Status (0, 1) */
     private Integer contSupplyStatus;
 
-    /** So tham chieu CATOS */
-    @Excel(name = "Reference No")
-    private String referenceNo;
-
     /** Shipment Status */
     @Excel(name = "Shipment Status")
     private String status;
@@ -86,6 +72,7 @@ public class Shipment extends BaseEntity
     @Excel(name = "Ghi chu")
     private String remak;
 
+    /** Tên công ty logistic theo ID */
     private String logisticName;
 
     private String vslNm;
@@ -102,13 +89,16 @@ public class Shipment extends BaseEntity
 
     private List<String> attachedImageUrls;
     
+    /** order number nhận cont house bill */
     private String orderNumber;
-    
+
+    /** House bill no */
     private String houseBill;
     
     /** Số lương process bill: dùng để ẩn button thanh toán om nếu null */
     private Integer amountBill;
     
+    /** Chủ hàng join với detail*/
     private String consignee;
     
     /** Thời gian quét hải quan bi loi som nhat*/
@@ -174,29 +164,29 @@ public class Shipment extends BaseEntity
         return opeCode;
     }
 
-    public void setTaxCode(String taxCode) {
-        this.taxCode = taxCode;
-    }
-
-    public String getTaxCode() {
-        return taxCode;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
+//    public void setTaxCode(String taxCode) {
+//        this.taxCode = taxCode;
+//    }
+//
+//    public String getTaxCode() {
+//        return taxCode;
+//    }
+//
+//    public void setGroupName(String groupName) {
+//        this.groupName = groupName;
+//    }
+//
+//    public String getGroupName() {
+//        return groupName;
+//    }
+//
+//    public String getAddress() {
+//        return address;
+//    }
+//
+//    public void setAddress(String address) {
+//        this.address = address;
+//    }
 
     public void setContainerAmount(Long containerAmount) {
         this.containerAmount = containerAmount;
@@ -230,13 +220,13 @@ public class Shipment extends BaseEntity
         return contSupplyStatus;
     }
 
-    public void setReferenceNo(String referenceNo) {
-        this.referenceNo = referenceNo;
-    }
-
-    public String getReferenceNo() {
-        return referenceNo;
-    }
+//    public void setReferenceNo(String referenceNo) {
+//        this.referenceNo = referenceNo;
+//    }
+//
+//    public String getReferenceNo() {
+//        return referenceNo;
+//    }
 
     public void setStatus(String status) {
         this.status = status;
@@ -352,14 +342,14 @@ public class Shipment extends BaseEntity
             .append("blNo", getBlNo())
             .append("bookingNo", getBookingNo())
             .append("opeCode", getOpeCode())
-            .append("taxCode", getTaxCode())
-            .append("groupName", getGroupName())
-            .append("address", getAddress())
+//            .append("taxCode", getTaxCode())
+//            .append("groupName", getGroupName())
+//            .append("address", getAddress())
             .append("containerAmount", getContainerAmount())
             .append("edoFlg", getEdoFlg())
             .append("specificContFlg", getSpecificContFlg())
             .append("contSupplyStatus", getContSupplyStatus())
-            .append("referenceNo", getReferenceNo())
+//            .append("referenceNo", getReferenceNo())
             .append("status", getStatus())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())
