@@ -16,7 +16,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="edoFlg"    column="edo_flg"    />
         <result property="specificContFlg"    column="specific_cont_flg"    />
         <result property="contSupplyStatus"    column="cont_supply_status"    />
-        <result property="referenceNo"    column="reference_no"    />
         <result property="status"    column="status"    />
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
@@ -32,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sendContEmptyType"    column="send_cont_empty_type"    />
     </resultMap>
     <sql id="selectShipmentVo">
-        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, container_amount, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, order_number, house_bill, create_by, create_time, update_by, update_time from shipment
+        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, container_amount, edo_flg, specific_cont_flg, cont_supply_status,  status, remark, order_number, house_bill, create_by, create_time, update_by, update_time from shipment
     </sql>
 
     <select id="selectShipmentList" parameterType="Shipment" resultMap="ShipmentResult">
@@ -49,7 +48,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
             <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
@@ -80,7 +78,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="edoFlg != null  and edoFlg != ''">edo_flg,</if>
             <if test="specificContFlg != null">specific_cont_flg,</if>
             <if test="contSupplyStatus != null">cont_supply_status,</if>
-            <if test="referenceNo != null  and referenceNo != ''">reference_no,</if>
             <if test="status != null  and status != ''">status,</if>
             <if test="orderNumber != null  and orderNumber != ''">order_number,</if>
             <if test="houseBill != null  and houseBill != ''">house_bill,</if>
@@ -101,7 +98,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="edoFlg != null  and edoFlg != ''">#{edoFlg},</if>
             <if test="specificContFlg != null">#{specificContFlg},</if>
             <if test="contSupplyStatus != null">#{contSupplyStatus},</if>
-            <if test="referenceNo != null  and referenceNo != ''">#{referenceNo},</if>
             <if test="status != null  and status != ''">#{status},</if>
             <if test="orderNumber != null  and orderNumber != ''">#{orderNumber},</if>
             <if test="houseBill != null  and houseBill != ''">#{houseBill},</if>
@@ -125,7 +121,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="edoFlg != null  and edoFlg != ''">edo_flg = #{edoFlg},</if>
             <if test="specificContFlg != null">specific_cont_flg = #{specificContFlg},</if>
             <if test="contSupplyStatus != null">cont_supply_status = #{contSupplyStatus},</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo},</if>
             <if test="status != null  and status != ''">status = #{status},</if>
             <if test="orderNumber != null  and orderNumber != ''">order_number = #{orderNumber},</if>
             <if test="houseBill != null  and houseBill != ''">house_bill = #{houseBill},</if>
@@ -183,7 +178,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getShipmentListForAssign" parameterType="Shipment" resultMap="ShipmentResult">
-        select  id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, create_by, create_time, update_by, update_time,
+        select  id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, edo_flg, specific_cont_flg, cont_supply_status, status, remark, create_by, create_time, update_by, update_time,
                 (select count(*) from shipment_detail sh where sh.shipment_id = s.id and sh.payment_status = 'Y') as container_amount
         from shipment s
         <where>
@@ -198,7 +193,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
             <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
@@ -234,7 +228,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			edo_flg as edoFlg, 
 			specific_cont_flg as specificContFlg, 
 			cont_supply_status as contSupplyStatus, 
-			reference_no as referenceNo, 
 			status, 
 			remark, 
 			order_number as orderNumber, 
@@ -258,7 +251,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
             <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
@@ -268,7 +260,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getShipmentListForContSupply" parameterType="Shipment" resultMap="ShipmentResult">
-        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, container_amount, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, order_number, house_bill, create_by, create_time, update_by, update_time,
+        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, container_amount, edo_flg, specific_cont_flg, cont_supply_status, status, remark, order_number, house_bill, create_by, create_time, update_by, update_time,
         (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as logistic_name
         from shipment s
         <where>  
@@ -283,7 +275,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
             <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
@@ -294,7 +285,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectShipmentListByWithShipmentDetailFilter" parameterType="Shipment" resultMap="ShipmentResult">
         select s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, s.ope_code, 
-        s.container_amount,s.edo_flg, s.specific_cont_flg, s.cont_supply_status, s.reference_no, s.status, s.remark, s.order_number, 
+        s.container_amount,s.edo_flg, s.specific_cont_flg, s.cont_supply_status, s.status, s.remark, s.order_number, 
         s.house_bill, s.create_by, s.create_time, s.update_by, s.update_time,
         (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as "logistic_name"
 
@@ -312,7 +303,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="edoFlg != null  and edoFlg != ''"> and s.edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and s.specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and s.cont_supply_status = #{contSupplyStatus}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and s.reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and s.status = #{status}</if>
             <if test="remark != null  and remark != ''"> and s.remark = #{remark}</if>
             <if test="params.fromDate != null">and s.create_time &gt;= #{params.fromDate}</if>
@@ -329,7 +319,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
         group by s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, 
         s.ope_code, s.container_amount, s.edo_flg, s.specific_cont_flg, 
-        s.cont_supply_status, s.reference_no, s.status, s.remark, s.order_number, s.house_bill, s.create_by, 
+        s.cont_supply_status, s.status, s.remark, s.order_number, s.house_bill, s.create_by, 
         s.create_time, s.update_by, s.update_time
 
         order by update_time desc
@@ -346,7 +336,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          edo_flg as edoFlg, 
          specific_cont_flg as specificContFlg, 
          cont_supply_status as contSupplyStatus, 
-         reference_no as referenceNo, 
          status, 
          remark, 
          order_number as orderNumber, 
@@ -370,7 +359,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="edoFlg != null  and edoFlg != ''"> and S.edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and S.specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and S.cont_supply_status = #{contSupplyStatus}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and S.reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and S.status = #{status}</if>
             <if test="remark != null  and remark != ''"> and S.remark = #{remark}</if>
             <if test="fromDate != null">and S.create_time &gt;= #{fromDate}</if>
@@ -382,7 +370,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectShipmentListForExtensionDate" parameterType="Shipment" resultMap="ShipmentResult">
         select * from
         (select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, 
-        edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, order_number, 
+        edo_flg, specific_cont_flg, cont_supply_status, status, remark, order_number, 
         house_bill, create_by, create_time, update_by, update_time, 
         (select count(*) from shipment_detail sh where sh.shipment_id = s.id and sh.process_status = 'Y' and sh.finish_status = 'N') as container_amount 
         from shipment s
@@ -397,7 +385,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
             <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
