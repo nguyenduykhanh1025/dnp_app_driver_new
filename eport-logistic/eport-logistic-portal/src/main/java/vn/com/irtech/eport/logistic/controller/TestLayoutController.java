@@ -29,4 +29,9 @@ public class TestLayoutController extends LogisticBaseController {
 	public String layout3() {
 		return PREFIX + "/layout3LeftRightWithTab";
 	}
+
+	@GetMapping("/driver")
+	public String driver() {
+		return PREFIX + "/driverAssign";
+	}
 }
