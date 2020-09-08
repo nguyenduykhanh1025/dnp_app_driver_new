@@ -11,7 +11,7 @@ var shipmentSearch = new Object;
 shipmentSearch.serviceType = 1;
 var sizeList = [];
 var voyCarrier;
-var onChangeFlg = false, currentIndexRow = 0, rejectChange = false;
+var onChangeFlg = false, currentIndexRow, rejectChange = false;
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
@@ -195,6 +195,9 @@ function loadTable(msg) {
           success(data);
           $("#dg").datagrid("hideColumn", "id");
           $("#dg").datagrid("hideColumn", "edoFlg");
+          if (currentIndexRow != null) {
+            $("#dg").datagrid("selectRow", currentIndexRow);
+          }
         },
         error: function () {
           error.apply(this, arguments);
@@ -567,6 +570,31 @@ function dischargePortRenderer(instance, td, row, col, prop, value, cellProperti
   $(td).html(value);
   return td;
 }
+
+function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'payType' + row).addClass("htMiddle");
+  $(td).html(value);
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
+  return td;
+}
+
+function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'payer' + row).addClass("htMiddle");
+  $(td).html(value);
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
+  return td;
+}
+
+function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'payerNamer' + row).addClass("htMiddle");
+  $(td).html(value);
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
+  return td;
+}
+
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'remark' + row).addClass("htMiddle");
   $(td).html(value);
@@ -630,12 +658,18 @@ function configHandson() {
         case 11:
           return "Seal No";
         case 12:
-          return "Trọng Tải";
+          return "Trọng Lượng (kg)";
         case 13:
           return '<span class="required">Cảng Xếp Hàng</span>';
         case 14:
           return "Cảng Dỡ Hàng";
         case 15:
+          return 'PTTT';
+        case 16:
+          return 'MST Người Trả Tiền';
+        case 17:
+          return 'Tên Cty Thanh Toán';
+        case 18:
           return "Ghi Chú";
       }
     },
@@ -732,6 +766,18 @@ function configHandson() {
         renderer: dischargePortRenderer
       },
       {
+        data: "payType",
+        renderer: payTypeRenderer
+      },
+      {
+        data: "payer",
+        renderer: payerRenderer
+      },
+      {
+        data: "payerName",
+        renderer: payerNameRenderer
+      },
+      {
         data: "remark",
         renderer: remarkRenderer
       },
@@ -782,7 +828,6 @@ function configHandson() {
               hot.setDataAtCell(change[0], 12, ''); //wgt
               hot.setDataAtCell(change[0], 13, ''); //loadingPort
               hot.setDataAtCell(change[0], 14, ''); //dischargePort
-              hot.setDataAtCell(change[0], 15, ''); //remark
 
               // Call data to auto-fill
               $.ajax({
@@ -799,7 +844,6 @@ function configHandson() {
                   hot.setDataAtCell(change[0], 12, shipmentDetail.wgt); //wgt
                   hot.setDataAtCell(change[0], 13, shipmentDetail.loadingPort); //loadingPort
                   hot.setDataAtCell(change[0], 14, shipmentDetail.dischargePort); //dischargePort
-                  hot.setDataAtCell(change[0], 15, shipmentDetail.remark); //remark
                   voyCarrier = shipmentDetail.voyCarrier;
                 }
               });
@@ -826,7 +870,7 @@ function configHandson() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 15) {
+          if (selected[3] == 18) {
             e.stopImmediatePropagation();
           }
           break

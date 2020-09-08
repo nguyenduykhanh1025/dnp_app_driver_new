@@ -257,7 +257,6 @@ function getSelected(index, row) {
                         success: function (res) {
                             if (res.code == 0) {
                                 checkEmptyExpiredDem = false;
-                               
                             } else {
                                 checkEmptyExpiredDem = true;
                             }
@@ -454,6 +453,30 @@ function emptyDepotLocationRenderer(instance, td, row, col, prop, value, cellPro
     return td;
 }
 
+function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'payType' + row).addClass("htMiddle");
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+
+function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'payer' + row).addClass("htMiddle");
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+
+function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'payerNamer' + row).addClass("htMiddle");
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'remark' + row).addClass("htMiddle");
     $(td).html(value);
@@ -498,6 +521,12 @@ function configHandson() {
                     case 6:
                         return '<span class="required">Bãi Hạ Vỏ</span>';
                     case 7:
+                        return 'PTTT';
+                    case 8:
+                        return 'MST Người Trả Tiền';
+                    case 9:
+                        return 'Tên Cty Thanh Toán';
+                    case 10:
                         return "Ghi Chú";
                 }
             },
@@ -547,6 +576,18 @@ function configHandson() {
                     renderer: emptyDepotLocationRenderer
                 },
                 {
+                    data: "payType",
+                    renderer: payTypeRenderer
+                },
+                {
+                    data: "payer",
+                    renderer: payerRenderer
+                },
+                {
+                    data: "payerName",
+                    renderer: payerNameRenderer
+                },
+                {
                     data: "remark",
                     renderer: remarkRenderer
                 },
@@ -568,7 +609,7 @@ function configHandson() {
                         break;
                     // Arrow Right
                     case 39:
-                        if (selected[3] == 7) {
+                        if (selected[3] == 10) {
                             e.stopImmediatePropagation();
                         } 
                         break
@@ -622,6 +663,12 @@ function configHandson() {
                     case 7:
                         return '<span class="required">Bãi Hạ Vỏ</span>';
                     case 8:
+                        return 'PTTT';
+                    case 9:
+                        return 'MST Người Trả Tiền';
+                    case 10:
+                        return 'Tên Cty Thanh Toán';
+                    case 11:
                         return "Ghi Chú";
                 }
             },
@@ -678,6 +725,18 @@ function configHandson() {
                     renderer: emptyDepotLocationRenderer
                 },
                 {
+                    data: "payType",
+                    renderer: payTypeRenderer
+                },
+                {
+                    data: "payer",
+                    renderer: payerRenderer
+                },
+                {
+                    data: "payerName",
+                    renderer: payerNameRenderer
+                },
+                {
                     data: "remark",
                     renderer: remarkRenderer
                 },
@@ -699,7 +758,7 @@ function configHandson() {
                         break;
                     // Arrow Right
                     case 39:
-                        if (selected[3] == 8) {
+                        if (selected[3] == 11) {
                             e.stopImmediatePropagation();
                         } 
                         break
@@ -1145,7 +1204,7 @@ function saveShipmentDetail() {
                             reloadShipmentDetail();
                         } else {
                             if (result.conts != null) {
-                                $.modal.alertError("Không thể làm lệnh đối với các container: "+result.conts);
+                                $.modal.alertError("Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>"+result.conts);
                             } else {
                                 $.modal.alertError(result.msg);
                             }
