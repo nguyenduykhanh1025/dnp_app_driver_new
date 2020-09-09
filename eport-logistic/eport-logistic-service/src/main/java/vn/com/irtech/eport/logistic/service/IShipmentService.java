@@ -68,14 +68,16 @@ public interface IShipmentService {
 	public List<Shipment> selectShipmentListForOm(Shipment shipment);
 
 	public List<Shipment> getShipmentListForAssign(Shipment shipment);
-	   /**
-		 * Select Shipment List For Driver App
-		 * 
-		 * @param serviceType
-		 * @param driverId
-		 * @return List<ShipmentForm>
-		 */
-		public List<ShipmentForm> selectShipmentListForDriver(Integer serviceType, Long driverId);
+	
+   /**
+	 * Select Shipment List For Driver App
+	 * 
+	 * @param serviceType
+	 * @param driverId
+	 * @return List<ShipmentForm>
+	 */
+	public List<ShipmentForm> selectShipmentListForDriver(Integer serviceType, Long driverId);
+	
     /**
      * Select Shipment List For Register
      */

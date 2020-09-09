@@ -11,6 +11,8 @@ public class ShipmentForm {
     private String fe;
 
     private Integer contAmount;
+    
+    private String consignee;
 
     public Long getBatchId() {
         return this.batchId;
@@ -51,4 +53,13 @@ public class ShipmentForm {
     public void setContAmount(Integer contAmount) {
         this.contAmount = contAmount;
     }
+
+	public String getConsignee() {
+		return consignee;
+	}
+
+	public void setConsignee(String consignee) {
+		this.consignee = consignee;
+	}
+    
 }
