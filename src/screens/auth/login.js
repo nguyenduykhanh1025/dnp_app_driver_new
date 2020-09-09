@@ -158,9 +158,9 @@ class LoginContainer extends PureComponent {
         });
         Geolocation.getCurrentPosition(
             info => {
-                Alert.alert('GPS location', JSON.stringify(info))
+                // Alert.alert('GPS location', JSON.stringify(info))
                 var GPS = info.coords;
-                console.log('GPS', GPS)
+                // console.log('GPS', GPS)
                 x = GPS.latitude;
                 y = GPS.longitude;
                 speed = GPS.speed;
@@ -192,7 +192,6 @@ class LoginContainer extends PureComponent {
         }
         var result = undefined;
         result = await callApi(params);
-        console.log('Login.resultonPushLocation', result)
     }
 
     render() {

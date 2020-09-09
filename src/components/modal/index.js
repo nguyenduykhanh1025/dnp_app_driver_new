@@ -1,9 +1,11 @@
 import Modal from './modal';
-import ModalWaiting from './modal.waiting';
+import WaitingModal from './modal.waiting';
 import ModalQRResult from './modal.QRresult'
+import ProfileModal from './profileModal'
 
 export {
     Modal,
-    ModalWaiting,
+    WaitingModal,
     ModalQRResult,
+    ProfileModal
 }

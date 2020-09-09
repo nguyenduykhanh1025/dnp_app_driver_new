@@ -55,7 +55,7 @@ export default class DetailScreen extends Component {
     var truckNo = await getTruck();
     var chassisNo = await getChassis();
     this.token = await getToken();
-    // console.log('this.props.navigation.state.params.data', this.props.navigation.state.params.data)
+    console.log('this.props.navigation.state.params.data', this.props.navigation.state.params.data)
     await this.setState({
       truckNo: truckNo,
       chassisNo: chassisNo,
@@ -64,7 +64,7 @@ export default class DetailScreen extends Component {
   }
 
   renderItem = (item, index) => (
-    console.log('item',item),
+    console.log('item', item),
     <Item
       data={item.item}
     />
@@ -112,7 +112,7 @@ export default class DetailScreen extends Component {
             showsVerticalScrollIndicator={false}
           >
             <Text style={styles.TitleLine}>Xe đăng ký</Text>
-            <View style={styles.RegisterCarContainer}>
+            <View style={[styles.RegisterCarContainer, { marginBottom: hs(20) }]}>
               <View style={styles.RegisterCarTag}>
                 <View style={styles.RegisterCarItem}>
                   <Text style={styles.RegisterCarLabel}>
@@ -137,10 +137,6 @@ export default class DetailScreen extends Component {
                 </View>
               </View>
             </View>
-            <Text style={styles.TitleLine}> </Text>
-            {/*
-  ---------------------------------------------------- 
- */}
             <FlatList
               data={this.state.data}
               renderItem={
@@ -149,6 +145,43 @@ export default class DetailScreen extends Component {
               }
               showsVerticalScrollIndicator={false}
             />
+
+            <View style={{
+              marginTop: hs(2.5),
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: hs(5)
+            }}>
+              <View style={{
+                flexDirection: 'column',
+                width: ws(333),
+              }}>
+                <Text style={{
+                  fontSize: fs(16),
+                  color: '#15307A',
+                  fontWeight: 'bold',
+                  marginBottom: hs(25),
+                }}>
+                  Thông tin chi tiết
+                </Text>
+                <View style={styles.Line}>
+                  <Text style={styles.txtLabel1} >Khách hàng</Text>
+                  <Text style={styles.txtValue2}>{this.state.data.consignee}</Text>
+                </View>
+                <View style={styles.Line}>
+                  <Text style={styles.txtLabel1} >Đ/c giao</Text>
+                  <Text style={styles.txtValue2}>{this.state.data.address}</Text>
+                </View>
+                <View style={styles.Line}>
+                  <Text style={styles.txtLabel1} >ĐT giao</Text>
+                  <Text style={styles.txtValue2}>{this.state.data.mobileNumber}</Text>
+                </View>
+                <View style={styles.Line}>
+                  <Text style={styles.txtLabel1} >Ghi chú</Text>
+                  <Text style={[styles.txtValue2, { fontSize: 15, fontWeight: null }]}>{this.state.data.remark}</Text>
+                </View>
+              </View>
+            </View>
           </ScrollView>
           <View
             style={{

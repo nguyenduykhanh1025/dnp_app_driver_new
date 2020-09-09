@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface Irtech_Base_RNAppTests : XCTestCase
+@interface Dnp_DriverTests : XCTestCase
 
 @end
 
-@implementation Irtech_Base_RNAppTests
+@implementation Dnp_DriverTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL(^)(UIView *view))test
 {

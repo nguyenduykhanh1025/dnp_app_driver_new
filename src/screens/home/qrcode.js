@@ -242,6 +242,11 @@ class HomeScreen extends PureComponent {
         this.setState({ loading: false })
     }
 
+    onCloseResult = () => {
+        this.props.navigation.goBack()
+        this.setState({ result: false })
+    }
+
     renderLeft = () => {
         return (
             <View
@@ -257,15 +262,26 @@ class HomeScreen extends PureComponent {
         )
     }
 
+    testLoading = async () => {
+        await this.setState({
+            loading: true,
+        })
+
+        await setTimeout(() => {
+            this.setState({
+                result:true,
+                loading: false,
+            })
+        },3000)
+    }
+
     render() {
         return (
             <View style={[commonStyles.containerClass,]}>
-                <StatusBar
-                    translucent
-                    barStyle={'dark-content'}
-                    backgroundColor='transparent'
-                />
+                <StatusBar barStyle="dark-content" backgroundColor={"transparent"} />
                 <HeaderMain
+                    disableBG
+                    disableStep
                     backgroundColor={Colors.white}
                     renderLeft={this.renderLeft()}
                     onPressLeft={() => {
@@ -320,45 +336,45 @@ class HomeScreen extends PureComponent {
                             />
                         </ImageBackground>
                     </View>
-                    {/* <TouchableOpacity
-                        onPress={() => { this.onTestLoading() }}
-                    > */}
-                    <ScrollView
-                        horizontal={true}
+                    <TouchableOpacity
+                        onPress={() => this.testLoading()}
                     >
-                        {
-                            this.state.data.map((item, index) => (
-                                <View style={{
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    marginTop: hs(46.78),
-                                    width: ws(375)
-                                }}>
-                                    <View style={styles.outline}>
-                                        <View style={styles.frame}>
-                                            <View style={styles.frame1Border}>
-                                                <Text style={styles.title}>Cont</Text>
-                                                <Text style={styles.txtValue}>{item.contNo}</Text>
-                                            </View>
-                                            <View style={styles.frame1Border}>
-                                                <Text style={styles.title}>Size</Text>
-                                                <Text style={styles.txtValue}>{item.sztp}</Text>
-                                            </View>
-                                            <View style={styles.frame1Border}>
-                                                <Text style={styles.title}>Fe</Text>
-                                                <Text style={styles.txtValue}>{item.fe}</Text>
-                                            </View>
-                                            <View style={styles.frame1}>
-                                                <Text style={styles.title}>Khối lượng</Text>
-                                                <Text style={styles.txtValue}>{item.weight}</Text>
+                        <ScrollView
+                            horizontal={true}
+                        >
+                            {
+                                this.state.data.map((item, index) => (
+                                    <View style={{
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        marginTop: hs(46.78),
+                                        width: ws(375)
+                                    }}>
+                                        <View style={styles.outline}>
+                                            <View style={styles.frame}>
+                                                <View style={styles.frame1Border}>
+                                                    <Text style={styles.title}>Cont</Text>
+                                                    <Text style={styles.txtValue}>{item.contNo}</Text>
+                                                </View>
+                                                <View style={styles.frame1Border}>
+                                                    <Text style={styles.title}>Size</Text>
+                                                    <Text style={styles.txtValue}>{item.sztp}</Text>
+                                                </View>
+                                                <View style={styles.frame1Border}>
+                                                    <Text style={styles.title}>Fe</Text>
+                                                    <Text style={styles.txtValue}>{item.fe}</Text>
+                                                </View>
+                                                <View style={styles.frame1}>
+                                                    <Text style={styles.title}>Khối lượng</Text>
+                                                    <Text style={styles.txtValue}>{item.weight}</Text>
+                                                </View>
                                             </View>
                                         </View>
                                     </View>
-                                </View>
-                            ))
-                        }
-                    </ScrollView>
-                    {/* </TouchableOpacity> */}
+                                ))
+                            }
+                        </ScrollView>
+                    </TouchableOpacity>
                 </View>
                 <WaitingModal
                     visible={this.state.loading}
@@ -368,7 +384,11 @@ class HomeScreen extends PureComponent {
                 <ModalQRResult
                     visible={this.state.result}
                     data={SearchQRCode}
+                    onClose={() => { this.onCloseResult() }}
                 />
+                {/* <View style={{ height: '100%', width: '100%', backgroundColor: '#fff', position: 'absolute' }}>
+
+                </View> */}
             </View>
         );
     }

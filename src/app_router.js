@@ -40,7 +40,7 @@ class AppAppContainer extends React.Component {
             isConnected: true,
             appState: AppState.currentState,
             GPSEnable: false,
-            timerLocation: '',
+            timerLocation: 10000,
         };
         this.token = null;
     }
@@ -108,10 +108,13 @@ class AppAppContainer extends React.Component {
         }
         var result = undefined;
         result = await callApi(params);
-        console.log('resultonGetURLMqtt', result)
         if (result.code == 0) {
             this.setState({
-                timerLocation: result.locationUpdatePeriod,
+                timerLocation: Number(result.locationUpdatePeriod),
+            })
+        } else {
+            this.setState({
+                timerLocation: 30000,
             })
         }
     }
@@ -249,10 +252,25 @@ class AppAppContainer extends React.Component {
 
         BackgroundTimer.runBackgroundTimer(() => {
             this.token != null ?
-                this.onPushLocation(x, y)
+                Geolocation.getCurrentPosition(
+                    info => {
+                        this.onPushLocation(x, y)
+                    },
+                    error => {
+                        console.log('location chưa được bật')
+                    },
+                    Platform.OS === 'android' ? {}
+                        :
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 200,
+                            distanceFilter: 0.5,
+                            useSignificantChanges: true,
+                        },
+                )
                 :
                 null
-        }, this.state.timerLocation == '' ? 120000 : Number(this.state.timerLocation));
+        }, this.state.timerLocation);
         // }
     }
 

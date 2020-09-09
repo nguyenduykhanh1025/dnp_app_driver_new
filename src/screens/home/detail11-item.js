@@ -36,7 +36,7 @@ export default class Item extends Component {
                     alignItems: 'center'
                   }}>
                     <Text style={[styles.TextLabel]}>
-                     Số Container
+                      Số Container
                   </Text>
                     <Text style={styles.TextValue1}>
                       {data.containerNo}
@@ -47,7 +47,7 @@ export default class Item extends Component {
                     alignItems: 'center',
                     left: ws(10)
                   }}>
-                    <Text style={[styles.TextLabel,{ width: ws(30)}]}>
+                    <Text style={[styles.TextLabel, { width: ws(30) }]}>
                       K/T
                     </Text>
                     <Text style={styles.TextValue2}>
@@ -60,37 +60,37 @@ export default class Item extends Component {
               <View style={styles.Line}>
                 <View style={{
                   flexDirection: 'row',
-                  justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
                   <View style={{
                     flexDirection: 'row',
-                    alignItems: 'center'
+                    alignItems: 'center',
                   }}>
-                    <Text style={styles.TextLabel}>
+                    <Text style={[styles.TextLabel]}>
                       Trọng lượng
                     </Text>
-                    <Text style={styles.TextValue2}>
-                      {data.wgt? data.wgt.toFixed().replace(/\d(?=(\d{3})+(?!\d))/g, '$&,') : ''} {data.wgt? 'Kg' : ''}
+                    <Text style={[styles.TextValue1,{ color: Colors.subColor}]}>
+                      {data.wgt ? data.wgt.toFixed().replace(/\d(?=(\d{3})+(?!\d))/g, '$&,') : ''} {data.wgt ? 'Kg' : ''}
                     </Text>
                   </View>
                   {/* { data.cargoType ?  */}
-                      <View style={{
-                        flexDirection: 'row',
-                        alignItems: 'center'
-                      }}>
-                        <Text style={[styles.TextLabel,{ width: ws(30) ,left: -ws(27)}]}>
-                          L/H
+                  <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    left: ws(10)
+                  }}>
+                    <Text style={[styles.TextLabel, { width: ws(30) }]}>
+                      L/H
                       </Text>
-                        <Text style={styles.TextValue2}>
-                          {data.cargoType}
-                        </Text>
-                      </View>
-                      {/* : null } */}
+                    <Text style={[styles.TextValue1,{ color: Colors.subColor}]}>
+                      {data.cargoType}
+                    </Text>
+                  </View>
+                  {/* : null } */}
                 </View>
               </View>
             </View>
-            { disabled ? null : <Image source={righticon} style={styles.righticon} /> }
+            {disabled ? null : <Image source={righticon} style={styles.righticon} />}
           </View>
         </View>
       </TouchableOpacity>
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
-    elevation: 1,
+    elevation: 6,
     borderRadius: 10,
     marginBottom: hs(13),
     marginTop: hs(2),
@@ -141,8 +141,8 @@ const styles = StyleSheet.create({
   TextLabel: {
     fontSize: fs(13),
     color: Colors.tinyTextGrey,
-    marginRight: ws(18),
-    marginVertical: ws(4), 
+    marginRight: ws(10),
+    marginVertical: ws(4),
     textAlign: 'right',
     width: ws(80),
   },
@@ -150,6 +150,7 @@ const styles = StyleSheet.create({
     fontSize: fs(15),
     color: Colors.blue,
     fontWeight: 'bold',
+    width: ws(110),
   },
   TextValue2: {
     fontSize: fs(15),

@@ -12,7 +12,9 @@ import {
   StatusBar,
   Alert,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
+import { connect } from 'react-redux';
 import NavigationService from '@/utils/navigation';
 import { mainStack, authStack } from '@/config/navigator';
 import {
@@ -36,18 +38,19 @@ import {
 } from '@/assets/icons'
 import HomeButton from './home_button'
 import { callApi } from '@/requests'
+import { signOut } from '@/modules/auth/action';
 import { getToken, saveUpEnable, saveDownEnable } from '@/stores';
 import { hasSystemFeature } from 'react-native-device-info';
 import Toast from 'react-native-tiny-toast';
 import { update } from 'immutable';
-import { DropDownProfile } from '@/components'
+import { DropDownProfile, ProfileModal } from '@/components'
 const icUser = require('@/assets/icons/account/user.png')
 const icCont1 = require('@/assets/icons/cont2_icon.png')
 const icCont2 = require('@/assets/icons/cont3_icon.png')
 const icCont3 = require('@/assets/icons/cont4_icon.png')
 const icCont4 = require('@/assets/icons/cont5_icon.png')
 
-export default class HomeScreen extends Component {
+class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -64,6 +67,7 @@ export default class HomeScreen extends Component {
       ha_focused: false,
       boc_rong_focused: false,
       ha_rong_focused: false,
+      profileVisible: false,
       userData: [],
       userName: 'Họ và tên',
       token: '',
@@ -118,7 +122,14 @@ export default class HomeScreen extends Component {
       }
     }
     else {
-      Alert.alert('Thông báo!', result.msg)
+      Alert.alert(
+        "Thông báo",
+        result.msg,
+        [
+          { text: "OK", onPress: () => this.props.dispatch(signOut()) }
+        ],
+        { cancelable: false }
+      );
     }
   }
 
@@ -171,9 +182,6 @@ export default class HomeScreen extends Component {
         dataNoList: result.data.chassisNoList,
       })
     }
-    else {
-      Alert.alert('Thông báo!', result.msg)
-    }
   }
 
   onGetHistoryList = async () => {
@@ -187,12 +195,10 @@ export default class HomeScreen extends Component {
     result = await callApi(params);
     // console.log('resultonGetHistoryList', result)
     if (result.code == 0) {
+      Toast.hide()
       await this.setState({
         HistoryList: result.data,
       })
-    }
-    else {
-      Alert.alert('Thông báo!', result.msg)
     }
   }
 
@@ -243,7 +249,7 @@ export default class HomeScreen extends Component {
         <StatusBar
           translucent
           barStyle={'dark-content'}
-          backgroundColor='transparent'
+          backgroundColor='#fff'
         />
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -258,7 +264,7 @@ export default class HomeScreen extends Component {
             <View style={styles.HeaderName}>
               <TouchableOpacity
                 onPress={() => {
-                  NavigationService.navigate(mainStack.profile, {})
+                  this.setState({ profileVisible: true })
                 }}
               >
                 <View style={styles.HeaderIcon}>
@@ -466,6 +472,21 @@ export default class HomeScreen extends Component {
             <View style={styles.TitleHistory}>
               <Text style={styles.TitleHistoryText}>Lịch sử</Text>
             </View>
+            {
+              this.state.HistoryList.length == 0 ?
+                <View style={{ height: hs(425), width: '100%', justifyContent: 'center', alignItems: 'center'}}>
+                  <ActivityIndicator size='large' color={Colors.mainColor}/>
+                </View>
+                :
+                <FlatList
+                  data={this.state.HistoryList}
+                  refreshing={this.state.refreshing}
+                  onRefresh={() => {
+                    this.onRefresh()
+                  }}
+                  renderItem={(item, index) => this.renderItem(item, index)}
+                />
+            }
             <FlatList
               data={this.state.HistoryList}
               refreshing={this.state.refreshing}
@@ -476,10 +497,21 @@ export default class HomeScreen extends Component {
             />
           </View>
         </ScrollView>
+        <ProfileModal 
+          visible={this.state.profileVisible}
+          onClose={()=> this.setState({ profileVisible: false })}
+        />
       </View>
     )
   }
 }
+const mapStateToProps = (state) => {
+  return {
+  };
+};
+
+export default connect(mapStateToProps)(HomeScreen);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -495,7 +527,7 @@ const styles = StyleSheet.create({
   Header: {
     width: ws(375),
     height: hs(37),
-    marginTop: hs(66),
+    marginTop: hs(55),
     justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'center',

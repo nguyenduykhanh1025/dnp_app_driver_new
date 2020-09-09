@@ -9,7 +9,6 @@ import { date, time } from './DateTime';
 import widgets from './widgets';
 import { TabViewInsertNcvt } from './tabview';
 import { SearchBox, SearchPopup } from './searchPopup';
-import { Modal } from './modal';
 import MenuItem from './menuitem';
 import { HeaderPopUp, HeaderList, HeaderSearch } from './header';
 import { DanhSach } from './danhsach';
@@ -23,8 +22,7 @@ import TextStatus from './TextStatus';
 import Tabbar from './Tabbar';
 import InputInline from './inputInline';
 import InputDateInline from './inputDateInline';
-import WaitingModal from './modal/modal.waiting';
-import ModalQRResult from './modal/modal.QRresult';
+import { ProfileModal, ModalQRResult, WaitingModal, Modal } from './modal'
 import HeaderResult from './header/headerresult';
 import HeaderMain from './header/header-main';
 import DropDown from './dropdown/dropdown';
@@ -64,6 +62,7 @@ export {
     InputDateInline,
     WaitingModal,
     ModalQRResult,
+    ProfileModal,
     HeaderResult,
     HeaderMain,
     DropDown,

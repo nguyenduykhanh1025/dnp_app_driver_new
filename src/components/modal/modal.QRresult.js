@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import { Text, View, Modal, TouchableOpacity, Image, StyleSheet, Dimensions, TouchableWithoutFeedback,  } from 'react-native';
+import { Text, View, Modal, TouchableOpacity, Image, StyleSheet, Dimensions, TouchableWithoutFeedback, StatusBar, FlatList, ScrollView } from 'react-native';
 import Toast from 'react-native-tiny-toast';
-import { Colors, sizeWidth, sizeHeight, sizes } from '@/commons';
-
+import {
+  Colors, sizeWidth, sizeHeight, sizes,
+  widthPercentageToDP as ws,
+  heightPercentageToDP as hs,
+  fontSizeValue as fs,
+} from '@/commons';
+import { HeaderMain, Button } from '@/components';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+import Icon from 'react-native-vector-icons/AntDesign';
 
 const ic_close = require('@/assets/icons/ic_back_menu.png')
 
@@ -25,9 +31,11 @@ export default class QRresult extends Component {
 
   componentDidMount() {
     this.setState({
-      data: this.state.data[0].Data
+      data: this.state.data.Data
     })
   }
+
+
 
   componentWillReceiveProps = async (nextProps) => {
     if (nextProps.visible != this.state.visible) {
@@ -37,44 +45,72 @@ export default class QRresult extends Component {
       await this.setState({ msg: nextProps.msg })
     }
   }
-
+  renderItems = (item) => {
+    return (
+      <View style={{
+        backgroundColor: '#E2EEFB',
+        borderRadius: hs(10),
+        marginVertical: hs(5)
+      }}>
+        <View style={{ backgroundColor: Colors.blue, borderRadius: hs(10), padding: hs(15) }}>
+          <Text style={{ color: Colors.white, fontSize: fs(16), marginVertical: hs(3) }}>{item.item.name}</Text>
+          <Text style={{ color: Colors.grey4, fontSize: fs(16), marginVertical: hs(3) }}>Số container:  <Text style={{ color: Colors.white }}>{item.item.containerNo}</Text></Text>
+        </View>
+        <Text style={{ color: Colors.grey6, fontSize: fs(18), margin: hs(15) }}>Tọa độ:    <Text style={{ color: Colors.grey7, fontSize: fs(20) }}>{item.item.coordinates}</Text></Text>
+      </View>
+    )
+  }
   render() {
     var { data } = this.state;
-    // console.log(data)
+    var item = this.props.data;
     return (
       <Modal
         animationType="fade"
         transparent={true}
         visible={this.state.visible}
         onRequestClose={() => {
-          Toast.show(
-            "Vui lòng điền, chọn và thoát ra đúng cách.!"
-          );
+          this.props.onClose()
         }}
       >
-        <TouchableWithoutFeedback
-          onPress={this.onModalClose}
-        >
-          <View style={styles.wrapper}>
-            <View style={styles.container}>
-              <TouchableWithoutFeedback onPress={this.onModalClose}>
-                <View>
-                  <View style={styles.close}>
-                    <Image source={ic_close} style={styles.ic_close} />
-                  </View>
-                  <View style={styles.contentView}>
-                    <Text style={styles.text}>Cont: {data[0].contCode}</Text>
-                    <Text style={styles.text}>Size: {data[0].contSize}</Text>
-                    <Text style={styles.text}>Type: {data[0].contType}</Text>
-                    <Text style={styles.text}>Yard Position: {data[0].yardPosition}</Text>
-                    <Text style={styles.text}>Gate Pass: {data[0].gatePass}</Text>
-                    <Text style={styles.text}>Notes: {data[0].notes}</Text>
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
+        <ScrollView style={styles.wrapper}>
+          <View style={{ paddingTop: hs(20), padding: hs(10) }}>
+            <TouchableOpacity style={{ width: ws(50), justifyContent: 'center', alignItems: 'center' }} onPress={() => this.props.onClose()}>
+              <Icon
+                name={'arrowleft'}
+                size={fs(25)}
+              />
+            </TouchableOpacity>
           </View>
-        </TouchableWithoutFeedback>
+          <View style={{ alignItems: 'center', padding: hs(15), paddingTop: 0 }}>
+            <View style={{ justifyContent: 'center', alignItems: 'center', width: hs(50), height: hs(50), backgroundColor: item.code == 1 ? '#CDFFE0' : '#F39292', borderRadius: hs(25), borderWidth: item.code == 1 ? 0 : 1, borderColor: 'red' }}>
+              {item.code == 1 ? <Icon name='check' size={fs(40)} color='#15F21D' /> :
+                <Icon name='close' size={fs(40)} color='#fff' />}
+            </View>
+            <Text style={{ textAlign: 'center', color: item.code == 1 ? Colors.blue : "red", fontWeight: 'bold', fontSize: fs(20) }}>{item.code == 1 ? 'Check in thành công' : ' Check in thất bại'}</Text>
+            {item.code == 1 ? <Text style={{ fontSize: fs(20), color: Colors.blue }}>XIN MỜI XE VÀO CỔNG</Text> : null}
+          </View>
+          {item.code == 1 ?
+            <View style={{ padding: ws(10), paddingTop: 0 }}>
+              <Text style={{ color: Colors.grey6, fontSize: fs(18)}}>Thông tin tọa độ</Text>
+              <FlatList
+                renderItem={(item) => this.renderItems(item)}
+                data={this.state.data}
+              />
+            </View>
+            :
+            <View style={{ padding: ws(10), paddingTop: 0 }}>
+            <Text style={{ color: Colors.grey6, fontSize: fs(18) }}>Thông báo</Text>
+            <Text style={{ color: 'red', fontSize: fs(20)}}>{item.msg}</Text>
+
+            </View>
+          }
+        </ScrollView>
+          <View style={{ position: 'absolute', bottom: hs(30) }}>
+            <Button value="OK" 
+              onPress={() => this.props.onClose()}
+            />
+          </View>
+
       </Modal>
     )
   }
@@ -82,14 +118,11 @@ export default class QRresult extends Component {
 
 const styles = StyleSheet.create({
   wrapper: {
-    height: sizeHeight(100),
-    width: sizeWidth(100),
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    flex: 1,
+    backgroundColor: '#fff',
   },
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: 'yellow',
     width: sizeWidth(70),
     height: sizeHeight(50),
     borderRadius: 7,

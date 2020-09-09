@@ -54,11 +54,6 @@ export default class HeaderMain extends Component {
           :
           null
       ]}>
-        <StatusBar
-          translucent
-          barStyle={disableBG && disableStep && !backgroundColor ? 'dark-content' : 'light-content'}
-          backgroundColor='transparent'
-        />
         {
           disableBG ?
             null :

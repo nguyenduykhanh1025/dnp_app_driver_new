@@ -7,6 +7,7 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   ScrollView,
+  StatusBar,
   Image,
   Alert,
 } from 'react-native';
@@ -126,6 +127,7 @@ export default class DetailScreen extends Component {
   render() {
     return (
       <ScrollView style={styles.Container}>
+        <StatusBar barStyle="light-content"/>
         <HeaderMain
           renderLeft={(
             <Image source={lefticon} style={styles.Lefticon} />

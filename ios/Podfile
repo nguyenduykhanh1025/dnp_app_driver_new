@@ -61,7 +61,7 @@ target 'vn.com.irtech.mobile.eport.driver' do
 
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 
-  target 'Irtech_Base_RNAppTests' do
+  target 'Dnp_DriverTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -78,10 +78,10 @@ target 'vn.com.irtech.mobile.eport.driver' do
   end
 end
 
-target 'vn.com.irtech.mobile.eport.driver-tvOS' do
+target 'Dnp_Driver-tvOS' do
   # Pods for vn.com.irtech.mobile.eport.driver-tvOS
 
-  target 'vn.com.irtech.mobile.eport.driver-tvOSTests' do
+  target 'Dnp_Driver-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end

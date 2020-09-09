@@ -11,7 +11,7 @@ const getInfoUser = [{
         name: "Đặng Thu Anh",
         email: "",
         p_number: "0978737921",
-        license_plates:'79-N2 0122'
+        license_plates: '79-N2 0122'
     }]
 }]
 
@@ -48,7 +48,7 @@ const getListHistory = [{
             notes: "Ghi chú 2",
             gatePass: "",
             yardPosition: "",
-        }, 
+        },
         {
             historyCode: 3,
             datetime: "09/06/2020",
@@ -58,7 +58,7 @@ const getListHistory = [{
             notes: "Ghi chú 3",
             gatePass: "",
             yardPosition: "",
-        }, 
+        },
         {
             historyCode: 4,
             datetime: "09/06/2020",
@@ -68,7 +68,7 @@ const getListHistory = [{
             notes: "Ghi chú 3",
             gatePass: "",
             yardPosition: "",
-        }, 
+        },
         {
             historyCode: 5,
             datetime: "09/06/2020",
@@ -78,7 +78,7 @@ const getListHistory = [{
             notes: "Ghi chú 3",
             gatePass: "",
             yardPosition: "",
-        }, 
+        },
         {
             historyCode: 6,
             datetime: "09/06/2020",
@@ -144,7 +144,7 @@ const getListNotification = [{
             title: "Gửi tới... 7",
             description: "Nội dung là .. 7",
         }
-        
+
     ]
 }]
 
@@ -406,20 +406,23 @@ const getDetailContItem = [{
     ]
 }]
 
-const SearchQRCode = [{
+const SearchQRCode = {
     code: 1,
-    msg: "Thông báo thành công",
-    Data: [
-        {
-            contCode: "C23AMN",
-            contSize: "A1",
-            contType: "ABC",
-            yardPosition: "B2",
-            gatePass: "Q1",
-            notes: "ghi chú ..."
-        },
-    ]
-}]
+    msg: "Container AGEA1231245 đã quá hạn lệnh hoặc không đủ điều kiện để nhận. Xin mời đến phòng dịch vụ khách hàng để làm thủ tục. Xe rơmooc biển số 43R5555 không đủ tải trong để bốc container AGEA1231245 (20,000kg). Xin vui lòng quay đầu xe chọn rơmooc khác rồi làm lại thủ tục",
+    Data:   
+        [
+            {
+                name: "Giao container hàng vào cảng",
+                containerNo: "AGEA1231245",
+                coordinates: "VJS1-45-5-5",
+            },
+            {
+                name: "Nhận container hàng từ cảng",
+                containerNo: "AGEA1231245",
+                coordinates: "A-20-3-2",
+            },
+        ]
+}
 
 export {
     loginApp,

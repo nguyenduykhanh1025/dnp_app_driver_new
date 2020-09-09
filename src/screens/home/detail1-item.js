@@ -20,7 +20,6 @@ import { righticon } from '@/assets/icons';
 export default class Item extends Component {
   render() {
     var { data, onPress } = this.props;
-    console.log(data)
     return (
       <TouchableOpacity onPress={onPress}>
         <View style={styles.Container}>
