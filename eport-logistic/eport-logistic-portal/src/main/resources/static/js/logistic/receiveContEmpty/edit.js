@@ -5,6 +5,7 @@ var currentBooking = shipment.bookingNo;
 if (shipment != null) {
     $("#id").val(shipment.id);
     $("#shipmentCode").val(shipment.id);
+    $("#opeCode").val(shipment.opeCode);
     $("#bookingNo").val(shipment.bookingNo);
     $("input[name='specificContFlg'][value='"+shipment.specificContFlg+"']").prop('checked', true);
     $("#containerAmount").val(shipment.containerAmount);
@@ -15,6 +16,7 @@ if (shipment != null) {
     }
     if (shipment.status > 2) {
         $("#containerAmount").prop('disabled', true);
+        $("#opeCode").prop('disabled', true);
     }
 }
 
@@ -24,7 +26,9 @@ $("#form-edit-shipment").validate({
 
 async function submitHandler() {
     if ($.validate.form()) {
-        if ($("#bookingNo").val() != currentBooking) {
+        if ($("#opeCode option:selected").text() == 'Chọn OPR') {
+            $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
+        } else if ($("#bookingNo").val() != currentBooking) {
             let res = await getBookingNoUnique();
             if (res.code == 0) {
                 edit(prefix + "/shipment/" + shipment.id, $('#form-edit-shipment').serialize())

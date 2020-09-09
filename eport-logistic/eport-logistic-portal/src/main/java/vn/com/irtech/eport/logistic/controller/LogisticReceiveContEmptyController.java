@@ -32,6 +32,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.exception.file.InvalidExtensionException;
+import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
@@ -131,6 +132,14 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	// FORM ADD NEW SHIPMENT
 	@GetMapping("/shipment/add")
 	public String add(ModelMap mmap) {
+		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
+		if (oprCodeList == null) {
+			oprCodeList = catosApiService.getOprCodeList();
+			oprCodeList.add(0, "Chọn OPR");
+			CacheUtils.put("oprCodeList", oprCodeList);
+		}
+		
+		mmap.put("oprCodeList", oprCodeList);
 		mmap.put("taxCode", getGroup().getMst());
 		return PREFIX + "/add";
 	}
@@ -143,6 +152,14 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			mmap.put("shipment", shipment);
 			mmap.put("taxCode", getGroup().getMst());
 		}
+		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
+		if (oprCodeList == null) {
+			oprCodeList = catosApiService.getOprCodeList();
+			oprCodeList.add(0, "Chọn OPR");
+			CacheUtils.put("oprCodeList", oprCodeList);
+		}
+		
+		mmap.put("oprCodeList", oprCodeList);
         return PREFIX + "/edit";
 	}
 
@@ -522,5 +539,22 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		}
 		
 		return error("Yêu cầu cấp rỗng thất bại, quý khách vui lòng liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
+	}
+	
+	@GetMapping("/berthplan/vessel-voyage/list")
+	@ResponseBody
+	public AjaxResult getVesselVoyageListWithoutOpeCode() {
+		AjaxResult ajaxResult = success();
+		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlanWithoutOpe();
+		if(berthplanList.size() > 0) {
+			List<String> vesselAndVoyages = new ArrayList<String>();
+			for(ShipmentDetail i : berthplanList) {
+				vesselAndVoyages.add(i.getVslAndVoy());
+			}
+			ajaxResult.put("berthplanList", berthplanList);
+			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
+			return ajaxResult;
+		}
+		return error();
 	}
 }
