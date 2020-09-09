@@ -1,143 +1,142 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Hạ bãi chờ xuất')" />
+    <th:block th:include="include :: handsontable-css" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/logistic/receiveContFull/style.css?v=12}" rel="stylesheet" />
+    <link th:href="@{/eport/css/common/style.css?v=2}" rel="stylesheet" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <th:block th:include="include :: header('Hạ bãi chờ xuất')" />
-  <th:block th:include="include :: handsontable-css" />
-  <th:block th:include="include :: easyui-css" />
-  <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
-  <link th:href="@{/eport/css/common/style.css?v=123122312}" rel="stylesheet" />
-</head>
-
-<body class="grey-background">
-  <div class="main-body">
-    <div class="main-body__search-wrapper mb-2">
-      <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
-      <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
-      <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
-        <div class="flex__left w-20">
-          <h3 class="mt-10">Nhận container hàng từ cảng</h3>
-        </div>
-        <div class="flex__right w-80">
-          <div class="justify-content-around align-items-center" id="ff">
-            <div class="d-inline">
-              <input class="easyui-textbox" id="blNo" data-options="prompt:'B/L No'" />
-            </div>
-            <div class="d-inline">
-              <input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
-            </div>
-            <div class="d-inline">
-              <input class="easyui-textbox" id="consignee" data-options="prompt:'Chủ hàng'" />
-            </div>
-            <div class="d-inline">
-              <input id="fromDate" class="easyui-datebox" style="width: 100px;"
-                data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
-            </div>
-            <div class="d-inline">
-              <input id="toDate" class="easyui-datebox" style="width: 100px;"
-                data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
-            </div>
-            <div class="d-inline">
-              <button class="btn btn-success" onclick="search()">Tìm kiếm</button>
-            </div>
-            <div class="d-inline">
-              <button class="btn btn-success btn-outline" onclick="clearInput()">Làm mới</button>
+  <body class="grey-background">
+    <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+    <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+    <div class="main-body">
+      <div class="main-body__search-wrapper mb-2">
+        <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+          <div class="flex__left w-20">
+            <h3 class="mt-10">Nhận container hàng từ cảng</h3>
+          </div>
+          <div class="flex__right w-80">
+            <div class="justify-content-around align-items-center" id="ff">
+              <div class="d-inline">
+                <input class="easyui-textbox" id="blNo" data-options="prompt:'B/L No'" />
+              </div>
+              <div class="d-inline">
+                <input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
+              </div>
+              <div class="d-inline">
+                <input class="easyui-textbox" id="consignee" data-options="prompt:'Chủ hàng'" />
+              </div>
+              <div class="d-inline">
+                <input id="fromDate" class="easyui-datebox" style="width: 100px" data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser" />
+              </div>
+              <div class="d-inline">
+                <input id="toDate" class="easyui-datebox" style="width: 100px" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser" />
+              </div>
+              <div class="d-inline">
+                <button class="btn btn-success btn-customs" onclick="search()">Tìm kiếm</button>
+              </div>
+              <div class="d-inline">
+                <button class="btn btn-success btn-outline btn-customs" onclick="clearInput()">Làm mới</button>
+              </div>
             </div>
           </div>
-      </div>
-      </div>
-    </div>
-    <div class="main-body__table-wrapper">
-      <div class="easyui-layout" id="main-layout" style="width: 100%;">
-        <div class="left-side" title="Danh sách lô" data-options="region:'west',split:true" style="width: 30%;">
-          <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
-          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
-            <thead>
-              <tr>
-                <th data-options="field:'id', fixed:true" width="1"></th>
-                <th data-options="field:'edoFlg', fixed:true" width="1"></th>
-                <th data-options="field:'blNo', halign:'center', resizable:true, fixed:true, formatter: formatBlNo" sortable="true" width="150">B/L No</th>
-                <th data-options="field:'containerAmount', align:'center', halign:'center', fixed:true" width="40">SL</th>
-                <th data-options="field:'opeCode', align:'center', halign:'center', fixed:true" width="50" sortable="true">OPR</th>
-                <th data-options="field:'consignee', align:'left', halign:'center', fixed:true" width="150" sortable="true">Tên chủ hàng</th>
-                <th data-options="field:'createTime', align:'center', halign:'center', formatter: formatDate, fixed:true" sortable="true" width="110">Ngày Tạo</th>
-                <th data-options="field:'remark', align:'left', halign:'center', formatter: formatRemark" sortable="true" width="150">Ghi Chú</th>
-              </tr>
-            </thead>
-          </table>
         </div>
-        <div class="right-side" title="Thông tin lô" data-options="region:'center'" style="width: 100%;">
-          <div class="right-side__toolbar">
-            <div class="datagrid-toolbar">
-              <table cellspacing="0" cellpadding="0">
-                <tbody>
-                  <tr>
-                    <td>
-                      <button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()" class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Lưu khai báo
-                      </button>
-                    </td>
-                    <td>
-                      <button id="deleteBtn" onclick="deleteShipmentDetail()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Xóa
-                      </button>
-                    </td>
-                    <td>
-                      <button id="customBtn" onclick="checkCustomStatus()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Khai hải quan
-                      </button>
-                    </td>
-                    <td>
-                      <button id="verifyBtn" onclick="verify()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Xác nhận
-                      </button>
-                    </td>
-                    <td>
-                      <button id="payBtn" onclick="pay()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Thanh toán
-                      </button>
-                    </td>
-                    <td>
-                      <button id="exportReceiptBtn" onclick="exportReceipt()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Xuất biên nhận
-                      </button>
-                    </td>
-                    <td>
-                      <button id="exportBill" onclick="exportBill()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Xuất hóa đơn
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+      </div>
+      <div class="main-body__table-wrapper">
+        <div class="easyui-layout" id="main-layout" style="width: 100%">
+          <div class="left-side" title="Danh sách lô" data-options="region:'west',split:true" style="width: 30%">
+            <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
+            <table id="dg" style="width: 100%" pageList="[20,50,100,150,200]">
+              <thead>
+                <tr>
+                  <th data-options="field:'id', fixed:true" width="1"></th>
+                  <th data-options="field:'edoFlg', fixed:true" width="1"></th>
+                  <th data-options="field:'blNo', halign:'center', resizable:true, fixed:true, formatter: formatBlNo" sortable="true" width="150">B/L No</th>
+                  <th data-options="field:'containerAmount', align:'center', halign:'center', fixed:true" width="40">SL</th>
+                  <th data-options="field:'opeCode', align:'center', halign:'center', fixed:true" width="50" sortable="true">OPR</th>
+                  <th data-options="field:'consignee', align:'left', halign:'center', fixed:true" width="150" sortable="true">Tên chủ hàng</th>
+                  <th data-options="field:'createTime', align:'center', halign:'center', formatter: formatDate, fixed:true" sortable="true" width="110">Ngày Tạo</th>
+                  <th data-options="field:'remark', align:'left', halign:'center', formatter: formatRemark" sortable="true" width="150">Ghi Chú</th>
+                </tr>
+              </thead>
+            </table>
           </div>
-          <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
-          <div class="progress-wrapper">
-            <p class="text-white" id="titleProgress"></p>
-            <div class="progress">
-              <span class="percent-text"></span>
-              <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+          <div class="right-side" data-options="region:'center'" style="width: 100%">
+            <div class="panel-header" style="width: 100%; background-color: rgb(158, 158, 158);">
+              <div class="panel-title" style="color: #fff;">Thông tin lô</div>
+              <div class="panel-tool" id="step-area">
+                <ul class="right-info">
+                  <li><a id="registerStatus" class="disable">Khai báo</a></li>
+                  <li><a id="contSupplyStatus" class="disable">Cấp container</a></li>
+                  <li><a id="verifyStatus" class="disable">Xác thực</a></li>
+                  <li><a id="paymentStatus" class="disable">Thanh toán</a></li>
+                  <li><a id="finishStatus" class="disable">Hoàn thành</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="right-side__toolbar">
+              <div class="datagrid-toolbar">
+                <table cellspacing="0" cellpadding="0">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()" class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Lưu khai báo</button></span></span></a>
+                      </td>
+                      <td>
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="deleteBtn" onclick="deleteShipmentDetail()" disabled class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Xóa</button></span></span></a>
+                        
+                      </td>
+                      <td>
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="customBtn" onclick="checkCustomStatus()" disabled class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Khai hải quan</button></span></span></a>
+                        
+                      </td>
+                      <td>
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="verifyBtn" onclick="verify()" disabled class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Xác nhận</button></span></span></a>
+                        
+                      </td>
+                      <td>
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="payBtn" onclick="pay()" disabled class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Thanh toán</button></span></span></a>
+                        
+                      </td>
+                      <td>
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="exportReceiptBtn" onclick="exportReceipt()" disabled class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Xuất biên nhận</button></span></span></a>
+                        
+                      </td>
+                      <td>
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="exportBill" onclick="exportBill()" disabled class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Xuất hóa đơn</button></span></span></a>
+                        
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+            <div class="progress-wrapper">
+              <p class="text-white" id="titleProgress"></p>
+              <div class="progress">
+                <span class="percent-text"></span>
+                <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <th:block th:include="include :: footer" />
-  <th:block th:include="include :: easyui-js" />
-  <th:block th:include="include :: handsontable-js" />
-  <th:block th:include="include :: websocket" />
-  <script type="text/javascript" th:inline="javascript">
-    $(".main-body").height($(document).height() - 10);
-    $(".easyui-layout").height($('.main-body').height() - 40);
-    var emptyDepots = /*[[${emptyDepots}]]*/;
-  </script>
-  <script th:src="@{/js/logistic/receiveContFull/index.js?v=20200901}"></script>
-</body>
-
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: handsontable-js" />
+    <th:block th:include="include :: websocket" />
+    <script type="text/javascript" th:inline="javascript">
+      $(".main-body").height($(document).height() - 10);
+      $(".easyui-layout").height($('.main-body').height() - 40);
+      var emptyDepots = /*[[${emptyDepots}]]*/;
+    </script>
+    <script th:src="@{/js/logistic/receiveContFull/index.js?v=1}"></script>
+  </body>
 </html>

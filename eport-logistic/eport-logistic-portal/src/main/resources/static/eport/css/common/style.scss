@@ -6,6 +6,32 @@ $black: #000000;
 $lightblue: #f3f7fa;
 body {
   height: 98%;
+  .btn-collapse {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    font-size: 1.5em;
+    width: 25px;
+    height: 25px;
+    line-height: 20px;
+    text-align: center;
+    z-index: 1406;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    &:hover {
+      border: 1px solid #ccc;
+      background: #ccc;
+    }
+  }
+  .uncollapse {
+    display: none;
+    line-height: 25px;
+  }
+  .collapse {
+    display: block;
+  }
 }
 .mb-2 {
   margin-bottom: 2em;
@@ -28,30 +54,6 @@ body {
       transition: 0.1s all;
       overflow: hidden;
       margin-bottom: 0;
-      .btn-collapse {
-        position: fixed;
-        top: 5px;
-        right: 5px;
-        font-size: 1.5em;
-        width: 25px;
-        height: 25px;
-        line-height: 20px;
-        text-align: center;
-        z-index: 1406;
-        border: 1px solid #ccc;
-        background: #fff;
-        cursor: pointer;
-        &:hover {
-          border: 1px solid #ccc;
-          background: #ccc;
-        }
-      }
-      .uncollapse {
-        display: none;
-      }
-      .collapse {
-        display: block;
-      }
       .main-body__search-wrapper--container {
         div.flex__left {
           h3 {
@@ -95,7 +97,7 @@ body {
       }
       .btn {
         font-size: 12px;
-        padding: 3px;
+        padding: 5px;
       }
     }
     .main-body__table-wrapper {
@@ -178,4 +180,29 @@ body {
   border: none;
   font-size: 12px;
   font-weight: bold;
+}
+
+.btn-customs {
+  position: relative;
+  vertical-align: middle;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-bottom: 5px !important;
+  margin: 0;
+  padding: 4;
+  border-radius: 3px;
+}
+
+.datagrid-toolbar {
+  table {
+    .btn {
+      padding: 2px 5px !important;
+      border-radius: 2px; 
+      margin-right: 2px;
+    }
+    .l-btn-text {
+      margin: 0 !important;
+    }
+  }
 }
