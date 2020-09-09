@@ -1,3 +1,4 @@
+const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var prefix = ctx + "logistic/send-cont-empty";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
@@ -8,11 +9,13 @@ var allChecked = false;
 var checkList = [];
 var rowAmount = 0;
 var shipmentSearch = new Object;
+shipmentSearch.params = new Object();
 shipmentSearch.serviceType = 2;
 var sizeList = [];
 var onChangeFlg = false, currentIndexRow, rejectChange = false;
 var checkEmptyExpiredDem = true;
 var berthplanList;// get infor
+var fromDate, toDate;
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
@@ -49,46 +52,118 @@ $.ajax({
 });
 var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
 
+var toolbar = [
+    {
+        text: '<button class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Thêm</button>',
+        handler: function () {
+            $.operate.addShipment();
+        },
+    },
+    {
+        text: '<button class="btn btn-sm btn-default" ><i class="fa fa-edit text-warning"></i> Sửa</button>',
+        handler: function () {
+            $.operate.editShipment();
+        },
+    },
+    {
+        text: '<button class="btn btn-sm btn-default"><i class="fa fa-remove text-danger"></i> Xóa</button>',
+        handler: function () {
+            removeShipment()
+        },
+    },
+    {
+        text: '<button class="btn btn-sm btn-default"><i class="fa fa-refresh text-success"></i></button>',
+        handler: function () {
+            handleRefresh();
+        },
+    },
+];
+
+$(".main-body").layout();
+
+loadTable();
+
+$(".collapse").click(function () {
+    $(".main-body__search-wrapper").height(15);
+    $(".main-body__search-wrapper--container").hide();
+    $(this).hide();
+    $(".uncollapse").show();
+});
+
+$(".uncollapse").click(function () {
+    $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
+    $(".main-body__search-wrapper--container").show();
+    $(this).hide();
+    $(".collapse").show();
+});
+
+$(".left-side__collapse").click(function () {
+    $("#main-layout").layout("collapse", "west");
+    setTimeout(() => {
+        hot.render();
+    }, 200);
+});
+
+
+$('#main-layout').layout({
+    onExpand: function (region) {
+        if (region == "west") {
+            hot.render();
+        }
+    }
+})
+
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
-    //DEFAULT SEARCH FOLLOW DATE
-    let fromMonth = (new Date().getMonth() < 10) ? "0" + (new Date().getMonth()) : new Date().getMonth();
-    let toMonth = (new Date().getMonth() +2 < 10) ? "0" + (new Date().getMonth() +2 ): new Date().getMonth() +2;
-    $('#fromDate').val("01/"+ fromMonth + "/" + new Date().getFullYear());
-    $('#toDate').val("01/"+ (toMonth > 12 ? "01" +"/"+ (new Date().getFullYear()+1)  : toMonth + "/" + new Date().getFullYear()));
-    let fromDate = stringToDate($('#fromDate').val());
-    let toDate =  stringToDate($('#toDate').val());
-    fromDate.setHours(0,0,0);
-    toDate.setHours(23, 59, 59);
-    shipmentSearch.fromDate = fromDate.getTime();
-    shipmentSearch.toDate = toDate.getTime();
+    $("#blNo").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+            shipmentSearch.blNo = $("#blNo").textbox('getText').toUpperCase();
+            loadTable();
+        }
+    });
 
-    loadTable();
-    $(".left-side").css("height", $(document).height());
-    $("#btn-collapse").click(function () {
-        handleCollapse(true);
+    $("#containerNo").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+            shipmentSearch.params.containerNo = $("#containerNo").textbox('getText').toUpperCase();
+            loadTable();
+        }
     });
-    $("#btn-uncollapse").click(function () {
-        handleCollapse(false);
+
+    $("#consignee").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+            shipmentSearch.params.consignee = $("#consignee").textbox('getText').toUpperCase();
+            loadTable();
+        }
     });
-    //find date
-    $('.from-date').datetimepicker({
-        language: 'en',
-        format: 'dd/mm/yyyy',
-        autoclose: true,
-        todayBtn: true,
-        todayHighlight: true,
-        pickTime: false,
-        minView: 2
+
+    $('#fromDate').datebox({
+        onSelect: function (date) {
+            date.setHours(0, 0, 0);
+            fromDate = date;
+            if (toDate != null && date.getTime() > toDate.getTime()) {
+                $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
+            } else {
+                shipmentSearch.params.fromDate = dateToString(date);
+                loadTable();
+            }
+            return date;
+        }
     });
-    $('.to-date').datetimepicker({
-        language: 'en',
-        format: 'dd/mm/yyyy',
-        autoclose: true,
-        todayBtn: true,
-        todayHighlight: true,
-        pickTime: false,
-        minView: 2
+
+    $('#toDate').datebox({
+        onSelect: function (date) {
+            date.setHours(23, 59, 59);
+            toDate = date;
+            if (fromDate != null && date.getTime() < fromDate.getTime()) {
+                $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
+            } else {
+                shipmentSearch.params.toDate = dateToString(date);
+                loadTable();
+            }
+        }
     });
     // Handle add
     $(function () {
@@ -100,54 +175,21 @@ $(document).ready(function () {
         $.table.init(options);
     });
 });
-//search date
-function changeFromDate() {
-    let fromDate = stringToDate($('#fromDate').val());
-    if ($('#toDate').val() != '' && stringToDate($('#toDate').val()).getTime() < fromDate.getTime()) {
-        $.modal.alertError('Quý khách không thể chọn từ ngày cao hơn đến ngày.')
-        $('#fromDate').val('');
-    } else {
-        shipmentSearch.fromDate = fromDate.getTime();
-        loadTable();
-    }
+
+function dateformatter(date) {
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    var d = date.getDate();
+    return (d < 10 ? ('0' + d) : d) + '/' + (m < 10 ? ('0' + m) : m) + '/' + y;
 }
-  
-function changeToDate() {
-    let toDate = stringToDate($('.to-date').val());
-    if ($('.from-date').val() != '' && stringToDate($('.from-date').val()).getTime() > toDate.getTime()) {
-        $.modal.alertError('Quý khách không thể chọn đến ngày thấp hơn từ ngày.')
-        $('.to-date').val('');
-    } else {
-        toDate.setHours(23, 59, 59);
-        shipmentSearch.toDate = toDate.getTime();
-        loadTable();
+function dateparser(s) {
+    var ss = (s.split('\.'));
+    var d = parseInt(ss[0], 10);
+    var m = parseInt(ss[1], 10);
+    var y = parseInt(ss[2], 10);
+    if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+        return new Date(y, m - 1, d);
     }
-}
-  
-function stringToDate(dateStr) {
-    let dateParts = dateStr.split('/');
-    return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
-}
-function handleCollapse(status) {
-    if (status) {
-        $(".left-side").css("width", "0.5%");
-        $(".left-side").children().hide();
-        $("#btn-collapse").hide();
-        $("#btn-uncollapse").show();
-        $(".right-side").css("width", "99%");
-        setTimeout(function () {
-            hot.render();
-        }, 500);
-        return;
-    }
-    $(".left-side").css("width", "33%");
-    $(".left-side").children().show();
-    $("#btn-collapse").show();
-    $("#btn-uncollapse").hide();
-    $(".right-side").css("width", "67%");
-    setTimeout(function () {
-        hot.render();
-    }, 500);
 }
 
 // LOAD SHIPMENT LIST
@@ -157,11 +199,12 @@ function loadTable(msg) {
     }
     $("#dg").datagrid({
         url: ctx + 'logistic/shipments',
-        height: window.innerHeight - 110,
+        height: $('.main-body').height() - 75,
         method: 'post',
         singleSelect: true,
         collapsible: true,
         clientPaging: false,
+        toolbar: toolbar,
         pagination: true,
         rownumbers:true,
         onBeforeSelect: function (index, row) {
@@ -244,9 +287,16 @@ function getSelected(index, row) {
                         };
                         $.table.init(options);
                     });
-                    $("#loCode").text(row.id);
-                    $("#taxCode").text(row.taxCode);
-                    $("#quantity").text(row.containerAmount);
+                    let title = '';
+                    title += 'Mã Lô: ' + row.id + ' - ';
+                    title += 'SL: ' + row.containerAmount + ' - ';
+                    title += 'B/L No: ';
+                    if (row.blNo != null) {
+                        title += row.blNo;
+                    } else {
+                        title += 'Trống';
+                    }
+                    $('#main-layout').layout('panel', 'center').panel('setTitle', title);
                     rowAmount = row.containerAmount;
                     checkList = Array(rowAmount).fill(0);
                     sztpListDisable = Array(rowAmount).fill(0);
@@ -285,9 +335,16 @@ function getSelected(index, row) {
                     };
                     $.table.init(options);
                 });
-                $("#loCode").text(row.id);
-                $("#taxCode").text(row.taxCode);
-                $("#quantity").text(row.containerAmount);
+                let title = '';
+                title += 'Mã Lô: ' + row.id + ' - ';
+                title += 'SL: ' + row.containerAmount + ' - ';
+                title += 'B/L No: ';
+                if (row.blNo != null) {
+                    title += row.blNo;
+                } else {
+                    title += 'Trống';
+                }
+                $('#main-layout').layout('panel', 'center').panel('setTitle', title);
                 rowAmount = row.containerAmount;
                 checkList = Array(rowAmount).fill(0);
                 sztpListDisable = Array(rowAmount).fill(0);
@@ -374,60 +431,58 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     return td;
 }
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
-    $(td).html(value);
+    $(td).attr('id', 'containerNo' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'consignee' + row).addClass("htMiddle");
-    $(td).html(value);
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
-    return td;
-}
-function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'opeCode' + row).addClass("htMiddle");
-    $(td).html(value);
-    if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
+    if (!value) {
+        value = '';
     }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function emptyExpiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'emptyExpiredDem' + row).addClass("htMiddle");
-    $(td).html(value);
+    $(td).attr('id', 'emptyExpiredDem' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
         if (value.substring(2, 3) != "/") {
             value = value.substring(8, 10)+"/"+value.substring(5, 7)+"/"+value.substring(0,4);
         }
-        $(td).html(value);
-    } else {
-        $(td).html('');
     }
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
-    $(td).html(value);
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -442,20 +497,29 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
         cellProperties.readOnly = 'true';
         $(td).css("background-color", "rgb(232, 232, 232)");
     }
-    $(td).html(value);
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function emptyDepotLocationRenderer(instance, td, row, col, prop, value, cellProperties)  {
     $(td).attr('id', 'emptyDepotLocation' + row).addClass("htMiddle");
-    $(td).html(value);
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     cellProperties.readOnly = 'true';
     $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
 
 function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'payType' + row).addClass("htMiddle");
-    $(td).html(value);
+    $(td).attr('id', 'payType' + row).addClass("htMiddle").addClass("htCenter");
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     cellProperties.readOnly = 'true';
     $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
@@ -463,7 +527,10 @@ function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'payer' + row).addClass("htMiddle");
-    $(td).html(value);
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     cellProperties.readOnly = 'true';
     $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
@@ -471,7 +538,10 @@ function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'payerNamer' + row).addClass("htMiddle");
-    $(td).html(value);
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     cellProperties.readOnly = 'true';
     $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
@@ -479,7 +549,10 @@ function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) 
 
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'remark' + row).addClass("htMiddle");
-    $(td).html(value);
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 
@@ -488,7 +561,7 @@ function configHandson() {
     if (!shipmentSelected || shipmentSelected.sendContEmptyType == '0') {
         config = {
             stretchH: "all",
-            height: document.documentElement.clientHeight - 105,
+            height: $('.main-body').height() - 110,
             minRows: rowAmount,
             maxRows: rowAmount,
             width: "100%",
@@ -530,7 +603,7 @@ function configHandson() {
                         return "Ghi Chú";
                 }
             },
-            // colWidths: [50, 100, 100, 100, 120, 100, 200],
+            colWidths: [40, 100, 100, 150, 150, 100, 100, 130, 130, 200],
             filter: "true",
             columns: [
                 {
@@ -628,7 +701,7 @@ function configHandson() {
     } else {
         config = {
             stretchH: "all",
-            height: document.documentElement.clientHeight - 105,
+            height: $('.main-body').height() - 110,
             minRows: rowAmount,
             maxRows: rowAmount,
             width: "100%",
@@ -672,7 +745,7 @@ function configHandson() {
                         return "Ghi Chú";
                 }
             },
-            // colWidths: [50, 100, 100, 100, 120, 100, 200],
+            colWidths: [40, 100, 100, 150, 150, 150, 100, 100, 130, 130, 200],
             filter: "true",
             columns: [
                 {
@@ -1478,4 +1551,27 @@ function removeShipmentSendEmpty(){
 			$.modal.msgError("Không thể xóa Lô " + shipmentSelected.id);
 		}
 	}
+}
+
+function dateToString(date) {
+    return ("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear()
+        + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
+}
+
+function search() {
+    loadTable();
+}
+
+function clearInput() {
+    $("#blNo").textbox('setText', '');
+    $("#containerNo").textbox('setText', '');
+    $("#consignee").textbox('setText', '');
+    $('#fromDate').datebox('setValue', '');
+    $('#toDate').datebox('setValue', '');
+    shipmentSearch = new Object();
+    shipmentSearch.params = new Object();
+    shipmentSearch.serviceType = 1;
+    fromDate = null;
+    toDate = null;
+    loadTable();
 }
