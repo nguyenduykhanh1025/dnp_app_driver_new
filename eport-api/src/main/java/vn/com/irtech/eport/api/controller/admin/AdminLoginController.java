@@ -40,10 +40,22 @@ public class AdminLoginController extends BaseController {
 		ajaxResult.put("token", loginService.login(loginForm, EportUserType.ADMIN));
 		
 		// Get block from catos
-		ajaxResult.put("blocks", catosApiService.getBlockList("empty"));
+		List<String> blocks = null;
+		try {
+			blocks = catosApiService.getBlockList("empty");
+		} catch (Exception e) {
+			logger.error("Failed to get list block from catos: " + e);
+			blocks = new ArrayList<>();
+		}
+		ajaxResult.put("blocks", blocks);
 		
 		// Get list object dictionary from eport db bay 2x for container sztp 2x
-		List<SysDictData> bay2xFull = sysDictDataService.selectDictDataByType("cont_plan_bay_2x");
+		List<SysDictData> bay2xFull = null;
+		try {
+			bay2xFull = sysDictDataService.selectDictDataByType("cont_plan_bay_2x");
+		} catch (Exception e) {
+			logger.error("Failed to get list cont 2x: " + e);
+		}
 		List<String> bay2x = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(bay2xFull)) {
 			for (SysDictData sysDictData2 : bay2xFull) {
@@ -53,7 +65,12 @@ public class AdminLoginController extends BaseController {
 		ajaxResult.put("bays2x", bay2x);
 		
 		// Get list object dictionary from eport db bay 4x for container sztp 4x 
-		List<SysDictData> bay4xFull = sysDictDataService.selectDictDataByType("cont_plan_bay_4x");
+		List<SysDictData> bay4xFull = null;
+		try {
+			bay4xFull = sysDictDataService.selectDictDataByType("cont_plan_bay_4x");
+		} catch (Exception e) {
+			logger.error("Failed to get list cont 4x: " + e);
+		}
 		List<String> bay4x = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(bay4xFull)) {
 			for (SysDictData sysDictData2 : bay4xFull) {
@@ -62,25 +79,43 @@ public class AdminLoginController extends BaseController {
 		}
 		ajaxResult.put("bays4x", bay4x);
 		
-		List<SysDictData> rowsFull = sysDictDataService.selectDictDataByType("cont_plan_row");
+		
+		List<SysDictData> rowsFull = null;
+		try {
+			rowsFull = sysDictDataService.selectDictDataByType("cont_plan_row");
+		} catch (Exception e) {
+			logger.error("Failed to get list row: " + e);
+		}
 		List<String> rows = new ArrayList<>();
-		if (CollectionUtils.isNotEmpty(bay4xFull)) {
+		if (CollectionUtils.isNotEmpty(rowsFull)) {
 			for (SysDictData sysDictData2 : rowsFull) {
 				rows.add(sysDictData2.getDictValue());
 			}
 		}
 		ajaxResult.put("rows", rows);
 		
-		List<SysDictData> tiersFull = sysDictDataService.selectDictDataByType("cont_plan_tier");
+		List<SysDictData> tiersFull = null;
+		try {
+			tiersFull = sysDictDataService.selectDictDataByType("cont_plan_tier");
+		} catch (Exception e) {
+			logger.error("Failed to get list tier: " + e);
+		}
 		List<String> tiers = new ArrayList<>();
-		if (CollectionUtils.isNotEmpty(bay4xFull)) {
+		if (CollectionUtils.isNotEmpty(tiersFull)) {
 			for (SysDictData sysDictData2 : tiersFull) {
 				tiers.add(sysDictData2.getDictValue());
 			}
 		}
 		ajaxResult.put("tiers", tiers);
 		
-		ajaxResult.put("areas", catosApiService.getAreaList("empty"));
+		List<String> areasFull = null;
+		try {
+			areasFull = catosApiService.getAreaList("empty");
+		} catch (Exception e) {
+			logger.error("Failed to get list area from catos: " + e);
+			areasFull = new ArrayList<>();
+		}
+		ajaxResult.put("areas", areasFull);
 		return ajaxResult;
 	}
 }

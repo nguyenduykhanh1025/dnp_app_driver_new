@@ -268,6 +268,7 @@ public class GatePassHandler implements IMqttMessageListener {
 					try {
 						logger.debug("Received Position failed from Robot. Send MC request: " + msg);
 						mqttService.sendMessageToMc(msg);
+						mqttService.sendMessageToMcAppWindow(pickupHistory.getId());
 					} catch (MqttException e) {
 						logger.error("Erorr request yard position from mc: " + e);
 					}

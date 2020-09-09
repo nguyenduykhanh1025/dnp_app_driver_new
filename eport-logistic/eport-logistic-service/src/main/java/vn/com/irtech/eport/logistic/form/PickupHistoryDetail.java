@@ -23,6 +23,10 @@ public class PickupHistoryDetail extends PickupHistoryForm {
     private String remark;
 
     private Integer status;
+    
+    private String cargoType;
+    
+    private Long wgt;
 
     public String getTruckNo() {
         return this.truckNo;
@@ -111,4 +115,21 @@ public class PickupHistoryDetail extends PickupHistoryForm {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+	public String getCargoType() {
+		return cargoType;
+	}
+
+	public void setCargoType(String cargoType) {
+		this.cargoType = cargoType;
+	}
+
+	public Long getWgt() {
+		return wgt;
+	}
+
+	public void setWgt(Long wgt) {
+		this.wgt = wgt;
+	}
+    
 }

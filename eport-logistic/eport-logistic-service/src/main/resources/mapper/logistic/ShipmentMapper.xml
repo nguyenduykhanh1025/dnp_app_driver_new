@@ -202,7 +202,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectShipmentListForDriver" resultType="vn.com.irtech.eport.logistic.form.ShipmentForm">
-        select s.id as batchId, s.bl_no as blNo, s.booking_no as bookingNo, sh.fe as fe, (select count(sh.id) from shipment_detail sh where sh.shipment_id = s.id) as contAmount
+        select s.id as batchId, s.bl_no as blNo, s.booking_no as bookingNo, sh.fe as fe,
+         (select sh.consignee from shipment_detail sh where sh.shipment_id = s.id fetch next 1 rows only) as consignee,
+        (select count(sh.id) from shipment_detail sh where sh.shipment_id = s.id) as contAmount
         from shipment s
         left join shipment_detail sh on s.id = sh.shipment_id 
         left join pickup_assign p on s.id = p.shipment_id

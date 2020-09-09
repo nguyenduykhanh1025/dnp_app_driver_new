@@ -1,7 +1,9 @@
 package vn.com.irtech.eport.api.mqtt.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -27,11 +29,16 @@ import vn.com.irtech.eport.api.config.MqttConfig;
 import vn.com.irtech.eport.api.consts.MqttConsts;
 import vn.com.irtech.eport.api.mqtt.listener.CheckinHandler;
 import vn.com.irtech.eport.api.mqtt.listener.GatePassHandler;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
+import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
+import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
 @Component
@@ -43,10 +50,16 @@ public class MqttService implements MqttCallback {
 
 	@Autowired
 	private CheckinHandler checkinHandler;
+	
 	@Autowired
 	private GatePassHandler gatePassHandler;
+	
 	@Autowired
 	private IProcessOrderService processOrderService;
+	
+	@Autowired
+	private IPickupHistoryService pickupHistoryService;
+	
 	@Autowired
 	private ISysRobotService robotService;
 
@@ -244,5 +257,40 @@ public class MqttService implements MqttCallback {
 		}
 		sysRobot.setDisabled(false);
 		return robotService.findFirstRobot(sysRobot);
+	}
+	
+	public void sendMessageToMcAppWindow(Long pickupHistoryId) throws MqttException {
+		// Send message to mc on web
+		Map<String, Object> map = new HashMap<>();
+		map.put("pickupHistoryId", pickupHistoryId.toString());
+		String msg = new Gson().toJson(map);
+		this.publish(MqttConsts.MC_REQ_TOPIC, new MqttMessage(msg.getBytes()));
+		
+		// Get data from pickup history id to send req to mc on app
+		PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(pickupHistoryId);
+		
+		// Set data
+		ShipmentDetail shipmentDetail = pickupHistory.getShipmentDetail();
+		NotificationReq notificationReq = new NotificationReq();
+		notificationReq.setTitle("ePort: Yêu cầu cấp tọa độ.");
+		notificationReq.setMsg("Có yêu cầu tọa độ cho container: " + pickupHistory.getShipment().getOpeCode() +
+				" - " + pickupHistory.getContainerNo() + " - " + shipmentDetail.getSztp() + " - " +
+				shipmentDetail.getVslNm() + shipmentDetail.getVoyNo() + " - " + shipmentDetail.getDischargePort());
+		notificationReq.setType(EportConstants.APP_USER_TYPE_MC);
+		notificationReq.setLink(EportConstants.DOMAIN_URL_ADMIN + EportConstants.URL_POSITION_MC);
+		notificationReq.setPriority(EportConstants.NOTIFICATION_PRIORITY_HIGH);
+		Map<String, Object> data = new HashMap<>();
+		data.put("id", pickupHistoryId);
+		data.put("opeCode", pickupHistory.getShipment().getOpeCode());
+		data.put("containerNo", pickupHistory.getContainerNo());
+		data.put("wgt", shipmentDetail.getWgt());
+		data.put("sztp", shipmentDetail.getSztp());
+		data.put("userVoy", shipmentDetail.getVslNm()+shipmentDetail.getVoyNo());
+		data.put("dischargePort", shipmentDetail.getDischargePort());
+		data.put("cargoType", shipmentDetail.getCargoType());
+		notificationReq.setData(data);
+		
+		String req = new Gson().toJson(notificationReq);
+		this.publish(MqttConsts.NOTIFICATION_MC_TOPIC, new MqttMessage(req.getBytes()));
 	}
 }

@@ -936,7 +936,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectShipmentDetailForDriverShipmentAssign" resultType="vn.com.irtech.eport.logistic.form.PickupAssignForm">
-        select sh.id as shipmentDetailId, sh.container_no as containerNo, sh.wgt as wgt, sh.sztp as sztp, a.id as pickupAssignId
+        select sh.id as shipmentDetailId, sh.container_no as containerNo, sh.wgt as wgt, sh.sztp as sztp, a.id as pickupAssignId,
+        sh.cargo_type as cargoType
         from shipment_detail sh
         left join pickup_assign a on sh.shipment_id = a.shipment_id
         left join pickup_history p on sh.id = p.shipment_detail_id
@@ -945,8 +946,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             and a.driver_id = #{driverId}
             and sh.shipment_id = #{shipmentId}
             and p.shipment_detail_id is null
+            and sh.finish_status = 'N'
             and sh.payment_status = 'Y'
-        group by sh.id, sh.container_no, sh.wgt, sh.sztp, a.id, a.create_time 
+            and a.id is not null
+        group by sh.id, sh.container_no, sh.wgt, sh.sztp, sh.cargo_type, a.id, a.create_time 
         order by a.create_time desc
     </select>
 
@@ -971,5 +974,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         e.consignee2 as consignee
         from edo_house_bill e left join edo d on e.edo_id = d.id
         where e.house_bill_no2 is null and e.house_bill_no = #{blNo}
+    </select>
+
+    <select id="selectShipmentDetailForDriverSendCont" parameterType="vn.com.irtech.eport.logistic.form.PickupAssignForm" resultType="vn.com.irtech.eport.logistic.form.PickupAssignForm">
+        select sh.id as shipmentDetailId, sh.container_no as containerNo, sh.wgt as wgt, sh.sztp as sztp, a.id as pickupAssignId,
+        sh.cargo_type as cargoType, sh.consignee as consignee
+        from shipment_detail sh
+        left join pickup_assign a on sh.shipment_id = a.shipment_id
+        left join pickup_history p on sh.id = p.shipment_detail_id
+        left join shipment s on sh.shipment_id = s.id
+        <where>
+            a.shipment_detail_id is null
+            and p.shipment_detail_id is null
+            and sh.payment_status = 'Y'
+            and sh.finish_status = 'N'
+            and (s.service_type = 2 or s.service_type = 4)
+            and a.id is not null
+            <if test="driverId != null "> and a.driver_id = #{driverId}</if>
+            <if test="pickUp.containerNo != null and pickUp.containerNo != ''"> and sh.container_no like concat(concat('%', #{pickUp.containerNo}), '%')</if>
+            <if test="pickUp.consignee != null and pickUp.consignee != ''"> and sh.consignee = concat(concat('%', #{pickUp.consignee}), '%')</if>
+        </where>
+        group by sh.id, sh.container_no, sh.wgt, sh.sztp, sh.cargo_type, sh.consignee, a.id, a.create_time 
+        order by a.create_time desc
     </select>
 </mapper>
