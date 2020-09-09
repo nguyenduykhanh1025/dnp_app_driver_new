@@ -285,4 +285,9 @@ public class ApiShipmentDetailController {
 	public List<String> getBaysForCarrier(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
 		return shipmentDetailDao.selectListBayBySztpOpeCode(shipmentDetailEntity);
 	}
+	
+	@GetMapping("/taxCode/{taxCode}/trucker")
+	public String getPtnrCodeByTaxCode(@PathVariable("taxCode") String taxCode) {
+		return shipmentDetailDao.getTruckerByRegNo(taxCode);
+	}
 }

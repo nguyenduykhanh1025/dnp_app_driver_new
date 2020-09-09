@@ -781,39 +781,39 @@ function onChange(changes, source) {
         } 
         // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
         else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-          let vesselAndVoy = hot.getDataAtCell(change[0], 10);
-          //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
-          if (vesselAndVoy) {
-              let shipmentDetail = new Object();
-              for (let i= 0; i < berthplanList.length;i++){
-              	if(vesselAndVoy == berthplanList[i].vslAndVoy){
-              		shipmentDetail.vslNm = berthplanList[i].vslNm;
-              		shipmentDetail.voyNo = berthplanList[i].voyNo;
-              		shipmentDetail.year = berthplanList[i].year;
-              		$.modal.loading("Đang xử lý ...");
-                      $.ajax({
-                          url: ctx + "/logistic/pods",
-                          method: "POST",
-                          contentType: "application/json",
-                          data: JSON.stringify(shipmentDetail),
-                          success: function (data) {
-                          	$.modal.closeLoading();
-                              if (data.code == 0) {
-                                  hot.updateSettings({
-                                      cells: function (row, col, prop) {
-                                          if (row == change[0] && col == 11) {
-                                              let cellProperties = {};
-                                              cellProperties.source = data.dischargePorts;
-                                              return cellProperties;
-                                          }
-                                      }
-                                  });
-                              }
-                          }
-                      });
-              	}
-              }
-          }
+            let vesselAndVoy = hot.getDataAtCell(change[0], 10);
+            //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
+            if (vesselAndVoy) {
+                let shipmentDetail = new Object();
+                for (let i= 0; i < berthplanList.length;i++){
+                    if(vesselAndVoy == berthplanList[i].vslAndVoy){
+                        shipmentDetail.vslNm = berthplanList[i].vslNm;
+                        shipmentDetail.voyNo = berthplanList[i].voyNo;
+                        shipmentDetail.year = berthplanList[i].year;
+                        $.modal.loading("Đang xử lý ...");
+                        $.ajax({
+                            url: ctx + "/logistic/pods",
+                            method: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(shipmentDetail),
+                            success: function (data) {
+                            $.modal.closeLoading();
+                                if (data.code == 0) {
+                                    hot.updateSettings({
+                                        cells: function (row, col, prop) {
+                                            if (row == change[0] && col == 11) {
+                                                let cellProperties = {};
+                                                cellProperties.source = data.dischargePorts;
+                                                return cellProperties;
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+              	    }
+                }
+            }
         }
     });
 }

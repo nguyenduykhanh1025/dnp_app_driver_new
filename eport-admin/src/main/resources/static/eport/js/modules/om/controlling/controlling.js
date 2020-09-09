@@ -2,6 +2,7 @@ const PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipmentDetailIds;
+var fromDate, toDate;
 var shipment = new Object();
 shipment.params = new Object();
 
@@ -9,7 +10,7 @@ $( document ).ready(function() {
   $(".main-body").layout();
 
   $(".collapse").click(function () {
-    $(".main-body__search-wrapper").height(0);
+    $(".main-body__search-wrapper").height(15);
     $(".main-body__search-wrapper--container").hide();
     $(this).hide();
     $(".uncollapse").show();
@@ -29,16 +30,27 @@ $( document ).ready(function() {
   $('#fromDate').datebox({
     onSelect: function(date){
       date.setHours(0,0,0);
-      shipment.fromDate = date.getTime();
-      loadTable();
+      fromDate = date;
+      if (toDate != null && date.getTime() > toDate.getTime()) {
+        $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
+      } else {
+        shipment.params.fromDate = dateToString(date);
+        loadTable();
+      }
+      return date;
     }
   });
 
   $('#toDate').datebox({
     onSelect: function(date){
       date.setHours(23,59,59);
-      shipment.toDate = date.getTime();
-      loadTable();
+      toDate = date;
+      if (fromDate != null && date.getTime() < fromDate.getTime()) {
+        $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
+      } else {
+        shipment.params.toDate = dateToString(date);
+        loadTable();
+      }
     }
   });
 
@@ -134,16 +146,13 @@ function dateformatter(date){
   return (d<10?('0'+d):d) + '/' + (m<10?('0'+m):m) + '/' + y;
 }
 function dateparser(s){
-  if (!s) return new Date();
   var ss = (s.split('\.'));
   var d = parseInt(ss[0],10);
   var m = parseInt(ss[1],10);
   var y = parseInt(ss[2],10);
   if (!isNaN(y) && !isNaN(m) && !isNaN(d)){
     return new Date(y,m-1,d);
-  } else {
-    return new Date();
-  }
+  } 
 }
 
 
@@ -184,13 +193,13 @@ function loadTable() {
           } else {
             success([]);
           }
-          if (res.shipments.length > 0) {
-            $("#dg").datagrid('checkRow', 0);
-            shipmentSelected = res.shipments[0];
-            rowAmount = shipmentSelected.containerAmount;
-            shipmentDetail.shipmentId = shipmentSelected.id;
-            loadShipmentDetails(shipmentSelected.id);
-          }
+          // if (res.shipments.length > 0) {
+          //   $("#dg").datagrid('checkRow', 0);
+          //   shipmentSelected = res.shipments[0];
+          //   rowAmount = shipmentSelected.containerAmount;
+          //   shipmentDetail.shipmentId = shipmentSelected.id;
+          //   loadShipmentDetails(shipmentSelected.id);
+          // }
         },
         error: function () {
           error.apply(this, arguments);
@@ -841,6 +850,8 @@ function clearInput() {
   $('#toDate').datebox('setValue', '');
   shipment = new Object();
   shipment.params = new Object();
+  fromDate = null;
+  toDate = null;
   loadTable();
 }
 
@@ -848,5 +859,10 @@ function logisticInfo(id, logistics) {
   $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function() {
     $.modal.close();
   });
+}
+
+function dateToString(date) {
+  return ("0" + date.getDate()).slice(-2) + "/" + ("0"+(date.getMonth()+1)).slice(-2) + "/" + date.getFullYear()
+  + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
 }
 

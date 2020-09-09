@@ -562,4 +562,11 @@
 	   </where>
 		GROUP BY BAY
 	</select>
+
+	<select id="getTruckerByRegNo" parameterType="String" resultType="String">
+		SELECT PTNR_CODE
+		FROM DNP_UAT.TB_PTNR
+		WHERE REG_NO = #{taxCode}
+		FETCH NEXT 1 ROWS ONLY
+	</select>
 </mapper>
