@@ -78,15 +78,12 @@ body {
             }
           }
         }
-        .main-body__search-wrapper--btn-group {
-          float: right;
-          width: 20%;
-          .btn {
-            font-size: 12px;
-            margin-bottom: 5px;
-            border-radius: 0;
-            padding: 2px 3px;
-          }
+
+        .btn {
+          font-size: 12px;
+          margin-bottom: 5px;
+          border-radius: 0;
+          padding: 2px 3px;
         }
       }
 
@@ -104,7 +101,7 @@ body {
         }
         .left-side__uncollapse {
           @include btn-collapse-col;
-          display: none;  
+          display: none;
           &:hover {
             cursor: e-resize;
           }
@@ -169,4 +166,16 @@ body {
 
 .d-inline {
   margin-bottom: 10px;
+}
+
+.btn-customs {
+  position: relative;
+  vertical-align: middle;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-bottom: 5px !important;
+  margin: 0;
+  padding: 0;
+  border-radius: 3px;
 }

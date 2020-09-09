@@ -80,14 +80,14 @@ var toolbar = [
 $(".main-body").layout();
 
 $(".collapse").click(function () {
-  $(".main-body__search-wrapper").height(15);
+  $(".main-body__search-wrapper").hide();
   $(".main-body__search-wrapper--container").hide();
   $(this).hide();
   $(".uncollapse").show();
 });
 
 $(".uncollapse").click(function () {
-  $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
+  $(".main-body__search-wrapper").show();
   $(".main-body__search-wrapper--container").show();
   $(this).hide();
   $(".collapse").show();
@@ -1485,11 +1485,11 @@ function exportBill() {
 
 // Handling UI STATUS
 function setLayoutRegisterStatus() {
-  // $("#registerStatus").removeClass("label-primary disable").addClass("active");
-  // $("#customStatus").removeClass("label-primary active").addClass("disable");
-  // $("#verifyStatus").removeClass("label-primary active").addClass("disable");
-  // $("#paymentStatus").removeClass("label-primary active").addClass("disable");
-  // $("#finishStatus").removeClass("label-primary active").addClass("disable");
+  $("#registerStatus").removeClass("label-primary disable").addClass("active");
+  $("#customStatus").removeClass("label-primary active").addClass("disable");
+  $("#verifyStatus").removeClass("label-primary active").addClass("disable");
+  $("#paymentStatus").removeClass("label-primary active").addClass("disable");
+  $("#finishStatus").removeClass("label-primary active").addClass("disable");
   $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
@@ -1498,11 +1498,11 @@ function setLayoutRegisterStatus() {
 }
 
 function setLayoutCustomStatus() {
-  // $("#registerStatus").removeClass("active disable").addClass("label-primary");
-  // $("#customStatus").removeClass("label-primary disable").addClass("active");
-  // $("#verifyStatus").removeClass("label-primary active").addClass("disable");
-  // $("#paymentStatus").removeClass("label-primary active").addClass("disable");
-  // $("#finishStatus").removeClass("label-primary active").addClass("disable");
+  $("#registerStatus").removeClass("active disable").addClass("label-primary");
+  $("#customStatus").removeClass("label-primary disable").addClass("active");
+  $("#verifyStatus").removeClass("label-primary active").addClass("disable");
+  $("#paymentStatus").removeClass("label-primary active").addClass("disable");
+  $("#finishStatus").removeClass("label-primary active").addClass("disable");
   $("#customBtn").prop("disabled", false);
   $("#verifyBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
@@ -1511,11 +1511,11 @@ function setLayoutCustomStatus() {
 }
 
 function setLayoutVerifyUserStatus() {
-  // $("#registerStatus").removeClass("active disable").addClass("label-primary");
-  // $("#customStatus").removeClass("active disable").addClass("label-primary");
-  // $("#verifyStatus").removeClass("label-primary disable").addClass("active");
-  // $("#paymentStatus").removeClass("active label-primary").addClass("disable");
-  // $("#finishStatus").removeClass("active label-primary").addClass("disable");
+  $("#registerStatus").removeClass("active disable").addClass("label-primary");
+  $("#customStatus").removeClass("active disable").addClass("label-primary");
+  $("#verifyStatus").removeClass("label-primary disable").addClass("active");
+  $("#paymentStatus").removeClass("active label-primary").addClass("disable");
+  $("#finishStatus").removeClass("active label-primary").addClass("disable");
   $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", false);
   $("#payBtn").prop("disabled", true);
@@ -1524,11 +1524,11 @@ function setLayoutVerifyUserStatus() {
 }
 
 function setLayoutPaymentStatus() {
-  // $("#registerStatus").removeClass("active disable").addClass("label-primary");
-  // $("#customStatus").removeClass("active disable").addClass("label-primary");
-  // $("#verifyStatus").removeClass("active disable").addClass("label-primary");
-  // $("#paymentStatus").removeClass("label-primary disable").addClass("active");
-  // $("#finishStatus").removeClass("active label-primary").addClass("disable");
+  $("#registerStatus").removeClass("active disable").addClass("label-primary");
+  $("#customStatus").removeClass("active disable").addClass("label-primary");
+  $("#verifyStatus").removeClass("active disable").addClass("label-primary");
+  $("#paymentStatus").removeClass("label-primary disable").addClass("active");
+  $("#finishStatus").removeClass("active label-primary").addClass("disable");
   $("#deleteBtn").prop("disabled", true);
   $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
@@ -1538,11 +1538,11 @@ function setLayoutPaymentStatus() {
 }
 
 function setLayoutFinishStatus() {
-  // $("#registerStatus").removeClass("active disable").addClass("label-primary");
-  // $("#verifyStatus").removeClass("active disable").addClass("label-primary");
-  // $("#paymentStatus").removeClass("active disable").addClass("label-primary");
-  // $("#customStatus").removeClass("active disable").addClass("label-primary");
-  // $("#finishStatus").removeClass("label-primary disable").addClass("active");
+  $("#registerStatus").removeClass("active disable").addClass("label-primary");
+  $("#verifyStatus").removeClass("active disable").addClass("label-primary");
+  $("#paymentStatus").removeClass("active disable").addClass("label-primary");
+  $("#customStatus").removeClass("active disable").addClass("label-primary");
+  $("#finishStatus").removeClass("label-primary disable").addClass("active");
   $("#deleteBtn").prop("disabled", true);
   $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
