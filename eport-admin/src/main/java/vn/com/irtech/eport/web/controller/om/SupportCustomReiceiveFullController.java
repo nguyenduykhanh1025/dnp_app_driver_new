@@ -128,8 +128,7 @@ public class SupportCustomReiceiveFullController  extends OmBaseController{
     	shipmentComment.setCommentTime(new Date());
     	shipmentComment.setCreateTime(new Date());
     	shipmentComment.setCreateBy(getUser().getUserName());
-    	//TODO
-    	//setTopic
+    	shipmentComment.setTopic(Constants.RECEIVE_CONT_FULL_CUSTOM_SUPPORT);
     	if(shipmentCommentService.insertShipmentComment(shipmentComment) == 1) {
     		return success();
     	}

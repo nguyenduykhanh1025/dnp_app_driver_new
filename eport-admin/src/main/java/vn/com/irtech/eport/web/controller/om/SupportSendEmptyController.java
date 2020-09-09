@@ -208,8 +208,7 @@ public class SupportSendEmptyController extends OmBaseController{
 	    	shipmentComment.setContent(content);
 	    	shipmentComment.setCreateTime(new Date());
 	    	shipmentComment.setCreateBy(getUser().getUserName());
-	    	//TODO
-	    	//setTopic
+	    	shipmentComment.setTopic(Constants.SEND_CONT_EMPTY_SUPPORT);
 	    	shipmentCommentService.insertShipmentComment(shipmentComment);
 		}
     	return success();
@@ -256,8 +255,7 @@ public class SupportSendEmptyController extends OmBaseController{
 		    	shipmentComment.setContent(content);
 		    	shipmentComment.setCreateTime(new Date());
 		    	shipmentComment.setCreateBy(getUser().getUserName());
-		    	//TODO
-		    	//setTopic
+		    	shipmentComment.setTopic(Constants.SEND_CONT_EMPTY_SUPPORT);
 		    	shipmentCommentService.insertShipmentComment(shipmentComment);
 			}
 	    	return success();
