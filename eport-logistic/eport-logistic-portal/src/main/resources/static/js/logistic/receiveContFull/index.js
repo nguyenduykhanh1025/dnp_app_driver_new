@@ -632,7 +632,7 @@ function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties
 function configHandson() {
   config = {
     stretchH: "all",
-    height: document.documentElement.clientHeight - 125,
+    height: $('.main-body').height() - 110,
     minRows: rowAmount,
     maxRows: rowAmount,
     width: "100%",
