@@ -25,8 +25,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectBookingList" parameterType="Booking" resultMap="BookingResult">
-        <include refid="selectBookingVo"/>
-        <where>  
+        select distinct a.id, a.booking_no, a.book_qty, a.consignee, a.book_status, a.create_time, a.update_by from booking a LEFT JOIN booking_detail b ON a.id = b.booking_id
+        <where> 
+            <if test="params.containerNo != null  and params.containerNo != ''">and upper(container_no) like concat(concat('%', #{params.containerNo}), '%')</if>
+            <if test="params.userVoy != null  and params.userVoy != ''">and upper(user_voy) like concat(concat('%', #{params.userVoy}), '%')</if>
             <if test="carrierGroupId != null "> and carrier_group_id = #{carrierGroupId}</if>
             <if test="carrierAccountId != null "> and carrier_account_id = #{carrierAccountId}</if>
             <if test="opr != null  and opr != ''"> and opr = #{opr}</if>
