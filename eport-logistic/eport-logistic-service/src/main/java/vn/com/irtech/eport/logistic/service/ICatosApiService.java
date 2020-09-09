@@ -2,20 +2,19 @@ package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.BookingInfo;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 
 public interface ICatosApiService {
 
 	public Shipment getOpeCodeCatosByBlNo(String blNo);
 	
-	public Shipment getGroupNameByTaxCode(String taxCode);
+	public PartnerInfoDto getGroupNameByTaxCode(String taxCode);
 	
 	public ProcessOrder getYearBeforeAfter(String vessel, String voyage);
 	
@@ -109,7 +108,7 @@ public interface ICatosApiService {
 	 * @param shipment
 	 * @return	List<shipment>
 	 */
-	public List<Shipment> getListConsigneeWithTaxCode(Shipment shipment);
+	public List<PartnerInfoDto> getListConsigneeWithTaxCode(PartnerInfoDto shipment);
 	
 	/**
 	 * Get sztp by container no
@@ -157,7 +156,7 @@ public interface ICatosApiService {
 	 * @param taxCode
 	 * @return Shipment
 	 */
-	public Shipment getConsigneeNameByTaxCode(String taxCode);
+	public PartnerInfoDto getConsigneeNameByTaxCode(String taxCode);
 	
 	/**
 	 * Get opr code list
@@ -218,4 +217,12 @@ public interface ICatosApiService {
 	 * @return List string bay
 	 */
 	public List<String> getBaysForCarrier(ShipmentDetail shipmentDetail);
+	
+	/**
+	 * Get trucker from column ptnr_code in catos by tax code (reg_no)
+	 * 
+	 * @param taxCode
+	 * @return String
+	 */
+	public String getTruckerByTaxCode(String taxCode);
 }

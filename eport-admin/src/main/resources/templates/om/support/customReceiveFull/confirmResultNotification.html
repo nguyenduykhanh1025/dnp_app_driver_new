@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <th:block th:include="include :: header('Verify Executed Command')" />
+    <th:block th:include="include :: bootstrap-toggle-css" />
+    <link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
+    <link th:href="@{/eport/css/orderRegistrationSupport/style.css}" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="content-body">
+       <form class="form-horizontal m" id="form-verify">
+        <section class="header">
+          <div class="col-sm 3">
+          <i>Hãy nhập nội dung thông báo kết quả và nhấn "Gửi Thông Báo" để thông báo cho khách hàng.
+          </i>
+          </div>
+        </section>
+        <br>
+        <label><b>Ghi chú đến khách hàng:</b></label>
+        <textarea id="remarkToLogistic"  rows="5" cols="50"></textarea>
+       </form>
+      </div>
+<!--       <div class="layui-layer-btn footer">
+        <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+        <a class="layui-layer-btn1" onclick="$opera.exit()">Đóng</a>
+      </div> -->
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: bootstrap-toggle-js" />
+    <script type="text/javascript" th:inline="javascript">
+      var shipmentId = /*[[${shipmentId}]]*/;
+      var PREFIX = ctx + "om/support/custom-receive-full";
+	  var shipmentComment = new Object();
+      function submitHandler() {
+    	  shipmentComment.shipmentId = shipmentId;
+    	  if($("#remarkToLogistic").val() != null){
+    		  shipmentComment.content = $("#remarkToLogistic").val();
+    	  }
+          if ($.validate.form()) {
+        	  $.modal.loading("Đang xử lý...");
+        	  $.ajax({
+        	    url: PREFIX + "/confirm-result-notification",
+        	    method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(shipmentComment),
+        	    success: function (data) {
+        	      $.modal.closeLoading();
+        	      if (data.code == 0) {
+        	    	  parent.msgSuccess("Xác nhận gửi thành công");
+        	      } else {
+        	    	  parent.msgError("Xác nhận gửi không thành công");
+        	      }
+        	      $.modal.close();
+        	    },
+        	    error: function (data) {
+        	    	parent.msgError("Có lỗi xảy ra liên hệ Admin");
+        	      $.modal.closeLoading();
+              	  $.modal.close();
+        	    }
+        	  });
+          }
+      }
+    </script>
+  </body>
+</html>

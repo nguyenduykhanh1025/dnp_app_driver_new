@@ -12,14 +12,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="blNo"    column="bl_no"    />
         <result property="bookingNo"    column="booking_no"    />
         <result property="opeCode"    column="ope_code"    />
-        <result property="taxCode"    column="tax_code"    />
-        <result property="groupName"    column="group_name"    />
-        <result property="address"    column="address"    />
         <result property="containerAmount"    column="container_amount"    />
         <result property="edoFlg"    column="edo_flg"    />
         <result property="specificContFlg"    column="specific_cont_flg"    />
         <result property="contSupplyStatus"    column="cont_supply_status"    />
-        <result property="referenceNo"    column="reference_no"    />
         <result property="status"    column="status"    />
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
@@ -32,9 +28,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="orderNumber"    column="order_number"    />
         <result property="houseBill"    column="house_bill"    />
         <result property="amountBill"    column="amount_bill"    />
+        <result property="sendContEmptyType"    column="send_cont_empty_type"    />
     </resultMap>
     <sql id="selectShipmentVo">
-        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, address, container_amount, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, order_number, house_bill, create_by, create_time, update_by, update_time from shipment
+        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, container_amount, edo_flg, specific_cont_flg, cont_supply_status,  status, remark, order_number, house_bill, create_by, create_time, update_by, update_time from shipment
     </sql>
 
     <select id="selectShipmentList" parameterType="Shipment" resultMap="ShipmentResult">
@@ -47,14 +44,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="blNo != null and blNo != ''"> and upper(bl_no) like concat(concat('%', #{blNo}), '%')</if>
             <if test="bookingNo != null and bookingNo != ''"> and upper(booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
-            <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
-            <if test="groupName != null  and groupName != ''"> and group_name like concat(concat('%', #{groupName}), '%')</if>
-            <if test="address != null  and address != ''"> and address like concat(concat('%', #{address}), '%')</if>
             <if test="containerAmount != null "> and container_amount = #{containerAmount}</if>
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
             <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
@@ -81,17 +74,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="blNo != null  and blNo != ''">bl_no,</if>
             <if test="bookingNo != null  and bookingNo != ''">booking_no,</if>
             <if test="opeCode != null  and opeCode != ''">ope_code,</if>
-            <if test="taxCode != null  and taxCode != ''">tax_code,</if>
-            <if test="groupName != null  and groupName != ''">group_name,</if>
-            <if test="address != null  and address != ''">address,</if>
             <if test="containerAmount != null ">container_amount,</if>
             <if test="edoFlg != null  and edoFlg != ''">edo_flg,</if>
             <if test="specificContFlg != null">specific_cont_flg,</if>
             <if test="contSupplyStatus != null">cont_supply_status,</if>
-            <if test="referenceNo != null  and referenceNo != ''">reference_no,</if>
             <if test="status != null  and status != ''">status,</if>
             <if test="orderNumber != null  and orderNumber != ''">order_number,</if>
             <if test="houseBill != null  and houseBill != ''">house_bill,</if>
+            <if test="sendContEmptyType != null  and sendContEmptyType != ''">send_cont_empty_type,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -104,17 +94,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="blNo != null  and blNo != ''">#{blNo},</if>
             <if test="bookingNo != null  and bookingNo != ''">#{bookingNo},</if>
             <if test="opeCode != null  and opeCode != ''">#{opeCode},</if>
-            <if test="taxCode != null  and taxCode != ''">#{taxCode},</if>
-            <if test="groupName != null  and groupName != ''">#{groupName},</if>
-            <if test="address != null  and address != ''">#{address},</if>
             <if test="containerAmount != null ">#{containerAmount},</if>
             <if test="edoFlg != null  and edoFlg != ''">#{edoFlg},</if>
             <if test="specificContFlg != null">#{specificContFlg},</if>
             <if test="contSupplyStatus != null">#{contSupplyStatus},</if>
-            <if test="referenceNo != null  and referenceNo != ''">#{referenceNo},</if>
             <if test="status != null  and status != ''">#{status},</if>
             <if test="orderNumber != null  and orderNumber != ''">#{orderNumber},</if>
             <if test="houseBill != null  and houseBill != ''">#{houseBill},</if>
+            <if test="sendContEmptyType != null  and sendContEmptyType != ''">#{sendContEmptyType},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -130,17 +117,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="blNo != null  and blNo != ''">bl_no = #{blNo},</if>
             <if test="bookingNo != null  and bookingNo != ''">booking_no = #{bookingNo},</if>
             <if test="opeCode != null  and opeCode != ''">ope_code = #{opeCode},</if>
-            <if test="taxCode != null  and taxCode != ''">tax_code = #{taxCode},</if>
-            <if test="groupName != null  and groupName != ''">group_name = #{groupName},</if>
-            <if test="address != null  and address != ''">address = #{address},</if>
             <if test="containerAmount != null ">container_amount = #{containerAmount},</if>
             <if test="edoFlg != null  and edoFlg != ''">edo_flg = #{edoFlg},</if>
             <if test="specificContFlg != null">specific_cont_flg = #{specificContFlg},</if>
             <if test="contSupplyStatus != null">cont_supply_status = #{contSupplyStatus},</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo},</if>
             <if test="status != null  and status != ''">status = #{status},</if>
             <if test="orderNumber != null  and orderNumber != ''">order_number = #{orderNumber},</if>
             <if test="houseBill != null  and houseBill != ''">house_bill = #{houseBill},</if>
+            <if test="sendContEmptyType != null  and sendContEmptyType != ''">send_cont_empty_type = #{sendContEmptyType},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
@@ -170,7 +154,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectShipmentListForOm" parameterType="Shipment" resultMap="ShipmentResult">
-        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, tax_code, status, create_time, group_name,
+        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, status, create_time, 
         (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as logistic_name,
         (select sh.vsl_nm from shipment_detail sh where sh.shipment_id = s.id FETCH NEXT 1 ROWS ONLY) as vsl_nm,
         (select sh.voy_no from shipment_detail sh where sh.shipment_id = s.id FETCH NEXT 1 ROWS ONLY) as voy_no,
@@ -188,14 +172,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerAmount != null">and s.container_amount = #{containerAmount}</if>
             <if test="blNo != null and blNo != ''"> and (upper(bl_no) like concat(concat('%', #{blNo}), '%')</if>
             <if test="bookingNo != null and bookingNo != ''"> or upper(booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
-            <if test="taxCode != null and taxCode != ''"> or upper(tax_code) like concat(concat('%', #{taxCode}), '%'))</if>
         </where>
-        GROUP BY id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, tax_code, status, create_time, group_name
+        GROUP BY id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, status, create_time
         order by create_time desc
     </select>
 
     <select id="getShipmentListForAssign" parameterType="Shipment" resultMap="ShipmentResult">
-        select  id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, create_by, create_time, update_by, update_time,
+        select  id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, edo_flg, specific_cont_flg, cont_supply_status, status, remark, create_by, create_time, update_by, update_time,
                 (select count(*) from shipment_detail sh where sh.shipment_id = s.id and sh.payment_status = 'Y') as container_amount
         from shipment s
         <where>
@@ -207,12 +190,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="blNo != null and blNo != ''"> and bl_no = #{blNo}</if>
             <if test="bookingNo != null and bookingNo != ''"> and booking_no = #{bookingNo}</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
-            <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
-            <if test="groupName != null  and groupName != ''"> and group_name like concat(concat('%', #{groupName}), '%')</if>
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
             <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
@@ -237,57 +217,73 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="selectShipmentListForRegister" parameterType="Shipment" resultType="Shipment">
         select
-			id,
-			logistic_account_id as logisticAccountId,
-			logistic_group_id as logisticGroupId,
-			service_type as serviceType,
-			bl_no as blNo,
-			booking_no as bookingNo,
-			ope_code as opeCode,
-			tax_code as taxCode, 
-			group_name as groupName, 
-			address, 
-			container_amount as containerAmount, 
-			edo_flg as edoFlg, 
-			specific_cont_flg as specificContFlg, 
-			cont_supply_status as contSupplyStatus, 
-			reference_no as referenceNo, 
-			status, 
-			remark, 
-			order_number as orderNumber, 
-			house_bill as houseBill, 
-			create_by as createBy, 
-			create_time as createTime, 
-			update_by as updateBy, 
-			update_time as updateTime,
+			s.id,
+			s.logistic_account_id as logisticAccountId,
+			s.logistic_group_id as logisticGroupId,
+			s.service_type as serviceType,
+			s.bl_no as blNo,
+			s.booking_no as bookingNo,
+			s.ope_code as opeCode,
+			s.container_amount as containerAmount, 
+			s.edo_flg as edoFlg, 
+			s.specific_cont_flg as specificContFlg, 
+			s.cont_supply_status as contSupplyStatus, 
+			s.status, 
+			s.remark, 
+			s.order_number as orderNumber, 
+			s.house_bill as houseBill, 
+			s.create_by as createBy, 
+			s.create_time as createTime, 
+			s.update_by as updateBy, 
+			s.update_time as updateTime,
+            s.send_cont_empty_type as sendContEmptyType,
 			(select sh.consignee from shipment_detail sh where sh.shipment_id = s.id FETCH NEXT 1 ROWS ONLY) as consignee
-		from shipment s
+		from shipment s right join shipment_detail sh on s.id = sh.shipment_id
         <where>  
-            <if test="id != null "> and id = #{id}</if>
-            <if test="logisticAccountId != null "> and logistic_account_id = #{logisticAccountId}</if>
-            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
-            <if test="serviceType != null "> and service_type = #{serviceType}</if>
-            <if test="blNo != null and blNo != ''"> and upper(bl_no) like concat(concat('%', #{blNo}), '%')</if>
-            <if test="bookingNo != null and bookingNo != ''"> and upper(booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
-            <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
-            <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
-            <if test="groupName != null  and groupName != ''"> and group_name like concat(concat('%', #{groupName}), '%')</if>
-            <if test="address != null  and address != ''"> and address like concat(concat('%', #{address}), '%')</if>
-            <if test="containerAmount != null "> and container_amount = #{containerAmount}</if>
-            <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
-            <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
-            <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
-            <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
-            <if test="toDate != null">and create_time &lt;= #{toDate}</if>
+            <if test="id != null "> and s.id = #{id}</if>
+            <if test="logisticAccountId != null "> and s.logistic_account_id = #{logisticAccountId}</if>
+            <if test="logisticGroupId != null "> and s.logistic_group_id = #{logisticGroupId}</if>
+            <if test="serviceType != null "> and s.service_type = #{serviceType}</if>
+            <if test="blNo != null and blNo != ''"> and upper(s.bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> and upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+            <if test="opeCode != null  and opeCode != ''"> and s.ope_code = #{opeCode}</if>
+            <if test="containerAmount != null "> and s.container_amount = #{containerAmount}</if>
+            <if test="edoFlg != null  and edoFlg != ''"> and s.edo_flg = #{edoFlg}</if>
+            <if test="specificContFlg != null"> and s.specific_cont_flg = #{specificContFlg}</if>
+            <if test="contSupplyStatus != null"> and s.cont_supply_status = #{contSupplyStatus}</if>
+            <if test="status != null  and status != ''"> and s.status = #{status}</if>
+            <if test="remark != null  and remark != ''"> and s.remark = #{remark}</if>
+            <if test="params.containerNo != null  and params.containerNo != ''"> and upper(sh.container_no) like concat(concat('%', #{params.containerNo}), '%')</if>
+            <if test="params.consignee != null  and params.consignee != ''"> and upper(consignee) like concat(concat('%', #{params.consignee}), '%')</if>
+            <if test="params.fromDate != null">and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDate != null">and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
         </where>
-        order by create_time desc
+        group by s.id,
+			s.logistic_account_id,
+			s.logistic_group_id,
+			s.service_type,
+			s.bl_no,
+			s.booking_no,
+			s.ope_code,
+			s.container_amount, 
+			s.edo_flg, 
+			s.specific_cont_flg, 
+			s.cont_supply_status, 
+			s.status, 
+			s.remark, 
+			s.order_number, 
+			s.house_bill, 
+			s.create_by, 
+			s.create_time, 
+			s.update_by, 
+			s.update_time,
+            s.send_cont_empty_type,
+            consignee
+        order by s.create_time desc
     </select>
 
     <select id="getShipmentListForContSupply" parameterType="Shipment" resultMap="ShipmentResult">
-        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, address, container_amount, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, order_number, house_bill, create_by, create_time, update_by, update_time,
+        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, container_amount, edo_flg, specific_cont_flg, cont_supply_status, status, remark, order_number, house_bill, create_by, create_time, update_by, update_time,
         (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as logistic_name
         from shipment s
         <where>  
@@ -298,14 +294,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="blNo != null and blNo != ''"> and upper(bl_no) like concat(concat('%', #{blNo}), '%')</if>
             <if test="bookingNo != null and bookingNo != ''"> and upper(booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
-            <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
-            <if test="groupName != null  and groupName != ''"> and group_name like concat(concat('%', #{groupName}), '%')</if>
-            <if test="address != null  and address != ''"> and address like concat(concat('%', #{address}), '%')</if>
             <if test="containerAmount != null "> and container_amount = #{containerAmount}</if>
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
             <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
@@ -315,8 +307,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectShipmentListByWithShipmentDetailFilter" parameterType="Shipment" resultMap="ShipmentResult">
-        select s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, s.ope_code, s.tax_code, s.group_name, 
-        s.address, s.container_amount,s.edo_flg, s.specific_cont_flg, s.cont_supply_status, s.reference_no, s.status, s.remark, s.order_number, 
+        select s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, s.ope_code, 
+        s.container_amount,s.edo_flg, s.specific_cont_flg, s.cont_supply_status, s.status, s.remark, s.order_number, 
         s.house_bill, s.create_by, s.create_time, s.update_by, s.update_time,
         (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as "logistic_name"
 
@@ -330,29 +322,98 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="blNo != null and blNo != ''"> and upper(s.bl_no) like concat(concat('%', #{blNo}), '%')</if>
             <if test="bookingNo != null and bookingNo != ''"> and upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
             <if test="opeCode != null  and opeCode != ''"> and s.ope_code = #{opeCode}</if>
-            <if test="taxCode != null  and taxCode != ''"> and s.tax_code = #{taxCode}</if>
-            <if test="groupName != null  and groupName != ''"> and s.group_name like concat(concat('%', #{groupName}), '%')</if>
-            <if test="address != null  and address != ''"> and s.address like concat(concat('%', #{address}), '%')</if>
             <if test="containerAmount != null "> and s.container_amount = #{containerAmount}</if>
             <if test="edoFlg != null  and edoFlg != ''"> and s.edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and s.specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and s.cont_supply_status = #{contSupplyStatus}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and s.reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and s.status = #{status}</if>
             <if test="remark != null  and remark != ''"> and s.remark = #{remark}</if>
-            <if test="fromDate != null">and s.create_time &gt;= #{fromDate}</if>
-            <if test="toDate != null">and s.create_time &lt;= #{toDate}</if>
+            <if test="params.fromDate != null">and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDate != null">and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
             <if test="params.containerNo != null and params.containerNo != ''">and sh.container_no like concat(concat('%', #{params.containerNo}), '%')</if>
             <if test="params.vslNm != null and params.vslNm != ''">and sh.vsl_nm = #{params.vslNm}</if>
             <if test="params.voyNo != null and params.voyNo != ''">and sh.voy_no = #{params.voyNo}</if>
             <if test="params.doStatus != null and params.doStatus != ''">and sh.do_status = #{params.doStatus}</if>
+            <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
+            <if test="params.blOrBooking != null and params.blOrBooking != ''">
+                and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
+            </if>
         </where>
 
         group by s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, 
-        s.ope_code, s.tax_code, s.group_name, s.address, s.container_amount, s.edo_flg, s.specific_cont_flg, 
-        s.cont_supply_status, s.reference_no, s.status, s.remark, s.order_number, s.house_bill, s.create_by, 
+        s.ope_code, s.container_amount, s.edo_flg, s.specific_cont_flg, 
+        s.cont_supply_status, s.status, s.remark, s.order_number, s.house_bill, s.create_by, 
         s.create_time, s.update_by, s.update_time
 
         order by update_time desc
+    </select>
+    <select id="getShipmentsForSupportCustom" parameterType="Shipment" resultType="Shipment">
+        select id,
+         logistic_account_id as logisticAccountId,
+         logistic_group_id as logisticGroupId, 
+         service_type as serviceType,
+         bl_no as blNo, 
+         booking_no as bookingNo, 
+         ope_code as opeCode, 
+         container_amount as containerAmount, 
+         edo_flg as edoFlg, 
+         specific_cont_flg as specificContFlg, 
+         cont_supply_status as contSupplyStatus, 
+         status, 
+         remark, 
+         order_number as orderNumber, 
+         house_bill as houseBill, 
+         create_by as createBy, 
+         create_time as createTime, 
+         update_by as updateBy, 
+         update_time as updateTime,
+        (SELECT MIN(CUSTOMS_SCAN_TIME) FROM SHIPMENT_DETAIL SH WHERE SH.SHIPMENT_ID = S.ID AND CUSTOM_STATUS = 'Y' AND SH.CUSTOMS_SCAN_TIME IS NOT NULL) as customsScanTime,
+        (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as logisticName
+        from shipment S
+        <where>  
+            S.ID IN ((SELECT SHIPMENT_ID FROM SHIPMENT_DETAIL WHERE CUSTOM_STATUS = 'Y' GROUP BY SHIPMENT_ID))
+            <if test="logisticAccountId != null "> and S.logistic_account_id = #{logisticAccountId}</if>
+            <if test="logisticGroupId != null "> and S.logistic_group_id = #{logisticGroupId}</if>
+            <if test="serviceType != null "> and S.service_type = #{serviceType}</if>
+            <if test="blNo != null and blNo != ''"> and upper(S.bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> and upper(S.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+            <if test="opeCode != null  and opeCode != ''"> and S.ope_code = #{opeCode}</if>
+            <if test="containerAmount != null "> and S.container_amount = #{containerAmount}</if>
+            <if test="edoFlg != null  and edoFlg != ''"> and S.edo_flg = #{edoFlg}</if>
+            <if test="specificContFlg != null"> and S.specific_cont_flg = #{specificContFlg}</if>
+            <if test="contSupplyStatus != null"> and S.cont_supply_status = #{contSupplyStatus}</if>
+            <if test="status != null  and status != ''"> and S.status = #{status}</if>
+            <if test="remark != null  and remark != ''"> and S.remark = #{remark}</if>
+            <if test="fromDate != null">and S.create_time &gt;= #{fromDate}</if>
+            <if test="toDate != null">and S.create_time &lt;= #{toDate}</if>
+        </where>
+        ORDER BY customsScanTime ASC
+    </select>
+
+    <select id="selectShipmentListForExtensionDate" parameterType="Shipment" resultMap="ShipmentResult">
+        select * from
+        (select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, 
+        edo_flg, specific_cont_flg, cont_supply_status, status, remark, order_number, 
+        house_bill, create_by, create_time, update_by, update_time, 
+        (select count(*) from shipment_detail sh where sh.shipment_id = s.id and sh.process_status = 'Y' and sh.finish_status = 'N') as container_amount 
+        from shipment s
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+            <if test="logisticAccountId != null "> and logistic_account_id = #{logisticAccountId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="serviceType != null "> and service_type = #{serviceType}</if>
+            <if test="blNo != null and blNo != ''"> and upper(bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> and upper(booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+            <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
+            <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
+            <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
+            <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
+            <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
+            <if test="toDate != null">and create_time &lt;= #{toDate}</if>
+        </where>)
+        where container_amount > 0
+        order by create_time desc
     </select>
 </mapper>

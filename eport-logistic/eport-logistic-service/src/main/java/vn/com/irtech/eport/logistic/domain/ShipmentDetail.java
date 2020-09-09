@@ -1,12 +1,14 @@
 package vn.com.irtech.eport.logistic.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import vn.com.irtech.eport.common.annotation.Excel;
-import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import vn.com.irtech.eport.common.annotation.Excel;
+import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
 /**
  * Shipment Details Object shipment_detail
@@ -197,7 +199,7 @@ public class ShipmentDetail extends BaseEntity
     private String orderNo;
     
     /** Tax Code */
-    @Excel(name = "Tax Code")
+    @Excel(name = "Consignee Tax Code")
     private String taxCode;
     
     /** Consignee By Tax Code */
@@ -207,6 +209,10 @@ public class ShipmentDetail extends BaseEntity
     /** Consignee By Tax Code */
     @Excel(name = "Customs Numbers")
     private String customsNo;
+    
+    /** Create time */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date customScanTime;
     
     /** Container supply status */
     @Excel(name = "Cont Supply Status")
@@ -220,9 +226,21 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Quality Requirement")
     private String qualityRequirement;
     
+    @Excel(name = "Container Supplier Name")
+    private String contSupplierName;
+    
     /** Container supply remark */
     @Excel(name = "Cont Supply Remark")
     private String contSupplyRemark;
+
+    @Excel(name = "Payment Type(Cash/Credit)")
+    private String payType;
+    
+    @Excel(name = "Payer Taxcode")
+    private String payer;
+    
+    @Excel(name = "Payer Name")
+    private String payerName;
 
     private String block;
 
@@ -233,8 +251,6 @@ public class ShipmentDetail extends BaseEntity
     private int tier;
 
     private Integer driverAmount;
-
-    private String payType;
 
     private Integer assignNumber;
 
@@ -256,7 +272,7 @@ public class ShipmentDetail extends BaseEntity
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date toDate;
-    
+	
     public void setFromDate(Date fromDate) {
 		this.fromDate = fromDate;
 	}
@@ -671,7 +687,23 @@ public class ShipmentDetail extends BaseEntity
         return payType;
     }
 
-    public void setAssignNumber(Integer assignNumber) {
+    public String getPayer() {
+		return payer;
+	}
+
+	public void setPayer(String payer) {
+		this.payer = payer;
+	}
+
+	public String getPayerName() {
+		return payerName;
+	}
+
+	public void setPayerName(String payerName) {
+		this.payerName = payerName;
+	}
+
+	public void setAssignNumber(Integer assignNumber) {
         this.assignNumber = assignNumber;
     }
 
@@ -752,6 +784,14 @@ public class ShipmentDetail extends BaseEntity
 		this.customsNo = customsNo;
 	}
 	
+	public Date getCustomScanTime() {
+		return customScanTime;
+	}
+
+	public void setCustomScanTime(Date customScanTime) {
+		this.customScanTime = customScanTime;
+	}
+
 	public String getContSupplyStatus() {
 		return contSupplyStatus;
 	}
@@ -774,6 +814,14 @@ public class ShipmentDetail extends BaseEntity
 
 	public void setQualityRequirement(String qualityRequirement) {
 		this.qualityRequirement = qualityRequirement;
+	}
+
+	public String getContSupplierName() {
+		return contSupplierName;
+	}
+
+	public void setContSupplierName(String contSupplierName) {
+		this.contSupplierName = contSupplierName;
 	}
 
 	public String getContSupplyRemark() {
@@ -847,13 +895,14 @@ public class ShipmentDetail extends BaseEntity
             .append("vslAndVoy", getVslAndVoy())
             .append("invoiceNo", getInvoiceNo())
             .append("vatAfterFee", getVatAfterFee())
-            .append("taxCode", getTaxCode())
+//            .append("consigneeTaxCode", getTaxCode())
             .append("consigneeByTaxCode", getConsigneeByTaxCode())
             .append("customsNo", getCustomsNo())
             .append("contSupplyStatus", getContSupplyStatus())
             .append("planningDate", getPlanningDate())
             .append("qualityRequirement", getQualityRequirement())
             .append("contSupplyRemark", getContSupplyRemark())
+            .append("customScanTime", getCustomScanTime())
             .toString();
     }
 }

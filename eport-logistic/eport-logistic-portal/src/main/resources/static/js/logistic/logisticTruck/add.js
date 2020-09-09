@@ -57,11 +57,11 @@ $( "#type" ).change(function() {
     }
 });
 
-function setGatePass() {
-    let gatePass = $("#plateNumber").val();
-    if(gatePass.length > 7 && $( "#type" ).val() == 0)
-    {
-        gatePass = gatePass.substring(gatePass.length-4,gatePass.length)
-        $("#gatepass").val(gatePass);
-    }
-}
+// function setGatePass() {
+//     let gatePass = $("#plateNumber").val();
+//     if(gatePass.length > 7 && $( "#type" ).val() == 0)
+//     {
+//         gatePass = gatePass.substring(gatePass.length-4,gatePass.length)
+//         $("#gatepass").val(gatePass);
+//     }
+// }

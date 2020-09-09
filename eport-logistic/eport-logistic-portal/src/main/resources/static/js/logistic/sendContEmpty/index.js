@@ -1,3 +1,4 @@
+const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var prefix = ctx + "logistic/send-cont-empty";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
@@ -8,8 +9,13 @@ var allChecked = false;
 var checkList = [];
 var rowAmount = 0;
 var shipmentSearch = new Object;
+shipmentSearch.params = new Object();
 shipmentSearch.serviceType = 2;
 var sizeList = [];
+var onChangeFlg = false, currentIndexRow, rejectChange = false;
+var checkEmptyExpiredDem = true;
+var berthplanList;// get infor
+var fromDate, toDate;
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
@@ -25,12 +31,12 @@ $.ajax({
 var consigneeList, opeCodeList, vslNmList, currentProcessId, currentSubscription;
 
 $.ajax({
-    url: ctx + "logistic/source/option",
+    url: prefix + "/berthplan/vessel-voyage/list",
     method: "GET",
     success: function (data) {
         if (data.code == 0) {
-            opeCodeList = data.opeCodeList;
-            vslNmList = data.vslNmList;
+            berthplanList = data.berthplanList;
+            vslNmList = data.vesselAndVoyages;
         }
     }
 });
@@ -46,46 +52,118 @@ $.ajax({
 });
 var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
 
+var toolbar = [
+    {
+        text: '<button class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Thêm</button>',
+        handler: function () {
+            $.operate.addShipment();
+        },
+    },
+    {
+        text: '<button class="btn btn-sm btn-default" ><i class="fa fa-edit text-warning"></i> Sửa</button>',
+        handler: function () {
+            $.operate.editShipment();
+        },
+    },
+    {
+        text: '<button class="btn btn-sm btn-default"><i class="fa fa-remove text-danger"></i> Xóa</button>',
+        handler: function () {
+            removeShipment()
+        },
+    },
+    {
+        text: '<button class="btn btn-sm btn-default"><i class="fa fa-refresh text-success"></i></button>',
+        handler: function () {
+            handleRefresh();
+        },
+    },
+];
+
+$(".main-body").layout();
+
+loadTable();
+
+$(".collapse").click(function () {
+    $(".main-body__search-wrapper").height(15);
+    $(".main-body__search-wrapper--container").hide();
+    $(this).hide();
+    $(".uncollapse").show();
+});
+
+$(".uncollapse").click(function () {
+    $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
+    $(".main-body__search-wrapper--container").show();
+    $(this).hide();
+    $(".collapse").show();
+});
+
+$(".left-side__collapse").click(function () {
+    $("#main-layout").layout("collapse", "west");
+    setTimeout(() => {
+        hot.render();
+    }, 200);
+});
+
+
+$('#main-layout').layout({
+    onExpand: function (region) {
+        if (region == "west") {
+            hot.render();
+        }
+    }
+})
+
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
-    //DEFAULT SEARCH FOLLOW DATE
-    let fromMonth = (new Date().getMonth() < 10) ? "0" + (new Date().getMonth()) : new Date().getMonth();
-    let toMonth = (new Date().getMonth() +2 < 10) ? "0" + (new Date().getMonth() +2 ): new Date().getMonth() +2;
-    $('#fromDate').val("01/"+ fromMonth + "/" + new Date().getFullYear());
-    $('#toDate').val("01/"+ (toMonth > 12 ? "01" +"/"+ (new Date().getFullYear()+1)  : toMonth + "/" + new Date().getFullYear()));
-    let fromDate = stringToDate($('#fromDate').val());
-    let toDate =  stringToDate($('#toDate').val());
-    fromDate.setHours(0,0,0);
-    toDate.setHours(23, 59, 59);
-    shipmentSearch.fromDate = fromDate.getTime();
-    shipmentSearch.toDate = toDate.getTime();
+    $("#blNo").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+            shipmentSearch.blNo = $("#blNo").textbox('getText').toUpperCase();
+            loadTable();
+        }
+    });
 
-    loadTable();
-    $(".left-side").css("height", $(document).height());
-    $("#btn-collapse").click(function () {
-        handleCollapse(true);
+    $("#containerNo").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+            shipmentSearch.params.containerNo = $("#containerNo").textbox('getText').toUpperCase();
+            loadTable();
+        }
     });
-    $("#btn-uncollapse").click(function () {
-        handleCollapse(false);
+
+    $("#consignee").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+            shipmentSearch.params.consignee = $("#consignee").textbox('getText').toUpperCase();
+            loadTable();
+        }
     });
-    //find date
-    $('.from-date').datetimepicker({
-        language: 'en',
-        format: 'dd/mm/yyyy',
-        autoclose: true,
-        todayBtn: true,
-        todayHighlight: true,
-        pickTime: false,
-        minView: 2
+
+    $('#fromDate').datebox({
+        onSelect: function (date) {
+            date.setHours(0, 0, 0);
+            fromDate = date;
+            if (toDate != null && date.getTime() > toDate.getTime()) {
+                $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
+            } else {
+                shipmentSearch.params.fromDate = dateToString(date);
+                loadTable();
+            }
+            return date;
+        }
     });
-    $('.to-date').datetimepicker({
-        language: 'en',
-        format: 'dd/mm/yyyy',
-        autoclose: true,
-        todayBtn: true,
-        todayHighlight: true,
-        pickTime: false,
-        minView: 2
+
+    $('#toDate').datebox({
+        onSelect: function (date) {
+            date.setHours(23, 59, 59);
+            toDate = date;
+            if (fromDate != null && date.getTime() < fromDate.getTime()) {
+                $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
+            } else {
+                shipmentSearch.params.toDate = dateToString(date);
+                loadTable();
+            }
+        }
     });
     // Handle add
     $(function () {
@@ -97,54 +175,21 @@ $(document).ready(function () {
         $.table.init(options);
     });
 });
-//search date
-function changeFromDate() {
-    let fromDate = stringToDate($('#fromDate').val());
-    if ($('#toDate').val() != '' && stringToDate($('#toDate').val()).getTime() < fromDate.getTime()) {
-        $.modal.alertError('Quý khách không thể chọn từ ngày cao hơn đến ngày.')
-        $('#fromDate').val('');
-    } else {
-        shipmentSearch.fromDate = fromDate.getTime();
-        loadTable();
-    }
+
+function dateformatter(date) {
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    var d = date.getDate();
+    return (d < 10 ? ('0' + d) : d) + '/' + (m < 10 ? ('0' + m) : m) + '/' + y;
 }
-  
-function changeToDate() {
-    let toDate = stringToDate($('.to-date').val());
-    if ($('.from-date').val() != '' && stringToDate($('.from-date').val()).getTime() > toDate.getTime()) {
-        $.modal.alertError('Quý khách không thể chọn đến ngày thấp hơn từ ngày.')
-        $('.to-date').val('');
-    } else {
-        toDate.setHours(23, 59, 59);
-        shipmentSearch.toDate = toDate.getTime();
-        loadTable();
+function dateparser(s) {
+    var ss = (s.split('\.'));
+    var d = parseInt(ss[0], 10);
+    var m = parseInt(ss[1], 10);
+    var y = parseInt(ss[2], 10);
+    if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+        return new Date(y, m - 1, d);
     }
-}
-  
-function stringToDate(dateStr) {
-    let dateParts = dateStr.split('/');
-    return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
-}
-function handleCollapse(status) {
-    if (status) {
-        $(".left-side").css("width", "0.5%");
-        $(".left-side").children().hide();
-        $("#btn-collapse").hide();
-        $("#btn-uncollapse").show();
-        $(".right-side").css("width", "99%");
-        setTimeout(function () {
-            hot.render();
-        }, 500);
-        return;
-    }
-    $(".left-side").css("width", "33%");
-    $(".left-side").children().show();
-    $("#btn-collapse").show();
-    $("#btn-uncollapse").hide();
-    $(".right-side").css("width", "67%");
-    setTimeout(function () {
-        hot.render();
-    }, 500);
 }
 
 // LOAD SHIPMENT LIST
@@ -154,15 +199,16 @@ function loadTable(msg) {
     }
     $("#dg").datagrid({
         url: ctx + 'logistic/shipments',
-        height: window.innerHeight - 110,
+        height: $('.main-body').height() - 75,
         method: 'post',
         singleSelect: true,
         collapsible: true,
         clientPaging: false,
+        toolbar: toolbar,
         pagination: true,
         rownumbers:true,
-        onClickRow: function () {
-            getSelected();
+        onBeforeSelect: function (index, row) {
+            getSelected(index, row);
         },
         pageSize: 50,
         nowrap: false,
@@ -185,6 +231,9 @@ function loadTable(msg) {
                 success: function (data) {
                     success(data);
                     $("#dg").datagrid("hideColumn", "id");
+                    if (currentIndexRow != null) {
+                        $("#dg").datagrid("selectRow", currentIndexRow);
+                    }
                 },
                 error: function () {
                     error.apply(this, arguments);
@@ -215,26 +264,109 @@ function handleRefresh() {
 }
 
 // HANDLE WHEN SELECT A SHIPMENT
-function getSelected() {
-    var row = $("#dg").datagrid("getSelected");
-    if (row) {
-        shipmentSelected = row;
-        $(function () {
-            var options = {
-                createUrl: prefix + "/shipment/add",
-                updateUrl: prefix + "/shipment/" + shipmentSelected.id,
-                modalName: " Lô"
-            };
-            $.table.init(options);
-        });
-        $("#loCode").text(row.id);
-        $("#taxCode").text(row.taxCode);
-        $("#quantity").text(row.containerAmount);
-        rowAmount = row.containerAmount;
-        checkList = Array(rowAmount).fill(0);
-        sztpListDisable = Array(rowAmount).fill(0);
-        allChecked = false;
-        loadShipmentDetail(row.id);
+function getSelected(index, row) {
+    if (rejectChange) {
+        rejectChange = false;
+        return true;
+    } else {
+        if (onChangeFlg) {
+            layer.confirm("Thông tin khái báo chưa được lưu, quý khách có muốn di chuyển qua trang khác?", {
+                icon: 3,
+                title: "Xác Nhận",
+                btn: ['Đồng Ý', 'Hủy Bỏ']
+            }, function () {
+                layer.close(layer.index);
+                currentIndexRow = index;
+                if (row) {
+                    shipmentSelected = row;
+                    $(function () {
+                        var options = {
+                            createUrl: prefix + "/shipment/add",
+                            updateUrl: prefix + "/shipment/" + shipmentSelected.id,
+                            modalName: " Lô"
+                        };
+                        $.table.init(options);
+                    });
+                    let title = '';
+                    title += 'Mã Lô: ' + row.id + ' - ';
+                    title += 'SL: ' + row.containerAmount + ' - ';
+                    title += 'B/L No: ';
+                    if (row.blNo != null) {
+                        title += row.blNo;
+                    } else {
+                        title += 'Trống';
+                    }
+                    $('#main-layout').layout('panel', 'center').panel('setTitle', title);
+                    rowAmount = row.containerAmount;
+                    checkList = Array(rowAmount).fill(0);
+                    sztpListDisable = Array(rowAmount).fill(0);
+                    allChecked = false;
+                    $.ajax({
+                        url: prefix + "/opr/" + shipmentSelected.opeCode + "/empty-expired-dem/require",
+                        method: "GET",
+                        success: function (res) {
+                            if (res.code == 0) {
+                                checkEmptyExpiredDem = false;
+                            } else {
+                                checkEmptyExpiredDem = true;
+                            }
+                            loadShipmentDetail(row.id);
+                        }
+                    });
+                    onChangeFlg = false;
+                    currentIndexRow = index;
+                }
+                return true;
+            }, function () {
+                layer.close(layer.index);
+                rejectChange = true;
+                $('#dg').datagrid('selectRow', currentIndexRow);
+                return false;
+            });
+        } else {
+            currentIndexRow = index;
+            if (row) {
+                shipmentSelected = row;
+                $(function () {
+                    var options = {
+                        createUrl: prefix + "/shipment/add",
+                        updateUrl: prefix + "/shipment/" + shipmentSelected.id,
+                        modalName: " Lô"
+                    };
+                    $.table.init(options);
+                });
+                let title = '';
+                title += 'Mã Lô: ' + row.id + ' - ';
+                title += 'SL: ' + row.containerAmount + ' - ';
+                title += 'B/L No: ';
+                if (row.blNo != null) {
+                    title += row.blNo;
+                } else {
+                    title += 'Trống';
+                }
+                $('#main-layout').layout('panel', 'center').panel('setTitle', title);
+                rowAmount = row.containerAmount;
+                checkList = Array(rowAmount).fill(0);
+                sztpListDisable = Array(rowAmount).fill(0);
+                allChecked = false;
+                $.ajax({
+                    url: prefix + "/opr/" + shipmentSelected.opeCode + "/empty-expired-dem/require",
+                    method: "GET",
+                    success: function (res) {
+                        if (res.code == 0) {
+                            checkEmptyExpiredDem = false;
+                           
+                        } else {
+                            checkEmptyExpiredDem = true;
+                        }
+                        loadShipmentDetail(row.id);
+                    }
+                });
+                onChangeFlg = false;
+                currentIndexRow = index;
+            }
+            return true;
+        }
     }
 }
 
@@ -299,49 +431,58 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     return td;
 }
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
-    $(td).html(value);
+    $(td).attr('id', 'containerNo' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'consignee' + row).addClass("htMiddle");
-    $(td).html(value);
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
-    return td;
-}
-function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'opeCode' + row).addClass("htMiddle");
-    $(td).html(value);
-    if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
+    if (!value) {
+        value = '';
     }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function emptyExpiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'emptyExpiredDem' + row).addClass("htMiddle");
-    $(td).html(value);
+    $(td).attr('id', 'emptyExpiredDem' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
         if (value.substring(2, 3) != "/") {
             value = value.substring(8, 10)+"/"+value.substring(5, 7)+"/"+value.substring(0,4);
         }
-        $(td).html(value);
-    } else {
-        $(td).html('');
     }
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
+    if (value != null && value != '') {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -356,12 +497,51 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
         cellProperties.readOnly = 'true';
         $(td).css("background-color", "rgb(232, 232, 232)");
     }
-    $(td).html(value);
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function emptyDepotLocationRenderer(instance, td, row, col, prop, value, cellProperties)  {
     $(td).attr('id', 'emptyDepotLocation' + row).addClass("htMiddle");
-    $(td).html(value);
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+
+function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'payType' + row).addClass("htMiddle").addClass("htCenter");
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+
+function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'payer' + row).addClass("htMiddle");
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+
+function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'payerNamer' + row).addClass("htMiddle");
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     cellProperties.readOnly = 'true';
     $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
@@ -369,142 +549,305 @@ function emptyDepotLocationRenderer(instance, td, row, col, prop, value, cellPro
 
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'remark' + row).addClass("htMiddle");
-    $(td).html(value);
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 
 // CONFIGURATE HANDSONTABLE
 function configHandson() {
-    config = {
-        stretchH: "all",
-        height: document.documentElement.clientHeight - 105,
-        minRows: rowAmount,
-        maxRows: rowAmount,
-        width: "100%",
-        minSpareRows: 0,
-        rowHeights: 30,
-        fixedColumnsLeft: 3,
-        trimDropdown: false,
-        manualColumnResize: true,
-        manualRowResize: true,
-        renderAllRows: true,
-        rowHeaders: true,
-        className: "htMiddle",
-        colHeaders: function (col) {
-            switch (col) {
-                case 0:
-                    var txt = "<input type='checkbox' class='checker' ";
-                    txt += "onclick='checkAll()' ";
-                    txt += ">";
-                    return txt;
-                case 1:
-                    return "Trạng Thái";
-                case 2:
-                    return '<span class="required">Container No</span>';
-                case 3:
-                    return '<span class="required">Kích Thước</span>';
-                case 4:
-                    return '<span class="required">Chủ Hàng</span>';
-                case 5:
-                    return '<span class="required">Hãng Tàu</span>';
-                case 6:
-                    return '<span class="required">Hạn Trả Vỏ</span>';
-                case 7:
-                    return '<span class="required">Bãi Hạ Vỏ</span>';
-                case 8:
-                    return "Ghi Chú";
-            }
-        },
-        // colWidths: [50, 100, 100, 100, 120, 100, 200],
-        filter: "true",
-        columns: [
-            {
-                data: "active",
-                type: "checkbox",
-                className: "htCenter",
-                renderer: checkBoxRenderer
+    if (!shipmentSelected || shipmentSelected.sendContEmptyType == '0') {
+        config = {
+            stretchH: "all",
+            height: $('.main-body').height() - 110,
+            minRows: rowAmount,
+            maxRows: rowAmount,
+            width: "100%",
+            minSpareRows: 0,
+            rowHeights: 30,
+            fixedColumnsLeft: 3,
+            trimDropdown: false,
+            manualColumnResize: true,
+            manualRowResize: true,
+            renderAllRows: true,
+            rowHeaders: true,
+            className: "htMiddle",
+            colHeaders: function (col) {
+                switch (col) {
+                    case 0:
+                        var txt = "<input type='checkbox' class='checker' ";
+                        txt += "onclick='checkAll()' ";
+                        txt += ">";
+                        return txt;
+                    case 1:
+                        return "Trạng Thái";
+                    case 2:
+                        return '<span class="required">Container No</span>';
+                    case 3:
+                        return '<span class="required">Kích Thước</span>';
+                    case 4:
+                        return '<span class="required">Chủ Hàng</span>';
+                    case 5:
+                        return checkEmptyExpiredDem?'<span class="required">Hạn Trả Vỏ</span>':'Hạn Trả Vỏ';
+                    case 6:
+                        return '<span class="required">Bãi Hạ Vỏ</span>';
+                    case 7:
+                        return 'PTTT';
+                    case 8:
+                        return 'MST Người Trả Tiền';
+                    case 9:
+                        return 'Tên Cty Thanh Toán';
+                    case 10:
+                        return "Ghi Chú";
+                }
             },
-            {
-                data: "status",
-                readOnly: true,
-                renderer: statusIconsRenderer
+            colWidths: [40, 100, 100, 150, 150, 100, 100, 130, 130, 200],
+            filter: "true",
+            columns: [
+                {
+                    data: "active",
+                    type: "checkbox",
+                    className: "htCenter",
+                    renderer: checkBoxRenderer
+                },
+                {
+                    data: "status",
+                    readOnly: true,
+                    renderer: statusIconsRenderer
+                },
+                {
+                    data: "containerNo",
+                    strict: true,
+                    renderer: containerNoRenderer,
+                },
+                {
+                    data: "sztp",
+                    type: "autocomplete",
+                    source: sizeList,
+                    strict: true,
+                    renderer: sizeRenderer
+                },
+                {
+                    data: "consignee",
+                    type: "autocomplete",
+                    source: consigneeList,
+                    strict: true,
+                    renderer: consigneeRenderer
+                },
+                {
+                    data: "emptyExpiredDem",
+                    type: "date",
+                    dateFormat: "DD/MM/YYYY",
+                    correctFormat: true,
+                    defaultDate: new Date(),
+                    renderer: emptyExpiredDemRenderer
+                },
+                {
+                    data: "emptyDepotLocation",
+                    renderer: emptyDepotLocationRenderer
+                },
+                {
+                    data: "payType",
+                    renderer: payTypeRenderer
+                },
+                {
+                    data: "payer",
+                    renderer: payerRenderer
+                },
+                {
+                    data: "payerName",
+                    renderer: payerNameRenderer
+                },
+                {
+                    data: "remark",
+                    renderer: remarkRenderer
+                },
+            ],
+            beforeKeyDown: function (e) {
+                let selected = hot.getSelected()[0];
+                switch (e.keyCode) {
+                    // Arrow Left
+                    case 37:
+                        if (selected[3] == 0) {
+                            e.stopImmediatePropagation();
+                        } 
+                        break;
+                    // Arrow Up
+                    case 38:
+                        if (selected[2] == 0) {
+                            e.stopImmediatePropagation();
+                        } 
+                        break;
+                    // Arrow Right
+                    case 39:
+                        if (selected[3] == 10) {
+                            e.stopImmediatePropagation();
+                        } 
+                        break
+                    // Arrow Down
+                    case 40:
+                        if (selected[2] == rowAmount-1) {
+                            e.stopImmediatePropagation();
+                        } 
+                        break
+                    default:
+                        break;
+                }
             },
-            {
-                data: "containerNo",
-                strict: true,
-                renderer: containerNoRenderer,
+            afterChange: onChange
+        };
+    } else {
+        config = {
+            stretchH: "all",
+            height: $('.main-body').height() - 110,
+            minRows: rowAmount,
+            maxRows: rowAmount,
+            width: "100%",
+            minSpareRows: 0,
+            rowHeights: 30,
+            fixedColumnsLeft: 3,
+            trimDropdown: false,
+            manualColumnResize: true,
+            manualRowResize: true,
+            renderAllRows: true,
+            rowHeaders: true,
+            className: "htMiddle",
+            colHeaders: function (col) {
+                switch (col) {
+                    case 0:
+                        var txt = "<input type='checkbox' class='checker' ";
+                        txt += "onclick='checkAll()' ";
+                        txt += ">";
+                        return txt;
+                    case 1:
+                        return "Trạng Thái";
+                    case 2:
+                        return '<span class="required">Container No</span>';
+                    case 3:
+                        return '<span class="required">Kích Thước</span>';
+                    case 4:
+                        return '<span class="required">Chủ Hàng</span>';
+                    case 5:
+                        return '<span class="required">Tàu và Chuyến</span>';
+                    case 6:
+                        return checkEmptyExpiredDem?'<span class="required">Hạn Trả Vỏ</span>':'Hạn Trả Vỏ';
+                    case 7:
+                        return '<span class="required">Bãi Hạ Vỏ</span>';
+                    case 8:
+                        return 'PTTT';
+                    case 9:
+                        return 'MST Người Trả Tiền';
+                    case 10:
+                        return 'Tên Cty Thanh Toán';
+                    case 11:
+                        return "Ghi Chú";
+                }
             },
-            {
-                data: "sztp",
-                type: "autocomplete",
-                source: sizeList,
-                strict: true,
-                renderer: sizeRenderer
+            colWidths: [40, 100, 100, 150, 150, 150, 100, 100, 130, 130, 200],
+            filter: "true",
+            columns: [
+                {
+                    data: "active",
+                    type: "checkbox",
+                    className: "htCenter",
+                    renderer: checkBoxRenderer
+                },
+                {
+                    data: "status",
+                    readOnly: true,
+                    renderer: statusIconsRenderer
+                },
+                {
+                    data: "containerNo",
+                    strict: true,
+                    renderer: containerNoRenderer,
+                },
+                {
+                    data: "sztp",
+                    type: "autocomplete",
+                    source: sizeList,
+                    strict: true,
+                    renderer: sizeRenderer
+                },
+                {
+                    data: "consignee",
+                    type: "autocomplete",
+                    source: consigneeList,
+                    strict: true,
+                    renderer: consigneeRenderer
+                },
+                {
+                    data: "vslNm",
+                    type: "autocomplete",
+                    source: vslNmList,
+                    strict: true,
+                    renderer: vslNmRenderer
+                },
+                {
+                    data: "emptyExpiredDem",
+                    type: "date",
+                    dateFormat: "DD/MM/YYYY",
+                    correctFormat: true,
+                    defaultDate: new Date(),
+                    renderer: emptyExpiredDemRenderer
+                },
+                {
+                    data: "emptyDepotLocation",
+                    renderer: emptyDepotLocationRenderer
+                },
+                {
+                    data: "payType",
+                    renderer: payTypeRenderer
+                },
+                {
+                    data: "payer",
+                    renderer: payerRenderer
+                },
+                {
+                    data: "payerName",
+                    renderer: payerNameRenderer
+                },
+                {
+                    data: "remark",
+                    renderer: remarkRenderer
+                },
+            ],
+            beforeKeyDown: function (e) {
+                let selected = hot.getSelected()[0];
+                switch (e.keyCode) {
+                    // Arrow Left
+                    case 37:
+                        if (selected[3] == 0) {
+                            e.stopImmediatePropagation();
+                        } 
+                        break;
+                    // Arrow Up
+                    case 38:
+                        if (selected[2] == 0) {
+                            e.stopImmediatePropagation();
+                        } 
+                        break;
+                    // Arrow Right
+                    case 39:
+                        if (selected[3] == 11) {
+                            e.stopImmediatePropagation();
+                        } 
+                        break
+                    // Arrow Down
+                    case 40:
+                        if (selected[2] == rowAmount-1) {
+                            e.stopImmediatePropagation();
+                        } 
+                        break
+                    default:
+                        break;
+                }
             },
-            {
-                data: "consignee",
-                type: "autocomplete",
-                source: consigneeList,
-                strict: true,
-                renderer: consigneeRenderer
-            },
-            {
-                data: "opeCode",
-                type: "autocomplete",
-                source: opeCodeList,
-                strict: true,
-                renderer: opeCodeRenderer
-            },
-            {
-                data: "emptyExpiredDem",
-                type: "date",
-                dateFormat: "DD/MM/YYYY",
-                correctFormat: true,
-                defaultDate: new Date(),
-                renderer: emptyExpiredDemRenderer
-            },
-            {
-                data: "emptyDepotLocation",
-                renderer: emptyDepotLocationRenderer
-            },
-            {
-                data: "remark",
-                renderer: remarkRenderer
-            },
-        ],
-        beforeKeyDown: function (e) {
-            let selected = hot.getSelected()[0];
-            switch (e.keyCode) {
-                // Arrow Left
-                case 37:
-                    if (selected[3] == 0) {
-                        e.stopImmediatePropagation();
-                    } 
-                    break;
-                // Arrow Up
-                case 38:
-                    if (selected[2] == 0) {
-                        e.stopImmediatePropagation();
-                    } 
-                    break;
-                // Arrow Right
-                case 39:
-                    if (selected[3] == 8) {
-                        e.stopImmediatePropagation();
-                    } 
-                    break
-                // Arrow Down
-                case 40:
-                    if (selected[2] == rowAmount-1) {
-                        e.stopImmediatePropagation();
-                    } 
-                    break
-                default:
-                    break;
-            }
-        },
-        afterChange: onChange
-    };
+            afterChange: onChange
+        };
+    }
 }
 configHandson();
 
@@ -512,36 +855,28 @@ function onChange(changes, source) {
     if (!changes) {
         return;
     }
+    onChangeFlg = true;
     changes.forEach(function (change) {
-        if (change[1] == "opeCode") {
-            if (change[3] && hot.getDataAtCell(change[0], 3)) {
-                hot.setDataAtCell(change[0], 7, ''); // empty depot location
-                $.ajax({
-                    url: prefix + "/opr/" + change[3].split(":")[0] + "/sztp/" + hot.getDataAtCell(change[0], 3).split(":")[0] + "/emptyDepotLocation",
-                    method: "GET",
-                    success: function (data) {
-                        if (data.code == 0 && data.emptyDepotLocation) {
-                            hot.setDataAtCell(change[0], 7, data.emptyDepotLocation);
-                        }
-                    }
-                });
+        if (change[1] == "sztp") {
+            let indexColEmptyDepotLocation = 6;
+            if (shipmentSelected.sendContEmptyType == '0') {
+                indexColEmptyDepotLocation = 6;
             } else {
-                hot.setDataAtCell(change[0], 7, ''); // empty depot location
+                indexColEmptyDepotLocation = 7;
             }
-        } else if (change[1] == "sztp") {
-            if (change[3] && hot.getDataAtCell(change[0], 4)) {
-                hot.setDataAtCell(change[0], 7, ''); // empty depot location
+            if (!change[3]) {
+                hot.setDataAtCell(change[0], indexColEmptyDepotLocation, '');
+            } else {
+                hot.setDataAtCell(change[0], indexColEmptyDepotLocation, ''); // empty depot location
                 $.ajax({
-                    url: prefix + "/opr/" + hot.getDataAtCell(change[0], 5).split(":")[0] + "/sztp/" + change[3].split(":")[0] + "/emptyDepotLocation",
+                    url: prefix + "/opr/" + shipmentSelected.opeCode + "/sztp/" + change[3].split(":")[0] + "/emptyDepotLocation",
                     method: "GET",
                     success: function (data) {
                         if (data.code == 0 && data.emptyDepotLocation) {
-                            hot.setDataAtCell(change[0], 7, data.emptyDepotLocation);
+                            hot.setDataAtCell(change[0], indexColEmptyDepotLocation, data.emptyDepotLocation);
                         }
                     }
                 });
-            } else {
-                hot.setDataAtCell(change[0], 7, ''); // empty depot location
             }
         } else if (change[1] == "containerNo") {
             if (!change[3]) {
@@ -714,6 +1049,7 @@ function loadShipmentDetail(id) {
                 hot = new Handsontable(dogrid, config);
                 hot.loadData(sourceData);
                 hot.render();
+                onChangeFlg = false;
             }
         },
         error: function (data) {
@@ -796,7 +1132,7 @@ function getDataFromTable(isValidate) {
     let cleanedGridData = [];
     for (let i=0; i<checkList.length; i++) {
         if (Object.keys(myTableData[i]).length > 0) {
-            if (myTableData[i].containerNo || myTableData[i].opeCode || myTableData[i].emptyExpiredDem ||
+            if (myTableData[i].containerNo || myTableData[i].emptyExpiredDem ||
                 myTableData[i].sztp || myTableData[i].remark) {
                 cleanedGridData.push(myTableData[i]);
             }
@@ -805,11 +1141,9 @@ function getDataFromTable(isValidate) {
     shipmentDetails = [];
     contList = [];
     conts = '';
-    let opecode, vessel, voyage, pod;
+    let vslNm;
     if (cleanedGridData.length > 0) {
-        opecode = cleanedGridData[0].opeCode;
-//        vessel = cleanedGridData[0].vslNm;
-//        voyage = cleanedGridData[0].voyNo;
+        vslNm = cleanedGridData[0].vslNm;
     }
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
@@ -826,11 +1160,11 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ hàng!");
                 errorFlg = true;
                 return false;
-            } else if (!object["opeCode"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn hãng tàu!");
+            } else if (shipmentSelected.sendContEmptyType == '1' && !object["vslNm"]) {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn tàu chuyến!");
                 errorFlg = true;
                 return false;
-            } else if (!object["emptyExpiredDem"]) {
+            } else if (!object["emptyExpiredDem"] && checkEmptyExpiredDem) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn trả vỏ!");
                 errorFlg = true;
                 return false;
@@ -842,13 +1176,13 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập nơi hạ vỏ!");
                 errorFlg = true;
                 return false;
-            } else if (opecode != object["opeCode"]) {
-                $.modal.alertError("Hãng tàu không được khác nhau!");
+            } else if (shipmentSelected.sendContEmptyType == '1' && vslNm != object["vslNm"]) {
+                $.modal.alertError("Tàu chuyến không được khác nhau!");
                 errorFlg = true;
                 return false;
             }
         }
-        opecode = object["opeCode"];
+        vslNm = object["vslNm"];
         let emptyExpiredDem;
         if (object["emptyExpiredDem"]) {
             emptyExpiredDem = new Date(object["emptyExpiredDem"].substring(6, 10) + "/" + object["emptyExpiredDem"].substring(3, 5) + "/" + object["emptyExpiredDem"].substring(0, 2));
@@ -866,10 +1200,20 @@ function getDataFromTable(isValidate) {
         if (object["status"] == 1 || object["status"] == null) {
             conts += object["containerNo"] + ',';
         }
-        let carrier = object["opeCode"].split(": ");
-        shipmentDetail.opeCode = carrier[0];
-        shipmentDetail.carrierName = carrier[1];
         let sizeType = object["sztp"].split(": ");
+        if (shipmentSelected.sendContEmptyType == '1') {
+            if(berthplanList){
+                for (let i= 0; i < berthplanList.length;i++){
+                    if(object["vslNm"] == berthplanList[i].vslAndVoy){
+                        shipmentDetail.vslNm = berthplanList[i].vslNm;
+                        shipmentDetail.voyNo = berthplanList[i].voyNo;
+                        shipmentDetail.year = berthplanList[i].year;
+                        shipmentDetail.vslName = berthplanList[i].vslAndVoy.split(" - ")[1];
+                        shipmentDetail.voyCarrier = berthplanList[i].voyCarrier;
+                    }
+                }
+            }
+        }
         shipmentDetail.sztp = sizeType[0];
         shipmentDetail.emptyDepotLocation = object["emptyDepotLocation"];
         shipmentDetail.sztpDefine = sizeType[1];
@@ -933,7 +1277,7 @@ function saveShipmentDetail() {
                             reloadShipmentDetail();
                         } else {
                             if (result.conts != null) {
-                                $.modal.alertError("Không thể làm lệnh đối với các container: "+result.conts);
+                                $.modal.alertError("Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>"+result.conts);
                             } else {
                                 $.modal.alertError(result.msg);
                             }
@@ -1207,4 +1551,27 @@ function removeShipmentSendEmpty(){
 			$.modal.msgError("Không thể xóa Lô " + shipmentSelected.id);
 		}
 	}
+}
+
+function dateToString(date) {
+    return ("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear()
+        + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
+}
+
+function search() {
+    loadTable();
+}
+
+function clearInput() {
+    $("#blNo").textbox('setText', '');
+    $("#containerNo").textbox('setText', '');
+    $("#consignee").textbox('setText', '');
+    $('#fromDate').datebox('setValue', '');
+    $('#toDate').datebox('setValue', '');
+    shipmentSearch = new Object();
+    shipmentSearch.params = new Object();
+    shipmentSearch.serviceType = 1;
+    fromDate = null;
+    toDate = null;
+    loadTable();
 }

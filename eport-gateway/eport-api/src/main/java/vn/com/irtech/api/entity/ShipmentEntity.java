@@ -4,10 +4,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 public class ShipmentEntity {
-	/** null */
     private Long logisticAccountId;
 
-    /** null */
     private Long logisticGroupId;
 
     /** Dich Vu */

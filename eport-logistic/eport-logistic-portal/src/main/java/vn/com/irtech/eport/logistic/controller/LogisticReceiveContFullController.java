@@ -38,10 +38,8 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
-import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
-import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
@@ -49,9 +47,7 @@ import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
-import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
-import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -100,12 +96,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	
 	@Autowired
 	private IEdoHouseBillService edoHouseBillService;
-	
-	@Autowired
-	private IDriverAccountService driverAccountService;
-	
-	@Autowired
-	private IPickupAssignService pickupAssignService;
 	
 	@Autowired
 	private DictService dictService;
@@ -210,13 +200,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@Transactional
 	@ResponseBody
 	public AjaxResult addShipment(Shipment shipment) {
-		//check MST 
-		if(shipment.getTaxCode() != null){
-			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
-			if(groupName == null){
-				error("Mã số thuế không tồn tại");
-			}
-		}
 		
 		if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
 			if (edoHouseBillService.getContainerAmountWithOrderNumber(shipment.getHouseBill(), shipment.getOrderNumber()) == 0) {
@@ -264,13 +247,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@PostMapping("/shipment/{shipmentId}")
 	@ResponseBody
 	public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
-		//check MST 
-		if(shipment.getTaxCode() != null){
-			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
-			if(groupName == null){
-				error("Mã số thuế không tồn tại");
-			}
-		}
 		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		//check if current user own shipment
@@ -350,10 +326,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				List<Shipment> shipments = shipmentService.selectShipmentList(shipmentSendCont);
 				if (shipments == null || shipments.size() == 0) {
 					shipmentSendCont.setContainerAmount(Long.valueOf(shipmentDt.getTier()));
-					shipmentSendCont.setTaxCode(shipmentDt.getProcessStatus());
 					shipmentSendCont.setLogisticAccountId(user.getId());
 					shipmentSendCont.setLogisticGroupId(user.getGroupId());
-					shipmentSendCont.setGroupName(shipmentDt.getCustomStatus());
 					shipmentSendCont.setCreateTime(new Date());
 					shipmentSendCont.setStatus("1");
 					shipmentService.insertShipment(shipmentSendCont);
@@ -376,6 +350,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentDetail.setDoStatus("N");
 					shipmentDetail.setPreorderPickup("N");
 					shipmentDetail.setFinishStatus("N");
+					// set consignee Taxcode
 					shipmentDetail.setTaxCode(taxCode);
 					shipmentDetail.setConsigneeByTaxCode(shipmentDetail.getConsignee());
 					if ("VN".equalsIgnoreCase(shipmentDetail.getLoadingPort().substring(0, 2))) {
@@ -404,6 +379,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				} else {
 					updateShipment = false;
 					shipmentDetail.setUpdateBy(user.getFullName());
+					shipmentDetail.setTaxCode(taxCode);
+					shipmentDetail.setConsigneeByTaxCode(shipmentDetail.getConsignee());
 					shipmentDetail.setUpdateTime(new Date());
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());

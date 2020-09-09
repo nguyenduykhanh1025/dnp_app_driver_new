@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -24,13 +25,12 @@ import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
+import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
-import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
-import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -38,9 +38,7 @@ import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
-import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
-import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -78,15 +76,6 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@Autowired
 	private ConfigService configService;
 	
-	@Autowired
-	private IDriverAccountService driverAccountService;
-	
-	@Autowired
-	private IPickupAssignService pickupAssignService;
-	
-	// @Autowired
-	// private CustomQueueService customQueueService;
-	
     @GetMapping()
 	public String sendContEmpty() {    	
 		return PREFIX + "/index";
@@ -95,6 +84,14 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@GetMapping("/shipment/add")
 	public String add(ModelMap mmap) {
 		mmap.put("taxCode", getGroup().getMst());
+		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
+		if (oprCodeList == null) {
+			oprCodeList = catosApiService.getOprCodeList();
+			oprCodeList.add(0, "Chọn OPR");
+			CacheUtils.put("oprCodeList", oprCodeList);
+		}
+		
+		mmap.put("oprCodeList", oprCodeList);
 		return PREFIX + "/add";
 	}
 
@@ -105,6 +102,14 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			mmap.put("shipment", shipment);
 			mmap.put("taxCode", getGroup().getMst());
 		}
+		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
+		if (oprCodeList == null) {
+			oprCodeList = catosApiService.getOprCodeList();
+			oprCodeList.add(0, "Chọn OPR");
+			CacheUtils.put("oprCodeList", oprCodeList);
+		}
+		
+		mmap.put("oprCodeList", oprCodeList);
         return PREFIX + "/edit";
 	}
 
@@ -154,13 +159,6 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@Transactional
     @ResponseBody
     public AjaxResult addShipment(Shipment shipment) {
-		//check MST 
-		if(shipment.getTaxCode() != null){
-			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
-			if(groupName == null){
-				error("Mã số thuế không tồn tại");
-			}
-		}
 		LogisticAccount user = getUser();
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
@@ -197,13 +195,6 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@PostMapping("/shipment/{shipmentId}")
     @ResponseBody
     public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
-		//check MST 
-		if(shipment.getTaxCode() != null){
-			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
-			if(groupName == null){
-				error("Mã số thuế không tồn tại");
-			}
-		}
 		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
@@ -240,8 +231,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
 			LogisticAccount user = getUser();
-			Shipment shipment = new Shipment();
-			shipment.setId(shipmentDetails.get(0).getShipmentId());
+			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
 			boolean updateShipment = true;
 			List<String> contReservedList = shipmentDetailService.checkContainerReserved(shipmentDetails.get(0).getProcessStatus());
 			if (contReservedList.size() > 0) {
@@ -270,8 +260,10 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 					shipmentDetail.setFe("E");
 					shipmentDetail.setCargoType("MT");
 					shipmentDetail.setDischargePort("VNDAD");
-					shipmentDetail.setVslNm("EMTY");
-					shipmentDetail.setVoyNo("0000");
+					if ("0".equals(shipment.getSendContEmptyType())) {
+						shipmentDetail.setVslNm("EMTY");
+						shipmentDetail.setVoyNo("0000");
+					}
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
@@ -339,9 +331,9 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 				shipmentService.updateShipment(shipment);
 			}
 			//Đổi opeCode operateCode -> groupCode
-			CarrierGroup carrierGroup = carrierService.getCarrierGroupByOpeCode(shipmentDetails.get(0).getOpeCode().toUpperCase());
+			CarrierGroup carrierGroup = carrierService.getCarrierGroupByOpeCode(shipment.getOpeCode().toUpperCase());
 			if(carrierGroup != null) {
-				if(! shipmentDetails.get(0).getOpeCode().toUpperCase().equals(carrierGroup.getGroupCode())) {
+				if(! shipment.getOpeCode().toUpperCase().equals(carrierGroup.getGroupCode())) {
 					for(ShipmentDetail i : shipmentDetails) {
 						i.setOpeCode(carrierGroup.getGroupCode());
 					}
@@ -426,5 +418,32 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		String danangDepotName = configService.getKey("danang.depot.name");
 		ajaxResult.put("emptyDepotLocation", danangDepotName);
 		return ajaxResult;
+	}
+	
+	@GetMapping("/opr/{opr}/empty-expired-dem/require")
+	@ResponseBody
+	public AjaxResult checkRequireEmptyExpiredDem(@PathVariable("opr") String opr) {
+		String oprRes = dictService.getLabel("empty_expired_dem_not_require_opr_list", opr);
+		if (StringUtils.isNotEmpty(oprRes)) {
+			return success();
+		}
+		return error();
+	}
+	
+	@GetMapping("/berthplan/vessel-voyage/list")
+	@ResponseBody
+	public AjaxResult getVesselVoyageListWithoutOpeCode() {
+		AjaxResult ajaxResult = success();
+		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlanWithoutOpe();
+		if(berthplanList.size() > 0) {
+			List<String> vesselAndVoyages = new ArrayList<String>();
+			for(ShipmentDetail i : berthplanList) {
+				vesselAndVoyages.add(i.getVslAndVoy());
+			}
+			ajaxResult.put("berthplanList", berthplanList);
+			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
+			return ajaxResult;
+		}
+		return error();
 	}
 }

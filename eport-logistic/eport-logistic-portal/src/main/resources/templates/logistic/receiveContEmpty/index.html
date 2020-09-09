@@ -1,44 +1,58 @@
 <!DOCTYPE html>
-<html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <th:block th:include="include :: header('Nhan Cont Rong')" />
-    <th:block th:include="include :: handsontable-css" />
-    <th:block th:include="include :: easyui-css" />
-    <th:block th:include="include :: datetimepicker-css" />
-    <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="wrapper">
-      <div class="left-side">
-        <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
-        <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
-        <div class="title-top">
-          <span style="color: black;"><b> NHẬN CONTAINER RỖNG TỪ CẢNG </b></span>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <th:block th:include="include :: header('Nhan Cont Rong')" />
+  <th:block th:include="include :: handsontable-css" />
+  <th:block th:include="include :: easyui-css" />
+  <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
+  <link th:href="@{/eport/css/common/style.css?v=123122312}" rel="stylesheet" />
+</head>
+
+<body class="grey-background">
+  <div class="main-body">
+    <div class="main-body__search-wrapper mb-2">
+      <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+      <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+      <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+        <div class="flex__left w-20">
+          <h3 class="mt-10">Nhận container rỗng từ cảng</h3>
         </div>
-        <div class="left-infor-top" style="display: flex;height: 20px;">
-          <div class="form-group col-md-4 col-sm-4 col-xs-4">
-            <input type="text" class="form-control" id="bookingSearch"  placeholder="Booking">
-          </div>
-          <div class="form-group col-md-4 col-sm-4 col-xs-4">
-            <input type="text" class="form-control from-date date" id="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" readonly>
-          </div>
-          <div class="form-group col-md-4 col-sm-4 col-xs-4">
-            <input type="text" class="form-control to-date date" id="toDate" onchange="changeToDate()" placeholder="Đến ngày" readonly>
-          </div>
-        </div>
-        <hr />
-        <div class="table-content">
-          <div class="row col-sm-12">
-            <span class="title col-sm-8">Danh sách lô</span>
-            <div class="action-bar col-sm-4" style="position: absolute; right: 0px;">
-              <span><i class="fa fa-plus" title="Thêm mới" onclick="$.operate.addShipmentReceiveEmpty()"></i></span>
-              <span><i class="fa fa-edit" title="Chỉnh sửa" onclick="$.operate.editShipmentReceiveEmpty()"></i></span>
-              <span><i class="fa fa-remove" title="Xóa" onclick="removeShipmentReceiveEmpty();"></i></span>
-              <span><i class="fa fa-refresh" title="Làm mới" onclick="handleRefresh();"></i></span>
+        <div class="flex__right w-80">
+          <div class="justify-content-around align-items-center" id="ff">
+            <div class="d-inline">
+              <input class="easyui-textbox" id="bookingNo" data-options="prompt:'Booking No'" />
+            </div>
+            <div class="d-inline">
+              <input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
+            </div>
+            <div class="d-inline">
+              <input class="easyui-textbox" id="consignee" data-options="prompt:'Chủ hàng'" />
+            </div>
+            <div class="d-inline">
+              <input id="fromDate" class="easyui-datebox" style="width: 100px;"
+                data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
+            </div>
+            <div class="d-inline">
+              <input id="toDate" class="easyui-datebox" style="width: 100px;"
+                data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
+            </div>
+            <div class="d-inline">
+              <button class="btn btn-success" onclick="search()">Tìm kiếm</button>
+            </div>
+            <div class="d-inline">
+              <button class="btn btn-success btn-outline" onclick="clearInput()">Làm mới</button>
             </div>
           </div>
+      </div>
+      </div>
+    </div>
+    <div class="main-body__table-wrapper">
+      <div class="easyui-layout" id="main-layout" style="width: 100%;">
+        <div class="left-side" title="Danh sách lô" data-options="region:'west',split:true" style="width: 30%;">
+          <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
           <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead>
               <tr>
@@ -53,74 +67,81 @@
             </thead>
           </table>
         </div>
-      </div>
-      <div class="right-side">
-        <div class="step-progress">
-          <div id="step-area">
-            <div class="left-info">
-              <div>
-                <span class="label-title">Mã Lô: </span>
-                <span id="loCode"></span>
-              </div>
-              <div>
-                <span class="label-title">Mã Số Thuế: </span>
-                <span id="taxCode"></span>
-              </div>
-              <div>
-                <span class="label-title">Số Lượng: </span>
-                <span id="quantity"></span>
-              </div>
-              <div>
-                <span class="label-title">Booking No: </span>
-                <span id="bookingNo"></span>
-              </div>
-              <div>
-                <a id="attachIcon" class="hidden" href="javascript:void(0)"
-                   th:attr="data-url=@{/logistic/receive-cont-empty/shipments/{shipmentId}/shipment-images}">
-                  <i class="fa fa-paperclip" style="font-size:3rem;" title="Xem hình ảnh đính kèm cho container"></i>
-                </a>
-              </div>
-            </div>
-            <ul class="right-info">
-              <li><a id="registerStatus" class="disable">Khai báo</a></li>
-              <li><a id="contSupplyStatus" class="disable">Cấp container</a></li>
-              <li><a id="verifyStatus" class="disable">Xác thực</a></li>
-              <li><a id="paymentStatus" class="disable">Thanh toán</a></li>
-              <li><a id="finishStatus" class="disable">Hoàn thành</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="title-top">
-          <div class="left-button-bar">
-            <button id="saveShipmentDetailBtn" class="btn btn-sm btn-primary" onclick="saveShipmentDetail()">Lưu khai báo</button>
-            <button id="deleteBtn" class="btn btn-sm btn-primary" onclick="deleteShipmentDetail()" disabled>Xóa</button>
-            <button id="contSupplyBtn" class="btn btn-sm btn-primary" onclick="requestContSupply()" disabled>Yêu cầu cấp rỗng</button>
-            <button id="verifyBtn" class="btn btn-sm btn-primary" onclick="verify()" disabled>Xác Thực</button>
-            <button id="payBtn" class="btn btn-sm btn-primary" onclick="pay()" disabled>Thanh Toán</button>
-          </div>
-          <div class="search-bar">
-            <button id="exportReceiptBtn" class="btn btn-sm btn-success" onclick="exportReceipt()" disabled>Xuất Biên Nhận</button>
-            <button id="exportBillBtn" class="btn btn-sm btn-success" onclick="exportBill()" disabled>Xuất Hóa Đơn</button>
-          </div>
-        </div>
-        <hr />
-        <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
-        <div class="progress-wrapper">
-          <p class="text-white" id="titleProgress"></p>
-          <div class="progress">
-            <span class="percent-text"></span>
-            <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+        <div class="right-side" title="Thông tin lô" data-options="region:'center'" style="width: 100%;">
+          <div class="right-side__toolbar">
+            <div class="datagrid-toolbar">
+              <table cellspacing="0" cellpadding="0">
+                <tbody>
+                  <tr>
+                    <td>
+                      <button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()" class="btn btn-sm btn-default"><i
+                        class="fa fa-plus text-success"></i> Lưu khai báo
+                      </button>
+                    </td>
+                    <td>
+                      <button id="deleteBtn" onclick="deleteShipmentDetail()" disabled class="btn btn-sm btn-default"><i
+                        class="fa fa-plus text-success"></i> Xóa
+                      </button>
+                    </td>
+                    <td>
+                      <button id="contSupplyBtn" onclick="requestContSupply()" disabled class="btn btn-sm btn-default"><i
+                        class="fa fa-plus text-success"></i> Yêu cầu cấp rỗng
+                      </button>
+                    </td>
+                    <td>
+                      <button id="verifyBtn" onclick="verify()" disabled class="btn btn-sm btn-default"><i
+                        class="fa fa-plus text-success"></i> Xác nhận
+                      </button>
+                    </td>
+                    <td>
+                      <button id="payBtn" onclick="pay()" disabled class="btn btn-sm btn-default"><i
+                        class="fa fa-plus text-success"></i> Thanh toán
+                      </button>
+                    </td>
+                    <td>
+                      <a id="attachIcon" class="hidden" href="javascript:void(0)"
+                         th:attr="data-url=@{/logistic/receive-cont-empty/shipments/{shipmentId}/shipment-images}">
+                        <i class="fa fa-paperclip" style="font-size:3rem;" title="Xem hình ảnh đính kèm cho container"></i>
+                      </a>
+                    </td>
+                    <td>
+                      <button id="exportReceiptBtn" onclick="exportReceipt()" disabled class="btn btn-sm btn-default"><i
+                        class="fa fa-plus text-success"></i> Xuất biên nhận
+                      </button>
+                    </td>
+                    <td>
+                      <button id="exportBill" onclick="exportBill()" disabled class="btn btn-sm btn-default"><i
+                        class="fa fa-plus text-success"></i> Xuất hóa đơn
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
+          <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+          <div class="progress-wrapper">
+            <p class="text-white" id="titleProgress"></p>
+            <div class="progress">
+              <span class="percent-text"></span>
+              <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="dim-bg"></div>
     </div>
-    <th:block th:include="include :: footer" />
-    <th:block th:include="include :: handsontable-js" />
-    <th:block th:include="include :: easyui-js" />
-    <th:block th:include="include :: datetimepicker-js" />
-    <th:block th:include="include :: websocket" />
-    <script th:src="@{/js/logistic/receiveContEmpty/index.js?v=20200901}"></script>
-  </body>
+  </div>
+
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: handsontable-js" />
+  <th:block th:include="include :: websocket" />
+  <script type="text/javascript">
+    $(".main-body").height($(document).height() - 10);
+    $(".easyui-layout").height($('.main-body').height() - 40);
+  </script>
+  <script th:src="@{/js/logistic/receiveContEmpty/index.js?v=20200901}"></script>
+</body>
+
 </html>

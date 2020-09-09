@@ -45,6 +45,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
 import vn.com.irtech.eport.system.dto.NotificationRes;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 import vn.com.irtech.eport.system.service.ISysNotificationReceiverService;
 
@@ -121,9 +122,9 @@ public class LogisticCommonController extends LogisticBaseController {
 	@GetMapping("/taxCode/{taxCode}/company")
 	public AjaxResult getCompanyInfor(@PathVariable("taxCode") String taxCode) {
 		AjaxResult ajaxResult = AjaxResult.success();
-		Shipment shipment = catosApiService.getGroupNameByTaxCode(taxCode);
-		String groupName = shipment.getGroupName();
-		String address = shipment.getAddress();
+		PartnerInfoDto partner = catosApiService.getGroupNameByTaxCode(taxCode);
+		String groupName = partner.getGroupName();
+		String address = partner.getAddress();
 		if (address != null) {
 			ajaxResult.put("address", address);
 		}

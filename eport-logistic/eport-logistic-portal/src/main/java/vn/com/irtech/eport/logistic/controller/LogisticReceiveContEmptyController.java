@@ -208,13 +208,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
     @ResponseBody
     @Transactional
     public AjaxResult addShipment(Shipment shipment) {
-        //check MST
-        if (shipment.getTaxCode() != null) {
-            String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
-            if (groupName == null) {
-                return error("Mã số thuế không tồn tại");
-            }
-        }
 
         MultipartFile[] images = shipment.getImages();
         if (Objects.nonNull(images) && images.length > 5) {
@@ -264,13 +257,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@PostMapping("/shipment/{shipmentId}")
     @ResponseBody
     public AjaxResult editShipment(Shipment shipment) {
-		//check MST
-		if(shipment.getTaxCode() != null){
-			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
-			if(groupName == null){
-				return error("Mã số thuế không tồn tại");
-			}
-		}
+
 		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {

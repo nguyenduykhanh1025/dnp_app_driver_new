@@ -41,6 +41,7 @@ import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysDictData;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 import vn.com.irtech.eport.system.service.ISysDictTypeService;
 
 
@@ -406,7 +407,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     public ServiceSendFullRobotReq groupShipmentDetailByShiftingContOrder(List<ShipmentDetail> shipmentDetails, Shipment shipment, Boolean isCredit, List<Long> prePickupContIds) {
         ProcessOrder processOrder = new ProcessOrder();
-        processOrder.setTaxCode(shipment.getTaxCode());
+        // FIXME
+        processOrder.setTaxCode(shipmentDetails.get(0).getPayer());
         processOrder.setShipmentId(shipment.getId());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         processOrder.setServiceType(5);
@@ -489,6 +491,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
             processOrder.setBeforeAfter("Before");
         }
+        try {
+			processOrder.setTrucker(catosApiService.getTruckerByTaxCode(taxCode));
+		} catch (Exception e) {
+			logger.error("Error when try to get ptnr code by reg no: " + e);
+		}
         processOrder.setBlNo(detail.getBlNo());
         processOrder.setPickupDate(detail.getExpiredDem());
         processOrder.setVessel(detail.getVslNm());
@@ -498,9 +505,23 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setShipmentId(shipment.getId());
         processOrder.setServiceType(1);
         processOrderService.insertProcessOrder(processOrder);
+        String payer = taxCode;
+        String payerName = "";
+        try {
+			payerName = getGroupNameByTaxCode(taxCode).getTaxCode();
+		} catch (Exception e) {
+			logger.error("Error when get payer name for " + payer + ": " + e);
+		}
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessOrderId(processOrder.getId());
             shipmentDetail.setRegisterNo(registerNo.toString());
+            shipmentDetail.setPayer(payer);
+            shipmentDetail.setPayerName(payerName);
+            if (creditFlag) {
+                shipmentDetail.setPayType("Credit");
+            } else {
+                shipmentDetail.setPayType("Cash");
+            }
             shipmentDetail.setUserVerifyStatus("Y");
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
         }
@@ -567,6 +588,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
             processOrder.setBeforeAfter("Before");
         }
+        try {
+			processOrder.setTrucker(catosApiService.getTruckerByTaxCode(taxCode));
+		} catch (Exception e) {
+			logger.error("Error when try to get ptnr code by reg no: " + e);
+		}
         processOrder.setBookingNo(detail.getBookingNo());
         processOrder.setPickupDate(detail.getExpiredDem());
         processOrder.setVessel(detail.getVslNm());
@@ -581,9 +607,23 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setRunnable(false);
         processOrder.setServiceType(3);
         processOrderService.insertProcessOrder(processOrder);
+        String payer = taxCode;
+        String payerName = "";
+        try {
+			payerName = getGroupNameByTaxCode(taxCode).getTaxCode();
+		} catch (Exception e) {
+			logger.error("Error when get payer name for " + payer + ": " + e);
+		}
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessOrderId(processOrder.getId());
             shipmentDetail.setRegisterNo(registerNo.toString());
+            shipmentDetail.setPayer(payer);
+            shipmentDetail.setPayerName(payerName);
+            if (creditFlag) {
+                shipmentDetail.setPayType("Credit");
+            } else {
+                shipmentDetail.setPayType("Cash");
+            }
             shipmentDetail.setUserVerifyStatus("Y");
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
         }
@@ -608,6 +648,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
             processOrder.setBeforeAfter("Before");
         }
+        try {
+			processOrder.setTrucker(catosApiService.getTruckerByTaxCode(taxCode));
+		} catch (Exception e) {
+			logger.error("Error when try to get ptnr code by reg no: " + e);
+		}
         processOrder.setShipmentId(shipment.getId());
         if ("F".equalsIgnoreCase(detail.getFe())) {
             processOrder.setServiceType(Constants.SEND_CONT_FULL);
@@ -626,13 +671,26 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setPayType("Cash");
         }
         processOrderService.insertProcessOrder(processOrder);
+        
+        String payer = taxCode;
+        String payerName = "";
+        try {
+			payerName = getGroupNameByTaxCode(taxCode).getTaxCode();
+		} catch (Exception e) {
+			logger.error("Error when get payer name for " + payer + ": " + e);
+		}
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessOrderId(processOrder.getId());
             shipmentDetail.setRegisterNo(detail.getId().toString());
             shipmentDetail.setUserVerifyStatus("Y");
-            if (processOrder.getServiceType() == EportConstants.SERVICE_DROP_FULL) {
-            	shipmentDetail.setOpeCode(shipment.getOpeCode());
+            shipmentDetail.setPayer(payer);
+            shipmentDetail.setPayerName(payerName);
+            if (creditFlag) {
+                shipmentDetail.setPayType("Credit");
+            } else {
+                shipmentDetail.setPayType("Cash");
             }
+            shipmentDetail.setOpeCode(shipment.getOpeCode());
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             if (processOrder.getServiceType() == 2) {
             	shipmentDetail.setRemark("Ha vo " + shipmentDetail.getEmptyDepotLocation());
@@ -665,7 +723,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public Shipment getGroupNameByTaxCode(String taxCode) throws Exception {
+    public PartnerInfoDto getGroupNameByTaxCode(String taxCode) throws Exception {
         // String apiUrl = "https://thongtindoanhnghiep.co/api/company/";
         // String methodName = "GET";
         // String readLine = null;
@@ -698,7 +756,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         // return convertedObject.get("Title").toString().replace("\"", "");
         String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/" + taxCode;
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(url, Shipment.class);
+        return restTemplate.getForObject(url, PartnerInfoDto.class);
     }
 
     @Override

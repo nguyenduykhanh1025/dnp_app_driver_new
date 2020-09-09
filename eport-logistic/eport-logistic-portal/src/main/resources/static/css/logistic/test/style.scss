@@ -84,6 +84,8 @@ body {
           .btn {
             font-size: 12px;
             margin-bottom: 5px;
+            border-radius: 0;
+            padding: 2px 3px;
           }
         }
       }
@@ -155,10 +157,16 @@ body {
   clear: both;
 }
 
-.tabs-container .panel-body {
-  padding: 0 !important;
+.tabs-container {
+  .panel-body {
+    padding: 0 !important;
+  }
 }
 
 .text-uppercase {
   font-style: uppercase;
+}
+
+.d-inline {
+  margin-bottom: 10px;
 }

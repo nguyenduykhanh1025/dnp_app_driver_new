@@ -124,7 +124,6 @@ public class GateTestController extends BaseController {
 		Shipment shipment = new Shipment();
 		shipment.setLogisticAccountId(1L);
 		shipment.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
-		shipment.setTaxCode("3123123123");
 		shipment.setContainerAmount(2L);
 		
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
@@ -286,7 +285,6 @@ public class GateTestController extends BaseController {
 			}
 			
 			if (!shipmentFound) {
-				shipment2.setTaxCode("3123123123");
 				shipment2.setLogisticAccountId(1L);
 				shipment2.setEdoFlg("0");
 				logger.debug("Get container list by B/L No ");
