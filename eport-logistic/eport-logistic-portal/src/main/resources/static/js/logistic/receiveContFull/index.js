@@ -440,7 +440,7 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
     }
   }
   if (!value) {
-    value = '--';
+    value = '';
   }
   $(td).attr('id', 'containerNo' + row).addClass("htMiddle").addClass("htCenter");
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
@@ -471,7 +471,7 @@ function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) 
     }
   }
   if (!value) {
-    value = '--';
+    value = '';
   }
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
@@ -485,14 +485,14 @@ function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties)
     }
   }
   if (!value) {
-    value = '--';
+    value = '';
   }
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
-    value = '--';
+    value = '';
   }
   cellProperties.readOnly = 'true';
   $(td).css("background-color", "#C6EFCE");
@@ -503,7 +503,7 @@ function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
-    value = '--';
+    value = '';
   }
   cellProperties.readOnly = 'true';
   $(td).css("background-color", "#C6EFCE");
@@ -514,7 +514,7 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
-    value = '--';
+    value = '';
   }
   cellProperties.readOnly = 'true';
   $(td).css("background-color", "#C6EFCE");
@@ -525,7 +525,7 @@ function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
-    value = '--';
+    value = '';
   }
   cellProperties.readOnly = 'true';
   $(td).css("background-color", "#C6EFCE");
@@ -536,7 +536,7 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
-    value = '--';
+    value = '';
   }
   cellProperties.readOnly = 'true';
   $(td).css("background-color", "#C6EFCE");
@@ -547,7 +547,7 @@ function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
-    value = '--';
+    value = '';
   }
   cellProperties.readOnly = 'true';
   $(td).css("background-color", "#C6EFCE");
@@ -558,7 +558,7 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
-    value = '--';
+    value = '';
   }
   cellProperties.readOnly = 'true';
   $(td).css("background-color", "#C6EFCE");
@@ -569,7 +569,7 @@ function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
-    value = '--';
+    value = '';
   }
   cellProperties.readOnly = 'true';
   $(td).css("background-color", "#C6EFCE");
@@ -581,7 +581,7 @@ function dischargePortRenderer(instance, td, row, col, prop, value, cellProperti
 
 function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
-    value = '--';
+    value = '';
   }
   $(td).attr('id', 'payType' + row).addClass("htMiddle").addClass("htCenter");
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
@@ -592,7 +592,7 @@ function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
-    value = '--';
+    value = '';
   }
   $(td).attr('id', 'payer' + row).addClass("htMiddle").addClass("htCenter");
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
@@ -603,7 +603,7 @@ function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
-    value = '--';
+    value = '';
   }
   $(td).attr('id', 'payerNamer' + row).addClass("htMiddle");
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
@@ -614,6 +614,9 @@ function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) 
 
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'remark' + row).addClass("htMiddle");
+  if (!value) {
+    value = '';
+  }
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
@@ -624,6 +627,9 @@ function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties
     $(td).css("background-color", "rgb(232, 232, 232)");
   }
   $(td).attr('id', 'detFreeTime' + row).addClass("htMiddle").addClass("htRight");
+  if (!value) {
+    value = '';
+  }
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
