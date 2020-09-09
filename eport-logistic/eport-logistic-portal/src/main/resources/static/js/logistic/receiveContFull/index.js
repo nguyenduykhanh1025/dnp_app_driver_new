@@ -1,3 +1,4 @@
+const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var prefix = ctx + "logistic/receive-cont-full";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
@@ -7,11 +8,13 @@ var conts = '';
 var allChecked = false, dnDepot = false;
 var checkList = [];
 var rowAmount = 0;
-var shipmentSearch = new Object;
+var shipmentSearch = new Object();
+shipmentSearch.params = new Object();
 shipmentSearch.serviceType = 1;
 var sizeList = [];
 var voyCarrier;
 var onChangeFlg = false, currentIndexRow, rejectChange = false;
+var fromDate, toDate;
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
@@ -47,48 +50,120 @@ $.ajax({
   }
 });
 
+var toolbar = [
+  {
+    text: '<button class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Thêm</button>',
+    handler: function () {
+      $.operate.addShipment();
+    },
+  },
+  {
+    text: '<button class="btn btn-sm btn-default" ><i class="fa fa-edit text-warning"></i> Sửa</button>',
+    handler: function () {
+      $.operate.editShipment();
+    },
+  },
+  {
+    text: '<button class="btn btn-sm btn-default"><i class="fa fa-remove text-danger"></i> Xóa</button>',
+    handler: function () {
+      removeShipment()
+    },
+  },
+  {
+    text: '<button class="btn btn-sm btn-default"><i class="fa fa-refresh text-success"></i></button>',
+    handler: function () {
+      handleRefresh();
+    },
+  },
+];
+
+$(".main-body").layout();
+
+loadTable();
+
+$(".collapse").click(function () {
+  $(".main-body__search-wrapper").height(15);
+  $(".main-body__search-wrapper--container").hide();
+  $(this).hide();
+  $(".uncollapse").show();
+});
+
+$(".uncollapse").click(function () {
+  $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
+  $(".main-body__search-wrapper--container").show();
+  $(this).hide();
+  $(".collapse").show();
+});
+
+$(".left-side__collapse").click(function () {
+  $("#main-layout").layout("collapse", "west");
+  setTimeout(() => {
+    hot.render();
+  }, 200);
+});
+
+
+$('#main-layout').layout({
+  onExpand: function (region) {
+    if (region == "west") {
+      hot.render();
+    }
+  }
+})
+
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
-  //DEFAULT SEARCH FOLLOW DATE
-  let fromMonth = (new Date().getMonth() < 10) ? "0" + (new Date().getMonth()) : new Date().getMonth();
-  let toMonth = (new Date().getMonth() +2 < 10) ? "0" + (new Date().getMonth() +2 ): new Date().getMonth() +2;
-  $('#fromDate').val("01/"+ fromMonth + "/" + new Date().getFullYear());
-  $('#toDate').val("01/"+ (toMonth > 12 ? "01" +"/"+ (new Date().getFullYear()+1)  : toMonth + "/" + new Date().getFullYear()));
-  let fromDate = stringToDate($('#fromDate').val());
-  let toDate =  stringToDate($('#toDate').val());
-  fromDate.setHours(0,0,0);
-  toDate.setHours(23, 59, 59);
-  shipmentSearch.fromDate = fromDate.getTime();
-  shipmentSearch.toDate = toDate.getTime();
 
-  loadTable();
-  $(".left-side").css("height", $(document).height());
-  $("#btn-collapse").click(function () {
-    handleCollapse(true);
+  $("#blNo").textbox('textbox').bind('keydown', function(e) {
+    // enter key
+    if (e.keyCode == 13) {
+      shipmentSearch.blNo = $("#blNo").textbox('getText').toUpperCase();
+      loadTable();
+    }
   });
-  $("#btn-uncollapse").click(function () {
-    handleCollapse(false);
+
+  $("#containerNo").textbox('textbox').bind('keydown', function(e) {
+    // enter key
+    if (e.keyCode == 13) {
+      shipmentSearch.params.containerNo = $("#containerNo").textbox('getText').toUpperCase();
+      loadTable();
+    }
   });
-  //find date
-  $('.from-date').datetimepicker({
-    language: 'en',
-    format: 'dd/mm/yyyy',
-    autoclose: true,
-    todayBtn: true,
-    todayHighlight: true,
-    pickTime: false,
-    minView: 2
+
+  $("#consignee").textbox('textbox').bind('keydown', function(e) {
+    // enter key
+    if (e.keyCode == 13) {
+      shipmentSearch.params.consignee = $("#consignee").textbox('getText').toUpperCase();
+      loadTable();
+    }
   });
-  $('.to-date').datetimepicker({
-    language: 'en',
-    format: 'dd/mm/yyyy',
-    autoclose: true,
-    todayBtn: true,
-    todayHighlight: true,
-    pickTime: false,
-    minView: 2
+
+  $('#fromDate').datebox({
+    onSelect: function(date){
+      date.setHours(0,0,0);
+      fromDate = date;
+      if (toDate != null && date.getTime() > toDate.getTime()) {
+        $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
+      } else {
+        shipmentSearch.params.fromDate = dateToString(date);
+        loadTable();
+      }
+      return date;
+    }
   });
-  // Handle add
+
+  $('#toDate').datebox({
+    onSelect: function(date){
+      date.setHours(23,59,59);
+      toDate = date;
+      if (fromDate != null && date.getTime() < fromDate.getTime()) {
+        $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
+      } else {
+        shipmentSearch.params.toDate = dateToString(date);
+        loadTable();
+      }
+    }
+  });
   $(function () {
     let options = {
       createUrl: prefix + "/shipment/add",
@@ -98,77 +173,34 @@ $(document).ready(function () {
     $.table.init(options);
   });
 });
-//search date
-function changeFromDate() {
-  let fromDate = stringToDate($('#fromDate').val());
-  if ($('#toDate').val() != '' && stringToDate($('#toDate').val()).getTime() < fromDate.getTime()) {
-      $.modal.alertError('Quý khách không thể chọn từ ngày cao hơn đến ngày.')
-      $('#fromDate').val('');
-  } else {
-      shipmentSearch.fromDate = fromDate.getTime();
-      loadTable();
-  }
-}
 
-function changeToDate() {
-  let toDate = stringToDate($('.to-date').val());
-  if ($('.from-date').val() != '' && stringToDate($('.from-date').val()).getTime() > toDate.getTime()) {
-      $.modal.alertError('Quý khách không thể chọn đến ngày thấp hơn từ ngày.')
-      $('.to-date').val('');
-  } else {
-      toDate.setHours(23, 59, 59);
-      shipmentSearch.toDate = toDate.getTime();
-      loadTable();
-  }
+function dateformatter(date){
+  var y = date.getFullYear();
+  var m = date.getMonth()+1;
+  var d = date.getDate();
+  return (d<10?('0'+d):d) + '/' + (m<10?('0'+m):m) + '/' + y;
 }
-
-function stringToDate(dateStr) {
-  let dateParts = dateStr.split('/');
-  return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
-}
-document.getElementById("billingSearch").addEventListener("keyup", function (event) {
-  event.preventDefault();
-  if (event.keyCode === 13) {
-    shipmentSearch.blNo = $('#billingSearch').val().toUpperCase();
-    loadTable();
-  }
-});
-
-function handleCollapse(status) {
-  if (status) {
-    $(".left-side").css("width", "0.5%");
-    $(".left-side").children().hide();
-    $("#btn-collapse").hide();
-    $("#btn-uncollapse").show();
-    $(".right-side").css("width", "99%");
-    setTimeout(function () {
-      hot.render();
-    }, 500);
-    return;
-  }
-  $(".left-side").css("width", "33%");
-  $(".left-side").children().show();
-  $("#btn-collapse").show();
-  $("#btn-uncollapse").hide();
-  $(".right-side").css("width", "67%");
-  setTimeout(function () {
-    hot.render();
-  }, 500);
+function dateparser(s){
+  var ss = (s.split('\.'));
+  var d = parseInt(ss[0],10);
+  var m = parseInt(ss[1],10);
+  var y = parseInt(ss[2],10);
+  if (!isNaN(y) && !isNaN(m) && !isNaN(d)){
+    return new Date(y,m-1,d);
+  } 
 }
 
 // LOAD SHIPMENT LIST
-function loadTable(msg) {
-  if (msg) {
-    $.modal.alertSuccess(msg);
-  }
+function loadTable() {
   $("#dg").datagrid({
     url: ctx + "logistic/shipments",
-    height: window.innerHeight - 110,
+    height: $('.main-body').height() - 75,
     method: 'post',
     singleSelect: true,
     collapsible: true,
     clientPaging: false,
     rownumbers:true,
+    toolbar: toolbar,
     pagination: true,
     onBeforeSelect: function (index, row) {
       getSelected(index, row);
@@ -258,17 +290,18 @@ function getSelected(index, row) {
             };
             $.table.init(options);
           });
-          $("#loCode").text(row.id);
-          $("#taxCode").text(row.taxCode);
-          $("#quantity").text(row.containerAmount);
+          let title = '';
+          title += 'Mã Lô: ' + row.id + ' - ';
+          title += 'SL: ' + row.containerAmount + ' - ';
           if (row.edoFlg == "0") {
-            $("#dotype").text("DO");
+            title += 'Loại lệnh: DO - ';
             $("#deleteBtn").show();
           } else {
-            $("#dotype").text("eDO");
+            title += 'Loại lệnh: eDO - ';
             $("#deleteBtn").hide();
           }
-          $("#blNo").text(row.blNo);
+          title += 'B/L No: ' + row.blNo;
+          $('#main-layout').layout('panel', 'center').panel('setTitle', title);
           rowAmount = row.containerAmount;
           checkList = Array(rowAmount).fill(0);
           allChecked = false;
@@ -295,17 +328,18 @@ function getSelected(index, row) {
           };
           $.table.init(options);
         });
-        $("#loCode").text(row.id);
-        $("#taxCode").text(row.taxCode);
-        $("#quantity").text(row.containerAmount);
+        let title = '';
+        title += 'Mã Lô: ' + row.id + ' - ';
+        title += 'SL: ' + row.containerAmount + ' - ';
         if (row.edoFlg == "0") {
-          $("#dotype").text("DO");
+          title += 'Loại lệnh: DO - ';
           $("#deleteBtn").show();
         } else {
-          $("#dotype").text("eDO");
+          title += 'Loại lệnh: eDO - ';
           $("#deleteBtn").hide();
         }
-        $("#blNo").text(row.blNo);
+        title += 'B/L No: ' + row.blNo;
+        $('#main-layout').layout('panel', 'center').panel('setTitle', title);
         rowAmount = row.containerAmount;
         checkList = Array(rowAmount).fill(0);
         allChecked = false;
@@ -399,14 +433,17 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
   return td;
 }
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
-  $(td).html(value);
   if (value != null && value != '') {
     if (hot.getDataAtCell(row, 1) != null) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
   }
+  if (!value) {
+    value = '--';
+  }
+  $(td).attr('id', 'containerNo' + row).addClass("htMiddle").addClass("htCenter");
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -418,178 +455,158 @@ function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties)
     if (value.substring(2, 3) != "/") {
       value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
     }
-    $(td).attr('id', 'expiredDem' + row).html(value).addClass("htMiddle");
+    $(td).attr('id', 'expiredDem' + row).addClass("htMiddle").addClass("htCenter");
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   } else {
-    $(td).html('');
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;"></div>');
   }
   return td;
 }
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'consignee' + row).addClass("htMiddle");
-  $(td).html(value);
   if (value != null && value != '') {
     if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
   }
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'emptyDepot' + row).addClass("htMiddle");
-  $(td).html(value);
   if (value != null && value != '') {
     if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
   }
+  if (!value) {
+    value = '--';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '--';
+  }
   cellProperties.readOnly = 'true';
-//  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).css("background-color", "#C6EFCE");
   $(td).css("color", "#006100");
   $(td).attr('id', 'opeCode' + row).addClass("htMiddle");
-  $(td).html(value);
-//  if (value != null && value != '') {
-//    if (hot.getDataAtCell(row, 1) != null) {
-//      cellProperties.readOnly = 'true';
-//      $(td).css("background-color", "rgb(232, 232, 232)");
-//    }
-//  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '--';
+  }
   cellProperties.readOnly = 'true';
-  //$(td).css("background-color", "rgb(232, 232, 232)");
   $(td).css("background-color", "#C6EFCE");
   $(td).css("color", "#006100");
   $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
-  $(td).html(value);
-//  if (value != null && value != '') {
-//    if (hot.getDataAtCell(row, 1) != null) {
-//      cellProperties.readOnly = 'true';
-//      $(td).css("background-color", "rgb(232, 232, 232)");
-//    }
-//  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '--';
+  }
   cellProperties.readOnly = 'true';
-//  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).css("background-color", "#C6EFCE");
   $(td).css("color", "#006100");
-  $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
-  $(td).html(value);
-//  if (value != null && value != '') {
-//    if (hot.getDataAtCell(row, 1) != null) {
-//      cellProperties.readOnly = 'true';
-//      $(td).css("background-color", "rgb(232, 232, 232)");
-//    }
-//  }
+  $(td).attr('id', 'voyNo' + row).addClass("htMiddle").addClass("htCenter");
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '--';
+  }
   cellProperties.readOnly = 'true';
-//  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).css("background-color", "#C6EFCE");
   $(td).css("color", "#006100");
-  $(td).attr('id', 'sztp' + row).addClass("htMiddle");
-//  if (value != null && value != '') {
-//    value = value.split(':')[0];
-//    if (hot.getDataAtCell(row, 1) != null) {
-//      cellProperties.readOnly = 'true';
-//      $(td).css("background-color", "rgb(232, 232, 232)");
-//    }
-//  }
-  $(td).html(value);
+  $(td).attr('id', 'sztp' + row).addClass("htMiddle").addClass("htCenter");
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '--';
+  }
   cellProperties.readOnly = 'true';
-//  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).css("background-color", "#C6EFCE");
   $(td).css("color", "#006100");
-  $(td).attr('id', 'sztp' + row).addClass("htMiddle");
-//  if (value != null && value != '') {
-//    value = value.split(':')[0];
-//    if (hot.getDataAtCell(row, 1) != null) {
-//      cellProperties.readOnly = 'true';
-//      $(td).css("background-color", "rgb(232, 232, 232)");
-//    }
-//  }
-  $(td).html(value);
+  $(td).attr('id', 'sztp' + row).addClass("htMiddle").addClass("htCenter");
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '--';
+  }
   cellProperties.readOnly = 'true';
-//  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).css("background-color", "#C6EFCE");
   $(td).css("color", "#006100");
-  $(td).attr('id', 'wgt' + row).addClass("htMiddle");
-  $(td).html(value);
-//  if (value != null && value != '') {
-//    if (hot.getDataAtCell(row, 1) != null) {
-//      cellProperties.readOnly = 'true';
-//      $(td).css("background-color", "rgb(232, 232, 232)");
-//    }
-//  }
+  $(td).attr('id', 'wgt' + row).addClass("htMiddle").addClass("htRight");
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '--';
+  }
   cellProperties.readOnly = 'true';
-//  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).css("background-color", "#C6EFCE");
   $(td).css("color", "#006100");
-  $(td).attr('id', 'loadingPort' + row).addClass("htMiddle");
-//  if (value != null && value != '') {
-//    value = value.split(':')[0];
-//    if (hot.getDataAtCell(row, 1) != null) {
-//      cellProperties.readOnly = 'true';
-//      $(td).css("background-color", "rgb(232, 232, 232)");
-//    }
-//  }
-  $(td).html(value);
+  $(td).attr('id', 'loadingPort' + row).addClass("htMiddle").addClass("htCenter");
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '--';
+  }
   cellProperties.readOnly = 'true';
-//  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).css("background-color", "#C6EFCE");
   $(td).css("color", "#006100");
-  $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
-//  if (value != null && value != '') {
-//    value = value.split(':')[0];
-//    if (hot.getDataAtCell(row, 1) != null) {
-//      cellProperties.readOnly = 'true';
-//      $(td).css("background-color", "rgb(232, 232, 232)");
-//    }
-//  }
-  $(td).html(value);
+  $(td).attr('id', 'dischargePort' + row).addClass("htMiddle").addClass("htCenter");
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 
 function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'payType' + row).addClass("htMiddle");
-  $(td).html(value);
+  if (!value) {
+    value = '--';
+  }
+  $(td).attr('id', 'payType' + row).addClass("htMiddle").addClass("htCenter");
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   cellProperties.readOnly = 'true';
   $(td).css("background-color", "rgb(232, 232, 232)");
   return td;
 }
 
 function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'payer' + row).addClass("htMiddle");
-  $(td).html(value);
+  if (!value) {
+    value = '--';
+  }
+  $(td).attr('id', 'payer' + row).addClass("htMiddle").addClass("htCenter");
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   cellProperties.readOnly = 'true';
   $(td).css("background-color", "rgb(232, 232, 232)");
   return td;
 }
 
 function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '--';
+  }
   $(td).attr('id', 'payerNamer' + row).addClass("htMiddle");
-  $(td).html(value);
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   cellProperties.readOnly = 'true';
   $(td).css("background-color", "rgb(232, 232, 232)");
   return td;
@@ -597,7 +614,7 @@ function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) 
 
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'remark' + row).addClass("htMiddle");
-  $(td).html(value);
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 
@@ -606,8 +623,8 @@ function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties
     cellProperties.readOnly = 'true';
     $(td).css("background-color", "rgb(232, 232, 232)");
   }
-  $(td).attr('id', 'detFreeTime' + row).addClass("htMiddle");
-  $(td).html(value);
+  $(td).attr('id', 'detFreeTime' + row).addClass("htMiddle").addClass("htRight");
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 
@@ -673,7 +690,7 @@ function configHandson() {
           return "Ghi Chú";
       }
     },
-    // colWidths: [50, 100, 100, 100, 150, 150, 100, 150, 200, 100, 100, 100, 100, 120, 100, 200],
+    colWidths: [40, 100, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200],
     filter: "true",
     columns: [
       {
@@ -1457,11 +1474,11 @@ function exportBill() {
 
 // Handling UI STATUS
 function setLayoutRegisterStatus() {
-  $("#registerStatus").removeClass("label-primary disable").addClass("active");
-  $("#customStatus").removeClass("label-primary active").addClass("disable");
-  $("#verifyStatus").removeClass("label-primary active").addClass("disable");
-  $("#paymentStatus").removeClass("label-primary active").addClass("disable");
-  $("#finishStatus").removeClass("label-primary active").addClass("disable");
+  // $("#registerStatus").removeClass("label-primary disable").addClass("active");
+  // $("#customStatus").removeClass("label-primary active").addClass("disable");
+  // $("#verifyStatus").removeClass("label-primary active").addClass("disable");
+  // $("#paymentStatus").removeClass("label-primary active").addClass("disable");
+  // $("#finishStatus").removeClass("label-primary active").addClass("disable");
   $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
@@ -1470,11 +1487,11 @@ function setLayoutRegisterStatus() {
 }
 
 function setLayoutCustomStatus() {
-  $("#registerStatus").removeClass("active disable").addClass("label-primary");
-  $("#customStatus").removeClass("label-primary disable").addClass("active");
-  $("#verifyStatus").removeClass("label-primary active").addClass("disable");
-  $("#paymentStatus").removeClass("label-primary active").addClass("disable");
-  $("#finishStatus").removeClass("label-primary active").addClass("disable");
+  // $("#registerStatus").removeClass("active disable").addClass("label-primary");
+  // $("#customStatus").removeClass("label-primary disable").addClass("active");
+  // $("#verifyStatus").removeClass("label-primary active").addClass("disable");
+  // $("#paymentStatus").removeClass("label-primary active").addClass("disable");
+  // $("#finishStatus").removeClass("label-primary active").addClass("disable");
   $("#customBtn").prop("disabled", false);
   $("#verifyBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
@@ -1483,11 +1500,11 @@ function setLayoutCustomStatus() {
 }
 
 function setLayoutVerifyUserStatus() {
-  $("#registerStatus").removeClass("active disable").addClass("label-primary");
-  $("#customStatus").removeClass("active disable").addClass("label-primary");
-  $("#verifyStatus").removeClass("label-primary disable").addClass("active");
-  $("#paymentStatus").removeClass("active label-primary").addClass("disable");
-  $("#finishStatus").removeClass("active label-primary").addClass("disable");
+  // $("#registerStatus").removeClass("active disable").addClass("label-primary");
+  // $("#customStatus").removeClass("active disable").addClass("label-primary");
+  // $("#verifyStatus").removeClass("label-primary disable").addClass("active");
+  // $("#paymentStatus").removeClass("active label-primary").addClass("disable");
+  // $("#finishStatus").removeClass("active label-primary").addClass("disable");
   $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", false);
   $("#payBtn").prop("disabled", true);
@@ -1496,11 +1513,11 @@ function setLayoutVerifyUserStatus() {
 }
 
 function setLayoutPaymentStatus() {
-  $("#registerStatus").removeClass("active disable").addClass("label-primary");
-  $("#customStatus").removeClass("active disable").addClass("label-primary");
-  $("#verifyStatus").removeClass("active disable").addClass("label-primary");
-  $("#paymentStatus").removeClass("label-primary disable").addClass("active");
-  $("#finishStatus").removeClass("active label-primary").addClass("disable");
+  // $("#registerStatus").removeClass("active disable").addClass("label-primary");
+  // $("#customStatus").removeClass("active disable").addClass("label-primary");
+  // $("#verifyStatus").removeClass("active disable").addClass("label-primary");
+  // $("#paymentStatus").removeClass("label-primary disable").addClass("active");
+  // $("#finishStatus").removeClass("active label-primary").addClass("disable");
   $("#deleteBtn").prop("disabled", true);
   $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
@@ -1510,11 +1527,11 @@ function setLayoutPaymentStatus() {
 }
 
 function setLayoutFinishStatus() {
-  $("#registerStatus").removeClass("active disable").addClass("label-primary");
-  $("#verifyStatus").removeClass("active disable").addClass("label-primary");
-  $("#paymentStatus").removeClass("active disable").addClass("label-primary");
-  $("#customStatus").removeClass("active disable").addClass("label-primary");
-  $("#finishStatus").removeClass("label-primary disable").addClass("active");
+  // $("#registerStatus").removeClass("active disable").addClass("label-primary");
+  // $("#verifyStatus").removeClass("active disable").addClass("label-primary");
+  // $("#paymentStatus").removeClass("active disable").addClass("label-primary");
+  // $("#customStatus").removeClass("active disable").addClass("label-primary");
+  // $("#finishStatus").removeClass("label-primary disable").addClass("active");
   $("#deleteBtn").prop("disabled", true);
   $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
@@ -1695,4 +1712,27 @@ function removeShipment(){
 			$.modal.msgError("Không thể xóa Lô " + shipmentSelected.id);
 		}
 	}
+}
+
+function dateToString(date) {
+  return ("0" + date.getDate()).slice(-2) + "/" + ("0"+(date.getMonth()+1)).slice(-2) + "/" + date.getFullYear()
+  + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
+}
+
+function search() {
+  loadTable();
+}
+
+function clearInput() {
+  $("#blNo").textbox('setText', '');
+  $("#containerNo").textbox('setText', '');
+  $("#consignee").textbox('setText', '');
+  $('#fromDate').datebox('setValue', '');
+  $('#toDate').datebox('setValue', '');
+  shipmentSearch = new Object();
+  shipmentSearch.params = new Object();
+  shipmentSearch.serviceType = 1;
+  fromDate = null;
+  toDate = null;
+  loadTable();
 }
