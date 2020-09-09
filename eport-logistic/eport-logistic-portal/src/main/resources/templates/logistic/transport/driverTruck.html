@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <th:block th:include="include :: header('Chỉ định xe')" />
+    <th:block th:include="include :: header('Edit Driver login info')" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <th:block th:include="include :: easyui-css" />
     <th:block th:include="include :: select2-css" />
+    <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
+    <link th:href="@{/css/logistic/assignTruck/assignTruck.css}" rel="stylesheet" />
     <style>
         .select2-container--default .select2-selection--multiple .select2-selection__choice{
             background-color: cornflowerblue !important;
@@ -10,159 +14,59 @@
     </style>
 </head>
 <body class="white-bg">
-	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
-		<form class="form-horizontal m" id="form-logistic-account-assignTruck">
-            <input name="id" type="hidden" />
-            <div class="form-group">
-                <label class="col-sm-3 control-label"style="text-align: right;">Chỉ định xe đầu kéo:</label>
-                <div class="col-sm-7 col-xs-7 col-md-9">
-                    <!-- <input type="hidden" name="tractorId" id="tractorId"> -->
-                    <select class="tractorList" id="tractorList"></select>
+    <div class="container" style="display: flex; flex-flow: column; height: 100%;">
+        <div class="wrapper wrapper-content animated fadeInRight ibox-content" style="flex-flow: column; display: flex;">
+            <form class="form-horizontal" id="form-account-edit" th:object="${driverAccount}">
+            </form>
+            <div class="col-sm-6-row" style="padding-bottom: 10px;">
+                <div style="display: flex; justify-content: left;">
+                    <b>DANH SÁCH XE</b>
                 </div>
-                <div>
-                	<a class="btn btn-success btn-xs" onclick="chooseAllTractor()">Tất cả</a>
+                <select id="addTruckAssignTable" class="easyui-combogrid" name="dept" style="width:250px;"
+                data-options="
+                    panelWidth:350,
+                    panelHeight:250,
+                    idField:'id',
+                    textField:'plateNumber',
+                    columns:[[
+                        {field:'id',title:'ID', fixed:true,formatter: formatId , width:50},
+                        {field:'plateNumber',title:'Biển số xe',formatter: formatPlateNumber, width:100},
+                        {field:'type',title:'Loại xe',formatter: formatType,  fixed:true, width:100},
+                        {field:'wgt',title:'Trọng tải',formatter: formatWgt,  fixed:true, width:70},
+                    ]],
+                    fitColumns: true,
+                    labelPosition: 'top'
+                "></select>
+                <div style="display: inline;">
+                    <button class="btn btn-sm btn-primary" onclick="addTruck()">Add</button>
                 </div>
+                <!-- <div style="display: inline;">
+                    <button class="btn btn-sm btn-danger" onclick="removeTruck()">Delete</button>
+                </div> -->
             </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label"style="text-align: right;">Chỉ định xe rơ mooc:</label>
-                <div class="col-sm-7 col-xs-7 col-md-9">
-                    <!-- <input type="hidden" name="trailerId" id="trailerId"> -->
-                    <select class="trailerList" id="trailerList"></select>
-                </div>
-                <div>
-                	<a class="btn btn-success btn-xs" onclick="chooseAllTrailer()">Tất cả</a>
-                </div>
+            <div class="table-content" style="flex: 1 1 auto;">
+                <table id="pickedTruckTable" class="table" style="width:100%;" fitColumns="true">
+                  <thead>
+                    <tr>
+                      <!-- <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th> -->
+                      <th data-options="field:'id', align:'center', fixed:true, formatter: formatId" width="50">ID</th>
+                      <th data-options="field:'plateNumber', align:'center', formatter: formatPlateNumber" width="150">Biển số xe</th>
+                      <th data-options="field:'type', editor:'textbox', formatter: formatType" width="100">Loại xe</th>
+                      <th data-options="field:'wgt', editor:'textbox', formatter: formatWgt" width="100">Trọng tải</th>
+                      <th data-options="field:'action', formatter: formatAction, align:'center', fixed:true" width="80">Hành động</th>
+                  </tr>
+                  </thead>
+                </table>
             </div>
-		</form>
+        </div>
     </div>
     <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: select2-js" />
+    <th:block th:include="include :: easyui-js" />
+    <script th:src="@{/js/logistic/transport/driverTruck.js}"></script>
     <script type="text/javascript" th:inline="javascript">
-    var tractorList = /*[[${tractorList}]]*/;
-    var trailerList = /*[[${trailerList}]]*/;
-    var driverId = /*[[${driverId}]]*/;
-    var tractorIdArray = [];
-    var trailerIdArray = [];
-    $(document).ready(function(){         
-        $('.tractorList').select2({
-            ajax: {
-                url: ctx + 'logistic/logisticTruck/searchTractorByKeyword',
-                method: 'get',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        keyword: params.term == null ? "" : params.term
-                    }
-                },
-                processResults: function (data, params) {
-                    return {
-                        results: data
-                    }
-                }
-            },
-            placeholder: 'Chọn xe đầu kéo',
-            minimumInputLength: 0,
-            multiple: true,
-        });
-
-        $('.trailerList').select2({
-            ajax: {
-                url: ctx + 'logistic/logisticTruck/searchTrailerByKeyword',
-                method: 'get',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        keyword: params.term == null ? "" : params.term
-                    }
-                },
-                processResults: function (data, params) {
-                    return {
-                        results: data
-                    }
-                }
-            },
-            placeholder: 'Chọn xe rơ mooc',
-            minimumInputLength: 0,
-            multiple: true,
-        });
-    })                 
-    setTimeout(() => {
-        // Init truckIds select 2
-        for (let i=0; i < tractorList.length; i++) {
-            let $option = $("<option selected></option>").val(tractorList[i].truckId).text(tractorList[i].logisticTruck.plateNumber);
-            $('.tractorList').append($option).trigger('change');
-        }
-        for (let i=0; i < trailerList.length; i++) {
-            let $option = $("<option selected></option>").val(trailerList[i].truckId).text(trailerList[i].logisticTruck.plateNumber);
-            $('.trailerList').append($option).trigger('change');
-        }
-    }, 200);
-    // when select option truckId
-    $('.tractorList').change(function () {
-        tractorIdArray = $(".tractorList").val();
-    });
-    $('.trailerList').change(function () {
-        trailerIdArray = $(".trailerList").val();
-    });
-    function submitHandler() {
-        if ($.validate.form()) {
-            //$.operate.save(ctx + "logistic/transport/truckAssign", $('#form-logistic-account-assignTruck').serialize());
-            let truckIds = [];
-            if(tractorIdArray != null){
-                for (var i=0; i<tractorIdArray.length; i++) {
-                    truckIds.push(tractorIdArray[i])
-                }
-            }
-            if(trailerIdArray != null){
-                for (var i=0; i<trailerIdArray.length; i++) {
-                truckIds.push(trailerIdArray[i])
-                }
-            }
-            $.ajax({
-                url: ctx + "logistic/transport/truckAssign",
-                type: 'POST',
-                data: {
-                    truckIds: truckIds,
-                    driverId: driverId
-                }
-            }).done(function(rs) {
-                if(rs.code  == 0){
-                    $.modal.alertSuccess(rs.msg);
-                }
-                else{
-                    $.modal.alertError(rs.msg)
-                }
-            });
-        }
-    }
-    function chooseAllTractor(){
-    	tractorIdArray = [];
-        $('.tractorList').val([]).trigger('change');
-        $.ajax({
-            url: ctx + "logistic/logisticTruck/getTractorList",
-            type: 'GET',
-            data:{}
-        }).done(function(rs){
-            for (let i=0; i < rs.length; i++) {
-                let $option = $("<option selected></option>").val(rs[i].id).text(rs[i].plateNumber);
-                $('.tractorList').append($option).trigger('change');
-            }
-        })
-    }
-    function chooseAllTrailer(){
-    	trailerIdArray = [];
-        $('.trailerList').val([]).trigger('change');
-        $.ajax({
-            url: ctx + "logistic/logisticTruck/getTrailerList",
-            type: 'GET',
-            data:{}
-        }).done(function(rs){
-            for (let i=0; i < rs.length; i++) {
-                let $option = $("<option selected></option>").val(rs[i].id).text(rs[i].plateNumber);
-                $('.trailerList').append($option).trigger('change');
-            }
-        })
-    }
+    var driverAccount = /*[[${driverAccount}]]*/;
     </script>
 </body>
 </html>
