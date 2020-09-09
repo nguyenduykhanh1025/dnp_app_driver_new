@@ -14,12 +14,6 @@ $( document ).ready(function() {
 
 // Call when changing block, bay, sztp to search what block, bay and sztp carrier want to get
 function loadContainerList(reqData) {
-    let reqData2 = {
-        block: "Z1",
-        bay: "17",
-        sztp: "22G0"
-    };
-
     $.ajax({
         cache: true,
         type: "POST",
@@ -51,12 +45,8 @@ function loadPostion() {
         str += '<div class="columnDiv">';
         for (let row = 4; row >= 0; row--) {
             if (shipmentDetails[row][col] != null) {
-
-                // Position is empty
                 if (shipmentDetails[row][col].containerNo == null) {
                     str += '<div id="cell' + col + '-' + row + '" class="cellDiv" style="background-color: #dbcfcf;>CONT</div>';
-
-                    // Container must be make into an order
                 } else {
                     shipmentDetails[row][col].preorderPickup = 'N';
                     if (shipmentDetails[row][col].orderNo) {
@@ -64,8 +54,6 @@ function loadPostion() {
                     } else {
                         str += '<div id="container' + col + '-' + row + '" style="background-color: #72ecea;" class="cellDiv" onclick="addOrRemove(' + col + ',' + row + ')">' + shipmentDetails[row][col].containerNo + '</div>';
                     }
-                    
-
                 }
             } else {
                 str += '<div class="cellDivDisable"></div>';
@@ -79,18 +67,23 @@ function loadPostion() {
 
 function addOrRemove(col, row) {
     let shipmentDetail = shipmentDetails[row][col];
+    shipmentDetail.yardPosition = null;
     if (shipmentDetail.orderNo) {
         $.modal.alertWarning("Container " + shipmentDetail.containerNo + " Đã được làm lệnh cấp rỗng, quý khách vui lòng chọn container khác.");
     } else {
-        if (row+1 < 6 && shipmentDetails[row+1][col].preorderPickup == 'N' && !shipmentDetails[row+1][col].orderNo) {
+        if (row < 6 && shipmentDetails[row][col].preorderPickup == 'N' && !shipmentDetails[row][col].orderNo) {
+            shipmentDetails[row][col].yardPosition =  shipmentDetails[row][col].block + "-" + shipmentDetails[row][col].bay + "-" + shipmentDetails[row][col].row + "-" + shipmentDetails[row][col].tier
+            //Canh bao cont bi đè
             // $.modal.alertWarning("Cảnh báo container " + shipmentDetail.containerNo + " bởi container " + shipmentDetails[row+1][col].containerNo); 
         }
         if ('Y' == shipmentDetail.preorderPickup) {
+            shipmentDetails[row][col].yardPosition =  shipmentDetails[row][col].block + "-" + shipmentDetails[row][col].bay + "-" + shipmentDetails[row][col].row + "-" + shipmentDetails[row][col].tier
             shipmentDetails[row][col].preorderPickup = 'N';
             removePickedContainer(shipmentDetail.containerNo);
             $('#container' + col + '-' + row).css('background-color', '#72ecea');
         } else {
             shipmentDetails[row][col].preorderPickup = 'Y';
+            shipmentDetails[row][col].yardPosition =  shipmentDetails[row][col].block + "-" + shipmentDetails[row][col].bay + "-" + shipmentDetails[row][col].row + "-" + shipmentDetails[row][col].tier
             pickedContainers.push(shipmentDetail);
             $('#container' + col + '-' + row).css('background-color', '#279c9a');
         }
@@ -124,11 +117,6 @@ function removePickedContainer(containerNo) {
         }
     }); 
 }
-
-function formatYardPosition(value, row) {
-    return row.block + '-' + row.bay + '-' + row.row + '-' + row.tier;
-}
-
 
 function confirm() {
     layer.confirm("Xác nhận lấy thông tin container trên bãi?", {
@@ -249,7 +237,6 @@ $(".c-search-box-sztp").select2({
         };
       },
       processResults: function (data) {
-      console.log("TCL: data", data)
         let results = []
         data.bays.forEach(function (element, i) {
           let obj = {};

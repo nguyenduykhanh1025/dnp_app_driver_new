@@ -15,19 +15,19 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label is-required">Số lượng container：</label>
                 <div class="col-sm-3">
-                    <input name="bookQty" class="form-control" type="number" required>
+                    <input name="bookQty" id="bookQty" class="form-control" onchange="validateBookQty()" type="number" required>
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label">Mã số thuế：</label>
+                <label class="col-sm-3 control-label is-required">Mã số thuế：</label>
                 <div class="col-sm-3">
-                    <input name="consigneeTaxcode" id="consigneeTaxcode" class="form-control" type="text">
+                    <input name="consigneeTaxcode" id="consigneeTaxcode" class="form-control" type="text" required>
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label">Tên khách hàng：</label>
+                <label class="col-sm-3 control-label is-required">Tên khách hàng：</label>
                 <div class="col-sm-3">
-                    <input name="consignee" id="consignee" class="form-control" type="text">
+                    <input name="consignee" id="consignee" class="form-control" type="text" readonly="readonly" required>
                 </div>
             </div>
             
@@ -42,7 +42,6 @@
 
         function submitHandler() {
             if ($.validate.form()) {
-                console.log($('#form-booking-add'));
                 $.operate.save(prefix + "/add", $('#form-booking-add').serialize());
             }
         }
@@ -65,6 +64,19 @@
                 });
             } else {
             }
+        }
+        function validateBookQty()
+        {
+            if($("#bookQty").val() < 0)
+            {
+                $.modal.alertError("Quý khách hàng ko nhập <br> số container là số âm.");
+                $("#bookQty").val(0);
+            }  
+            if($("#bookQty").val() > 100)
+            {
+                $.modal.alertError("Quý khách nhập container <br> không được vượt quá 100 container.");
+                $("#bookQty").val(100);
+            }    
         }
     </script>
 </body>

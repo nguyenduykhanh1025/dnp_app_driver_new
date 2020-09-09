@@ -65,7 +65,8 @@ public class BookingController extends CarrierBaseController
 		Booking booking = param.getData();
 		if (booking == null) {
 			booking = new Booking();
-		}
+        }
+        booking.setCarrierAccountId(super.getUserId());
         List<Booking> list = bookingService.selectBookingList(booking);
         return getDataTable(list);
     }
@@ -157,7 +158,7 @@ public class BookingController extends CarrierBaseController
             booking.setCarrierAccountId(super.getUserId());
             booking.setCarrierGroupId(super.getUserGroup().getId());
             booking.setOpr(super.getUserGroup().getGroupCode());
-            booking.setBookStatus('1');
+            booking.setBookStatus('H');
             return toAjax(bookingService.updateBooking(booking));
         }
         return error("Có lỗi xảy ra, Booking này không thể chỉnh sửa!");
@@ -197,5 +198,4 @@ public class BookingController extends CarrierBaseController
         return ajaxResult;
     }
    
-
 }

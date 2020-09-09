@@ -166,31 +166,8 @@ public class BookingDetailController extends CarrierBaseController
     }
 
     @GetMapping("/pickupContainer")
-    public String pickupContainer(ModelMap mmap)
+    public String pickupContainer()
     {
-        String blNo = "032A503121";
-        ShipmentDetail shipmentDt = new ShipmentDetail();
-		// shipmentDt.setBlNo(blNo);
-        shipmentDt.setFe("E");
-        shipmentDt.setOpeCode("CMA");
-        shipmentDt.setSztp("45G0");
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
-
-		//Get coordinate from catos
-		List<ShipmentDetail> coordinateOfList = catosApiService.selectCoordinateOfContainersByShipmentDetail(shipmentDt);
-		List<ShipmentDetail[][]> bayList = new ArrayList<>();
-		try {
-			bayList = shipmentDetailService.getContPosition(coordinateOfList, shipmentDetails);
-		} catch (Exception e) {
-			logger.warn("Can't get container yard position!");
-        }
-        mmap.put("bayList", bayList);
-		// if (shipmentDetails.size() > 0) {
-			
-		// }
-        List<SysDictData> sztpList = dictService.getType("sys_size_container_eport");
-        mmap.put("sztpList", sztpList);
-        
         return prefix + "/pickupContainer";
     }
 
@@ -217,11 +194,11 @@ public class BookingDetailController extends CarrierBaseController
     @GetMapping("/berthplan/ope-code/vessel-voyage/list")
 	@ResponseBody
 	public AjaxResult getVesselVoyageList() {
-        String opeCode = super.getUserGroup().getGroupCode();
 		AjaxResult ajaxResult = success();
-		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlan(opeCode);
+		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlanWithoutOpe();
 		if(CollectionUtils.isNotEmpty(berthplanList)) {
-			List<String> vesselAndVoyages = new ArrayList<>();
+            List<String> vesselAndVoyages = new ArrayList<>();
+            
 			for(ShipmentDetail i : berthplanList) {
 				vesselAndVoyages.add(i.getVslAndVoy());
 			}

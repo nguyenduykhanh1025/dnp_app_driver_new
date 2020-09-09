@@ -2,7 +2,12 @@ var prefix = ctx + "logistic/logisticTruck"
 $("#form-truck-add").validate({
     focusCleanup: true
 });
-function submitHandler() {
+function submitHandler() { 
+    if(!validatePlateNumber())
+    {
+        return false;
+    }
+    console.log("DDDDD");
     if ($.validate.form()) {
         $.ajax({
             url: prefix + "/unique/plate/" + $('input[name=plateNumber]').val(),
@@ -56,6 +61,17 @@ $( "#type" ).change(function() {
         $("#wgtTitle").addClass("hidden");
     }
 });
+var plateNumberRgx = /[0-9][0-9][a-z][0-9]{4,5}$/i;
+function validatePlateNumber()
+{
+    var check = plateNumberRgx.test($('#plateNumber').val())
+    if(!check)
+    {
+        $.modal.alertError("Vui lòng nhập đúng định dạng biển số xe!");
+        return false;
+    }
+    return true;
+}
 
 // function setGatePass() {
 //     let gatePass = $("#plateNumber").val();

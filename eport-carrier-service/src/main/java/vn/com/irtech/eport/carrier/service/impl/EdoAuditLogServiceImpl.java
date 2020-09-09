@@ -181,10 +181,10 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
             insertEdoAuditLogDetFreeTime(edoAuditLog);
             edoSeg +=1;
         }
-        if(edoItem.getVesselNo() != null)
+        if(edoItem.getVessel() != null)
         {
             edoAuditLog.setSeqNo((long) edoSeg);
-            edoAuditLog.setFieldName("Vessel No");
+            edoAuditLog.setFieldName("Vessel");
             edoAuditLog.setNewValue(edoItem.getVesselNo().toString());
             insertEdoAuditLogDetFreeTime(edoAuditLog);
             edoSeg +=1;
