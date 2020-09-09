@@ -217,4 +217,12 @@ public interface ICatosApiService {
 	 * @return List string bay
 	 */
 	public List<String> getBaysForCarrier(ShipmentDetail shipmentDetail);
+	
+	/**
+	 * Get trucker from column ptnr_code in catos by tax code (reg_no)
+	 * 
+	 * @param taxCode
+	 * @return String
+	 */
+	public String getTruckerByTaxCode(String taxCode);
 }

@@ -491,6 +491,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
             processOrder.setBeforeAfter("Before");
         }
+        try {
+			processOrder.setTrucker(catosApiService.getTruckerByTaxCode(taxCode));
+		} catch (Exception e) {
+			logger.error("Error when try to get ptnr code by reg no: " + e);
+		}
         processOrder.setBlNo(detail.getBlNo());
         processOrder.setPickupDate(detail.getExpiredDem());
         processOrder.setVessel(detail.getVslNm());
@@ -583,6 +588,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
             processOrder.setBeforeAfter("Before");
         }
+        try {
+			processOrder.setTrucker(catosApiService.getTruckerByTaxCode(taxCode));
+		} catch (Exception e) {
+			logger.error("Error when try to get ptnr code by reg no: " + e);
+		}
         processOrder.setBookingNo(detail.getBookingNo());
         processOrder.setPickupDate(detail.getExpiredDem());
         processOrder.setVessel(detail.getVslNm());
@@ -638,6 +648,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
             processOrder.setBeforeAfter("Before");
         }
+        try {
+			processOrder.setTrucker(catosApiService.getTruckerByTaxCode(taxCode));
+		} catch (Exception e) {
+			logger.error("Error when try to get ptnr code by reg no: " + e);
+		}
         processOrder.setShipmentId(shipment.getId());
         if ("F".equalsIgnoreCase(detail.getFe())) {
             processOrder.setServiceType(Constants.SEND_CONT_FULL);

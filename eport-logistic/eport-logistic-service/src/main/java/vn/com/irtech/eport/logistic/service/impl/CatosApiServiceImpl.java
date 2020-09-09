@@ -794,4 +794,23 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+	
+	/**
+	 * Get trucker from column ptnr_code in catos by tax code (reg_no)
+	 * 
+	 * @param taxCode
+	 * @return String
+	 */
+	public String getTruckerByTaxCode(String taxCode) {
+		try {
+			String url = Global.getApiUrl() + "/taxCode/" + taxCode + "/trucker";
+			logger.debug("Call CATOS API get trucker:{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			String trucker = restTemplate.getForObject(url, String.class);
+			return  trucker;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api get trucker: ", e);
+			return null;
+		}
+	}
 }

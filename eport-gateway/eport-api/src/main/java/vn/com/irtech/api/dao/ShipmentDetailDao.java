@@ -179,4 +179,12 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return List string of block
 	 */
 	public List<String> selectListBayBySztpOpeCode(ShipmentDetailEntity shipmentDetailEntity);
+	
+	/**
+	 * Get trucker by reg no
+	 * 
+	 * @param taxCode
+	 * @return String
+	 */
+	public String getTruckerByRegNo(String taxCode);
 }
