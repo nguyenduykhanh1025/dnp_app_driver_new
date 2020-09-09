@@ -81,8 +81,6 @@ var toolbar = [
 
 $(".main-body").layout();
 
-loadTable();
-
 $(".collapse").click(function () {
     $(".main-body__search-wrapper").height(15);
     $(".main-body__search-wrapper--container").hide();
@@ -153,6 +151,11 @@ $(document).ready(function () {
         }
     });
 
+    let now = new Date();
+    now.setHours(0, 0, 0, 0);
+    $('#fromDate').datebox('setValue', ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear());
+    shipmentSearch.params.fromDate = dateToString(now);
+
     $('#toDate').datebox({
         onSelect: function (date) {
             date.setHours(23, 59, 59);
@@ -174,6 +177,8 @@ $(document).ready(function () {
         };
         $.table.init(options);
     });
+
+    loadTable();
 });
 
 function dateformatter(date) {
