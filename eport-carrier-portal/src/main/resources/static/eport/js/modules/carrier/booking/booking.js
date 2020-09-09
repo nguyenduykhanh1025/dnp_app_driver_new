@@ -3,6 +3,7 @@ const PREFIX = ctx + "carrier/booking";
 const PREFIX2 = ctx + "carrier/booking/detail";
 
 
+
 var dogrid = document.getElementById("dg-right"),
   hot;
 var interval, currentPercent, timeout;
@@ -24,7 +25,7 @@ $.ajax({
     success(data) {
         if(data.code == 0){
             data.data.forEach(element => {
-                sizeList.push(element['dictLabel'])
+                sizeList.push(element['dictValue'])
             })
         }
     }
@@ -99,13 +100,13 @@ var toolbar = [
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
+
     $('#bookingNo').keyup(function (event) {
         if (event.keyCode == 13) {
             bookingNo = $('#bookingNo').val().toUpperCase();
           if (bookingNo == "" || bookingNo == undefined) {
             loadTable(bookingNo);
           }
-          booking = new Object();
           booking.bookingNo = bookingNo;
           loadTable(booking);
         }
@@ -116,19 +117,47 @@ $(document).ready(function () {
           if (consignee == "" || consignee == undefined) {
             loadTable(booking);
           }
-          booking = new Object();
           booking.consignee = consignee;
           loadTable(booking);
         }
       });
+      $('#ContainerNo').keyup(function (event) {
+        if (event.keyCode == 13) {
+            containerNo = $('#ContainerNo').val().toUpperCase();
+          if (containerNo == "" || containerNo == undefined) {
+            loadTable(booking);
+          }
+          booking.params.containerNo = containerNo;
+          loadTable(booking);
+        }
+      });
+   
 
     
 });
+
+
+booking.params = new Object();
+$(".c-search-box-vessel-voyage").change(function () {
+  userVoy = $(this).text().trim().toUpperCase();
+  booking.params.userVoy = userVoy;
+  console.log("TCL: booking.params.userVoy", booking)
+  loadTable(booking);
+
+});
+
+$(".c-search-box-vessel-voyage").on("select2:open", function(e) {
+  $(".c-search-box-vessel-voyage").text(null);
+  booking.params.userVoy = null;
+  loadTable(booking);
+  console.log("TCL: booking", booking)
+});
 function searchInfoBooking() {
-    booking = new Object();
     booking.consignee = $('#consignee').val().toUpperCase();
     booking.bookingNo = $('#bookingNo').val().toUpperCase();
+    booking.params.containerNo = $('#ContainerNo').val().toUpperCase();
     loadTable(booking);
+    console.log("TCL: searchInfoBooking -> booking", booking)
 }
 
 function freshBooking() {
@@ -234,7 +263,7 @@ function configHandson() {
                     return "Ghi chú";
             }
         },
-        colWidths: [ 100, 200, 100, 120, 100, 100, 150, 100, 150],
+        colWidths: [ 120, 70, 100, 120, 100, 100, 150, 100, 150],
         filter: "true",
         columns: [
             {
@@ -278,17 +307,54 @@ function configHandson() {
                 type: "autocomplete",
                 source: vslNmList,
                 strict: true,
+                renderer : userVoyRenderer
             },
             {
                 data: "pod", 
             },
             {
                 data: "remark",
+                renderer : remarkRenderer
             }
         ],
+        // afterChange: onChange
     };
 }
 configHandson();
+
+// function onChange(changes, source) {
+//   if (!changes) {
+//       return;
+//   }
+//   changes.forEach(function (change) {
+
+//       // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
+//       if (change[1] == "userVoy" && change[3] != null && change[3] != '') {
+
+//                       $.ajax({
+//                           url: ctx + "/logistic/pods",
+//                           method: "POST",
+//                           contentType: "application/json",
+//                           data: JSON.stringify(shipmentDetail),
+//                           success: function (data) {
+//                               $.modal.closeLoading();
+//                               if (data.code == 0) {
+//                                   hot.updateSettings({
+//                                       cells: function (row, col, prop) {
+//                                           if (row == change[0] && col == 9) {
+//                                               let cellProperties = {};
+//                                               cellProperties.source = data.userVoy;
+//                                               return cellProperties;
+//                                           }
+//                                       }
+//                                   });
+//                               }
+//                           }
+//                       });
+                    
+//   }
+// }
+// }
 
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
@@ -441,6 +507,7 @@ function loadShipmentDetail(id, readOnly) {
 }
 
 function getDataFromTable() {
+  
     let row = $('#dg-left').datagrid('getSelected');
     let myTableData = hot.getSourceData();
     let errorFlg = false;
@@ -454,8 +521,17 @@ function getDataFromTable() {
     contList = [];
     $.each(cleanedGridData, function (index, object) {
         var bookingDetail = new Object();
+        console.log(object["expiredDate"]);
         if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"])) {
             $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
+            errorFlg = true;
+        }
+        if (object["expiredDate"] == "" || object["expiredDate"] == undefined) {
+          $.modal.alertError("Hàng " + (index + 1) + ": Bạn phải nhập hết hạn!");
+          errorFlg = true;
+        }
+        if (object["releaseDate"] == "" || object["expiredDate"] == undefined) {
+            $.modal.alertError("Hàng " + (index + 1) + ": Bạn phải nhập ngày cấp!");
             errorFlg = true;
         }
         bookingDetail.id = object["id"]
@@ -483,8 +559,9 @@ function getDataFromTable() {
             }
             contTemp = cont;
         });
+        $.each(bookingDetail, function (index) {
+      });
     }
-
     if (errorFlg) {
         return false;
     } else {
@@ -494,7 +571,7 @@ function getDataFromTable() {
 
 function saveInput() {
     if (getDataFromTable()) {
-        if (bookingDetails.length == bookingSelected.bookQty) {
+        if (bookingDetails.length >= bookingSelected.bookQty) {
             $.modal.loading("Đang xử lý...");
             $.ajax({
                 url: PREFIX2 + "/add/",
@@ -519,7 +596,7 @@ function saveInput() {
                 },
             });
         } else {
-            $.modal.alertError("Bạn chưa nhập đủ container yêu cầu.");
+            $.modal.alertError("Bạn chưa nhập đủ container mà bạn đã khai báo.");
         }
     }
 }
@@ -557,6 +634,36 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     return td;
 }
 
+function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+
+function userVoyRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+
+
+
+function yardPositionRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'bay' + row).addClass("htMiddle");
+  if (value != null && value != '') {
+    value = value.split(':')[0];
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+  }
+  $(td).html(value);
+  return td;
+}
+
 $(".c-search-box-vessel-voyage").select2({
     theme: "bootstrap",
     allowClear: true,
@@ -571,7 +678,6 @@ $(".c-search-box-vessel-voyage").select2({
         };
       },
       processResults: function (data) {
-      console.log("TCL: data", data)
         let results = []
         data.vesselAndVoyages.forEach(function (element, i) {
           let obj = {};
