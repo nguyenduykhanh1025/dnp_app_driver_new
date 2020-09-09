@@ -242,6 +242,15 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Payer Name")
     private String payerName;
 
+    @Excel(name = "Delivery Address")
+    private String deliveryAddress;
+
+    @Excel(name = "Deliver Mobile")
+    private String deliveryMobile;
+
+    @Excel(name = "Delivery Remark")
+    private String deliveryRemark;
+
     private String block;
 
     private String bay;
@@ -701,6 +710,30 @@ public class ShipmentDetail extends BaseEntity
 
 	public void setPayerName(String payerName) {
 		this.payerName = payerName;
+	}
+
+	public String getDeliveryAddress() {
+		return deliveryAddress;
+	}
+
+	public void setDeliveryAddress(String deliveryAddress) {
+		this.deliveryAddress = deliveryAddress;
+	}
+
+	public String getDeliveryMobile() {
+		return deliveryMobile;
+	}
+
+	public void setDeliveryMobile(String deliveryMobile) {
+		this.deliveryMobile = deliveryMobile;
+	}
+
+	public String getDeliveryRemark() {
+		return deliveryRemark;
+	}
+
+	public void setDeliveryRemark(String deliveryRemark) {
+		this.deliveryRemark = deliveryRemark;
 	}
 
 	public void setAssignNumber(Integer assignNumber) {
