@@ -3,6 +3,8 @@ package vn.com.irtech.eport.logistic.service;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -253,4 +255,13 @@ public interface IShipmentDetailService
      * @return List shipment detail with container, sztp, yard position include
      */
     public ShipmentDetail[][] getListContainerForCarrier(ShipmentDetail shipmentDetail);
+    
+    /**
+     * Select shipment detail for driver send cont on app mobile
+     * 
+     * @param driverId
+     * @param pickupAssignForm
+     * @return list pickup assign form object
+     */
+    public List<PickupAssignForm> selectShipmentDetailForDriverSendCont(@Param("driverId") Long driverId, @Param("pickUp") PickupAssignForm pickupAssignForm);
 }

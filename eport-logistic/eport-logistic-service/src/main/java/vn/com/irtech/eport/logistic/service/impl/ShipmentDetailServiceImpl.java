@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1291,5 +1292,17 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         	shipmentDetailMatrix[shipmentDt.getTier() - 1][shipmentDt.getRow() - 1] = shipmentDt;
         }
         return shipmentDetailMatrix;
+	}
+	
+	/**
+     * Select shipment detail for driver send cont on app mobile
+     * 
+     * @param driverId
+     * @param pickupAssignForm
+     * @return list pickup assign form object
+     */
+	@Override
+    public List<PickupAssignForm> selectShipmentDetailForDriverSendCont(@Param("driverId") Long driverId, @Param("pickUp") PickupAssignForm pickupAssignForm) {
+		return selectShipmentDetailForDriverSendCont(driverId, pickupAssignForm);
 	}
 }
