@@ -217,46 +217,69 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="selectShipmentListForRegister" parameterType="Shipment" resultType="Shipment">
         select
-			id,
-			logistic_account_id as logisticAccountId,
-			logistic_group_id as logisticGroupId,
-			service_type as serviceType,
-			bl_no as blNo,
-			booking_no as bookingNo,
-			ope_code as opeCode,
-			container_amount as containerAmount, 
-			edo_flg as edoFlg, 
-			specific_cont_flg as specificContFlg, 
-			cont_supply_status as contSupplyStatus, 
-			status, 
-			remark, 
-			order_number as orderNumber, 
-			house_bill as houseBill, 
-			create_by as createBy, 
-			create_time as createTime, 
-			update_by as updateBy, 
-			update_time as updateTime,
-            send_cont_empty_type as sendContEmptyType,
+			s.id,
+			s.logistic_account_id as logisticAccountId,
+			s.logistic_group_id as logisticGroupId,
+			s.service_type as serviceType,
+			s.bl_no as blNo,
+			s.booking_no as bookingNo,
+			s.ope_code as opeCode,
+			s.container_amount as containerAmount, 
+			s.edo_flg as edoFlg, 
+			s.specific_cont_flg as specificContFlg, 
+			s.cont_supply_status as contSupplyStatus, 
+			s.status, 
+			s.remark, 
+			s.order_number as orderNumber, 
+			s.house_bill as houseBill, 
+			s.create_by as createBy, 
+			s.create_time as createTime, 
+			s.update_by as updateBy, 
+			s.update_time as updateTime,
+            s.send_cont_empty_type as sendContEmptyType,
 			(select sh.consignee from shipment_detail sh where sh.shipment_id = s.id FETCH NEXT 1 ROWS ONLY) as consignee
-		from shipment s
+		from shipment s right join shipment_detail sh on s.id = sh.shipment_id
         <where>  
-            <if test="id != null "> and id = #{id}</if>
-            <if test="logisticAccountId != null "> and logistic_account_id = #{logisticAccountId}</if>
-            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
-            <if test="serviceType != null "> and service_type = #{serviceType}</if>
-            <if test="blNo != null and blNo != ''"> and upper(bl_no) like concat(concat('%', #{blNo}), '%')</if>
-            <if test="bookingNo != null and bookingNo != ''"> and upper(booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
-            <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
-            <if test="containerAmount != null "> and container_amount = #{containerAmount}</if>
-            <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
-            <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
-            <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
-            <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
-            <if test="toDate != null">and create_time &lt;= #{toDate}</if>
+            <if test="id != null "> and s.id = #{id}</if>
+            <if test="logisticAccountId != null "> and s.logistic_account_id = #{logisticAccountId}</if>
+            <if test="logisticGroupId != null "> and s.logistic_group_id = #{logisticGroupId}</if>
+            <if test="serviceType != null "> and s.service_type = #{serviceType}</if>
+            <if test="blNo != null and blNo != ''"> and upper(s.bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> and upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+            <if test="opeCode != null  and opeCode != ''"> and s.ope_code = #{opeCode}</if>
+            <if test="containerAmount != null "> and s.container_amount = #{containerAmount}</if>
+            <if test="edoFlg != null  and edoFlg != ''"> and s.edo_flg = #{edoFlg}</if>
+            <if test="specificContFlg != null"> and s.specific_cont_flg = #{specificContFlg}</if>
+            <if test="contSupplyStatus != null"> and s.cont_supply_status = #{contSupplyStatus}</if>
+            <if test="status != null  and status != ''"> and s.status = #{status}</if>
+            <if test="remark != null  and remark != ''"> and s.remark = #{remark}</if>
+            <if test="params.containerNo != null  and params.containerNo != ''"> and upper(sh.container_no) like concat(concat('%', #{params.containerNo}), '%')</if>
+            <if test="params.consignee != null  and params.consignee != ''"> and upper(consignee) like concat(concat('%', #{params.consignee}), '%')</if>
+            <if test="params.fromDate != null">and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDate != null">and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
         </where>
-        order by create_time desc
+        group by s.id,
+			s.logistic_account_id,
+			s.logistic_group_id,
+			s.service_type,
+			s.bl_no,
+			s.booking_no,
+			s.ope_code,
+			s.container_amount, 
+			s.edo_flg, 
+			s.specific_cont_flg, 
+			s.cont_supply_status, 
+			s.status, 
+			s.remark, 
+			s.order_number, 
+			s.house_bill, 
+			s.create_by, 
+			s.create_time, 
+			s.update_by, 
+			s.update_time,
+            s.send_cont_empty_type,
+            consignee
+        order by s.create_time desc
     </select>
 
     <select id="getShipmentListForContSupply" parameterType="Shipment" resultMap="ShipmentResult">
