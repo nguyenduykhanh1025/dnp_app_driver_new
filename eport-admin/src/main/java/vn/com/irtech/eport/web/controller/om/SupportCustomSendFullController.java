@@ -116,8 +116,7 @@ public class SupportCustomSendFullController extends OmBaseController{
     	shipmentComment.setCommentTime(new Date());
     	shipmentComment.setCreateTime(new Date());
     	shipmentComment.setCreateBy(getUser().getUserName());
-    	//TODO
-    	//setTopic
+    	shipmentComment.setTopic(Constants.SEND_CONT_FULL_CUSTOM_SUPPORT);
     	if(shipmentCommentService.insertShipmentComment(shipmentComment) == 1) {
     		return success();
     	}
