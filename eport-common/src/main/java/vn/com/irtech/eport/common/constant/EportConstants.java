@@ -127,17 +127,19 @@ public interface EportConstants {
 	
 	//User type on notification app window
 	/** User type om in app notification */
-	public static final String APP_USER_TYPE_OM = "OM";
+	public static final String APP_USER_TYPE_OM = "om";
 	/** User type om in app notification */
-	public static final String APP_USER_TYPE_MC = "MC";
+	public static final String APP_USER_TYPE_MC = "mc";
 	/** User type om in app notification */
-	public static final String APP_USER_TYPE_IT = "IT";
+	public static final String APP_USER_TYPE_IT = "it";
 	/** User type om in app notification */
-	public static final String APP_USER_TYPE_KT = "KT";
+	public static final String APP_USER_TYPE_KT = "kt";
 	/** User type om in app notification */
-	public static final String APP_USER_TYPE_CUSTOM = "HQ";
+	public static final String APP_USER_TYPE_CUSTOM = "hq";
 	/** User type om in app notification */
-	public static final String APP_USER_TYPE_GATE = "GATE";
+	public static final String APP_USER_TYPE_GATE = "gate";
+	/** User type cont supplier in app notification */
+	public static final String APP_USER_TYPE_CONT = "cont";
 	
 	//Domain web eport
 	/** Url to mc provide yard position */
@@ -154,6 +156,8 @@ public interface EportConstants {
 	public static final String URL_OM_CUSTOM_RECEIVE_SUPPORT = "/om/support/custom-receive-full/view";
 	/** url to om support send custom */
 	public static final String URL_OM_CUSTOM_SEND_SUPPORT = "/om/support/custom-send-full/view";
+	/** url to cont supplier */
+	public static final String URL_CONT_SUPPLIER = "/container/supplier";
 	
 	// Priority notification app window
 	/** High priority notificaiton app window */

@@ -1186,9 +1186,7 @@ function getDataFromTable(isValidate) {
         let sizeType = object["sztp"].split(": ");
         shipmentDetail.sztp = sizeType[0];
         shipmentDetail.sztpDefine = sizeType[1];
-        let carrier = object["opeCode"].split(": ");
         shipmentDetail.opeCode = shipmentSelected.opeCode;
-        shipmentDetail.carrierName = carrier[1];
         expiredDem.setHours(23, 59, 59);
         planningDate.setHours(23, 59, 59);
         shipmentDetail.expiredDem = expiredDem.getTime();
