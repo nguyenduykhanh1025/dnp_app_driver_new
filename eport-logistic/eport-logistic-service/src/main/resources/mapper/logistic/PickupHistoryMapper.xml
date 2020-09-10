@@ -31,6 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="jobOrderNo" column="job_order_no" />
 		<result property="jobOrderFlg" column="job_order_flg" />
 		<result property="loadableWgt" column="loadable_wgt" />
+		<result property="sztp" column="sztp" />
 		<result property="remark" column="remark" />
 		<result property="createBy" column="create_by" />
 		<result property="createTime" column="create_time" />
@@ -173,6 +174,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="jobOrderNo != null and jobOrderNo != ''">job_order_no,</if>
 			<if test="jobOrderFlg != null">job_order_flg,</if>
 			<if test="loadableWgt != null">loadable_wgt,</if>
+			<if test="sztp != null and sztp != ''">sztp,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -203,6 +205,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="jobOrderNo != null and jobOrderNo != ''">#{jobOrderNo},</if>
 			<if test="jobOrderFlg != null">#{jobOrderFlg},</if>
 			<if test="loadableWgt != null">#{loadableWgt},</if>
+			<if test="sztp != null and sztp != ''">#{sztp},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -236,6 +239,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="jobOrderNo != null and jobOrderNo != ''">job_order_no = #{jobOrderNo},</if>
 			<if test="jobOrderFlg != null">job_order_flg = #{jobOrderFlg},</if>
 			<if test="loadableWgt != null">loadableWgt = #{loadableWgt},</if>
+			<if test="sztp != null and sztp != ''">sztp = #{sztp},</if>
 			<if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
@@ -425,8 +429,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<select id="selectPickupListByDriverId" parameterType="Long" resultType="vn.com.irtech.eport.logistic.form.Pickup">
-		select p.id as pickupId, p.container_no as containerNo, p.shipment_id as batchCode, p.truck_no as truckNo, 
-		p.status as status, p.chassis_no as chassisNo, p.block, p.bay, p.line, p.tier, p.area, s.service_type as serviceType, sh.sztp as sztp
+		select p.id as pickupId, p.container_no as containerNo, p.shipment_id as batchCode, p.truck_no as truckNo, p.sztp as sztp,
+		p.status as status, p.chassis_no as chassisNo, p.block, p.bay, p.line, p.tier, p.area, s.service_type as serviceType
 		from pickup_history p
 		left join shipment s on p.shipment_id = s.id
 		left join shipment_detail sh on p.shipment_detail_id = sh.id
@@ -444,7 +448,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<select id="selectPickupHistoryDetailById" resultType="vn.com.irtech.eport.logistic.form.PickupHistoryDetail">
 		select p.id as pickupHistoryId, p.container_no as containerNo, P.gate_pass as gatePass, p.gatein_date as gateInDate, p.shipment_id as batchId, p.truck_no as truckNo, 
-		p.status as status, p.chassis_no as chassisNo, sh.sztp as sztp, sh.consignee as consignee, concat(concat(concat(p.block, concat('-', p.bay)), concat('-', p.line)), concat('-', p.tier)) as yardPosition,
+		p.status as status, p.chassis_no as chassisNo, p.sztp as sztp, sh.consignee as consignee, concat(concat(concat(p.block, concat('-', p.bay)), concat('-', p.line)), concat('-', p.tier)) as yardPosition,
 		sh.wgt as wgt, sh.cargo_type as cargoType, sh.delivery_address as address, sh.delivery_mobile as mobileNumber, sh.delivery_remark as remark
 		from pickup_history p
 		left join shipment s on p.shipment_id = s.id
@@ -453,7 +457,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		p.id = #{pickupId}
 		and p.driver_id = #{driverId}
 		group by p.id, p.container_no, p.gate_pass, p.gatein_date, p.shipment_id, p.truck_no, 
-		p.status, p.chassis_no, sh.sztp, sh.consignee, p.block, p.bay, p.line, p.tier, sh.wgt, sh.cargo_type, 
+		p.status, p.chassis_no, p.sztp, sh.consignee, p.block, p.bay, p.line, p.tier, sh.wgt, sh.cargo_type, 
 		sh.delivery_address, sh.delivery_mobile, sh.delivery_remark
 	</select>
 

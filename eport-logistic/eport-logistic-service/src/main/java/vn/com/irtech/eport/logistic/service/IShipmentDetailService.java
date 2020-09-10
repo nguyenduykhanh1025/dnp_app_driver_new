@@ -263,5 +263,5 @@ public interface IShipmentDetailService
      * @param pickupAssignForm
      * @return list pickup assign form object
      */
-    public List<PickupAssignForm> selectShipmentDetailForDriverSendCont(@Param("driverId") Long driverId, @Param("pickUp") PickupAssignForm pickupAssignForm);
+    public List<PickupAssignForm> selectShipmentDetailForDriverSendCont(@Param("driverId") Long driverId, @Param("pickUp") PickupAssignForm pickupAssignForm, @Param("serviceType") Integer serviceType);
 }

@@ -168,20 +168,16 @@ public class GatePassHandler implements IMqttMessageListener {
 					if (pickupInResult != null) {
 						try {
 							List<PickupRobotResult> pickupRobotResults = getListRobotResultPickupFromString(pickupInResult);
-							updatePickupHistoryData(pickupRobotResults, pickupHistory);
+							pickupHistory = updatePickupHistoryData(pickupRobotResults, pickupHistory);
 						} catch (Exception e) {
 							logger.error("Error when parsing pickup result from robot: " + pickupInResult);;
 						}
 					}
 					
-					pickupHistory.setGateinDate(new Date());
-					pickupHistory.setStatus(EportConstants.PICKUP_HISTORY_STATUS_GATE_IN);
-					pickupHistoryService.updatePickupHistory(pickupHistory);
-					
 					// Data to send response to driver app when having session id
 					DriverDataRes driverData = new DriverDataRes();
 					driverData.setPickupHistoryId(pickupHistory.getId());
-					driverData.setContNo(pickupHistory.getContainerNo());
+					driverData.setContainerNo(pickupHistory.getContainerNo());
 					driverData.setYardPosition(pickupHistory.getBlock()+"-"+pickupHistory.getBay()
 					+"-"+pickupHistory.getLine()+"-"+pickupHistory.getTier());
 					if (pickupHistory.getShipment().getServiceType() == EportConstants.SERVICE_PICKUP_EMPTY ||
@@ -189,6 +185,11 @@ public class GatePassHandler implements IMqttMessageListener {
 						driverData.setFe("E");
 					} else {
 						driverData.setFe("F");
+					}
+					if (pickupHistory.getStatus().equals(EportConstants.PICKUP_HISTORY_STATUS_GATE_IN)) {
+						driverData.setResult(BusinessConsts.PASS);
+					} else {
+						driverData.setResult(BusinessConsts.FAIL);
 					}
 					driverData.setSztp(pickupHistory.getSztp());
 					driverData.setTruckNo(pickupHistory.getTruckNo());
@@ -219,7 +220,7 @@ public class GatePassHandler implements IMqttMessageListener {
 						// Data to send response to driver app when having session id
 						DriverDataRes driverData = new DriverDataRes();
 						driverData.setPickupHistoryId(pickupHistory.getId());
-						driverData.setContNo(pickupHistory.getContainerNo());
+						driverData.setContainerNo(pickupHistory.getContainerNo());
 						driverData.setYardPosition(pickupHistory.getBlock()+"-"+pickupHistory.getBay()
 						+"-"+pickupHistory.getLine()+"-"+pickupHistory.getTier());
 						if (pickupHistory.getShipment().getServiceType() == EportConstants.SERVICE_PICKUP_EMPTY ||

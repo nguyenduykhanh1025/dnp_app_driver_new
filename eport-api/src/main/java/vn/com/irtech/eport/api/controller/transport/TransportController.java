@@ -118,6 +118,14 @@ public class TransportController extends BaseController {
 		for (Pickup pickup : pickups) {
 			if (StringUtils.isEmpty(pickup.getContainerNo())) {
 				pickup.setContainerNo("Chưa có");
+				ShipmentDetail shipmentDetail = new ShipmentDetail();
+				shipmentDetail.setShipmentId(pickup.getBatchCode());
+				shipmentDetail.setSztp(pickup.getSztp());
+				startPage(1,1,null);
+				List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+				if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+					shipmentDetail = shipmentDetails.get(0);
+				}
 			}
 		}
 		ajaxResult.put("data", pickupHistoryService.selectPickupListByDriverId(userId));
@@ -238,13 +246,9 @@ public class TransportController extends BaseController {
 		List<ShipmentDetail> shipmentDetails = null;
 		
 		// Check if this pickup is make with container no 
-		if (StringUtils.isNotEmpty(pickupHistoryTemp.getContainerNo())) {
-			shipmentDetail = new ShipmentDetail();
-			shipmentDetail.setShipmentId(pickupAssign.getShipmentId());
-			shipmentDetail.setContainerNo(pickupHistoryTemp.getContainerNo());
-			shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-				shipmentDetail = shipmentDetails.get(0);
+		if (pickupHistoryTemp.getShipmentDetailId() != null) {
+			shipmentDetail = shipmentDetailService.selectShipmentDetailById(pickupHistoryTemp.getShipmentDetailId());
+			if (shipmentDetail != null) {
 				pickupHistory.setContainerNo(shipmentDetail.getContainerNo());
 				pickupHistory.setShipmentDetailId(shipmentDetail.getId());
 			} else {
@@ -258,7 +262,6 @@ public class TransportController extends BaseController {
 			shipmentDetail.setShipmentId(pickupAssign.getShipmentId());
 			shipmentDetail.setFinishStatus("N");
 			shipmentDetail.setPaymentStatus("Y");
-			startPage(0, 1, null);
 			shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 			shipmentDetail = shipmentDetails.get(0);
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
@@ -286,6 +289,7 @@ public class TransportController extends BaseController {
 		pickupHistory.setShipmentId(pickupAssign.getShipmentId());
 		pickupHistory.setDriverPhoneNumber(pickupAssign.getPhoneNumber());
 		pickupHistory.setPickupAssignId(pickupAssign.getId());
+		pickupHistory.setSztp(pickupHistoryTemp.getSztp());
 		LogisticTruck logisticTruck = new LogisticTruck();
 		logisticTruck.setPlateNumber(pickupHistoryTemp.getTruckNo());
 		List<LogisticTruck> logisticTrucks = logisticTruckService.selectLogisticTruckList(logisticTruck);
@@ -315,8 +319,24 @@ public class TransportController extends BaseController {
 		PickupHistoryDetail pickupHistoryDetail = pickupHistoryService.selectPickupHistoryDetailById(userId, pickupId);
 		if (StringUtils.isEmpty(pickupHistoryDetail.getContainerNo())) {
 			pickupHistoryDetail.setContainerNo("Chưa có");
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setSztp(pickupHistoryDetail.getSztp());
+			shipmentDetail.setShipmentId(pickupHistoryDetail.getBatchId());
+			shipmentDetail.setPaymentStatus("Y");
+			shipmentDetail.setFinishStatus("N");
+			startPage(1, 1, null);
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+				shipmentDetail = shipmentDetails.get(0);
+				pickupHistoryDetail.setAddress(shipmentDetail.getDeliveryAddress());
+				pickupHistoryDetail.setMobileNumber(shipmentDetail.getDeliveryMobile());
+				pickupHistoryDetail.setRemark(shipmentDetail.getDeliveryRemark());
+				pickupHistoryDetail.setConsignee(shipmentDetail.getConsignee());
+				pickupHistoryDetail.setCargoType(shipmentDetail.getCargoType());
+				pickupHistoryDetail.setWgt(shipmentDetail.getWgt());
+			}
 		}
-		ajaxResult.put("data", pickupHistoryService.selectPickupHistoryDetailById(userId, pickupId));
+		ajaxResult.put("data", pickupHistoryDetail);
 		return ajaxResult;
     }
 	
@@ -367,9 +387,8 @@ public class TransportController extends BaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		// Push pickup assign for driver to make confirm and make a pick up history
 		ajaxResult.put("pickupAssignId", pickupAssign.getId()); 
-		
+		startPage(1, 1, null);
 		// Get information of pickup before confirm get pickup
-		startPage(0, 1, null);
 		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
 		shipmentDetailParam.setShipmentId(shipmentId);
 		shipmentDetailParam.setSztp(sztp);
@@ -379,7 +398,7 @@ public class TransportController extends BaseController {
 			ShipmentDetail shipmentDetail = shipmentDetails.get(0);
 			PickupHistoryDetail pickupHistoryDetail = new PickupHistoryDetail();
 			pickupHistoryDetail.setContainerNo("Chưa có");
-			pickupHistoryDetail.setSztp(sztp);
+			pickupHistoryDetail.setSztp(shipmentDetail.getSztp());
 			pickupHistoryDetail.setConsignee(shipmentDetail.getConsignee());
 			pickupHistoryDetail.setAddress(shipmentDetail.getDeliveryAddress());
 			pickupHistoryDetail.setMobileNumber(shipmentDetail.getDeliveryMobile());
@@ -447,8 +466,9 @@ public class TransportController extends BaseController {
 							Map<String, Object> map = new HashMap<>();
 							map.put("pickupHistoryId", pickup.getPickupId().toString());
 							try {
-							logger.debug("Received GPS location. Request MC to plan for pickupId " + pickup.getPickupId());
-							 mqttService.sendMessageToMc(new Gson().toJson(map));
+								logger.debug("Received GPS location. Request MC to plan for pickupId " + pickup.getPickupId());
+								 mqttService.sendMessageToMc(new Gson().toJson(map));
+								 mqttService.sendMessageToMcAppWindow(pickup.getPickupId());
 							} catch (MqttException e) {
 								logger.error("Api Driver Error Update Location: " + e);
 							}
@@ -572,9 +592,9 @@ public class TransportController extends BaseController {
 		return ajaxResult;
 	}
 	
-	@PostMapping("/pickup-assign/list")
-	public AjaxResult getPickupAssingListSend(@RequestBody PickupAssignForm pickupHistoryDetail) {
-		List<PickupAssignForm> pickupAssignForms = shipmentDetailService.selectShipmentDetailForDriverSendCont(SecurityUtils.getCurrentUser().getUser().getUserId(), pickupHistoryDetail);
+	@PostMapping("/pickup-assign/serviceType/{serviceType}/list")
+	public AjaxResult getPickupAssingListSend(@PathVariable("serviceType") Integer serviceType, @RequestBody PickupAssignForm pickupHistoryDetail) {
+		List<PickupAssignForm> pickupAssignForms = shipmentDetailService.selectShipmentDetailForDriverSendCont(SecurityUtils.getCurrentUser().getUser().getUserId(), pickupHistoryDetail, serviceType);
 		if (CollectionUtils.isEmpty(pickupAssignForms)) {
 			pickupAssignForms = new ArrayList<>();
 		}
