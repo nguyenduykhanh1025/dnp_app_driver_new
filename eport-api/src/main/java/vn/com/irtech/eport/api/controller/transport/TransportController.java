@@ -12,6 +12,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -415,12 +416,21 @@ public class TransportController extends BaseController {
 	 */
     @GetMapping("/notify")
 	@ResponseBody
+	@Transactional
 	public AjaxResult getNotifyList() {
 		startPage();
 		SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
 		sysNotificationReceiver.setUserId(SecurityUtils.getCurrentUser().getUser().getUserId());
 		sysNotificationReceiver.setUserType(BusinessConsts.DRIVER_USER_TYPE);
 		List<NotificationRes> notificationReses = sysNotificationReceiverService.getNotificationList(sysNotificationReceiver);
+		if (CollectionUtils.isNotEmpty(notificationReses)) {
+			for (NotificationRes notificationRes : notificationReses) {
+				SysNotificationReceiver sysNotificationRecei= new SysNotificationReceiver();
+				sysNotificationRecei.setId(notificationRes.getId());
+				sysNotificationRecei.setSeenFlg(true);
+				sysNotificationReceiverService.updateSysNotificationReceiver(sysNotificationRecei);
+			}
+		}
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("notificationList", notificationReses);
 		return ajaxResult;

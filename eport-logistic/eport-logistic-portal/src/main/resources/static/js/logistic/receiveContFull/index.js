@@ -1265,6 +1265,7 @@ function getDataFromTable(isValidate) {
     shipmentDetail.sztp = object["sztp"].split(":")[0];
     shipmentDetail.consignee = object["consignee"];
     shipmentDetail.sealNo = object["sealNo"];
+    expiredDem.setHours(23,59,59);
     shipmentDetail.expiredDem = expiredDem.getTime();
     shipmentDetail.wgt = object["wgt"];
     let vessel = object["vslNm"].split(": ");
