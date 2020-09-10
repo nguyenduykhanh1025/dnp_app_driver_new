@@ -71,7 +71,7 @@ public class LogisticShiftingContController extends LogisticBaseController {
 	 */
 	@GetMapping()
 	public String getShiftingContView() {
-		return PREFIX + "/otp";
+		return PREFIX + "/index";
 	}
 
 	/**
