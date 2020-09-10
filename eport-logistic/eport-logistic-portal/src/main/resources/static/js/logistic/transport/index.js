@@ -99,7 +99,7 @@ function formatAction(value, row, index) {
     return actions.join('');
 }
 function assignTruck(id){
-	$.modal.open("Chỉ định xe", prefix+"/driverTruck/"+id , 800, 300);
+	$.modal.open("Chỉ định xe", prefix+"/edit/driver/"+id, 800,450);
 }
 function remove(id){
 	$.modal.confirmTransport("Xác nhận thực hiện xóa thông tin  ?", function() {
@@ -173,3 +173,7 @@ document.getElementById("mobileNumber").addEventListener("keyup", function (even
 	    $("#searchBtn").click();
 	  }
 	});
+
+function finishAssignTruck(msg) {
+    $.modal.msgSuccess(msg);
+}

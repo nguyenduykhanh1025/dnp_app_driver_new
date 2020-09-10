@@ -805,9 +805,10 @@
   filter: none;
 }
 .l-btn-plain {
-  background: transparent;
-  border-width: 0;
-  filter: none;
+  background: transparent !important;
+  border-width: 0 !important;
+  filter: none !important;
+  border-radius: 3px !important;
 }
 .l-btn-outline {
   border-width: 1px;

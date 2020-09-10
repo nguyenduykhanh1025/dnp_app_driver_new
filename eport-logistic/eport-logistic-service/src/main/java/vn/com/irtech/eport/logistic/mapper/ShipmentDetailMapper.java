@@ -157,4 +157,13 @@ public interface ShipmentDetailMapper
      * updateShipmentDetailForOMSupport is used for OM reset process status. Not use with another purpose
      */
     public int updateShipmentDetailForOMSupport(ShipmentDetail shipmentDetail);
+    
+    /**
+     * Select shipment detail for driver send cont on app mobile
+     * 
+     * @param driverId
+     * @param pickupAssignForm
+     * @return list pickup assign form object
+     */
+    public List<PickupAssignForm> selectShipmentDetailForDriverSendCont(@Param("driverId") Long driverId, @Param("pickUp") PickupAssignForm pickupAssignForm);
 }

@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.api.controller.transport;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -43,6 +44,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.Pickup;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
+import vn.com.irtech.eport.logistic.form.PickupHistoryDetail;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
@@ -112,6 +114,12 @@ public class TransportController extends BaseController {
 	public AjaxResult getPickupList() {
 		AjaxResult ajaxResult = AjaxResult.success();
 		Long userId = SecurityUtils.getCurrentUser().getUser().getUserId();
+		List<Pickup> pickups = pickupHistoryService.selectPickupListByDriverId(userId);
+		for (Pickup pickup : pickups) {
+			if (StringUtils.isEmpty(pickup.getContainerNo())) {
+				pickup.setContainerNo("Chưa có");
+			}
+		}
 		ajaxResult.put("data", pickupHistoryService.selectPickupListByDriverId(userId));
 		return ajaxResult;
     }
@@ -173,8 +181,8 @@ public class TransportController extends BaseController {
 		if (CollectionUtils.isEmpty(pickupAssigns)) {
 			pickupAssigns = pickupAssignService.selectPickupAssignListByDriverId(userId, shipmentId);
 		}
-		// TODO logic %2 kho hieu
-		if (shipment.getServiceType() % 2 == 1 && CollectionUtils.isNotEmpty(pickupAssigns)) {
+		// cho t/h boc hang hoac boc rong
+		if ((shipment.getServiceType() == EportConstants.SERVICE_PICKUP_FULL || shipment.getServiceType() == EportConstants.SERVICE_PICKUP_EMPTY) && CollectionUtils.isNotEmpty(pickupAssigns)) {
 			List<PickupAssignForm> pickupAssign = pickupAssignService.selectPickupAssignListByDriverId(userId, shipmentId);
 			if (CollectionUtils.isNotEmpty(pickupAssign)) {
 				for (PickupAssignForm pickupAssignForm1 : pickupAssigns) {
@@ -207,19 +215,29 @@ public class TransportController extends BaseController {
 	@PostMapping("/pickup")
 	@ResponseBody
 	public AjaxResult pickup(@RequestBody PickupHistory pickupHistoryTemp) {
+		
+		// Get pickup assign to make pickup history
 		PickupAssign pickupAssign = pickupAssignService.selectPickupAssignById(pickupHistoryTemp.getPickupAssignId());
 		if (pickupAssign == null) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0007));
 		}
+		
+		// Check if pickup is assign to this driver
+		// or in case shipment detail id not null (pickup container)
+		// then this container need to be has not pickup yet
 		Long userId = SecurityUtils.getCurrentUser().getUser().getUserId();
 		if (!userId.equals(pickupAssign.getDriverId()) || (pickupHistoryTemp.getShipmentDetailId() != null
 				&& pickupHistoryService.checkPickupHistoryExists(pickupAssign.getShipmentId(),
 						pickupHistoryTemp.getShipmentDetailId()) > 0)) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0009));
 		}
+		
+		// Begin make pickup history base on pickup assign has been check and validate carefully
 		PickupHistory pickupHistory = new PickupHistory();
 		ShipmentDetail shipmentDetail = null;
 		List<ShipmentDetail> shipmentDetails = null;
+		
+		// Check if this pickup is make with container no 
 		if (StringUtils.isNotEmpty(pickupHistoryTemp.getContainerNo())) {
 			shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(pickupAssign.getShipmentId());
@@ -227,24 +245,27 @@ public class TransportController extends BaseController {
 			shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 				shipmentDetail = shipmentDetails.get(0);
+				pickupHistory.setContainerNo(shipmentDetail.getContainerNo());
+				pickupHistory.setShipmentDetailId(shipmentDetail.getId());
 			} else {
 				shipmentDetail = null;
+				throw new BusinessException("Container này không tồn tại hoặc đã được nhận bởi tài xế khác.");
 			}
-		}
-		
-		// Case shipmentDetailId != null
-		if (shipmentDetail != null) {
-			pickupHistory.setContainerNo(shipmentDetail.getContainerNo());
-			pickupHistory.setShipmentDetailId(shipmentDetail.getId());
 		} else {
 			pickupHistory.setJobOrderFlg(true);
-		}
-		
-		ProcessOrder processOrder = new ProcessOrder();
-		processOrder.setShipmentId(pickupAssign.getShipmentId());
-		List<ProcessOrder> processOrders = processOrderService.selectProcessOrderList(processOrder);
-		if (CollectionUtils.isNotEmpty(processOrders)) {
-			pickupHistory.setJobOrderNo(processOrders.get(0).getOrderNo());
+			shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setSztp(pickupHistoryTemp.getSztp());
+			shipmentDetail.setShipmentId(pickupAssign.getShipmentId());
+			shipmentDetail.setFinishStatus("N");
+			shipmentDetail.setPaymentStatus("Y");
+			startPage(0, 1, null);
+			shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			shipmentDetail = shipmentDetails.get(0);
+			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+				pickupHistory.setJobOrderNo(shipmentDetail.getOrderNo());
+			} else {
+				throw new BusinessException("Không tìm thấy container đủ điều kiện đăng ký vận chuyển, quý khách vui lòng thử lại sau.");
+			}
 		}
 		
 		// Check max pickup driver can pick
@@ -270,8 +291,9 @@ public class TransportController extends BaseController {
 		List<LogisticTruck> logisticTrucks = logisticTruckService.selectLogisticTruckList(logisticTruck);
 		if (CollectionUtils.isNotEmpty(logisticTrucks)) {
 			pickupHistory.setGatePass(logisticTrucks.get(0).getGatepass());
+			pickupHistory.setLoadableWgt(logisticTrucks.get(0).getSelfWgt());
 		}
-		pickupHistory.setStatus(0);
+		pickupHistory.setStatus(EportConstants.PICKUP_HISTORY_STATUS_WAITING);
 		pickupHistoryService.insertPickupHistory(pickupHistory);
 		return success();
     }
@@ -290,6 +312,10 @@ public class TransportController extends BaseController {
 		}
 		Long userId = SecurityUtils.getCurrentUser().getUser().getUserId();
 		AjaxResult ajaxResult = AjaxResult.success();
+		PickupHistoryDetail pickupHistoryDetail = pickupHistoryService.selectPickupHistoryDetailById(userId, pickupId);
+		if (StringUtils.isEmpty(pickupHistoryDetail.getContainerNo())) {
+			pickupHistoryDetail.setContainerNo("Chưa có");
+		}
 		ajaxResult.put("data", pickupHistoryService.selectPickupHistoryDetailById(userId, pickupId));
 		return ajaxResult;
     }
@@ -325,9 +351,9 @@ public class TransportController extends BaseController {
 		return success();
 	}
 
-	@GetMapping("/shipment/{shipmentId}/auto-pickup")
+	@GetMapping("/shipment/{shipmentId}/sztp/{sztp}/pickup-info")
 	@ResponseBody
-	public AjaxResult getPickupAssignByShipmentId(@PathVariable Long shipmentId) {
+	public AjaxResult getPickupAssignByShipmentId(@PathVariable("shipmentId") Long shipmentId, @PathVariable("sztp") String sztp) {
 		if (shipmentId == null) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0015));
 		}
@@ -339,7 +365,27 @@ public class TransportController extends BaseController {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0008));
 		}
 		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("pickupAssignId", pickupAssign.getId());
+		// Push pickup assign for driver to make confirm and make a pick up history
+		ajaxResult.put("pickupAssignId", pickupAssign.getId()); 
+		
+		// Get information of pickup before confirm get pickup
+		startPage(0, 1, null);
+		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+		shipmentDetailParam.setShipmentId(shipmentId);
+		shipmentDetailParam.setSztp(sztp);
+		shipmentDetailParam.setFinishStatus("N");
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetailParam);
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			ShipmentDetail shipmentDetail = shipmentDetails.get(0);
+			PickupHistoryDetail pickupHistoryDetail = new PickupHistoryDetail();
+			pickupHistoryDetail.setContainerNo("Chưa có");
+			pickupHistoryDetail.setSztp(sztp);
+			pickupHistoryDetail.setConsignee(shipmentDetail.getConsignee());
+			pickupHistoryDetail.setAddress(shipmentDetail.getDeliveryAddress());
+			pickupHistoryDetail.setMobileNumber(shipmentDetail.getDeliveryMobile());
+			pickupHistoryDetail.setRemark(shipmentDetail.getDeliveryRemark());
+			ajaxResult.put("data", pickupHistoryDetail);
+		}
 		return ajaxResult;
 	}
 	
@@ -483,4 +529,57 @@ public class TransportController extends BaseController {
 		}
 	}
 
+	@PostMapping("/pickup/truck")
+	public AjaxResult updateTruckNo(@RequestBody PickupHistory pickupHistoryReq) {
+		Long userId = SecurityUtils.getCurrentUser().getUser().getUserId();
+		PickupHistory pickupHistoryParam = new PickupHistory();
+		pickupHistoryParam.setDriverId(userId);
+		pickupHistoryParam.setStatus(EportConstants.PICKUP_HISTORY_STATUS_WAITING);
+		List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
+		if (CollectionUtils.isNotEmpty(pickupHistories)) {
+			for (PickupHistory pickupHistory : pickupHistories) {
+				if (StringUtils.isNotEmpty(pickupHistoryReq.getTruckNo())) {
+					pickupHistory.setTruckNo(pickupHistoryReq.getTruckNo());
+				}
+				if (StringUtils.isNotEmpty(pickupHistoryReq.getChassisNo())) {
+					pickupHistory.setTruckNo(pickupHistoryReq.getChassisNo());
+				}
+				pickupHistoryService.updatePickupHistory(pickupHistory);
+			}
+		} else {
+			throw new BusinessException("Bạn chưa nhận đơn hoặc đơn của bạn đang ở trạng thái gate in, vui lòng kiểm tra và thử lại sau.");
+		}
+		return success();
+	}
+	
+	@GetMapping("/shipment-detail/{shipmentDetailId}/pickup-info")
+	public AjaxResult getInfoWithShipmentDetailId(@PathVariable("shipmentDetailId") Long shipmentDetailId) {
+		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		if (shipmentDetail == null) {
+			throw new BusinessException("Không tìm thấy thông tin container.");
+		}
+		AjaxResult ajaxResult = AjaxResult.success();
+		PickupHistoryDetail pickupHistoryDetail = new PickupHistoryDetail();
+		pickupHistoryDetail.setContainerNo(shipmentDetail.getContainerNo());
+		pickupHistoryDetail.setSztp(shipmentDetail.getSztp());
+		pickupHistoryDetail.setCargoType(shipmentDetail.getCargoType());
+		pickupHistoryDetail.setWgt(shipmentDetail.getWgt());
+		pickupHistoryDetail.setConsignee(shipmentDetail.getConsignee());
+		pickupHistoryDetail.setAddress(shipmentDetail.getDeliveryAddress());
+		pickupHistoryDetail.setMobileNumber(shipmentDetail.getDeliveryMobile());
+		pickupHistoryDetail.setRemark(shipmentDetail.getDeliveryRemark());
+		ajaxResult.put("data", pickupHistoryDetail);
+		return ajaxResult;
+	}
+	
+	@PostMapping("/pickup-assign/list")
+	public AjaxResult getPickupAssingListSend(@RequestBody PickupAssignForm pickupHistoryDetail) {
+		List<PickupAssignForm> pickupAssignForms = shipmentDetailService.selectShipmentDetailForDriverSendCont(SecurityUtils.getCurrentUser().getUser().getUserId(), pickupHistoryDetail);
+		if (CollectionUtils.isEmpty(pickupAssignForms)) {
+			pickupAssignForms = new ArrayList<>();
+		}
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("data", pickupAssignForms);
+		return ajaxResult;
+	}
 }

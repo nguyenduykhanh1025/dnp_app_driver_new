@@ -124,4 +124,45 @@ public interface EportConstants {
 	public static final String COMMENTOR_CARRIER = "C";
 	/** Driver commentor */
 	public static final String COMMENTOR_DRIVER = "D";
+	
+	//User type on notification app window
+	/** User type om in app notification */
+	public static final String APP_USER_TYPE_OM = "OM";
+	/** User type om in app notification */
+	public static final String APP_USER_TYPE_MC = "MC";
+	/** User type om in app notification */
+	public static final String APP_USER_TYPE_IT = "IT";
+	/** User type om in app notification */
+	public static final String APP_USER_TYPE_KT = "KT";
+	/** User type om in app notification */
+	public static final String APP_USER_TYPE_CUSTOM = "HQ";
+	/** User type om in app notification */
+	public static final String APP_USER_TYPE_GATE = "GATE";
+	
+	//Domain web eport
+	/** Domain url eport admin */
+	public static final String DOMAIN_URL_ADMIN = "https://eport.danangport.com/admin";
+	/** Url to mc provide yard position */
+	public static final String URL_POSITION_MC = "/mc/plan/request/index";
+	/** url to om support receive full */
+	public static final String URL_OM_RECEIVE_F_SUPPORT = "/";
+	/** url to om support receive empty */
+	public static final String URL_OM_RECEIVE_E_SUPPORT = "/";
+	/** url to om support send full */
+	public static final String URL_OM_SEND_F_SUPPORT = "/";
+	/** url to om support send empty */
+	public static final String URL_OM_SEND_E_SUPPORT = "/";
+	/** url to om support receive custom */
+	public static final String URL_OM_CUSTOM_RECEIVE_SUPPORT = "/";
+	/** url to om support send custom */
+	public static final String URL_OM_CUSTOM_SEND_SUPPORT = "/";
+	
+	// Priority notification app window
+	/** High priority notificaiton app window */
+	public static final Integer NOTIFICATION_PRIORITY_HIGH = 1;
+	/** Medium priority notificaiton app window */
+	public static final Integer NOTIFICATION_PRIORITY_MEDIUM = 3;
+	/** Low priority notificaiton app window */
+	public static final Integer NOTIFICATION_PRIORITY_LOW = 2;
+	
 }

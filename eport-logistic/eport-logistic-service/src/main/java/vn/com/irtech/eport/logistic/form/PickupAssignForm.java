@@ -13,6 +13,10 @@ public class PickupAssignForm {
     private Long shipmentDetailId;
 
     private Boolean clickable = true;
+    
+    private String cargoType;
+    
+    private String consignee;
 
     public Long getPickupAssignId() {
         return this.pickupAssignId;
@@ -61,4 +65,21 @@ public class PickupAssignForm {
     public void setClickable(Boolean clickable) {
         this.clickable = clickable;
     }
+
+	public String getCargoType() {
+		return cargoType;
+	}
+
+	public void setCargoType(String cargoType) {
+		this.cargoType = cargoType;
+	}
+
+	public String getConsignee() {
+		return consignee;
+	}
+
+	public void setConsignee(String consignee) {
+		this.consignee = consignee;
+	}
+    
 }

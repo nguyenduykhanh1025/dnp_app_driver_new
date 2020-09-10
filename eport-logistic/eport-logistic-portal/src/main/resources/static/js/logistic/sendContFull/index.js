@@ -80,17 +80,15 @@ var toolbar = [
 
 $(".main-body").layout();
 
-loadTable();
-
 $(".collapse").click(function () {
-    $(".main-body__search-wrapper").height(15);
+    $(".main-body__search-wrapper").hide();
     $(".main-body__search-wrapper--container").hide();
     $(this).hide();
     $(".uncollapse").show();
 });
 
 $(".uncollapse").click(function () {
-    $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
+    $(".main-body__search-wrapper").show();
     $(".main-body__search-wrapper--container").show();
     $(this).hide();
     $(".collapse").show();
@@ -152,6 +150,11 @@ $(document).ready(function () {
         }
     });
 
+    let now = new Date();
+    now.setHours(0, 0, 0, 0);
+    $('#fromDate').datebox('setValue', ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear());
+    shipmentSearch.params.fromDate = dateToString(now);
+
     $('#toDate').datebox({
         onSelect: function (date) {
             date.setHours(23, 59, 59);
@@ -173,6 +176,8 @@ $(document).ready(function () {
         };
         $.table.init(options);
     });
+
+    loadTable();
 });
 
 function dateformatter(date) {
@@ -195,7 +200,7 @@ function dateparser(s) {
 function loadTable() {
     $("#dg").datagrid({
         url: ctx + 'logistic/shipments',
-        height: window.innerHeight - 110,
+        height: $('.main-body').height() - 75,
         method: 'post',
         singleSelect: true,
         collapsible: true,
@@ -630,7 +635,7 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 function configHandson() {
     config = {
         stretchH: "all",
-        height: document.documentElement.clientHeight - 105,
+        height: $('.main-body').height() - 110,
         minRows: rowAmount,
         maxRows: rowAmount,
         width: "100%",
@@ -897,7 +902,7 @@ function onChange(changes, source) {
                     method: "GET",
                     success: function (data) {
                         if (data.code == 0) {
-                            if (data.sztp) {
+                            if (data.sztp && data.sztp[0] != '{') {
                                 sizeList.forEach(element => {
                                     if (data.sztp == element.substring(0, 4)) {
                                         data.sztp = element;

@@ -12,10 +12,10 @@
 </head>
 
 <body class="grey-background">
+  <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+  <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
   <div class="main-body">
     <div class="main-body__search-wrapper mb-2">
-      <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
-      <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
       <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
         <div class="flex__left w-20">
           <h3 class="mt-10">Giao contaiener rỗng cho cảng</h3>
@@ -67,7 +67,18 @@
             </thead>
           </table>
         </div>
-        <div class="right-side" title="Thông tin lô" data-options="region:'center'" style="width: 100%;">
+        <div class="right-side" data-options="region:'center'" style="width: 100%;">
+          <div class="panel-header" style="width: 100%; background-color: rgb(158, 158, 158);">
+            <div class="panel-title" style="color: #fff;">Thông tin lô</div>
+            <div class="panel-tool" id="step-area">
+              <ul class="right-info">
+                <li><a id="registerStatus" class="disable">Khai báo</a></li>
+                <li><a id="verifyStatus" class="disable">Xác nhận</a></li>
+                <li><a id="paymentStatus" class="disable">Thanh toán</a></li>
+                <li><a id="finishStatus" class="disable">Hoàn thành</a></li>
+              </ul>
+            </div>
+          </div>
           <div class="right-side__toolbar">
             <div class="datagrid-toolbar">
               <table cellspacing="0" cellpadding="0">

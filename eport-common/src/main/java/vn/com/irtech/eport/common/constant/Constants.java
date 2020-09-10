@@ -57,4 +57,16 @@ public class Constants
 	public static final Integer CREATE_BOOKING_ORDER = 7;
 	
 	public static final Integer EXTENSION_DATE_ORDER = 9;
+	
+	public static final String RECEIVE_CONT_FULL_SUPPORT = "Hỗ Trợ Bốc Hàng";
+	
+	public static final String RECEIVE_CONT_EMPTY_SUPPORT = "Hỗ Trợ Bốc Rỗng";
+	
+	public static final String SEND_CONT_FULL_SUPPORT = "Hỗ Trợ Hạ Hàng";
+	
+	public static final String SEND_CONT_EMPTY_SUPPORT = "Hỗ Trợ Hạ Rỗng";
+	
+	public static final String RECEIVE_CONT_FULL_CUSTOM_SUPPORT = "Thông Quan Bốc Hàng";
+	
+	public static final String SEND_CONT_FULL_CUSTOM_SUPPORT = "Thông Quan Hạ Hàng";
 }

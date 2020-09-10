@@ -15,4 +15,12 @@ public class MqttConsts {
 	public static String GATE_ROBOT_REQ_TOPIC = BASE_TOPIC + "/robot/gate/+/request";
 	
 	public static String GATE_ROBOT_RES_TOPIC = BASE_TOPIC + "/robot/gate/+/response";
+	
+	public static final String NOTIFICATION_OM_TOPIC = "eport/notification/om";
+	
+	public static final String NOTIFICATION_IT_TOPIC = "eport/notification/it";
+	
+	public static final String NOTIFICATION_CONT_TOPIC = "eport/notification/cont";
+	
+	public static final String NOTIFICATION_MC_TOPIC = "eport/notification/mc";
 }
