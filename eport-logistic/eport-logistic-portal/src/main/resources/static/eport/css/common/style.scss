@@ -129,6 +129,9 @@ body {
         .ht_clone_top th,
         .ht_clone_top_left_corner th {
           @include border-dotted;
+          background-color:#efefef;
+          background:linear-gradient(to bottom,#F9F9F9 0,#efefef 100%);
+          background-repeat:repeat-x;
         }
         .ht_master tr:nth-of-type(odd) > td,
         .htCore tr:nth-of-type(odd) > td {
