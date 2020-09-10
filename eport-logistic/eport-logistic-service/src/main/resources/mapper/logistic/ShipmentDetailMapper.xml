@@ -140,7 +140,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="registerNo != null  and registerNo != ''"> and register_no = #{registerNo}</if>
             <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
             <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
-            <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="sztp != null  and sztp != ''"> and sztp like concat(#{sztp}, '%')</if>
             <if test="temperature != null "> and temperature = #{temperature}</if>
             <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
             <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
@@ -988,8 +988,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             and p.shipment_detail_id is null
             and sh.payment_status = 'Y'
             and sh.finish_status = 'N'
-            and (s.service_type = 2 or s.service_type = 4)
             and a.id is not null
+            <if test="serviceType != null">and s.service_type = #{serviceType}</if>
             <if test="driverId != null "> and a.driver_id = #{driverId}</if>
             <if test="pickUp.containerNo != null and pickUp.containerNo != ''"> and sh.container_no like concat(concat('%', #{pickUp.containerNo}), '%')</if>
             <if test="pickUp.consignee != null and pickUp.consignee != ''"> and sh.consignee = concat(concat('%', #{pickUp.consignee}), '%')</if>
