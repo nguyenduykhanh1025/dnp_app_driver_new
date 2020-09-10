@@ -7,7 +7,6 @@ function submitHandler() {
     {
         return false;
     }
-    console.log("DDDDD");
     if ($.validate.form()) {
         $.ajax({
             url: prefix + "/unique/plate/" + $('input[name=plateNumber]').val(),
@@ -56,28 +55,33 @@ $( "#type" ).change(function() {
     {
         $( "#wgt" ).attr("type", "number");
         $("#wgtTitle").removeClass("hidden");
+        $("#gatepassTitle").addClass("hidden");
+        $("#gatepass").prop( "disabled", true );
     }else {
         $( "#wgt" ).attr("type", "hidden");
         $("#wgtTitle").addClass("hidden");
+        $("#gatepassTitle").removeClass("hidden");
+        $("#gatepass").prop( "disabled", false );
     }
 });
 var plateNumberRgx = /[0-9][0-9][a-z][0-9]{4,5}$/i;
 function validatePlateNumber()
 {
-    var check = plateNumberRgx.test($('#plateNumber').val())
+    var check = plateNumberRgx.test($('#plateNumber').val().trim())
     if(!check)
     {
         $.modal.alertError("Vui lòng nhập đúng định dạng biển số xe!");
         return false;
     }
+    setGatePass();
     return true;
 }
 
-// function setGatePass() {
-//     let gatePass = $("#plateNumber").val();
-//     if(gatePass.length > 7 && $( "#type" ).val() == 0)
-//     {
-//         gatePass = gatePass.substring(gatePass.length-4,gatePass.length)
-//         $("#gatepass").val(gatePass);
-//     }
-// }
+function setGatePass() {
+    let gatePass = $("#plateNumber").val().trim();
+    if(gatePass.length > 7 && $( "#type" ).val() == 0)
+    {
+        gatePass = gatePass.substring(gatePass.length-5,gatePass.length)
+        $("#gatepass").val(gatePass);
+    }
+}
