@@ -493,7 +493,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="payType != null  and payType != ''">#{payType},</if>
             <if test="payer != null  and payer != ''">#{payer},</if>
             <if test="payerName != null  and payerName != ''">#{payerName},</if>
-            <if test="deliveryAddress != null  deliveryAddress != ''">#{deliveryAddress},</if>
+            <if test="deliveryAddress != null and deliveryAddress != ''">#{deliveryAddress},</if>
             <if test="deliveryMobile != null  and deliveryMobile != ''">#{deliveryMobile},</if>
             <if test="deliveryRemark != null  and deliveryRemark != ''">#{deliveryRemark},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
@@ -562,7 +562,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="payer != null  and payer != ''">payer = #{payer},</if>
             <if test="payerName != null  and payerName != ''">payer_name = #{payerName},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
-            <if test="deliveryAddress != null  deliveryAddress != ''">delivery_address = #{deliveryAddress},</if>
+            <if test="deliveryAddress != null and deliveryAddress != ''">delivery_address = #{deliveryAddress},</if>
             <if test="deliveryMobile != null  and deliveryMobile != ''">delivery_mobile = #{deliveryMobile},</if>
             <if test="deliveryRemark != null  and deliveryRemark != ''">delivery_remark = #{deliveryRemark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
