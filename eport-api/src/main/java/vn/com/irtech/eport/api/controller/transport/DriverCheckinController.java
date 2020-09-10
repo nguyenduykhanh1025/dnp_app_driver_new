@@ -60,6 +60,8 @@ public class DriverCheckinController extends BaseController  {
 		
 		ajaxResult.put("qrString", driverCheckinService.checkin(req, sessionId));
 		
+		sendCheckinReq(SecurityUtils.getCurrentUser().getUser().getUserId(), sessionId);
+		
 		return ajaxResult;
 	}
 	
@@ -104,6 +106,43 @@ public class DriverCheckinController extends BaseController  {
 			logger.error("Error send detection info: " + e);
 		}
 		return success();
+	}
+	
+	public void sendCheckinReq(Long driverId, String sessionId) {
+		PickupHistory pickupHistoryParam = new PickupHistory();
+		pickupHistoryParam.setDriverId(driverId);
+		pickupHistoryParam.setStatus(EportConstants.PICKUP_HISTORY_STATUS_WAITING);
+		List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
+		
+		if (CollectionUtils.isEmpty(pickupHistories)) {
+			throw new BusinessException("Quý khách chưa đăng ký vận chuyển container ra/vào cảng.");
+		}
+		
+		List<MeasurementDataReq> measurementDataReqs = new ArrayList<>();
+		for (PickupHistory pickupHistory : pickupHistories) {
+			if (pickupHistory.getShipment().getServiceType() == EportConstants.SERVICE_DROP_FULL || 
+					pickupHistory.getShipment().getServiceType() == EportConstants.SERVICE_DROP_EMPTY) {
+				MeasurementDataReq measurementDataReq = new MeasurementDataReq();
+				measurementDataReq.setTruckNo(pickupHistory.getTruckNo());
+				measurementDataReq.setChassisNo(pickupHistory.getChassisNo());
+				pickupHistory.setContainerNo(pickupHistory.getContainerNo());
+				measurementDataReqs.add(measurementDataReq);
+			}
+		}
+		
+		CheckinReq checkinReq = new CheckinReq();
+		checkinReq.setInput(measurementDataReqs);
+		checkinReq.setSessionId(sessionId);
+		
+		if (!checkIfDriverIsAtGate(checkinReq)) {
+			throw new BusinessException("Quý khách chưa đến cổng chưa thể làm thủ tục vào cổng.");
+		}
+		try {
+			logger.debug("Publish smart gate app request: " + new Gson().toJson(checkinReq));
+			mqttService.publish(MqttConsts.SMART_GATE_RES_TOPIC.replace("+", "gate1"), new MqttMessage(new Gson().toJson(checkinReq).getBytes()));
+		} catch (MqttException e) {
+			logger.error("Error send detection info: " + e);
+		}
 	}
 	
 	

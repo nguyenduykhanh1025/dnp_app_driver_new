@@ -19,4 +19,6 @@ public class BusinessConsts {
 	public static final Long DRIVER_USER_TYPE = 2L;
 	
 	public static final Long ADMIN_USER_TYPE = 3L;
+	
+	
 }

@@ -24,11 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
+import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
 @Component
@@ -41,6 +43,8 @@ public class MqttService implements MqttCallback {
 	private static final String NOTIFICATION_OM_TOPIC = "eport/notification/om";
 	private static final String NOTIFICATION_IT_TOPIC = "eport/notification/it";
 	private static final String NOTIFICATION_CONT_TOPIC = "eport/notification/cont";
+	private static final String NOTIFICATION_MC_TOPIC = "eport/notification/mc";
+	private static final String NOTIFICATION_GATE_TOPIC = "eport/notification/gate";
 
 	@Autowired
 	private MqttAsyncClient mqttClient;
@@ -348,6 +352,31 @@ public class MqttService implements MqttCallback {
 		data.put("msg", content);
 		data.put("link", url);
 		String msg = new Gson().toJson(data);
+		publish(topic, new MqttMessage(msg.getBytes()));
+	}
+	
+	public void sendNotificationApp(NotificationCode code, String title, String content, String url, Integer priority) throws MqttException {
+		NotificationReq notificationReq = new NotificationReq();
+		notificationReq.setTitle(title);
+		notificationReq.setMsg(content);
+		notificationReq.setLink(url);
+		notificationReq.setPriority(priority);
+		String topic = "";
+		switch (code) {
+		case NOTIFICATION_OM:
+			notificationReq.setType(EportConstants.APP_USER_TYPE_OM);
+			topic = NOTIFICATION_OM_TOPIC;
+			break;
+		case NOTIFICATION_OM_CUSTOM:
+			notificationReq.setType(EportConstants.APP_USER_TYPE_OM);
+			topic = NOTIFICATION_OM_TOPIC;
+			break;
+		case NOTIFICATION_IT:
+			notificationReq.setType(EportConstants.APP_USER_TYPE_IT);
+			topic = NOTIFICATION_IT_TOPIC;
+			break;
+		}
+		String msg = new Gson().toJson(notificationReq);
 		publish(topic, new MqttMessage(msg.getBytes()));
 	}
 }
