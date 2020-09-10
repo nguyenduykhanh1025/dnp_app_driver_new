@@ -158,7 +158,7 @@ function viewHistoryCont(id) {
 }
 
 function viewUpdateCont(id) {
-  $.modal.openOption("Cập nhật container", PREFIX + "/update/" + id, 500, 380);
+  $.modal.openOption("Cập nhật container", PREFIX + "/update/" + id, 500, 420);
 }
 
 function loadTableByContainer(billOfLading) {
@@ -297,7 +297,7 @@ function multiUpdateEdo() {
     }
     ids.push(row.id);
   }
-  $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 500, 320);
+  $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 500, 370);
 }
 
 

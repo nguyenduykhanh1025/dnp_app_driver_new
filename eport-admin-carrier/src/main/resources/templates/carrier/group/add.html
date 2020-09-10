@@ -52,6 +52,13 @@
                 </div>
             </div>
             <div class="form-group">
+                <input type="hidden" name="consigneeFlag" id="consigneeFlag">
+                <label class="col-sm-2 col-xs-3 col-md-1 control-label">Cập nhật Consignee</label>
+                <div id="consignee" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="consignee()"></i>
+                </div>
+            </div>
+            <div class="form-group">
                 <input type="hidden" name="bookingFlag" id="bookingFlag">
                 <label class="col-sm-2 col-xs-3 col-md-1 control-label">Booking Container</label>
                 <div id="bookingContainer" class="col-sm-9 col-xs-8 col-md-10">
@@ -74,6 +81,7 @@
         $("#edoFlag").val(1);
         $("#apiFlag").val(1);
         $("#bookingFlag").val(1);
+        $("#consigneeFlag").val(1);
         $("#form-account-add").validate({
             focusCleanup: true
         });
@@ -120,6 +128,15 @@
             } else {
                 document.getElementById("bookingContainer").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="bookingContainer()"></span>';
                 $("#bookingFlag").val(1);
+            }
+        }
+        function consignee() {
+            if ($("#consigneeFlag").val() == 1) {
+                document.getElementById("consignee").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="consignee()"></span>';
+                $("#consigneeFlag").val(0);
+            } else {
+                document.getElementById("consignee").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="consignee()"></span>';
+                $("#consigneeFlag").val(1);
             }
         }
     </script>
