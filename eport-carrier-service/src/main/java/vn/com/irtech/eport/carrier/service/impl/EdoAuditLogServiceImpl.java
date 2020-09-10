@@ -185,7 +185,7 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
         {
             edoAuditLog.setSeqNo((long) edoSeg);
             edoAuditLog.setFieldName("Vessel");
-            edoAuditLog.setNewValue(edoItem.getVesselNo().toString());
+            edoAuditLog.setNewValue(edoItem.getVessel().toString());
             insertEdoAuditLogDetFreeTime(edoAuditLog);
             edoSeg +=1;
         }
@@ -194,6 +194,14 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
             edoAuditLog.setSeqNo((long) edoSeg);
             edoAuditLog.setFieldName("Voy No");
             edoAuditLog.setNewValue(edoItem.getVoyNo().toString());
+            insertEdoAuditLogDetFreeTime(edoAuditLog);
+            edoSeg +=1;
+        }
+        if(edoItem.getConsignee() != null) 
+        {
+            edoAuditLog.setSeqNo((long) edoSeg);
+            edoAuditLog.setFieldName("Consignee");
+            edoAuditLog.setNewValue(edoItem.getConsignee().toString());
             insertEdoAuditLogDetFreeTime(edoAuditLog);
             edoSeg +=1;
         }
@@ -262,6 +270,19 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
                 edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
                 edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
                 edoAuditLog.setNewValue(edoItem.getEmptyContainerDepot().toString());
+                insertEdoAuditLogDetFreeTime(edoAuditLog);
+            }
+            
+        }
+        if(edoItem.getConsignee() != null && !edoItem.getConsignee().equals(""))
+        {
+            edoAuditLog.setFieldName("Consignee");
+            EdoAuditLog edoAuditLogCheck = selectEdoAuditLogByEdo(edoAuditLog);
+            if(edoAuditLogCheck != null && !edoItem.getConsignee().toString().equals(edoAuditLogCheck.getNewValue())) 
+            {
+                edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+                edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
+                edoAuditLog.setNewValue(edoItem.getConsignee().toString());
                 insertEdoAuditLogDetFreeTime(edoAuditLog);
             }
             

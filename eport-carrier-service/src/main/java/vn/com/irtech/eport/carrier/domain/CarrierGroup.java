@@ -48,6 +48,18 @@ public class CarrierGroup extends BaseEntity {
 	/** bookingFlag Permission */
 	private String bookingFlag;
 
+
+	/** consigneeFlag Permission */
+	private String consigneeFlag;
+
+	public String getConsigneeFlag() {
+		return this.consigneeFlag;
+	}
+
+	public void setConsigneeFlag(String consigneeFlag) {
+		this.consigneeFlag = consigneeFlag;
+	}
+
 	public String getBookingFlag() {
 		return this.bookingFlag;
 	}

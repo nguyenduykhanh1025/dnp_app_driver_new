@@ -1,13 +1,18 @@
 const PREFIX = ctx + "edo";
 
 $(function () {
+  if(hasConsigneeUpdatePermission == true)
+  {
+    $( "#consignee" ).prop( "disabled", false );
+  }
   $("#expiredDem").val(formatDate(expiredDem));
   $("#detFreeTime").val(detFreeTime);
   $("#emptyContainerDepot").val(emptyContainerDepot);
+  $("#consignee").val(consignee);
 })
 
 function confirm() {
-  if (formatDate(expiredDem) == $("#expiredDem").val() && $("#detFreeTime").val() == detFreeTime && $("#emptyContainerDepot").val() == emptyContainerDepot) {
+  if (formatDate(expiredDem) == $("#expiredDem").val() && $("#detFreeTime").val() == detFreeTime && $("#emptyContainerDepot").val() == emptyContainerDepot && $("#consignee").val() == consignee) {
     $.modal.alertError("Không có thông tin nào được thay đổi !!!")
     return;
   }
@@ -26,7 +31,8 @@ function confirm() {
           ids: ids,
           expiredDem: formatDateForSubmit($("#expiredDem").val()),
           detFreeTime: $("#detFreeTime").val() == detFreeTime ? "" : $("#detFreeTime").val(),
-          emptyContainerDepot: $("#emptyContainerDepot").val() == emptyContainerDepot ? "" : $("#emptyContainerDepot").val()
+          emptyContainerDepot: $("#emptyContainerDepot").val() == emptyContainerDepot ? "" : $("#emptyContainerDepot").val(),
+          consignee: $("#consignee").val() == consignee ? "" : $("#consignee").val()
         },
         beforeSend: function () {
           $.modal.loading("Đang xử lý dữ liệu...");
