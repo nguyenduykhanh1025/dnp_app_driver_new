@@ -108,6 +108,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		map.put("id", id);
 		Edo edo = edoService.selectEdoById(id);
 		map.put("edo", edo);
+		map.put("hasConsigneeUpdatePermission",hasConsigneeUpdatePermission());
 		return PREFIX + "/update";
 	}
 
@@ -118,6 +119,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		Long id = Long.parseLong(idMap[0]);
 		Edo edo = edoService.selectEdoById(id);
 		map.put("edo", edo);
+		map.put("hasConsigneeUpdatePermission",hasConsigneeUpdatePermission());
 		return PREFIX + "/multiUpdate";
 	}
 
@@ -138,6 +140,11 @@ public class CarrierEdoController extends CarrierBaseController {
 				Map<String, Object> groupCodes = new HashMap<>();
 				groupCodes.put("groupCode", super.getGroupCodes());
 				edoCheck.setParams(groupCodes);
+				if(hasConsigneeUpdatePermission() == false && edo.getConsignee() != "")
+				{
+					return AjaxResult.error(
+							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật Consignee, vui lòng kiếm tra lại dữ liệu");
+				}
 				if (edoService.selectFirstEdo(edoCheck) == null) {
 					return AjaxResult.error(
 							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");

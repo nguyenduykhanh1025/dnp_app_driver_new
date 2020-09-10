@@ -31,6 +31,12 @@
               </select>
             </div>
           </div>
+          <div class="form-group">
+            <label class="col-sm-5 col-xs-5 col-md-5 label-style">Khách hàng : <br> (Consignee) : </label>
+            <div class="col-sm-7 col-xs-7 col-md-7">
+              <input type="text" name="consignee"  id="consignee" class="form-control" disabled/>
+            </div>
+          </div>
         </form>
         <div class="layui-layer-btn footer">
           <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
@@ -49,6 +55,8 @@
     var expiredDem = /*[[${edo.expiredDem}]]*/ ;
     var detFreeTime = /*[[${edo.detFreeTime}]]*/ ;
     var emptyContainerDepot = /*[[${edo.emptyContainerDepot}]]*/ ;
+    var consignee = /*[[${edo.consignee}]]*/ ;
+    var hasConsigneeUpdatePermission = /*[[${hasConsigneeUpdatePermission}]]*/ ;
   </script>
    <script th:src="@{/eport/js/modules/edo/multiUpdate.js}"></script>
 </html>
