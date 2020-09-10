@@ -25,18 +25,18 @@ $(".main-body").layout();
 loadTable("#dg-right");
 loadTable("#dg-left");
 $(".collapse").click(function () {
-  $(".main-body__search-wrapper").height(15);
+  $(".main-body__search-wrapper").hide();
   $(".main-body__search-wrapper--container").hide();
   $(this).hide();
   $(".uncollapse").show();
-})
+});
 
-$(".uncollapse").click(function() {
-  $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
+$(".uncollapse").click(function () {
+  $(".main-body__search-wrapper").show();
   $(".main-body__search-wrapper--container").show();
   $(this).hide();
   $(".collapse").show();
-})
+});
 
 $(".left-side__collapse").click(function() {
   $('#main-layout').layout('collapse','west');

@@ -103,7 +103,7 @@ xss:
 mqtt:
   username: admin             
   password: public            
-  host-url: tcp://192.168.1.70:1883                # The address and port of your own server need to be changed
+  host-url: tcp://192.168.1.111:1883                # The address and port of your own server need to be changed
 
 websocket:
    endpoint: /logistic

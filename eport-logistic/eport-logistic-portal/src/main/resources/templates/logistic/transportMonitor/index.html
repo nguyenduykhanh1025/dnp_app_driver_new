@@ -4,45 +4,67 @@
     <meta charset="UTF-8" />
     <th:block th:include="include :: header('Giám sát')" />
     <th:block th:include="include :: select2-css" />
-    <link th:href="@{/css/logistic/monitor/style.css}" rel="stylesheet" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/logistic/test/style.css}" rel="stylesheet" />
+    <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
   </head>
-  <body class="bg-white">
-    <div class="p-main-div">
-      <div class="p-list-items row">
-        <div class="c-search-zone col-md-12">
-          <div class="input-group">
-            <select class="form-control c-search-box">
-              <option></option>
-            </select>
-            <span class="input-group-btn">
-              <button class="btn btn-default c-btn-search" type="button"><i class="fa fa-search"></i></button>
-            </span>
+  <body class="grey-background">
+    <div class="main-body">
+      <div class="main-body__table-wrapper">
+        <div class="easyui-layout" id="main-layout" style="width: 100%">
+          <div class="left-side" data-options="region:'west',split:true, collapsible:false" title="Danh sách xe" style="width: 30%">
+            <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
+            <div class="right-side__toolbar">
+              <div class="datagrid-toolbar">
+                <table cellspacing="0" cellpadding="0">
+                  <tbody>
+                    <tr>
+                      <td style="padding: 0 5px">
+                        <input class="easyui-textbox" name="booking" id="search" data-options="prompt: 'Tìm kiếm' " />
+                      </td>
+                      <td style="padding: 0 5px">
+                        <select class="easyui-combobox" name="Status" prompt="Trạng thái:" style="width: 80px">
+                          <option value="ar">Offline</option>
+                          <option value="bg">Online</option>
+                        </select>
+                      </td>
+                      <td>
+                        <button class="btn btn-success" style="height: 30px; margin-bottom: 5px">Tìm kiếm</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <table id="dg-left" style="width: 100%" pageList="[20,50,100,150,200]">
+              <thead>
+                <tr>
+                  <th data-options="field:'id',align:'right',halign:'center'" width="5%">STT</th>
+                  <th data-options="field:'fullName',halign:'center',resizable:true" sortable="true" width="20%">BS Xe</th>
+                  <th data-options="field:'mobileNumber',align:'right',halign:'center'" sortable="true" width="15%">Điện thoại</th>
+                  <th data-options="field:'createTime',align:'center'" sortable="true" width="20%">Container</th>
+                  <th data-options="field:'status',align:'center'" sortable="true" width="15%">Cập nhật lúc</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+          <div data-options="region:'center'" style="width: 100%">
+            <div id="c-map"></div>
           </div>
         </div>
-        <div id="list">
-
-        </div>
-        <!-- <div class="c-item col-md-12" onclick="setCenterMap(16.077450, 108.212149)">
-          <div class="col-md-4"><span>Tên tài xế:</span></div>
-          <div class="col-md-8"><span id="name"></span></div>
-          <div class="col-md-4"><span>Biển số xe đầu kéo:</span></div>
-          <div class="col-md-8"><span id="truckNo"></span></div>
-          <div class="col-md-4"><span>Container:</span></div>
-          <div class="col-md-8"><span id="containerNo"></span></div>
-        </div> -->
-
-        <div class="col-md-12 text-center">
-          <span class="c-loadmore"><i class="fa fa-angle-double-down" aria-hidden="true"></i>&nbsp;Thêm</span>
-        </div>
       </div>
-      <div id="c-map"></div>
     </div>
     <th:block th:include="include :: footer" />
+    <script>
+      $(".main-body").height($(document).height() - 10);
+      $(".easyui-layout").height($(".main-body").height() - 50);
+    </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBcB5jZhTfANWzYViExPpf7NeEl_jq0T3Q&libraries=places&&language=vi&callback=initMap" async defer></script>
     <th:block th:include="include :: monitor-view" />
     <th:block th:include="include :: select2-js" />
+    <th:block th:include="include :: easyui-js" />
     <script type="text/javascript">
-    const PREFIX = ctx + "logistic/transportMonitor"
+      const PREFIX = ctx + "logistic/transportMonitor";
       // "use strict";
       var locations = [];
       var map;
@@ -66,8 +88,8 @@
         };
         let currentDriverId, contNo, location, driverName, mobileNumber, truckNo, chassisNo;
         if (locations.length > 0) {
-          currentDriverId = locations[0].driverId; 
-          contNo = '';
+          currentDriverId = locations[0].driverId;
+          contNo = "";
           location = new google.maps.LatLng(locations[0].x, locations[0].y);
           driverName = locations[0].driver.fullName;
           mobileNumber = locations[0].driver.mobileNumber;
@@ -108,24 +130,24 @@
                 "                <td>Biển số xe rơ moóc:</td>\n" +
                 "                <td> " +
                 chassisNo +
-                  "</td></tr>" +
+                "</td></tr>" +
                 "			<tr><td>Container: " +
                 "</td>" +
                 "			<td>" +
-                contNo.substring(0, contNo.length-1) +
+                contNo.substring(0, contNo.length - 1) +
                 " </td></tr>\n" +
                 "        </table>\n" +
                 "    </div>",
             });
             bindMarkerinfo(marker);
-            contNo = locations[i] + ',';
+            contNo = locations[i] + ",";
             location = new google.maps.LatLng(locations[i].x, locations[i].y);
             driverName = locations[i].driver.fullName;
             mobileNumber = locations[i].driver.mobileNumber;
             truckNo = locations[i].truckNo;
             chassisNo = locations[i].chassisNo;
           } else {
-            contNo += locations[i].containerNo + ',';
+            contNo += locations[i].containerNo + ",";
           }
         }
         if (locations.length > 0) {
@@ -161,11 +183,11 @@
               "                <td>Biển số xe rơ moóc:</td>\n" +
               "                <td> " +
               chassisNo +
-                "</td></tr>" +
+              "</td></tr>" +
               "			<tr><td>Container: " +
               "</td>" +
               "			<td>" +
-              contNo.substring(0, contNo.length-1) +
+              contNo.substring(0, contNo.length - 1) +
               " </td></tr>\n" +
               "        </table>\n" +
               "    </div>",
@@ -175,14 +197,18 @@
       }
 
       $(document).ready(function () {
+        $(".main-body").layout();
+        $(".left-side__collapse").click(function () {
+          $("#main-layout").layout("collapse", "west");
+        });
         $.ajax({
           url: PREFIX + "/list",
-          method: "get"
-        }).done(function(res){
+          method: "get",
+        }).done(function (res) {
           if (res.code == 0) {
             locations = res.pickupHistories.sort(compareDriverId);
-            for (let i=0; i<locations.length; i++) {
-              if ((locations[i].serviceType%2 == 0 && locations[i].status == 1) || (locations[i].serviceType%2 == 1 && locations[i].status == 0)) {
+            for (let i = 0; i < locations.length; i++) {
+              if ((locations[i].serviceType % 2 == 0 && locations[i].status == 1) || (locations[i].serviceType % 2 == 1 && locations[i].status == 0)) {
                 locations.splice(i, 1);
                 i--;
               }
@@ -251,8 +277,6 @@
           },
         });
       });
-      
-
 
       var bindMarkerinfo = function (marker) {
         google.maps.event.addListener(marker, "click", function (point) {
@@ -272,24 +296,24 @@
       }
 
       function loadListDriver() {
-        let str = '';
+        let str = "";
         let currentDriverId, x, y, name, truckNo;
         if (locations.length > 0) {
-          currentDriverId = locations[0].driverId; 
+          currentDriverId = locations[0].driverId;
           x = locations[0].x;
           y = locations[0].y;
           name = locations[0].driver.fullName;
           truckNo = locations[0].truckNo;
         }
-        for (let i=0; i<locations.length; i++) {
+        for (let i = 0; i < locations.length; i++) {
           if (currentDriverId != locations[i].driverId) {
-            str += '<div class="c-item col-md-12" onclick="setCenterMap('+ x +', '+ y +')">';
+            str += '<div class="c-item col-md-12" onclick="setCenterMap(' + x + ", " + y + ')">';
             str += '<div class="col-md-4"><span>Tên tài xế:</span></div>';
-            str += '<div class="col-md-8"><span>'+ name +'</span></div>';
+            str += '<div class="col-md-8"><span>' + name + "</span></div>";
             str += '<div class="col-md-4"><span>Biển số xe đầu kéo:</span></div>';
-            str += '<div class="col-md-8"><span>'+ truckNo +'</span></div>';
-            str += '</div>';
-            currentDriverId = locations[i].driverId; 
+            str += '<div class="col-md-8"><span>' + truckNo + "</span></div>";
+            str += "</div>";
+            currentDriverId = locations[i].driverId;
             x = locations[i].x;
             y = locations[i].y;
             name = locations[i].driver.fullName;
@@ -297,14 +321,14 @@
           }
         }
         if (locations.length > 0) {
-          str += '<div class="c-item col-md-12" onclick="setCenterMap('+ x +', '+ y +')">';
+          str += '<div class="c-item col-md-12" onclick="setCenterMap(' + x + ", " + y + ')">';
           str += '<div class="col-md-4"><span>Tên tài xế:</span></div>';
-          str += '<div class="col-md-8"><span>'+ name +'</span></div>';
+          str += '<div class="col-md-8"><span>' + name + "</span></div>";
           str += '<div class="col-md-4"><span>Biển số xe đầu kéo:</span></div>';
-          str += '<div class="col-md-8"><span>'+ truckNo +'</span></div>';
-          str += '</div>';
+          str += '<div class="col-md-8"><span>' + truckNo + "</span></div>";
+          str += "</div>";
         }
-        $('#list').html(str);
+        $("#list").html(str);
       }
 
       function compareDriverId(a, b) {
