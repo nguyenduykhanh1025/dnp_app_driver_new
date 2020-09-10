@@ -158,6 +158,8 @@ public interface EportConstants {
 	public static final String URL_OM_CUSTOM_SEND_SUPPORT = "/om/support/custom-send-full/view";
 	/** url to cont supplier */
 	public static final String URL_CONT_SUPPLIER = "/container/supplier";
+	/** url to gate support */
+	public static final String URL_GATE = "/gate/support";
 	
 	// Priority notification app window
 	/** High priority notificaiton app window */

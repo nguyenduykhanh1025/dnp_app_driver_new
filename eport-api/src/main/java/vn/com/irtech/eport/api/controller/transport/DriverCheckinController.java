@@ -33,6 +33,7 @@ import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
+import vn.com.irtech.eport.system.service.ISysConfigService;
 
 @RestController
 @RequestMapping("/transport/checkin")
@@ -43,6 +44,9 @@ public class DriverCheckinController extends BaseController  {
 	
 	@Autowired
 	private IPickupHistoryService pickupHistoryService;
+	
+	@Autowired
+	private ISysConfigService configService;
 	
 	@Autowired
 	private MqttService mqttService;
@@ -87,7 +91,7 @@ public class DriverCheckinController extends BaseController  {
 				MeasurementDataReq measurementDataReq = new MeasurementDataReq();
 				measurementDataReq.setTruckNo(pickupHistory.getTruckNo());
 				measurementDataReq.setChassisNo(pickupHistory.getChassisNo());
-				pickupHistory.setContainerNo(pickupHistory.getContainerNo());
+				measurementDataReq.setContNo((pickupHistory.getContainerNo()));
 				measurementDataReqs.add(measurementDataReq);
 			}
 		}
@@ -147,7 +151,10 @@ public class DriverCheckinController extends BaseController  {
 	
 	
 	private Boolean checkIfDriverIsAtGate(CheckinReq checkinReq) {
+		if ("1".equals(configService.selectConfigByKey("mobile.checkin.auto"))) {
+			return true;
+		}
 		// TODO : Add condition to check if driver is at gate and information about truck is true
-		return true;
+		return false;
 	}
 }

@@ -16,7 +16,7 @@ public class FirebaseService {
 			throws FirebaseMessagingException {
 		MulticastMessage message = MulticastMessage.builder()
 				.setNotification(Notification.builder().setTitle(title)
-						.setBody(content).build())
+				.setBody(content).build())
 				.addAllTokens(receiverTokens).build();
 		BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
 		return response;
