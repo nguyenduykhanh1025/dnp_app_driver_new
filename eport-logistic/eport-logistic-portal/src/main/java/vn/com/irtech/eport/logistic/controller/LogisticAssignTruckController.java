@@ -15,6 +15,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -93,7 +94,20 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		pickupAssign.setLogisticGroupId(getUser().getGroupId());
 		pickupAssign.setExternalFlg(1L);
 		mmap.put("driverOwnerList", pickupAssignService.getDriverOwners(pickupAssign));
-    	return PREFIX + "/assignTruck";
+    	return PREFIX + "/driverAssign";
+	}
+	
+	@GetMapping("/shipment-detail/{pickedIds}/delivery-remark")
+	public String deliveryRemark(@PathVariable("pickedIds") Long[] pickedIds, ModelMap mmap) {
+		mmap.put("pickedIds", pickedIds);
+		return PREFIX + "/deliveryRemark";
+	}
+	
+	@GetMapping("/shipment/{shipmentId}/add-drivers/ids-assigned/{pickedIds}")
+	public String getDriverList(@PathVariable Long shipmentId, @PathVariable Long[] pickedIds,ModelMap mmap) {
+		mmap.put("shipmentId", shipmentId);
+		mmap.put("pickedIds", pickedIds);
+		return PREFIX + "/driverList";
 	}
 
 	@PostMapping("/listShipment")
@@ -620,5 +634,32 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 			ajaxResult.put("deliveryPhoneNumber", result.getDeliveryPhoneNumber());
 		}
 		return ajaxResult;
+	}
+	
+	@Log(title = "Lưu ghi chú điều vận", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
+	@PutMapping("/save-delivery-remark")
+	@ResponseBody
+	@Transactional
+	public AjaxResult saveDeliverRemark(ShipmentDetail shipmentDetail,@RequestParam(value = "pickedIds[]", required = false)  Long[] pickedIds) {
+		if(shipmentDetail == null || pickedIds == null) {
+			return error();
+		}
+		ShipmentDetail detail = new ShipmentDetail();
+		detail.setLogisticGroupId(getUser().getGroupId());
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(detail);
+		if(shipmentDetails.size() > 0) {
+			for(Long id : pickedIds) {
+				for(ShipmentDetail i : shipmentDetails) {
+					if(i.getId().equals(id)) {
+						i.setDeliveryAddress(shipmentDetail.getDeliveryAddress());
+						i.setDeliveryMobile(shipmentDetail.getDeliveryMobile());
+						i.setDeliveryRemark(shipmentDetail.getDeliveryRemark());
+						shipmentDetailService.updateShipmentDetail(i);
+					}
+				}
+			}
+			return success();
+		}
+		return error();
 	}
 }
