@@ -182,6 +182,35 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			// Co loi bat thuong xay ra. order khong ton tai
 			throw new IllegalArgumentException("Process order not exist");
 		}
+		
+		// Get the true name of the service to make message send to om
+		String serviceName = "";
+		String url = "";
+		switch (processOrder.getServiceType()) {
+		case EportConstants.SERVICE_PICKUP_FULL:
+			serviceName = "bốc container hàng";
+			url = EportConstants.URL_OM_RECEIVE_F_SUPPORT;
+			break;
+		case EportConstants.SERVICE_PICKUP_EMPTY:
+			serviceName = "bốc container rỗng";
+			url = EportConstants.URL_OM_RECEIVE_E_SUPPORT;
+			break;
+		case EportConstants.SERVICE_DROP_FULL:
+			serviceName = "hạ container hàng";
+			url = EportConstants.URL_OM_SEND_F_SUPPORT;
+			break;
+		case EportConstants.SERVICE_DROP_EMPTY:
+			serviceName = "hạ container rỗng";
+			url = EportConstants.URL_OM_SEND_E_SUPPORT;
+			break;
+		case EportConstants.SERVICE_SHIFTING:
+			serviceName = "dịch chuyển container";
+		default:
+			break;
+		}
+		
+		String title = "";
+		String msg = "";
 		String historyResult = "";
 		if ("success".equalsIgnoreCase(result)) {
 			// GET LIST SHIPMENT DETAIL BY PROCESS ORDER ID
@@ -225,17 +254,19 @@ public class RobotResponseHandler implements IMqttMessageListener{
 					}
 				}
 			}
-
+			
+			// Send notification order success to om to check whether some data is wrong or not
+			title = "ePort: Thông báo làm lệnh " + serviceName + " thành công bởi robot " + robotUuId + ".";
+			msg = "Robot làm lệnh " + serviceName + " thành công cho mã lô " + processOrder.getShipmentId() + " Job Order No " + processOrder.getOrderNo();
+			
 			// SET RESULT FOR HISTORY SUCCESS
 			historyResult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
 		} else {
-			// Send notification for om
-			try {
-				mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
-			} catch (Exception e) {
-				logger.warn(e.getMessage());
-			}
-
+			
+			// Send notification order success to om to check whether some data is wrong or not
+			title = "ePort: Thông báo làm lệnh " + serviceName + " bị lỗi bởi robot " + robotUuId + ".";
+			msg = "Robot làm lệnh " + serviceName + " thất bại cho mã lô " + processOrder.getShipmentId() + " Job Order No " + processOrder.getOrderNo();
+			
 			// INIT PROCESS ORDER TO UPDATE
 			processOrder.setResult("F"); // RESULT FAILED
 			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
@@ -254,6 +285,14 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			// SET RESULT FOR HISTORY FAILED
 			historyResult = EportConstants.PROCESS_HISTORY_RESULT_FAILED;
 		}
+		
+		// Send notification for om
+		try {
+			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg, configService.getKey("domain.admin.name") + url, EportConstants.NOTIFICATION_PRIORITY_LOW);
+		} catch (Exception e) {
+			logger.warn(e.getMessage());
+		}
+		
 		// Update history
 		updateHistory(processOrderId, robotUuId, serviceType, historyResult);
 	}

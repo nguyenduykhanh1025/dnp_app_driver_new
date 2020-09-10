@@ -1,7 +1,6 @@
 const PREFIX = ctx + "om/support/custom-receive-full";
+const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var bill;
-var shipment = new Object();
-shipment.serviceType = 1;
 var shipmentDetails = new Object();
 var currentLeftWidth = $(".table-left").width();
 var currentRightWidth = $(".table-right").width();
@@ -9,54 +8,98 @@ var dogrid = document.getElementById("container-grid"), hot;
 var rowAmount = 0;
 var shipmentSelected;
 var sourceData;
+var shipment = new Object();
+shipment.serviceType = 1;
+shipment.params = new Object();
 
 $(document).ready(function () {
-  $("#btn-collapse").click(function () {
-    handleCollapse(true);
-  });
-  $("#btn-uncollapse").click(function () {
-    handleCollapse(false);
-  });
-  loadTable(shipment);
-  $('#checkCustomStatusByProcessOrderId').attr("disabled", true);
-  $('#checkProcessStatusByProcessOrderId').attr("disabled", true);
+  $(".main-body").layout();
 
-  $("#searchInfoProcessOrder").keyup(function (event) {
-    if (event.keyCode == 13) {
-      blNo = $("#searchInfoProcessOrder").val().toUpperCase();
-      if (blNo == "") {
-        loadTable(shipment);
+  $(".collapse").click(function () {
+    $(".main-body__search-wrapper").height(15);
+    $(".main-body__search-wrapper--container").hide();
+    $(this).hide();
+    $(".uncollapse").show();
+  });
+
+  $(".uncollapse").click(function () {
+    $(".main-body__search-wrapper").height(SEARCH_HEIGHT + 20);
+    $(".main-body__search-wrapper--container").show();
+    $(this).hide();
+    $(".collapse").show();
+  });
+
+  $(".left-side__collapse").click(function () {
+    $('#main-layout').layout('collapse', 'west');
+  });
+
+  $("#logisticGroups").combobox({
+    valueField: 'id',
+    textField: 'groupName',
+    data: logisticGroups,
+    onSelect: function (logisticGroup) {
+      if (logisticGroup.id != 0) {
+        shipment.logisticGroupId = logisticGroup.id;
+      } else {
+        shipment.logisticGroupId = null;
       }
-      shipment.blNo = blNo;
-      loadTable(shipment);
+      $('#vesselAndVoyages').combobox('select', 'Chọn tàu chuyến');
+      $("#containerNo").textbox('setText', '');
+      $("#consignee").textbox('setText', '');
+      loadTable();
+    }
+  });
+
+  $("#blNo").textbox('textbox').bind('keydown', function(e) {
+    // enter key
+    if (e.keyCode == 13) {
+      shipment.blNo = $("#blNo").textbox('getText').toUpperCase();
+      loadTable();
+    }
+  });
+
+  $("#containerNo").textbox('textbox').bind('keydown', function(e) {
+    // enter key
+    if (e.keyCode == 13) {
+      shipment.params.containerNo = $("#containerNo").textbox('getText').toUpperCase();
+      loadTable();
+    }
+  });
+
+  $("#consignee").textbox('textbox').bind('keydown', function(e) {
+    // enter key
+    if (e.keyCode == 13) {
+      shipment.params.consignee = $("#consignee").textbox('getText').toUpperCase();
+      loadTable();
+    }
+  });
+
+  vesselAndVoyages[0].selected = true;
+  $("#vesselAndVoyages").combobox({
+    valueField: 'vslAndVoy',
+    textField: 'vslAndVoy',
+    data: vesselAndVoyages,
+    onSelect: function (vesselAndVoyage) {
+      if (vesselAndVoyage.vslAndVoy != 'Chọn tàu chuyến') {
+        let vslAndVoyArr = vesselAndVoyage.vslAndVoy.split(" - ");
+        shipment.params.vslNm = vslAndVoyArr[0];
+        shipment.params.voyNo = vslAndVoyArr[2];
+      } else {
+        shipment.params.vslNm = null;
+        shipment.params.voyNo = null;
+      }
+      loadTable();
     }
   });
 
 });
 
-function handleCollapse(status) {
-  if (status) {
-    $(".left").css("width", "0.5%");
-    $(".left").children().hide();
-    $("#btn-collapse").hide();
-    $("#btn-uncollapse").show();
-    $(".right").css("width", "99%");
-    return;
-  }
-  $(".left").css("width", "25%");
-  $(".left").children().show();
-  $("#btn-collapse").show();
-  $("#btn-uncollapse").hide();
-  $(".right").css("width", "74%");
-  return;
-}
-
-function loadTable(shipment) {
+function loadTable() {
   $("#dg").datagrid({
     url: PREFIX + "/shipments",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - 60,
+    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     clientPaging: true,
     collapsible: true,
     pagination: true,
@@ -74,8 +117,6 @@ function loadTable(shipment) {
         type: opts.method,
         url: opts.url,
         contentType: "application/json",
-        accept: "text/plain",
-        dataType: "text",
         data: JSON.stringify({
           pageNum: param.page,
           pageSize: param.rows,
@@ -83,10 +124,12 @@ function loadTable(shipment) {
           isAsc: param.order,
           data: shipment,
         }),
-        dataType: "json",
-        success: function (data) {
-          success(data);
-
+        success: function (res) {
+          if (res.code == 0) {
+            success(res.shipments);
+          } else {
+            success([]);
+          }
         },
         error: function () {
           error.apply(this, arguments);
@@ -180,7 +223,7 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 function configHandson() {
     config = {
         stretchH: "all",
-        height: document.documentElement.clientHeight - 100,
+        height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
         minRows: rowAmount,
         maxRows: rowAmount,
         width: "100%",
@@ -340,11 +383,10 @@ function loadTableByContainer(shipmentId) {
 function getSelectedRow() {
   var row = $("#dg").datagrid("getSelected");
   if (row) {
-	shipmentSelected = row;
-	rowAmount = shipmentSelected.contAmount;
+    shipmentSelected = row;
+    rowAmount = shipmentSelected.contAmount;
     shipmentDetails.shipmentId = row.id;
     $('#checkCustomStatusByProcessOrderId').attr("disabled", false);
-    $('#checkProcessStatusByProcessOrderId').attr("disabled", false);
     loadTableByContainer(row.id);
   }
 }
@@ -385,24 +427,11 @@ function msgError(msg) {
 	$.modal.alertError(msg);
 }
 
-
-//function formatVessel(value, row) {
-//  return row.vslNm + " - " + row.vslName + " - " + row.voyNo;
-//}
-
-$('#logistic').change(function () {
-  if (0 != $('#logistic option:selected').val()) {
-    shipment.logisticGroupId = $('#logistic option:selected').val();
-  } else {
-    shipment.logisticGroupId = '';
-  }
-  loadTable(shipment);
-});
-
 function formatUpdateTime(value, row, index) {
   if(!row.customScanTime){
 	  return null
   }
+
   let customScanTime = new Date(row.customScanTime);
   let now = new Date();
   let offset = now.getTime() - customScanTime.getTime();
@@ -419,5 +448,20 @@ function formatUpdateTime(value, row, index) {
 	        .join(":")
 	}
   return toHHMMSS(totalMinutes*60);
+}
+
+function search() {
+  loadTable();
+}
+
+function clearInput() {
+  $('#vesselAndVoyages').combobox('select', 'Chọn tàu chuyến');
+  $('#logisticGroups').combobox('select', '0');
+  $("#containerNo").textbox('setText', '');
+  $("#consignee").textbox('setText', '');
+  $("#blNo").textbox('setText', '');
+  shipment = new Object();
+  shipment.params = new Object();
+  loadTable();
 }
 

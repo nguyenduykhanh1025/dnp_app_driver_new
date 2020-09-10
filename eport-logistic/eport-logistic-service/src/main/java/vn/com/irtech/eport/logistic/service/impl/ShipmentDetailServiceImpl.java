@@ -1302,7 +1302,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
      * @return list pickup assign form object
      */
 	@Override
-    public List<PickupAssignForm> selectShipmentDetailForDriverSendCont(@Param("driverId") Long driverId, @Param("pickUp") PickupAssignForm pickupAssignForm) {
-		return selectShipmentDetailForDriverSendCont(driverId, pickupAssignForm);
+    public List<PickupAssignForm> selectShipmentDetailForDriverSendCont(@Param("driverId") Long driverId, @Param("pickUp") PickupAssignForm pickupAssignForm, @Param("serviceType") Integer serviceType) {
+		return shipmentDetailMapper.selectShipmentDetailForDriverSendCont(driverId, pickupAssignForm, serviceType);
 	}
 }

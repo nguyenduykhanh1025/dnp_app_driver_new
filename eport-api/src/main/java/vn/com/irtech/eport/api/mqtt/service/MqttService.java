@@ -39,6 +39,7 @@ import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.dto.NotificationReq;
+import vn.com.irtech.eport.system.service.ISysConfigService;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
 @Component
@@ -62,6 +63,9 @@ public class MqttService implements MqttCallback {
 	
 	@Autowired
 	private ISysRobotService robotService;
+	
+	@Autowired
+	private ISysConfigService sysConfigService;
 
 	@Value("${mqtt.root:'eport'}")
 	public void setBaseTopic(String baseTopic) {
@@ -277,7 +281,7 @@ public class MqttService implements MqttCallback {
 				" - " + pickupHistory.getContainerNo() + " - " + shipmentDetail.getSztp() + " - " +
 				shipmentDetail.getVslNm() + shipmentDetail.getVoyNo() + " - " + shipmentDetail.getDischargePort());
 		notificationReq.setType(EportConstants.APP_USER_TYPE_MC);
-		notificationReq.setLink(EportConstants.DOMAIN_URL_ADMIN + EportConstants.URL_POSITION_MC);
+		notificationReq.setLink(sysConfigService.selectConfigByKey("domain.admin.name") + EportConstants.URL_POSITION_MC);
 		notificationReq.setPriority(EportConstants.NOTIFICATION_PRIORITY_HIGH);
 		Map<String, Object> data = new HashMap<>();
 		data.put("id", pickupHistoryId);

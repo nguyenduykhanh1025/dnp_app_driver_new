@@ -140,22 +140,20 @@ public interface EportConstants {
 	public static final String APP_USER_TYPE_GATE = "GATE";
 	
 	//Domain web eport
-	/** Domain url eport admin */
-	public static final String DOMAIN_URL_ADMIN = "https://eport.danangport.com/admin";
 	/** Url to mc provide yard position */
 	public static final String URL_POSITION_MC = "/mc/plan/request/index";
 	/** url to om support receive full */
-	public static final String URL_OM_RECEIVE_F_SUPPORT = "/";
+	public static final String URL_OM_RECEIVE_F_SUPPORT = "/om/support/receive-full/view";
 	/** url to om support receive empty */
-	public static final String URL_OM_RECEIVE_E_SUPPORT = "/";
+	public static final String URL_OM_RECEIVE_E_SUPPORT = "/om/support/receive-empty/view";
 	/** url to om support send full */
-	public static final String URL_OM_SEND_F_SUPPORT = "/";
+	public static final String URL_OM_SEND_F_SUPPORT = "/om/support/send-full/view";
 	/** url to om support send empty */
-	public static final String URL_OM_SEND_E_SUPPORT = "/";
+	public static final String URL_OM_SEND_E_SUPPORT = "/om/support/send-empty/view";
 	/** url to om support receive custom */
-	public static final String URL_OM_CUSTOM_RECEIVE_SUPPORT = "/";
+	public static final String URL_OM_CUSTOM_RECEIVE_SUPPORT = "/om/support/custom-receive-full/view";
 	/** url to om support send custom */
-	public static final String URL_OM_CUSTOM_SEND_SUPPORT = "/";
+	public static final String URL_OM_CUSTOM_SEND_SUPPORT = "/om/support/custom-send-full/view";
 	
 	// Priority notification app window
 	/** High priority notificaiton app window */
