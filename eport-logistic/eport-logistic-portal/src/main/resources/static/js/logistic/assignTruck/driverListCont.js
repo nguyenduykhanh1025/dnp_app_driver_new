@@ -1,15 +1,15 @@
 var prefix = ctx + "logistic/assignTruck";
 $(document).ready(function () {
-	loadDriver(shipmentId)
+	loadDriver(shipmentDetailId)
 });
-function loadDriver(shipmentId){
+function loadDriver(shipmentDetailId){
 	//TH pickedIds rỗng
 	if(pickedIds[0] == -1){
 		pickedIds = [];
 	}
     //ds tai xe chua dieu, da co truck
   $("#driverTable").datagrid({
-  url: prefix + "/listDriverAccount",
+  url: prefix + "/listDriverAccountPreorderPickup",
   height: window.innerHeight,
   collapsible: true,
   clientPaging: false,
@@ -23,7 +23,7 @@ function loadDriver(shipmentId){
           type: "GET",
           url: opts.url,
           data: {
-              shipmentId: shipmentId,
+              shipmentDetailId: shipmentDetailId,
               pickedIds: pickedIds
           },
           dataType: "json",
@@ -41,7 +41,7 @@ function submitHandler() {
     if ($.validate.form()) {
     	let rows = $('#driverTable').datagrid('getSelections');
         if(rows){
-            parent.appendDriverList(rows);
+            parent.appendDriverListCont(rows);
             $.modal.close();
         }
     }

@@ -110,6 +110,13 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		mmap.put("pickedIds", pickedIds);
 		return PREFIX + "/driverList";
 	}
+	
+	@GetMapping("/shipment-detail/{shipmentDetailId}/add-drivers/ids-assigned-follow-container/{pickedIds}")
+	public String getDriverListContainer(@PathVariable Long shipmentDetailId, @PathVariable Long[] pickedIds,ModelMap mmap) {
+		mmap.put("shipmentDetailId", shipmentDetailId);
+		mmap.put("pickedIds", pickedIds);
+		return PREFIX + "/driverListCont";
+	}
 
 	@PostMapping("/listShipment")
 	@ResponseBody
