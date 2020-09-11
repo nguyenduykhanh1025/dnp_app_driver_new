@@ -25,6 +25,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -225,11 +226,29 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 				}
 			}
 			
+			String serviceName = "";
+			switch (shipment.getServiceType()) {
+			case EportConstants.SERVICE_PICKUP_FULL:
+				serviceName = "nhận container hàng";
+				break;
+			case EportConstants.SERVICE_PICKUP_EMPTY:
+				serviceName = "nhận container rỗng";
+				break;
+			case EportConstants.SERVICE_DROP_FULL:
+				serviceName = "giao container hàng";
+				break;
+			case EportConstants.SERVICE_DROP_EMPTY:
+				serviceName = "giao container rỗng";
+				break;
+			default:
+				break;
+			}
+			
 			// Create info notification
 			SysNotification sysNotification = new SysNotification();
 			sysNotification.setTitle("Thông báo điều xe.");
 			sysNotification.setNotifyLevel(2L);
-			sysNotification.setContent("Bạn đã được chỉ định điều xe cho lô " + shipment.getId());
+			sysNotification.setContent("Bạn đã được chỉ định điều xe cho dịch vụ " + serviceName + " lô " + shipment.getId());
 			sysNotification.setNotifyLink("");
 			sysNotification.setStatus(1L);
 			sysNotificationService.insertSysNotification(sysNotification);
@@ -372,11 +391,29 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 				}
 			}
 			
+			String serviceName = "";
+			switch (shipment.getServiceType()) {
+			case EportConstants.SERVICE_PICKUP_FULL:
+				serviceName = "nhận container hàng";
+				break;
+			case EportConstants.SERVICE_PICKUP_EMPTY:
+				serviceName = "nhận container rỗng";
+				break;
+			case EportConstants.SERVICE_DROP_FULL:
+				serviceName = "giao container hàng";
+				break;
+			case EportConstants.SERVICE_DROP_EMPTY:
+				serviceName = "giao container rỗng";
+				break;
+			default:
+				break;
+			}
+			
 			// Create info notification
 			SysNotification sysNotification = new SysNotification();
 			sysNotification.setTitle("Thông báo điều xe.");
 			sysNotification.setNotifyLevel(2L);
-			sysNotification.setContent("Bạn đã được chỉ định điều xe theo container cho lô " + shipment.getId());
+			sysNotification.setContent("Bạn đã được chỉ định điều xe cho dịch vụ " + serviceName + " lô " + shipment.getId());
 			sysNotification.setNotifyLink("");
 			sysNotification.setStatus(1L);
 			sysNotificationService.insertSysNotification(sysNotification);
