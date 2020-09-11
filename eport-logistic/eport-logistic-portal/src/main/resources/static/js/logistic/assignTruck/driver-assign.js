@@ -81,7 +81,7 @@ var addDriverForContainer = [
             if(pickedIds.length == 0){
             	pickedIds.push(-1);// cho TH chua assgin
             }
-        	$.modal.open("Thêm tài xế", prefix + "/shipment-detail/" + shipmentSelected.id + "/add-drivers/ids-assigned-follow-container" + pickedIds, 800,400);
+        	$.modal.open("Thêm tài xế", prefix + "/shipment-detail/" + shipmentSelected.id + "/add-drivers/ids-assigned-follow-container/" + pickedIds, 800,400);
         },
     },
     {
@@ -90,7 +90,7 @@ var addDriverForContainer = [
         	if(!shipmentSelected){
         		$.modal.alertError("Bạn chưa chọn Lô!");
         	}
-        	save();
+        	saveCont();
         },
     },
 ]
@@ -353,13 +353,10 @@ function getSelectedShipment() {
     }
 }
 //HANDLE WHEN SELECT A SHIPMENT DETAIL
-function getSelectedShipmentDetail() {
-	rowsSelected = []
-	let row = $("#dgShipmentDetail").datagrid("getSelected");
-	//let rows = $('#dgShipmentDetail').datagrid('getSelections');
+function getSelectedShipmentDetail(index , row) {
 	shipmentDetailSelected = row;
 	loadDriverFollowContainer(shipmentSelected.id, shipmentDetailSelected.id);
-	loadOutSourceFollowContainer(shipmentDetailSelected.id);
+	loadOutSourceContainer(shipmentDetailSelected.id);
 }
 
 $("#dgShipmentDetail").datagrid({
@@ -384,8 +381,8 @@ function loadShipmentDetail(id) {
         collapsible: true,
         rownumbers:true,
         clientPaging: false,
-        onClickRow: function () {
-            getSelectedShipmentDetail();
+        onClickRow: function (index, row) {
+            getSelectedShipmentDetail(index, row);
         },
         nowrap: false,
         striped: true,
@@ -534,14 +531,72 @@ function save(){
     }
 
 }
+//save assign driver follow container
+function saveCont(){
+    let rows = $('#driver-table-follow-cont').datagrid('getRows');
+    let pickupAssigns = [];
+    
+    if(rows){
+        for(let i=0; i< rows.length;i++){
+            let object = new Object();
+            object.driverId = rows[i].id;
+            object.shipmentId = shipmentSelected.id;
+            object.shipmentDetailId = shipmentDetailSelected.id;
+            object.fullName = rows[i].fullName;
+            object.phoneNumber = rows[i].mobileNumber;
+            pickupAssigns.push(object);
+        }
+    }
+    if (getDataFromOutSourceContainer(true)){
+        if(outsourcesContainer.length > 0){
+            for(let i=0;i < outsourcesContainer.length; i++){
+                pickupAssigns.push(outsourcesContainer[i])
+            }
+        }
+        $.modal.loading("Đang xử lý ...");
+        $.ajax({
+            url: prefix + "/savePickupAssignFollowContainer",
+            method: "post",
+            contentType: "application/json",
+            data: JSON.stringify(pickupAssigns),
+            success: function(result){
+            	$.modal.closeLoading();
+                if(result.code == 0){
+                    $.modal.msgSuccess(result.msg);
+                    loadShipmentDetail(shipmentSelected.id);
+                }else{
+                    $.modal.msgError(result.msg);
+                }
+            },
+            error: function () {
+            	$.modal.closeLoading();
+                $.modal.alertError("Có lỗi trong quá trình lưu dữ liệu, vui lòng liên hệ admin.");
+            },
+        })
+    }
+
+}
 //----------------------------------------------------------------------------------------------------------------
 function formatAction(value, row, index) {
 	let actions = [];
     actions.push('<a class="btn btn-danger btn-xs " onclick="removeDriver(\'' + index + '\')"><i class="fa fa-remove"></i>Xoá</a> ');
     return actions.join('');
 }
+function formatActionContainer(value, row, index) {
+	let actions = [];
+    actions.push('<a class="btn btn-danger btn-xs " onclick="removeDriverContainer(\'' + index + '\')"><i class="fa fa-remove"></i>Xoá</a> ');
+    return actions.join('');
+}
 function removeDriver(index) {
     $('#driver-table-follow-batch').datagrid('deleteRow', index);
+    //reload data
+    let table_data = $('#driver-table-follow-batch').datagrid('getRows');
+    $('#driver-table-follow-batch').datagrid('loadData', table_data);
+}
+function removeDriverContainer(index) {
+    $('#driver-table-follow-cont').datagrid('deleteRow', index);
+    let table_data = $('#driver-table-follow-cont').datagrid('getRows');
+    $('#driver-table-follow-cont').datagrid('loadData', table_data);
 }
 function formatRemark(value) {
     let remark = value;
@@ -602,10 +657,11 @@ function checkForChanges(){
 
     $('#dgShipmentDetail').datagrid('resize');
  }
-
- //---------------------------------THUE NGOAI------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------THUE NGOAI---------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------
  var dogrid = document.getElementById("container-grid-follow-batch"), hot;
- var dogridContainer = document.getElementById("container-grid-follow-batch"), hotContainer;
+ var dogridContainer = document.getElementById("container-grid-follow-cont"), hotContainer;
  var config;
  var configContainer;
  var outsources = [];
@@ -795,9 +851,11 @@ function onChange(changes, source) {
                 success: function (data) {
                 	$.modal.closeLoading();
                     if (data.code == 0) {
-                        hot.setDataAtCell(change[0], 2, data.pickupAssign.fullName);
-                        hot.setDataAtCell(change[0], 3, data.pickupAssign.truckNo);
-                        hot.setDataAtCell(change[0], 4, data.pickupAssign.chassisNo);
+                    	if(data.pickupAssign){
+                            hot.setDataAtCell(change[0], 2, data.pickupAssign.fullName);
+                            hot.setDataAtCell(change[0], 3, data.pickupAssign.truckNo);
+                            hot.setDataAtCell(change[0], 4, data.pickupAssign.chassisNo);
+                    	}
                     }
                 },
                 error: function () {
@@ -846,9 +904,11 @@ function onChangeContainer(changes, source) {
                 success: function (data) {
                 	$.modal.closeLoading();
                     if (data.code == 0) {
-                        hotContainer.setDataAtCell(change[0], 2, data.pickupAssign.fullName);
-                        hotContainer.setDataAtCell(change[0], 3, data.pickupAssign.truckNo);
-                        hotContainer.setDataAtCell(change[0], 4, data.pickupAssign.chassisNo);
+                    	if(data.pickupAssign){
+                            hotContainer.setDataAtCell(change[0], 2, data.pickupAssign.fullName);
+                            hotContainer.setDataAtCell(change[0], 3, data.pickupAssign.truckNo);
+                            hotContainer.setDataAtCell(change[0], 4, data.pickupAssign.chassisNo);
+                    	}
                     }
                 },
                 error: function () {
@@ -954,6 +1014,7 @@ function getDataFromOutSourceContainer(){
         outsource.fullName = object["fullName"].trim();
         outsource.chassisNo = object["chassisNo"].trim().toUpperCase();
         outsource.shipmentId = shipmentSelected.id
+        outsource.shipmentDetailId = shipmentDetailSelected.id;
         outsource.externalFlg = 1;
         outsourcesContainer.push(outsource);
     })
@@ -974,6 +1035,13 @@ function appendDriverList(rows) {
     if(rows){
         for(let i=0; i< rows.length;i++){
             $('#driver-table-follow-batch').datagrid('appendRow', rows[i]);
+        }
+    }
+}
+function appendDriverListCont(rows) {
+    if(rows){
+        for(let i=0; i< rows.length;i++){
+            $('#driver-table-follow-cont').datagrid('appendRow', rows[i]);
         }
     }
 }
