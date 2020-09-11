@@ -1,5 +1,6 @@
 																																																																																																																																																																					package vn.com.irtech.eport.api.mqtt.listener;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
 
 import vn.com.irtech.eport.api.consts.BusinessConsts;
@@ -47,6 +47,8 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysNotification;
 import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
 import vn.com.irtech.eport.system.domain.SysRobot;
+import vn.com.irtech.eport.system.dto.NotificationReq;
+import vn.com.irtech.eport.system.service.ISysConfigService;
 import vn.com.irtech.eport.system.service.ISysNotificationReceiverService;
 import vn.com.irtech.eport.system.service.ISysNotificationService;
 import vn.com.irtech.eport.system.service.ISysRobotService;
@@ -56,6 +58,8 @@ public class GatePassHandler implements IMqttMessageListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(GatePassHandler.class);
 	
+	@Autowired
+	private ISysConfigService configService;
 	@Autowired
 	private ISysRobotService robotService;
 	@Autowired
@@ -244,6 +248,8 @@ public class GatePassHandler implements IMqttMessageListener {
 			driverRes.setResult(BusinessConsts.PASS);;
 			processOrder.setResult("S");
 			history.setResult("S");
+			
+			// Send result gate in to driver
 			try {
 				if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
 					responseDriver(driverRes, gateInFormData.getSessionId());
@@ -251,10 +257,19 @@ public class GatePassHandler implements IMqttMessageListener {
 			} catch (Exception e) {
 				logger.error("Error send result gate in for driver: " + e);
 			}
+			
+			// Send result gate in to smart app
 			try {
 				responseSmartGate(gateInFormData.getGateId(), BusinessConsts.SUCCESS, MessageHelper.getMessage(MessageConsts.E0028));
 			} catch (Exception e) {
 				logger.error("Error send result gate in for smart app: " + e);
+			}
+			
+			// Send result gate in to app notification gate
+			try {
+				sendMessageToNotificationApp(driverRes, processOrder);
+			} catch (Exception e) {
+				logger.error("Error when send message mqtt to app notification: " + e);
 			}
 		
 		} else if("position_failed".equalsIgnoreCase(result)) {
@@ -268,7 +283,6 @@ public class GatePassHandler implements IMqttMessageListener {
 					String msg = new Gson().toJson(map);
 					try {
 						logger.debug("Received Position failed from Robot. Send MC request: " + msg);
-						mqttService.sendMessageToMc(msg);
 						mqttService.sendMessageToMcAppWindow(pickupHistory.getId());
 					} catch (MqttException e) {
 						logger.error("Erorr request yard position from mc: " + e);
@@ -419,10 +433,18 @@ public class GatePassHandler implements IMqttMessageListener {
 			} catch (Exception e) {
 				logger.error("Error send result gate in for driver: " + e);
 			}
+			
 			try {
 				responseSmartGate(gateInFormData.getGateId(), BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0024));
 			} catch (Exception e) {
 				logger.error("Error send result gate in for smart app: " + e);
+			}
+			
+			// Send result gate in to app notification gate
+			try {
+				sendMessageToNotificationApp(driverRes, processOrder);
+			} catch (Exception e) {
+				logger.error("Error when send message mqtt to app notification: " + e);
 			}
 			processOrder.setResult("F");
 			history.setResult("F");
@@ -612,5 +634,33 @@ public class GatePassHandler implements IMqttMessageListener {
 		Type listType = new TypeToken<ArrayList<PickupRobotResult>>() {}.getType();
 		ArrayList<PickupRobotResult> pickupRobotResults = new Gson().fromJson(pickupResult , listType);
 		return pickupRobotResults;
+	}
+	
+	/**
+	 * Send message result of gate in order for gate staff
+	 * 
+	 * @param driverRes
+	 * @throws MqttException
+	 */
+	public void sendMessageToNotificationApp(DriverRes driverRes, ProcessOrder processOrder) throws MqttException {
+		String truckNo = "";
+		String chassisNo = "";
+		if (CollectionUtils.isNotEmpty(driverRes.getData())) {
+			truckNo = driverRes.getData().get(0).getTruckNo();
+			chassisNo = driverRes.getData().get(0).getChassisNo();
+		}
+		NotificationReq notificationReq = new NotificationReq();
+		notificationReq.setType(EportConstants.APP_USER_TYPE_GATE);
+		notificationReq.setLink(configService.selectConfigByKey("domain.admin.name") + EportConstants.URL_GATE);
+		notificationReq.setPriority(EportConstants.NOTIFICATION_PRIORITY_HIGH);
+		if (BusinessConsts.PASS.equals(driverRes.getResult())) {
+			notificationReq.setTitle("ePort: Thông báo làm lệnh gate in thành công.");
+			notificationReq.setMsg("Làm lệnh gate in thành công cho xe: " + truckNo + " - " + chassisNo + ", Số lệnh " + processOrder.getId());
+		} else {
+			notificationReq.setTitle("ePort: Thông báo làm lệnh gate in thất bại.");
+			notificationReq.setMsg("Làm lệnh gate in thất bại cho xe: " + truckNo + " - " + chassisNo + ", Số lệnh " + processOrder.getId());
+		}
+		String msg = new Gson().toJson(notificationReq);
+		mqttService.publish(MqttConsts.NOTIFICATION_GATE_TOPIC, new MqttMessage(msg.getBytes()));
 	}
 }

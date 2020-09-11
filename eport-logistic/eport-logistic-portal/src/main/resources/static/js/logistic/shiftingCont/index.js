@@ -10,13 +10,35 @@ $(document).ready(function () {
     //DEFAULT SEARCH FOLLOW DATE
 
     loadTable();
-    $(".left-side").css("height", $(document).height());
-    $("#btn-collapse").click(function () {
-        handleCollapse(true);
-    });
-    $("#btn-uncollapse").click(function () {
-        handleCollapse(false);
-    });
+    $(".main-body").layout();
+  $(".collapse").click(function () {
+    $(".main-body__search-wrapper").hide();
+    $(".main-body__search-wrapper--container").hide();
+    $(this).hide();
+    $(".uncollapse").show();
+  });
+
+  $(".uncollapse").click(function () {
+    $(".main-body__search-wrapper").show();
+    $(".main-body__search-wrapper--container").show();
+    $(this).hide();
+    $(".collapse").show();
+  });
+
+  $(".left-side__collapse").click(function () {
+    $("#main-layout").layout("collapse", "west");
+    setTimeout(() => {
+      hot.render();
+    }, 200);
+  });
+
+  $("#main-layout").layout({
+    onExpand: function (region) {
+      if (region == "west") {
+        hot.render();
+      }
+    },
+  });
 });
 
 document.getElementById("blSearch").addEventListener("keyup", function (event) {
@@ -26,27 +48,6 @@ document.getElementById("blSearch").addEventListener("keyup", function (event) {
         loadTable();
     }
 });
-function handleCollapse(status) {
-    if (status) {
-        $(".left-side").css("width", "0.5%");
-        $(".left-side").children().hide();
-        $("#btn-collapse").hide();
-        $("#btn-uncollapse").show();
-        $(".right-side").css("width", "99%");
-        setTimeout(function () {
-            hot.render();
-        }, 500);
-        return;
-    }
-    $(".left-side").css("width", "33%");
-    $(".left-side").children().show();
-    $("#btn-collapse").show();
-    $("#btn-uncollapse").hide();
-    $(".right-side").css("width", "67%");
-    setTimeout(function () {
-        hot.render();
-    }, 500);
-}
 
 // LOAD SHIPMENT LIST
 function loadTable(msg) {

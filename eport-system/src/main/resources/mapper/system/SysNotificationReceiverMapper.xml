@@ -114,7 +114,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <select id="getNotificationList" parameterType="SysNotificationReceiver" resultType="vn.com.irtech.eport.system.dto.NotificationRes">
-        select r.notification_type as notificationType, r.seen_flg as seenFlg, n.title as title, n.content as content, 
+        select r.id as id, r.notification_type as notificationType, r.seen_flg as seenFlg, n.title as title, n.content as content, 
         n.notify_link as notifyLink, n.create_time as createTime 
         from sys_notification_receiver r
         left join sys_notification n on r.notification_id = n.id
@@ -127,6 +127,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="seenFlg != null "> and r.seen_flg = #{seenFlg}</if>
             <if test="createTime != null "> and TO_CHAR(n.createTime, 'DD/MM/YYYY') = #{createTime}</if>
         </where>
+        order by n.create_time desc
     </select>
 
     <select id="getNotificationListNotSentYet" resultMap="SysNotificationReceiverResult">

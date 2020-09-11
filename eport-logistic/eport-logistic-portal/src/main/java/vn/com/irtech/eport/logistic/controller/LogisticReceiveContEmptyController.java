@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +39,7 @@ import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
+import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -45,6 +49,7 @@ import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
+import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
@@ -57,6 +62,8 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 @Controller
 @RequestMapping("/logistic/receive-cont-empty")
 public class LogisticReceiveContEmptyController extends LogisticBaseController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(LogisticReceiveContEmptyController.class);
 
     private final String PREFIX = "logistic/receiveContEmpty";
 
@@ -92,6 +99,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
     
     @Autowired
     private IProcessBillService processBillService;
+    
+    @Autowired
+    private ConfigService configService;
 
     // VIEW RECEIVE CONT EMPTY
     @GetMapping()
@@ -181,6 +191,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			@PathVariable("creditFlag") boolean creditFlag, @PathVariable("taxCode") String taxCode, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
+		mmap.put("shipmentId", "-");
 		mmap.put("creditFlag", creditFlag);
 		mmap.put("taxCode", taxCode);
 		return PREFIX + "/verifyOtp";
@@ -526,14 +537,22 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	public AjaxResult reqSupplyContainer(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			Shipment shipment = new Shipment();
-			shipment.setId(shipmentDetails.get(0).getShipmentId());
+			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
 			shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_WAITING);
 			shipmentService.updateShipment(shipment);
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_REQ);
 				shipmentDetail.setStatus(1);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+			
+			// Set up data to send app notificaton 
+			String title = "ePort: Yêu cầu cấp container rỗng.";
+			String msg = "Có yêu cầu cấp rỗng cho Booking: " + shipment.getBookingNo() + ", Hãng tàu: " + shipment.getOpeCode() + ", Trucker: " + getGroup().getGroupName() + ", Chủ hàng: " + shipmentDetails.get(0).getConsignee();
+			try {
+				mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_CONT, title, msg, configService.getKey("domain.admin.name") + EportConstants.URL_CONT_SUPPLIER, EportConstants.NOTIFICATION_PRIORITY_LOW);
+			} catch (MqttException e) {
+				logger.error("Error when push request container supply: " + e);
 			}
 			return success("Đã yêu cầu cấp container, quý khách vui lòng đợi bộ phận cấp container xử lý.");
 		}

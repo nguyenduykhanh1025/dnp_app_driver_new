@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('Update/ Add Delivery Remark')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-delivery-remark">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Địa chỉ giao nhận:</label>
+                <div class="col-sm-4">
+                    <input id="deliveryAddress" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">SĐT giao nhận:</label>
+                <div class="col-sm-4">
+                    <input id="deliveryMobile" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Ghi chú điều vận:</label>
+                <div class="col-sm-4">
+                    <textarea id="deliveryRemark"  rows="3" cols="63"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script type="text/javascript" th:inline="javascript">
+      var pickedIds = /*[[${pickedIds}]]*/;
+      var PREFIX = ctx + "logistic/assignTruck";
+	  var shipmentDetail = new Object();
+      function submitHandler() {
+          if ($.validate.form()) {
+        	  $.modal.loading("Đang xử lý...");
+        	  $.ajax({
+        	    url: PREFIX + "/save-delivery-remark",
+        	    method: "PUT",
+        	    dataType: "json",
+                data:{
+                	deliveryAddress: $("#deliveryAddress").val() != null ? $("#deliveryAddress").val() : "",
+                	deliveryMobile: $("#deliveryMobile").val() != null ? $("#deliveryMobile").val() : "",
+                	deliveryRemark: $("#deliveryRemark").val() != null ? $("#deliveryRemark").val() : "",
+                	pickedIds: pickedIds,
+                },
+        	    success: function (data) {
+        	      $.modal.closeLoading();
+        	      if (data.code == 0) {
+        	    	  parent.msgSuccess("Lưu thành công");
+            	      $.modal.close();
+        	      } else {
+        	    	  parent.msgError("Lưu thất bại");
+        	      }
+        	      $.modal.close();
+        	    },
+        	    error: function (data) {
+        	    	parent.msgError("Có lỗi xảy ra liên hệ Admin");
+        	      $.modal.closeLoading();
+              	  $.modal.close();
+        	    }
+        	  });
+          }
+      }
+    </script>
+</body>
+</html>
