@@ -10,7 +10,7 @@
         <div class="col-xs-3" style="border-right: 1px solid #cccccc;">
             <div class="infor text-center">
                 <h3 class="text-black" style="margin-top: 20px;"><b>Mã lô</b></h3>
-                <h3 class="text-black"><b>1234567</b></h3>
+                <h3 class="text-black" id="sid"></h3>
             </div>
             <div class="tools text-center">
                 <p>OTP hết hạn trong</p>
@@ -20,7 +20,7 @@
         </div>
         <div class="col-xs-9 text-center">
             <h2 class="text-black"><b>Xác nhận làm lệnh</b></h2>
-            <p class="text-black">Mã OTP đã được gửi đến số điện thoại đã đăng ký <span class="text-success">0905888888</span></p>
+            <p id="p1"></p>
             <p class="text-black">Xin vui lòng nhập mã OTP và bấm "Xác Nhận" để thực hiện làm lệnh"</p>
             <div class="row" style="display: flex; justify-content: space-between; align-items: center;">
                 <span class="col-xs-3 text-black"><b>Nhập mã OTP</b></span>
@@ -37,6 +37,7 @@
 <script type="text/javascript" th:inline="javascript">
     var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
     var numberPhone = /*[[${numberPhone}]]*/;
+    var sid = /*[[${shipmentId}]]*/;
     var creditFlag = /*[[${creditFlag}]]*/;
     var taxCode = /*[[${taxCode}]]*/;
 </script>

@@ -86,6 +86,8 @@ function getOtp() {
     }
 }
 
-$("#p1").html("Mã OTP sẽ được gửi đến số điện thoại " + numberPhone + ".");
-
-getOtp();
+$(function() {
+	$("#p1").html("Mã OTP sẽ được gửi đến số điện thoại " + numberPhone + ".");
+	$("#sid").html("<b>" + sid + "</b>");
+	getOtp();
+});

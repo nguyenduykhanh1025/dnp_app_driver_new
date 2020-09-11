@@ -2,21 +2,21 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" >
 <head>
     <th:block th:include="include :: header('Update/ Add Delivery Remark')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/eport/css/common/style.css?v=2}" rel="stylesheet" />
 </head>
 <body class="white-bg">
-    <div class="container">
-        <form class="form-horizontal m" id="form-driver">
-             <table id="driverTable" class="table" style="width: 100%;" fitColumns="true" data-options="rownumbers:true">
-               <thead>
-                 <tr>
-                   <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th>
-                   <th data-options="field:'mobileNumber',align:'right'" width="120">Số điện thoại</th>
-                   <th data-options="field:'fullName',editor:'textbox'" width="150">Họ và Tên</th>
-                 </tr>
-               </thead>
-             </table>
-        </form>
-    </div>
+    <form class="form-horizontal" id="form-driver">
+         <table id="driverTable" class="table" style="width: 100%;" fitColumns="true" data-options="rownumbers:true">
+           <thead>
+             <tr>
+               <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th>
+               <th data-options="field:'mobileNumber',align:'right'" width="120">Số điện thoại</th>
+               <th data-options="field:'fullName',editor:'textbox'" width="150">Họ và Tên</th>
+             </tr>
+           </thead>
+         </table>
+    </form>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
     <script type="text/javascript" th:inline="javascript">

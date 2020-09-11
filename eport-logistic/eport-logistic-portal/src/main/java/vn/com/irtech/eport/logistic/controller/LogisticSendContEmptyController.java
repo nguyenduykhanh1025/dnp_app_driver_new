@@ -129,6 +129,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			@PathVariable("creditFlag") boolean creditFlag, @PathVariable("taxCode") String taxCode, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
+		mmap.put("shipmentId", "-");
 		mmap.put("creditFlag", creditFlag);
 		mmap.put("taxCode", taxCode);
 		return PREFIX + "/verifyOtp";
