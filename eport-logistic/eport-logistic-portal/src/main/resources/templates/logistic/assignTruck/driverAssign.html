@@ -136,17 +136,15 @@
     </div>
 
     <th:block th:include="include :: footer" />
-    <script>
-      $(".main-body").height($(document).height() - 10);
-      $(".main-body__table--layout").height($(".main-body").height() - 50);
-      var leftHeight = $(".main-body").height();
-      var rightHeight = leftHeight / 2;
-    </script>
     <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: handsontable-js" />
     <script type="text/javascript" th:inline="javascript">
       var driverOwnerList = /*[[${driverOwnerList}]]*/;
+      $(".main-body").height($(document).height() - 10);
+      $(".main-body__table--layout").height($(".main-body").height() - 50);
+      var leftHeight = $(".main-body").height();
+      var rightHeight = leftHeight / 2;
     </script>
     <script th:src="@{/js/logistic/assignTruck/driver-assign.js}"></script>
   </body>

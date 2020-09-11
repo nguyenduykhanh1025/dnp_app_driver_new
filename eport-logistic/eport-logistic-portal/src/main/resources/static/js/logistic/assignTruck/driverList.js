@@ -10,7 +10,7 @@ function loadDriver(shipmentId){
     //ds tai xe chua dieu, da co truck
   $("#driverTable").datagrid({
   url: prefix + "/listDriverAccount",
-  height: window.innerHeight/2 + 5,
+  height: window.innerHeight,
   collapsible: true,
   clientPaging: false,
   nowrap: false,

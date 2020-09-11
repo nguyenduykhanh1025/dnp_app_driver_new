@@ -159,6 +159,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			@PathVariable("creditFlag") boolean creditFlag, @PathVariable("isSendContEmpty") boolean isSendContEmpty, 
 			@PathVariable("taxCode") String taxCode, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
+		mmap.put("shipmentId", "-");
 		mmap.put("numberPhone", getGroup().getMobilePhone());
 		mmap.put("creditFlag", creditFlag);
 		mmap.put("isSendContEmpty", isSendContEmpty);
