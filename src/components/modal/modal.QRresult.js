@@ -19,7 +19,7 @@ export default class QRresult extends Component {
     super(props);
     this.state = {
       visible: this.props.visible,
-      data: this.props.data,
+      data: this.props.data.data
     }
   }
 
@@ -31,7 +31,7 @@ export default class QRresult extends Component {
 
   componentDidMount() {
     this.setState({
-      data: this.state.data.Data
+      data: this.state.data
     })
   }
 
@@ -53,10 +53,14 @@ export default class QRresult extends Component {
         marginVertical: hs(5)
       }}>
         <View style={{ backgroundColor: Colors.blue, borderRadius: hs(10), padding: hs(15) }}>
-          <Text style={{ color: Colors.white, fontSize: fs(16), marginVertical: hs(3) }}>{item.item.name}</Text>
+          <Text style={{ color: Colors.white, fontSize: fs(16), marginVertical: hs(3) }}>{item.item.serviceName}</Text>
           <Text style={{ color: Colors.grey4, fontSize: fs(16), marginVertical: hs(3) }}>Số container:  <Text style={{ color: Colors.white }}>{item.item.containerNo}</Text></Text>
         </View>
-        <Text style={{ color: Colors.grey6, fontSize: fs(18), margin: hs(15) }}>Tọa độ:    <Text style={{ color: Colors.grey7, fontSize: fs(20) }}>{item.item.coordinates}</Text></Text>
+        <View style={{flexDirection: 'row'}}>
+        <Text style={{ color: Colors.grey6, fontSize: fs(18), margin: hs(15), flex:1 }}>Tọa độ:    <Text style={{ color: Colors.grey7, fontSize: fs(20) }}>{item.item.yardPosition}</Text></Text>
+        {item.item.result == 'FAIL' ? <Text style={{backgroundColor: '#F39292', color: 'red', fontSize: fs(18), margin: hs(10), padding: hs(10), paddingBottom: hs(5), paddingTop: hs(5), borderRadius:hs(5)}}>Error</Text> : null}
+        </View>
+        { item.item.result == 'FAIL' ?<Text style={{color:'red', fontSize: fs(16),margin: hs(15), marginTop:0}}> {item.item.msg} </Text> : null}
       </View>
     )
   }
@@ -82,19 +86,20 @@ export default class QRresult extends Component {
             </TouchableOpacity>
           </View>
           <View style={{ alignItems: 'center', padding: hs(15), paddingTop: 0 }}>
-            <View style={{ justifyContent: 'center', alignItems: 'center', width: hs(50), height: hs(50), backgroundColor: item.code == 1 ? '#CDFFE0' : '#F39292', borderRadius: hs(25), borderWidth: item.code == 1 ? 0 : 1, borderColor: 'red' }}>
-              {item.code == 1 ? <Icon name='check' size={fs(40)} color='#15F21D' /> :
+            <View style={{ justifyContent: 'center', alignItems: 'center', width: hs(50), height: hs(50), backgroundColor: item.result == 'PASS' ? '#CDFFE0' : '#F39292', borderRadius: hs(25), borderWidth: item.result == 'PASS' ? 0 : 1, borderColor: 'red' }}>
+              {item.result == 'PASS' ? <Icon name='check' size={fs(40)} color='#15F21D' /> :
                 <Icon name='close' size={fs(40)} color='#fff' />}
             </View>
-            <Text style={{ textAlign: 'center', color: item.code == 1 ? Colors.blue : "red", fontWeight: 'bold', fontSize: fs(20) }}>{item.code == 1 ? 'Check in thành công' : ' Check in thất bại'}</Text>
-            {item.code == 1 ? <Text style={{ fontSize: fs(20), color: Colors.blue }}>XIN MỜI XE VÀO CỔNG</Text> : null}
+            <Text style={{ textAlign: 'center', color: item.result == 'PASS' ? Colors.blue : "red", fontWeight: 'bold', fontSize: fs(20) }}>{item.result == 'PASS' ? 'Check in thành công' : ' Check in thất bại'}</Text>
+            {item.result == 'PASS' ? <Text style={{ fontSize: fs(20), color: Colors.blue }}>XIN MỜI XE VÀO CỔNG</Text> : null}
           </View>
-          {item.code == 1 ?
+          {item.result == 'PASS' ?
             <View style={{ padding: ws(10), paddingTop: 0 }}>
               <Text style={{ color: Colors.grey6, fontSize: fs(18)}}>Thông tin tọa độ</Text>
               <FlatList
                 renderItem={(item) => this.renderItems(item)}
-                data={this.state.data}
+                data={this.props.data.data}
+                extraData={this.state}
               />
             </View>
             :

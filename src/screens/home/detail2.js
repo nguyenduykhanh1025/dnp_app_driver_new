@@ -55,7 +55,6 @@ export default class DetailScreen extends Component {
     var truckNo = await getTruck();
     var chassisNo = await getChassis();
     this.token = await getToken();
-    console.log('this.props.navigation.state.params.data', this.props.navigation.state.params.data)
     await this.setState({
       truckNo: truckNo,
       chassisNo: chassisNo,
@@ -64,7 +63,6 @@ export default class DetailScreen extends Component {
   }
 
   renderItem = (item, index) => (
-    console.log('item', item),
     <Item
       data={item.item}
     />
@@ -78,14 +76,15 @@ export default class DetailScreen extends Component {
         "containerNo": this.props.navigation.state.params.data.containerNo,
         "truckNo": this.state.truckNo,
         "chassisNo": this.state.chassisNo,
-        "shipmentDetailId": this.props.navigation.state.params.data.shipmentDetailId
+        "shipmentDetailId": this.props.navigation.state.params.data.shipmentDetailId,
+        "sztp": this.props.navigation.state.params.data.sztp,
       },
       token: this.token,
       method: 'POST'
     }
     var result = undefined;
     result = await callApi(params);
-    console.log('resultonPickupContainer', result)
+    console.log('resultonPickupContainer', params)
     if (result.code == 0) {
       NavigationService.navigate(homeTab.home, { update: 1 })
     }
@@ -166,19 +165,19 @@ export default class DetailScreen extends Component {
                 </Text>
                 <View style={styles.Line}>
                   <Text style={styles.txtLabel1} >Khách hàng</Text>
-                  <Text style={styles.txtValue2}>{this.state.data.consignee}</Text>
+                  <Text style={styles.txtValue2}>{this.props.navigation.state.params.data.consignee.length > 21 ? this.props.navigation.state.params.data.consignee.slice(0, 21)+'...' : this.props.navigation.state.params.data.consignee}</Text>
                 </View>
                 <View style={styles.Line}>
                   <Text style={styles.txtLabel1} >Đ/c giao</Text>
-                  <Text style={styles.txtValue2}>{this.state.data.address}</Text>
+                  <Text style={styles.txtValue2}>{this.props.navigation.state.params.data.address}</Text>
                 </View>
                 <View style={styles.Line}>
                   <Text style={styles.txtLabel1} >ĐT giao</Text>
-                  <Text style={styles.txtValue2}>{this.state.data.mobileNumber}</Text>
+                  <Text style={styles.txtValue2}>{this.props.navigation.state.params.data.mobileNumber}</Text>
                 </View>
                 <View style={styles.Line}>
                   <Text style={styles.txtLabel1} >Ghi chú</Text>
-                  <Text style={[styles.txtValue2, { fontSize: 15, fontWeight: null }]}>{this.state.data.remark}</Text>
+                  <Text style={[styles.txtValue2, { fontSize: 15, fontWeight: null }]}>{this.props.navigation.state.params.data.remark}</Text>
                 </View>
               </View>
             </View>
@@ -193,7 +192,6 @@ export default class DetailScreen extends Component {
               value={'Xác nhận'}
               onPress={
                 () => {
-                  // NavigationService.navigate(homeTab.home)
                   Alert.alert(
                     "Thông báo xác nhận!",
                     "Bạn có chắc chắn xác nhận không?",
@@ -296,5 +294,25 @@ const styles = StyleSheet.create({
     color: Colors.black,
     fontWeight: 'bold',
     marginLeft: ws(4),
+  },
+  Line: {
+    flexDirection: 'row',
+    marginBottom: hs(20)
+  },
+  txtValue1: {
+    fontSize: fs(20),
+    color: '#15307A',
+    fontWeight: 'bold'
+  },
+  txtLabel1: {
+    fontSize: fs(14),
+    color: Colors.tinyTextGrey,
+    width: ws(85),
+    marginRight: ws(19),
+  },
+  txtValue2: {
+    fontSize: fs(16),
+    fontWeight: 'bold',
+    width: ws(230),
   },
 })

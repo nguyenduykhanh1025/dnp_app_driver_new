@@ -90,49 +90,33 @@ class DetailScreen extends Component {
   }
 
   onGetContainerList = async (serviceType) => {
-    // const params = {
-    //   api: 'shipments/service-type/' + serviceType,
-    //   param: {
-    //     containerNo: this.state.container_no,
-    //     consignee: this.state.consignee_name,
-    //   },
-    //   token: this.token,
-    //   method: 'POST'
-    // }
-
     const params = {
       api: 'shipments/service-type/' + serviceType,
       param: '',
       token: this.token,
       method: 'GET'
     }
-
     const params1 = {
-      api: 'shipments/service-type/' + serviceType,
+      api: 'pickup-assign/serviceType/' + serviceType + '/list',
       param: {
         containerNo: this.state.container_no,
         consignee: this.state.consignee_name,
       },
       token: this.token,
-      method: 'GET'
+      method: 'POST'
     }
-    // const params1 = {
-    //   api: 'shipments/service-type/' + serviceType,
-    //   param: {
-    //     containerNo: this.state.container_no,
-    //     consignee: this.state.consignee_name,
-    //   },
-    //   token: this.token,
-    //   method: 'POST'
-    // }
 
     var result = undefined;
     result = serviceType % 2 != 0 ? await callApi(params) : await callApi(params1);
-    console.log('resultonGetContainerList', result)
+
     if (result.code == 0) {
-      if (result.shipmentList.length > 0) {
+      if (result.shipmentList) {
         await this.setState({
           data: result.shipmentList,
+        })
+      } else if (result.data) {
+        await this.setState({
+          data: result.data,
         })
       }
       else {
@@ -151,7 +135,7 @@ class DetailScreen extends Component {
         "Thông báo",
         result.msg,
         [
-          { text: "OK", onPress: () => result.errorCode == 405 ? this.props.navigation.goBack() : this.props.dispatch(signOut()) }
+          { text: "OK", onPress: () => result.errorCode == 401 ? this.props.dispatch(signOut()) : this.props.navigation.goBack() }
         ],
         { cancelable: false }
       );
@@ -162,16 +146,17 @@ class DetailScreen extends Component {
   }
 
   renderItem = (item, index) => (
+    console.log('this.DownEnable',this.DownEnable,item.item.sztp),
     this.props.navigation.state.params.serviceType % 2 == 0 ?
       <Item
         data={item.item}
         onPress={() => {
-          this.DownEnable == '1' || this.upEnable == '1' && item.item.sztp.slice(0, 1) != '2' ?
-            Alert.alert('Thông báo !', 'Không thể chọn.')
+          this.DownEnable == '1' && item.item.sztp.slice(0, 1) != '2' ?
+            Alert.alert('Thông báo !', 'Đã chọn container 20 không thể chọn container 40 .')
             :
-            NavigationService.navigate(mainStack.detail2, { data: item.item })
+            this.shipmentDetail(item.item.shipmentDetailId, item.item.pickupAssignId)
         }}
-        disabled={item.item.clickable ? true : false}
+        disabled={item.item.clickable == true ? false : true}
       /> :
       <Item1
         data={item.item}
@@ -186,10 +171,49 @@ class DetailScreen extends Component {
       />
   )
 
+  shipmentDetail = async (id,asign) => {
+    const params = {
+      api: 'shipment-detail/' + id + '/pickup-info',
+      param: '',
+      token: this.token,
+      method: 'GET'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    if (result.code == 0) {
+      var data = result.data
+      NavigationService.navigate(mainStack.detail2, {
+        data: {
+          containerNo: data.containerNo,
+          pickupAssignId: asign,
+          sztp: data.sztp,
+          wgt: data.wgt,
+          consignee: data.consignee,
+          address: data.address,
+          mobileNumber: data.mobileNumber,
+          remark: data.remark,
+          cargoType: data.cargoType,
+          shipmentDetailId: id,
+        }
+      })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
+    }
+  }
+
   closeFilter = async () => {
     await this.setState({
       filterVisible: false
     })
+  }
+
+  onRefresh = async () => {
+    await this.setState({
+      container_no: '',
+      consignee_name:'',
+    })
+    this.componentDidMount()
   }
 
   render() {
@@ -211,7 +235,7 @@ class DetailScreen extends Component {
             refreshControl={
               <RefreshControl
                 refreshing={this.state.refreshing}
-                onRefresh={() => { this.componentDidMount() }}
+                onRefresh={() => { this.onRefresh() }}
               />
             }
           >

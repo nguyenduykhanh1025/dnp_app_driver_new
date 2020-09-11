@@ -49,6 +49,7 @@ export default class DropDown extends Component {
             PickerStyle,
             onSelect,
             data,
+            mode
         } = this.props;
         return (
             <View style={[styles.Container, style]}>
@@ -58,7 +59,7 @@ export default class DropDown extends Component {
                     </Text>
                 </View>
                 <Picker
-                    mode="dropdown"
+                    mode={mode? mode : "dropdown"}
                     placeholder=""
                     placeholderStyle={{ color: "#bfc6ea" }}
                     placeholderIconColor="#007aff"

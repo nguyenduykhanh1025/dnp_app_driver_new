@@ -39,7 +39,7 @@ import {
 import HomeButton from './home_button'
 import { callApi } from '@/requests'
 import { signOut } from '@/modules/auth/action';
-import { getToken, saveUpEnable, saveDownEnable } from '@/stores';
+import { getToken, saveUpEnable, saveDownEnable, saveChassis, saveTruck } from '@/stores';
 import { hasSystemFeature } from 'react-native-device-info';
 import Toast from 'react-native-tiny-toast';
 import { update } from 'immutable';
@@ -58,6 +58,8 @@ class HomeScreen extends Component {
       HistoryList: [],
       dataTruckNo: [],
       dataNoList: [],
+      checkTruck: 0,
+      checkChassisNo: 0,
       pageNum: 1,
       pageSize: 10,
       truckNo: '',
@@ -126,7 +128,7 @@ class HomeScreen extends Component {
         "Thông báo",
         result.msg,
         [
-          { text: "OK", onPress: () => this.props.dispatch(signOut()) }
+          { text: "OK", onPress: () => result.errorCode == 401 ? this.props.dispatch(signOut()) : null },
         ],
         { cancelable: false }
       );
@@ -193,7 +195,6 @@ class HomeScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    // console.log('resultonGetHistoryList', result)
     if (result.code == 0) {
       Toast.hide()
       await this.setState({
@@ -232,7 +233,6 @@ class HomeScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    // console.log('resultonGoCheckIn', result)
     if (result.code == 0) {
       Toast.hide()
       NavigationService.navigate(mainStack.qr_code, { dataQR: result })
@@ -240,6 +240,59 @@ class HomeScreen extends Component {
     else {
       Toast.hide()
       Alert.alert('Thông báo!', result.msg)
+    }
+  }
+
+  changeTruck = async (item) => {
+    if (this.state.checkTruck == 1) {
+    } else {
+      const params = {
+        api: 'pickup/truck',
+        param: {
+          chassisNo: this.state.chassisNo,
+          truckNo: item,
+        },
+        token: this.token,
+        method: 'POST'
+      }
+      var result = undefined;
+      result = await callApi(params);
+      if (result.code == 0) {
+        await saveTruck(item)
+        Toast.showSuccess('Đổi biển số thành công')
+        this.setState({
+          truckNo: item
+        })
+      }
+      else {
+        Alert.alert('Thông báo!', result.msg)
+      }
+    }
+  }
+
+  changeChassisNo = async (item) => {
+    if (this.state.checkChassisNo == 1) {
+    } else {
+      const params = {
+        api: 'pickup/truck',
+        param: {
+          chassisNo: item,
+          truckNo: this.state.truckNo,
+        },
+        token: this.token,
+        method: 'POST'
+      }
+      var result = undefined;
+      result = await callApi(params);
+      if (result.code == 0) {
+        await saveChassis(item)
+        Toast.showSuccess('Đổi biển số thành công')
+        this.setState({
+          chassisNo: item
+        })
+      } else {
+        Alert.alert('Thông báo!', result.msg)
+      }
     }
   }
 
@@ -283,7 +336,18 @@ class HomeScreen extends Component {
             {!this.state.PickupList.length < 1 ?
               <TouchableOpacity
                 onPress={() => {
-                  this.onGoCheckIn()
+                  Alert.alert(
+                    "Xác Nhận Check In!",
+                    "Vui lòng đỗ xe đúng vị trí bàn cân rồi chọn OK để thực hiện Check In",
+                    [
+                      { text: "OK", onPress: () => this.onGoCheckIn() },
+                      {
+                        text: "Hủy",
+                        style: "cancel"
+                      },
+                    ],
+                    { cancelable: false }
+                  )
                 }}
               >
                 <View style={styles.HeaderButton}>
@@ -300,13 +364,14 @@ class HomeScreen extends Component {
                 <View style={styles.PortersTagEmpty}>
                   <Text style={styles.txtEmpty}>Hãy chọn nhận cuốc</Text>
                   <Text style={styles.txtEmpty}>để bắt đầu giao nhận container!</Text>
-                  <View style={styles.bgRound}>
+
+                  <TouchableOpacity style={styles.bgRound} onPress={() => NavigationService.navigate(mainStack.detail)}>
                     <Image
                       source={command_icon}
                       style={[styles.iconBgRound]}
                       resizeMode='contain'
                     />
-                  </View>
+                  </TouchableOpacity>
                 </View>
               </View>
               :
@@ -320,7 +385,12 @@ class HomeScreen extends Component {
                         data={this.state.dataTruckNo}
                         style={styles.dropdownStyle}
                         PickerStyle={styles.pickerStyle}
-                        onSelect={(item) => { this.setState({ truckNo: item }) }}
+                        onSelect={async (item) => {
+                          await this.setState({
+                            checkTruck: this.state.checkTruck + 1
+                          })
+                          await this.changeTruck(item)
+                        }}
                       />
                       {/* <Text style={styles.LicensePlateTextDown}>{this.state.truckNo}</Text> */}
                     </View>
@@ -332,7 +402,12 @@ class HomeScreen extends Component {
                         data={this.state.dataNoList}
                         style={styles.dropdownStyle}
                         PickerStyle={[styles.pickerStyle]}
-                        onSelect={(item) => { this.setState({ chassisNo: item }) }}
+                        onSelect={async (item) => {
+                          await this.setState({
+                            checkChassisNo: this.state.checkChassisNo + 1
+                          })
+                          await this.changeChassisNo(item)
+                        }}
                       />
                       {/* <Text style={styles.LicensePlateTextDown}>{this.state.chassisNo}</Text> */}
                     </View>
@@ -374,8 +449,7 @@ class HomeScreen extends Component {
                                           :
                                           item.status == 1 ?
                                             'Gate in'
-                                            :
-                                            ''
+                                            : ''
                                       }
                                     </Text>
                                   </View>
@@ -404,7 +478,7 @@ class HomeScreen extends Component {
                                   item.serviceType == 1 ?
                                     <Image source={icCont1} style={styles.PorterIcon} />
                                     : item.serviceType == 2 ?
-                                      <Image source={icCont4} style={styles.PorterIcon} />
+                                      <Image source={icCont4} style={[styles.PorterIcon, { height: ws(30), width: ws(36) }]} />
                                       : item.serviceType == 3 ?
                                         <Image source={icCont3} style={styles.PorterIcon} />
                                         : <Image source={icCont2} style={styles.PorterIcon} />
@@ -474,8 +548,8 @@ class HomeScreen extends Component {
             </View>
             {
               this.state.HistoryList.length == 0 ?
-                <View style={{ height: hs(425), width: '100%', justifyContent: 'center', alignItems: 'center'}}>
-                  <ActivityIndicator size='large' color={Colors.mainColor}/>
+                <View style={{ height: hs(425), width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                  <ActivityIndicator size='large' color={Colors.mainColor} />
                 </View>
                 :
                 <FlatList
@@ -497,9 +571,9 @@ class HomeScreen extends Component {
             />
           </View>
         </ScrollView>
-        <ProfileModal 
+        <ProfileModal
           visible={this.state.profileVisible}
-          onClose={()=> this.setState({ profileVisible: false })}
+          onClose={() => this.setState({ profileVisible: false })}
         />
       </View>
     )
@@ -553,7 +627,7 @@ const styles = StyleSheet.create({
     borderRadius: 200,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.maincolor,
+    backgroundColor: '#7B9DCD',
     borderWidth: ws(5), borderColor:
       Colors.bgGrey
   },

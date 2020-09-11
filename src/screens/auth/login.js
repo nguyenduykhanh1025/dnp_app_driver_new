@@ -130,6 +130,7 @@ class LoginContainer extends PureComponent {
             }
             var result = undefined;
             result = await callApi(params);
+            console.log('result', result)
             if (result.code == 0) {
                 Toast.hide()
                 this.token = result.token;
@@ -140,7 +141,7 @@ class LoginContainer extends PureComponent {
             }
             else {
                 Toast.hide()
-                Alert.alert('Thông báo!', result.msg)
+                Alert.alert('Thông báo!', result.msg ? result.msg : 'Đăng nhập thất bại.')
             }
         }
         else {

@@ -22,7 +22,7 @@ export default class Item extends Component {
   render() {
     var { data, onPress, disabled } = this.props;
     return (
-      <TouchableOpacity onPress={onPress} disabled={disabled}>
+      <View onPress={onPress} disabled={disabled}>
         <View style={styles.Container}>
           <View style={[styles.ItemContainer, disabled ? { backgroundColor: '#f1f1f1' } : null]}>
             <View style={styles.LeftView}>
@@ -90,10 +90,10 @@ export default class Item extends Component {
                 </View>
               </View>
             </View>
-            {disabled ? null : <Image source={righticon} style={styles.righticon} />}
+            {/* {disabled ? null : <Image source={righticon} style={styles.righticon} />} */}
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
     )
   }
 }

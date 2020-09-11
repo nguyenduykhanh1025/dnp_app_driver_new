@@ -12,6 +12,7 @@ import {
     ImageBackground,
     AsyncStorage,
     StatusBar,
+    ActivityIndicator,
     TextInput,
     Alert,
     ScrollView,
@@ -56,7 +57,7 @@ import DeviceInfo from 'react-native-device-info';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { callApi } from '@/requests';
 import { getToken } from '@/stores';
-
+// import { Spinner, Content } from 'native-base'
 const bg_qrcode = require('../../assets/images/qr-code.png');
 
 class HomeScreen extends PureComponent {
@@ -67,13 +68,14 @@ class HomeScreen extends PureComponent {
             getLocationEnable: false,
             loading: false,
             result: false,
-            msg: 'Đang xử lý',
+            msg: 'Đang gửi yêu cầu ...',
             data: [],
+            DataResult: '',
             deviceId: '',
             sessionId: '',
             "domain": "",
             "port": "",
-            "topic": ""
+            "topic": "",
         };
         this.token = null;
     }
@@ -85,7 +87,6 @@ class HomeScreen extends PureComponent {
         var qrString = this.props.navigation.state.params.dataQR.qrString;
         qrString = qrString.slice(0, qrString.length - 1);
         var dataQR = JSON.parse(qrString.replace(/'/g, '"'))
-        // console.log('data', dataQR.data)
         await this.setState({
             qrvalue: this.props.navigation.state.params.dataQR.qrString,
             sessionId: this.props.navigation.state.params.dataQR.sessionId,
@@ -113,7 +114,6 @@ class HomeScreen extends PureComponent {
         }
         var result = undefined;
         result = await callApi(params);
-        // console.log('resultonGetURLMqtt', result.domain)
         if (result.code == 0) {
             this.setState({
                 "domain": result.domain,
@@ -131,7 +131,7 @@ class HomeScreen extends PureComponent {
         var settings = {
             mqttServerUrl: this.state.domain,
             port: this.state.port,
-            topic: "eport/driver/" + this.state.sessionId + "/res",
+            topic: this.state.topic,
         }
 
         mqtt.createClient({
@@ -139,7 +139,6 @@ class HomeScreen extends PureComponent {
             clientId: this.state.deviceId,
         }).then((client) => {
             client.on('closed', () => {
-                console.log('closed');
             });
             client.unsubscribe(settings.topic)
             client.disconnect();
@@ -163,54 +162,39 @@ class HomeScreen extends PureComponent {
         var settings = {
             mqttServerUrl: this.state.domain,
             port: this.state.port,
-            topic: "eport/driver/" + this.state.sessionId + "/res",
-            // topic: "eport/driver/ado3709Adlfj/res"
+            topic: this.state.topic,
         }
-        // var settings = {
-        //     mqttServerUrl: '113.176.195.221',
-        //     port: 1883,
-        //     topic: "eport/driver/" + this.state.sessionId + "/res",
-        //     // topic: "eport/driver/ado3709Adlfj/res"
-        // }
-
         mqtt.createClient({
-            // uri: 'mqtt://' + settings.mqttServerUrl + ":" + settings.port,
             uri: settings.mqttServerUrl + ":" + settings.port,
             clientId: "DriverApp-" + this.state.sessionId,
         }).then((client) => {
             client.on('connect', () => {
                 // console.log('connected');
-                client.subscribe(settings.topic, 0);
+                client.subscribe(settings.topic, 1);
             });
             client.on('message', (msg) => {
                 var message = JSON.parse(msg.data);
                 console.log('message', message)
                 this.setState({
-                    loading: message.status == 'PROCESSING' ? true : message.status == 'FINISH' ? false : this.state.loading,
+                    // loading: message.status == 'PROCESSING' ? true : message.status == 'FINISH' ? false : this.state.loading,
                     msg: message.msg,
-                    Data: message.data
+                    DataResult: message
                 })
                 if (message.status == 'FINISH' && message.result == 'PASS') {
                     client.unsubscribe(settings.topic)
                     client.disconnect();
-                    this.setState({ loading: false })
-                    NavigationService.navigate(mainStack.result, { Data: message.data })
+                    this.setState({
+                        result: true,
+                    })
+                    // NavigationService.navigate(mainStack.result, { Data: message.result })
                 }
                 if (message.status == 'FINISH' && message.result == 'FAIL') {
                     client.unsubscribe(settings.topic)
                     client.disconnect();
-                    Alert.alert(
-                        'Thông báo!',
-                        'Checkin thất bại!',
-                        [
-                            {
-                                text: 'OK', onPress: () => {
-                                    this.props.navigation.goBack()
-                                }
-                            }
-                        ],
-                        { cancelable: false }
-                    );
+                    this.setState({
+                        result: true,
+                        loading: false,
+                    })
                 }
                 // PushNotification.localNotification({
                 //     title: message.title, // (optional)
@@ -262,19 +246,6 @@ class HomeScreen extends PureComponent {
         )
     }
 
-    testLoading = async () => {
-        await this.setState({
-            loading: true,
-        })
-
-        await setTimeout(() => {
-            this.setState({
-                result:true,
-                loading: false,
-            })
-        },3000)
-    }
-
     render() {
         return (
             <View style={[commonStyles.containerClass,]}>
@@ -287,9 +258,12 @@ class HomeScreen extends PureComponent {
                     onPressLeft={() => {
                         Alert.alert(
                             "Thông báo xác nhận!",
-                            "Bạn chưa quét mã, bạn chắc chắn muốn thoát?",
+                            "Bạn đang thực hiện check-in, bạn chắc chắn muốn thoát không?",
                             [
-                                { text: "Có", onPress: () => this.props.navigation.goBack() },
+                                { text: "Có", onPress: () =>  
+                                {
+                                    this.props.navigation.goBack()
+                                }},
                                 {
                                     text: "Không",
                                     style: "cancel"
@@ -336,10 +310,14 @@ class HomeScreen extends PureComponent {
                             />
                         </ImageBackground>
                     </View>
-                    <TouchableOpacity
+                    <View style={styles.Loading}>
+                        <ActivityIndicator size={fs(70)} color={Colors.subColor} />
+                        <Text style={{ textAlign: 'center', marginTop: hs(10), fontSize: fs(17), color: Colors.blue }}>{this.state.msg}</Text>
+                    </View>
+                    {/* <TouchableOpacity
                         onPress={() => this.testLoading()}
-                    >
-                        <ScrollView
+                    > */}
+                    {/* <ScrollView
                             horizontal={true}
                         >
                             {
@@ -373,17 +351,17 @@ class HomeScreen extends PureComponent {
                                     </View>
                                 ))
                             }
-                        </ScrollView>
-                    </TouchableOpacity>
+                        </ScrollView> */}
+                    {/* </TouchableOpacity> */}
                 </View>
-                <WaitingModal
+                {/* <WaitingModal
                     visible={this.state.loading}
                     msg={this.state.msg}
                     onModalClose={() => { this.onModalClose() }}
-                />
+                /> */}
                 <ModalQRResult
                     visible={this.state.result}
-                    data={SearchQRCode}
+                    data={this.state.DataResult}
                     onClose={() => { this.onCloseResult() }}
                 />
                 {/* <View style={{ height: '100%', width: '100%', backgroundColor: '#fff', position: 'absolute' }}>
@@ -407,6 +385,11 @@ const styles = StyleSheet.create({
     scroll: {
         height: hs(721),
     },
+    Loading: {
+        height: hs(320),
+        paddingTop: hs(40),
+    }
+    ,
     outline: {
         alignItems: 'center',
         justifyContent: 'center',

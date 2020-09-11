@@ -407,7 +407,7 @@ const getDetailContItem = [{
 }]
 
 const SearchQRCode = {
-    code: 1,
+    code: 0,
     msg: "Container AGEA1231245 đã quá hạn lệnh hoặc không đủ điều kiện để nhận. Xin mời đến phòng dịch vụ khách hàng để làm thủ tục. Xe rơmooc biển số 43R5555 không đủ tải trong để bốc container AGEA1231245 (20,000kg). Xin vui lòng quay đầu xe chọn rơmooc khác rồi làm lại thủ tục",
     Data:   
         [

@@ -51,6 +51,7 @@ export default class DropDown extends Component {
             itemTextStyle,
             data,
             line,
+            mode,
             textStyle
         } = this.props;
         return (
@@ -61,7 +62,7 @@ export default class DropDown extends Component {
                     </Text>
                 </View>
                 <Picker
-                    mode="dropdown"
+                    mode={mode ? mode : "dropdown"}
                     placeholder=""
                     placeholderStyle={{ color: "#bfc6ea" }}
                     placeholderIconColor="#007aff"
@@ -77,7 +78,7 @@ export default class DropDown extends Component {
                     }
 
                 </Picker>
-                {line ? null :  <View style={styles.Line} /> }
+                {line ? null : <View style={styles.Line} />}
             </View>
         )
     }

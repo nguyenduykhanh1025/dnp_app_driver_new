@@ -21,6 +21,7 @@ export default class Item extends Component {
 
   render() {
     var { data, onPress, index } = this.props;
+    console.log('data', data.seenFlg)
     var date = moment(data.createTime).format('DD-MM-YYYY')
     return (
       <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} style={styles.itemContainer}>
