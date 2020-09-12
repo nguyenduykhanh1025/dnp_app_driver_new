@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 
 import vn.com.irtech.eport.api.config.MqttConfig;
 import vn.com.irtech.eport.api.consts.MqttConsts;
+import vn.com.irtech.eport.api.form.DriverRes;
 import vn.com.irtech.eport.api.mqtt.listener.CheckinHandler;
 import vn.com.irtech.eport.api.mqtt.listener.GateCheckInHandler;
 import vn.com.irtech.eport.api.mqtt.listener.GatePassHandler;
@@ -301,5 +302,48 @@ public class MqttService implements MqttCallback {
 		
 		String req = new Gson().toJson(notificationReq);
 		this.publish(MqttConsts.NOTIFICATION_MC_TOPIC, new MqttMessage(req.getBytes()));
+	}
+	
+	/**
+	 * Send message to driver the result or progress of process
+	 * 
+	 * @param status
+	 * @param result
+	 * @param sessionId
+	 * @param msg
+	 */
+	public void sendNotificationOfProcessForDriver(String status, String result, String sessionId, String msg) {
+		DriverRes driverRes = new DriverRes();
+		driverRes.setStatus(status);
+		driverRes.setResult(result);
+		driverRes.setMsg(msg);
+		String payload = new Gson().toJson(driverRes);
+		try {
+			publish(MqttConsts.DRIVER_RES_TOPIC.replace("+", sessionId), new MqttMessage(payload.getBytes()));
+		} catch (MqttException e) {
+			logger.error("Error when send message to driver: " + e);
+		}
+	}
+	
+	/**
+	 * Send status of gate in order to gate
+	 * 
+	 * @param truckNo
+	 * @param message
+	 */
+	public void sendNotificationToGate(String truckNo, String message) {
+		NotificationReq notificationReq = new NotificationReq();
+		notificationReq.setTitle("ePort: Thông báo xe gate in tại cổng.");
+		notificationReq.setMsg("Xe " + truckNo + ": " + message);
+		notificationReq.setType(EportConstants.APP_USER_TYPE_GATE);
+		notificationReq.setLink("");
+		notificationReq.setPriority(EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
+		
+		String msg = new Gson().toJson(notificationReq);
+		try {
+			publish(MqttConsts.NOTIFICATION_GATE_TOPIC, new MqttMessage(msg.getBytes()));
+		} catch (MqttException e) {
+			logger.error("Error when try sending notification check in for gate: " + e);
+		}
 	}
 }

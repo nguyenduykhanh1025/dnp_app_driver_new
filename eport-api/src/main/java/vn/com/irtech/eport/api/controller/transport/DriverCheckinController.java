@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 
+import vn.com.irtech.eport.api.consts.BusinessConsts;
 import vn.com.irtech.eport.api.consts.MqttConsts;
 import vn.com.irtech.eport.api.form.GateNotificationCheckInReq;
 import vn.com.irtech.eport.api.form.QrCodeReq;
@@ -80,7 +81,9 @@ public class DriverCheckinController extends BaseController  {
 		List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
 		
 		if (CollectionUtils.isEmpty(pickupHistories)) {
-			throw new BusinessException("Quý khách chưa đăng ký vận chuyển container ra/vào cảng.");
+			String message = "Quý khách chưa đăng ký vận chuyển container ra/vào cảng.";
+			mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, sessionId, message);
+			throw new BusinessException(message);
 		}
 		
 		// contSendCount variable to count the number of cont send to gate in

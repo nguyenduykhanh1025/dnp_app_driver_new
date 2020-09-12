@@ -95,66 +95,23 @@ public class GateCheckInHandler implements IMqttMessageListener {
 		}
 		
 		if ("reject".equals(result)) {
-			String msg = "Yêu cầu làm lệnh vào cổng của bạn đã bị từ chối do thông tin vào cổng không hợp lệ.";
+			String msg = "Thông tin xe/container không trùng khớp với thực tế. Vui lòng kiểm tra và thực hiện Check In lại hoặc gặp bàn cân để xử lý.";
 			if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSessionId())) {
-				sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateNotificationCheckInReq.getSessionId(), msg);
+				mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateNotificationCheckInReq.getSessionId(), msg);
 			}
-			sendNotificationOfProcessForDriver(BusinessConsts.FINISH, BusinessConsts.FAIL, gateNotificationCheckInReq.getSessionId(), msg);
+			mqttService.sendNotificationOfProcessForDriver(BusinessConsts.FINISH, BusinessConsts.FAIL, gateNotificationCheckInReq.getSessionId(), msg);
 			return;
 		} 
 		
 		if ("accept".equals(result)) {
 			String msg = "Chấp nhận yêu cầu gate in, chuẩn bị làm lệnh gate in.";
 			if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSessionId())) {
-				sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateNotificationCheckInReq.getSessionId(), msg);
+				mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateNotificationCheckInReq.getSessionId(), msg);
 			}
 			sendGateInOrderToRobot(gateNotificationCheckInReq);
 		}
 		
 		
-	}
-	
-	/**
-	 * Send message to driver the result or progress of process
-	 * 
-	 * @param status
-	 * @param result
-	 * @param sessionId
-	 * @param msg
-	 */
-	private void sendNotificationOfProcessForDriver(String status, String result, String sessionId, String msg) {
-		DriverRes driverRes = new DriverRes();
-		driverRes.setStatus(status);
-		driverRes.setResult(result);
-		driverRes.setMsg(msg);
-		String payload = new Gson().toJson(driverRes);
-		try {
-			mqttService.publish(MqttConsts.DRIVER_RES_TOPIC.replace("+", sessionId), new MqttMessage(payload.getBytes()));
-		} catch (MqttException e) {
-			logger.error("Error when send message to driver: " + e);
-		}
-	}
-	
-	/**
-	 * Send status of gate in order to gate
-	 * 
-	 * @param truckNo
-	 * @param message
-	 */
-	private void sendNotificationToGate(String truckNo, String message) {
-		NotificationReq notificationReq = new NotificationReq();
-		notificationReq.setTitle("ePort: Thông báo xe gate in tại cổng.");
-		notificationReq.setMsg("Xe " + truckNo + ": " + message);
-		notificationReq.setType(EportConstants.APP_USER_TYPE_GATE);
-		notificationReq.setLink("");
-		notificationReq.setPriority(EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
-		
-		String msg = new Gson().toJson(notificationReq);
-		try {
-			mqttService.publish(MqttConsts.NOTIFICATION_GATE_TOPIC, new MqttMessage(msg.getBytes()));
-		} catch (MqttException e) {
-			logger.error("Error when try sending notification check in for gate: " + e);
-		}
 	}
 	
 	/**
@@ -280,9 +237,9 @@ public class GateCheckInHandler implements IMqttMessageListener {
 					
 					String message = "Đang thực hiện làm lệnh gate in";
 					if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSessionId())) {
-						sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateNotificationCheckInReq.getSessionId(), message);
+						mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateNotificationCheckInReq.getSessionId(), message);
 					}
-					sendNotificationToGate(gateNotificationCheckInReq.getTruckNo(), message);
+					mqttService.sendNotificationToGate(gateNotificationCheckInReq.getTruckNo(), message);
 				} else {
 					logger.debug("No GateRobot is available: " + msg);
 				}
