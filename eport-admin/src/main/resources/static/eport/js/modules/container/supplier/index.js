@@ -7,16 +7,31 @@ var shipment = new Object();
 var shipmentSelected;
 var sourceData;
 
+const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
+var dogrid = document.getElementById("container-grid"), hot;
+
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
     loadTable();
-    $(".left-side").css("height", $(document).height());
-    $("#btn-collapse").click(function () {
-        handleCollapse(true);
-    });
-    $("#btn-uncollapse").click(function () {
-        handleCollapse(false);
-    });
+    $(".main-body").layout();
+
+    $(".collapse").click(function () {
+        $(".main-body__search-wrapper").height(15);
+        $(".main-body__search-wrapper--container").hide();
+        $(this).hide();
+        $(".uncollapse").show();
+    })
+
+    $(".uncollapse").click(function () {
+        $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
+        $(".main-body__search-wrapper--container").show();
+        $(this).hide();
+        $(".collapse").show();
+    })
+
+    $(".left-side__collapse").click(function () {
+        $('#main-layout').layout('collapse', 'west');
+    })
 
     $("#attachIcon").on("click", function () {
         let shipmentId = $(this).data("shipment-id");
@@ -54,7 +69,7 @@ function handleCollapse(status) {
 function loadTable() {
     $("#dg").datagrid({
         url: PREFIX + '/shipments',
-        height: window.innerHeight - 70,
+        height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
         method: 'POST',
         singleSelect: true,
         collapsible: true,
@@ -165,10 +180,14 @@ function toggleAttachIcon(shipmentId) {
     });
 }
 
-function changeBatchStatus() {
-    shipment.contSupplyStatus = $('#batchStatus').val();
-    loadTable();
-}
+
+//change serviceType
+$("#batchStatus").combobox({
+    onSelect: function (serviceType) {
+        shipment.contSupplyStatus = $('#batchStatus').val();
+        loadTable();
+    }
+  });
 
 // FORMAT HANDSONTABLE COLUMN
 function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
