@@ -182,11 +182,12 @@ public class LogisticCommonController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult getConsigneeList() {
 		AjaxResult ajaxResult = success();
-		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeListTaxCode");
-		if (listConsignee == null) {
-			listConsignee = shipmentDetailService.getConsigneeList();
-			CacheUtils.put("consigneeListTaxCode", listConsignee);
-		}
+//		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeListTaxCode");
+//		if (listConsignee == null) {
+//			listConsignee = shipmentDetailService.getConsigneeList();
+//			CacheUtils.put("consigneeListTaxCode", listConsignee);
+//		}
+		List<String> listConsignee = shipmentDetailService.getConsigneeList();
 		ajaxResult.put("consigneeList", listConsignee);
 		return ajaxResult;
 	}
@@ -196,11 +197,12 @@ public class LogisticCommonController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult getConsigneeListWithoutTaxCode() {
 		AjaxResult ajaxResult = success();
-		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeList");
-		if (listConsignee == null) {
-			listConsignee = shipmentDetailService.getConsigneeListWithoutTaxCode();
-			CacheUtils.put("consigneeList", listConsignee);
-		}
+//		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeList");
+//		if (listConsignee == null) {
+//			listConsignee = shipmentDetailService.getConsigneeListWithoutTaxCode();
+//			CacheUtils.put("consigneeList", listConsignee);
+//		}
+		List<String> listConsignee = shipmentDetailService.getConsigneeListWithoutTaxCode();
 		ajaxResult.put("consigneeList", listConsignee);
 		return ajaxResult;
 	}
