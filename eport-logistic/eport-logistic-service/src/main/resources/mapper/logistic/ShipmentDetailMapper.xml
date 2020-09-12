@@ -506,7 +506,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update shipment_detail
         <trim prefix="SET" suffixOverrides=",">
             <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
-            <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
             <if test="processOrderId != null">process_order_id = #{processOrderId},</if>
             <if test="registerNo != null  and registerNo != ''">register_no = #{registerNo},</if>
             <if test="containerNo != null  and containerNo != ''">container_no = #{containerNo},</if>
@@ -569,6 +568,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             update_time = sysdate
         </trim>
         where id = #{id}
+            AND logistic_group_id = #{logisticGroupId}
     </update>
     <!--updateShipmentDetailForOMSupport is used for OM reset process status. Not use with another purpose-->
     <update id="updateShipmentDetailForOMSupport" parameterType="ShipmentDetail">
