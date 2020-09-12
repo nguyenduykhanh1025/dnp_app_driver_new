@@ -259,27 +259,28 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 			sysNotification.setNotifyLink("");
 			sysNotification.setStatus(1L);
 			sysNotificationService.insertSysNotification(sysNotification);
-			
+			Long driverId = null;
 			// add custom assign follow batch
 			for(int i = 0 ; i< pickupAssigns.size(); i ++){
 				pickupAssigns.get(i).setCreateBy(getUser().getFullName());
-				pickupAssigns.get(i).setCreateTime(new Date());
 				pickupAssignService.insertPickupAssign(pickupAssigns.get(i));
-				
+				driverId = pickupAssigns.get(i).getDriverId();
 				// Notification receiver
-				SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
-				sysNotificationReceiver.setUserId(pickupAssigns.get(i).getDriverId());
-				sysNotificationReceiver.setNotificationId(sysNotification.getId());
-				sysNotificationReceiver.setUserType(2L);
-				sysNotificationReceiver.setSentFlg(true);
-				sysNotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
-				
-				List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(pickupAssigns.get(i).getDriverId());
-				if (CollectionUtils.isNotEmpty(sysUserTokens)) {
-					try {
-						firebaseService.sendNotification(sysNotification.getTitle(), sysNotification.getContent(), sysUserTokens);
-					} catch (FirebaseMessagingException e) {
-						logger.error("Error send notification: " + e);
+				if(driverId != null) {
+					SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
+					sysNotificationReceiver.setUserId(driverId);
+					sysNotificationReceiver.setNotificationId(sysNotification.getId());
+					sysNotificationReceiver.setUserType(2L);
+					sysNotificationReceiver.setSentFlg(true);
+					sysNotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
+
+					List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(driverId);
+					if (CollectionUtils.isNotEmpty(sysUserTokens)) {
+						try {
+							firebaseService.sendNotification(sysNotification.getTitle(), sysNotification.getContent(), sysUserTokens);
+						} catch (FirebaseMessagingException e) {
+							logger.warn("Error send notification: " + e);
+						}
 					}
 				}
 			}
@@ -688,22 +689,21 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		if(shipmentDetail == null || pickedIds == null) {
 			return error();
 		}
-		ShipmentDetail detail = new ShipmentDetail();
-		detail.setLogisticGroupId(getUser().getGroupId());
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(detail);
-		if(shipmentDetails.size() > 0) {
-			for(Long id : pickedIds) {
-				for(ShipmentDetail i : shipmentDetails) {
-					if(i.getId().equals(id)) {
-						i.setDeliveryAddress(shipmentDetail.getDeliveryAddress());
-						i.setDeliveryMobile(shipmentDetail.getDeliveryMobile());
-						i.setDeliveryRemark(shipmentDetail.getDeliveryRemark());
-						shipmentDetailService.updateShipmentDetail(i);
-					}
-				}
+//		ShipmentDetail detail = new ShipmentDetail();
+//		detail.setLogisticGroupId(getUser().getGroupId());
+		// Lay toan bo shipment ra NG
+		// List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(detail);
+		ShipmentDetail detail = null;
+		for(Long id : pickedIds) {
+			detail = shipmentDetailService.selectShipmentDetailById(id);
+			if(detail != null && detail.getLogisticGroupId().equals(getUser().getGroupId())) {
+				detail.setDeliveryAddress(shipmentDetail.getDeliveryAddress());
+				detail.setDeliveryMobile(shipmentDetail.getDeliveryMobile());
+				detail.setDeliveryRemark(shipmentDetail.getDeliveryRemark());
+				shipmentDetailService.updateShipmentDetail(detail);
 			}
-			return success();
 		}
-		return error();
+		return success();
+		// return error();
 	}
 }
