@@ -25,4 +25,6 @@ public class MqttConsts {
 	public static final String NOTIFICATION_MC_TOPIC = "eport/notification/mc";
 	
 	public static final String NOTIFICATION_GATE_TOPIC = "eport/notification/gate";
+	
+	public static final String NOTIFICATION_GATE_RES_TOPIC = "eport/notification/gate/response";
 }

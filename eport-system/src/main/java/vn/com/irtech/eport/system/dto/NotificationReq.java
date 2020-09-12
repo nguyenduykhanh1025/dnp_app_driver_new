@@ -18,6 +18,8 @@ public class NotificationReq implements Serializable {
 	private Integer priority;
 	
 	private Map<String, Object> data;
+	
+	private Object gateData;
 
 	public String getTitle() {
 		return title;
@@ -65,6 +67,14 @@ public class NotificationReq implements Serializable {
 
 	public void setData(Map<String, Object> data) {
 		this.data = data;
+	}
+
+	public Object getGateData() {
+		return gateData;
+	}
+
+	public void setGateData(Object gateData) {
+		this.gateData = gateData;
 	}
 	
 }

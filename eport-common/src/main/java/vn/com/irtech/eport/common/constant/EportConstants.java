@@ -169,4 +169,9 @@ public interface EportConstants {
 	/** Low priority notificaiton app window */
 	public static final Integer NOTIFICATION_PRIORITY_LOW = 2;
 	
+	// plate number type for logistic truck type
+	/** loai xe dau keo */
+	public static final String TRUCK_TYPE_TRUCK_NO = "0";
+	/** loai xe ro mooc */
+	public static final String TRUCK_TYPE_CHASSIS_NO = "1";
 }

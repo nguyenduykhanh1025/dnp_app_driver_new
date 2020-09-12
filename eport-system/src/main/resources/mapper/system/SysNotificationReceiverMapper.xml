@@ -125,7 +125,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="notificationId != null "> and r.notification_id = #{notificationId}</if>
             <if test="notificationType != null  and notificationType != ''"> and r.notification_type = #{notificationType}</if>
             <if test="seenFlg != null "> and r.seen_flg = #{seenFlg}</if>
-            <if test="createTime != null "> and TO_CHAR(n.createTime, 'DD/MM/YYYY') = #{createTime}</if>
         </where>
         order by n.create_time desc
     </select>

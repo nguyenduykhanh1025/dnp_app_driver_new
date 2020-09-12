@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import vn.com.irtech.eport.api.config.MqttConfig;
 import vn.com.irtech.eport.api.consts.MqttConsts;
 import vn.com.irtech.eport.api.mqtt.listener.CheckinHandler;
+import vn.com.irtech.eport.api.mqtt.listener.GateCheckInHandler;
 import vn.com.irtech.eport.api.mqtt.listener.GatePassHandler;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.utils.StringUtils;
@@ -54,6 +55,9 @@ public class MqttService implements MqttCallback {
 	
 	@Autowired
 	private GatePassHandler gatePassHandler;
+	
+	@Autowired
+	private GateCheckInHandler gateCheckInHandler;
 	
 	@Autowired
 	private IProcessOrderService processOrderService;
@@ -133,6 +137,7 @@ public class MqttService implements MqttCallback {
 		List<IMqttToken> tokens = new ArrayList<>();
 		tokens.add(mqttClient.subscribe(MqttConsts.SMART_GATE_REQ_TOPIC, 1, checkinHandler));
 		tokens.add(mqttClient.subscribe(MqttConsts.GATE_ROBOT_RES_TOPIC, 1, gatePassHandler));
+		tokens.add(mqttClient.subscribe(MqttConsts.NOTIFICATION_GATE_RES_TOPIC, 1, gateCheckInHandler));
 		for (IMqttToken token : tokens) {
 			token.waitForCompletion();
 		}
