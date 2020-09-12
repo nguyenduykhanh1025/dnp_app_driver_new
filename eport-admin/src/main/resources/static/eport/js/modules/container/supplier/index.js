@@ -204,7 +204,6 @@ function toggleAttachIcon(shipmentId) {
 
 $("#batchStatus").combobox({
     onSelect: function (serviceType) {
-    console.log("TCL: serviceType", serviceType)
         shipment.contSupplyStatus = serviceType.value;
         loadTable();
     }
