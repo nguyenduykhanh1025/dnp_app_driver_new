@@ -110,6 +110,13 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		mmap.put("pickedIds", pickedIds);
 		return PREFIX + "/driverList";
 	}
+	
+	@GetMapping("/shipment-detail/{shipmentDetailId}/add-drivers/ids-assigned-follow-container/{pickedIds}")
+	public String getDriverListContainer(@PathVariable Long shipmentDetailId, @PathVariable Long[] pickedIds,ModelMap mmap) {
+		mmap.put("shipmentDetailId", shipmentDetailId);
+		mmap.put("pickedIds", pickedIds);
+		return PREFIX + "/driverListCont";
+	}
 
 	@PostMapping("/listShipment")
 	@ResponseBody
@@ -281,18 +288,18 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		return error("Bạn không có quyền điều xe cho lô này.");
 	}
 
-	@GetMapping("preoderPickupAssign/{shipmentDetailId}")
-	public String preoderPickupAssign(@PathVariable("shipmentDetailId") Long shipmentDetailId, ModelMap mmap){
-		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
-		Shipment shipment = shipmentService.selectShipmentById(shipmentDetail.getShipmentId());
-		mmap.put("shipment", shipment);
-		mmap.put("shipmentDetail", shipmentDetail);
-		PickupAssign pickupAssign = new PickupAssign();
-		pickupAssign.setLogisticGroupId(getUser().getGroupId());
-		pickupAssign.setExternalFlg(1L);
-		mmap.put("driverOwnerList", pickupAssignService.getDriverOwners(pickupAssign));
-		return PREFIX + "/preoderPickupAssign";
-	}
+//	@GetMapping("preoderPickupAssign/{shipmentDetailId}")
+//	public String preoderPickupAssign(@PathVariable("shipmentDetailId") Long shipmentDetailId, ModelMap mmap){
+//		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+//		Shipment shipment = shipmentService.selectShipmentById(shipmentDetail.getShipmentId());
+//		mmap.put("shipment", shipment);
+//		mmap.put("shipmentDetail", shipmentDetail);
+//		PickupAssign pickupAssign = new PickupAssign();
+//		pickupAssign.setLogisticGroupId(getUser().getGroupId());
+//		pickupAssign.setExternalFlg(1L);
+//		mmap.put("driverOwnerList", pickupAssignService.getDriverOwners(pickupAssign));
+//		return PREFIX + "/preoderPickupAssign";
+//	}
 
 	@GetMapping("/assignedDriverAccountListForPreoderPickup")
 	@ResponseBody
@@ -447,13 +454,13 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		
 	}
 
-	@GetMapping("edit/driver/{id}")
-	public String editDriver(@PathVariable("id") Long id, ModelMap mmap)
-    {
-        DriverAccount driverAccount = driverAccountService.selectDriverAccountById(id);
-        mmap.put("driverAccount", driverAccount);
-        return PREFIX + "/driverInfor";
-	}
+//	@GetMapping("edit/driver/{id}")
+//	public String editDriver(@PathVariable("id") Long id, ModelMap mmap)
+//    {
+//        DriverAccount driverAccount = driverAccountService.selectDriverAccountById(id);
+//        mmap.put("driverAccount", driverAccount);
+//        return PREFIX + "/driverInfor";
+//	}
 	/**
      * Update Save Driver login info
      */
@@ -474,50 +481,50 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	/**
 	 * Load table truck assigned follow driver
 	*/
-	@RequestMapping("/driver/truck/list")
-	@ResponseBody
-	public List<LogisticTruck> getDriverTruckList(DriverTruck driverTruck){
-		List<LogisticTruck> logisticTrucks  = new ArrayList<LogisticTruck>();
-		DriverAccount driverAccount = driverAccountService.selectDriverAccountById(driverTruck.getDriverId());
-		//check driver of current logisticGroup
-		if(driverAccount.getLogisticGroupId().equals(getUser().getGroupId())){
-			//get ds xe theo driverId (table mapping)
-			List<DriverTruck> tractors = driverTruckService.selectTractorByDriverId(driverTruck.getDriverId());
-			List<DriverTruck> trailers = driverTruckService.selectTrailerByDriverId(driverTruck.getDriverId());
-			if(tractors.size() != 0){
-				for(DriverTruck i : tractors){
-					logisticTrucks.add(logisticTruckService.selectLogisticTruckById(i.getTruckId()));
-				}
-			}
-			if(trailers.size() != 0){
-				for(DriverTruck i :trailers){
-					logisticTrucks.add(logisticTruckService.selectLogisticTruckById(i.getTruckId()));
-				}
-			}
-		}
-		return logisticTrucks;
-	}
+//	@RequestMapping("/driver/truck/list")
+//	@ResponseBody
+//	public List<LogisticTruck> getDriverTruckList(DriverTruck driverTruck){
+//		List<LogisticTruck> logisticTrucks  = new ArrayList<LogisticTruck>();
+//		DriverAccount driverAccount = driverAccountService.selectDriverAccountById(driverTruck.getDriverId());
+//		//check driver of current logisticGroup
+//		if(driverAccount.getLogisticGroupId().equals(getUser().getGroupId())){
+//			//get ds xe theo driverId (table mapping)
+//			List<DriverTruck> tractors = driverTruckService.selectTractorByDriverId(driverTruck.getDriverId());
+//			List<DriverTruck> trailers = driverTruckService.selectTrailerByDriverId(driverTruck.getDriverId());
+//			if(tractors.size() != 0){
+//				for(DriverTruck i : tractors){
+//					logisticTrucks.add(logisticTruckService.selectLogisticTruckById(i.getTruckId()));
+//				}
+//			}
+//			if(trailers.size() != 0){
+//				for(DriverTruck i :trailers){
+//					logisticTrucks.add(logisticTruckService.selectLogisticTruckById(i.getTruckId()));
+//				}
+//			}
+//		}
+//		return logisticTrucks;
+//	}
 
 	/**
 	 * Load table truck not assigned follow driver
 	*/
-	@GetMapping("/trucks/not-picked")
-	@ResponseBody
-	public List<LogisticTruck> getTrucks(@RequestParam (value = "truckIds[]", required = false) Long[] truckIds){
-		LogisticTruck logisticTruck = new LogisticTruck();
-		logisticTruck.setLogisticGroupId(getUser().getGroupId());
-		List<LogisticTruck> trucks = logisticTruckService.selectLogisticTruckList(logisticTruck);
-		if(truckIds != null && trucks.size() > 0){
-			for(Long i : truckIds){
-				for(int j=0; j< trucks.size(); j++){
-					if(trucks.get(j).getId() == i){
-						trucks.remove(j);
-					}
-				}
-			}
-		}
-		return trucks;
-	}
+//	@GetMapping("/trucks/not-picked")
+//	@ResponseBody
+//	public List<LogisticTruck> getTrucks(@RequestParam (value = "truckIds[]", required = false) Long[] truckIds){
+//		LogisticTruck logisticTruck = new LogisticTruck();
+//		logisticTruck.setLogisticGroupId(getUser().getGroupId());
+//		List<LogisticTruck> trucks = logisticTruckService.selectLogisticTruckList(logisticTruck);
+//		if(truckIds != null && trucks.size() > 0){
+//			for(Long i : truckIds){
+//				for(int j=0; j< trucks.size(); j++){
+//					if(trucks.get(j).getId() == i){
+//						trucks.remove(j);
+//					}
+//				}
+//			}
+//		}
+//		return trucks;
+//	}
 
 	/**
 	 * Save assign truck for driver
@@ -525,48 +532,48 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	 * @param driverId
 	 * @return
 	 */
-	@Log(title = "Thêm Xe Cho Tài Xế", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/truck/assign/save")
-	@ResponseBody
-	@Transactional
-	public AjaxResult saveAssignTruck(@RequestParam(value = "truckIds[]", required = false)  Long[] truckIds, Long driverId){
-		//check this driver is of current logisticGoup
-		DriverAccount driverAccount = driverAccountService.selectDriverAccountById(driverId);
-		if(! driverAccount.getLogisticGroupId().equals(getUser().getGroupId())){
-			return error();
-		}
-        if(truckIds != null){
-			//truckIds is of current logisticGroup
-			LogisticTruck logisticTruck = new LogisticTruck();
-			logisticTruck.setLogisticGroupId(getUser().getGroupId());
-			List<LogisticTruck> logisticTrucks = logisticTruckService.selectLogisticTruckList(logisticTruck);
-			if(logisticTrucks.size() > 0 ){
-				int count = 0;
-				for(Long i : truckIds){
-					for(int j = 0; j< logisticTrucks.size(); j++){
-						if(logisticTrucks.get(j).getId().equals(i)){
-							count++;
-						}
-					}
-				}
-				if(count != truckIds.length){
-					//TH: a truckId isn't of current logisticGroup
-					return error();
-				}
-			}else{
-				//TH:current logisticGroup hasn't truck
-				return error();
-			}
-			driverTruckService.deleteDriverTruckById(driverId);
-            for (Long i : truckIds) {
-                DriverTruck driverTruck = new DriverTruck();
-                driverTruck.setDriverId(driverId);
-                driverTruck.setTruckId(i);
-                driverTruckService.insertDriverTruck(driverTruck);
-            }
-        }
-        return success();
-	}
+//	@Log(title = "Thêm Xe Cho Tài Xế", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
+//	@PostMapping("/truck/assign/save")
+//	@ResponseBody
+//	@Transactional
+//	public AjaxResult saveAssignTruck(@RequestParam(value = "truckIds[]", required = false)  Long[] truckIds, Long driverId){
+//		//check this driver is of current logisticGoup
+//		DriverAccount driverAccount = driverAccountService.selectDriverAccountById(driverId);
+//		if(! driverAccount.getLogisticGroupId().equals(getUser().getGroupId())){
+//			return error();
+//		}
+//        if(truckIds != null){
+//			//truckIds is of current logisticGroup
+//			LogisticTruck logisticTruck = new LogisticTruck();
+//			logisticTruck.setLogisticGroupId(getUser().getGroupId());
+//			List<LogisticTruck> logisticTrucks = logisticTruckService.selectLogisticTruckList(logisticTruck);
+//			if(logisticTrucks.size() > 0 ){
+//				int count = 0;
+//				for(Long i : truckIds){
+//					for(int j = 0; j< logisticTrucks.size(); j++){
+//						if(logisticTrucks.get(j).getId().equals(i)){
+//							count++;
+//						}
+//					}
+//				}
+//				if(count != truckIds.length){
+//					//TH: a truckId isn't of current logisticGroup
+//					return error();
+//				}
+//			}else{
+//				//TH:current logisticGroup hasn't truck
+//				return error();
+//			}
+//			driverTruckService.deleteDriverTruckById(driverId);
+//            for (Long i : truckIds) {
+//                DriverTruck driverTruck = new DriverTruck();
+//                driverTruck.setDriverId(driverId);
+//                driverTruck.setTruckId(i);
+//                driverTruckService.insertDriverTruck(driverTruck);
+//            }
+//        }
+//        return success();
+//	}
 
 	@GetMapping("/out-source/batch/{shipmentId}")
 	@ResponseBody

@@ -46,8 +46,8 @@
               </div>
             </form>
             <div class="main-body__search-wrapper--btn-group d-flex justify-content-end w-10">
-              <button class="btn btn-success">Tìm kiếm</button>
-              <button class="btn btn-success btn-outline ml-10 mr-10">Làm mới</button>
+              <button class="btn btn-success" onclick="search()">Tìm kiếm</button>
+              <button class="btn btn-success btn-outline ml-10 mr-10" onclick="clearInput()">Làm mới</button>
             </div>
           </div>
         </div>
@@ -94,19 +94,21 @@
                     </div>
                   </div>
                   <div title="Điều xe theo container">
-                     <div data-options="region:'west',split:true" style="width: 50%">
-                       <table id="driver-table-follow-cont" class="table" style="width: 100%; height: auto" fitColumns="true" data-options="rownumbers:true">
-                         <thead>
-                           <tr>
-                             <th data-options="field:'mobileNumber',align:'right'" width="120">Số điện thoại</th>
-                             <th data-options="field:'fullName',editor:'textbox'" width="150">Họ và Tên</th>
-                             <th data-options="field:'action', formatter: formatAction, align:'center', fixed:true" width="80">Hành động</th>
-                           </tr>
-                         </thead>
-                       </table>
-                     </div>
-                     <div data-options="region:'center',title:'Xe thuê ngoài'">
-                       <div id="container-grid-follow-cont" style="width: 100%" class="hot handsontable htColumnHeaders"></div>
+                     <div class="easyui-layout" data-options="fit:true">
+	                     <div data-options="region:'west',split:true" style="width: 50%">
+	                       <table id="driver-table-follow-cont" class="table" style="width: 100%; height: auto" fitColumns="true" data-options="rownumbers:true">
+	                         <thead>
+	                           <tr>
+	                             <th data-options="field:'mobileNumber',align:'right'" width="120">Số điện thoại</th>
+	                             <th data-options="field:'fullName',editor:'textbox'" width="150">Họ và Tên</th>
+	                             <th data-options="field:'action', formatter: formatActionContainer, align:'center', fixed:true" width="80">Hành động</th>
+	                           </tr>
+	                         </thead>
+	                       </table>
+	                     </div>
+	                     <div data-options="region:'center',title:'Xe thuê ngoài'">
+	                       <div id="container-grid-follow-cont" style="width: 100%" class="hot handsontable htColumnHeaders"></div>
+	                     </div>
                      </div>
                   </div>
                 </div>
