@@ -355,6 +355,13 @@ public class GatePassHandler implements IMqttMessageListener {
 			
 			// Get yard position success then send new process order to robot to gate in again
 			if (yardPositionCount == gateInFormData.getPickupIn().size()) {
+				
+				String message = "Đã có tọa độ đầy đủ, tiếp tục làm lệnh gate in";
+				if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
+					sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, pickupInResult, gateInFormData.getSessionId(), message);
+				}
+				sendNotificationToGate(gateInFormData.getTruckNo(), message);
+				
 				// re-try gate order with yard position
 				// Create new process order
 				ProcessOrder processOrderNew = new ProcessOrder();
