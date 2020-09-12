@@ -14,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
@@ -22,15 +21,19 @@ import com.google.gson.Gson;
 import vn.com.irtech.eport.api.consts.MqttConsts;
 import vn.com.irtech.eport.api.form.CheckinReq;
 import vn.com.irtech.eport.api.form.DetectionInfo;
+import vn.com.irtech.eport.api.form.GateNotificationCheckInReq;
 import vn.com.irtech.eport.api.form.MeasurementDataReq;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.logistic.domain.LogisticTruck;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
+import vn.com.irtech.eport.system.dto.NotificationReq;
 
 @RestController
 @RequestMapping("/gate")
@@ -129,5 +132,7 @@ public class GateDetectionController extends BaseController {
 			}
 		}
 	}
+	
+	
 }
  

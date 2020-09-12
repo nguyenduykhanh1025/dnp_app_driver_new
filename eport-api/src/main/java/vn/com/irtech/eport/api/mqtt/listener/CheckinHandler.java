@@ -345,7 +345,7 @@ public class CheckinHandler implements IMqttMessageListener {
 			logger.debug("Prepare Gate-in infor for Robot: " + new Gson().toJson(driverDatareses));
 			for (DriverDataRes driverDataRes : driverDatareses) {
 				pickupTemp = pickupHistoryService.selectPickupHistoryById(driverDataRes.getPickupHistoryId());
-				// TODO chinh sua logic cho nay lai %2?
+				
 				if (pickupTemp.getShipment().getServiceType() == 1 || pickupTemp.getShipment().getServiceType() == 3) {
 					pickupOut.add(pickupTemp);
 				} else {
