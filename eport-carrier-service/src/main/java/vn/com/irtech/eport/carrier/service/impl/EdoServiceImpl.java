@@ -145,6 +145,7 @@ public class EdoServiceImpl implements IEdoService
 		List<Edo> listEdi = new ArrayList<>();
 		String business = "";
 		Date fileCreateTime = new Date();
+		boolean checkBgm = true;
 		for(String s : text)
 		{
 			//businessUnit and createTime
@@ -170,6 +171,7 @@ public class EdoServiceImpl implements IEdoService
 				}
 				continue;
 			}
+			
 			if(s.contains("UNH"))
 			{
 				edi = new Edo();
@@ -178,6 +180,15 @@ public class EdoServiceImpl implements IEdoService
 				continue;
 			}
 
+			if(s.contains("BGM+12"))
+			{
+				String[] checkMess = s.split("\\+");
+				if(checkMess.length == 5 && checkMess[3].equals("3"))
+				{
+					checkBgm = false;
+				}
+				continue;
+			}
 			//Bill Of Lading
 			if(s.contains("RFF+BM"))
 			{
@@ -319,7 +330,12 @@ public class EdoServiceImpl implements IEdoService
 
 			if(s.contains("UNT"))
 			{
-				listEdi.add(edi);
+				if(checkBgm)
+				{
+					listEdi.add(edi);
+				}
+				checkBgm = true;
+				
 			}
 
 		}

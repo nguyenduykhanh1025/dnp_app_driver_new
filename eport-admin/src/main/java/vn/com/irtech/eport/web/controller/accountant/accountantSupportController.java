@@ -22,12 +22,10 @@ import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
-import vn.com.irtech.eport.logistic.domain.PaymentHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
-import vn.com.irtech.eport.logistic.service.IPaymentHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -51,8 +49,6 @@ public class accountantSupportController extends AdminBaseController{
     @Autowired
     private IProcessBillService processBillService;
     
-    @Autowired
-	private IPaymentHistoryService paymentHistoryService;
     
     @GetMapping("/receiveFull")
     public String getViewSupportReceiveFull(ModelMap mmap)
@@ -137,7 +133,7 @@ public class accountantSupportController extends AdminBaseController{
     }
 
     @GetMapping("/receiveContEmpty")
-    public String getViewSupportReceiveContEmpy(ModelMap mmap)
+    public String getViewSupportReceiveContEmpty(ModelMap mmap)
     {
         LogisticGroup logisticGroup = new LogisticGroup();
 	    logisticGroup.setGroupName("Chọn đơn vị Logistics");
