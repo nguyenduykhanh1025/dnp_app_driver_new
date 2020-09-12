@@ -92,7 +92,7 @@ public class ContainerSupplierController extends BaseController {
 						EportConstants.CONTAINER_SUPPLY_STATUS_REQ.equalsIgnoreCase(shipmentDetail.getContSupplyStatus())) {
 					allUpdate = false;
 				} else if (!EportConstants.CONTAINER_SUPPLY_STATUS_HOLD.equalsIgnoreCase(shipmentDetail.getContSupplyStatus())) {
-					shipmentDetail.setContainerStatus(EportConstants.CONTAINER_SUPPLY_STATUS_FINISH);
+					shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_FINISH);
 					// Set container is qualified to verify otp to make order with status = 2
 					shipmentDetail.setStatus(2);
 				}
