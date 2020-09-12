@@ -280,7 +280,7 @@ public class GateCheckInHandler implements IMqttMessageListener {
 					
 					String message = "Đang thực hiện làm lệnh gate in";
 					if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSessionId())) {
-						sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.SUCCESS, gateNotificationCheckInReq.getSessionId(), message);
+						sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateNotificationCheckInReq.getSessionId(), message);
 					}
 					sendNotificationToGate(gateNotificationCheckInReq.getTruckNo(), message);
 				} else {
