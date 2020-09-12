@@ -39,7 +39,14 @@ $(document).ready(function () {
             return;
         }
         let url = $(this).data("url");
-        $.modal.openTab(`Đính kèm - Cont [${shipmentId}]`, url.replace("{shipmentId}", shipmentId));
+        try {
+            $.modal.openTab(`Đính kèm - Cont [${shipmentId}]`, url.replace("{shipmentId}", shipmentId));
+        }
+        catch (e)
+        {
+            window.open(url.replace("{shipmentId}", shipmentId));
+        }
+        
     });
     $("#blNo").textbox('textbox').bind('keydown', function(e) {
         // enter key
