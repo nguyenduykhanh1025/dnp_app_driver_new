@@ -242,16 +242,10 @@ public class GatePassHandler implements IMqttMessageListener {
 				}
 			}
 			
-			// Set data for response driver
-			driverRes.setData(driverDataRes);
-			driverRes.setStatus(BusinessConsts.FINISH);
-			driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
-			driverRes.setResult(BusinessConsts.PASS);;
-			processOrder.setResult("S");
-			history.setResult("S");
-			
 			// Send result gate in to driver
 			try {
+				driverRes.setData(driverDataRes);
+				driverRes.setResult(BusinessConsts.PASS);
 				if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
 					responseDriver(driverRes, gateInFormData.getSessionId());
 				}
@@ -281,8 +275,11 @@ public class GatePassHandler implements IMqttMessageListener {
 				if (!checkPickupHistoryHasPosition(pickupHistory)) {
 					
 					String message = "Container " + pickupHistory.getContainerNo() + " chưa có tọa độ, đang thực hiện yêu cầu mc cấp tọa độ.";
-					sendNotificationToGate(pickupHistory.getTruckNo(), message);
-					sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateInFormData.getSessionId(), message);
+					mqttService.sendNotificationToGate(pickupHistory.getTruckNo(), message);
+					
+					if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
+						mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateInFormData.getSessionId(), message);
+					}
 					
 					Map<String, Object> map = new HashMap<>();
 					map.put("pickupHistoryId", pickupHistory.getId().toString());
@@ -358,9 +355,9 @@ public class GatePassHandler implements IMqttMessageListener {
 				
 				String message = "Đã có tọa độ đầy đủ, tiếp tục làm lệnh gate in";
 				if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
-					sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, pickupInResult, gateInFormData.getSessionId(), message);
+					mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, pickupInResult, gateInFormData.getSessionId(), message);
 				}
-				sendNotificationToGate(gateInFormData.getTruckNo(), message);
+				mqttService.sendNotificationToGate(gateInFormData.getTruckNo(), message);
 				
 				// re-try gate order with yard position
 				// Create new process order
@@ -676,48 +673,5 @@ public class GatePassHandler implements IMqttMessageListener {
 		}
 		String msg = new Gson().toJson(notificationReq);
 		mqttService.publish(MqttConsts.NOTIFICATION_GATE_TOPIC, new MqttMessage(msg.getBytes()));
-	}
-	
-	/**
-	 * Send message to driver the result or progress of process
-	 * 
-	 * @param status
-	 * @param result
-	 * @param sessionId
-	 * @param msg
-	 */
-	private void sendNotificationOfProcessForDriver(String status, String result, String sessionId, String msg) {
-		DriverRes driverRes = new DriverRes();
-		driverRes.setStatus(status);
-		driverRes.setResult(result);
-		driverRes.setMsg(msg);
-		String payload = new Gson().toJson(driverRes);
-		try {
-			mqttService.publish(MqttConsts.DRIVER_RES_TOPIC.replace("+", sessionId), new MqttMessage(payload.getBytes()));
-		} catch (MqttException e) {
-			logger.error("Error when send message to driver: " + e);
-		}
-	}
-	
-	/**
-	 * Send status of gate in order to gate
-	 * 
-	 * @param truckNo
-	 * @param message
-	 */
-	private void sendNotificationToGate(String truckNo, String message) {
-		NotificationReq notificationReq = new NotificationReq();
-		notificationReq.setTitle("ePort: Thông báo xe gate in tại cổng.");
-		notificationReq.setMsg("Xe " + truckNo + ": " + message);
-		notificationReq.setType(EportConstants.APP_USER_TYPE_GATE);
-		notificationReq.setLink("");
-		notificationReq.setPriority(EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
-		
-		String msg = new Gson().toJson(notificationReq);
-		try {
-			mqttService.publish(MqttConsts.NOTIFICATION_GATE_TOPIC, new MqttMessage(msg.getBytes()));
-		} catch (MqttException e) {
-			logger.error("Error when try sending notification check in for gate: " + e);
-		}
 	}
 }
