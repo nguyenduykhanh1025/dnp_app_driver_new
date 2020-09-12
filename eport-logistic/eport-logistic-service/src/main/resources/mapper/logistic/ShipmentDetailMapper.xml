@@ -567,8 +567,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
         </trim>
-        where id = #{id}
-            AND logistic_group_id = #{logisticGroupId}
+        <where>
+            id = #{id}
+            <if test="logisticGroupId != null">AND logistic_group_id = #{logisticGroupId}</if>
+        </where>
     </update>
     <!--updateShipmentDetailForOMSupport is used for OM reset process status. Not use with another purpose-->
     <update id="updateShipmentDetailForOMSupport" parameterType="ShipmentDetail">
