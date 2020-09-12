@@ -201,10 +201,10 @@ function toggleAttachIcon(shipmentId) {
 }
 
 
-//change serviceType
+
 $("#batchStatus").combobox({
     onSelect: function (serviceType) {
-        shipment.contSupplyStatus = $('#batchStatus').val();
+        shipment.contSupplyStatus = serviceType.value;
         loadTable();
     }
   });
