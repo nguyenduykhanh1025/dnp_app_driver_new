@@ -8,7 +8,7 @@ public class MqttConsts {
 
 	public static String SMART_GATE_RES_TOPIC = BASE_TOPIC + "/gate/+/response";
 
-	public static String DRIVER_RES_TOPIC = BASE_TOPIC + "/driver/+/res";
+	public static String DRIVER_RES_TOPIC = BASE_TOPIC + "/driver/+/response";
 	
 	public static String MC_REQ_TOPIC = BASE_TOPIC + "/mc/plan/request";
 	

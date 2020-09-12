@@ -244,6 +244,7 @@ public class GatePassHandler implements IMqttMessageListener {
 			
 			// Set data for response driver
 			driverRes.setData(driverDataRes);
+			driverRes.setStatus(BusinessConsts.FINISH);
 			driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
 			driverRes.setResult(BusinessConsts.PASS);;
 			processOrder.setResult("S");
@@ -429,6 +430,7 @@ public class GatePassHandler implements IMqttMessageListener {
 				}
 			}
 			
+			driverRes.setStatus(BusinessConsts.FINISH);
 			driverRes.setResult(BusinessConsts.FAIL);
 			driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
 			try {
