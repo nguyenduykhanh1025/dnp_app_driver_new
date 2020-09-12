@@ -41,7 +41,20 @@ $(document).ready(function () {
         let url = $(this).data("url");
         $.modal.openTab(`Đính kèm - Cont [${shipmentId}]`, url.replace("{shipmentId}", shipmentId));
     });
+    $("#blNo").textbox('textbox').bind('keydown', function(e) {
+        // enter key
+        if (e.keyCode == 13) {
+          shipment.bookingNo = $("#blNo").textbox('getText').toUpperCase();
+          loadTable();
+        }
+      });
 });
+
+function search() {
+    shipment.bookingNo = $("#blNo").textbox('getText').toUpperCase();
+    shipment.contSupplyStatus = $('#batchStatus').val();
+    loadTable();
+}
 
 function handleCollapse(status) {
     if (status) {
@@ -141,6 +154,13 @@ function handleRefresh() {
     loadTable();
 }
 
+function clearInput() {
+    $("#blNo").textbox('setText', '');
+    shipment = new Object();
+    loadTable();
+  }
+  
+
 // HANDLE WHEN SELECT A SHIPMENT
 function getSelected() {
     var row = $("#dg").datagrid("getSelected");
@@ -188,6 +208,8 @@ $("#batchStatus").combobox({
         loadTable();
     }
   });
+
+
 
 // FORMAT HANDSONTABLE COLUMN
 function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
