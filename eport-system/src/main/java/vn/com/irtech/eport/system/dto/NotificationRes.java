@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.system.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 public class NotificationRes implements Serializable {
 
