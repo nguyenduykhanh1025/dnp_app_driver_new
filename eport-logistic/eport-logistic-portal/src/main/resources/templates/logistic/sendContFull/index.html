@@ -84,45 +84,44 @@
           <div class="right-side__toolbar">
             <div class="datagrid-toolbar">
               <table cellspacing="0" cellpadding="0">
-                <tbody>
                   <tr>
                     <td>
-                      <button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()" class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Lưu khai báo
+                      <button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()" class="btn btn-sm btn-primary"><i
+                        class="fa fa-save text-primary"></i> Lưu khai báo
                       </button>
                     </td>
                     <td>
-                      <button id="deleteBtn" onclick="deleteShipmentDetail()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Xóa
+                      <button id="verifyBtn" onclick="verify()" disabled class="btn btn-sm btn-primary"><i
+                        class="fa fa-check text-primary"></i> Xác nhận
                       </button>
                     </td>
                     <td>
-                      <button id="verifyBtn" onclick="verify()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Xác nhận
+                      <button id="payBtn" onclick="pay()" disabled class="btn btn-sm btn-primary"><i
+                        class="fa fa-credit-card text-primary"></i> Thanh toán
                       </button>
                     </td>
                     <td>
-                      <button id="payBtn" onclick="pay()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Thanh toán
-                      </button>
-                    </td>
-                    <td>
-                      <button id="customBtn" onclick="checkCustomStatus()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Khai hải quan
+                      <button id="customBtn" onclick="checkCustomStatus()" disabled class="btn btn-sm btn-primary"><i
+                        class="fa fa-address-card text-primary"></i> Khai hải quan
                       </button>
                     </td> 
                     <td>
+                      <button id="deleteBtn" onclick="deleteShipmentDetail()" disabled class="btn btn-sm btn-danger"><i
+                        class="fa fa-times text-primary"></i> Xóa
+                      </button>
+                    </td>
+                    <td width="100%"></td>
+                    <td>
                       <button id="exportReceiptBtn" onclick="exportReceipt()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Xuất biên nhận
+                        class="fa fa-print text-primary"></i> In biên nhận
                       </button>
                     </td>
                     <td>
                       <button id="exportBill" onclick="exportBill()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-plus text-success"></i> Xuất hóa đơn
+                        class="fa fa-external-link text-success"></i> Xem hóa đơn
                       </button>
                     </td>
                   </tr>
-                </tbody>
               </table>
             </div>
           </div>
