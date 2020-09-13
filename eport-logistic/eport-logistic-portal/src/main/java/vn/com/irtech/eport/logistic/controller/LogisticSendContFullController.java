@@ -202,9 +202,13 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Có lỗi khi thực hiện thêm lô, vui lòng thử lại");
 	}
 
-	@GetMapping("/unique/booking-no/{bookingNo}")
+	@PostMapping("/unique/booking-no")
 	@ResponseBody
-	public AjaxResult checkBookingNoUnique(@PathVariable String bookingNo) {
+	public AjaxResult checkBookingNoUnique(@RequestBody ContainerServiceForm inputForm) {
+		String bookingNo = inputForm.getBookingNo();
+		if(StringUtils.isAllBlank(bookingNo)) {
+			return error("Hãy nhập số Booking");
+		}
 		Shipment shipment = new Shipment();
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBookingNo(bookingNo);
