@@ -77,7 +77,7 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 	@GetMapping("/shipment-detail-ids/{shipmentDetailIds}/form")
 	public String getVesselChangingForm(@PathVariable String shipmentDetailIds, ModelMap mmap) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
-		String opeCode = "" , vslNm = "", voyNo = "", carrierName = "", bookingNo = "", vslName = "";
+		String vslNm = "", voyNo = "", bookingNo = "", vslName = "";
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			vslNm = shipmentDetails.get(0).getVslNm();
 			voyNo = shipmentDetails.get(0).getVoyNo();

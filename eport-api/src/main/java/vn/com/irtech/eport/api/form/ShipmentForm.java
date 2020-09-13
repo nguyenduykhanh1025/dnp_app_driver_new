@@ -1,8 +1,11 @@
 package vn.com.irtech.eport.api.form;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ShipmentForm {
+public class ShipmentForm  implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	

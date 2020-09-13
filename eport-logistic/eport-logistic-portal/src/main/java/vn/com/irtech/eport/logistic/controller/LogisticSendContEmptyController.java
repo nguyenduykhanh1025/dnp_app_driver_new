@@ -130,7 +130,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds,
 			@PathVariable("creditFlag") boolean creditFlag, @PathVariable("taxCode") String taxCode, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
-		mmap.put("numberPhone", getGroup().getMobilePhone());
+		mmap.put("numberPhone", getUser().getMobile());
 		mmap.put("shipmentId", "-");
 		mmap.put("creditFlag", creditFlag);
 		mmap.put("taxCode", taxCode);
