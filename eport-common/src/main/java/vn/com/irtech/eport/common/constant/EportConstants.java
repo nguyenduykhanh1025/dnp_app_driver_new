@@ -31,15 +31,21 @@ public interface EportConstants {
 	/** Update booking*/ 
 	public static final int BOOKING_CREATE = 2;
 	
+	public static final String DROP_EMPTY_TO_VESSEL = "1";
+
+	public static final String DROP_EMPTY_TO_DEPORT = "0";
+	
 	// Shipment status
 	/** Lo duoc khoi tao*/
-	public static final String SHIPMENT_STATUS_DECLARE = "1";
+	public static final String SHIPMENT_STATUS_INIT = "1";
 	/** Lo duoc khai bao chi tiet*/
 	public static final String SHIPMENT_STATUS_SAVE = "2";
 	/** Lo dang trong qua trinh lam lenh*/
 	public static final String SHIPMENT_STATUS_PROCESSING = "3";
 	/** Lo da hoan thanh toan bo container*/
 	public static final String SHIPMENT_STATUS_FINISH = "4";
+	
+	// Shipment detail status
 	
 	// Robot Status
 	/** Robot is available */

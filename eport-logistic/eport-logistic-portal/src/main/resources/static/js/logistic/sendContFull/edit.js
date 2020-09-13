@@ -25,8 +25,8 @@ async function submitHandler() {
     if ($.validate.form()) {
         if ($("#opeCode option:selected").text() == 'Chọn OPR') {
             $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
-        } else if (!$("#containerAmount").val() || $("#containerAmount").val() < shipment.containerAmount) {
-            $.modal.alertWarning("Số lượng container quý khách muốn cập nhật không hợp lệ.");
+        } else if (!$("#containerAmount").val()) {
+            $.modal.alertWarning("Số lượng container cập nhật không hợp lệ.");
         } else {
             if ($("#bookingNo").val() != currentBooking) {
                 let res = await getBookingNoUnique();
@@ -80,6 +80,7 @@ function edit(url, data) {
             } else {
                 $.modal.alertError(result.msg);
             }
+            $.modal.enable();
         }
     })
 }

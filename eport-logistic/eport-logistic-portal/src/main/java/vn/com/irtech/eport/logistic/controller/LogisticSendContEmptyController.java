@@ -22,6 +22,7 @@ import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
@@ -287,7 +288,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult deleteShipmentDetail(@PathVariable Long shipmentId, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		if (shipmentDetailIds != null) {
-			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
+			shipmentDetailService.deleteShipmentDetailByIds(shipmentId, shipmentDetailIds);
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
 			if (shipmentDetailService.countShipmentDetailList(shipmentDetail) == 0) {
@@ -308,7 +309,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		try {
 			Long.parseLong(otp);
 		} catch (Exception e) {
-			return error("Mã OTP nhập vào không hợp lệ!");
+			return error("Mã OTP không hợp lệ. Vui lòng kiểm tra lại.");
 		}
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
@@ -322,21 +323,22 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
 		}
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
-		if (CollectionUtils.isNotEmpty(shipmentDetails)) { 
+		// Check if shipment details is valid.
+		if (CollectionUtils.isNotEmpty(shipmentDetails) && shipmentDetails.get(0) != null) {
 			AjaxResult ajaxResult = null;
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-			if (!"3".equals(shipment.getStatus())) {
-				shipment.setStatus("3");
-				shipment.setUpdateTime(new Date());
+			// Set Shipment status to "PROCESSING"
+			if (!EportConstants.SHIPMENT_STATUS_PROCESSING.equals(shipment.getStatus())) {
+				shipment.setStatus(EportConstants.SHIPMENT_STATUS_PROCESSING);
 				shipment.setUpdateBy(getUser().getFullName());
 				shipmentService.updateShipment(shipment);
 			}
 			//Đổi opeCode operateCode -> groupCode
-			CarrierGroup carrierGroup = carrierService.getCarrierGroupByOpeCode(shipment.getOpeCode().toUpperCase());
+			CarrierGroup carrierGroup = carrierService.getCarrierGroupByOpeCode(shipment.getOpeCode());
 			if(carrierGroup != null) {
-				if(! shipment.getOpeCode().toUpperCase().equals(carrierGroup.getGroupCode())) {
-					for(ShipmentDetail i : shipmentDetails) {
-						i.setOpeCode(carrierGroup.getGroupCode());
+				if(!shipment.getOpeCode().toUpperCase().equals(carrierGroup.getGroupCode())) {
+					for(ShipmentDetail sdetail : shipmentDetails) {
+						sdetail.setOpeCode(carrierGroup.getGroupCode());
 					}
 				}
 			}
@@ -358,6 +360,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 				return ajaxResult;
 			}
 		}
+		logger.error("Không tim thấy lô khi nhập OTP: " + shipmentDetailIds);
 		return error("Có lỗi xảy ra trong quá trình xác thực!");
 	}
 

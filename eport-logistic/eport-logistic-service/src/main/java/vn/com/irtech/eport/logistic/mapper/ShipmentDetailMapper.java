@@ -62,17 +62,11 @@ public interface ShipmentDetailMapper
      * @param ids IDs
      * @return result
      */
-    public int deleteShipmentDetailByIds(String[] ids);
+    public int deleteShipmentDetailByIds(@Param("shipmentId")Long shipmentId, @Param("shipmentDetailIds")String[] shipmentDetailIds);
 
     public List<ShipmentDetail> selectShipmentDetailByIds(@Param("shipmentDetailIds") String[] ids, @Param("logisticGroupId") Long logisticGroupId);
 
     public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
-
-    public List<String> getBlListByDoStatus(String keyString);
-
-    public List<String> getBlLists(String keyString);
-
-    public List<String> getBlListByPaymentStatus(String keyString);
 
     public long countShipmentDetailList(ShipmentDetail shipmentDetail);
     
@@ -154,9 +148,9 @@ public interface ShipmentDetailMapper
     public List<ShipmentDetail> selectShipmentDetailListReport(ShipmentDetail shipmentDetail);
     
     /**
-     * updateShipmentDetailForOMSupport is used for OM reset process status. Not use with another purpose
+     * resetShipmentDetailProcessStatus is used for OM reset process status. Not use with another purpose
      */
-    public int updateShipmentDetailForOMSupport(ShipmentDetail shipmentDetail);
+    public int resetShipmentDetailProcessStatus(ShipmentDetail shipmentDetail);
     
     /**
      * Select shipment detail for driver send cont on app mobile

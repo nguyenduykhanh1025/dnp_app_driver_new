@@ -67,7 +67,7 @@ var toolbar = [
     {
         text: '<button class="btn btn-sm btn-default"><i class="fa fa-remove text-danger"></i> Xóa</button>',
         handler: function () {
-            removeShipment()
+        	removeShipmentSendFull()
         },
     },
     {
@@ -1313,7 +1313,7 @@ function saveShipmentDetail() {
                 shipmentDetails[0].processStatus = conts;
                 $.modal.loading("Đang xử lý...");
                 $.ajax({
-                    url: prefix + "/shipment-detail",
+                    url: prefix + "/" + shipmentSelected.id + "/shipment-detail",
                     method: "post",
                     contentType: "application/json",
                     accept: 'text/plain',
@@ -1322,7 +1322,7 @@ function saveShipmentDetail() {
                     success: function (data) {
                         var result = JSON.parse(data);
                         if (result.code == 0) {
-                            $.modal.alertSuccess(result.msg);
+                            $.modal.msgSuccess(result.msg);
                             reloadShipmentDetail();
                         } else {
                             if (result.conts != null) {
@@ -1350,24 +1350,28 @@ function saveShipmentDetail() {
 // DELETE SHIPMENT DETAIL
 function deleteShipmentDetail() {
     if (getDataSelectedFromTable(true)) {
-        $.modal.loading("Đang xử lý...");
-        $.ajax({
-            url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
-            method: "delete",
-            success: function (result) {
-                if (result.code == 0) {
-                    $.modal.alertSuccess(result.msg);
-                    reloadShipmentDetail();
-                } else {
-                    $.modal.alertError(result.msg);
-                }
-                $.modal.closeLoading();
-            },
-            error: function (result) {
-                $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-                $.modal.closeLoading();
-            },
-        });
+    	$.modal.confirmShipment("Xác nhận xóa khai báo container ?", function() {
+	        $.modal.loading("Đang xử lý...");
+	        $.ajax({
+	            url: prefix + "/" + shipmentSelected.id + "/shipment-detail/delete",
+	            method: "post",
+	            contentType: "application/json",
+	            data: JSON.stringify({"ids":shipmentDetailIds}),
+	            success: function (result) {
+	                if (result.code == 0) {
+	                	$.modal.msgSuccess(result.msg)
+	                    reloadShipmentDetail();
+	                } else {
+	                    $.modal.alertError(result.msg);
+	                }
+	                $.modal.closeLoading();
+	            },
+	            error: function (result) {
+	                $.modal.alertError("Có lỗi trong quá trình xóa dữ liệu, vui lòng thử lại.");
+	                $.modal.closeLoading();
+	            },
+	        });
+    	});
     }
 }
 

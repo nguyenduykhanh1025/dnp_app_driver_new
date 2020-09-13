@@ -118,11 +118,16 @@ public class DriverCheckinController extends BaseController  {
 		List<LogisticTruck> chassisNos = logisticTruckService.selectLogisticTruckList(logisticTruckParam);
 		
 		if (CollectionUtils.isNotEmpty(chassisNos)) {
-			gateNotificationCheckInReq.setLoadableWgt(chassisNos.get(0).getWgt());
-			
 			if (CollectionUtils.isNotEmpty(truckNos)) {
-				gateNotificationCheckInReq.setDeduct(truckNos.get(0).getSelfWgt() + chassisNos.get(0).getSelfWgt());
+				try {
+					gateNotificationCheckInReq.setLoadableWgt(chassisNos.get(0).getWgt());
+					gateNotificationCheckInReq.setDeduct(truckNos.get(0).getSelfWgt() + chassisNos.get(0).getSelfWgt());
+				} catch(Exception ex) {
+					logger.warn(">>>>>>>>>>>>>>>>> Weight failed", ex);
+				}
 			}
+		} else {
+			logger.warn(">>>>>>>>>>>>>>>>> Khong tim thay ro-mooc");
 		}
 		
 		// Begin interate pickup history list get by driver id
@@ -190,6 +195,7 @@ public class DriverCheckinController extends BaseController  {
 		
 		String msg = new Gson().toJson(notificationReq);
 		try {
+			logger.warn(">>>>>>>>>>>>>>>>> Send GATE Dialog: " + msg);
 			mqttService.publish(MqttConsts.NOTIFICATION_GATE_TOPIC, new MqttMessage(msg.getBytes()));
 		} catch (MqttException e) {
 			logger.error("Error when try sending notification request check in for gate: " + e);

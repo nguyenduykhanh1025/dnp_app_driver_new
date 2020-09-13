@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.annotation.Log;
-import vn.com.irtech.eport.common.constant.Constants;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
@@ -35,6 +35,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
+import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
 import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
@@ -173,10 +174,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		LogisticAccount user = getUser();
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
-		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
-		shipment.setServiceType(Constants.SEND_CONT_FULL);
-		shipment.setStatus("1");
+		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
+		shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
 		if (shipmentService.insertShipment(shipment) == 1) {
 //			// assign driver default
 //			PickupAssign pickupAssign = new PickupAssign();
@@ -199,7 +199,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 //			}
 			return success("Thêm lô thành công");
 		}
-		return error("Thêm lô thất bại");
+		return error("Có lỗi khi thực hiện thêm lô, vui lòng thử lại");
 	}
 
 	@GetMapping("/unique/booking-no/{bookingNo}")
@@ -208,24 +208,41 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		Shipment shipment = new Shipment();
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBookingNo(bookingNo);
-		shipment.setServiceType(Constants.SEND_CONT_FULL);
+		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
 //		if(catosApiService.checkBookingNoForSendFReceiveE(bookingNo, "F").intValue() == 0) {
 //			return error("Booking No này chưa có trong hệ thống. Vui lòng liên hệ OM để tạo !");
 //		}
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
 			return success();
 		}
-		return error("Số book đã tồn tại!");
+		return error(String.format("Số Booking '%s' đã tồn tại!", bookingNo));
 	}
 	
 	@PostMapping("/shipment/{shipmentId}")
     @ResponseBody
-    public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
+    public AjaxResult editShipment(Shipment input, @PathVariable Long shipmentId) {
 		LogisticAccount user = getUser();
-		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
-		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
-			shipment.setUpdateTime(new Date());
+		Shipment shipment = shipmentService.selectShipmentById(input.getId());
+		if (verifyPermission(shipment.getLogisticGroupId())) {
+			// Chi update cac item cho phep
+			// Kiem tra co update so luong co giam -> kiem tra xem so luong details 
+			if(input.getContainerAmount() < shipment.getContainerAmount()) {
+				ShipmentDetail shipmentSearch = new ShipmentDetail();
+				shipmentSearch.setShipmentId(shipmentId);
+				long contNumber = shipmentDetailService.countShipmentDetailList(shipmentSearch);
+				if(contNumber > input.getContainerAmount()) {
+					return error("Không thể chỉnh sửa số lượng container nhỏ hơn danh sách khai báo.");
+				}
+			}
+			shipment.setContainerAmount(input.getContainerAmount());
+			shipment.setRemark(input.getRemark());
 			shipment.setUpdateBy(user.getFullName());
+			// Update OPR, Booking when status is 1 or 2
+			if(shipment.getStatus().equals(EportConstants.SHIPMENT_STATUS_INIT) || shipment.getStatus().equals(EportConstants.SHIPMENT_STATUS_SAVE)) {
+				shipment.setOpeCode(input.getOpeCode());
+				shipment.setBookingNo(input.getBookingNo());
+			}
+			
 			if (shipmentService.updateShipment(shipment) == 1) {
 				return success("Chỉnh sửa lô thành công");
 			}
@@ -245,40 +262,53 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			if (shipmentDetails != null) {
 				ajaxResult.put("shipmentDetails", shipmentDetails);
 			} else {
-				ajaxResult = AjaxResult.error();
+				ajaxResult = AjaxResult.error("Không tìm thấy thông tin lô hàng, vui lòng kiểm tra lại.");
 			}
+		} else {
+			ajaxResult = AjaxResult.error("Lô không tồn tại, vui lòng kiểm tra lại.");
 		}
+		
 		return ajaxResult;
 	}
 
 	@Log(title = "Khai Báo Cont", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/shipment-detail")
+	@PostMapping("/{shipmentId}/shipment-detail")
 	@ResponseBody
-	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
-		if (shipmentDetails != null) {
+	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails, @PathVariable("shipmentId") Long shipmentId) {
+		// Verify shipment
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		if (!verifyPermission(shipment.getLogisticGroupId())) {
+			return AjaxResult.error("Không tìm thấy lô, xin vui lòng kiểm tra lại");
+		}
+		// Check if list have one or more items
+		if (shipmentDetails != null && shipmentDetails.size() > 0) {
 			LogisticAccount user = getUser();
-			Shipment shipment = new Shipment();
-			shipment.setId(shipmentDetails.get(0).getShipmentId());
 			boolean updateShipment = true;
+			// Lay danh sach container da lam lenh booking
 			List<String> contReservedList = shipmentDetailService.checkContainerReserved(shipmentDetails.get(0).getProcessStatus());
 			if (contReservedList.size() > 0) {
+				// Thong bao loi khong the khai bao cho cac conts nay
 				AjaxResult ajaxResult = AjaxResult.error();
 				ajaxResult.put("conts", contReservedList);
 				return ajaxResult;
 			}
+			// Danh sachs shipment details co 2 truong hop: co container da tao tu truoc (id != null) va container vua tao (id ==null)
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				// ? Vi sao update process status = null ??
 				shipmentDetail.setProcessStatus(null);
+				// Giu lai cac thong tin khong the overwrite kih update
+				shipmentDetail.setShipmentId(shipmentId);
+				shipmentDetail.setLogisticGroupId(user.getGroupId());
+				shipmentDetail.setServiceType(EportConstants.SERVICE_DROP_FULL);
+				// T/H container da ton tai
 				if (shipmentDetail.getId() != null) {
 					updateShipment = false;
 					shipmentDetail.setUpdateBy(user.getFullName());
-					shipmentDetail.setUpdateTime(new Date());
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
 				} else {
-					shipmentDetail.setLogisticGroupId(user.getGroupId());
 					shipmentDetail.setCreateBy(user.getFullName());
-					shipmentDetail.setCreateTime(new Date());
 					shipmentDetail.setStatus(1);
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setUserVerifyStatus("N");
@@ -292,9 +322,8 @@ public class LogisticSendContFullController extends LogisticBaseController {
 				}
 			}
 			if (updateShipment) {
-				shipment.setUpdateTime(new Date());
 				shipment.setUpdateBy(getUser().getFullName());
-				shipment.setStatus("2");
+				shipment.setStatus(EportConstants.SHIPMENT_STATUS_SAVE);
 				shipmentService.updateShipment(shipment);
 			}
 			return success("Lưu khai báo thành công");
@@ -303,23 +332,30 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	}
 
 	@Log(title = "Xóa Khai Báo Cont", businessType = BusinessType.DELETE, operatorType = OperatorType.LOGISTIC)
-	@DeleteMapping("/shipment/{shipmentId}/shipment-detail/{shipmentDetailIds}")
+	@PostMapping("/{shipmentId}/shipment-detail/delete")
 	@Transactional
 	@ResponseBody
-	public AjaxResult deleteShipmentDetail(@PathVariable Long shipmentId, @PathVariable String shipmentDetailIds) {
+	public AjaxResult deleteShipmentDetail(@PathVariable("shipmentId") Long shipmentId, @RequestBody ContainerServiceForm inputForm) {
+		// check shipment permission
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		if (!verifyPermission(shipment.getLogisticGroupId())) {
+			return AjaxResult.error("Không tìm thấy lô, xin vui lòng kiểm tra lại");
+		}
+		String shipmentDetailIds = inputForm.getIds();
+		// delete shipment details
 		if (shipmentDetailIds != null) {
-			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
+			// just delete shipmentIds for shipment has been verified before
+			shipmentDetailService.deleteShipmentDetailByIds(shipmentId, shipmentDetailIds);
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
+			// Reset status shipment to INIT if deleted all shipment details
 			if (shipmentDetailService.countShipmentDetailList(shipmentDetail) == 0) {
-				Shipment shipment = new Shipment();
-				shipment.setId(shipmentId);
-				shipment.setStatus("1");
+				shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
 				shipmentService.updateShipment(shipment);
 			}
-			return success("Lưu khai báo thành công");
+			return success("Xóa khai báo thành công");
 		}
-		return error("Lưu khai báo thất bại");
+		return error("Xóa khai báo thất bại");
 	}
 
 	@Log(title = "Xác Nhận OTP", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
@@ -340,15 +376,14 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		otpCode.setCreateTime(cal.getTime());
 		otpCode.setOtpCode(otp);
 		if (otpCodeService.verifyOtpCodeAvailable(otpCode) != 1) {
-			return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
+			return error("Mã OTP không chính xác hoặc đã hết hạn, xin vui lòng kiểm tra lại.");
 		}
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			AjaxResult ajaxResult = null;
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-			if (!"3".equals(shipment.getStatus())) {
-				shipment.setStatus("3");
-				shipment.setUpdateTime(new Date());
+			if (!EportConstants.SHIPMENT_STATUS_PROCESSING.equals(shipment.getStatus())) {
+				shipment.setStatus(EportConstants.SHIPMENT_STATUS_PROCESSING);
 				shipment.setUpdateBy(getUser().getFullName());
 				shipmentService.updateShipment(shipment);
 			}
@@ -357,7 +392,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 				ServiceSendFullRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
 				try {
 					if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL)) {
-						ajaxResult = AjaxResult.warn("Yêu cầu đang được chờ xử lý, quý khách vui lòng đợi trong giây lát.");
+						ajaxResult = AjaxResult.warn("Yêu cầu đang được xử lý, xin vui lòng đợi trong giây lát.");
 						ajaxResult.put("processId", processOrder.getId());
 						return ajaxResult;
 					}
@@ -366,7 +401,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
 				
-				ajaxResult =  AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
+				ajaxResult =  AjaxResult.success("Yêu cầu đang được xử lý, xin vui lòng đợi trong giây lát.");
 				ajaxResult.put("processId", processOrder.getId());
 				return ajaxResult;
 			}
@@ -381,7 +416,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				shipmentDetail.setStatus(3);
+				shipmentDetail.setStatus(3); // TODO Chuyen thanh dung EportConstants
 				shipmentDetail.setPaymentStatus("Y");
 				if ("VN".equals(shipmentDetail.getDischargePort().substring(0,2))) {
 					shipmentDetail.setStatus(4);
@@ -398,12 +433,14 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@PostMapping("/custom-status/shipment-detail")
 	@ResponseBody
 	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNos") String declareNoList, @RequestParam(value = "shipmentDetailIds") String shipmentDetailIds) {
+		// FIXME chuyen params thanh POST REQUEST BODY
 		if (StringUtils.isNotEmpty(declareNoList)) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 				for (ShipmentDetail shipmentDetail : shipmentDetails) {
 					// Save declare no list to shipment detail
 					shipmentDetail.setCustomsNo(declareNoList);
+					shipmentDetail.setCustomScanTime(new Date());
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					customQueueService.offerShipmentDetail(shipmentDetail);
 				}
