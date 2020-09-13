@@ -94,7 +94,7 @@ public class LogisticExtensionOrderController extends LogisticBaseController {
 	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("expiredDem") String expiredDem , ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("expiredDem", expiredDem);
-		mmap.put("numberPhone", getGroup().getMobilePhone());
+		mmap.put("numberPhone", getUser().getMobile());
 		return PREFIX + "/otp";
 	}
 	

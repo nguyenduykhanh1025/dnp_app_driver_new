@@ -115,7 +115,7 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("vessel") String vessel , ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("vessel", vessel);
-		mmap.put("numberPhone", getGroup().getMobilePhone());
+		mmap.put("numberPhone", getUser().getMobile());
 		return PREFIX + "/otp";
 	}
 	

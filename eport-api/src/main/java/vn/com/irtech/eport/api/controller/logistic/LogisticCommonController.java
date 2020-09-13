@@ -31,7 +31,6 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.bean.BeanUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
-import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
@@ -139,8 +138,6 @@ public class LogisticCommonController extends LogisticBaseController {
 	@GetMapping("/shipment/{shipmentId}/otp")
 	@ResponseBody
 	public AjaxResult sendOTP(@PathVariable("shipmentId") Long shipmentId) {
-		LogisticGroup lGroup = getLogisticGroup();
-
 		OtpCode otpCode = new OtpCode();
 		Random rd = new Random();
 		long rD = rd.nextInt(900000)+100000;
@@ -161,7 +158,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
 
 		otpCode.setTransactionId(shipmentDetailIds);
-		otpCode.setPhoneNumber(lGroup.getMobilePhone());
+		otpCode.setPhoneNumber(getUser().getMobile());
 		otpCode.setOtpCode(tDCode);
 		otpCode.setOtpType("1");
 
@@ -176,7 +173,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		content = content.replace("{shipmentId}", shipmentId.toString()).replace("{otp}", tDCode);
 		String response = "";
 		 try {
-		 	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(), content);
+		 	response = otpCodeService.postOtpMessage(getUser().getMobile(), content);
 		 	logger.debug("OTP Send Response: " + response);
 		 } catch (IOException ex) {
 		 	// process the exception

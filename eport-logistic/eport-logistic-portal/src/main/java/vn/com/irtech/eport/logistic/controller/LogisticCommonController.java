@@ -150,7 +150,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
 
 		otpCode.setTransactionId(shipmentDetailIds);
-		otpCode.setPhoneNumber(lGroup.getMobilePhone());
+		otpCode.setPhoneNumber(getUser().getMobile());
 		otpCode.setOtpCode(tDCode);
 		otpCode.setOtpType("1");
 
@@ -167,7 +167,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		content = content.replace("{shipmentId}", shipmentDetail.getShipmentId().toString()).replace("{otp}", tDCode);
 		String response = "";
 		 try {
-		 	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(), content);
+		 	response = otpCodeService.postOtpMessage(getUser().getMobile(), content);
 		 	System.out.println(response);
 		 	logger.debug("OTP Send Response: " + response);
 		 } catch (IOException ex) {
