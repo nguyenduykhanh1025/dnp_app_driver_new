@@ -300,7 +300,7 @@ $.ajaxSetup({
         	$.modal.enable();
             $.modal.closeLoading();
         } else if (textStatus == "parsererror" || textStatus == "error") {
-        	$.modal.alertWarning("Không thể kết nối với server, vui lòng thử lại.");
+        	$.modal.alertWarning("Có lỗi khi gửi yêu cầu đến server, vui lòng thử lại.");
         	$.modal.enable();
             $.modal.closeLoading();
         }
