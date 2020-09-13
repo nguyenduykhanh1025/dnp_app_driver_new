@@ -152,8 +152,9 @@ $(document).ready(function () {
     });
 
     let now = new Date();
-    now.setHours(0, 0, 0, 0);
-    $('#fromDate').datebox('setValue', ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear());
+    now = new Date(now.getFullYear(), now.getMonth(), 1);
+    let nowStr = ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear();
+    $('#fromDate').datebox('setValue', nowStr);
     shipmentSearch.params.fromDate = dateToString(now);
 
     $('#toDate').datebox({
@@ -530,20 +531,6 @@ function qualityRequirementRenderer(instance, td, row, col, prop, value, cellPro
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
-// function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
-//     $(td).attr('id', 'opeCode' + row).addClass("htMiddle");
-//     if (value != null && value != '') {
-//         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
-//             cellProperties.readOnly = 'true';
-//             $(td).css("background-color", "rgb(232, 232, 232)");
-//         }
-//     }
-//     if (!value) {
-//         value = '';
-//     }
-//     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-//     return td;
-// }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
     if (value != null && value != '') {
@@ -558,7 +545,20 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
-
+function etaRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'eta' + row).addClass("htMiddle").addClass("htCenter");
+    if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+        }
+    } else {
+        value = '';
+    }
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
     if (value != null && value != '') {
@@ -681,25 +681,25 @@ function configHandson() {
                     return '<span class="required">Loại Hàng</span>';
                 case 8:
                     return 'Yêu Cầu <br>Chất Lượng';
-                // case 9:
-                //     return '<span class="required">Hãng Tàu</span>';
                 case 9:
                     return '<span class="required">Tàu và Chuyến</span>';
                 case 10:
-                    return '<span class="required">Cảng Dỡ Hàng</span>';
+                    return "Ngày tàu đến";
                 case 11:
-                    return 'Cấp Container <br>Ghi Chú';
+                    return '<span class="required">Cảng Dỡ Hàng</span>';
                 case 12:
-                    return 'PTTT';
+                    return 'Cấp Container <br>Ghi Chú';
                 case 13:
-                    return 'MST Người Trả Tiền';
+                    return 'PTTT';
                 case 14:
-                    return 'Tên Cty Thanh Toán';
+                    return 'Mã Số Thuế';
                 case 15:
+                    return 'Người Thanh Toán';
+                case 16:
                     return "Ghi Chú";
             }
         },
-        colWidths: [40, 100, 100, 150, 100, 200, 100, 80, 150, 150, 120, 150, 100, 130, 130, 200],
+        colWidths: [40, 100, 100, 150, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200],
         filter: "true",
         columns: [
             {
@@ -758,19 +758,16 @@ function configHandson() {
                 data: "qualityRequirement",
                 renderer: qualityRequirementRenderer
             },
-            // {
-            //     data: "opeCode",
-            //     type: "autocomplete",
-            //     source: opeCodeList,
-            //     strict: true,
-            //     renderer: opeCodeRenderer
-            // },
             {
                 data: "vslNm",
                 type: "autocomplete",
                 source: vslNmList,
                 strict: true,
                 renderer: vslNmRenderer
+            },
+            {
+                data: "eta",
+                renderer: etaRenderer
             },
             {
                 data: "dischargePort",
@@ -849,36 +846,41 @@ function onChange(changes, source) {
             let vesselAndVoy = hot.getDataAtCell(change[0], 9);
             //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
             if (vesselAndVoy) {
-                let shipmentDetail = new Object();
-                for (let i= 0; i < berthplanList.length;i++){
-                    if(vesselAndVoy == berthplanList[i].vslAndVoy){
-                        shipmentDetail.vslNm = berthplanList[i].vslNm;
-                        shipmentDetail.voyNo = berthplanList[i].voyNo;
-                        shipmentDetail.year = berthplanList[i].year;
-                        $.modal.loading("Đang xử lý ...");
-                        $.ajax({
-                            url: ctx + "/logistic/pods",
-                            method: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify(shipmentDetail),
-                            success: function (data) {
-                            $.modal.closeLoading();
-                                if (data.code == 0) {
-                                    hot.updateSettings({
-                                        cells: function (row, col, prop) {
-                                            if (col == 10) {
-                                                let cellProperties = {};
-                                                dischargePortList = data.dischargePorts;
-                                                cellProperties.source = dischargePortList;
-                                                return cellProperties;
+                if (currentVesselVoyage != vesselAndVoy) {
+                    currentVesselVoyage = vesselAndVoy;
+                    let shipmentDetail = new Object();
+                    for (let i= 0; i < berthplanList.length;i++){
+                        if(vesselAndVoy == berthplanList[i].vslAndVoy){
+                            currentEta = berthplanList[i].eta;
+                            shipmentDetail.vslNm = berthplanList[i].vslNm;
+                            shipmentDetail.voyNo = berthplanList[i].voyNo;
+                            shipmentDetail.year = berthplanList[i].year;
+                            $.modal.loading("Đang xử lý ...");
+                            $.ajax({
+                                url: ctx + "/logistic/pods",
+                                method: "POST",
+                                contentType: "application/json",
+                                data: JSON.stringify(shipmentDetail),
+                                success: function (data) {
+                                $.modal.closeLoading();
+                                    if (data.code == 0) {
+                                        hot.updateSettings({
+                                            cells: function (row, col, prop) {
+                                                if (col == 11) {
+                                                    let cellProperties = {};
+                                                    dischargePortList = data.dischargePorts;
+                                                    cellProperties.source = dischargePortList;
+                                                    return cellProperties;
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
                                 }
-                            }
-                        });
-              	    }
+                            });
+                        }
+                    }
                 }
+                hot.setDataAtCell(change[0], 10, currentEta);
             }
         }
     });
@@ -1058,6 +1060,7 @@ function getDataSelectedFromTable(isValidate) {
         shipmentDetail.paymentStatus = object["paymentStatus"];
         shipmentDetail.userVerifyStatus = object["userVerifyStatus"];
         shipmentDetail.status = object["status"];
+        shipmentDetail.eta = object["eta"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);
@@ -1194,6 +1197,7 @@ function getDataFromTable(isValidate) {
         shipmentDetail.cargoType = object["cargoType"];
         shipmentDetail.qualityRequirement = object["qualityRequirement"];
         shipmentDetail.consignee = object["consignee"];
+        shipmentDetail.eta = object["eta"];
         shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
         shipmentDetail.remark = object["remark"];
         if(berthplanList){
@@ -1256,7 +1260,7 @@ function saveShipmentDetail() {
         return;
     } else {
         if (getDataFromTable(true)) {
-            if (shipmentDetails.length > 0 && shipmentDetails.length == shipmentSelected.containerAmount) {
+            if (shipmentDetails.length > 0) {
                 $.modal.loading("Đang xử lý...");
                 $.ajax({
                     url: prefix + "/shipment-detail",
@@ -1280,8 +1284,6 @@ function saveShipmentDetail() {
                         $.modal.closeLoading();
                     },
                 });
-            } else if (shipmentDetails.length < shipmentSelected.containerAmount) {
-                $.modal.alertError("Quý khách chưa nhập đủ số lượng container.");
             } else {
                 $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
             }
@@ -1366,11 +1368,11 @@ function exportBill() {
 
 // Handling UI STATUS
 function setLayoutRegisterStatus() {
-    // $("#registerStatus").removeClass("label-primary disable").addClass("active");
-    // $("#contSupplyStatus").removeClass("label-primary active").addClass("disable");
-    // $("#verifyStatus").removeClass("label-primary active").addClass("disable");
-    // $("#paymentStatus").removeClass("label-primary active").addClass("disable");
-    // $("#finishStatus").removeClass("label-primary active").addClass("disable");
+    $("#registerStatus").removeClass("label-primary disable").addClass("active");
+    $("#contSupplyStatus").removeClass("label-primary active").addClass("disable");
+    $("#verifyStatus").removeClass("label-primary active").addClass("disable");
+    $("#paymentStatus").removeClass("label-primary active").addClass("disable");
+    $("#finishStatus").removeClass("label-primary active").addClass("disable");
     $("#contSupplyBtn").prop("disabled", true);
     $("#verifyBtn").prop("disabled", true);
     $("#payBtn").prop("disabled", true);
@@ -1379,11 +1381,11 @@ function setLayoutRegisterStatus() {
 }
 
 function setLayoutSupplyContReq() {
-    // $("#registerStatus").removeClass("active disable").addClass("label-primary");
-    // $("#contSupplyStatus").removeClass("label-primary disable").addClass("active");
-    // $("#verifyStatus").removeClass("label-primary active").addClass("disable");
-    // $("#paymentStatus").removeClass("label-primary active").addClass("disable");
-    // $("#finishStatus").removeClass("label-primary active").addClass("disable");
+    $("#registerStatus").removeClass("active disable").addClass("label-primary");
+    $("#contSupplyStatus").removeClass("label-primary disable").addClass("active");
+    $("#verifyStatus").removeClass("label-primary active").addClass("disable");
+    $("#paymentStatus").removeClass("label-primary active").addClass("disable");
+    $("#finishStatus").removeClass("label-primary active").addClass("disable");
     $("#contSupplyBtn").prop("disabled", false);
     $("#verifyBtn").prop("disabled", true);
     $("#payBtn").prop("disabled", true);
@@ -1392,11 +1394,11 @@ function setLayoutSupplyContReq() {
 }
 
 function setLayoutVerifyUserStatus() {
-    // $("#registerStatus").removeClass("active disable").addClass("label-primary");
-    // $("#contSupplyStatus").removeClass("active disable").addClass("label-primary");
-    // $("#verifyStatus").removeClass("label-primary disable").addClass("active");
-    // $("#paymentStatus").removeClass("active label-primary").addClass("disable");
-    // $("#finishStatus").removeClass("active label-primary").addClass("disable");
+    $("#registerStatus").removeClass("active disable").addClass("label-primary");
+    $("#contSupplyStatus").removeClass("active disable").addClass("label-primary");
+    $("#verifyStatus").removeClass("label-primary disable").addClass("active");
+    $("#paymentStatus").removeClass("active label-primary").addClass("disable");
+    $("#finishStatus").removeClass("active label-primary").addClass("disable");
     $("#contSupplyBtn").prop("disabled", false);
     $("#verifyBtn").prop("disabled", false);
     $("#payBtn").prop("disabled", true);
@@ -1405,11 +1407,11 @@ function setLayoutVerifyUserStatus() {
 }
 
 function setLayoutPaymentStatus() {
-    // $("#registerStatus").removeClass("active disable").addClass("label-primary");
-    // $("#contSupplyStatus").removeClass("active disable").addClass("label-primary");
-    // $("#verifyStatus").removeClass("active disable").addClass("label-primary");
-    // $("#paymentStatus").removeClass("label-primary disable").addClass("active");
-    // $("#finishStatus").removeClass("active label-primary").addClass("disable");
+    $("#registerStatus").removeClass("active disable").addClass("label-primary");
+    $("#contSupplyStatus").removeClass("active disable").addClass("label-primary");
+    $("#verifyStatus").removeClass("active disable").addClass("label-primary");
+    $("#paymentStatus").removeClass("label-primary disable").addClass("active");
+    $("#finishStatus").removeClass("active label-primary").addClass("disable");
     $("#contSupplyBtn").prop("disabled", true);
     $("#deleteBtn").prop("disabled", true);
     $("#verifyBtn").prop("disabled", true);
@@ -1419,11 +1421,11 @@ function setLayoutPaymentStatus() {
 }
 
 function setLayoutFinishStatus() {
-    // $("#registerStatus").removeClass("active disable").addClass("label-primary");
-    // $("#contSupplyStatus").removeClass("active disable").addClass("label-primary");
-    // $("#verifyStatus").removeClass("active disable").addClass("label-primary");
-    // $("#paymentStatus").removeClass("active disable").addClass("label-primary");
-    // $("#finishStatus").removeClass("label-primary disable").addClass("active");
+    $("#registerStatus").removeClass("active disable").addClass("label-primary");
+    $("#contSupplyStatus").removeClass("active disable").addClass("label-primary");
+    $("#verifyStatus").removeClass("active disable").addClass("label-primary");
+    $("#paymentStatus").removeClass("active disable").addClass("label-primary");
+    $("#finishStatus").removeClass("label-primary disable").addClass("active");
     $("#contSupplyBtn").prop("disabled", true);
     $("#deleteBtn").prop("disabled", true);
     $("#verifyBtn").prop("disabled", true);

@@ -9,7 +9,10 @@ function confirm() {
             method: "post",
             data: {
                 shipmentDetailIds : shipmentDetailIds,
-                vessel : vessel
+                vslNm : vslNm,
+                voyNo : voyNo,
+                vslName : vslName,
+                voyCarrier : voyCarrier
             },
             success: function (data) {
                 if (data.code != 0 && data.code != 301) {
@@ -88,6 +91,7 @@ function getOtp() {
     }
 }
 
-$("#p1").html("Mã OTP sẽ được gửi đến số điện thoại " + numberPhone + ".");
-
-getOtp();
+$(function() {
+	$("#p1").html("Mã OTP sẽ được gửi đến số điện thoại " + numberPhone + ".");
+	getOtp();
+});

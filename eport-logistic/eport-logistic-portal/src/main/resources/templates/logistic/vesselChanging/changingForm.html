@@ -20,12 +20,6 @@
             </div>
             <div>
                 <div class="form-group row">
-                    <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Hãng tàu cũ</label>
-                    <div class="col-md-10 col-sm-9 col-xs-7">
-                        <input th:value="${opeCode}" type="text" class="form-control" readonly />
-                    </div>
-                </div>
-                <div class="form-group row">
                     <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Tàu/chuyến cũ</label>
                     <div class="col-md-10 col-sm-9 col-xs-7">
                         <input th:value="${vessel}" type="text" class="form-control" readonly />
@@ -35,20 +29,20 @@
             <div>
                 <div class="form-group row">
                     <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">
-                        <span style="color: red;">*</span>Hãng tàu mới</label>
+                        <span style="color: red;">*</span>Tàu/chuyến mới</label>
                     <div class="col-md-10 col-sm-9 col-xs-7">
-                        <select class="form-control" onfocus="removeOpeCodeError()" id="opeCodeList">
-                            <option th:each="opeCode, iterator : ${opeCodeList}" th:value=${opeCode} th:text=${opeCode}>
+                        <select class="form-control" onfocus="removeVesselError()" id="vesselList">
+                            <option th:each="vesselAndVoyage, iterator : ${vesselAndVoyages}" th:value=${vesselAndVoyage} th:text=${vesselAndVoyage}>
                             </option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">
-                        <span style="color: red;">*</span>Tàu/chuyến mới</label>
+                        <span style="color: red;">*</span>Cảng dỡ hàng</label>
                     <div class="col-md-10 col-sm-9 col-xs-7">
-                        <select class="form-control" onfocus="removeVesselError()" id="vesselList">
-                            <option value="" selected>Chọn tàu/chuyến</option>
+                        <select class="form-control" onfocus="removePod()" id="podList">
+                            <option value="" selected>Chọn cảng dỡ</option>
                         </select>
                     </div>
                 </div>
@@ -62,6 +56,7 @@
     <th:block th:include="include :: footer" />
     <script type="text/javascript" th:inline="javascript">
         var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
+        var berthplanList = /*[[${berthplanList}]]*/;
     </script>
     <script th:src="@{/js/logistic/vesselChanging/changingForm.js}"></script>
 </body>

@@ -43,6 +43,7 @@ import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
+import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
 import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
@@ -182,20 +183,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return PREFIX + "/paymentForm";
 	}
 
-	@GetMapping("/unique/bl-no/{blNo}")
-	@ResponseBody
-	public AjaxResult checkBlNoUnique(@PathVariable String blNo) {
-		Shipment shipment = new Shipment();
-		shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
-		shipment.setLogisticGroupId(getUser().getGroupId());
-		shipment.setBlNo(blNo);
-		shipment.setLogisticGroupId(getUser().getGroupId());
-		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
-			return success();
-		}
-		return error();
-	}
-
 	@Log(title = "Thêm Lô Bốc Hàng", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment")
 	@Transactional
@@ -218,27 +205,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
 		shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
-		shipment.setStatus("1");
+		shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
 		if (shipmentService.insertShipment(shipment) == 1) {
-//			// assign driver default
-//			PickupAssign pickupAssign = new PickupAssign();
-//			pickupAssign.setLogisticGroupId(getUser().getGroupId());
-//			pickupAssign.setShipmentId(shipment.getId());
-//			//list driver
-//			DriverAccount driverAccount = new DriverAccount();
-//			driverAccount.setLogisticGroupId(getUser().getGroupId());
-//			driverAccount.setDelFlag(false);
-//			driverAccount.setStatus("0");
-//			List<DriverAccount> driverAccounts = driverAccountService.selectDriverAccountList(driverAccount);
-//			if(driverAccounts.size() > 0) {
-//				for(DriverAccount i : driverAccounts) {
-//					pickupAssign.setDriverId(i.getId());
-//					pickupAssign.setFullName(i.getFullName());
-//					pickupAssign.setPhoneNumber(i.getMobileNumber());
-//					pickupAssign.setCreateBy(getUser().getFullName());
-//					pickupAssignService.insertPickupAssign(pickupAssign);
-//				}
-//			}
 			return success("Thêm lô thành công");
 		}
 		return error("Thêm lô thất bại");
@@ -252,9 +220,24 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		//check if current user own shipment
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
-			shipment.setUpdateTime(new Date());
-			shipment.setUpdateBy(user.getFullName());
-			if (shipmentService.updateShipment(shipment) == 1) {
+			// Chi update cac item cho phep
+			referenceShipment.setUpdateBy(user.getFullName());
+			referenceShipment.setRemark(shipment.getRemark());
+
+			// Can change bill of lading when status = initialize => another item change accordingly
+			if (EportConstants.SHIPMENT_STATUS_INIT.equals(referenceShipment.getStatus())) {
+				if (StringUtils.isNotEmpty(shipment.getBlNo())) {
+					referenceShipment.setBlNo(shipment.getBlNo().toUpperCase());
+				}
+				
+				if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
+					referenceShipment.setHouseBill(shipment.getHouseBill().toUpperCase());
+				}
+				referenceShipment.setOpeCode(shipment.getOpeCode());
+				referenceShipment.setEdoFlg(shipment.getEdoFlg());
+			}
+			
+			if (shipmentService.updateShipment(referenceShipment) == 1) {
 				return success("Chỉnh sửa lô thành công");
 			}
 		}
@@ -610,9 +593,13 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return ajaxResult;
 	}
 	
-	@GetMapping("/shipment/bl-no/{blNo}")
+	@PostMapping("/shipment/bl-no")
 	@ResponseBody
-	public AjaxResult checkShipmentInforByBlNo(@PathVariable String blNo) {
+	public AjaxResult checkShipmentInforByBlNo(@RequestBody ContainerServiceForm inputForm) {
+		String blNo = inputForm.getBlNo();
+		if (StringUtils.isNotEmpty(blNo)) {
+			blNo = blNo.toUpperCase();
+		}
 		AjaxResult ajaxResult = new AjaxResult();
 		Shipment shipment = new Shipment();
 		//check bill unique

@@ -1,30 +1,39 @@
 var prefix = ctx + "logistic/vessel-changing";
-var berthplanList;
+var podList;
 
-$('#opeCodeList').change(function() {
-    let vesselOption = '<option value="" selected>Chọn tàu/chuyến</option>';
-    if ("Chọn" != $('#opeCodeList').val()) {
+$('#vesselList').change(function() {
+    let podOption = '<option value="" selected>Chọn cảng dỡ</option>';
+    if ("Chọn" != $('#vesselList').val()) {
         $.modal.loading("Đang xử lý ...");
-        $.ajax({
-            url: prefix + "/berthplan/ope-code/"+ $("#opeCodeList").val().split(":")[0] +"/vessel-voyage/list",
-            method: "GET",
-            success: function (data) {
-                $.modal.closeLoading();
-                if (data.code == 0) {
-                    berthplanList = data.berthplanList;
-                    $.each(data.vesselAndVoyages, function(index, value) {
-                        vesselOption += '<option value="' + value + '" selected>' + value + '</option>';
-                    });
-                    $("#vesselList").html(vesselOption);
-                } else if (data.code == 301) {
-                    $.modal.alertWarning(data.msg);
-                }
-            },
-            error: function() {
-                $.modal.closeLoading();
-                $.modal.alertError("Có lỗi xảy ra trong quá trình truy xuất dữ liệu, vui lòng liên hệ với admin.");
+        let shipmentDetail = new Object();
+        for (let i = 0; i < berthplanList.length; i++) {
+            if ($('#vesselList option:selected').text() == berthplanList[i].vslAndVoy) {
+                shipmentDetail.vslNm = berthplanList[i].vslNm;
+                shipmentDetail.voyNo = berthplanList[i].voyNo;
+                shipmentDetail.year = berthplanList[i].year;
+                $.modal.loading("Đang xử lý ...");
+                $.ajax({
+                    url: ctx + "/logistic/pods",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(shipmentDetail),
+                    success: function (data) {
+                        $.modal.closeLoading();
+                        if (data.code == 0) {
+                            podList = data.dischargePorts;
+                            $.each(podList, function(index, value) {
+                                podOption += '<option value="' + value + '">' + value + '</option>';
+                            });
+                            $("#podList").html(podOption);
+                        }
+                    },
+                    error: function() {
+                        $.modal.closeLoading();
+                        $.modal.alertError("Có lỗi xảy ra trong quá trình truy xuất dữ liệu, vui lòng liên hệ với admin.");
+                    }
+                });
             }
-        });
+        }
     }
 });
 
@@ -34,10 +43,7 @@ function closeForm() {
 }
 
 function confirm() {
-    if ("Chọn" == $('#opeCodeList').val()) {
-        $('#opeCodeList').addClass("error-input");
-        $.modal.alertError("Quý khách chưa chọn hãng tàu.");
-    } else if ("" == $("#vesselList").val()) {
+    if ("" == $("#vesselList").val()) {
         $("#vesselList").addClass("error-input");
         $.modal.alertError("Quý khách chựa chọn tàu/chuyến.");
     } else {
@@ -56,10 +62,10 @@ function confirm() {
     }
 }
 
-function removeOpeCodeError() {
-    $('#opeCodeList').removeClass("error-input");
-}
-
 function removeVesselError() {
     $('#vesselList').removeClass("error-input");
+}
+
+function removePod() {
+    $('#podList').removeClass("error-input");
 }

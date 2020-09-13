@@ -172,31 +172,15 @@ public class LogisticSendContFullController extends LogisticBaseController {
     @ResponseBody
     public AjaxResult addShipment(Shipment shipment) {
 		LogisticAccount user = getUser();
+		if (StringUtils.isNotEmpty(shipment.getBookingNo())) {
+			shipment.setBookingNo(shipment.getBookingNo().toUpperCase());
+		}
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateBy(user.getFullName());
 		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
 		shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
 		if (shipmentService.insertShipment(shipment) == 1) {
-//			// assign driver default
-//			PickupAssign pickupAssign = new PickupAssign();
-//			pickupAssign.setLogisticGroupId(getUser().getGroupId());
-//			pickupAssign.setShipmentId(shipment.getId());
-//			//list driver
-//			DriverAccount driverAccount = new DriverAccount();
-//			driverAccount.setLogisticGroupId(getUser().getGroupId());
-//			driverAccount.setDelFlag(false);
-//			driverAccount.setStatus("0");
-//			List<DriverAccount> driverAccounts = driverAccountService.selectDriverAccountList(driverAccount);
-//			if(driverAccounts.size() > 0) {
-//				for(DriverAccount i : driverAccounts) {
-//					pickupAssign.setDriverId(i.getId());
-//					pickupAssign.setFullName(i.getFullName());
-//					pickupAssign.setPhoneNumber(i.getMobileNumber());
-//					pickupAssign.setCreateBy(getUser().getFullName());
-//					pickupAssignService.insertPickupAssign(pickupAssign);
-//				}
-//			}
 			return success("Thêm lô thành công");
 		}
 		return error("Có lỗi khi thực hiện thêm lô, vui lòng thử lại");
@@ -242,9 +226,13 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			shipment.setRemark(input.getRemark());
 			shipment.setUpdateBy(user.getFullName());
 			// Update OPR, Booking when status is 1 or 2
-			if(shipment.getStatus().equals(EportConstants.SHIPMENT_STATUS_INIT) || shipment.getStatus().equals(EportConstants.SHIPMENT_STATUS_SAVE)) {
+			if(shipment.getStatus().equals(EportConstants.SHIPMENT_STATUS_INIT)) {
 				shipment.setOpeCode(input.getOpeCode());
-				shipment.setBookingNo(input.getBookingNo());
+				if (StringUtils.isNotEmpty(input.getBookingNo())) {
+					shipment.setBookingNo(input.getBookingNo().toUpperCase());
+				}
+			} else if (shipment.getStatus().equals(EportConstants.SHIPMENT_STATUS_SAVE)) {
+				shipment.setOpeCode(input.getOpeCode());
 			}
 			
 			if (shipmentService.updateShipment(shipment) == 1) {
@@ -500,20 +488,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		}
 		return error();
 	}
-	
-//	@PostMapping("berthplan/container/infor")
-//	@ResponseBody
-//	public AjaxResult getInforContainer(@RequestBody ShipmentDetail shipmentDetail) {
-//		AjaxResult ajaxResult = success();
-//		shipmentDetail.setFe("F");
-//		ShipmentDetail rs = catosApiService.getInforSendFReceiveE(shipmentDetail);
-//		if(rs != null) {
-//			ajaxResult.put("shipmentDetail", rs);
-//			return ajaxResult;
-//		}
-//		return error();
-//	}
-//	
 	
 	@GetMapping("/containerNo/{containerNo}/sztp")
 	@ResponseBody
