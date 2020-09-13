@@ -502,9 +502,9 @@
 						data: JSON.stringify(delegatedLogistic)
 					}).done(function (res) {
 						if (res.code == 0) {
-							$.modal.alertSuccess("Thêm ủy quyền thành công.");
+							$.modal.msgSuccess("Thêm ủy quyền thành công.");
 						} else {
-							$.modal.alertError("Thêm ủy quyền thất bại.");
+							$.modal.msgError("Thêm ủy quyền thất bại.");
 						}
 						loadtable();
 						delegatedLogistic = new Object();

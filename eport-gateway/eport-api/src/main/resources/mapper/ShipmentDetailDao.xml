@@ -166,7 +166,7 @@
 	    	ENG_SNM as groupName,
 	    	ADDR as address
 		FROM DNP_PROD.TB_PTNR
-		WHERE REG_NO = #{taxCode}
+		WHERE TRIM(REG_NO) = #{taxCode}
 		    AND UNUSED_CHK = 'N' 
 		    AND ROWNUM = 1
 	</select>
@@ -392,13 +392,13 @@
 	
 	<select id="selectConsigneeTaxCode" parameterType="vn.com.irtech.api.dto.PartnerInfoDto" resultType="vn.com.irtech.api.dto.PartnerInfoDto">
 		SELECT
-	    	CONCAT(REG_NO ,CONCAT(': ',ENG_LNM)) as groupName,
-	    	REG_NO AS taxCode
+	    	CONCAT(TRIM(REG_NO) ,CONCAT(': ',ENG_LNM)) as groupName,
+	    	TRIM(REG_NO) AS taxCode
 		FROM DNP_PROD.TB_PTNR
 		<where>
 			REG_NO IS NOT NULL
 			AND UNUSED_CHK = 'N'
-			<if test="groupName != null  and groupName != ''"> AND UPPER(CONCAT(REG_NO ,CONCAT(': ',ENG_LNM))) LIKE CONCAT(CONCAT('%', #{groupName}), '%')</if>
+			<if test="groupName != null  and groupName != ''"> AND UPPER(CONCAT(TRIM(REG_NO) ,CONCAT(': ',ENG_LNM))) LIKE CONCAT(CONCAT('%', #{groupName}), '%')</if>
 		</where>
 		GROUP BY ENG_LNM, REG_NO
 	</select>
@@ -419,7 +419,7 @@
 
 	<select id="getTaxCodeBySnmGroupName" parameterType="String" resultType="String">
 		SELECT 
-	    	REG_NO AS TAXCODE
+	    	TRIM(REG_NO) AS TAXCODE
 		FROM DNP_PROD.TB_PTNR 
 		WHERE PTNR_TYPE = 'CNS'
 		    AND ENG_SNM = #{consignee}
@@ -441,7 +441,7 @@
 		FROM DNP_PROD.TB_PTNR
 		WHERE PTNR_TYPE = 'CNS' 
 		    AND UNUSED_CHK = 'N'
-		    AND REG_NO = #{taxCode} AND ROWNUM = 1
+		    AND TRIM(REG_NO) = #{taxCode} AND ROWNUM = 1
 	</select>
 
 	<select id="getOprCodeList" resultType	="String">
@@ -578,7 +578,7 @@
 	<select id="getTruckerByRegNo" parameterType="String" resultType="String">
 		SELECT PTNR_CODE
 		FROM DNP_PROD.TB_PTNR
-		WHERE REG_NO = #{taxCode}
+		WHERE TRIM(REG_NO) = #{taxCode}
 		    AND UNUSED_CHK = 'N'
 		FETCH NEXT 1 ROWS ONLY
 	</select>
