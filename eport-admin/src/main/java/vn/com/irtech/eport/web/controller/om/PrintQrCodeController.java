@@ -3,7 +3,6 @@ package vn.com.irtech.eport.web.controller.om;
 
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.controller.BaseController;
-import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -29,13 +27,6 @@ public class PrintQrCodeController extends BaseController{
     public String getViewUpdateDo()
     {
         return prefix + "/printQrCode";
-    }
-
-    @GetMapping("/getOptionSearch")
-    @ResponseBody
-    public AjaxResult getOptionSearch(String keyString) {
-        List<String> blNo = shipmentDetailService.getBlLists(keyString);
-        return AjaxResult.success(blNo);
     }
     
     @GetMapping("/getShipmentDetail")

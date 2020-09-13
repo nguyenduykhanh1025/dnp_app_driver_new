@@ -237,7 +237,7 @@ public class SupportReceiveEmptyController extends OmBaseController{
 					i.setProcessStatus("N");
 					i.setStatus(1);
 					i.setUserVerifyStatus("N");
-					shipmentDetailService.updateShipmentDetailForOMSupport(i);
+					shipmentDetailService.resetShipmentDetailProcessStatus(i);
 				}
 			}
 			//delete record table process_order

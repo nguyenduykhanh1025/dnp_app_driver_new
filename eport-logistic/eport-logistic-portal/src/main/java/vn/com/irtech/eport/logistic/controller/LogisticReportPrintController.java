@@ -119,7 +119,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentDetails.get(0).getShipmentId());
 		shipmentDetail.setPaymentStatus("Y");
-		List<Long> commands = shipmentDetailService.getCommandListInBatch(shipmentDetail);
+		List<Long> commands = shipmentDetailService.getProcessOrderIdListByShipment(shipmentDetail);
 		if(commands.size()>0) {
 			for(Long i : commands) {
 				List<ShipmentDetail> list = new ArrayList<ShipmentDetail>();

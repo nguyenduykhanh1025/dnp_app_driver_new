@@ -18,7 +18,6 @@ const DESTINATION_PREFIX = ctx + 'eport_logistic/';
       },
       subscribe: function(destination, callback, headers = {}){
         if (stompClient == null){
-          console.error("Please connect to websocket server before subcribe!");
           return;
         }
         return stompClient.subscribe(DESTINATION_PREFIX + destination, callback, headers);

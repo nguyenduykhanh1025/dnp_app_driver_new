@@ -405,7 +405,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult deleteShipmentDetail(@PathVariable Long shipmentId, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		if (shipmentDetailIds != null) {
-			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
+			shipmentDetailService.deleteShipmentDetailByIds(shipmentId, shipmentDetailIds);
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
 			if (shipmentDetailService.countShipmentDetailList(shipmentDetail) == 0) {

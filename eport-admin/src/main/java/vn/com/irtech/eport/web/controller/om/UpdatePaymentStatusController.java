@@ -32,13 +32,6 @@ public class UpdatePaymentStatusController extends BaseController{
         return prefix + "/updatePayment";
     }
 
-    @GetMapping("/getOptionSearch")
-    @ResponseBody
-    public AjaxResult getOptionSearch(String keyString) {
-        List<String> blNo = shipmentDetailService.getBlListByPaymentStatus(keyString);
-        return AjaxResult.success(blNo);
-    }
-
     @GetMapping("/getShipmentDetail")
     @ResponseBody
     public TableDataInfo getShipmentDetail( int pageNum, int pageSize,String blNo) {

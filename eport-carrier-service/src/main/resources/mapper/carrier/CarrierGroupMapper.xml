@@ -35,9 +35,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<include refid="selectCarrierGroupVo" />
 		<where>
 			<if test="id != null  and id != ''"> and id = #{id}</if>
-			<if test="groupCode != null  and groupCode != ''"> and lower(group_code) like concat(concat('%', #{groupCode}), '%')</if>
-			<if test="groupName != null  and groupName != ''"> and lower(group_name) like concat(concat('%', #{groupName}), '%')</if>
-			<if test="operateCode != null  and operateCode != ''"> and lower(operate_code) like concat(concat('%', #{operateCode}), '%')</if>
+			<if test="groupCode != null  and groupCode != ''"> and upper(group_code) like concat(concat('%', #{groupCode}), '%')</if>
+			<if test="groupName != null  and groupName != ''"> and upper(group_name) like concat(concat('%', #{groupName}), '%')</if>
+			<if test="operateCode != null  and operateCode != ''"> and upper(operate_code) like concat(concat('%', #{operateCode}), '%')</if>
 		</where>
 	</select>
 
@@ -51,7 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		parameterType="CarrierGroup" resultMap="CarrierGroupResult">
 		<include refid="selectCarrierGroupVo" />
 		<where>
-			<if test="groupCode != null  and groupCode != ''"> and lower(group_code) like concat(concat'%', #{groupCode}), '%')</if>
+			<if test="groupCode != null  and groupCode != ''"> and upper(group_code) like concat(concat'%', #{groupCode}), '%')</if>
 		</where>
 	</select>
 
@@ -59,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		parameterType="CarrierGroup" resultMap="CarrierGroupResult">
 		<include refid="selectCarrierGroupVo" />
 		<where>
-			<if test="groupName != null  and groupName != ''"> and lower(group_name) like concat(concat('%', #{groupName}), '%')</if>
+			<if test="groupName != null  and groupName != ''"> and upper(group_name) like concat(concat('%', #{groupName}), '%')</if>
 		</where>
 	</select>
 
@@ -140,29 +140,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="checkGroupCodeUnique" parameterType="String"
 		resultType="int">
 		select count(1) from carrier_group where
-		lower(group_code)=#{groupCode}
+		upper(group_code)=#{groupCode}
 	</select>
 
 	<select id="checkMainEmailUnique" parameterType="String"
 		resultType="int">
 		select count(1) from carrier_group where
-		lower(main_email)=#{mainEmail}
+		upper(main_email) = #{mainEmail}
 	</select>
 	<select id="getDoTypeByOpeCode" parameterType="String"
 		resultType="String">
-		select do_type from carrier_group where operate_code like
-		concat(concat('%', #{opeCode}), '%')
+		select do_type from carrier_group 
+		where operate_code like concat(concat('%', #{opeCode}), '%')
 		FETCH NEXT 1 ROWS ONLY
 	</select>
 
 	<select id="selectCarrierGroupByGroupCode"
 		parameterType="String" resultMap="CarrierGroupResult">
 		<include refid="selectCarrierGroupVo" />
-		where lower(group_code) = lower(#{groupCode})
+		where upper(group_code) = upper(#{groupCode})
 	</select>
 	<select id="getCarrierGroupByOpeCode" parameterType="String" resultMap="CarrierGroupResult">
 		<include refid="selectCarrierGroupVo" />
-		where operate_code like concat(concat('%', #{operateCode}), '%')
+		where upper(operate_code) like concat(concat('%', upper(#{operateCode})), '%')
 		FETCH NEXT 1 ROWS ONLY
 	</select>
 
