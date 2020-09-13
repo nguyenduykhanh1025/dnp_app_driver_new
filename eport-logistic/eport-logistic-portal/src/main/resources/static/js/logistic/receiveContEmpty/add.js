@@ -21,16 +21,20 @@ async function submitHandler() {
 
 function getBookingNoUnique() {
     return $.ajax({
-        url: prefix + "/unique/booking-no/" + $("#bookingNo").val(),
-        method: "GET",
+        url: prefix + "/unique/booking-no",
+        method: "post",
+        contentType: "application/json",
+        data: JSON.stringify({"bookingNo": $("#bookingNo").val()}),
     });
 }
 
 function checkBookingNoUnique() {
     if ($("#bookingNo").val() != null && $("#bookingNo").val() != '') {
         $.ajax({
-            url: prefix + "/unique/booking-no/" + $("#bookingNo").val(),
-            method: "GET",
+            url: prefix + "/unique/booking-no",
+            method: "post",
+            contentType: "application/json",
+            data: JSON.stringify({"bookingNo": $("#bookingNo").val()}),
         }).done(function (result) {
             if (result.code == 0) {
                 $("#bookingNo").removeClass("error-input");

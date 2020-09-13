@@ -46,16 +46,20 @@ async function submitHandler() {
 }
 function getBillNoUnique() {
     return $.ajax({
-        url: prefix + "/shipment/bl-no/" + $("#blNo").val(),
-        method: "GET",
+        url: prefix + "/blNo/bl-no",
+        method: "post",
+        contentType: "application/json",
+        data: JSON.stringify({"blNo": $("#blNo").val()}),
     });
 }
 function checkBlNoUnique() {
     if ($("#blNo").val() != null && $("#blNo").val() != '' && $("#blNo").val() != currentBill) {
         //check bill unique
         $.ajax({
-            url: prefix + "/shipment/bl-no/" + $("#blNo").val(),
-            method: "GET",
+            url: prefix + "/blNo/bl-no",
+            method: "post",
+            contentType: "application/json",
+            data: JSON.stringify({"blNo": $("#blNo").val()}),
         }).done(function (result) {
             if (result.code == 500) {
                 $.modal.alertError(result.msg);

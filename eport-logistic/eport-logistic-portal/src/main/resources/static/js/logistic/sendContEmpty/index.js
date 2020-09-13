@@ -15,7 +15,7 @@ var sizeList = [];
 var onChangeFlg = false, currentIndexRow, rejectChange = false;
 var checkEmptyExpiredDem = true;
 var berthplanList;// get infor
-var fromDate, toDate;
+var fromDate, toDate, currentEta, currentVesselVoyage = '';
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
@@ -152,8 +152,9 @@ $(document).ready(function () {
     });
 
     let now = new Date();
-    now.setHours(0, 0, 0, 0);
-    $('#fromDate').datebox('setValue', ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear());
+    now = new Date(now.getFullYear(), now.getMonth(), 1);
+    let nowStr = ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear();
+    $('#fromDate').datebox('setValue', nowStr);
     shipmentSearch.params.fromDate = dateToString(now);
 
     $('#toDate').datebox({
@@ -490,6 +491,20 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
+function etaRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'eta' + row).addClass("htMiddle").addClass("htCenter");
+    if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+        }
+    } else {
+        value = '';
+    }
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
     if (value != null && value != '') {
@@ -601,14 +616,14 @@ function configHandson() {
                     case 7:
                         return 'PTTT';
                     case 8:
-                        return 'MST Người Trả Tiền';
+                        return 'Mã Số Thuế';
                     case 9:
-                        return 'Tên Cty Thanh Toán';
+                        return 'Người Thanh Toán';
                     case 10:
                         return "Ghi Chú";
                 }
             },
-            colWidths: [40, 100, 100, 150, 150, 100, 100, 130, 130, 200],
+            colWidths: [40, 100, 100, 150, 150, 100, 100, 100, 130, 130, 200],
             filter: "true",
             columns: [
                 {
@@ -737,20 +752,22 @@ function configHandson() {
                     case 5:
                         return '<span class="required">Tàu và Chuyến</span>';
                     case 6:
-                        return checkEmptyExpiredDem?'<span class="required">Hạn Trả Vỏ</span>':'Hạn Trả Vỏ';
+                        return 'Ngày tàu đến';
                     case 7:
-                        return '<span class="required">Bãi Hạ Vỏ</span>';
+                        return checkEmptyExpiredDem?'<span class="required">Hạn Trả Vỏ</span>':'Hạn Trả Vỏ';
                     case 8:
-                        return 'PTTT';
+                        return '<span class="required">Bãi Hạ Vỏ</span>';
                     case 9:
-                        return 'MST Người Trả Tiền';
+                        return 'PTTT';
                     case 10:
-                        return 'Tên Cty Thanh Toán';
+                        return 'Mã Số Thuế';
                     case 11:
+                        return 'Người Thanh Toán';
+                    case 12:
                         return "Ghi Chú";
                 }
             },
-            colWidths: [40, 100, 100, 150, 150, 150, 100, 100, 130, 130, 200],
+            colWidths: [40, 100, 100, 150, 150, 150, 100, 100, 100, 100, 130, 130, 200],
             filter: "true",
             columns: [
                 {
@@ -789,6 +806,10 @@ function configHandson() {
                     source: vslNmList,
                     strict: true,
                     renderer: vslNmRenderer
+                },
+                {
+                    data: "eta",
+                    renderer: etaRenderer
                 },
                 {
                     data: "emptyExpiredDem",
@@ -836,7 +857,7 @@ function configHandson() {
                         break;
                     // Arrow Right
                     case 39:
-                        if (selected[3] == 11) {
+                        if (selected[3] == 12) {
                             e.stopImmediatePropagation();
                         } 
                         break
@@ -867,7 +888,7 @@ function onChange(changes, source) {
             if (shipmentSelected.sendContEmptyType == '0') {
                 indexColEmptyDepotLocation = 6;
             } else {
-                indexColEmptyDepotLocation = 7;
+                indexColEmptyDepotLocation = 8;
             }
             if (!change[3]) {
                 hot.setDataAtCell(change[0], indexColEmptyDepotLocation, '');
@@ -916,6 +937,22 @@ function onChange(changes, source) {
                         cleanCell(change[0], 3, sizeList);
                     }
                 });
+            }
+        } else if (change[1] == "vslNm") {
+            let vesselAndVoy = hot.getDataAtCell(change[0], 5);
+            //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
+            if (vesselAndVoy) {
+                if (currentVesselVoyage != vesselAndVoy) {
+                    currentVesselVoyage = vesselAndVoy;
+                    let shipmentDetail = new Object();
+                    for (let i= 0; i < berthplanList.length;i++){
+                        if(vesselAndVoy == berthplanList[i].vslAndVoy){
+                            currentEta = berthplanList[i].eta;
+                            break;
+                        }
+                    }
+                }
+                hot.setDataAtCell(change[0], 6, currentEta);
             }
         }
     });
@@ -1207,6 +1244,7 @@ function getDataFromTable(isValidate) {
         }
         let sizeType = object["sztp"].split(": ");
         if (shipmentSelected.sendContEmptyType == '1') {
+            shipmentDetail.eta = object["eta"];
             if(berthplanList){
                 for (let i= 0; i < berthplanList.length;i++){
                     if(object["vslNm"] == berthplanList[i].vslAndVoy){

@@ -217,6 +217,7 @@
 		       t.call_seq as voyNo,
 		       t.call_year as year,
 		       t.in_voy as voyCarrier,
+			   t.longterm_eta as eta,
 		       t.vsl_cd || ' - ' || (select vsl_nm FROM DNP_PROD.tb_vsl where vsl_cd = t.vsl_cd) ||' - '|| t.in_voy as vslAndVoy
 		 FROM DNP_PROD.tb_berthplan t
 		 where t.ptnr_code = #{opeCode}
@@ -457,6 +458,7 @@
 		       t.call_seq as voyNo,
 		       t.call_year as year,
 		       t.in_voy as voyCarrier,
+			   t.longterm_eta as eta,
 		       t.vsl_cd || ' - ' || (select vsl_nm FROM DNP_PROD.tb_vsl where vsl_cd = t.vsl_cd) ||' - '|| t.in_voy as vslAndVoy
 		 FROM DNP_PROD.tb_berthplan t
 		 where t.vsl_cd NOT IN ('DBO','EMPTY',
