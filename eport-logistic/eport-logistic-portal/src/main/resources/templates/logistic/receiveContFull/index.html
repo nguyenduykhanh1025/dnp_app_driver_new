@@ -81,37 +81,58 @@
             <div class="right-side__toolbar">
               <div class="datagrid-toolbar">
                 <table cellspacing="0" cellpadding="0">
-                  <tbody>
                     <tr>
                       <td>
-                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()" class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Lưu khai báo</button></span></span></a>
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                          <span class="l-btn-left"><span class="l-btn-text">
+                          <button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()" class="btn btn-sm btn-primary">
+                          <i class="fa fa-save text-primary"></i> Lưu khai báo</button></span></span>
+                        </a>
                       </td>
                       <td>
-                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="deleteBtn" onclick="deleteShipmentDetail()" disabled class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Xóa</button></span></span></a>
-                        
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+	                        <span class="l-btn-left"><span class="l-btn-text">
+	                        <button id="customBtn" onclick="checkCustomStatus()" disabled class="btn btn-sm btn-primary">
+	                        <i class="fa fa-address-card text-primary"></i> Khai hải quan</button></span></span>
+                        </a>
                       </td>
                       <td>
-                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="customBtn" onclick="checkCustomStatus()" disabled class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Khai hải quan</button></span></span></a>
-                        
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+	                        <span class="l-btn-left"><span class="l-btn-text">
+	                        <button id="verifyBtn" onclick="verify()" disabled class="btn btn-sm btn-primary">
+	                        <i class="fa fa-check text-primary"></i> Xác nhận</button></span></span>
+                        </a>
                       </td>
                       <td>
-                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="verifyBtn" onclick="verify()" disabled class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Xác nhận</button></span></span></a>
-                        
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+	                        <span class="l-btn-left"><span class="l-btn-text">
+	                        <button id="payBtn" onclick="pay()" disabled class="btn btn-sm btn-primary">
+	                        <i class="fa fa-credit-card text-primary"></i> Thanh toán</button></span></span>
+                        </a>
                       </td>
                       <td>
-                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="payBtn" onclick="pay()" disabled class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Thanh toán</button></span></span></a>
-                        
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                            <span class="l-btn-left"><span class="l-btn-text">
+                            <button id="deleteBtn" onclick="deleteShipmentDetail()" disabled class="btn btn-sm btn-danger">
+                            <i class="fa fa-times text-primary"></i> Xóa</button></span></span>
+                        </a>
+                      </td>
+                      <td width="100%"></td>
+                      <td>
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+	                        <span class="l-btn-left"><span class="l-btn-text">
+	                        <button id="exportReceiptBtn" onclick="exportReceipt()" disabled class="btn btn-sm btn-default">
+	                        <i class="fa fa-print text-primary"></i> In biên nhận</button></span></span>
+                        </a>
                       </td>
                       <td>
-                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="exportReceiptBtn" onclick="exportReceipt()" disabled class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Xuất biên nhận</button></span></span></a>
-                        
-                      </td>
-                      <td>
-                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id=""><span class="l-btn-left"><span class="l-btn-text"><button id="exportBill" onclick="exportBill()" disabled class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Xuất hóa đơn</button></span></span></a>
-                        
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+	                        <span class="l-btn-left"><span class="l-btn-text">
+	                        <button id="exportBill" onclick="exportBill()" disabled class="btn btn-sm btn-default">
+	                        <i class="fa fa-external-link text-primary"></i> Xem hóa đơn</button></span></span>
+                        </a>
                       </td>
                     </tr>
-                  </tbody>
                 </table>
               </div>
             </div>
