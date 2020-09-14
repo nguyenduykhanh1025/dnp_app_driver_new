@@ -6,6 +6,8 @@ import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  *LogisticTruck Object truck
  * 
@@ -44,6 +46,7 @@ public class LogisticTruck extends BaseEntity
 
     /** Hạn đăng kiểm */
     @Excel(name = "Hạn đăng kiểm", width = 30, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date registryExpiryDate;
 
     /** Delete Flag(default 0) */

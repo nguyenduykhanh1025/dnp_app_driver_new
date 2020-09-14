@@ -22,11 +22,13 @@ function submitHandler() {
 }
 
 $("input[name='registryExpiryDate']").datetimepicker({
-    format: "dd-mm-yyyy",
+    format: "yyyy-mm-dd",
     minView: "month",
     language: 'en',
     autoclose: true
 });
+
+  
 
 function save(url, data) {
     $.ajax({
