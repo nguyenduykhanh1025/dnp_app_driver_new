@@ -132,7 +132,7 @@ android {
        javaMaxHeapSize "4g"
     }
     defaultConfig {
-        applicationId "vn.com.irtech.mobile.eport.driver"
+        applicationId "Dnp_Driver"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 10
