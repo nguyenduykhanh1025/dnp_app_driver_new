@@ -17,7 +17,7 @@
       <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
       <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
         <div class="flex__left w-20">
-          <h3 class="mt-10">Quản Lý Đăng Ký Dịch Vụ</h3>
+          <h3 class="mt-10">Hỗ trợ hạ rỗng</h3>
         </div>
         <div class="flex__right w-80">
           <div class="justify-content-around align-items-center" id="ff">
@@ -76,8 +76,10 @@
         </div>
         <div data-options="region:'center'" style="width:100%;">
           <div>
-            <button class="button-custom" id="checkCustomStatusByProcessOrderId"  onclick="executedSuccess()">Xác Nhận Làm Lệnh OK</button>
-            <button style="display: inline-block;" id="checkProcessStatusByProcessOrderId" class="button-custom" onclick="resetProcessStatus()">Reset Trạng Thái Làm Lệnh</button>
+            <button id="checkCustomStatusByProcessOrderId"  onclick="executedSuccess()" class="btn btn-sm btn-primary">
+              <i class="fa fa-check text-primary"></i> Xác Nhận Làm Lệnh OK</button>
+            <button style="display: inline-block;" id="checkProcessStatusByProcessOrderId" class="btn btn-sm btn-primary" onclick="resetProcessStatus()">
+              <i class="fa fa-refresh" aria-hidden="true"></i> Reset Trạng Thái Làm Lệnh</button>
           </div>
           <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
         </div>
