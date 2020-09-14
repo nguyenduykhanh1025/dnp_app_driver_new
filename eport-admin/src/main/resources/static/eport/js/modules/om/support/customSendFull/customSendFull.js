@@ -32,8 +32,8 @@ $(document).ready(function () {
     $('#main-layout').layout('collapse', 'west');
   });
   loadTable(shipment);
-  $('#checkCustomStatusByProcessOrderId').attr("disabled", true);
-  $('#checkProcessStatusByProcessOrderId').attr("disabled", true);
+  $('#notifyResult').attr("disabled", true);
+  $('#notifyResult').css( "background-color", "gray");
 
   $("#blNo").textbox('textbox').bind('keydown', function(e) {
     // enter key
@@ -322,8 +322,8 @@ function getSelectedRow() {
 	shipmentSelected = row;
 	rowAmount = shipmentSelected.contAmount;
     shipmentDetails.shipmentId = row.id;
-    $('#checkCustomStatusByProcessOrderId').attr("disabled", false);
-    $('#checkProcessStatusByProcessOrderId').attr("disabled", false);
+    $('#notifyResult').attr("disabled", false);
+    $('#notifyResult').css( "background-color", "#1C84C6");
     loadTableByContainer(row.id);
   }
 }
@@ -347,7 +347,7 @@ function logisticInfo(id, logistics) {
 }
 
 function notifyResult() {
-  $.modal.open("Xác nhận", PREFIX + "/confirm-result-notification/shipmentId/" + shipmentSelected.id , 400, 330);
+  $.modal.open("Xác nhận", PREFIX + "/confirm-result-notification/shipmentId/" + shipmentSelected.id , 430, 330);
 }
 
 function msgSuccess(msg) {

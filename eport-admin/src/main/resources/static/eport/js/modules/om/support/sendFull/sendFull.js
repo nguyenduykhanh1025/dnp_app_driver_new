@@ -371,7 +371,7 @@ function logisticInfo(id, logistics) {
   });
 }
 function executedSuccess() {
-  $.modal.open("Xác nhận", PREFIX + "/verify-executed-command-success/process-order/" + processOrderSelected.id , 400, 270);
+  $.modal.open("Xác nhận", PREFIX + "/verify-executed-command-success/process-order/" + processOrderSelected.id , 430, 270);
 
 }
 
@@ -384,7 +384,7 @@ function msgError(msg) {
 }
 
 function resetProcessStatus() {
-	$.modal.open("Xác nhận", PREFIX + "/reset-process-status/process-order/" + processOrderSelected.id , 400, 270);
+	$.modal.open("Xác nhận", PREFIX + "/reset-process-status/process-order/" + processOrderSelected.id , 430, 270);
 }
 
 //function formatVessel(value, row) {
