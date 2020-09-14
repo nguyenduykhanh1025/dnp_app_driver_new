@@ -59,7 +59,7 @@ $(document).ready(function () {
 
 function search() {
     shipment.bookingNo = $("#blNo").textbox('getText').toUpperCase();
-    shipment.contSupplyStatus = $('#batchStatus').val();
+    shipment.contSupplyStatus = $('#batchStatus').combobox('getValue');
     loadTable();
 }
 
