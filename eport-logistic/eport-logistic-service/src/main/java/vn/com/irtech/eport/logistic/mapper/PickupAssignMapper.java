@@ -13,8 +13,7 @@ import vn.com.irtech.eport.logistic.form.PickupAssignForm;
  * @author admin
  * @date 2020-06-27
  */
-public interface PickupAssignMapper 
-{
+public interface PickupAssignMapper {
     /**
      * Get Pickup Assign
      * 
@@ -94,4 +93,12 @@ public interface PickupAssignMapper
      * @return PickupAssign
      */
     public PickupAssign selectPickupAssignByShipmentId(PickupAssign pickupAssign);
+
+    /**
+     * Remove all pickup assign for shipment
+     * 
+     * @param shipmentId
+     * @param groupId
+     */
+	public void deleteAllShipmentPickupAssign(@Param("shipmentId") Long shipmentId, @Param("groupId") Long groupId);
 }

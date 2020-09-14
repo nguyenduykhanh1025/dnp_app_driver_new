@@ -129,6 +129,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+    
+    <delete id="deleteAllShipmentPickupAssign">
+        delete from pickup_assign where 
+            shipment_id = #{shipmentId} 
+            AND logistic_group_id = #{groupId}
+            AND shipment_detail_id is null
+    </delete>
+
     <select id="getDriverOwners" parameterType="PickupAssign" resultType="String">
         select driver_owner from pickup_assign
         <where>  

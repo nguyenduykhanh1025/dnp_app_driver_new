@@ -33,9 +33,7 @@ import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.framework.firebase.service.FirebaseService;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
-import vn.com.irtech.eport.logistic.domain.DriverTruck;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
-import vn.com.irtech.eport.logistic.domain.LogisticTruck;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -184,12 +182,18 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	}
 	
     @Log(title = "Điều Xe", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
-    @PostMapping("/savePickupAssignFollowBatch")
+    @PostMapping("/{shipmentId}/savePickupAssignFollowBatch")
 	@Transactional
 	@ResponseBody
-	public AjaxResult savePickupAssignFollowBatch(@RequestBody List<PickupAssign> pickupAssigns){
+	public AjaxResult savePickupAssignFollowBatch(@PathVariable("shipmentId") Long shipmentId, @RequestBody List<PickupAssign> pickupAssigns){
+    	Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		if(shipment == null || !verifyPermission(shipment.getLogisticGroupId())) {
+			return error("Bạn không có quyền điều xe cho lô này.");
+		}
 		if(pickupAssigns.size() == 0){
-			return error();
+			// remove all
+			pickupAssignService.deleteAllShipmentPickupAssign(shipmentId, getUser().getGroupId());
+			return success();
 		}
 		int accountNumber = 0;
 		for(PickupAssign assign :pickupAssigns){
@@ -210,6 +214,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 				}
 			}
 			assign.setLogisticGroupId(getUser().getGroupId());
+			assign.setShipmentId(shipmentId);
 		}
 		//check driverId of current logistic
 		if(accountNumber > 0){// co driver trong cty moi check
@@ -219,74 +224,70 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 			}
 		}
 		//check shipmentId of current logistic
-		Shipment shipment = shipmentService.selectShipmentById(pickupAssigns.get(0).getShipmentId());
-		if(shipment != null && shipment.getLogisticGroupId().equals(getUser().getGroupId())){
-			//delete last assign follow batch
-			PickupAssign assignBatch = new PickupAssign();
-			assignBatch.setShipmentId(shipment.getId());
-			List<PickupAssign> assignlist = pickupAssignService.selectPickupAssignList(assignBatch);
-			if(assignlist.size() != 0 ){
-				for(PickupAssign i : assignlist){
-					if(i.getShipmentDetailId() == null){
-						pickupAssignService.deletePickupAssignById(i.getId());
-					}
+		//delete last assign follow batch
+		PickupAssign assignBatch = new PickupAssign();
+		assignBatch.setShipmentId(shipmentId);
+		List<PickupAssign> assignlist = pickupAssignService.selectPickupAssignList(assignBatch);
+		if(assignlist.size() != 0 ){
+			for(PickupAssign i : assignlist){
+				if(i.getShipmentDetailId() == null){
+					pickupAssignService.deletePickupAssignById(i.getId());
 				}
 			}
-			
-			String serviceName = "";
-			switch (shipment.getServiceType()) {
-			case EportConstants.SERVICE_PICKUP_FULL:
-				serviceName = "nhận container hàng";
-				break;
-			case EportConstants.SERVICE_PICKUP_EMPTY:
-				serviceName = "nhận container rỗng";
-				break;
-			case EportConstants.SERVICE_DROP_FULL:
-				serviceName = "giao container hàng";
-				break;
-			case EportConstants.SERVICE_DROP_EMPTY:
-				serviceName = "giao container rỗng";
-				break;
-			default:
-				break;
-			}
-			
-			// Create info notification
-			SysNotification sysNotification = new SysNotification();
-			sysNotification.setTitle("Thông báo điều xe.");
-			sysNotification.setNotifyLevel(2L);
-			sysNotification.setContent("Bạn đã được chỉ định điều xe cho dịch vụ " + serviceName + " lô " + shipment.getId());
-			sysNotification.setNotifyLink("");
-			sysNotification.setStatus(1L);
-			sysNotificationService.insertSysNotification(sysNotification);
-			Long driverId = null;
-			// add custom assign follow batch
-			for(int i = 0 ; i< pickupAssigns.size(); i ++){
-				pickupAssigns.get(i).setCreateBy(getUser().getFullName());
-				pickupAssignService.insertPickupAssign(pickupAssigns.get(i));
-				driverId = pickupAssigns.get(i).getDriverId();
-				// Notification receiver
-				if(driverId != null) {
-					SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
-					sysNotificationReceiver.setUserId(driverId);
-					sysNotificationReceiver.setNotificationId(sysNotification.getId());
-					sysNotificationReceiver.setUserType(2L);
-					sysNotificationReceiver.setSentFlg(true);
-					sysNotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
-
-					List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(driverId);
-					if (CollectionUtils.isNotEmpty(sysUserTokens)) {
-						try {
-							firebaseService.sendNotification(sysNotification.getTitle(), sysNotification.getContent(), sysUserTokens);
-						} catch (FirebaseMessagingException e) {
-							logger.warn("Error send notification: " + e);
-						}
-					}
-				}
-			}
-			return success();
 		}
-		return error("Bạn không có quyền điều xe cho lô này.");
+		
+		String serviceName = "";
+		switch (shipment.getServiceType()) {
+		case EportConstants.SERVICE_PICKUP_FULL:
+			serviceName = "nhận container hàng";
+			break;
+		case EportConstants.SERVICE_PICKUP_EMPTY:
+			serviceName = "nhận container rỗng";
+			break;
+		case EportConstants.SERVICE_DROP_FULL:
+			serviceName = "giao container hàng";
+			break;
+		case EportConstants.SERVICE_DROP_EMPTY:
+			serviceName = "giao container rỗng";
+			break;
+		default:
+			break;
+		}
+		
+		// Create info notification
+		SysNotification sysNotification = new SysNotification();
+		sysNotification.setTitle("Thông báo điều xe.");
+		sysNotification.setNotifyLevel(2L);
+		sysNotification.setContent("Bạn đã được chỉ định điều xe cho dịch vụ " + serviceName + " lô " + shipment.getId());
+		sysNotification.setNotifyLink("");
+		sysNotification.setStatus(1L);
+		sysNotificationService.insertSysNotification(sysNotification);
+		Long driverId = null;
+		// add custom assign follow batch
+		for(int i = 0 ; i< pickupAssigns.size(); i ++){
+			pickupAssigns.get(i).setCreateBy(getUser().getFullName());
+			pickupAssignService.insertPickupAssign(pickupAssigns.get(i));
+			driverId = pickupAssigns.get(i).getDriverId();
+			// Notification receiver
+			if(driverId != null) {
+				SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
+				sysNotificationReceiver.setUserId(driverId);
+				sysNotificationReceiver.setNotificationId(sysNotification.getId());
+				sysNotificationReceiver.setUserType(2L);
+				sysNotificationReceiver.setSentFlg(true);
+				sysNotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
+
+				List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(driverId);
+				if (CollectionUtils.isNotEmpty(sysUserTokens)) {
+					try {
+						firebaseService.sendNotification(sysNotification.getTitle(), sysNotification.getContent(), sysUserTokens);
+					} catch (FirebaseMessagingException e) {
+						logger.warn("Error send notification: " + e);
+					}
+				}
+			}
+		}
+		return success();
 	}
 
 //	@GetMapping("preoderPickupAssign/{shipmentDetailId}")
@@ -351,12 +352,17 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	}
 	
     @Log(title = "Điều Xe Theo Cont", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
-    @PostMapping("/savePickupAssignFollowContainer")
+    @PostMapping("/{shipmentId}/savePickupAssignFollowContainer")
 	@Transactional
 	@ResponseBody
-	public AjaxResult savePickupAssignFollowContainer(@RequestBody List<PickupAssign> pickupAssigns){
-		if(pickupAssigns.size() == 0){
-			return error();
+	public AjaxResult savePickupAssignFollowContainer(@PathVariable("shipmentId") Long shipmentId, @RequestBody List<PickupAssign> pickupAssigns){
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		if(shipment == null || !verifyPermission(shipment.getLogisticGroupId())) {
+			return error("Bạn không có quyền điều xe cho lô này.");
+		}
+    	if(pickupAssigns.size() == 0){
+    		
+			return success();
 		}
 		int accountNumber = 0; // so driver trong cty
 		for(PickupAssign i :pickupAssigns){
@@ -386,72 +392,68 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 			}
 		}
 		//check shipmentId of current logistic
-		Shipment shipment  = shipmentService.selectShipmentById(pickupAssigns.get(0).getShipmentId());
-		if(shipment != null && shipment.getLogisticGroupId().equals(getUser().getGroupId())){
-			//delete last assign follow container
-			PickupAssign assignContainer = new PickupAssign();
-			assignContainer.setShipmentId(shipment.getId());
-			assignContainer.setShipmentDetailId(pickupAssigns.get(0).getShipmentDetailId());
-			List<PickupAssign> assignlist = pickupAssignService.selectPickupAssignList(assignContainer);
-			if(assignlist.size() != 0 ){
-				for(PickupAssign i : assignlist){
-						pickupAssignService.deletePickupAssignById(i.getId());
-				}
+		//delete last assign follow container
+		PickupAssign assignContainer = new PickupAssign();
+		assignContainer.setShipmentId(shipment.getId());
+		assignContainer.setShipmentDetailId(pickupAssigns.get(0).getShipmentDetailId());
+		List<PickupAssign> assignlist = pickupAssignService.selectPickupAssignList(assignContainer);
+		if(assignlist.size() != 0 ){
+			for(PickupAssign i : assignlist){
+					pickupAssignService.deletePickupAssignById(i.getId());
 			}
-			
-			String serviceName = "";
-			switch (shipment.getServiceType()) {
-			case EportConstants.SERVICE_PICKUP_FULL:
-				serviceName = "nhận container hàng";
-				break;
-			case EportConstants.SERVICE_PICKUP_EMPTY:
-				serviceName = "nhận container rỗng";
-				break;
-			case EportConstants.SERVICE_DROP_FULL:
-				serviceName = "giao container hàng";
-				break;
-			case EportConstants.SERVICE_DROP_EMPTY:
-				serviceName = "giao container rỗng";
-				break;
-			default:
-				break;
-			}
-			
-			// Create info notification
-			SysNotification sysNotification = new SysNotification();
-			sysNotification.setTitle("Thông báo điều xe.");
-			sysNotification.setNotifyLevel(2L);
-			sysNotification.setContent("Bạn đã được chỉ định điều xe cho dịch vụ " + serviceName + " lô " + shipment.getId());
-			sysNotification.setNotifyLink("");
-			sysNotification.setStatus(1L);
-			sysNotificationService.insertSysNotification(sysNotification);
-			
-			// add  assign follow container (preoderPickup: receiveContFull)
-			for(int i = 0; i < pickupAssigns.size(); i ++){
-				pickupAssigns.get(i).setCreateBy(getUser().getFullName());
-				pickupAssigns.get(i).setCreateTime(new Date());
-				pickupAssignService.insertPickupAssign(pickupAssigns.get(i));
-				
-				// Notification receiver
-				SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
-				sysNotificationReceiver.setUserId(pickupAssigns.get(i).getDriverId());
-				sysNotificationReceiver.setNotificationId(sysNotification.getId());
-				sysNotificationReceiver.setUserType(2L);
-				sysNotificationReceiver.setSentFlg(true);
-				sysNotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
-				
-				List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(pickupAssigns.get(i).getDriverId());
-				if (CollectionUtils.isNotEmpty(sysUserTokens)) {
-					try {
-						firebaseService.sendNotification(sysNotification.getTitle(), sysNotification.getContent(), sysUserTokens);
-					} catch (FirebaseMessagingException e) {
-						logger.error("Error send notification: " + e);
-					}
-				}
-			}
-			return success();
 		}
-		return error();
+		
+		String serviceName = "";
+		switch (shipment.getServiceType()) {
+		case EportConstants.SERVICE_PICKUP_FULL:
+			serviceName = "nhận container hàng";
+			break;
+		case EportConstants.SERVICE_PICKUP_EMPTY:
+			serviceName = "nhận container rỗng";
+			break;
+		case EportConstants.SERVICE_DROP_FULL:
+			serviceName = "giao container hàng";
+			break;
+		case EportConstants.SERVICE_DROP_EMPTY:
+			serviceName = "giao container rỗng";
+			break;
+		default:
+			break;
+		}
+		
+		// Create info notification
+		SysNotification sysNotification = new SysNotification();
+		sysNotification.setTitle("Thông báo điều xe.");
+		sysNotification.setNotifyLevel(2L);
+		sysNotification.setContent("Bạn đã được chỉ định điều xe cho dịch vụ " + serviceName + " lô " + shipment.getId());
+		sysNotification.setNotifyLink("");
+		sysNotification.setStatus(1L);
+		sysNotificationService.insertSysNotification(sysNotification);
+		
+		// add  assign follow container (preoderPickup: receiveContFull)
+		for(int i = 0; i < pickupAssigns.size(); i ++){
+			pickupAssigns.get(i).setCreateBy(getUser().getFullName());
+			pickupAssigns.get(i).setCreateTime(new Date());
+			pickupAssignService.insertPickupAssign(pickupAssigns.get(i));
+			
+			// Notification receiver
+			SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
+			sysNotificationReceiver.setUserId(pickupAssigns.get(i).getDriverId());
+			sysNotificationReceiver.setNotificationId(sysNotification.getId());
+			sysNotificationReceiver.setUserType(2L);
+			sysNotificationReceiver.setSentFlg(true);
+			sysNotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
+			
+			List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(pickupAssigns.get(i).getDriverId());
+			if (CollectionUtils.isNotEmpty(sysUserTokens)) {
+				try {
+					firebaseService.sendNotification(sysNotification.getTitle(), sysNotification.getContent(), sysUserTokens);
+				} catch (FirebaseMessagingException e) {
+					logger.error("Error send notification: " + e);
+				}
+			}
+		}
+		return success();
 		
 	}
 

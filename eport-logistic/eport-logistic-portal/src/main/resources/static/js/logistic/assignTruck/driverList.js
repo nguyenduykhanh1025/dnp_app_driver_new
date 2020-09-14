@@ -8,7 +8,7 @@ function loadDriver(shipmentId){
 		pickedIds = [];
 	}
     //ds tai xe chua dieu, da co truck
-  $("#driverTable").datagrid({
+  var dg = $("#driverTable").datagrid({
   url: prefix + "/listDriverAccount",
   height: window.innerHeight,
   collapsible: true,
@@ -36,6 +36,7 @@ function loadDriver(shipmentId){
       });
   },
   });
+  dg.datagrid('enableFilter');
 }
 function submitHandler() {
     if ($.validate.form()) {
