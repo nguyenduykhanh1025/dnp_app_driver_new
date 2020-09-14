@@ -94,4 +94,11 @@ public interface IPickupAssignService
      * @return PickupAssign
      */
     public PickupAssign selectPickupAssignByShipmentId(PickupAssign pickupAssign);
+
+    /**
+     * Remove all shipment pickup assign 
+     * @param shipmentId
+     * @param groupId
+     */
+	public void deleteAllShipmentPickupAssign(Long shipmentId, Long groupId);
 }
