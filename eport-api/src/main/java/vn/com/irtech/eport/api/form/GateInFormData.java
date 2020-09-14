@@ -1,10 +1,13 @@
 package vn.com.irtech.eport.api.form;
 
+import java.io.Serializable;
 import java.util.List;
 
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 
-public class GateInFormData {
+public class GateInFormData  implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private List<PickupHistory> pickupIn;
 	

@@ -1,14 +1,20 @@
 package vn.com.irtech.eport.api.domain;
 
+import java.io.Serializable;
+
 import vn.com.irtech.eport.api.consts.BusinessConsts;
 
-public class EportUser {
+public class EportUser implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Long userId;
 
 	private String loginName;
 
 	private String password;
+
+	private String mobile;
 
 	private String salt;
 
@@ -40,6 +46,14 @@ public class EportUser {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
 
 	public String getSalt() {

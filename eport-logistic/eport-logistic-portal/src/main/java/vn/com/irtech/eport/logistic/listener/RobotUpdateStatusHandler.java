@@ -191,7 +191,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		// check if robot is exists but be disabled then just update robot infor but not validate or assign new order to robot
 		SysRobot robotExist = robotService.selectRobotByUuId(uuId);
 		if (robotExist != null && robotExist.getDisabled()) {
-			robotService.updateRobot(sysRobot);
+			robotService.updateRobotByUuId(sysRobot);
 		} else {
 			// if robot is busying
 			if (EportConstants.ROBOT_STATUS_BUSY.equals(status)) {

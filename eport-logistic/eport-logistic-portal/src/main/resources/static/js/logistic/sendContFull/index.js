@@ -13,7 +13,7 @@ shipmentSearch.params = new Object();
 shipmentSearch.serviceType = 4;
 var sizeList = [];
 var berthplanList;// get infor
-var onChangeFlg = false, currentIndexRow, rejectChange = false, dischargePortList = [], currentVesselVoyage = '';
+var onChangeFlg = false, currentIndexRow, rejectChange = false, dischargePortList = [], currentVesselVoyage = '', currentEta;
 var fromDate, toDate;
 //dictionary sizeList
 $.ajax({
@@ -67,7 +67,7 @@ var toolbar = [
     {
         text: '<button class="btn btn-sm btn-default"><i class="fa fa-remove text-danger"></i> Xóa</button>',
         handler: function () {
-            removeShipment()
+        	removeShipmentSendFull()
         },
     },
     {
@@ -136,6 +136,11 @@ $(document).ready(function () {
         }
     });
 
+    let now = new Date();
+    now = new Date(now.getFullYear(), now.getMonth(), 1);
+    let nowStr = ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear();
+    
+
     $('#fromDate').datebox({
         onSelect: function (date) {
             date.setHours(0, 0, 0);
@@ -150,9 +155,7 @@ $(document).ready(function () {
         }
     });
 
-    let now = new Date();
-    now.setHours(0, 0, 0, 0);
-    $('#fromDate').datebox('setValue', ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear());
+    $('#fromDate').datebox('setValue', nowStr);
     shipmentSearch.params.fromDate = dateToString(now);
 
     $('#toDate').datebox({
@@ -167,6 +170,7 @@ $(document).ready(function () {
             }
         }
     });
+
     // Handle add
     $(function () {
         let options = {
@@ -484,6 +488,20 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
+function etaRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'eta' + row).addClass("htMiddle").addClass("htCenter");
+    if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+        }
+    } else {
+        value = '';
+    }
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
     if (value != null && value != '') {
@@ -666,26 +684,29 @@ function configHandson() {
                 case 5:
                     return '<span class="required">Tàu và Chuyến</span>';
                 case 6:
+                    return "Ngày tàu đến";
+                case 7:
                     return "Nhiệt Độ (c)";
+                
                 // case 8:
                 //     return "Chi tiết";
-                case 7:
-                    return '<span class="required">Trọng Lượng (kg)</span>';
                 case 8:
-                    return '<span class="required">Loại Hàng</span>';
+                    return '<span class="required">Trọng Lượng (kg)</span>';
                 case 9:
-                    return '<span class="required">Cảng Dỡ Hàng</span>';
+                    return '<span class="required">Loại Hàng</span>';
                 case 10:
-                    return 'PTTT';
+                    return '<span class="required">Cảng Dỡ Hàng</span>';
                 case 11:
-                    return 'MST Người Trả Tiền';
+                    return 'PTTT';
                 case 12:
-                    return 'Tên Cty Thanh Toán';
+                    return 'Mã Số Thuế';
                 case 13:
+                    return 'Người Thanh Toán';
+                case 14:
                     return "Ghi Chú";
             }
         },
-        colWidths: [40, 100, 100, 150, 150, 150, 100, 120, 80, 100, 100, 130, 130, 200],
+        colWidths: [40, 100, 100, 150, 150, 150, 100, 120, 120, 80, 100, 100, 130, 130, 200],
         filter: "true",
         columns: [
             {
@@ -724,6 +745,10 @@ function configHandson() {
                 source: vslNmList,
                 strict: true,
                 renderer: vslNmRenderer
+            },
+            {
+                data: "eta",
+                renderer: etaRenderer
             },
             {
                 data: "temperature",
@@ -789,7 +814,7 @@ function configHandson() {
                     break;
                 // Arrow Right
                 case 39:
-                    if (selected[3] == 13) {
+                    if (selected[3] == 14) {
                         e.stopImmediatePropagation();
                     } 
                     break
@@ -830,6 +855,7 @@ function onChange(changes, source) {
                     let shipmentDetail = new Object();
                     for (let i = 0; i < berthplanList.length; i++) {
                         if (vesselAndVoy == berthplanList[i].vslAndVoy) {
+                            currentEta = berthplanList[i].eta;
                             shipmentDetail.vslNm = berthplanList[i].vslNm;
                             shipmentDetail.voyNo = berthplanList[i].voyNo;
                             shipmentDetail.year = berthplanList[i].year;
@@ -844,7 +870,7 @@ function onChange(changes, source) {
                                     if (data.code == 0) {
                                         hot.updateSettings({
                                             cells: function (row, col, prop) {
-                                                if (col == 9) {
+                                                if (col == 10) {
                                                     let cellProperties = {};
                                                     dischargePortList = data.dischargePorts;
                                                     cellProperties.source = dischargePortList;
@@ -858,6 +884,7 @@ function onChange(changes, source) {
                         }
                     }
                 }
+                hot.setDataAtCell(change[0], 6, currentEta);
             }
         // check to input temperature
         } else if (change[1] == "sztp") {
@@ -872,7 +899,7 @@ function onChange(changes, source) {
                 temperatureDisable[change[0]] = 0;
                 hot.updateSettings({
                     cells: function (row, col, prop) {
-                        if (row == change[0] && col == 6) {
+                        if (row == change[0] && col == 7) {
                             let cellProperties = {};
                             cellProperties.readOnly = false;
                             return cellProperties;
@@ -883,7 +910,7 @@ function onChange(changes, source) {
                 temperatureDisable[change[0]] = 1;
                 hot.updateSettings({
                     cells: function (row, col, prop) {
-                        if (row == change[0] && col == 6) {
+                        if (row == change[0] && col == 7) {
                             let cellProperties = {};
                             cellProperties.readOnly = true;
                             $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
@@ -1249,6 +1276,7 @@ function getDataFromTable(isValidate) {
         shipmentDetail.sztpDefine = sizeType[1];
         shipmentDetail.temperature = object["temperature"];
         shipmentDetail.consignee = object["consignee"];
+        shipmentDetail.eta = object["eta"];
         shipmentDetail.wgt = object["wgt"];
         if(berthplanList){
             for (let i= 0; i < berthplanList.length;i++){
@@ -1313,7 +1341,7 @@ function saveShipmentDetail() {
                 shipmentDetails[0].processStatus = conts;
                 $.modal.loading("Đang xử lý...");
                 $.ajax({
-                    url: prefix + "/shipment-detail",
+                    url: prefix + "/" + shipmentSelected.id + "/shipment-detail",
                     method: "post",
                     contentType: "application/json",
                     accept: 'text/plain',
@@ -1322,7 +1350,7 @@ function saveShipmentDetail() {
                     success: function (data) {
                         var result = JSON.parse(data);
                         if (result.code == 0) {
-                            $.modal.alertSuccess(result.msg);
+                            $.modal.msgSuccess(result.msg);
                             reloadShipmentDetail();
                         } else {
                             if (result.conts != null) {
@@ -1350,24 +1378,28 @@ function saveShipmentDetail() {
 // DELETE SHIPMENT DETAIL
 function deleteShipmentDetail() {
     if (getDataSelectedFromTable(true)) {
-        $.modal.loading("Đang xử lý...");
-        $.ajax({
-            url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
-            method: "delete",
-            success: function (result) {
-                if (result.code == 0) {
-                    $.modal.alertSuccess(result.msg);
-                    reloadShipmentDetail();
-                } else {
-                    $.modal.alertError(result.msg);
-                }
-                $.modal.closeLoading();
-            },
-            error: function (result) {
-                $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-                $.modal.closeLoading();
-            },
-        });
+    	$.modal.confirmShipment("Xác nhận xóa khai báo container ?", function() {
+	        $.modal.loading("Đang xử lý...");
+	        $.ajax({
+	            url: prefix + "/" + shipmentSelected.id + "/shipment-detail/delete",
+	            method: "post",
+	            contentType: "application/json",
+	            data: JSON.stringify({"ids":shipmentDetailIds}),
+	            success: function (result) {
+	                if (result.code == 0) {
+	                	$.modal.msgSuccess(result.msg)
+	                    reloadShipmentDetail();
+	                } else {
+	                    $.modal.alertError(result.msg);
+	                }
+	                $.modal.closeLoading();
+	            },
+	            error: function (result) {
+	                $.modal.alertError("Có lỗi trong quá trình xóa dữ liệu, vui lòng thử lại.");
+	                $.modal.closeLoading();
+	            },
+	        });
+    	});
     }
 }
 

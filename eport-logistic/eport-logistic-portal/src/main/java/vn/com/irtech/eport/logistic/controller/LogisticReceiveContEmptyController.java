@@ -37,6 +37,7 @@ import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.exception.file.InvalidExtensionException;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
@@ -47,6 +48,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
+import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
 import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
@@ -160,7 +162,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		Shipment shipment = shipmentService.selectShipmentById(id);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			mmap.put("shipment", shipment);
-			mmap.put("taxCode", getGroup().getMst());
 		}
 		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
 		if (oprCodeList == null) {
@@ -190,7 +191,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, 
 			@PathVariable("creditFlag") boolean creditFlag, @PathVariable("taxCode") String taxCode, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
-		mmap.put("numberPhone", getGroup().getMobilePhone());
+		mmap.put("numberPhone", getUser().getMobile());
 		mmap.put("shipmentId", "-");
 		mmap.put("creditFlag", creditFlag);
 		mmap.put("taxCode", taxCode);
@@ -214,9 +215,13 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	}
 
 	// CHECK BOOKING NO IS UNIQUE
-	@GetMapping("/unique/booking-no/{bookingNo}")
+	@PostMapping("/unique/booking-no")
 	@ResponseBody
-	public AjaxResult checkBookingNoUnique(@PathVariable String bookingNo) {
+	public AjaxResult checkBookingNoUnique(@RequestBody ContainerServiceForm inputForm) {
+		String bookingNo = inputForm.getBookingNo();
+		if(StringUtils.isAllBlank(bookingNo)) {
+			return error("Hãy nhập số Booking");
+		}
 		Shipment shipment = new Shipment();
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBookingNo(bookingNo);
@@ -242,6 +247,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
             return error("Chỉ được phép đính kèm tối đa 5 hình ảnh!");
         }
 
+        if (StringUtils.isNotEmpty(shipment.getBookingNo())) {
+        	shipment.setBookingNo(shipment.getBookingNo());
+        }
         LogisticAccount user = getUser();
         shipment.setLogisticAccountId(user.getId());
         shipment.setLogisticGroupId(user.getGroupId());
@@ -253,25 +261,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
         if (shipmentService.insertShipment(shipment) == 1) {
             try {
                 insertShipmentImages(shipment);
-//    			// assign driver default
-//    			PickupAssign pickupAssign = new PickupAssign();
-//    			pickupAssign.setLogisticGroupId(getUser().getGroupId());
-//    			pickupAssign.setShipmentId(shipment.getId());
-//    			//list driver
-//    			DriverAccount driverAccount = new DriverAccount();
-//    			driverAccount.setLogisticGroupId(getUser().getGroupId());
-//    			driverAccount.setDelFlag(false);
-//    			driverAccount.setStatus("0");
-//    			List<DriverAccount> driverAccounts = driverAccountService.selectDriverAccountList(driverAccount);
-//    			if(driverAccounts.size() > 0) {
-//    				for(DriverAccount i : driverAccounts) {
-//    					pickupAssign.setDriverId(i.getId());
-//    					pickupAssign.setFullName(i.getFullName());
-//    					pickupAssign.setPhoneNumber(i.getMobileNumber());
-//    					pickupAssign.setCreateBy(getUser().getFullName());
-//    					pickupAssignService.insertPickupAssign(pickupAssign);
-//    				}
-//    			}
                 return success("Thêm lô thành công");
             } catch (IOException | InvalidExtensionException e) {
                 return error(e.getMessage());
@@ -289,9 +278,32 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
-			shipment.setUpdateTime(new Date());
-			shipment.setUpdateBy(user.getFullName());
-			if (shipmentService.updateShipment(shipment) == 1) {
+			// Check container amount update need to greater or equal  curren amount
+			// Or at least greater or equal the number of container has been declared
+			if(shipment.getContainerAmount() < shipment.getContainerAmount()) {
+				ShipmentDetail shipmentSearch = new ShipmentDetail();
+				shipmentSearch.setShipmentId(shipment.getId());
+				long contNumber = shipmentDetailService.countShipmentDetailList(shipmentSearch);
+				if(contNumber > shipment.getContainerAmount()) {
+					return error("Không thể chỉnh sửa số lượng container nhỏ hơn danh sách khai báo.");
+				}
+			}
+			
+			referenceShipment.setRemark(shipment.getRemark());
+			referenceShipment.setContainerAmount(shipment.getContainerAmount());
+			referenceShipment.setUpdateBy(getUser().getUserName());
+			
+			if (EportConstants.SHIPMENT_STATUS_INIT.equals(referenceShipment.getStatus())) {
+				if (StringUtils.isNotEmpty(shipment.getBookingNo())) {
+					referenceShipment.setBookingNo(shipment.getBookingNo().toUpperCase());
+				}
+				referenceShipment.setSpecificContFlg(shipment.getSpecificContFlg());
+				referenceShipment.setOpeCode(shipment.getOpeCode());
+			} else if (EportConstants.SHIPMENT_STATUS_SAVE.equals(referenceShipment.getStatus())) {
+				referenceShipment.setOpeCode(shipment.getOpeCode());
+			}
+			
+			if (shipmentService.updateShipment(referenceShipment) == 1) {
 				return success("Chỉnh sửa lô thành công");
 			}
 		}
@@ -370,7 +382,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult deleteShipmentDetail(@PathVariable Long shipmentId, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		if (shipmentDetailIds != null) {
-			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
+			shipmentDetailService.deleteShipmentDetailByIds(shipmentId, shipmentDetailIds);
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
 			if (shipmentDetailService.countShipmentDetailList(shipmentDetail) == 0) {

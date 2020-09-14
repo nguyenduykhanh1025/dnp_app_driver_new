@@ -46,6 +46,10 @@ public class LogisticAccount extends BaseEntity
     @Excel(name = "Ho Va Ten")
     private String fullName;
 
+    /** Ho Va Ten */
+    @Excel(name = "Mobile")
+    private String mobile;
+
     /** Status（0 Normal 1 Disabled） */
     @Excel(name = "Status", readConverterExp = "0=,N=ormal,1=,D=isabled")
     private String status;
@@ -67,9 +71,6 @@ public class LogisticAccount extends BaseEntity
     private LogisticGroup logisticGroup;
 
     public LogisticGroup getLogisticGroup() {
-    	if(logisticGroup == null) {
-    		logisticGroup = new LogisticGroup();
-    	}
 		return logisticGroup;
 	}
 
@@ -142,7 +143,15 @@ public class LogisticAccount extends BaseEntity
     {
         return fullName;
     }
-    public void setStatus(String status) 
+    public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public void setStatus(String status) 
     {
         this.status = status;
     }

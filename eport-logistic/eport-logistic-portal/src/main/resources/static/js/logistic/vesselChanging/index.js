@@ -477,8 +477,9 @@ function changeVessel() {
   }
 }
 
-function otp(vessel) {
-  $.modal.openCustomForm("Xác Thực OTP", prefix + "/otp/shipment-detail-ids/" + shipmentDetailIds + "/vessel/" + vessel, 600, 350);
+function otp(vslNm, voyNo, vslName, voyCarrier) {
+  console.log("OK");
+  $.modal.openCustomForm("Xác Thực OTP", prefix + "/otp/shipment-detail-ids/" + shipmentDetailIds + "/vslNm/" + vslNm + "/" + voyNo + "/" + vslName + "/" + voyCarrier, 600, 350);
 }
 
 function finishVerifyForm(result) {

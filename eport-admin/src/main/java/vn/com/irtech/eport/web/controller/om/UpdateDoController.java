@@ -32,12 +32,12 @@ public class UpdateDoController extends BaseController{
         return prefix + "/updateDO";
     }
 
-    @GetMapping("/getOptionSearchDo")
-    @ResponseBody
-    public AjaxResult getOptionSearch(String keyString) {
-        List<String> blNo = shipmentDetailService.getBlListByDoStatus(keyString);
-        return AjaxResult.success(blNo);
-    }
+//    @GetMapping("/getOptionSearchDo")
+//    @ResponseBody
+//    public AjaxResult getOptionSearch(String keyString) {
+//        List<String> blNo = shipmentDetailService.getBlListByDoStatus(keyString);
+//        return AjaxResult.success(blNo);
+//    }
 
     @GetMapping("/getShipmentDetail")
     @ResponseBody

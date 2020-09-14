@@ -25,8 +25,8 @@ async function submitHandler() {
     if ($.validate.form()) {
         if ($("#opeCode option:selected").text() == 'Chọn OPR') {
             $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
-        } else if (!$("#containerAmount").val() || $("#containerAmount").val() < shipment.containerAmount) {
-            $.modal.alertWarning("Số lượng container quý khách muốn cập nhật không hợp lệ.");
+        } else if (!$("#containerAmount").val()) {
+            $.modal.alertWarning("Số lượng container cập nhật không hợp lệ.");
         } else {
             if ($("#bookingNo").val() != currentBooking) {
                 let res = await getBookingNoUnique();
@@ -42,16 +42,20 @@ async function submitHandler() {
 
 function getBookingNoUnique() {
     return $.ajax({
-        url: prefix + "/unique/booking-no/" + $("#bookingNo").val(),
-        method: "GET",
+        url: prefix + "/unique/booking-no",
+        method: "post",
+        contentType: "application/json",
+        data: JSON.stringify({"bookingNo": $("#bookingNo").val()}),
     })
 }
 
 function checkBookingNoUnique() {
     if ($("#bookingNo").val() != null && $("#bookingNo").val() != '' && $("#bookingNo").val() != currentBooking) {
         $.ajax({
-            url: prefix + "/unique/booking-no/" + $("#bookingNo").val(),
-            method: "GET",
+            url: prefix + "/unique/booking-no",
+            method: "post",
+            contentType: "application/json",
+            data: JSON.stringify({"bookingNo": $("#bookingNo").val()}),
         }).done(function (result) {
             if (result.code == 0) {
                 $("#bookingNo").removeClass("error-input");
@@ -80,6 +84,7 @@ function edit(url, data) {
             } else {
                 $.modal.alertError(result.msg);
             }
+            $.modal.enable();
         }
     })
 }

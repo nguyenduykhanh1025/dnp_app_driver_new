@@ -59,7 +59,7 @@ public interface IShipmentDetailService
      * @param ids Entity Ids
      * @return result
      */
-    public int deleteShipmentDetailByIds(String ids);
+    public int deleteShipmentDetailByIds(Long shipmentId, String shipmentDetailIds);
 
     /**
      * Delete Shipment Details
@@ -69,16 +69,15 @@ public interface IShipmentDetailService
      */
     public int deleteShipmentDetailById(Long id);
 
+    /**
+     * Select shipment details list by list of ID for logistic id
+     * 
+     * @param ids
+     * @param logisticGroupId
+     * @return
+     */
     public List<ShipmentDetail> selectShipmentDetailByIds(String ids, Long logisticGroupId);
 
-    public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
-
-    public List<String> getBlListByDoStatus(String keyString);
-
-    public List<String> getBlLists(String keyString);
-
-    public List<String> getBlListByPaymentStatus(String keyString);
-    
     public long countShipmentDetailList(ShipmentDetail shipmentDetail);
     
     /**
@@ -99,18 +98,28 @@ public interface IShipmentDetailService
     
     public void updateProcessStatus(List<ShipmentDetail> shipmentDetail, String status, String invoiceNo, ProcessOrder processOrder);
 
-//    public boolean checkCustomStatus(String userVoy,String cntrNo) throws IOException;
-
     public PartnerInfoDto getGroupNameByTaxCode(String taxCode) throws Exception;
 
     public ProcessOrder getYearBeforeAfter(String vessel, String voyage);
     
+    /**
+     * Get container list was reserved on Catos. Can not process booking again.
+     * 
+     * @param containerNos
+     * @return
+     */
     public List<String> checkContainerReserved(String containerNos);
     
-    public List<String> getPODList();
-    
+    /**
+     * Get vessel code list from catos
+     * @return
+     */
     public List<String> getVesselCodeList();
     
+    /**
+     * Get consignee list from catos
+     * @return
+     */
     public List<String> getConsigneeList();
     
     /**
@@ -120,27 +129,43 @@ public interface IShipmentDetailService
      */
     public List<String> getConsigneeListWithoutTaxCode();
     
+    /**
+     * Get voyage list by vessel from catos
+     * 
+     * @param vesselCode
+     * @return
+     */
     public List<String> getVoyageNoList(String vesselCode);
     
+    /**
+     * Get OPE code list from Catos
+     * 
+     * @return
+     */
     public List<String> getOpeCodeList();
     
+    /**
+     * Get number of container by B/L No
+     * @param blNo
+     * @return
+     */
     public int getCountContByBlNo(String blNo);
 
-    public List<ShipmentDetail> selectShipmentDetailByProcessIds (String processOrderIds);
-    
-//    public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo);
-    
     /**
-     * Get shipment detail from house bill
+     * Get list of shipment details that processed by user.
      * 
-     * @param houseBl
-     * @return List<ShipmentDetail>
+     * @param processOrderIds
+     * @return
      */
-//    public List<ShipmentDetail> getShipmentDetailFromHouseBill(String houseBl);
+    public List<ShipmentDetail> selectShipmentDetailByProcessIds (String processOrderIds);
 
+    /**
+     * Get list of shipment detail to assign truck
+     * 
+     * @param shipmentDetail
+     * @return
+     */
     public List<ShipmentDetail> getShipmentDetailListForAssign(ShipmentDetail shipmentDetail);
-
-    // public List<ShipmentDetail> selectSendEmptyShipmentDetailByListCont(@Param("conts") String conts, @Param("shipmentId") Long shipmentId);
 
     public List <ShipmentDetail> selectContainerStatusList(ShipmentDetail shipmentDetail);
     
@@ -155,7 +180,13 @@ public interface IShipmentDetailService
      */
     public Integer countNumberOfLegalCont(List<ShipmentDetail> shipmentDetails, Long logisticGroupId);
     
-    public String getSSR(String sztp);
+    /**
+     * Get SSR code by size type for robot to select while processing.
+     * 
+     * @param sztp
+     * @return
+     */
+    public String getSsrCodeBySztp(String sztp);
     
     /***
      * getShipmentDetail for SendContFull and receiveContEmpty
@@ -163,21 +194,14 @@ public interface IShipmentDetailService
     public List<ShipmentDetail> getShipmentDetailListForSendFReceiveE(ShipmentDetail shipmentDetail);
     
     /***
-     * get command List of batch
+     * get process order id list by shipment id
      */
-    public List<Long> getCommandListInBatch(ShipmentDetail shipmentDetail);
+    public List<Long> getProcessOrderIdListByShipment(ShipmentDetail shipmentDetail);
+
     /***
      * get shipmentDetail for Print
      */
     public List<ShipmentDetail> getShipmentDetailForPrint(ShipmentDetail shipmentDetail);
-
-    /**
-     * Get container with yard position
-     * 
-     * @param shipmentId
-     * @return ShipmentDetail
-     */
-    public ShipmentDetail getContainerWithYardPosition(Long shipmentId);
 
     /**
      * Select shipment detail for driver shipment assign
@@ -197,7 +221,7 @@ public interface IShipmentDetailService
      * @param groupId
      * @return ServiceSendFullRobotReq
      */
-    public ServiceSendFullRobotReq makeChangeVesselOrder(List<ShipmentDetail>shipmentDetails, String[] vesselArr, Long groupId);
+    public ServiceSendFullRobotReq makeChangeVesselOrder(List<ShipmentDetail>shipmentDetails, String vslNm, String voyNo, String vslName, String voyCarrier, Long groupId);
 
     /**
      * Make extension date order
@@ -244,9 +268,9 @@ public interface IShipmentDetailService
     public List<ShipmentDetail> selectShipmentDetailListReport(ShipmentDetail shipmentDetail);
     
     /**
-     * updateShipmentDetailForOMSupport is used for OM reset process status. Not use with another purpose
+     * resetShipmentDetailProcessStatus is used for OM reset process status. Not use with another purpose
      */
-    public int updateShipmentDetailForOMSupport(ShipmentDetail shipmentDetail);
+    public int resetShipmentDetailProcessStatus(ShipmentDetail shipmentDetail);
     
     /**
      * Get List container with coordinate for carrier

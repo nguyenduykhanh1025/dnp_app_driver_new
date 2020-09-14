@@ -1,6 +1,10 @@
 package vn.com.irtech.eport.api.form;
 
-public class ProcessBillForm {
+import java.io.Serializable;
+
+public class ProcessBillForm  implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 

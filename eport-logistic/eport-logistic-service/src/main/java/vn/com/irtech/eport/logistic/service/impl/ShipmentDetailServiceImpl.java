@@ -25,7 +25,6 @@ import org.springframework.web.client.RestTemplate;
 import com.google.gson.Gson;
 
 import vn.com.irtech.eport.common.config.Global;
-import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
@@ -149,8 +148,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
      * @return result
      */
     @Override
-    public int deleteShipmentDetailByIds(String ids) {
-        return shipmentDetailMapper.deleteShipmentDetailByIds(Convert.toStrArray(ids));
+    public int deleteShipmentDetailByIds(Long shipmentId, String shipmentDetailIds) {
+        return shipmentDetailMapper.deleteShipmentDetailByIds(shipmentId, Convert.toStrArray(shipmentDetailIds));
     }
 
     /**
@@ -167,26 +166,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     @Override
     public List<ShipmentDetail> selectShipmentDetailByIds(String ids, Long logisticGroupId) {
         return shipmentDetailMapper.selectShipmentDetailByIds(Convert.toStrArray(ids), logisticGroupId);
-    }
-
-    @Override
-    public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno) {
-        return shipmentDetailMapper.selectShipmentDetailByBlno(Blno);
-    }
-
-    @Override
-    public List<String> getBlListByDoStatus(String keyString) {
-        return shipmentDetailMapper.getBlListByDoStatus(keyString);
-    }
-
-    @Override
-    public List<String> getBlListByPaymentStatus(String keyString) {
-        return shipmentDetailMapper.getBlListByPaymentStatus(keyString);
-    }
-
-    @Override
-    public List<String> getBlLists(String keyString) {
-        return shipmentDetailMapper.getBlLists(keyString);
     }
 
     public long countShipmentDetailList(ShipmentDetail shipmentDetail) {
@@ -419,7 +398,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setPayType("Cash");
         }
         processOrder.setContNumber(shipmentDetails.size());
-        processOrder.setSsrCode(getSSR(shipmentDetails.get(0).getSztp()));
+        processOrder.setSsrCode(getSsrCodeBySztp(shipmentDetails.get(0).getSztp()));
         List<Long> shipmentDetailIds = new ArrayList<>();
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
         	shipmentDetailIds.add(shipmentDetail.getId());
@@ -656,7 +635,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		}
         processOrder.setShipmentId(shipment.getId());
         if ("F".equalsIgnoreCase(detail.getFe())) {
-            processOrder.setServiceType(Constants.SEND_CONT_FULL);
+            processOrder.setServiceType(EportConstants.SERVICE_DROP_FULL);
             if (StringUtils.isNotEmpty(detail.getDischargePort()) && "VN".equalsIgnoreCase(detail.getDischargePort().substring(0, 2))) {
             	processOrder.setDomesticFlg(true);
             } else {
@@ -664,7 +643,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             }
         } else {
         	processOrder.setDomesticFlg(false);
-            processOrder.setServiceType(Constants.SEND_CONT_EMPTY);
+            processOrder.setServiceType(EportConstants.SERVICE_DROP_EMPTY);
         }
         if (creditFlag) {
             processOrder.setPayType("Credit");
@@ -693,9 +672,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             }
             shipmentDetail.setOpeCode(shipment.getOpeCode());
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
-            if (processOrder.getServiceType() == 2) {
-            	shipmentDetail.setRemark("Ha vo " + shipmentDetail.getEmptyDepotLocation());
-            }
+			if (processOrder.getServiceType() == EportConstants.SERVICE_DROP_EMPTY
+					&& EportConstants.DROP_EMPTY_TO_DEPORT.equals(shipment.getSendContEmptyType())) {
+	            // TODO Them remark han lenh khi ha vo
+				shipmentDetail.setRemark("Ha vo " + shipmentDetail.getEmptyDepotLocation());
+			}
         }
         return processOrder;
     }
@@ -779,22 +760,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     public List<String> checkContainerReserved(String containerNos) {
         String url = Global.getApiUrl() + "/shipmentDetail/checkContReserved/" + containerNos;
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<String>>() {
-                });
+        ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
         List<String> listCont = response.getBody();
         return listCont;
-    }
-
-    @Override
-    public List<String> getPODList() {
-        String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<String>>() {
-                });
-        List<String> pods = response.getBody();
-        return pods;
     }
 
     @Override
@@ -899,7 +867,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-	public String getSSR(String sztp)
+	public String getSsrCodeBySztp(String sztp)
 	{
 		List<SysDictData> dictDatas = dictTypeService.selectDictDataByType("sys_special_service_request");
 		for(SysDictData i : dictDatas) {
@@ -916,7 +884,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	}
 
 	@Override
-	public List<Long> getCommandListInBatch(ShipmentDetail shipmentDetail) {
+	public List<Long> getProcessOrderIdListByShipment(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.getCommandListInBatch(shipmentDetail);
 	}
 
@@ -925,97 +893,97 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		return shipmentDetailMapper.getShipmentDetailForPrint(shipmentDetail);
 	} 
     
-    /**
-     * Get container with yard position
-     * 
-     * @param shipmentId
-     * @return ShipmentDetail
-     */
-    @Override
-    public ShipmentDetail getContainerWithYardPosition(Long shipmentId) {
-        // Get Shipment
-//        Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+//    /**
+//     * Get container with yard position
+//     * 
+//     * @param shipmentId
+//     * @return ShipmentDetail
+//     */
+//    @Override
+//    public ShipmentDetail getContainerWithYardPosition(Long shipmentId) {
+//        // Get Shipment
+////        Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+//
+//        // Get shipment detail by shipment id
+//        ShipmentDetail shipmentDetail = new ShipmentDetail();
+//        shipmentDetail.setShipmentId(shipmentId);
+//        List<ShipmentDetail> shipmentDetails = shipmentDetailMapper.selectShipmentDetailList(shipmentDetail);
+//
+//        // Get coordinate by bill
+//        List<ShipmentDetail> coordinateList = catosApiService.getCoordinateOfContainers(shipmentDetails.get(0).getBlNo());
+//        List<ShipmentDetail[][]> bayList = new ArrayList<>();
+//        bayList = getContPosition(coordinateList, shipmentDetails);
+//
+//        // Get container from top to bottom
+//        for (int b = 0; b < bayList.size(); b++) {
+//        	int rowMax = bayList.get(b)[0].length;
+//        	int rowTemp = 0;
+//        	if (rowMax%2 == 1) {
+//        		rowMax++;
+//        		rowTemp++;
+//        	}
+//            for (int row = 0; row < rowMax/2; row++) {
+//                boolean stack1 = false;
+//                boolean stack2 = false;
+//                for (int tier = 4; tier >= 0; tier--) {
+//                    ShipmentDetail shipmentDetail1 = bayList.get(b)[tier][row];
+//                    // validate
+//                    if (shipmentDetail1 != null) {
+//                    	if (validateAutoPickupCont(shipmentDetail1, stack1)) {
+//                            return shipmentDetail1;
+//                        }
+//                    	stack1 = true;
+//                    }
+//                    
+//                    ShipmentDetail shipmentDetail2 = bayList.get(b)[tier][rowMax-row-1-rowTemp];
+//                    if (shipmentDetail2 != null) {
+//                    	if (validateAutoPickupCont(shipmentDetail2, stack2)) {
+//                            return shipmentDetail2;
+//                        }
+//                    	stack2 = true;
+//                    }
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
-        // Get shipment detail by shipment id
-        ShipmentDetail shipmentDetail = new ShipmentDetail();
-        shipmentDetail.setShipmentId(shipmentId);
-        List<ShipmentDetail> shipmentDetails = shipmentDetailMapper.selectShipmentDetailList(shipmentDetail);
-
-        // Get coordinate by bill
-        List<ShipmentDetail> coordinateList = catosApiService.getCoordinateOfContainers(shipmentDetails.get(0).getBlNo());
-        List<ShipmentDetail[][]> bayList = new ArrayList<>();
-        bayList = getContPosition(coordinateList, shipmentDetails);
-
-        // Get container from top to bottom
-        for (int b = 0; b < bayList.size(); b++) {
-        	int rowMax = bayList.get(b)[0].length;
-        	int rowTemp = 0;
-        	if (rowMax%2 == 1) {
-        		rowMax++;
-        		rowTemp++;
-        	}
-            for (int row = 0; row < rowMax/2; row++) {
-                boolean stack1 = false;
-                boolean stack2 = false;
-                for (int tier = 4; tier >= 0; tier--) {
-                    ShipmentDetail shipmentDetail1 = bayList.get(b)[tier][row];
-                    // validate
-                    if (shipmentDetail1 != null) {
-                    	if (validateAutoPickupCont(shipmentDetail1, stack1)) {
-                            return shipmentDetail1;
-                        }
-                    	stack1 = true;
-                    }
-                    
-                    ShipmentDetail shipmentDetail2 = bayList.get(b)[tier][rowMax-row-1-rowTemp];
-                    if (shipmentDetail2 != null) {
-                    	if (validateAutoPickupCont(shipmentDetail2, stack2)) {
-                            return shipmentDetail2;
-                        }
-                    	stack2 = true;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private Boolean validateAutoPickupCont (ShipmentDetail shipmentDetail, boolean stack) {	
-        if (shipmentDetail.getId() == null) {
-            return false;
-        } 
-
-        // Not received DO
-        if (!"Y".equals(shipmentDetail.getDoStatus())) {
-            return false;
-        }
-        
-        // Exceed expired dem
-        Date now = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(now);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        if (shipmentDetail.getExpiredDem().compareTo(now) < 0) {
-            return false;
-        }
-
-        if ("N".equals(shipmentDetail.getPaymentStatus())) {
-            return false;
-        }
-
-        if (stack && "N".equals(shipmentDetail.getPrePickupPaymentStatus())) {
-            return false;
-        }
-        
-        if (!"N".equals(shipmentDetail.getFinishStatus())) {
-        	return false;
-        }
-
-        return true;
-    }
+//    private Boolean validateAutoPickupCont (ShipmentDetail shipmentDetail, boolean stack) {	
+//        if (shipmentDetail.getId() == null) {
+//            return false;
+//        } 
+//
+//        // Not received DO
+//        if (!"Y".equals(shipmentDetail.getDoStatus())) {
+//            return false;
+//        }
+//        
+//        // Exceed expired dem
+//        Date now = new Date();
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(now);
+//        calendar.set(Calendar.HOUR_OF_DAY, 0);
+//        calendar.set(Calendar.MINUTE, 0);
+//        calendar.set(Calendar.SECOND, 0);
+//        calendar.set(Calendar.MILLISECOND, 0);
+//        if (shipmentDetail.getExpiredDem().compareTo(now) < 0) {
+//            return false;
+//        }
+//
+//        if ("N".equals(shipmentDetail.getPaymentStatus())) {
+//            return false;
+//        }
+//
+//        if (stack && "N".equals(shipmentDetail.getPrePickupPaymentStatus())) {
+//            return false;
+//        }
+//        
+//        if (!"N".equals(shipmentDetail.getFinishStatus())) {
+//        	return false;
+//        }
+//
+//        return true;
+//    }
 
     /**
      * Select shipment detail for driver shipment assign
@@ -1038,11 +1006,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
      * @return ServiceSendFullRobotReq
      */
     @Override
-    public ServiceSendFullRobotReq makeChangeVesselOrder(List<ShipmentDetail>shipmentDetails, String[] vesselArr, Long groupId) {
+    public ServiceSendFullRobotReq makeChangeVesselOrder(List<ShipmentDetail>shipmentDetails, String vslNm, String voyNo, String vslName, String voyCarrier, Long groupId) {
     	ProcessOrder processOrder = new ProcessOrder();
     	if (CollectionUtils.isNotEmpty(shipmentDetails)) {
     		ShipmentDetail shipmentDt = shipmentDetails.get(0);
-    		processOrder.setServiceType(Constants.CHANGE_VESSEL);
+    		processOrder.setServiceType(EportConstants.SERVICE_CHANGE_VESSEL);
     		processOrder.setShipmentId(shipmentDt.getShipmentId());
     		processOrder.setBookingNo(shipmentDt.getBookingNo());
     		processOrder.setStatus(0);
@@ -1056,19 +1024,19 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             }
     		processOrder.setOldVessel(shipmentDt.getVslNm());
     		processOrder.setOldVoyAge(shipmentDt.getVoyNo());
-    		processOrder.setVessel(vesselArr[0]);
-    		processOrder.setVoyage(vesselArr[1]);
+    		processOrder.setVessel(vslNm);
+    		processOrder.setVoyage(voyNo);
     		processOrder.setContNumber(shipmentDetails.size());
     		List<Long> shipmentDetailIds = new ArrayList<>();
     		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-    			shipmentDetail.setVslNm(vesselArr[0]);
-    			shipmentDetail.setVoyNo(vesselArr[1]);
+    			shipmentDetail.setVslNm(vslNm);
+    			shipmentDetail.setVoyNo(voyNo);
     			shipmentDetailIds.add(shipmentDetail.getId());
     		}
     		Map<String, Object> map = new HashMap<>();
     		map.put("shipmentDetailIds", shipmentDetailIds);
-    		map.put("vslName", vesselArr[2]);
-    		map.put("voyCarrier", vesselArr[3]);
+    		map.put("vslName", vslName);
+    		map.put("voyCarrier", voyCarrier);
     		processOrder.setProcessData(new Gson().toJson(map));
     		processOrder.setLogisticGroupId(groupId);
     		processOrderService.insertProcessOrder(processOrder);
@@ -1109,7 +1077,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     private ServiceSendFullRobotReq separateExtensionOrderByOrderNo(List<ShipmentDetail> shipmentDetails, Date expiredDem, Long groupId) {
     	ProcessOrder processOrder = new ProcessOrder();
     	processOrder.setPickupDate(expiredDem);
-    	processOrder.setServiceType(Constants.EXTENSION_DATE_ORDER);
+    	processOrder.setServiceType(EportConstants.SERVICE_EXTEND_DATE);
     	processOrder.setLogisticGroupId(groupId);
     	processOrder.setShipmentId(shipmentDetails.get(0).getShipmentId());
     	processOrder.setOrderNo(shipmentDetails.get(0).getOrderNo());
@@ -1272,8 +1240,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
      * updateShipmentDetailForOMSupport is used for OM reset process status. Not use with another purpose
      */
 	@Override
-	public int updateShipmentDetailForOMSupport(ShipmentDetail shipmentDetail) {
-		return shipmentDetailMapper.updateShipmentDetailForOMSupport(shipmentDetail);
+	public int resetShipmentDetailProcessStatus(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.resetShipmentDetailProcessStatus(shipmentDetail);
 	}
 	
 	 /**

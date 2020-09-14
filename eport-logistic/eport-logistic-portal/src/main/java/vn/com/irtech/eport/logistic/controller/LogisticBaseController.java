@@ -17,7 +17,7 @@ import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
  */
 public abstract class LogisticBaseController extends BaseController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(LogisticBaseController.class);
+	protected static final Logger logger = LoggerFactory.getLogger(LogisticBaseController.class);
 
 	public static final String PHONE_PATTERN = "^[0-9]{10,11}$";
 
@@ -39,11 +39,7 @@ public abstract class LogisticBaseController extends BaseController {
 	}
 
 	public boolean verifyPermission(Long groupId) {
-		LogisticAccount user = getUser();
-		if (user.getGroupId().equals(groupId)) {
-			return true;
-		}
-		return false;
+		return getUser().getGroupId().equals(groupId);
 	}
 
 	public String getUserIp() {

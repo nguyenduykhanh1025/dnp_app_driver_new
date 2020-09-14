@@ -119,16 +119,19 @@ public class LogisticAccountController extends BaseController
         if (logisticAccount.getPassword().length() < 6) {
             return error("Mật khẩu không được ít hơn 6 ký tự!");
         }
-        Map<String, Object> variables = new HashMap<>();
-		variables.put("username", logisticAccount.getUserName());
-        variables.put("password", logisticAccount.getPassword());
-        variables.put("email", logisticAccount.getEmail());
+        if (!Pattern.matches(UserConstants.MOBILE_PHONE_PATTERN, logisticAccount.getMobile())) {
+        	return error("Số mobile không hợp lệ");
+        }
         logisticAccount.setSalt(ShiroUtils.randomSalt());
         logisticAccount.setPassword(passwordService.encryptPassword(logisticAccount.getUserName()
         , logisticAccount.getPassword(), logisticAccount.getSalt()));
         logisticAccount.setCreateBy(ShiroUtils.getSysUser().getUserName());
         if (logisticAccountService.insertLogisticAccount(logisticAccount) == 1) {
             if (isSendEmail != null) {
+                Map<String, Object> variables = new HashMap<>();
+        		variables.put("username", logisticAccount.getUserName());
+                variables.put("password", logisticAccount.getPassword());
+                variables.put("email", logisticAccount.getEmail());
                 new Thread() {
                     public void run() {
                         try {
@@ -165,6 +168,12 @@ public class LogisticAccountController extends BaseController
     @ResponseBody
     public AjaxResult editSave(LogisticAccount logisticAccount)
     {
+        if (!Pattern.matches(UserConstants.EMAIL_PATTERN, logisticAccount.getEmail())) {
+            return error("Email không hợp lệ!");
+        }
+        if (!Pattern.matches(UserConstants.MOBILE_PHONE_PATTERN, logisticAccount.getMobile())) {
+        	return error("Số mobile không hợp lệ");
+        }
         return toAjax(logisticAccountService.updateLogisticAccount(logisticAccount));
     }
 

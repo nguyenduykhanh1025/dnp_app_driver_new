@@ -19,9 +19,9 @@
             </div>
         </div>
         <div class="col-xs-9 text-center">
-            <h2 class="text-black"><b>Xác nhận làm lệnh</b></h2>
-            <p class="text-black">Mã OTP đã được gửi đến số điện thoại đã đăng ký <span class="text-success">0905888888</span></p>
-            <p class="text-black">Xin vui lòng nhập mã OTP và bấm "Xác Nhận" để thực hiện làm lệnh"</p>
+            <h2 class="text-black"><b>Xác nhận đổi tàu/chuyến</b></h2>
+            <p id="p1"></p>
+            <p class="text-black">Xin vui lòng nhập mã OTP và bấm "Xác Nhận" để thực hiện đổi tàu/chuyến"</p>
             <div class="row" style="display: flex; justify-content: space-between; align-items: center;">
                 <span class="col-xs-3 text-black"><b>Nhập mã OTP</b></span>
                 <input type="number" id="otpInput" class="form-control col-xs-3" style="width: 100px" placeholder="123456">
@@ -35,7 +35,10 @@
 <th:block th:include="include :: footer" />
 <script type="text/javascript" th:inline="javascript">
     var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
-    var vessel = /*[[${vessel}]]*/;
+    var vslNm = /*[[${vslNm}]]*/;
+    var voyNo = /*[[${voyNo}]]*/;
+    var vslName = /*[[${vslName}]]*/;
+    var voyCarrier = /*[[${voyCarrier}]]*/;
     var numberPhone = /*[[${numberPhone}]]*/;
 </script>
 <script th:src="@{/js/logistic/vesselChanging/otp.js}"></script>

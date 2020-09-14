@@ -77,27 +77,30 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 	@GetMapping("/shipment-detail-ids/{shipmentDetailIds}/form")
 	public String getVesselChangingForm(@PathVariable String shipmentDetailIds, ModelMap mmap) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
-		String opeCode = "" , vslNm = "", voyNo = "", carrierName = "", bookingNo = "", vslName = "";
+		String vslNm = "", voyNo = "", bookingNo = "", vslName = "";
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			opeCode = shipmentDetails.get(0).getOpeCode();
 			vslNm = shipmentDetails.get(0).getVslNm();
 			voyNo = shipmentDetails.get(0).getVoyNo();
-			carrierName = shipmentDetails.get(0).getCarrierName();
 			bookingNo = shipmentDetails.get(0).getBookingNo();
 			vslName = shipmentDetails.get(0).getVslName();
 		}
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			if (!opeCode.equals(shipmentDetail.getOpeCode()) || !vslNm.equals(shipmentDetail.getVslNm()) || !voyNo.equals(shipmentDetail.getVoyNo())) {
+			if (!vslNm.equals(shipmentDetail.getVslNm()) || !voyNo.equals(shipmentDetail.getVoyNo())) {
 				return "Tàu/chuyến khônng được khác nhau!";
 			}
 		}
-		List<String> opeCodeList = catosApiService.selectOpeCodeListInBerthPlan();
-		if (CollectionUtils.isNotEmpty(opeCodeList)) {
-			opeCodeList.add(0, "Chọn hãng tàu");
+		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlanWithoutOpe();
+		if(CollectionUtils.isNotEmpty(berthplanList)) {
+			List<String> vesselAndVoyages = new ArrayList<>();
+			for(ShipmentDetail i : berthplanList) {
+				vesselAndVoyages.add(i.getVslAndVoy());
+			}
+			mmap.put("berthplanList", berthplanList);
+			vesselAndVoyages.add(0, "Chọn tàu/chuyến mới");
+			mmap.put("vesselAndVoyages", vesselAndVoyages);
+			
 		}
-		mmap.put("opeCode", opeCode + ": " + carrierName);
 		mmap.put("vessel", vslNm + " - " + vslName + " - " + voyNo);
-		mmap.put("opeCodeList", opeCodeList);
 		mmap.put("bookingNo", bookingNo);
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		return PREFIX + "/changingForm";	
@@ -111,10 +114,13 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 	 * @param mmap
 	 * @return
 	 */
-	@GetMapping("/otp/shipment-detail-ids/{shipmentDetailIds}/vessel/{vessel}")
-	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("vessel") String vessel , ModelMap mmap) {
+	@GetMapping("/otp/shipment-detail-ids/{shipmentDetailIds}/vslNm/{vslNm}/{voyNo}/{vslName}/{voyCarrier}")
+	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("vslNm") String vslNm, @PathVariable("voyNo") String voyNo, @PathVariable("vslName") String vslName, @PathVariable("voyCarrier") String voyCarrier, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
-		mmap.put("vessel", vessel);
+		mmap.put("vslNm", vslNm);
+		mmap.put("voyNo", voyNo);
+		mmap.put("vslName", vslName);
+		mmap.put("voyCarrier", voyCarrier);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
 		return PREFIX + "/otp";
 	}
@@ -170,7 +176,7 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 	 */
 	@PostMapping("/otp/{otp}/verification")
 	@ResponseBody
-	public AjaxResult verifyOtp(@PathVariable String otp, String shipmentDetailIds, String vessel) {
+	public AjaxResult verifyOtp(@PathVariable String otp, String shipmentDetailIds, String vslNm, String voyNo, String vslName, String voyCarrier) {
 		try {
 			Long.parseLong(otp);
 		} catch (Exception e) {
@@ -196,18 +202,8 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 			return error("Không tìm thấy danh sách container cần đổi tàu, quý khách vui lòng thử lại sau.");
 		}
 
-		// Check vessel exist
-		if (vessel == null || vessel.length() == 0) {
-			return error("Quý khách chưa chọn tàu/chuyến.");
-		}
-
-		String[] vesselArr = vessel.split(",");
-		if (vesselArr.length < 4) {
-			return error("Thông tin tàu/chuyến không hợp lệ.");
-		}
-
 		// Make order send to robot
-		ServiceSendFullRobotReq serviceRobotReq = shipmentDetailService.makeChangeVesselOrder(shipmentDetails, vesselArr, getUser().getGroupId());
+		ServiceSendFullRobotReq serviceRobotReq = shipmentDetailService.makeChangeVesselOrder(shipmentDetails, vslNm, voyNo, vslName, voyCarrier, getUser().getGroupId());
 		if (serviceRobotReq == null) {
 			return error("Có lỗi xảy ra trong quá trình tạo lệnh để thực thi!");
 		}
@@ -225,23 +221,6 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 		ajaxResult =  AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
 		ajaxResult.put("processId", serviceRobotReq.processOrder.getId());
 		return ajaxResult;
-	}
-
-	@GetMapping("/berthplan/ope-code/{opeCode}/vessel-voyage/list")
-	@ResponseBody
-	public AjaxResult getVesselVoyageList(@PathVariable String opeCode) {
-		AjaxResult ajaxResult = success();
-		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlan(opeCode);
-		if(CollectionUtils.isNotEmpty(berthplanList)) {
-			List<String> vesselAndVoyages = new ArrayList<>();
-			for(ShipmentDetail i : berthplanList) {
-				vesselAndVoyages.add(i.getVslAndVoy());
-			}
-			ajaxResult.put("berthplanList", berthplanList);
-			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
-			return ajaxResult;
-		}
-		return AjaxResult.warn("Không tìm thấy tàu/chuyến nào cho hãng tàu này.");
 	}
 	
 	@GetMapping("/process-order/{processOrderId}/containers/failed")
