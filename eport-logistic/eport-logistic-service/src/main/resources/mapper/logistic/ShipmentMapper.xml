@@ -29,6 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="houseBill"    column="house_bill"    />
         <result property="amountBill"    column="amount_bill"    />
         <result property="sendContEmptyType"    column="send_cont_empty_type"    />
+        <result property="consignee"    column="consignee"    />
     </resultMap>
     <sql id="selectShipmentVo">
         select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, container_amount, edo_flg, specific_cont_flg, cont_supply_status,  status, remark, order_number, house_bill, create_by, create_time, update_by, update_time from shipment
@@ -178,32 +179,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getShipmentListForAssign" parameterType="Shipment" resultMap="ShipmentResult">
-        select  id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, edo_flg, specific_cont_flg, cont_supply_status, status, remark, create_by, create_time, update_by, update_time,
+        select * from (
+            select  s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, s.ope_code,
+                s.edo_flg, s.specific_cont_flg, s.cont_supply_status, s.status, s.remark, s.create_by, s.create_time, s.update_by, s.update_time,
+                (select sh.consignee from shipment_detail sh where sh.shipment_id = s.id fetch next 1 rows only) as consignee,
                 (select count(*) from shipment_detail sh where sh.shipment_id = s.id and sh.payment_status = 'Y') as container_amount
-        from shipment s
-        <where>
-            (select count(*) from shipment_detail sh where sh.shipment_id = s.id and sh.process_status = 'Y') > 0
-            <if test="containerAmount != null "> and container_amount > 0</if>
-            <if test="logisticAccountId != null "> and logistic_account_id = #{logisticAccountId}</if>
-            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
-            <if test="serviceType != null "> and service_type = #{serviceType}</if>
-            <if test="blNo != null and blNo != ''"> and bl_no = #{blNo}</if>
-            <if test="bookingNo != null and bookingNo != ''"> and booking_no = #{bookingNo}</if>
-            <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
-            <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
-            <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
-            <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
-            <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
-            <if test="toDate != null">and create_time &lt;= #{toDate}</if>
-        </where>
+            from shipment s right join shipment_detail sh on s.id = sh.shipment_id
+            <where>
+                s.container_amount > 0
+                <if test="containerAmount != null "> and container_amount > 0</if>
+                <if test="logisticAccountId != null "> and s.logistic_account_id = #{logisticAccountId}</if>
+                <if test="logisticGroupId != null "> and s.logistic_group_id = #{logisticGroupId}</if>
+                <if test="serviceType != null "> and s.service_type = #{serviceType}</if>
+                <if test="blNo != null and blNo != ''"> and s.bl_no = #{blNo}</if>
+                <if test="bookingNo != null and bookingNo != ''"> and s.booking_no = #{bookingNo}</if>
+                <if test="opeCode != null  and opeCode != ''"> and s.ope_code = #{opeCode}</if>
+                <if test="edoFlg != null  and edoFlg != ''"> and s.edo_flg = #{edoFlg}</if>
+                <if test="specificContFlg != null"> and s.specific_cont_flg = #{specificContFlg}</if>
+                <if test="contSupplyStatus != null"> and s.cont_supply_status = #{contSupplyStatus}</if>
+                <if test="status != null  and status != ''"> and s.status = #{status}</if>
+                <if test="remark != null  and remark != ''"> and s.remark = #{remark}</if>
+                <if test="params.containerNo != null  and params.containerNo != ''"> and upper(sh.container_no) like concat(concat('%', #{params.containerNo}), '%')</if>
+                <if test="params.consignee != null  and params.consignee != ''"> and upper(sh.consignee) like concat(concat('%', #{params.consignee}), '%')</if>
+                <if test="params.fromDate != null">and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+                <if test="params.toDate != null">and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
+                <if test="params.blOrBooking != null and params.blOrBooking != ''">
+                    and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
+                </if>
+            </where>
+        ) 
+        where container_amount > 0
+        
         order by create_time desc
     </select>
 
     <select id="selectShipmentListForDriver" resultType="vn.com.irtech.eport.logistic.form.ShipmentForm">
         select s.id as batchId, s.bl_no as blNo, s.booking_no as bookingNo, sh.fe as fe,
-         (select sh.consignee from shipment_detail sh where sh.shipment_id = s.id fetch next 1 rows only) as consignee,
+        (select sh.consignee from shipment_detail sh where sh.shipment_id = s.id fetch next 1 rows only) as consignee,
         (select count(sh.id) from shipment_detail sh where sh.shipment_id = s.id) as contAmount
         from shipment s
         left join shipment_detail sh on s.id = sh.shipment_id 

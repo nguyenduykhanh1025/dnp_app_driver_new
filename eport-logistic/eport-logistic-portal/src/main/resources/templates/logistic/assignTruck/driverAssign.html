@@ -6,7 +6,6 @@
     <th:block th:include="include :: header('Điều xe')" />
     <th:block th:include="include :: easyui-css" />
     <th:block th:include="include :: handsontable-css" />
-    <th:block th:include="include :: datetimepicker-css" />
     <link th:href="@{/eport/css/common/style.css?v=2}" rel="stylesheet" />
   </head>
   <body class="grey-background">
@@ -21,29 +20,29 @@
           <div class="flex__right w-90 justify-content-between align-items-center d-flex">
             <form id="ff" method="post" class="w-90">
               <div class="d-inline">
-                <select class="easyui-combobox" name="services" id="shipmentType"  prompt="Dịch vụ:" panelHeight="auto" editable="false" style="width: 120px">
+                <select class="easyui-combobox" id="shipmentType"  prompt="Dịch vụ:" panelHeight="auto" editable="false" style="width: 120px">
                   <option value="" selected>Tất Cả</option>
-                  <option value=1 selected>Bốc Hàng</option>
+                  <option value=1>Bốc Hàng</option>
                   <option value=2>Hạ Rỗng</option>
                   <option value=3>Bốc Rỗng</option>
                   <option value=4>Hạ Hàng</option>
                 </select>
               </div>
               <div class="d-inline">
-                <input class="easyui-textbox" name="blNo" data-options="prompt: 'BL No/Booking No' " />
+                <input class="easyui-textbox" id="blNo" data-options="prompt: 'BL No/Booking No' " />
               </div>
               <div class="d-inline">
-                <input class="easyui-textbox" name="container" data-options="prompt:'Container:'" />
+                <input class="easyui-textbox" id="containerNo" data-options="prompt:'Container:'" />
               </div>
               
               <div class="d-inline">
-                <input class="easyui-textbox" name="owner" data-options="prompt:'Chủ hàng:'" />
+                <input class="easyui-textbox" id="consignee" data-options="prompt:'Chủ hàng:'" />
               </div>
               <div class="d-inline">
-                <input class="easyui-datebox" name="fromdate" id="fromDate" style="width:110px">
+                <input class="easyui-datebox" id="fromDate" style="width:110px" data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
               </div>
               <div class="d-inline">
-                <input class="easyui-datebox" name="todate" id="toDate" style="width:110px">
+                <input class="easyui-datebox" id="toDate" style="width:110px" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
               </div>
             </form>
             <div class="main-body__search-wrapper--btn-group d-flex justify-content-end w-10">
@@ -63,9 +62,11 @@
                   <th data-options="field: 'id', fixed:true" sortable="true" width="60">Mã Lô</th>
                   <th data-options="field: 'blNo',halign: 'center', fixed:true" sortable="true" width="120">B/L No</th>
                   <th data-options="field: 'bookingNo',halign: 'center', fixed:true" sortable="true" width="120">Booking No</th>
+                  <th data-options="field: 'blBookingNo',halign: 'center', fixed:true, formatter: formatBlBooking" width="120">Bl/Booking No</th>
+                  <th data-options="field: 'serviceType',halign: 'center', fixed:true, formatter: formatServiceType" sortable="true" width="80">Dịch vụ</th>
                   <th data-options="field: 'containerAmount', align:'center', halign: 'center', fixed:true" width="40">SL</th>
                   <th data-options="field: 'opeCode', align:'center', halign: 'center', fixed:true" sortable="true" width="50">OPR</th>
-                  <th data-options="field: 'groupName',halign: 'center', fixed:true" sortable="true" width="150">Chủ Hàng</th>
+                  <th data-options="field: 'consignee',halign: 'center', fixed:true" sortable="true" width="150">Chủ Hàng</th>
                   <th data-options="field: 'createTime',align:'right',halign:'center', formatter: formatDate" sortable="true" width="110">Ngày tạo</th>
                 </tr>
               </thead>
@@ -141,7 +142,6 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
-    <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: handsontable-js" />
     <script type="text/javascript" th:inline="javascript">
       var driverOwnerList = /*[[${driverOwnerList}]]*/;
