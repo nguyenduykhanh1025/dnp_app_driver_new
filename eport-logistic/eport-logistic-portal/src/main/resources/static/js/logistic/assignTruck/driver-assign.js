@@ -684,7 +684,7 @@ function checkForChanges(){
  var outsources = [];
  var outsourcesContainer = [];
  function loadOutSource(shipmentId) {
-	$.modal.loading("Đang xử lý ...");
+	// $.modal.loading("Đang xử lý ...");
     $.ajax({
         url: prefix + "/out-source/batch/" + shipmentId,
         method: "GET",
@@ -705,7 +705,7 @@ function checkForChanges(){
 }
  
  function loadOutSourceContainer(shipmentDetailId) {
-		$.modal.loading("Đang xử lý ...");
+		// $.modal.loading("Đang xử lý ...");
 	    $.ajax({
 	        url: prefix + "/out-source/container/" + shipmentDetailId,
 	        method: "GET",
@@ -837,7 +837,7 @@ function onChange(changes, source) {
     }
     changes.forEach(function (change) {
         if (change[1] == "driverOwner" && change[3] != null && change[3] != '') {
-        	$.modal.loading("Đang xử lý ...");
+        	// $.modal.loading("Đang xử lý ...");
             $.ajax({
                 url: prefix + "/owner/"+ change[3] +"/driver-phone-list",
                 method: "GET",
@@ -861,7 +861,7 @@ function onChange(changes, source) {
                 },
             });
         } else if (change[1] == "phoneNumber" && change[3] != null && change[3] != '') {
-        	$.modal.loading("Đang xử lý ...");
+        	// $.modal.loading("Đang xử lý ...");
             $.ajax({
                 url: prefix + "/driver-phone/" + change[3] + "/infor",
                 method: "GET",
@@ -890,7 +890,7 @@ function onChangeContainer(changes, source) {
     }
     changes.forEach(function (change) {
         if (change[1] == "driverOwner" && change[3] != null && change[3] != '') {
-        	$.modal.loading("Đang xử lý ...");
+        	// $.modal.loading("Đang xử lý ...");
             $.ajax({
                 url: prefix + "/owner/"+ change[3] +"/driver-phone-list",
                 method: "GET",
@@ -914,7 +914,7 @@ function onChangeContainer(changes, source) {
                 },
             });
         } else if (change[1] == "phoneNumber" && change[3] != null && change[3] != '') {
-        	$.modal.loading("Đang xử lý ...");
+        	// $.modal.loading("Đang xử lý ...");
             $.ajax({
                 url: prefix + "/driver-phone/" + change[3] + "/infor",
                 method: "GET",

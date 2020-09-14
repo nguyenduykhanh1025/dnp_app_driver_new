@@ -2,6 +2,7 @@ package vn.com.irtech.eport.logistic.controller;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -295,6 +296,49 @@ public class LogisticReportPrintController extends LogisticBaseController {
 			edoList.add(i.getEdo());
 		}
 		parameters.put("list", edoList);
+		final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
+//		final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
+		// Export DPF to output stream
+		JasperExportManager.exportReportToPdfStream(print, out);
+	}
+	
+	@GetMapping("create-packing-list/{shipmentId}")
+	public void packingListReport( @PathVariable("shipmentId") Long shipmentId, HttpServletResponse response) {
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setShipmentId(shipmentId);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		if(shipmentDetails.isEmpty()) {
+			logger.error("Error when print packing list: " + shipmentId);
+			return;
+		}
+		try {
+			response.setContentType("application/pdf");
+			createPackingListReport(shipmentDetails, response.getOutputStream());
+		} catch (final Exception e) {
+			logger.debug(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	private void createPackingListReport(final List<ShipmentDetail> shipmentDetailList, OutputStream out) throws JRException {
+		// Fetching the report file from the resources folder.
+		final JasperReport report = (JasperReport) JRLoader
+				.loadObject(this.getClass().getResourceAsStream("/report/packinglist.jasper"));
+
+		// Fetching the shipmentDetails from the data source.
+		//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(shipmentDetails);
+
+
+		// Adding the additional parameters to the pdf.
+		final Map<String, Object> parameters = new HashMap<>();
+		parameters.put("bookingNo", shipmentDetailList.get(0).getBookingNo());
+		parameters.put("consignee", shipmentDetailList.get(0).getConsignee());
+		parameters.put("etd", new Date());//TODO
+		parameters.put("feederName", "unknown");//TODO
+		parameters.put("voy", shipmentDetailList.get(0).getVoyCarrier());
+		parameters.put("pol", shipmentDetailList.get(0).getLoadingPort());
+		parameters.put("pod", shipmentDetailList.get(0).getDischargePort());
+
+		parameters.put("table", shipmentDetailList);
 		final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
 //		final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
 		// Export DPF to output stream
