@@ -33,7 +33,6 @@ $(document).ready(function () {
   });
   loadTable(shipment);
   $('#notifyResult').attr("disabled", true);
-  $('#notifyResult').css( "background-color", "gray");
 
   $("#blNo").textbox('textbox').bind('keydown', function(e) {
     // enter key

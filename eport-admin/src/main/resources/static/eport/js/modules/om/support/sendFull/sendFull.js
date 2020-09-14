@@ -33,10 +33,7 @@ $(document).ready(function () {
   });
   loadTable(processOrder);
   $('#checkCustomStatusByProcessOrderId').attr("disabled", true);
-  $('#checkCustomStatusByProcessOrderId').css( "background-color", "gray");
   $('#checkProcessStatusByProcessOrderId').attr("disabled", true);
-  $('#checkProcessStatusByProcessOrderId').css( "background-color", "gray");
-
   $("#bookingNo").textbox('textbox').bind('keydown', function(e) {
     // enter key
     if (e.keyCode == 13) {
@@ -337,9 +334,7 @@ function getSelectedRow() {
 	rowAmount = processOrderSelected.contAmount;
     shipmentDetails.processOrderId = row.id;
     $('#checkCustomStatusByProcessOrderId').attr("disabled", false);
-    $('#checkCustomStatusByProcessOrderId').css( "background-color", "#1C84C6");
     $('#checkProcessStatusByProcessOrderId').attr("disabled", false);
-    $('#checkProcessStatusByProcessOrderId').css( "background-color", "#1C84C6");
     loadTableByContainer(row.id);
   }
 }
