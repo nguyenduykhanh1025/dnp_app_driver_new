@@ -1,92 +1,95 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
-  <head>
-    <th:block th:include="include :: header('List Exchange Delivery Order')" />
-    <th:block th:include="include :: easyui-css" />
-    <th:block th:include="include :: handsontable-css" />
-    <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet"/>
-    <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet"/>
-    <link th:href="@{/eport/css/eport.css}" rel="stylesheet"/>
-    <link th:href="@{/eport/css/edo/manage/edo.css}" rel="stylesheet" />
-  </head>
-  <body class="bg-gray">
-    <div class="col-sm-12">
-        <div class="form-inline mt10 mb10" >
-        <div class="form-group">
-          <div class="input-group">
-            <input type="text" class="form-control" name="searchInfoProcessOrder" id="searchInfoProcessOrder" placeholder="Tìm kiếm" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="sr-only" for="logistic">Logistic</label>
-          <div class="input-group">
-            <select class="form-control" id="logistic">
-              <option th:each="logistic, iterator : ${logisticsGroups}" th:value=${logistic.id} th:text=${logistic.groupName}>
-              </option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group" style="margin-left: 70px;">
-          <a class="btn btn-primary btn-rounded btn-sm" onclick="searchDo()" id="searchInfoProcessOrder"><i
-            class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
-        </div>
-        <div class="form-group margin-input">
-            <label class="sr-only"> Xác Nhận Làm Lệnh OK</label>
-            <div class="input-group">
-              <button class="btn btn-success btn-sm" id="checkCustomStatusByProcessOrderId" onclick="executedSuccess()"><i
-                  class="fa fa-pencil-square-o"></i>Xác Nhận Làm Lệnh OK</button>
-            </div>
-          </div>
-          <div class="form-group margin-input">
-            <label class="sr-only">Reset Trạng Thái Làm Lệnh</label>
-            <div class="input-group">
-              <button class="btn btn-success btn-sm" id="checkProcessStatusByProcessOrderId" onclick="resetProcessStatus() "><i
-                  class="fa fa-pencil-square-o"></i> Reset Trạng Thái Làm Lệnh</button>
-            </div>
-          </div>
-      </div> <!-- //end form -->
-    </div>
-    <div class="col-sm-12 container-fluid wrapper">
-    <section class="left">
-      <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
-      <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
-      <table id="dg">
-        <thead>
-            <tr>
-              <th data-options="field:'updateTime',align:'center', formatter: formatUpdateTime" width="70">
-                Số phút
-              </th>
-              <th data-options="field:'shipmentId',align:'center', formatter: formatBatch" width="50">
-                Mã Lô
-              </th>
-              <th data-options="field: 'logisticName', halign: 'center', resizable: true, formatter: formatLogistic" width="120" sortable="true">
-                Logistics
-              </th>
-              <th data-options="field: 'bookingNo', halign: 'center', resizable:true" width="110">
-                Booking No
-              </th>
-              <th data-options="field:'opr',align:'center'" width="40">
-                OPR
-              </th>
-              <th data-options="field:'contNumber',align:'center'" width="40">
-                SL
-              </th>
-              <th data-options="field:'createTime',align:'left'" width="150">
-                Thời gian thực hiện
-              </th>
-            </tr>
-        </thead>
-      </table>
-    </section>
-    <section class="right ml10">
-      <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
-    </section>
-    </div>
-    <th:block th:include="include :: footer" />
-    <th:block th:include="include :: easyui-js" />
-    <th:block th:include="include :: handsontable-js" />
-    <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
-    <script th:src="@{/eport/js/modules/om/support/sendEmpty/sendEmpty.js}"></script>
-  </body>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
-</html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <th:block th:include="include :: header('General Controlling')" />
+  <th:block th:include="include :: easyui-css" />
+  <th:block th:include="include :: handsontable-css" />
+  <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+</head>
+
+<body class="grey-background">
+  <div class="main-body">
+    <div class="main-body__search-wrapper mb-2">
+      <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+      <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+      <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+        <div class="flex__left w-20">
+          <h3 class="mt-10">Quản Lý Đăng Ký Dịch Vụ</h3>
+        </div>
+        <div class="flex__right w-80">
+          <div class="justify-content-around align-items-center" id="ff">
+           
+            <div class="d-inline">
+              <input class="easyui-textbox" id="bookingNo"   data-options="prompt:'Booking No'"/>
+            </div>
+            <div class="d-inline">
+                <select class="easyui-combobox" id="logistic">
+                    <option th:each="logistic, iterator : ${logisticsGroups}" th:value=${logistic.id} th:text=${logistic.groupName}>
+                    </option>
+                </select>
+              </div>
+            <div class="d-inline">
+              <button class="btn btn-success" onclick="search()">Tìm kiếm</button>
+            </div>
+            <div class="d-inline">
+              <button class="btn btn-success btn-outline" onclick="clearInput()">Làm mới</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-body__table-wrapper">
+      <div class="easyui-layout" id="main-layout" style="width:100%">
+        <div class="left-side" data-options="region:'west',split:true, collapsible:false" title="Danh sách lô"
+          style="width:30%;">
+          <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
+          <table id="dg">
+            <thead>
+                <tr>
+                  <th data-options="field:'updateTime',align:'center', formatter: formatUpdateTime" width="70">
+                    Số phút
+                  </th>
+                  <th data-options="field:'shipmentId',align:'center', formatter: formatBatch" width="50">
+                    Mã Lô
+                  </th>
+                  <th data-options="field: 'logisticName', halign: 'center', resizable: true, formatter: formatLogistic" width="120" sortable="true">
+                    Logistics
+                  </th>
+                  <th data-options="field: 'bookingNo', halign: 'center', resizable:true" width="110">
+                    Booking No
+                  </th>
+                  <th data-options="field:'opr',align:'center'" width="40">
+                    OPR
+                  </th>
+                  <th data-options="field:'contNumber',align:'center'" width="40">
+                    SL
+                  </th>
+                  <th data-options="field:'createTime',align:'left'" width="150">
+                    Thời gian thực hiện
+                  </th>
+                </tr>
+            </thead>
+          </table>
+        </div>
+        <div data-options="region:'center'" style="width:100%;">
+          <div>
+            <button class="button-custom" id="checkCustomStatusByProcessOrderId"  onclick="executedSuccess()">Xác Nhận Làm Lệnh OK</button>
+            <button style="display: inline-block;" id="checkProcessStatusByProcessOrderId" class="button-custom" onclick="resetProcessStatus()">Reset Trạng Thái Làm Lệnh</button>
+          </div>
+          <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: handsontable-js" />
+  <script type="text/javascript" th:inline="javascript">
+    $(".main-body").height($(document).height() - 10);
+    $(".easyui-layout").height($('.main-body').height() - 50);
+  </script>
+   <script th:src="@{/eport/js/modules/om/support/sendEmpty/sendEmpty.js}"></script>
+</body>

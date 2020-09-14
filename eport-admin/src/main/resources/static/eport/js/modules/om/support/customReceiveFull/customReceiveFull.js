@@ -416,7 +416,7 @@ function logisticInfo(id, logistics) {
 }
 
 function notifyResult() {
-  $.modal.open("Xác nhận", PREFIX + "/confirm-result-notification/shipmentId/" + shipmentSelected.id , 400, 330);
+  $.modal.open("Xác nhận", PREFIX + "/confirm-result-notification/shipmentId/" + shipmentSelected.id , 430, 330);
 }
 
 function msgSuccess(msg) {

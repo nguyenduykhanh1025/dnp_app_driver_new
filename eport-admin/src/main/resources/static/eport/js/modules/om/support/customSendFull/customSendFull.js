@@ -1,4 +1,5 @@
 const PREFIX = ctx + "om/support/custom-send-full";
+const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var bill;
 var shipment = new Object();
 shipment.serviceType = 4;
@@ -11,26 +12,40 @@ var shipmentSelected;
 var sourceData;
 
 $(document).ready(function () {
-  $("#btn-collapse").click(function () {
-    handleCollapse(true);
+  $(".main-body").layout();
+
+  $(".collapse").click(function () {
+    $(".main-body__search-wrapper").height(15);
+    $(".main-body__search-wrapper--container").hide();
+    $(this).hide();
+    $(".uncollapse").show();
   });
-  $("#btn-uncollapse").click(function () {
-    handleCollapse(false);
+
+  $(".uncollapse").click(function () {
+    $(".main-body__search-wrapper").height(SEARCH_HEIGHT + 20);
+    $(".main-body__search-wrapper--container").show();
+    $(this).hide();
+    $(".collapse").show();
+  });
+
+  $(".left-side__collapse").click(function () {
+    $('#main-layout').layout('collapse', 'west');
   });
   loadTable(shipment);
-  $('#checkCustomStatusByProcessOrderId').attr("disabled", true);
-  $('#checkProcessStatusByProcessOrderId').attr("disabled", true);
+  $('#notifyResult').attr("disabled", true);
+  $('#notifyResult').css( "background-color", "gray");
 
-  $("#searchInfoProcessOrder").keyup(function (event) {
-    if (event.keyCode == 13) {
-      blNo = $("#searchInfoProcessOrder").val().toUpperCase();
+  $("#blNo").textbox('textbox').bind('keydown', function(e) {
+    // enter key
+    if (e.keyCode == 13) {
+      blNo = $("#blNo").textbox('getText').toUpperCase();
       if (blNo == "") {
         loadTable(shipment);
       }
       shipment.blNo = blNo;
       loadTable(shipment);
     }
-  });
+    });
 
 });
 
@@ -56,7 +71,7 @@ function loadTable(shipment) {
     url: PREFIX + "/shipments",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - 60,
+    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     clientPaging: true,
     collapsible: true,
     pagination: true,
@@ -307,8 +322,8 @@ function getSelectedRow() {
 	shipmentSelected = row;
 	rowAmount = shipmentSelected.contAmount;
     shipmentDetails.shipmentId = row.id;
-    $('#checkCustomStatusByProcessOrderId').attr("disabled", false);
-    $('#checkProcessStatusByProcessOrderId').attr("disabled", false);
+    $('#notifyResult').attr("disabled", false);
+    $('#notifyResult').css( "background-color", "#1C84C6");
     loadTableByContainer(row.id);
   }
 }
@@ -332,7 +347,7 @@ function logisticInfo(id, logistics) {
 }
 
 function notifyResult() {
-  $.modal.open("Xác nhận", PREFIX + "/confirm-result-notification/shipmentId/" + shipmentSelected.id , 400, 330);
+  $.modal.open("Xác nhận", PREFIX + "/confirm-result-notification/shipmentId/" + shipmentSelected.id , 430, 330);
 }
 
 function msgSuccess(msg) {
@@ -348,13 +363,17 @@ function msgError(msg) {
 //  return row.vslNm + " - " + row.vslName + " - " + row.voyNo;
 //}
 
-$('#logistic').change(function () {
-  if (0 != $('#logistic option:selected').val()) {
-    shipment.logisticGroupId = $('#logistic option:selected').val();
-  } else {
-    shipment.logisticGroupId = '';
+
+$("#logistic").combobox({
+  onSelect: function (serviceType) {
+    if(serviceType.value != 0)
+    {
+      shipment.logisticGroupId = serviceType.value;
+    }else {
+      shipment.logisticGroupId = '';
+    }
+    loadTable(shipment);
   }
-  loadTable(shipment);
 });
 
 function formatUpdateTime(value, row, index) {
@@ -378,4 +397,18 @@ function formatUpdateTime(value, row, index) {
 	}
   return toHHMMSS(totalMinutes*60);
 }
+
+function clearInput() {
+  $("#blNo").textbox('setText', '');
+  $('#logistic').combobox('setValue', "0");
+  $('#logistic').combobox('setText', "Chọn đơn vị Logistics");
+  shipment = new Object();
+  loadTable(shipment);
+}
+function search() {
+  shipment.blNo = $("#blNo").textbox('getText').toUpperCase();
+  shipment.logisticGroupId = $('#logistic').combobox('getValue') == '0' ? '' : $('#logistic').combobox('getValue') ;
+  loadTable(shipment);
+}
+
 

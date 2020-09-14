@@ -1,4 +1,5 @@
 const PREFIX = ctx + "om/support/send-full";
+const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var bill;
 var processOrder = new Object();
 processOrder.serviceType = 4;
@@ -11,26 +12,42 @@ var processOrderSelected;
 var sourceData;
 
 $(document).ready(function () {
-  $("#btn-collapse").click(function () {
-    handleCollapse(true);
+  $(".main-body").layout();
+
+  $(".collapse").click(function () {
+    $(".main-body__search-wrapper").height(15);
+    $(".main-body__search-wrapper--container").hide();
+    $(this).hide();
+    $(".uncollapse").show();
   });
-  $("#btn-uncollapse").click(function () {
-    handleCollapse(false);
+
+  $(".uncollapse").click(function () {
+    $(".main-body__search-wrapper").height(SEARCH_HEIGHT + 20);
+    $(".main-body__search-wrapper--container").show();
+    $(this).hide();
+    $(".collapse").show();
+  });
+
+  $(".left-side__collapse").click(function () {
+    $('#main-layout').layout('collapse', 'west');
   });
   loadTable(processOrder);
   $('#checkCustomStatusByProcessOrderId').attr("disabled", true);
+  $('#checkCustomStatusByProcessOrderId').css( "background-color", "gray");
   $('#checkProcessStatusByProcessOrderId').attr("disabled", true);
+  $('#checkProcessStatusByProcessOrderId').css( "background-color", "gray");
 
-  $("#searchInfoProcessOrder").keyup(function (event) {
-    if (event.keyCode == 13) {
-      blNo = $("#searchInfoProcessOrder").val().toUpperCase();
-      if (blNo == "") {
+  $("#bookingNo").textbox('textbox').bind('keydown', function(e) {
+    // enter key
+    if (e.keyCode == 13) {
+      bookingNo = $("#bookingNo").textbox('getText').toUpperCase();
+      if (bookingNo == "") {
         loadTable(processOrder);
       }
-      processOrder.blNo = blNo;
+      processOrder.bookingNo = bookingNo;
       loadTable(processOrder);
     }
-  });
+    });
 
 });
 
@@ -56,7 +73,7 @@ function loadTable(processOrder) {
     url: PREFIX + "/orders",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - 60,
+    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     clientPaging: true,
     collapsible: true,
     pagination: true,
@@ -320,7 +337,9 @@ function getSelectedRow() {
 	rowAmount = processOrderSelected.contAmount;
     shipmentDetails.processOrderId = row.id;
     $('#checkCustomStatusByProcessOrderId').attr("disabled", false);
+    $('#checkCustomStatusByProcessOrderId').css( "background-color", "#1C84C6");
     $('#checkProcessStatusByProcessOrderId').attr("disabled", false);
+    $('#checkProcessStatusByProcessOrderId').css( "background-color", "#1C84C6");
     loadTableByContainer(row.id);
   }
 }
@@ -352,7 +371,7 @@ function logisticInfo(id, logistics) {
   });
 }
 function executedSuccess() {
-  $.modal.open("Xác nhận", PREFIX + "/verify-executed-command-success/process-order/" + processOrderSelected.id , 400, 270);
+  $.modal.open("Xác nhận", PREFIX + "/verify-executed-command-success/process-order/" + processOrderSelected.id , 430, 270);
 
 }
 
@@ -365,20 +384,23 @@ function msgError(msg) {
 }
 
 function resetProcessStatus() {
-	$.modal.open("Xác nhận", PREFIX + "/reset-process-status/process-order/" + processOrderSelected.id , 400, 270);
+	$.modal.open("Xác nhận", PREFIX + "/reset-process-status/process-order/" + processOrderSelected.id , 430, 270);
 }
 
 //function formatVessel(value, row) {
 //  return row.vslNm + " - " + row.vslName + " - " + row.voyNo;
 //}
 
-$('#logistic').change(function () {
-  if (0 != $('#logistic option:selected').val()) {
-    processOrder.logisticGroupId = $('#logistic option:selected').val();
-  } else {
-    processOrder.logisticGroupId = '';
+$("#logistic").combobox({
+  onSelect: function (serviceType) {
+    if(serviceType.value != 0)
+    {
+        processOrder.logisticGroupId = serviceType.value;
+    }else {
+      processOrder.logisticGroupId = '';
+    }
+    loadTable(processOrder);
   }
-  loadTable(processOrder);
 });
 
 function formatUpdateTime(value) {
@@ -399,4 +421,18 @@ function formatUpdateTime(value) {
 	}
   return toHHMMSS(totalMinutes*60);
 }
+
+function clearInput() {
+  $("#bookingNo").textbox('setText', '');
+  $('#logistic').combobox('setValue', "0");
+  $('#logistic').combobox('setText', "Chọn đơn vị Logistics");
+  processOrder = new Object();
+  loadTable(processOrder);
+}
+function search() {
+  processOrder.bookingNo = $("#bookingNo").textbox('getText').toUpperCase();
+  processOrder.logisticGroupId = $('#logistic').combobox('getValue') == '0' ? '' : $('#logistic').combobox('getValue') ;
+  loadTable(processOrder);
+}
+
 
