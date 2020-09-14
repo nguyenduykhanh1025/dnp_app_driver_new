@@ -73,6 +73,8 @@ public class CheckingCustomThread {
 							}
 							if(releasedFlg) {
 								shipmentDetail.setStatus(shipmentDetail.getStatus() + 1); // Set status thong quan
+								shipmentDetail.setTaxCode(result.getTaxCode());
+								shipmentDetail.setConsigneeByTaxCode(result.getCompanyName());
 								shipmentDetail.setCustomStatus("R");
 								shipmentDetailService.updateShipmentDetail(shipmentDetail);
 							} else {

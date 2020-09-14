@@ -65,6 +65,8 @@ public class CustomCheckServiceImpl implements ICustomCheckService {
 				resultDto.setCustomsAppNo(data.getStr("customsAppNo"));
 				resultDto.setCustomsRemark(data.getStr("customsRemark"));
 				resultDto.setMsgRecvContent(data.getStr("msgRecvContent"));
+				resultDto.setTaxCode(data.getStr("enterpriseIdentity"));
+				resultDto.setCompanyName(data.getStr("enterpriseName"));
 				// String rs = data.get("customsStatus").toString();
 				return resultDto;
 			}
