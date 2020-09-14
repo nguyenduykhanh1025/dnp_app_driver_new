@@ -282,6 +282,9 @@ public class ShipmentDetail extends BaseEntity
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date toDate;
 	
+	/** Ngay tau den theo tau va chuyen */
+	private Date eta;
+	
     public void setFromDate(Date fromDate) {
 		this.fromDate = fromDate;
 	}
@@ -865,6 +868,14 @@ public class ShipmentDetail extends BaseEntity
 		this.contSupplyRemark = contSupplyRemark;
 	}
 
+	public Date getEta() {
+		return eta;
+	}
+
+	public void setEta(Date eta) {
+		this.eta = eta;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -936,6 +947,7 @@ public class ShipmentDetail extends BaseEntity
             .append("qualityRequirement", getQualityRequirement())
             .append("contSupplyRemark", getContSupplyRemark())
             .append("customScanTime", getCustomScanTime())
+            .append("eta", getEta())
             .toString();
     }
 }

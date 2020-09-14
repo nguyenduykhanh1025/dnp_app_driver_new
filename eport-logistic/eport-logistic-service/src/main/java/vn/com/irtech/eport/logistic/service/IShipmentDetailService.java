@@ -221,7 +221,7 @@ public interface IShipmentDetailService
      * @param groupId
      * @return ServiceSendFullRobotReq
      */
-    public ServiceSendFullRobotReq makeChangeVesselOrder(List<ShipmentDetail>shipmentDetails, String[] vesselArr, Long groupId);
+    public ServiceSendFullRobotReq makeChangeVesselOrder(List<ShipmentDetail>shipmentDetails, String vslNm, String voyNo, String vslName, String voyCarrier, Long groupId);
 
     /**
      * Make extension date order

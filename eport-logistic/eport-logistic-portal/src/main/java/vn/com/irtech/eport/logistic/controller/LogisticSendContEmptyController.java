@@ -36,6 +36,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
+import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
 import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
@@ -161,36 +162,37 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@Transactional
     @ResponseBody
     public AjaxResult addShipment(Shipment shipment) {
+		if (StringUtils.isNotEmpty(shipment.getBlNo())) {
+			shipment.setBlNo(shipment.getBlNo());
+		}
 		LogisticAccount user = getUser();
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
-		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
 		shipment.setServiceType(Constants.SEND_CONT_EMPTY);
-		shipment.setStatus("1");
+		shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
 		if (shipmentService.insertShipment(shipment) == 1) {
-//			// assign driver default
-//			PickupAssign pickupAssign = new PickupAssign();
-//			pickupAssign.setLogisticGroupId(getUser().getGroupId());
-//			pickupAssign.setShipmentId(shipment.getId());
-//			//list driver
-//			DriverAccount driverAccount = new DriverAccount();
-//			driverAccount.setLogisticGroupId(getUser().getGroupId());
-//			driverAccount.setDelFlag(false);
-//			driverAccount.setStatus("0");
-//			List<DriverAccount> driverAccounts = driverAccountService.selectDriverAccountList(driverAccount);
-//			if(driverAccounts.size() > 0) {
-//				for(DriverAccount i : driverAccounts) {
-//					pickupAssign.setDriverId(i.getId());
-//					pickupAssign.setFullName(i.getFullName());
-//					pickupAssign.setPhoneNumber(i.getMobileNumber());
-//					pickupAssign.setCreateBy(getUser().getFullName());
-//					pickupAssignService.insertPickupAssign(pickupAssign);
-//				}
-//			}
 			return success("Thêm lô thành công");
 		}
 		return error("Thêm lô thất bại");
+	}
+	
+	@PostMapping("/unique/bl-no")
+	@ResponseBody
+	public AjaxResult checkBlNoUnique(@RequestBody ContainerServiceForm inputForm) {
+		String blNo = inputForm.getBlNo();
+		if (StringUtils.isAllBlank(blNo)) {
+			return error("Hãy nhập B/L No");
+		}
+		Shipment shipment = new Shipment();
+		shipment.setServiceType(Constants.SEND_CONT_EMPTY);
+		shipment.setLogisticGroupId(getUser().getGroupId());
+		shipment.setBlNo(blNo);
+		shipment.setLogisticGroupId(getUser().getGroupId());
+		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
+			return success();
+		}
+		return error("B/L No này đã tồn tại trong hệ thống.");
 	}
 	
 	@Log(title = "Sữa Lô Hạ Rỗng", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
@@ -200,9 +202,27 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
-			shipment.setUpdateTime(new Date());
-			shipment.setUpdateBy(user.getFullName());
-			if (shipmentService.updateShipment(shipment) == 1) {
+
+			// Check container amount update need to greater or equal  curren amount
+			// Or at least greater or equal the number of container has been declared
+			if(shipment.getContainerAmount() < shipment.getContainerAmount()) {
+				ShipmentDetail shipmentSearch = new ShipmentDetail();
+				shipmentSearch.setShipmentId(shipment.getId());
+				long contNumber = shipmentDetailService.countShipmentDetailList(shipmentSearch);
+				if(contNumber > shipment.getContainerAmount()) {
+					return error("Không thể chỉnh sửa số lượng container nhỏ hơn danh sách khai báo.");
+				}
+			}
+			referenceShipment.setRemark(shipment.getRemark());
+			referenceShipment.setContainerAmount(shipment.getContainerAmount());
+			referenceShipment.setUpdateBy(getUser().getUserName());
+			
+			if (EportConstants.SHIPMENT_STATUS_INIT.equals(shipment.getStatus())) {
+				referenceShipment.setSendContEmptyType(shipment.getSendContEmptyType());
+				referenceShipment.setOpeCode(shipment.getOpeCode());
+			}
+			
+			if (shipmentService.updateShipment(referenceShipment) == 1) {
 				return success("Chỉnh sửa lô thành công");
 			}
 		}
@@ -380,10 +400,14 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 	
-	@GetMapping("/shipment/bl-no/{blNo}")
+	@PostMapping("/shipment/bl-no")
 	@ResponseBody
-	public AjaxResult checkShipmentInforByBlNo(@PathVariable String blNo) {
+	public AjaxResult checkShipmentInforByBlNo(@RequestBody ContainerServiceForm inputForm) {
+		String blNo = inputForm.getBlNo();
 		Shipment shipment = new Shipment();
+		if (StringUtils.isAllBlank(blNo)) {
+			return error("Hãy nhập B/L No");
+		}
 		//check bill unique
 		shipment.setServiceType(Constants.SEND_CONT_EMPTY);
 		shipment.setLogisticGroupId(getUser().getGroupId());

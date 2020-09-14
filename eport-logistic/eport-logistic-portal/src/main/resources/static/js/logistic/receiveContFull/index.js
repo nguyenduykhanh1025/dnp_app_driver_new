@@ -151,8 +151,9 @@ $(document).ready(function () {
   });
 
   let now = new Date();
-  now.setHours(0, 0, 0, 0);
-  $('#fromDate').datebox('setValue', ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear());
+  now = new Date(now.getFullYear(), now.getMonth(), 1);
+  let nowStr = ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear();
+  $('#fromDate').datebox('setValue', nowStr);
   shipmentSearch.params.fromDate = dateToString(now);
 
   $('#toDate').datebox({
@@ -694,9 +695,9 @@ function configHandson() {
         case 15:
           return 'PTTT';
         case 16:
-          return 'MST Người Trả Tiền';
+          return 'Mã Số Thuế';
         case 17:
-          return 'Tên Cty Thanh Toán';
+          return 'Người Thanh Toán';
         case 18:
           return "Ghi Chú";
       }
@@ -1046,19 +1047,12 @@ function loadShipmentDetail(id) {
           }
           taxCodeArr[index].taxCode = shipmentDetail.taxCode;
           taxCodeArr[index].consigneeByTaxCode = shipmentDetail.consigneeByTaxCode;
-          // if (shipmentDetail.preorderPickup == 'Y' && shipmentDetail.prePickupPaymentStatus == "N") {
-          //   shiftingFee = true;
-          // }
         });
         if (saved) {
           $('#pickContOnDemandBtn').prop('disabled', false);
         } else {
           $('#pickContOnDemandBtn').prop('disabled', true);
         }
-
-        // if (shiftingFee) {
-        //   $('#payShiftingBtn').prop('disabled', false);
-        // }
 
         hot.destroy();
         configHandson();
@@ -1067,9 +1061,6 @@ function loadShipmentDetail(id) {
         hot.render();
         setLayoutRegisterStatus();
         onChangeFlg = false;
-//        if (!saved) {
-//          $.modal.alert("Thông tin container đã được hệ thống tự<br>động điền, quý khách vui lòng kiểm tra lại<br>thông tin và lưu khai báo.");
-//        }
       }
     },
     error: function (data) {
@@ -1204,10 +1195,6 @@ function getDataFromTable(isValidate) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
         errorFlg = true;
         return false;
-      // } else if (!object["detFreeTime"]) {
-      //   $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập Ngày miễn lưu vỏ!");
-      //   errorFlg = true;
-      //   return false;
       } else if (!object["consignee"]) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ hàng!");
         errorFlg = true;
@@ -1237,20 +1224,7 @@ function getDataFromTable(isValidate) {
         errorFlg = true;
         return false;
       } 
-      // Noi ha vo co the khac nhau
-/*      else if (emptydepot != object["emptyDepot"]) {
-        $.modal.alertError("Nơi hạ vỏ không được khác nhau!");
-        errorFlg = true;
-        return false;
-      }  */
     }
-
-    // $.ajax({
-    //   url: prefix + "/shipment-detail/bl-no/" + shipmentSelected.blNo + "/cont/" + containerNo,
-    //   type: "GET"
-    // }).done(function (shipmentDetail) {
-      
-    // });
 
     consignee = object["consignee"];
     emptydepot = object["emptyDepot"];
