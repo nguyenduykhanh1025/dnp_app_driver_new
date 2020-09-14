@@ -6,31 +6,39 @@ var shipmentDetailSelected;//for assign follow cont
 var dataAssignedDriver = [];
 var dataDriver = [];
 var dataContainerList = [];
-var shipmentSearch = new Object;
+var shipmentSearch = new Object();
+shipmentSearch.params = new Object();
+var fromDate, toDate;
 //----------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------TOOLBAR TABLE------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------------
 //toobar of shipmentDetail
 var toolbar = [
-  {
-    text: '<button class="btn btn-sm btn-primary" style="padding: 2px 3px; border-radius: 2;"><i class="fa fa-save text-primary"></i> Ghi chú điều vận</button>',
-    handler: function () {
-      let pickedIds = [];
-      let rows = $('#dgShipmentDetail').datagrid('getSelections');
-      if(rows){
-          for(let i=0; i< rows.length;i++){
-              let id = rows[i].id;
-              pickedIds.push(id);
-          }
-      }
-      if(pickedIds.length >0) {
-	      $.modal.open("Ghi chú điều vận", prefix + "/shipment-detail/"+ pickedIds +"/delivery-remark", 500,400);
-      }else{
-    	  $.modal.alertError("Bạn chưa chọn container nào!");
-      }
+    {
+        text: '<button class="btn btn-sm btn-primary" style="padding: 2px 3px; border-radius: 2;"><i class="fa fa-save text-primary"></i> Ghi chú điều vận</button>',
+        handler: function () {
+            let pickedIds = [];
+            let rows = $('#dgShipmentDetail').datagrid('getSelections');
+            if (rows) {
+                for (let i = 0; i < rows.length; i++) {
+                    let id = rows[i].id;
+                    pickedIds.push(id);
+                }
+            }
+            if (pickedIds.length > 0) {
+                $.modal.open("Ghi chú điều vận", prefix + "/shipment-detail/" + pickedIds + "/delivery-remark", 500, 400);
+            } else {
+                $.modal.alertError("Bạn chưa chọn container nào!");
+            }
 
+        },
     },
-  },
+    {
+        text: '<button class="btn btn-sm btn-warning" style="padding: 2px 3px; border-radius: 2;"><i class="fa fa-file"></i> In phiếu</button>',
+        handler: function () {
+            generatePDF();
+        },
+    }
 ];
 //toolbar of driver follow batch
 var addDriverForBatch = [
@@ -97,17 +105,73 @@ var addDriverForContainer = [
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
-    //DEFAULT SEARCH FOLLOW DATE
-    let fromMonth = (new Date().getMonth() < 10) ? "0" + (new Date().getMonth()) : new Date().getMonth();
-    let toMonth = (new Date().getMonth() +2 < 10) ? "0" + (new Date().getMonth() +2 ): new Date().getMonth() +2;
-    $('#fromDate').val("01/"+ fromMonth + "/" + new Date().getFullYear());
-    $('#toDate').val("01/"+ (toMonth > 12 ? "01" +"/"+ (new Date().getFullYear()+1)  : toMonth + "/" + new Date().getFullYear()));
-    let fromDate = stringToDate($('#fromDate').val());
-    let toDate =  stringToDate($('#toDate').val());
-    fromDate.setHours(0,0,0);
-    toDate.setHours(23, 59, 59);
-    shipmentSearch.fromDate = fromDate.getTime();
-    shipmentSearch.toDate = toDate.getTime();
+
+    $('#fromDate').datebox({
+        onSelect: function (date) {
+            date.setHours(0, 0, 0);
+            fromDate = date;
+            if (toDate != null && date.getTime() > toDate.getTime()) {
+                $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
+            } else {
+                shipmentSearch.params.fromDate = dateToString(date);
+                loadTable();
+            }
+            return date;
+        }
+    });
+
+    let now = new Date();
+    let nowStr = ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear();
+    $('#fromDate').datebox('setValue', nowStr);
+    shipmentSearch.params.fromDate = dateToString(now);
+
+    $('#toDate').datebox({
+        onSelect: function (date) {
+            date.setHours(23, 59, 59);
+            toDate = date;
+            if (fromDate != null && date.getTime() < fromDate.getTime()) {
+                $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
+            } else {
+                shipmentSearch.params.toDate = dateToString(date);
+                loadTable();
+            }
+        }
+    });
+
+    $("#blNo").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+            shipmentSearch.params.blOrBooking = $("#blNo").textbox('getText').toUpperCase();
+            loadTable();
+        }
+    });
+
+    $("#containerNo").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+            shipmentSearch.params.containerNo = $("#containerNo").textbox('getText').toUpperCase();
+            loadTable();
+        }
+    });
+
+    //change serviceType
+    $("#shipmentType").combobox({
+        onSelect: function (serviceType) {
+            shipmentSearch.params.consignee = $("#consignee").textbox('getText').toUpperCase();
+            shipmentSearch.params.containerNo = $("#containerNo").textbox('getText').toUpperCase();
+            shipmentSearch.params.blOrBooking = $("#blNo").textbox('getText').toUpperCase();
+            shipmentSearch.serviceType = serviceType.value;
+            loadTable();
+        }
+    });
+
+    $("#consignee").textbox('textbox').bind('keydown', function(e) {
+        // enter key
+        if (e.keyCode == 13) {
+          shipmentSearch.params.consignee = $("#consignee").textbox('getText').toUpperCase();
+          loadTable();
+        }
+    });
 
     loadTable();
     $(".left-side").css("height", $(document).height());
@@ -118,119 +182,53 @@ $(document).ready(function () {
         handleCollapse(false);
     });
 
-    //find date
-    $('.from-date').datetimepicker({
-        language: 'en',
-        format: 'dd/mm/yyyy',
-        autoclose: true,
-        todayBtn: true,
-        todayHighlight: true,
-        pickTime: false,
-        minView: 2
-    });
-    $('.to-date').datetimepicker({
-        language: 'en',
-        format: 'dd/mm/yyyy',
-        autoclose: true,
-        todayBtn: true,
-        todayHighlight: true,
-        pickTime: false,
-        minView: 2
-    });
 });
 
-//change serviceType
-$("#shipmentType").combobox({
-    onSelect: function (serviceType) {
-      shipmentSearch.serviceType = serviceType.value;
-      loadTable();
-    }
-  });
-//search date
-function changeFromDate() {
-    let fromDate = stringToDate($('#fromDate').val());
-    if ($('#toDate').val() != '' && stringToDate($('#toDate').val()).getTime() < fromDate.getTime()) {
-        $.modal.alertError('Quý khách không thể chọn từ ngày cao hơn đến ngày.')
-        $('#fromDate').val('');
-    } else {
-        shipmentSearch.fromDate = fromDate.getTime();
-        loadTable();
+function dateformatter(date) {
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    var d = date.getDate();
+    return (d < 10 ? ('0' + d) : d) + '/' + (m < 10 ? ('0' + m) : m) + '/' + y;
+}
+function dateparser(s) {
+    var ss = (s.split('\.'));
+    var d = parseInt(ss[0], 10);
+    var m = parseInt(ss[1], 10);
+    var y = parseInt(ss[2], 10);
+    if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+        return new Date(y, m - 1, d);
     }
 }
 
-function changeToDate() {
-    let toDate = stringToDate($('.to-date').val());
-    if ($('.from-date').val() != '' && stringToDate($('.from-date').val()).getTime() > toDate.getTime()) {
-        $.modal.alertError('Quý khách không thể chọn đến ngày thấp hơn từ ngày.')
-        $('.to-date').val('');
-    } else {
-        toDate.setHours(23, 59, 59);
-        shipmentSearch.toDate = toDate.getTime();
-        loadTable();
-    }
+function dateToString(date) {
+    return ("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear()
+        + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
+}
+
+function search() {
+    shipmentSearch.params.consignee = $("#consignee").textbox('getText').toUpperCase();
+    shipmentSearch.params.containerNo = $("#containerNo").textbox('getText').toUpperCase();
+    shipmentSearch.params.blOrBooking = $("#blNo").textbox('getText').toUpperCase();
+    loadTable();
+}
+
+function clearInput() {
+    $("#blNo").textbox('setText', '');
+    $("#containerNo").textbox('setText', '');
+    $("#consignee").textbox('setText', '');
+    $('#fromDate').datebox('setValue', '');
+    $('#toDate').datebox('setValue', '');
+    shipmentSearch = new Object();
+    shipmentSearch.params = new Object();
+    fromDate = null;
+    toDate = null;
+    loadTable();
 }
 
 function stringToDate(dateStr) {
     let dateParts = dateStr.split('/');
     return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
 }
-function handleCollapse(status) {
-    if (status) {
-        $(".left-side").css("width", "0.5%");
-        $(".left-side").children().hide();
-        $("#btn-collapse").hide();
-        $("#btn-uncollapse").show();
-        $(".right-side").css("width", "99%");
-        setTimeout(() => {
-            checkForChanges();
-            hot.render();
-        }, 500);
-        return;
-    }
-    $(".left-side").css("width", "33%");
-    $(".left-side").children().show();
-    $("#btn-collapse").show();
-    $("#btn-uncollapse").hide();
-    $(".right-side").css("width", "67%");
-    setTimeout(() => {
-        checkForChanges();
-        hot.render();
-    }, 500);
-}
-//function assignFollowBatchTab() {
-//    $(".assignFollowBatch").show();
-//    $("#batchBtn").css({"background-color": "#6c9dc7"});
-//    $(".assignFollowContainer").hide();
-//    $("#containerBtn").css({"background-color": "#c7c1c1"});
-//    // let row = $("#dg").datagrid("getSelected");
-//    // if(row){
-//    //     loadDriver(row.id);
-//    // }
-//    if(dataAssignedDriver.length >0){
-//        $("#pickedDriverTable").datagrid('loadData', dataAssignedDriver);
-//        checkForChanges();
-//
-//    }
-//    if(dataDriver.length > 0){
-//        $("#driverTable").datagrid('loadData', dataDriver)
-//        checkForChanges();
-//    }
-//}
-
-//function assignFollowContainerTab() {
-//    $(".assignFollowContainer").css("display","flex");;
-//    $("#containerBtn").css({"background-color": "#6c9dc7"});
-//    $(".assignFollowBatch").hide();
-//    $("#batchBtn").css({"background-color": "#c7c1c1"});
-//    // let row = $("#dg").datagrid("getSelected");
-//    // if(row){
-//    //     loadShipmentDetail(row.id);
-//    // }
-//    if(dataContainerList.length > 0){
-//        $("#dgShipmentDetail").datagrid('loadData', dataContainerList)
-//        checkForChanges();
-//    }
-//}
 $(".main-body").layout();
 
 loadTable("#dg-right-tab1", rightHeight / 2);
@@ -305,18 +303,15 @@ function loadTable() {
                     if ($('#shipmentType').val() == 1 || $('#shipmentType').val() == 2) {
                         $("#dg").datagrid("hideColumn", "bookingNo");
                         $("#dg").datagrid("showColumn", "blNo");
-                        $("#bookingNoDiv").hide();
-                        $("#blNoDiv").show();
+                        $("#dg").datagrid("hideColumn", "blBookingNo");
                     } else if ($('#shipmentType').val() == 3 || $('#shipmentType').val() == 4) {
                         $("#dg").datagrid("hideColumn", "blNo");
                         $("#dg").datagrid("showColumn", "bookingNo");
-                        $("#bookingNoDiv").show();
-                        $("#blNoDiv").hide();
+                        $("#dg").datagrid("hideColumn", "blBookingNo");
                     } else {
                         $("#dg").datagrid("hideColumn", "blNo");
                         $("#dg").datagrid("hideColumn", "bookingNo");
-                        $("#bookingNoDiv").hide();
-                        $("#blNoDiv").hide();
+                        $("#dg").datagrid("showColumn", "blBookingNo");
                     }
                 },
                 error: function () {
@@ -327,10 +322,32 @@ function loadTable() {
     });
 }
 //------------------------------------------------------------------------------------------------------------------------
-//FORMAT QUANTITY FOR SHIPMENT LIST
-function formatQuantity(){
-    
+// FORMAT SERVICE TYPE
+function formatServiceType(value, row) {
+    switch (value) {
+        case 1:
+            return 'Bốc Hàng';
+        case 2:
+            return 'Hạ Rỗng';
+        case 3:
+            return 'Bốc Rỗng';
+        case 4:
+            return 'Hạ Hàng';
+        default:
+            return '';
+    }
 }
+
+// FORMAT BOOKING OR BL NO
+function formatBlBooking(value, row) {
+    if (row.bookingNo) {
+        return row.bookingNo;
+    } else if (row.blNo) {
+        return row.blNo;
+    }
+    return '';
+}
+
 // FORMAT DATE FOR SHIPMENT LIST
 function formatDate(value) {
 	var date = new Date(value);
