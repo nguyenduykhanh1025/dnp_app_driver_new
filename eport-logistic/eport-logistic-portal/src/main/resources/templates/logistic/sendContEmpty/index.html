@@ -32,6 +32,13 @@
               <input class="easyui-textbox" id="consignee" data-options="prompt:'Chủ hàng'" />
             </div>
             <div class="d-inline">
+              <select id="shipmentStatus" class="easyui-combobox" panelHeight="auto" editable="false" style="width: 130px">
+                  <option value="" selected>Tất Cả</option>
+                  <option value=1 selected>Đang Giao Dịch</option>
+                  <option value=2>Hoàn Thành</option>
+              </select>
+          </div>
+            <div class="d-inline">
               <input id="fromDate" class="easyui-datebox" style="width: 100px;"
                 data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
             </div>

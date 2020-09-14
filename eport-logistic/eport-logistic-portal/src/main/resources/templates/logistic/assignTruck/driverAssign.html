@@ -21,7 +21,8 @@
           <div class="flex__right w-90 justify-content-between align-items-center d-flex">
             <form id="ff" method="post" class="w-90">
               <div class="d-inline">
-                <select class="easyui-combobox" name="services" id="shipmentType"  prompt="Dịch vụ:" style="width: max-content">
+                <select class="easyui-combobox" name="services" id="shipmentType"  prompt="Dịch vụ:" panelHeight="auto" editable="false" style="width: 120px">
+                  <option value="" selected>Tất Cả</option>
                   <option value=1 selected>Bốc Hàng</option>
                   <option value=2>Hạ Rỗng</option>
                   <option value=3>Bốc Rỗng</option>
@@ -39,10 +40,10 @@
                 <input class="easyui-textbox" name="owner" data-options="prompt:'Chủ hàng:'" />
               </div>
               <div class="d-inline">
-                <input class="easyui-datebox" name="fromdate" id="fromDate">
+                <input class="easyui-datebox" name="fromdate" id="fromDate" style="width:110px">
               </div>
               <div class="d-inline">
-                <input class="easyui-datebox" name="todate" id="toDate" >
+                <input class="easyui-datebox" name="todate" id="toDate" style="width:110px">
               </div>
             </form>
             <div class="main-body__search-wrapper--btn-group d-flex justify-content-end w-10">
@@ -81,6 +82,7 @@
                         <table id="driver-table-follow-batch" class="table" style="width: 100%; height: auto" fitColumns="true" data-options="rownumbers:true">
                           <thead>
                             <tr>
+                              <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th>
                               <th data-options="field:'mobileNumber',align:'right'" width="120">Số điện thoại</th>
                               <th data-options="field:'fullName',editor:'textbox'" width="150">Họ và Tên</th>
                               <th data-options="field:'action', formatter: formatAction, align:'center', fixed:true" width="80">Hành động</th>
@@ -96,9 +98,10 @@
                   <div title="Điều xe theo container">
                      <div class="easyui-layout" data-options="fit:true">
 	                     <div data-options="region:'west',split:true" style="width: 50%">
-	                       <table id="driver-table-follow-cont" class="table" style="width: 100%; height: auto" fitColumns="true" data-options="rownumbers:true">
+	                       <table id="driver-table-follow-cont" class="table" style="width: 100%; height: auto" fitColumns="true" data-options="rownumbers:true, toolbar:'#tb'">
 	                         <thead>
 	                           <tr>
+	                             <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th>
 	                             <th data-options="field:'mobileNumber',align:'right'" width="120">Số điện thoại</th>
 	                             <th data-options="field:'fullName',editor:'textbox'" width="150">Họ và Tên</th>
 	                             <th data-options="field:'action', formatter: formatActionContainer, align:'center', fixed:true" width="80">Hành động</th>
@@ -123,7 +126,7 @@
                       <th data-options="field:'sztp',halign:'center', fixed:true" width="100">Kích Thước</th>
                       <th data-options="field:'preorderPickup', align:'center', fixed:true, formatter: formatPickup" width="100">Bốc Chỉ Định</th>
                       <th data-options="field:'wgt',halign:'center'" width="60">Trọng lượng</th>
-                      <th data-options="field:'driverAmount',halign:'center', align:'center'" width="100">Số Lượng tài xế điều</th>
+                      <th data-options="field:'driverAmount',halign:'center', align:'center'" width="100">Số tài xế điều</th>
                       <th data-options="field:'deliveryMobile',halign:'center'" width="70">SĐT giao nhận</th>
                       <th data-options="field:'deliveryAddress',halign:'center'" width="100">Địa chỉ giao nhận</th>
                       <th data-options="field:'deliveryRemark',halign:'center', align:'center', formatter: formatRemark" width="100">Ghi chú điều vận</th>
@@ -136,7 +139,6 @@
         </div>
       </div>
     </div>
-
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: datetimepicker-js" />

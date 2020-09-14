@@ -132,5 +132,10 @@ public class PickupAssignServiceImpl implements IPickupAssignService {
     public PickupAssign selectPickupAssignByShipmentId(PickupAssign pickupAssign) {
         return pickupAssignMapper.selectPickupAssignByShipmentId(pickupAssign);
     }
+
+	@Override
+	public void deleteAllShipmentPickupAssign(Long shipmentId, Long groupId) {
+		pickupAssignMapper.deleteAllShipmentPickupAssign(shipmentId, groupId);
+	}
     
 }

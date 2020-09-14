@@ -13,7 +13,7 @@ var shipmentSearch = new Object;
 //toobar of shipmentDetail
 var toolbar = [
   {
-    text: '<a href="#" class="btn btn-sm btn-default" style="padding: 2px 3px; border-radius: 0;"><i class="fa fa-save text-success"></i> Ghi chú điều vận</a>',
+    text: '<button class="btn btn-sm btn-primary" style="padding: 2px 3px; border-radius: 2;"><i class="fa fa-save text-primary"></i> Ghi chú điều vận</button>',
     handler: function () {
       let pickedIds = [];
       let rows = $('#dgShipmentDetail').datagrid('getSelections');
@@ -59,7 +59,7 @@ var addDriverForBatch = [
         	if(!shipmentSelected){
         		$.modal.alertError("Bạn chưa chọn Lô!");
         	}
-        	save();
+        	save(shipmentSelected.id);
         },
     },
 ]
@@ -90,7 +90,7 @@ var addDriverForContainer = [
         	if(!shipmentSelected){
         		$.modal.alertError("Bạn chưa chọn Lô!");
         	}
-        	saveCont();
+        	saveCont(shipmentSelected.id);
         },
     },
 ]
@@ -489,7 +489,7 @@ function loadDriverFollowContainer(shipmentId, shipmentDetailId){
 //-------------------------------------------------SAVE ASSIGN DRIVER---------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
 //save assign driver follow batch
-function save(){
+function save(shipmentId){
     let rows = $('#driver-table-follow-batch').datagrid('getRows');
     let pickupAssigns = [];
     if(rows){
@@ -510,7 +510,7 @@ function save(){
         }
         $.modal.loading("Đang xử lý...");
         $.ajax({
-            url: prefix + "/savePickupAssignFollowBatch",
+            url: prefix + "/"+shipmentId+"/savePickupAssignFollowBatch",
             method: "post",
             contentType: "application/json",
             data: JSON.stringify(pickupAssigns),
@@ -532,7 +532,7 @@ function save(){
 
 }
 //save assign driver follow container
-function saveCont(){
+function saveCont(shipmentId){
     let rows = $('#driver-table-follow-cont').datagrid('getRows');
     let pickupAssigns = [];
     
@@ -555,7 +555,7 @@ function saveCont(){
         }
         $.modal.loading("Đang xử lý ...");
         $.ajax({
-            url: prefix + "/savePickupAssignFollowContainer",
+            url: prefix + "/" + shipmentId + "/savePickupAssignFollowContainer",
             method: "post",
             contentType: "application/json",
             data: JSON.stringify(pickupAssigns),
@@ -601,10 +601,10 @@ function removeDriverContainer(index) {
 function formatRemark(value) {
     let remark = value;
     if(value){
-        return '<div class="easyui-tooltip" title="' + value + '" style="width: 80; text-align: center;"><span>' + (remark.length < 15 ? value : "...") + '</span></div>';
+        return '<div class="easyui-tooltip" title="' + value + '" style="width: 80; text-align: center;"><span>' + (remark.length < 20 ? value : remark.substring(0,20) + "...") + '</span></div>';
     }
-    return 
-  }
+    return "";
+}
 function formatPickup(value) {
     if (value == "Y") {
         return "<span class='label label-success'>Có</span>"
@@ -667,7 +667,7 @@ function checkForChanges(){
  var outsources = [];
  var outsourcesContainer = [];
  function loadOutSource(shipmentId) {
-	$.modal.loading("Đang xử lý ...");
+	// $.modal.loading("Đang xử lý ...");
     $.ajax({
         url: prefix + "/out-source/batch/" + shipmentId,
         method: "GET",
@@ -688,7 +688,7 @@ function checkForChanges(){
 }
  
  function loadOutSourceContainer(shipmentDetailId) {
-		$.modal.loading("Đang xử lý ...");
+		// $.modal.loading("Đang xử lý ...");
 	    $.ajax({
 	        url: prefix + "/out-source/container/" + shipmentDetailId,
 	        method: "GET",
@@ -820,7 +820,7 @@ function onChange(changes, source) {
     }
     changes.forEach(function (change) {
         if (change[1] == "driverOwner" && change[3] != null && change[3] != '') {
-        	$.modal.loading("Đang xử lý ...");
+        	// $.modal.loading("Đang xử lý ...");
             $.ajax({
                 url: prefix + "/owner/"+ change[3] +"/driver-phone-list",
                 method: "GET",
@@ -844,7 +844,7 @@ function onChange(changes, source) {
                 },
             });
         } else if (change[1] == "phoneNumber" && change[3] != null && change[3] != '') {
-        	$.modal.loading("Đang xử lý ...");
+        	// $.modal.loading("Đang xử lý ...");
             $.ajax({
                 url: prefix + "/driver-phone/" + change[3] + "/infor",
                 method: "GET",
@@ -873,7 +873,7 @@ function onChangeContainer(changes, source) {
     }
     changes.forEach(function (change) {
         if (change[1] == "driverOwner" && change[3] != null && change[3] != '') {
-        	$.modal.loading("Đang xử lý ...");
+        	// $.modal.loading("Đang xử lý ...");
             $.ajax({
                 url: prefix + "/owner/"+ change[3] +"/driver-phone-list",
                 method: "GET",
@@ -897,7 +897,7 @@ function onChangeContainer(changes, source) {
                 },
             });
         } else if (change[1] == "phoneNumber" && change[3] != null && change[3] != '') {
-        	$.modal.loading("Đang xử lý ...");
+        	// $.modal.loading("Đang xử lý ...");
             $.ajax({
                 url: prefix + "/driver-phone/" + change[3] + "/infor",
                 method: "GET",

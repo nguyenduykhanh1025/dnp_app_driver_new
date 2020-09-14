@@ -526,59 +526,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình xác thực!");
 	}
 
-	// @Log(title = "Bốc Chỉ Định", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	// @PostMapping("/shipment-detail/pickup-cont/{isCredit}")
-	// @ResponseBody
-	// public AjaxResult pickContOnDemand(@RequestBody List<ShipmentDetail> preorderPickupConts, @PathVariable("isCredit") Boolean isCredit) {
-	// 	// Check if logistic can pay by credit
-	// 	if (getGroup().getCreditFlag() == "0" && isCredit) {
-	// 		return error("Qúy khách không có quyền thanh toán trả sau!");
-	// 	}
-	// 	if (!preorderPickupConts.isEmpty()) {
-	// 		ShipmentDetail shipmentDt = new ShipmentDetail();
-	// 		shipmentDt.setBlNo(preorderPickupConts.get(0).getBlNo());
-	// 		shipmentDt.setFe("F");
-	// 		shipmentDt.setLogisticGroupId(getUser().getGroupId());
-
-	// 		// Check if logistic own preorderPickupConts
-	// 		if (preorderPickupConts.size() != shipmentDetailService.countNumberOfLegalCont(preorderPickupConts, getUser().getGroupId())) {
-	// 			return error("Bạn không có quyền bốc chỉ định những container này!");
-	// 		}
-
-	// 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
-
-	// 		Shipment shipment = null;
-	// 		if (shipmentDetails.isEmpty()) {
-	// 			return error("Có lỗi xảy ra trong quá trình bốc container chỉ định!");
-	// 		} else {
-	// 			shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-	// 		}
-
-	// 		//Get coordinate from catos test
-	// 		List<ShipmentDetail> coordinateOfList = catosApiService.getCoordinateOfContainers(preorderPickupConts.get(0).getBlNo());
-	// 		AjaxResult ajaxResult = AjaxResult.success();
-	// 		List<Long> orderIds = new ArrayList<>();
-	// 		if (!shipmentDetails.isEmpty()) {
-	// 			List<ServiceSendFullRobotReq> reqs = shipmentDetailService.calculateMovingCont(coordinateOfList, preorderPickupConts, shipmentDetails, shipment, isCredit);
-	// 			if (reqs == null) {
-	// 				return error("Không có container nào cần làm lệnh dịch chuyển!");
-	// 			}
-	// 			try {
-	// 				for (ServiceSendFullRobotReq robotReq : reqs) {
-	// 					orderIds.add(robotReq.processOrder.getId());
-	// 					mqttService.publishMessageToRobot(robotReq, EServiceRobot.SHIFTING_CONT);
-	// 				}
-	// 			} catch (MqttException e) {
-	// 				logger.warn(e.getMessage());
-	// 				return AjaxResult.warn("Lệnh dịch chuyển của quý khách đang được chờ xử lý!");
-	// 			}
-	// 		}
-	// 		ajaxResult.put("orderIds", orderIds);
-	// 		return ajaxResult;
-	// 	}
-	// 	return error("Có lỗi xảy ra trong quá trình bốc container chỉ định!");
-	// }
-
 	@SuppressWarnings("unchecked")
 	@GetMapping("/consignees")
 	@ResponseBody

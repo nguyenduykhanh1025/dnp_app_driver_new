@@ -21,6 +21,10 @@ public class CustomsCheckResultDto implements Serializable {
 	private String customsRemark;
 
 	private String msgRecvContent;
+	
+	private String taxCode;
+	
+	private String companyName;
 
 	/**
 	 * Check if customs is released
@@ -79,4 +83,20 @@ public class CustomsCheckResultDto implements Serializable {
 		this.msgRecvContent = msgRecvContent;
 	}
 
+	public String getTaxCode() {
+		return taxCode;
+	}
+
+	public void setTaxCode(String taxCode) {
+		this.taxCode = taxCode;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+	
 }

@@ -195,6 +195,7 @@ function dateparser(s) {
     var d = parseInt(ss[0], 10);
     var m = parseInt(ss[1], 10);
     var y = parseInt(ss[2], 10);
+    console.log("OK");
     if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
         return new Date(y, m - 1, d);
     }
