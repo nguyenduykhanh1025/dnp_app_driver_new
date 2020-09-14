@@ -70,6 +70,7 @@ class HomeScreen extends PureComponent {
             result: false,
             msg: 'Đang gửi yêu cầu ...',
             data: [],
+            PickupList: [],
             DataResult: '',
             deviceId: '',
             sessionId: '',
@@ -78,19 +79,18 @@ class HomeScreen extends PureComponent {
             "topic": "",
         };
         this.token = null;
+        this.client = null;
     }
 
     componentDidMount = async () => {
         this.getId()
         this.token = await getToken();
         this.onGetURLMqtt()
-        var qrString = this.props.navigation.state.params.dataQR.qrString;
-        qrString = qrString.slice(0, qrString.length - 1);
-        var dataQR = JSON.parse(qrString.replace(/'/g, '"'))
+        // var qrString = this.props.navigation.state.params.dataQR.qrString;
+        // qrString = qrString.slice(0, qrString.length - 1);
+        // var dataQR = JSON.parse(qrString.replace(/'/g, '"'))
         await this.setState({
-            qrvalue: this.props.navigation.state.params.dataQR.qrString,
-            sessionId: this.props.navigation.state.params.dataQR.sessionId,
-            data: dataQR.data
+            PickupList: this.props.navigation.state.params.data
         })
     }
 
@@ -105,6 +105,58 @@ class HomeScreen extends PureComponent {
 
     }
 
+    onGoCheckIn = async () => {
+        var pickupHistoryIds = [];
+        this.state.PickupList.map((item, index) => {
+            pickupHistoryIds = pickupHistoryIds.concat(item.pickupId)
+        })
+        const params = {
+            api: 'checkin',
+            param: {
+                pickupHistoryIds: pickupHistoryIds
+            },
+            token: this.token,
+            method: 'POST'
+        }
+        var result = undefined;
+        result = await callApi(params);
+        // console.log('result')
+        if (result.code == 0) {
+            this.setState({
+                qrvalue: result.qrString,
+                sessionId: result.sessionId,
+                data: result.data,
+            })
+        }
+        else {
+            result.msg ?
+                Alert.alert(
+                    'Lỗi!!!',
+                    result.msg,
+                    [
+                        {
+                            text: 'OK', onPress: () => {
+                                this.props.navigation.goBack()
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                ) :
+                Alert.alert(
+                    'Lỗi!!!',
+                    'Đường truyền mạng không ổn định vui lòng kiểm tra lại đường truyền',
+                    [
+                        {
+                            text: 'OK', onPress: () => {
+                                this.props.navigation.goBack()
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                );
+        }
+    }
+
     onGetURLMqtt = async () => {
         const params = {
             api: 'connection/info',
@@ -114,6 +166,7 @@ class HomeScreen extends PureComponent {
         }
         var result = undefined;
         result = await callApi(params);
+        console.log('resulr', result)
         if (result.code == 0) {
             this.setState({
                 "domain": result.domain,
@@ -122,7 +175,31 @@ class HomeScreen extends PureComponent {
             })
         }
         else {
-            Alert.alert('Thông báo!', result.msg)
+            result.msg ?
+                Alert.alert(
+                    'Lỗi!!!',
+                    result.msg,
+                    [
+                        {
+                            text: 'OK', onPress: () => {
+                                this.props.navigation.goBack()
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                ) :
+                Alert.alert(
+                    'Lỗi!!!',
+                    'Đường truyền mạng không ổn định vui lòng kiểm tra lại đường truyền',
+                    [
+                        {
+                            text: 'OK', onPress: () => {
+                                this.props.navigation.goBack()
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                );
         }
         this.onTestMqtt()
     }
@@ -133,32 +210,19 @@ class HomeScreen extends PureComponent {
             port: this.state.port,
             topic: this.state.topic,
         }
-
         mqtt.createClient({
             uri: settings.mqttServerUrl + ":" + settings.port,
-            clientId: this.state.deviceId,
+            clientId: "DriverApp-" + this.state.topic,
         }).then((client) => {
-            client.on('closed', () => {
-            });
+            client.on('closed', () => { });
             client.unsubscribe(settings.topic)
             client.disconnect();
-        }).catch((err) => {
-            Alert.alert(
-                'Lỗi!!!',
-                'Liên hệ người phụ trách!',
-                [
-                    {
-                        text: 'OK', onPress: () => {
-                            this.props.navigation.goBack()
-                        }
-                    }
-                ],
-                { cancelable: false }
-            );
-        });
+        })
     }
 
     onTestMqtt = async () => {
+        // const client = new mqtt.Client('[SCHEME]://[URL]:[PORT]');
+
         var settings = {
             mqttServerUrl: this.state.domain,
             port: this.state.port,
@@ -166,35 +230,53 @@ class HomeScreen extends PureComponent {
         }
         mqtt.createClient({
             uri: settings.mqttServerUrl + ":" + settings.port,
-            clientId: "DriverApp-" + this.state.sessionId,
+            clientId: "DriverApp-" + this.state.topic,
         }).then((client) => {
+            this.client = client
             client.on('connect', () => {
-                // console.log('connected');
+                this.onGoCheckIn()
                 client.subscribe(settings.topic, 1);
             });
             client.on('message', (msg) => {
-                var message = JSON.parse(msg.data);
-                console.log('message', message)
-                this.setState({
-                    // loading: message.status == 'PROCESSING' ? true : message.status == 'FINISH' ? false : this.state.loading,
-                    msg: message.msg,
-                    DataResult: message
-                })
-                if (message.status == 'FINISH' && message.result == 'PASS') {
+                try {
+                    var message = JSON.parse(msg.data);
+
+                    this.setState({
+                        // loading: message.status == 'PROCESSING' ? true : message.status == 'FINISH' ? false : this.state.loading,
+                        msg: message.msg,
+                        DataResult: message
+                    })
+                    if (message.status == 'FINISH' && message.result == 'PASS') {
+                        client.unsubscribe(settings.topic)
+                        client.disconnect();
+                        this.setState({
+                            result: true,
+                        })
+                        // NavigationService.navigate(mainStack.result, { Data: message.result })
+                    }
+                    if (message.status == 'FINISH' && message.result == 'FAIL') {
+                        client.unsubscribe(settings.topic)
+                        client.disconnect();
+                        this.setState({
+                            result: true,
+                            loading: false,
+                        })
+                    }
+                } catch (error) {
                     client.unsubscribe(settings.topic)
                     client.disconnect();
-                    this.setState({
-                        result: true,
-                    })
-                    // NavigationService.navigate(mainStack.result, { Data: message.result })
-                }
-                if (message.status == 'FINISH' && message.result == 'FAIL') {
-                    client.unsubscribe(settings.topic)
-                    client.disconnect();
-                    this.setState({
-                        result: true,
-                        loading: false,
-                    })
+                    Alert.alert(
+                        'Thông báo',
+                        'Thông tin từ ePort lỗi vui lòng liên hệ người phụ trách!',
+                        [
+                            {
+                                text: 'OK', onPress: () => {
+                                    this.props.navigation.goBack()
+                                }
+                            }
+                        ],
+                        { cancelable: false }
+                    );
                 }
                 // PushNotification.localNotification({
                 //     title: message.title, // (optional)
@@ -260,10 +342,11 @@ class HomeScreen extends PureComponent {
                             "Thông báo xác nhận!",
                             "Bạn đang thực hiện check-in, bạn chắc chắn muốn thoát không?",
                             [
-                                { text: "Có", onPress: () =>  
                                 {
-                                    this.props.navigation.goBack()
-                                }},
+                                    text: "Có", onPress: () => {
+                                        this.props.navigation.goBack()
+                                    }
+                                },
                                 {
                                     text: "Không",
                                     style: "cancel"

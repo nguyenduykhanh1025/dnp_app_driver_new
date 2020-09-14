@@ -21,8 +21,8 @@ export default class Item extends Component {
 
   render() {
     var { data, onPress, index } = this.props;
-    console.log('data', data.seenFlg)
-    var date = moment(data.createTime).format('DD-MM-YYYY')
+    // console.log('data', data.createTime)
+    var date = moment(data.createTime).format('DD-MM-YYYY HH:mm')
     return (
       <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} style={styles.itemContainer}>
         <View style={styles.imageView}>
@@ -35,14 +35,15 @@ export default class Item extends Component {
         </View>
         <View style={[styles.ContentView]}>
           <Text style={[styles.title, !data.seenFlg ? { fontWeight: 'bold' } : null]}>{data.title}</Text>
+            <Text style={styles.datetime}>{date}</Text>
           <Text style={styles.description}>{data.content}</Text>
           <View style={{
             justifyContent: 'space-between',
             alignItems: 'center',
+            justifyContent:'flex-end',
             flexDirection: 'row',
             width: sizeWidth(70),
           }}>
-            <Text style={styles.datetime}>{date}</Text>
             <Text style={styles.datetime}>{data.seenFlg ? 'Đã xem' : 'Chưa xem'}</Text>
           </View>
         </View>

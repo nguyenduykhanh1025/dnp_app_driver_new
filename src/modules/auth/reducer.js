@@ -19,7 +19,7 @@ export default function loginReducers(state = login, action) {
   switch (action.type) {
 
     case types.LOGIN:
-      FlashMessage('Đăng nhập thành công !', 'success')
+      // FlashMessage('Đăng nhập thành công !', 'success')
       return state
         .set('loginname', action.loginname)
         .set('pwd', action.pwd)
@@ -44,7 +44,7 @@ export default function loginReducers(state = login, action) {
         .set('isLoading', action.isLoading)
 
     case types.LOGOUT:
-      FlashMessage('Đăng xuất thành công !', 'success')
+      // FlashMessage('Đăng xuất thành công !', 'success')
       return state
         .set('loginname', '')
         .set('pwd', '')

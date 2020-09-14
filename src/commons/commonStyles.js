@@ -9,6 +9,17 @@ export default {
         paddingRight: 5,
         width: '90%',
     },
+    flexRow: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    listItem: {
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#AABBCC',
+        width: screen.widthsc * 0.85,
+        left: 10
+    },
     iconItem: {
         position: 'relative',
         paddingVertical: 10,

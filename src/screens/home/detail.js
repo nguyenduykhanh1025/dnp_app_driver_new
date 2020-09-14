@@ -168,8 +168,9 @@ export default class DetailScreen extends Component {
             <View style={styles.SelectIconContainer}>
               <View style={styles.SelectIconTag}>
                 <TouchableOpacity
-                  onPress={() => { this.onSelectService(1) }}
-                  disabled={this.upEnable == '2' ? true : false}
+                  onPress={() => { this.upEnable == '2' ? 
+                  Alert.alert('Thông báo!','Đang có container bốc chưa trả hàng. Vui lòng trả hàng rồi thực hiện nhận container lại') :
+                  this.onSelectService(1) }}
                 >
                   <View style={styles.SelectIconItemContainer}>
                     <View style={[
@@ -217,8 +218,9 @@ export default class DetailScreen extends Component {
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => { this.onSelectService(4) }}
-                  disabled={this.DownEnable == '2' ? true : false}
+                  onPress={() => { this.DownEnable == '2' ? 
+                  Alert.alert('Thông báo!','Đang có container hạ chưa trả hàng. Vui lòng trả hàng rồi thực hiện nhận container lại') :
+                  this.onSelectService(4) }}
                 >
                   <View style={styles.SelectIconItemContainer}>
                     <View style={[
@@ -267,9 +269,10 @@ export default class DetailScreen extends Component {
                 </TouchableOpacity>
               </View>
               <View style={styles.SelectIconTag}>
-                <TouchableOpacity
-                  onPress={() => { this.onSelectService(3) }}
-                  disabled={this.upEnable == '2' ? true : false}
+              <TouchableOpacity
+                  onPress={() => { this.upEnable == '2' ? 
+                  Alert.alert('Thông báo!','Đang có container bốc chưa trả hàng. Vui lòng trả hàng rồi thực hiện nhận container lại') :
+                  this.onSelectService(3) }}
                 >
                   <View style={styles.SelectIconItemContainer}>
                     <View style={[
@@ -317,8 +320,9 @@ export default class DetailScreen extends Component {
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => { this.onSelectService(2) }}
-                  disabled={this.DownEnable == '2' ? true : false}
+                  onPress={() => { this.DownEnable == '2' ? 
+                  Alert.alert('Thông báo!','Đang có container hạ chưa trả hàng. Vui lòng trả hàng rồi thực hiện nhận container lại') :
+                  this.onSelectService(2) }}
                 >
                   <View style={styles.SelectIconItemContainer}>
                     <View style={[

@@ -17,6 +17,7 @@ import {
 import { connect } from 'react-redux';
 import NavigationService from '@/utils/navigation';
 import { mainStack, authStack } from '@/config/navigator';
+import Icon from 'react-native-vector-icons/AntDesign'
 import {
   Colors,
   sizes,
@@ -43,7 +44,7 @@ import { getToken, saveUpEnable, saveDownEnable, saveChassis, saveTruck } from '
 import { hasSystemFeature } from 'react-native-device-info';
 import Toast from 'react-native-tiny-toast';
 import { update } from 'immutable';
-import { DropDownProfile, ProfileModal } from '@/components'
+import { DropDownProfile, ProfileModal, TruckNoModal } from '@/components'
 const icUser = require('@/assets/icons/account/user.png')
 const icCont1 = require('@/assets/icons/cont2_icon.png')
 const icCont2 = require('@/assets/icons/cont3_icon.png')
@@ -70,6 +71,8 @@ class HomeScreen extends Component {
       boc_rong_focused: false,
       ha_rong_focused: false,
       profileVisible: false,
+      truckNoVisible: false,
+      chassisNoVisible: false,
       userData: [],
       userName: 'Họ và tên',
       token: '',
@@ -244,55 +247,51 @@ class HomeScreen extends Component {
   }
 
   changeTruck = async (item) => {
-    if (this.state.checkTruck == 1) {
-    } else {
-      const params = {
-        api: 'pickup/truck',
-        param: {
-          chassisNo: this.state.chassisNo,
-          truckNo: item,
-        },
-        token: this.token,
-        method: 'POST'
-      }
-      var result = undefined;
-      result = await callApi(params);
-      if (result.code == 0) {
-        await saveTruck(item)
-        Toast.showSuccess('Đổi biển số thành công')
-        this.setState({
-          truckNo: item
-        })
-      }
-      else {
-        Alert.alert('Thông báo!', result.msg)
-      }
+    this.setState({ truckNo: item })
+    const params = {
+      api: 'pickup/truck',
+      param: {
+        chassisNo: this.state.chassisNo,
+        truckNo: item,
+      },
+      token: this.token,
+      method: 'POST'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    if (result.code == 0) {
+      await saveTruck(item)
+      Toast.showSuccess('Đổi biển số thành công')
+      this.setState({
+        truckNo: item
+      })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
     }
   }
 
   changeChassisNo = async (item) => {
-    if (this.state.checkChassisNo == 1) {
+    this.setState({ chassisNo: item })
+    const params = {
+      api: 'pickup/truck',
+      param: {
+        chassisNo: item,
+        truckNo: this.state.truckNo,
+      },
+      token: this.token,
+      method: 'POST'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    if (result.code == 0) {
+      await saveChassis(item)
+      Toast.showSuccess('Đổi biển số thành công')
+      this.setState({
+        chassisNo: item
+      })
     } else {
-      const params = {
-        api: 'pickup/truck',
-        param: {
-          chassisNo: item,
-          truckNo: this.state.truckNo,
-        },
-        token: this.token,
-        method: 'POST'
-      }
-      var result = undefined;
-      result = await callApi(params);
-      if (result.code == 0) {
-        await saveChassis(item)
-        Toast.showSuccess('Đổi biển số thành công')
-        this.setState({
-          chassisNo: item
-        })
-      } else {
-        Alert.alert('Thông báo!', result.msg)
-      }
+      Alert.alert('Thông báo!', result.msg)
     }
   }
 
@@ -340,7 +339,16 @@ class HomeScreen extends Component {
                     "Xác Nhận Check In!",
                     "Vui lòng đỗ xe đúng vị trí bàn cân rồi chọn OK để thực hiện Check In",
                     [
-                      { text: "OK", onPress: () => this.onGoCheckIn() },
+                      {
+                        text: "OK", onPress: () => this.state.PickupList[0].status == 0 ? NavigationService.navigate(mainStack.qr_code, { data: this.state.PickupList }) : Alert.alert(
+                          "Thông báo!",
+                          "Đang có container hạ/bốc chưa trả hàng. Vui lòng trả hàng rồi thực hiện nhận container lại",
+                          [
+                            { text: "OK", onPress: () => null }
+                          ],
+                          { cancelable: false }
+                        )
+                      },
                       {
                         text: "Hủy",
                         style: "cancel"
@@ -380,7 +388,7 @@ class HomeScreen extends Component {
                   <View style={styles.LicensePlateTag}>
                     <View style={styles.LicensePlate}>
                       <Text style={styles.LicensePlateTextUp}>Biển số xe đầu kéo</Text>
-                      <DropDownProfile
+                      {/* <DropDownProfile
                         line
                         data={this.state.dataTruckNo}
                         style={styles.dropdownStyle}
@@ -391,13 +399,16 @@ class HomeScreen extends Component {
                           })
                           await this.changeTruck(item)
                         }}
-                      />
-                      {/* <Text style={styles.LicensePlateTextDown}>{this.state.truckNo}</Text> */}
+                      /> */}
+                      <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.setState({ truckNoVisible: true })}>
+                        <Text style={styles.LicensePlateTextDown}>{this.state.truckNo}</Text>
+                        <Icon name='down' size={fs(20)} />
+                      </TouchableOpacity>
                     </View>
                     <View style={styles.LicensePlateLine} />
                     <View style={styles.LicensePlate}>
                       <Text style={styles.LicensePlateTextUp}>Biển số xe Romooc</Text>
-                      <DropDownProfile
+                      {/* <DropDownProfile
                         line
                         data={this.state.dataNoList}
                         style={styles.dropdownStyle}
@@ -408,8 +419,11 @@ class HomeScreen extends Component {
                           })
                           await this.changeChassisNo(item)
                         }}
-                      />
-                      {/* <Text style={styles.LicensePlateTextDown}>{this.state.chassisNo}</Text> */}
+                      /> */}
+                      <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.setState({ chassisNoVisible: true })}>
+                        <Text style={styles.LicensePlateTextDown}>{this.state.chassisNo}</Text>
+                        <Icon name='down' size={fs(20)} />
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>
@@ -546,21 +560,6 @@ class HomeScreen extends Component {
             <View style={styles.TitleHistory}>
               <Text style={styles.TitleHistoryText}>Lịch sử</Text>
             </View>
-            {
-              this.state.HistoryList.length == 0 ?
-                <View style={{ height: hs(425), width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                  <ActivityIndicator size='large' color={Colors.mainColor} />
-                </View>
-                :
-                <FlatList
-                  data={this.state.HistoryList}
-                  refreshing={this.state.refreshing}
-                  onRefresh={() => {
-                    this.onRefresh()
-                  }}
-                  renderItem={(item, index) => this.renderItem(item, index)}
-                />
-            }
             <FlatList
               data={this.state.HistoryList}
               refreshing={this.state.refreshing}
@@ -574,6 +573,17 @@ class HomeScreen extends Component {
         <ProfileModal
           visible={this.state.profileVisible}
           onClose={() => this.setState({ profileVisible: false })}
+        />
+        <TruckNoModal
+          visible={this.state.truckNoVisible}
+          onClose={() => this.setState({ truckNoVisible: false })}
+          truckCheck
+          _onSave={(item) => this.changeTruck(item)}
+        />
+        <TruckNoModal
+          visible={this.state.chassisNoVisible}
+          onClose={() => this.setState({ chassisNoVisible: false })}
+          _onSave={(item) => this.changeChassisNo(item)}
         />
       </View>
     )

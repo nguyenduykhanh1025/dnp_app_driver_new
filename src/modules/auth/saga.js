@@ -56,14 +56,14 @@ function* doLoginSuccess(result, account) {
                 switch (result.role_id) {
                     case '6':
                         yield call(NavigationService.navigate, supplierStack.supplier);
-                        yield put({
-                            type: types.LOGIN_SUCCESS,
-                            msg: 'Đăng nhập thành công !',
-                            type_msg: 'success',
-                            userId: result.role_id,
-                            name: result.name,
-                            isLoading: false,
-                        });
+                        // yield put({
+                        //     type: types.LOGIN_SUCCESS,
+                        //     msg: 'Đăng nhập thành công !',
+                        //     type_msg: 'success',
+                        //     userId: result.role_id,
+                        //     name: result.name,
+                        //     isLoading: false,
+                        // });
                         break;
                     default:
                         yield put({

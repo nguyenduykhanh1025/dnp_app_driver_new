@@ -242,7 +242,7 @@ class DetailScreen extends Component {
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text style={[styles.TitleLine, { flex: 1 }]}>{
                 this.props.navigation.state.params.serviceType % 2 == 0 ?
-                  'Hạ công từ cảng'
+                  'Hạ công vào cảng'
                   :
                   'Bốc container từ cảng'
               }</Text>
@@ -278,7 +278,7 @@ class DetailScreen extends Component {
                     <TouchableOpacity style={{ width: ws(30), justifyContent: 'center', alignItems: 'center' }} onPress={() => this.closeFilter()}>
                       <Icon name='remove' size={fs(25)} color='gray' />
                     </TouchableOpacity>
-                    <Text style={{ flex: 1, color: Colors.blue, textAlign: 'center', fontSize: fs(16), }}> Chọn Loại Container</Text>
+                    <Text style={{ flex: 1, color: Colors.blue, textAlign: 'center', fontSize: fs(16), }}> Tìm kiếm Container</Text>
                   </View>
                   <View style={{ padding: hs(25) }}>
 
@@ -286,7 +286,7 @@ class DetailScreen extends Component {
                       <Text style={styles.textTilteFilter}>Số container </Text>
                       <TextInput
                         style={styles.txtInputFilter}
-                        placeholder='Nhập số container cần tìm...'
+                        placeholder='Số container'
                         onChangeText={(text) => this.setState({ container_no: text })}
                       />
                     </View>
@@ -294,14 +294,14 @@ class DetailScreen extends Component {
                       <Text style={styles.textTilteFilter}>Chủ hàng </Text>
                       <TextInput
                         style={styles.txtInputFilter}
-                        placeholder="Nhập tên chủ hàng cần tìm..."
+                        placeholder="Chủ hàng"
                         onChangeText={(text) => this.setState({ consignee_name: text })}
                       />
                     </View>
                   </View>
                   <View style={{ position: 'absolute', bottom: hs(10) }}>
                     <Button
-                      value={'Xác nhận'}
+                      value={'Tìm kiếm'}
                       onPress={() => { this.componentDidMount() }}
                     />
                   </View>

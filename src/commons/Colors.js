@@ -13,6 +13,7 @@ export default {
   grey8: '#1e1e1e',
   grey9: '#2C2C2C',
   black: '#121212',
+  bgModal: 'rgba(0, 0, 0, 0.5)',
 
   maincolor: '#1B5198',
   subColor: '#F3B03F',
