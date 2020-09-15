@@ -650,6 +650,21 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         } else {
             processOrder.setPayType("Cash");
         }
+        if (processOrder.getServiceType() == EportConstants.SERVICE_DROP_EMPTY
+				&& EportConstants.DROP_EMPTY_TO_DEPORT.equals(shipment.getSendContEmptyType())) {
+            // Them remark han lenh khi ha vo
+			String remark = "";
+			if (StringUtils.isNotEmpty(detail.getEmptyDepotLocation())) {
+				remark += "Ha vo " + detail.getEmptyDepotLocation();
+			}
+			if (detail.getDetFreeTime() != null) {
+				if (StringUtils.isNotEmpty(remark)) {
+					remark += ", ";
+				}
+				remark += ", Mien luu " + detail.getDetFreeTime();
+			}
+			processOrder.setRemark(remark);
+		}
         processOrderService.insertProcessOrder(processOrder);
         
         String payer = taxCode;
@@ -671,12 +686,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 shipmentDetail.setPayType("Cash");
             }
             shipmentDetail.setOpeCode(shipment.getOpeCode());
+            shipmentDetail.setRemark(processOrder.getRemark());
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
-			if (processOrder.getServiceType() == EportConstants.SERVICE_DROP_EMPTY
-					&& EportConstants.DROP_EMPTY_TO_DEPORT.equals(shipment.getSendContEmptyType())) {
-	            // TODO Them remark han lenh khi ha vo
-				shipmentDetail.setRemark("Ha vo " + shipmentDetail.getEmptyDepotLocation());
-			}
         }
         return processOrder;
     }

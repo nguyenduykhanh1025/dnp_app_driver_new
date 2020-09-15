@@ -478,7 +478,6 @@ function changeVessel() {
 }
 
 function otp(vslNm, voyNo, vslName, voyCarrier) {
-  console.log("OK");
   $.modal.openCustomForm("Xác Thực OTP", prefix + "/otp/shipment-detail-ids/" + shipmentDetailIds + "/vslNm/" + vslNm + "/" + voyNo + "/" + vslName + "/" + voyCarrier, 600, 350);
 }
 

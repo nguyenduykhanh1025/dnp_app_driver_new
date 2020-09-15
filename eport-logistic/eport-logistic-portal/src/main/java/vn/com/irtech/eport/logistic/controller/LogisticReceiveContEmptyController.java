@@ -187,14 +187,15 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	}
 
 	// FORM TO VERIFY OTP
-	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}/{taxCode}")
-	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, 
+	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}/{taxCode}/{shipmentId}")
+	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("shipmentId") Long shipmentId,
 			@PathVariable("creditFlag") boolean creditFlag, @PathVariable("taxCode") String taxCode, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getUser().getMobile());
 		mmap.put("shipmentId", "-");
 		mmap.put("creditFlag", creditFlag);
 		mmap.put("taxCode", taxCode);
+		mmap.put("shipmentId", shipmentId);
 		return PREFIX + "/verifyOtp";
 	}
 
