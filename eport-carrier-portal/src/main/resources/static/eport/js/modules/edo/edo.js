@@ -4,7 +4,7 @@ var edo = new Object();
 var coutCheck = 0;
 $(function () {
   $("#updateEdo").attr("disabled", true);
-
+  $("#delEdo").attr("disabled", true);
   $("#btn-collapse").click(function () {
     handleCollapse(true);
   });
@@ -300,6 +300,61 @@ function multiUpdateEdo() {
   $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 500, 370);
 }
 
+function delEdo() {
+  let ids = [];
+  let rows = $('#dgContainer').datagrid('getSelections');
+  if (rows.length === 0) {
+    $.modal.alertWarning("Quý khách chưa chọn container để update <br>, vui lòng kiểm tra lại !");
+    return;
+  }
+  for (let i = 0; i < rows.length; i++) {
+    let row = rows[i];
+    if (row.status == '3') {
+      $.modal.alertError("Quý khách đã chọn container đã GATE-IN ra khỏi cảng, vui lòng kiểm tra lại dữ liệu!");
+      return;
+    }
+    ids.push(row.id);
+  }
+  ids = ids.toString();
+  $.modal.confirm(
+    "Bạn có chắc bạn muốn xóa<br>những container này? ",
+    function () {
+      $.ajax({
+        url: PREFIX + "/delContainer",
+        method: "post",
+        dataType: "text",
+        data: {
+          ids: ids,
+        },
+        beforeSend: function () {
+          $.modal.loading("Đang xử lý dữ liệu...");
+        },
+        success: function (data) {
+          data = JSON.parse(data);
+          if(data.code == 0)
+          {
+            $.modal.msgSuccess(data.msg);
+            getSelectedRow();
+            $.modal.closeLoading();
+          }
+          else {
+            $.modal.msgError(data.msg);
+            $.modal.closeLoading();
+          }
+        },
+        error: function (data) {
+          $.modal.alertError(
+            "Có lỗi trong quá xử lý dữ liệu, vui lòng liên hệ admin."
+          )
+        },
+      })
+    }, {
+      title: "Xác nhận cập nhật DO",
+      btn: ["Đồng Ý", "Hủy Bỏ"]
+    }
+  )
+}
+
 
 
 // SEARCH INFO VESSEL AREA
@@ -414,20 +469,24 @@ $('#dgContainer').datagrid({
   onCheck: function(){
     coutCheck += 1;
     $("#updateEdo").attr("disabled", false);
+    $("#delEdo").attr("disabled", false);
   },
   onCheckAll: function(index){
     coutCheck = index.length;
     $("#updateEdo").attr("disabled", false);
+    $("#delEdo").attr("disabled", false);
   },
   onUncheck: function(){
     coutCheck = coutCheck - 1;
     if(coutCheck == 0)
     {
       $("#updateEdo").attr("disabled", true);
+      $("#delEdo").attr("disabled", true);
     }
   },
   onUncheckAll: function(){
     coutCheck = 0;
     $("#updateEdo").attr("disabled", true);
+    $("#delEdo").attr("disabled", true);
   },
 })
