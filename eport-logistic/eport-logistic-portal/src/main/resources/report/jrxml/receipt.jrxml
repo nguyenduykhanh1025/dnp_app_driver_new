@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="receipt" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ac56fd89-896d-45e1-a703-5f0975f66a75">
 	<property name="ireport.zoom" value="1.7715610000000013"/>
 	<property name="ireport.x" value="11"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="240"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -190,8 +190,8 @@
 								<bottomPen lineWidth="1.0"/>
 								<rightPen lineWidth="1.0"/>
 							</box>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="53" height="20" uuid="ea808415-f0a0-421c-9fde-d7a8892b6285"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="53" height="20" uuid="ea808415-f0a0-421c-9fde-d7a8892b6285"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans"/>
 									<paragraph leftIndent="3"/>
@@ -226,8 +226,8 @@
 								<bottomPen lineWidth="1.0"/>
 								<rightPen lineWidth="1.0"/>
 							</box>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="90" height="20" uuid="71f33407-060a-4935-9691-6d6097cf49b4"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="20" uuid="71f33407-060a-4935-9691-6d6097cf49b4"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans"/>
 									<paragraph leftIndent="3"/>
@@ -262,8 +262,8 @@
 								<bottomPen lineWidth="1.0"/>
 								<rightPen lineWidth="1.0"/>
 							</box>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="90" height="20" uuid="717c95b7-cd04-416b-9dcf-2f277690e13b"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="20" uuid="717c95b7-cd04-416b-9dcf-2f277690e13b"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans"/>
 									<paragraph leftIndent="3"/>
@@ -299,8 +299,8 @@
 								<bottomPen lineWidth="1.0"/>
 								<rightPen lineWidth="1.0"/>
 							</box>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="141" height="20" uuid="3b656499-ea9f-47f9-834b-f1460b1a0ca4"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="141" height="20" uuid="3b656499-ea9f-47f9-834b-f1460b1a0ca4"/>
 								<textElement verticalAlignment="Middle">
 									<paragraph leftIndent="3"/>
 								</textElement>
@@ -349,8 +349,8 @@
 								<bottomPen lineWidth="1.0"/>
 								<rightPen lineWidth="1.0"/>
 							</box>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="90" height="20" uuid="87fb0296-3e1e-494d-80a1-13efd8107d9a"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="20" uuid="87fb0296-3e1e-494d-80a1-13efd8107d9a"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans"/>
 									<paragraph leftIndent="3"/>
@@ -384,8 +384,10 @@
 								<bottomPen lineWidth="1.0"/>
 								<rightPen lineWidth="1.0"/>
 							</box>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="90" height="30" uuid="e5c54cc4-2f1d-4cb6-a803-dfaa761ecde0"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="30" uuid="e5c54cc4-2f1d-4cb6-a803-dfaa761ecde0">
+									<printWhenExpression><![CDATA[new Boolean($V{total} != null)]]></printWhenExpression>
+								</reportElement>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans"/>
 									<paragraph leftIndent="3"/>
@@ -401,8 +403,8 @@
 								<bottomPen lineWidth="1.0"/>
 								<rightPen lineWidth="1.0"/>
 							</box>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="90" height="20" uuid="b15b48ab-17a6-4fc5-ba74-d0003745d5e9"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="20" uuid="b15b48ab-17a6-4fc5-ba74-d0003745d5e9"/>
 								<textElement verticalAlignment="Middle">
 									<font fontName="DejaVu Sans"/>
 									<paragraph leftIndent="3"/>

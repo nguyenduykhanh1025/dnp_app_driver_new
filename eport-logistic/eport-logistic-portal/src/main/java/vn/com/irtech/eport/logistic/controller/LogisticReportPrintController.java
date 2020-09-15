@@ -164,7 +164,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 				        parameters.put("serviceType", "Truck Empty Pickup");
 			        }
 			        if(shipment.getServiceType().intValue() == 4) {
-				        parameters.put("serviceType", "Truck Full Drop");
+				        parameters.put("serviceType", "Truck Drop Full");
 			        }
 					final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
 					jpList.add(new SimpleExporterInputItem(print));
