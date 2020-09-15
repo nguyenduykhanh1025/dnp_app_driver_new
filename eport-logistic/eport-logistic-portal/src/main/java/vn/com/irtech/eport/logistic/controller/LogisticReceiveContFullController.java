@@ -155,7 +155,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return PREFIX + "/checkContListBeforeVerify";
 	}
 
-	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}/{taxCode}/{isSendContEmpty}/{shipmentId}}")
+	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}/{taxCode}/{isSendContEmpty}/{shipmentId}")
 	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("shipmentId") Long shipmentId,
 			@PathVariable("creditFlag") boolean creditFlag, @PathVariable("isSendContEmpty") boolean isSendContEmpty, 
 			@PathVariable("taxCode") String taxCode, ModelMap mmap) {

@@ -238,7 +238,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="gatePass != null and gatePass">gate_pass = #{gatePass},</if>
 			<if test="jobOrderNo != null and jobOrderNo != ''">job_order_no = #{jobOrderNo},</if>
 			<if test="jobOrderFlg != null">job_order_flg = #{jobOrderFlg},</if>
-			<if test="loadableWgt != null">loadableWgt = #{loadableWgt},</if>
+			<if test="loadableWgt != null">loadable_wgt = #{loadableWgt},</if>
 			<if test="sztp != null and sztp != ''">sztp = #{sztp},</if>
 			<if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
