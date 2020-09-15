@@ -257,6 +257,14 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 						shipmentDetail.setProcessOrderId(reqProcessOrder.getId());
 						// Get list of shipment details for current processOrder
 						List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+						
+						// Check if order is send empty set remark for container for empty depot location or det free time
+						if (EportConstants.SERVICE_DROP_EMPTY == reqProcessOrder.getServiceType()) {
+							for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
+								shipmentDetail2.setRemark(reqProcessOrder.getRemark());
+							}
+						}
+						
 						ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(reqProcessOrder, shipmentDetails);
 
 						// update status of robot to BUZY

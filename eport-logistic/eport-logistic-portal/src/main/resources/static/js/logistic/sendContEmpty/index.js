@@ -464,11 +464,12 @@ function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) 
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
-function emptyExpiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'emptyExpiredDem' + row).addClass("htMiddle").addClass("htCenter");
+function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'detFreeTime' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
-        if (value.substring(2, 3) != "/") {
-            value = value.substring(8, 10)+"/"+value.substring(5, 7)+"/"+value.substring(0,4);
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
     if (!value) {
@@ -497,11 +498,13 @@ function etaRenderer(instance, td, row, col, prop, value, cellProperties) {
         if (value.substring(2, 3) != "/") {
             value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
         }
+        $(td).css("background-color", "#C6EFCE");
+        $(td).css("color", "#006100");
     } else {
         value = '';
+        $(td).css("background-color", "rgb(232, 232, 232)");
     }
     cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
@@ -527,10 +530,13 @@ function emptyDepotLocationRenderer(instance, td, row, col, prop, value, cellPro
     $(td).attr('id', 'emptyDepotLocation' + row).addClass("htMiddle");
     if (!value) {
         value = '';
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    } else {
+        $(td).css("background-color", "#C6EFCE");
+        $(td).css("color", "#006100");
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
 
@@ -538,10 +544,13 @@ function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'payType' + row).addClass("htMiddle").addClass("htCenter");
     if (!value) {
         value = '';
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    } else {
+        $(td).css("background-color", "#C6EFCE");
+        $(td).css("color", "#006100");
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
 
@@ -549,10 +558,13 @@ function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'payer' + row).addClass("htMiddle");
     if (!value) {
         value = '';
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    } else {
+        $(td).css("background-color", "#C6EFCE");
+        $(td).css("color", "#006100");
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
 
@@ -560,10 +572,13 @@ function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) 
     $(td).attr('id', 'payerNamer' + row).addClass("htMiddle");
     if (!value) {
         value = '';
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    } else {
+        $(td).css("background-color", "#C6EFCE");
+        $(td).css("color", "#006100");
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
 
@@ -610,7 +625,7 @@ function configHandson() {
                     case 4:
                         return '<span class="required">Chủ Hàng</span>';
                     case 5:
-                        return checkEmptyExpiredDem?'<span class="required">Hạn Trả Vỏ</span>':'Hạn Trả Vỏ';
+                        return checkEmptyExpiredDem?'<span class="required">Ngày Miễn <br>Lưu Bãi</span>':'Ngày Miễn <br>Lưu Bãi';
                     case 6:
                         return '<span class="required">Bãi Hạ Vỏ</span>';
                     case 7:
@@ -657,12 +672,8 @@ function configHandson() {
                     renderer: consigneeRenderer
                 },
                 {
-                    data: "emptyExpiredDem",
-                    type: "date",
-                    dateFormat: "DD/MM/YYYY",
-                    correctFormat: true,
-                    defaultDate: new Date(),
-                    renderer: emptyExpiredDemRenderer
+                    data: "detFreeTime",
+                    renderer: detFreeTimeRenderer
                 },
                 {
                     data: "emptyDepotLocation",
@@ -754,7 +765,7 @@ function configHandson() {
                     case 6:
                         return 'Ngày tàu đến';
                     case 7:
-                        return checkEmptyExpiredDem?'<span class="required">Hạn Trả Vỏ</span>':'Hạn Trả Vỏ';
+                        return checkEmptyExpiredDem?'<span class="required">Ngày Miễn <br>Lưu Bãi/span>':'Ngày Miễn <br>Lưu Bãi';
                     case 8:
                         return '<span class="required">Bãi Hạ Vỏ</span>';
                     case 9:
@@ -812,12 +823,8 @@ function configHandson() {
                     renderer: etaRenderer
                 },
                 {
-                    data: "emptyExpiredDem",
-                    type: "date",
-                    dateFormat: "DD/MM/YYYY",
-                    correctFormat: true,
-                    defaultDate: new Date(),
-                    renderer: emptyExpiredDemRenderer
+                    data: "detFreeTime",
+                    renderer: detFreeTimeRenderer
                 },
                 {
                     data: "emptyDepotLocation",
@@ -1206,8 +1213,8 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn tàu chuyến!");
                 errorFlg = true;
                 return false;
-            } else if (!object["emptyExpiredDem"] && checkEmptyExpiredDem) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn trả vỏ!");
+            } else if (!object["detFreeTime"] && checkEmptyExpiredDem) {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số ngày miễn lưu bãi!");
                 errorFlg = true;
                 return false;
             } else if (!object["sztp"]) {
@@ -1225,18 +1232,7 @@ function getDataFromTable(isValidate) {
             }
         }
         vslNm = object["vslNm"];
-        let emptyExpiredDem;
-        if (object["emptyExpiredDem"]) {
-            emptyExpiredDem = new Date(object["emptyExpiredDem"].substring(6, 10) + "/" + object["emptyExpiredDem"].substring(3, 5) + "/" + object["emptyExpiredDem"].substring(0, 2));
-            let now = new Date();
-            now.setHours(0, 0, 0);
-            emptyExpiredDem.setHours(23, 59, 59);
-            if (emptyExpiredDem.getTime() < now.getTime() && isValidate) {
-                errorFlg = true;
-                $.modal.alertError("Hàng " + (index + 1) + ": Hạn trả vỏ không được trong quá khứ!")
-            }
-            shipmentDetail.emptyExpiredDem = emptyExpiredDem.getTime();
-        }
+        shipmentDetail.detFreeTime = object["detFreeTime"]
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
         if (object["status"] == 1 || object["status"] == null) {
@@ -1376,7 +1372,7 @@ function verify() {
 function verifyOtp(shipmentDtIds, taxCode, creditFlag) {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag + "/" + taxCode, 600, 350);
+        $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag + "/" + taxCode + "/" + shipmentSelected.id, 600, 350);
     }
 }
 
