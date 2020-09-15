@@ -4,45 +4,44 @@ var bill;
 var processOrder = new Object();
 processOrder.serviceType = 1;
 var shipmentDetails = new Object();
-var currentLeftWidth = $(".table-left").width();
-var currentRightWidth = $(".table-right").width();
 var dogrid = document.getElementById("container-grid"), hot;
 var rowAmount = 0;
 var processOrderSelected;
 var sourceData;
 
 $(document).ready(function () {
+  loadTable(processOrder);
   $(".main-body").layout();
 
   $(".collapse").click(function () {
-    $(".main-body__search-wrapper").height(15);
-    $(".main-body__search-wrapper--container").hide();
-    $(this).hide();
-    $(".uncollapse").show();
-  });
+      $(".main-body__search-wrapper").height(15);
+      $(".main-body__search-wrapper--container").hide();
+      $(this).hide();
+      $(".uncollapse").show();
+  })
 
   $(".uncollapse").click(function () {
-    $(".main-body__search-wrapper").height(SEARCH_HEIGHT + 20);
-    $(".main-body__search-wrapper--container").show();
-    $(this).hide();
-    $(".collapse").show();
-  });
+      $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
+      $(".main-body__search-wrapper--container").show();
+      $(this).hide();
+      $(".collapse").show();
+  })
 
   $(".left-side__collapse").click(function () {
-    $('#main-layout').layout('collapse', 'west');
-  });
-  loadTable(processOrder);
+      $('#main-layout').layout('collapse', 'west');
+  })
+ 
   $('#checkCustomStatusByProcessOrderId').attr("disabled", true);
   $('#checkProcessStatusByProcessOrderId').attr("disabled", true);
 
-  $("#bookingNo").textbox('textbox').bind('keydown', function(e) {
+  $("#blNo").textbox('textbox').bind('keydown', function(e) {
     // enter key
     if (e.keyCode == 13) {
-      bookingNo = $("#bookingNo").textbox('getText').toUpperCase();
-      if (bookingNo == "") {
+      blNo = $("#blNo").textbox('getText').toUpperCase();
+      if (blNo == "") {
         loadTable(processOrder);
       }
-      processOrder.bookingNo = bookingNo;
+      processOrder.blNo = blNo;
       loadTable(processOrder);
     }
     });
@@ -50,20 +49,26 @@ $(document).ready(function () {
 
 function handleCollapse(status) {
   if (status) {
-    $(".left").css("width", "0.5%");
-    $(".left").children().hide();
-    $("#btn-collapse").hide();
-    $("#btn-uncollapse").show();
-    $(".right").css("width", "99%");
-    return;
+      $(".left-side").css("width", "0.5%");
+      $(".left-side").children().hide();
+      $("#btn-collapse").hide();
+      $("#btn-uncollapse").show();
+      $(".right-side").css("width", "99%");
+      setTimeout(function () {
+          hot.render();
+      }, 500);
+      return;
   }
-  $(".left").css("width", "25%");
-  $(".left").children().show();
+  $(".left-side").css("width", "33%");
+  $(".left-side").children().show();
   $("#btn-collapse").show();
   $("#btn-uncollapse").hide();
-  $(".right").css("width", "74%");
-  return;
+  $(".right-side").css("width", "67%");
+  setTimeout(function () {
+      hot.render();
+  }, 500);
 }
+
 
 function loadTable(processOrder) {
   $("#dg").datagrid({
@@ -434,4 +439,8 @@ function search() {
   processOrder.blNo = $("#blNo").textbox('getText').toUpperCase();
   processOrder.logisticGroupId = $('#logistic').combobox('getValue') == '0' ? '' : $('#logistic').combobox('getValue') ;
   loadTable(processOrder);
+}
+
+function handleRefresh() {
+  loadTable();
 }

@@ -657,7 +657,21 @@ var table = {
         	    	layer.close(index);
         	        callBack(true);
         	    });
-            },
+			},
+			confirm2: function (content, callBack) {
+				layer.confirm(
+				  content,
+				  {
+					icon: 3,
+					title: "Xác Nhận",
+					btn: ["Đồng Ý", "Hủy Bỏ"],
+				  },
+				  function (index) {
+					layer.close(index);
+					callBack(true);
+				  }
+				);
+			  },
             open: function (title, url, width, height, callback) {
             	if ($.common.isMobile()) {
             	    width = 'auto';

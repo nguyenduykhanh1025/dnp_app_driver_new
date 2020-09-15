@@ -123,6 +123,43 @@ public class CarrierEdoController extends CarrierBaseController {
 		return PREFIX + "/multiUpdate";
 	}
 
+	@PostMapping("/delContainer")
+	@ResponseBody
+	@Transactional
+	@Log(title = "Xóa container", businessType = BusinessType.DELETE, operatorType = OperatorType.SHIPPINGLINE)
+	public AjaxResult delContainer(String ids) {
+		Edo edo = new Edo();
+		if (ids == null) {
+			ids = edo.getId().toString();
+		}
+		try {
+			String[] idsList = ids.split(",");
+			edo.setCarrierCode(super.getUserGroup().getGroupCode());
+			edo.setCarrierId(super.getUser().getGroupId());
+			for (String id : idsList) {
+				Edo edoCheck = new Edo();
+				edoCheck.setId(Long.parseLong(id));
+				Map<String, Object> groupCodes = new HashMap<>();
+				groupCodes.put("groupCode", super.getGroupCodes());
+				edoCheck.setParams(groupCodes);
+				if (edoService.selectFirstEdo(edoCheck) == null) {
+					return AjaxResult.error(
+							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
+				} else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("3")) {
+					return AjaxResult.error(
+							"Bạn đã chọn container đã GATE-IN ra khỏi <br> cảng, vui lòng kiểm tra lại dữ liệu!");
+				}
+			}
+			for (String id : idsList) {
+				edoService.deleteEdoById(Long.parseLong(id));
+			}
+			return AjaxResult.success("Xóa eDO thành công");
+		} catch (Exception e) {
+			return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
+		}
+	
+	}
+
 	@PostMapping("/update")
 	@ResponseBody
 	@Log(title = "Cập Nhật eDO", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
