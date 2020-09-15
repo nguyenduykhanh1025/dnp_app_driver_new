@@ -1130,6 +1130,7 @@ function reloadShipmentDetail() {
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
     $("#exportReceiptBtn").prop("disabled", true);
+    $("#exportPackingListBtn").prop("disabled", true);
     setLayoutRegisterStatus();
     loadShipmentDetail(shipmentSelected.id);
 }
@@ -1449,6 +1450,7 @@ function setLayoutRegisterStatus() {
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
     $("#exportReceiptBtn").prop("disabled", true);
+    $("#exportPackingListBtn").prop("disabled", true);
 }
 
 function setLayoutVerifyUserStatus() {
@@ -1462,6 +1464,7 @@ function setLayoutVerifyUserStatus() {
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
     $("#exportReceiptBtn").prop("disabled", true);
+    $("#exportPackingListBtn").prop("disabled", false);
 }
 
 function setLayoutPaymentStatus() {
@@ -1476,6 +1479,7 @@ function setLayoutPaymentStatus() {
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
     $("#exportReceiptBtn").prop("disabled", true);
+    $("#exportPackingListBtn").prop("disabled", false);
 }
 
 function setLayoutCustomStatus() {
@@ -1490,6 +1494,7 @@ function setLayoutCustomStatus() {
     $("#customBtn").prop("disabled", false);
     $("#exportBillBtn").prop("disabled", false);
     $("#exportReceiptBtn").prop("disabled", false);
+    $("#exportPackingListBtn").prop("disabled", false);
 }
 
 function setLayoutFinishStatus() {
@@ -1504,6 +1509,7 @@ function setLayoutFinishStatus() {
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", false);
     $("#exportReceiptBtn").prop("disabled", false);
+    $("#exportPackingListBtn").prop("disabled", false);
 }
 
 function finishForm(result) {
@@ -1628,6 +1634,14 @@ function exportReceipt(){
 		return
 	}
     $.modal.openTab("In Biên Nhận", ctx +"logistic/print/receipt/shipment/"+shipmentSelected.id);
+}
+
+function exportPackingList(){
+	if(!shipmentSelected){
+		$.modal.alertError("Bạn chưa chọn Lô!");
+		return
+	}
+    $.modal.openTab("In Packing List", ctx +"logistic/print/shipment/"+shipmentSelected.id + "/packing-list");
 }
 
 function openDetail(id, containerNo, sztp) {
