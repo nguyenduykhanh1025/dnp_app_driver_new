@@ -1,5 +1,4 @@
 const PREFIX = ctx + "container/supplier";
-var dogrid = document.getElementById("container-grid"), hot;
 var rowAmount = 0;
 var allChecked = false;
 var checkList = [];
