@@ -86,6 +86,15 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		mmap.put("houseBillNo", houseBillNo);
 		return prefix + "/houseBill";
 	}
+	
+	/**
+	 * Print Packing List
+	 */
+	@GetMapping("/shipment/{id}/packing-list")
+	public String packingList(@PathVariable("id") Long id, ModelMap mmap) {
+		mmap.put("shipmentId", id);
+		return prefix + "/packingList";
+	}
 	@GetMapping("/processOrder/{shipmentId}")
 	public void jasperReport(@PathVariable("shipmentId") Long shipmentId, HttpServletResponse response) {
 		// First check permission for this shipmentId
