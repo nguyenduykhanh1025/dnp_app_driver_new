@@ -300,8 +300,14 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			ShipmentDetail shipmentDt = shipmentDetails.get(0);
 			Shipment shipmentSendCont = new Shipment();
 			boolean isCreated = true;
-			Shipment shipment = new Shipment();
-			shipment.setId(shipmentDetails.get(0).getShipmentId());
+			Long shipmentId = shipmentDetails.get(0).getShipmentId();
+			if (shipmentId == null) {
+				return error("Không tìm thấy lô cần thêm chi tiết.");
+			}
+			Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+			if (!shipment.getLogisticGroupId().equals(getUser().getGroupId())) {
+				return error("Mã lô quý khách muốn lưu thông tin chi  tiết <br>không hợp lệ.");
+			}
 			boolean updateShipment = true;
 			boolean isSendEmpty = shipmentDt.getVgmChk();
 			if (dnPortName.equals(shipmentDt.getEmptyDepot()) && isSendEmpty) {
@@ -311,9 +317,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				if (shipments == null || shipments.size() == 0) {
 					shipmentSendCont.setContainerAmount(Long.valueOf(shipmentDt.getTier()));
 					shipmentSendCont.setLogisticAccountId(user.getId());
+					shipmentSendCont.setOpeCode(shipment.getOpeCode());
 					shipmentSendCont.setLogisticGroupId(user.getGroupId());
 					shipmentSendCont.setCreateTime(new Date());
-					shipmentSendCont.setStatus("1");
+					shipmentSendCont.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
 					shipmentService.insertShipment(shipmentSendCont);
 					isCreated = false;
 				}
@@ -355,6 +362,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						shipmentDetail.setDischargePort("VNDAD");
 						shipmentDetail.setVslNm("EMTY");
 						shipmentDetail.setVoyNo("0000");
+						shipmentDetail.setOpeCode(shipment.getOpeCode());
 						shipmentDetail.setEmptyDepotLocation(getEmptyDepotLocation(shipmentDetail.getSztp(), shipmentDetail.getOpeCode()));
 						shipmentDetail.setStatus(1);
 						shipmentDetailService.insertShipmentDetail(shipmentDetail);
@@ -365,16 +373,17 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentDetail.setUpdateBy(user.getFullName());
 					shipmentDetail.setTaxCode(taxCode);
 					shipmentDetail.setConsigneeByTaxCode(shipmentDetail.getConsignee());
+					
 					shipmentDetail.setUpdateTime(new Date());
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
 				}
 			}
-			if (updateShipment) {
+			if (updateShipment && shipment != null && shipment.getId() != null) {
 				shipment.setUpdateTime(new Date());
 				shipment.setUpdateBy(getUser().getFullName());
-				shipment.setStatus("2");
+				shipment.setStatus(EportConstants.SHIPMENT_STATUS_SAVE);
 				shipmentService.updateShipment(shipment);
 			}
 			return success("Lưu khai báo thành công");
