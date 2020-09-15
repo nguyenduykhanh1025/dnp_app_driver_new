@@ -434,6 +434,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				for (ShipmentDetail shipmentDetail : shipmentDetails) {
 					// Save declareNoList to shipment detail
 					shipmentDetail.setCustomsNo(declareNoList);
+					shipmentDetail.setCustomScanTime(new Date());
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					// Neu bat buoc check to khai thi phai goi lai acciss
 					if (!customsNoMappingFlg && catosApiService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
