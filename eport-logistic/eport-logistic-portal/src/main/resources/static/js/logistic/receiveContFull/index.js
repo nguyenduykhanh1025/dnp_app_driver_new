@@ -1434,7 +1434,7 @@ function verify() {
 function verifyOtp(shipmentDtIds, taxCode, creditFlag, isSendContEmpty) {
   getDataSelectedFromTable(true, false);
   if (shipmentDetails.length > 0) {
-    $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag + "/" + taxCode + "/" + isSendContEmpty, 600, 350);
+    $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag + "/" + taxCode + "/" + isSendContEmpty + "/" + shipmentSelected.id, 600, 350);
   }
 }
 

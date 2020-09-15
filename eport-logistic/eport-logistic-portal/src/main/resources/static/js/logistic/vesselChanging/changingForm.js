@@ -49,7 +49,8 @@ function confirm() {
     } else {
         let vslNm, voyNo, vslName, voyCarrier;
         $.each(berthplanList, function(index, value) {
-            if ($("#vesselList").val() == value.vslAndVoy) {
+            if ($('#vesselList option:selected').text() == value.vslAndVoy) {
+                console.log(value);
                 vslNm = value.vslNm;
                 voyNo = value.voyNo;
                 vslName = value.vslAndVoy.split(" - ")[1];
@@ -57,8 +58,8 @@ function confirm() {
                 return false;
             }
         });
+        parent.otp(vslNm, voyNo, vslName, voyCarrier);
         $.modal.close();
-        parent.otp(vslNm + "," + voyNo + "," +vslName + "," + voyCarrier);
     }
 }
 

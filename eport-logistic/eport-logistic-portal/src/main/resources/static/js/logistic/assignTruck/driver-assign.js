@@ -597,8 +597,16 @@ function saveCont(shipmentId){
 function formatAction(value, row, index) {
 	let actions = [];
     actions.push('<a class="btn btn-danger btn-xs " onclick="removeDriver(\'' + index + '\')"><i class="fa fa-remove"></i>Xoá</a> ');
+    actions.push('<a class="btn btn-primary btn-xs " onclick="assignTruck(\'' + row.id + '\')"><i class="fa fa-eye"></i>Xem</a>');
     return actions.join('');
 }
+function assignTruck(id){
+	$.modal.open("Chỉ định xe", ctx + "logistic/transport/edit/driver/"+id, 800,450);
+}
+function finishAssignTruck(msg) {
+    $.modal.msgSuccess(msg);
+}
+
 function formatActionContainer(value, row, index) {
 	let actions = [];
     actions.push('<a class="btn btn-danger btn-xs " onclick="removeDriverContainer(\'' + index + '\')"><i class="fa fa-remove"></i>Xoá</a> ');

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -121,7 +122,7 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 		mmap.put("voyNo", voyNo);
 		mmap.put("vslName", vslName);
 		mmap.put("voyCarrier", voyCarrier);
-		mmap.put("numberPhone", getGroup().getMobilePhone());
+		mmap.put("numberPhone", getUser().getMobile());
 		return PREFIX + "/otp";
 	}
 	
@@ -140,10 +141,10 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
-		shipment.setServiceType(4);
+		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
 		shipment.setStatus("3");
 		shipment.setLogisticGroupId(user.getGroupId());
-		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
+		List<Shipment> shipments = shipmentService.selectShipmentListForExtensionDate(shipment);
 		return getDataTable(shipments);
 	}
 

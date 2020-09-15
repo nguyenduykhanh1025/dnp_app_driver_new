@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="packinglist" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4f12348a-6dd7-40b6-89eb-7a9e9a8ce4c0">
 	<property name="ireport.zoom" value="1.7715610000000013"/>
 	<property name="ireport.x" value="31"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="192"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -31,6 +31,10 @@
 		<field name="cargoType" class="java.lang.String"/>
 		<field name="wgt" class="java.lang.Integer"/>
 		<field name="remark" class="java.lang.String"/>
+		<variable name="stt" class="java.lang.Integer">
+			<variableExpression><![CDATA[$V{stt} + 1]]></variableExpression>
+			<initialValueExpression><![CDATA[0]]></initialValueExpression>
+		</variable>
 	</subDataset>
 	<parameter name="bookingNo" class="java.lang.String"/>
 	<parameter name="consignee" class="java.lang.String"/>
@@ -246,12 +250,12 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="20" rowSpan="1">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="30" height="20" uuid="98522525-1eee-4994-af74-23a117d3736d"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="30" height="20" uuid="98522525-1eee-4994-af74-23a117d3736d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="8"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{COLUMN_COUNT}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{stt}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -273,8 +277,8 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="20" rowSpan="1">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="70" height="20" uuid="bfe99d42-68fd-4026-b77b-0bd127403da0"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="20" uuid="bfe99d42-68fd-4026-b77b-0bd127403da0"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="8"/>
 								</textElement>
@@ -300,8 +304,8 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="20" rowSpan="1">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="70" height="20" uuid="cdddf509-7cc8-481f-96b2-9ed0db148a9f"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="20" uuid="cdddf509-7cc8-481f-96b2-9ed0db148a9f"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="8"/>
 								</textElement>
@@ -327,8 +331,8 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="20" rowSpan="1">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="70" height="20" uuid="f22ca589-ea49-4ee4-b40b-3ebaa7943735"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="20" uuid="f22ca589-ea49-4ee4-b40b-3ebaa7943735"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="8"/>
 								</textElement>
@@ -354,8 +358,8 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="20" rowSpan="1">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="70" height="20" uuid="26e7143f-79a9-400c-9e56-3bfc374537ef"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="20" uuid="26e7143f-79a9-400c-9e56-3bfc374537ef"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="8"/>
 								</textElement>
@@ -381,8 +385,8 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="20" rowSpan="1">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="80" height="20" uuid="c3fb0d6d-7fa7-4a4a-9921-45cdee12a8a6"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="80" height="20" uuid="c3fb0d6d-7fa7-4a4a-9921-45cdee12a8a6"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="8"/>
 								</textElement>
@@ -408,8 +412,8 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="20" rowSpan="1">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="60" height="20" uuid="ea93d645-fd0e-4ef3-92e1-a7aaf0339df4"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="20" uuid="ea93d645-fd0e-4ef3-92e1-a7aaf0339df4"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="8"/>
 								</textElement>
@@ -435,8 +439,8 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="table_TD" height="20" rowSpan="1">
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="106" height="20" uuid="a6d9f84b-79d6-40b4-8a43-e849e2c65bc6"/>
+							<textField isBlankWhenNull="true">
+								<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="106" height="20" uuid="a6d9f84b-79d6-40b4-8a43-e849e2c65bc6"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="DejaVu Sans" size="8"/>
 								</textElement>

@@ -6,11 +6,11 @@
                 M.CNTR_NO AS containerNo,
                 M.SZTP2 AS sztp,
                 M.FE AS fe,
-                M.PTNR_CODE ||': ' || (SELECT ENG_SNM FROM DNP_UAT.TB_PTNR WHERE PTNR_CODE = M.PTNR_CODE AND PTNR_TYPE = 'SHP') AS opeCode,
-                (SELECT VSL_NM FROM DNP_UAT.TB_VSL WHERE VSL_CD = M.VSL_CD) AS vslName,
-                M.VSL_CD ||': '|| (SELECT VSL_NM FROM DNP_UAT.TB_VSL V WHERE V.VSL_CD = M.VSL_CD) AS vslNm,
+                M.PTNR_CODE ||': ' || (SELECT ENG_SNM FROM DNP_PROD.TB_PTNR WHERE PTNR_CODE = M.PTNR_CODE AND PTNR_TYPE = 'SHP') AS opeCode,
+                (SELECT VSL_NM FROM DNP_PROD.TB_VSL WHERE VSL_CD = M.VSL_CD) AS vslName,
+                M.VSL_CD ||': '|| (SELECT VSL_NM FROM DNP_PROD.TB_VSL V WHERE V.VSL_CD = M.VSL_CD) AS vslNm,
                 M.CALL_YEAR AS year,
-                (SELECT B.IN_VOY FROM DNP_UAT.TB_BERTHPLAN B WHERE B.VSL_CD = M.VSL_CD AND B.CALL_YEAR = M.CALL_YEAR AND B.CALL_SEQ = M.CALL_SEQ) AS voyCarrier,
+                (SELECT B.IN_VOY FROM DNP_PROD.TB_BERTHPLAN B WHERE B.VSL_CD = M.VSL_CD AND B.CALL_YEAR = M.CALL_YEAR AND B.CALL_SEQ = M.CALL_SEQ) AS voyCarrier,
                 M.BOOKING_NO AS bookingNo,
                 M.BL_NO AS blNo,
                 M.SEAL_NO1 AS sealNo,
@@ -43,7 +43,7 @@
                     WHEN M.CNTR_STATE = 'E' THEN 'Empty Gate Out'
                     ELSE M.CNTR_STATE
                 END AS containerStatus
-            FROM DNP_UAT.TB_INVENTORY M
+            FROM DNP_PROD.TB_INVENTORY M
         WHERE M.BL_NO = #{blNo}
         ORDER BY M.CNTR_NO ASC
     </select>
@@ -53,11 +53,11 @@
                 M.CNTR_NO AS containerNo,
                 M.SZTP2 AS sztp,
                 M.FE AS fe,
-                M.PTNR_CODE ||': ' || (SELECT ENG_SNM FROM DNP_UAT.TB_PTNR WHERE PTNR_CODE = M.PTNR_CODE AND PTNR_TYPE = 'SHP') AS opeCode,
-                (SELECT VSL_NM FROM DNP_UAT.TB_VSL V WHERE V.VSL_CD = M.VSL_CD) AS vslName,
-                M.VSL_CD ||': '|| (SELECT VSL_NM FROM DNP_UAT.TB_VSL V WHERE V.VSL_CD = M.VSL_CD) AS vslNm,
+                M.PTNR_CODE ||': ' || (SELECT ENG_SNM FROM DNP_PROD.TB_PTNR WHERE PTNR_CODE = M.PTNR_CODE AND PTNR_TYPE = 'SHP') AS opeCode,
+                (SELECT VSL_NM FROM DNP_PROD.TB_VSL V WHERE V.VSL_CD = M.VSL_CD) AS vslName,
+                M.VSL_CD ||': '|| (SELECT VSL_NM FROM DNP_PROD.TB_VSL V WHERE V.VSL_CD = M.VSL_CD) AS vslNm,
                 M.CALL_YEAR AS year,
-                (SELECT B.IN_VOY FROM DNP_UAT.TB_BERTHPLAN B WHERE B.VSL_CD = M.VSL_CD AND B.CALL_YEAR = M.CALL_YEAR AND B.CALL_SEQ = M.CALL_SEQ) AS voyCarrier,
+                (SELECT B.IN_VOY FROM DNP_PROD.TB_BERTHPLAN B WHERE B.VSL_CD = M.VSL_CD AND B.CALL_YEAR = M.CALL_YEAR AND B.CALL_SEQ = M.CALL_SEQ) AS voyCarrier,
                 M.BOOKING_NO AS bookingNo,
                 M.BL_NO AS blNo,
                 M.SEAL_NO1 AS sealNo,
@@ -93,7 +93,7 @@
                     WHEN M.CNTR_STATE = 'E' THEN 'Empty Gate Out'
                     ELSE M.CNTR_STATE
                 END AS containerStatus
-            FROM DNP_UAT.TB_INVENTORY M
+            FROM DNP_PROD.TB_INVENTORY M
 		WHERE BL_NO = #{blNo} AND CNTR_NO = #{containerNo}
 				AND OPR_EXPIRE_DATE IS NULL
 				AND JOB_ODR_NO2 IS NULL
@@ -108,7 +108,7 @@
            ROWW AS roww,
            BAY AS bay,
            TIER AS tier
-        FROM DNP_UAT.TB_INVENTORY
+        FROM DNP_PROD.TB_INVENTORY
         WHERE BL_NO = #{blNo}
         ORDER BY CNTR_NO ASC
     </select>
@@ -116,13 +116,13 @@
     <select id="selectVesselCodeList" resultType="String">
         SELECT
                VSL_CD||': '||VSL_NM AS VSL_CD
-       	FROM DNP_UAT.TB_VSL
+       	FROM DNP_PROD.TB_VSL
 	</select>
 	
 	<select id="selectPODList" parameterType="ShipmentDetailEntity"	resultType="String">
 		SELECT 
-   			POD || ': ' ||(SELECT PORT_NM FROM DNP_UAT.TB_PORT WHERE CNTRY_CD = SUBSTR(POD, 1, 2) AND PORT_CD = SUBSTR(POD, 3)) AS POD
-		FROM DNP_UAT.TB_VSL_POD
+   			POD || ': ' ||(SELECT PORT_NM FROM DNP_PROD.TB_PORT WHERE CNTRY_CD = SUBSTR(POD, 1, 2) AND PORT_CD = SUBSTR(POD, 3)) AS POD
+		FROM DNP_PROD.TB_VSL_POD
 		WHERE VSL_CD = #{vslNm} and CALL_SEQ = #{voyNo} and CALL_YEAR = #{year}
 		GROUP BY POD
 	</select>
@@ -130,7 +130,7 @@
 	<select id="selectConsigneeList" resultType="String">
 		SELECT 
 	    	ENG_SNM AS CONSIGNEE
-		FROM DNP_UAT.TB_PTNR 
+		FROM DNP_PROD.TB_PTNR 
 		WHERE PTNR_TYPE = 'CNS'
 		    AND REG_NO IS NOT NULL
 		    AND UNUSED_CHK = 'N'
@@ -139,7 +139,7 @@
 	<select id="selectConsigneeListWithoutTaxCode" resultType="String">
 		SELECT 
 	    	ENG_SNM AS CONSIGNEE
-		FROM DNP_UAT.TB_PTNR 
+		FROM DNP_PROD.TB_PTNR 
 		WHERE PTNR_TYPE = 'CNS'
 		    AND UNUSED_CHK = 'N'
 	</select>
@@ -147,7 +147,7 @@
 	<select id="selectVoyageNoListByVesselCode" parameterType="String" resultType="String">
 		SELECT
 	    	CALL_SEQ AS VOYAGE
-		FROM DNP_UAT.TB_BERTHPLAN
+		FROM DNP_PROD.TB_BERTHPLAN
 		WHERE VSL_CD = #{vesselCode}
 		       AND longterm_eta IS NOT NULL
 		       AND atc IS NULL
@@ -155,7 +155,7 @@
 	<select id="selectOpeCodeList" resultType="String">
 	    SELECT 
         	PTNR_CODE || ': ' || ENG_SNM AS PTNR_CODE
-	    FROM DNP_UAT.TB_PTNR
+	    FROM DNP_PROD.TB_PTNR
 	    WHERE PTNR_TYPE = 'SHP'
 	        AND UNUSED_CHK = 'N'
 	        AND PTNR_CODE NOT IN ('000','OWN')
@@ -165,7 +165,7 @@
 		SELECT
 	    	ENG_SNM as groupName,
 	    	ADDR as address
-		FROM DNP_UAT.TB_PTNR
+		FROM DNP_PROD.TB_PTNR
 		WHERE TRIM(REG_NO) = #{taxCode}
 		    AND UNUSED_CHK = 'N' 
 		    AND ROWNUM = 1
@@ -173,7 +173,7 @@
 	<select id="checkContReservedByContainerNos" parameterType="String" resultType="String">
 		SELECT 
 			CNTR_NO
-		FROM DNP_UAT.TB_RESERVE
+		FROM DNP_PROD.TB_RESERVE
 		WHERE CNTR_STATE != 'D' AND CNTR_NO IN 
 		<foreach item="containerNo" collection="array" open="(" separator="," close=")">
            	#{containerNo}
@@ -181,12 +181,12 @@
 	</select>
     <select id="getCountContByBlNo" parameterType="String" resultType="Integer">
 		SELECT COUNT(*)
-		FROM DNP_UAT.TB_INVENTORY
+		FROM DNP_PROD.TB_INVENTORY
 		WHERE BL_NO = #{blNo}
     </select>
     <select id="getOpeCodeCatosByBlNo" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentEntity">
     	SELECT PTNR_CODE AS opeCode, COUNT(*) AS containerAmount
-    	FROM DNP_UAT.TB_INVENTORY
+    	FROM DNP_PROD.TB_INVENTORY
     	WHERE BL_NO = #{blNo}
     	GROUP BY PTNR_CODE
     </select>
@@ -195,14 +195,14 @@
     				WHEN HOLD_CHK = 'N' THEN 'true'
     				WHEN HOLD_CHK = 'Y' THEN 'false'
     			END AS HOLD_CHK
-    	FROM DNP_UAT.TB_HOLD_STATE
+    	FROM DNP_PROD.TB_HOLD_STATE
     	WHERE HOLD_TYPE = 'C'
     		AND CNTR_NO = #{containerNo}
     		AND CALL_SEQ = #{voyNo}
     </select>
     <select id="selectVesselCodeBerthPlan" parameterType="String" resultType="String">
-		SELECT t.VSL_CD||': '|| (SELECT VSL_NM FROM DNP_UAT.TB_VSL WHERE VSL_CD = t.VSL_CD) AS VSL_CD
-		  FROM DNP_UAT.tb_berthplan t
+		SELECT t.VSL_CD||': '|| (SELECT VSL_NM FROM DNP_PROD.TB_VSL WHERE VSL_CD = t.VSL_CD) AS VSL_CD
+		  FROM DNP_PROD.tb_berthplan t
 		WHERE  PTNR_CODE = #{opeCode}
 		       AND t.vsl_cd NOT IN ('DBO','EMTY',
 		                            'STRG',
@@ -218,8 +218,8 @@
 		       t.call_year as year,
 		       t.in_voy as voyCarrier,
 			   t.longterm_eta as eta,
-		       t.vsl_cd || ' - ' || (select vsl_nm FROM DNP_UAT.tb_vsl where vsl_cd = t.vsl_cd) ||' - '|| t.in_voy as vslAndVoy
-		 FROM DNP_UAT.tb_berthplan t
+		       t.vsl_cd || ' - ' || (select vsl_nm FROM DNP_PROD.tb_vsl where vsl_cd = t.vsl_cd) ||' - '|| t.in_voy as vslAndVoy
+		 FROM DNP_PROD.tb_berthplan t
 		 where t.ptnr_code = #{opeCode}
 		 		 			    AND   t.vsl_cd NOT IN ('DBO','EMPTY',
 			                            'STRG',
@@ -230,7 +230,7 @@
 	</select>
 	<select id="getYearByVslCodeAndVoyNo" resultType="String">
 		SELECT CALL_YEAR
-		  FROM DNP_UAT.tb_berthplan t
+		  FROM DNP_PROD.tb_berthplan t
 		WHERE  VSL_CD = #{vesselCode} and CALL_SEQ = #{voyNo}
 		       AND t.vsl_cd NOT IN ('DBO','EMTY',
 		                            'STRG',
@@ -240,8 +240,8 @@
 		       AND t.atc IS NULL
 	</select>
 	<select id="selectOpeCodeListInBerthPlan" resultType="String">
-			SELECT t.PTNR_CODE || ': ' || (SELECT ENG_SNM FROM DNP_UAT.TB_PTNR WHERE PTNR_CODE = t.PTNR_CODE AND ROWNUM = 1) AS PTNR_CODE
-			FROM DNP_UAT.tb_berthplan t
+			SELECT t.PTNR_CODE || ': ' || (SELECT ENG_SNM FROM DNP_PROD.TB_PTNR WHERE PTNR_CODE = t.PTNR_CODE AND ROWNUM = 1) AS PTNR_CODE
+			FROM DNP_PROD.tb_berthplan t
 			WHERE
 			       t.vsl_cd NOT IN ('DBO','EMPTY',
 			                            'STRG',
@@ -253,7 +253,7 @@
 	</select>
 	<select id="checkBookingNoForSendFReceiveE" resultType="Integer">
 			SELECT COUNT(*)
-			FROM DNP_UAT.TB_BOOKING
+			FROM DNP_PROD.TB_BOOKING
 			WHERE BOOKING_NO = #{bookingNo} AND FE = #{fe}
 	</select>
 	<select id="getInforSendFReceiveE" parameterType="ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
@@ -261,22 +261,22 @@
 		        BO.CALL_YEAR as year,
 		        BO.CALL_SEQ as voyNo,
 		        BO.PTNR_CODE as opeCode,
-		        BO.POD || ': ' ||(SELECT PORT_NM FROM DNP_UAT.TB_PORT WHERE CNTRY_CD = SUBSTR(BO.POD, 1, 2) AND PORT_CD = SUBSTR(BO.POD, 3)) as dischargePort,
+		        BO.POD || ': ' ||(SELECT PORT_NM FROM DNP_PROD.TB_PORT WHERE CNTRY_CD = SUBSTR(BO.POD, 1, 2) AND PORT_CD = SUBSTR(BO.POD, 3)) as dischargePort,
 		        BO.CARGO_TYPE as cargoType,
 		        BO.SZTP2 as sztp,
-		        BO.VSL_CD || ' - ' || (SELECT VSL_NM FROM DNP_UAT.TB_VSL WHERE VSL_CD = BO.VSL_CD ) || ' - ' || 
+		        BO.VSL_CD || ' - ' || (SELECT VSL_NM FROM DNP_PROD.TB_VSL WHERE VSL_CD = BO.VSL_CD ) || ' - ' || 
 		        (SELECT B.IN_VOY
-		         FROM DNP_UAT.TB_BERTHPLAN B
+		         FROM DNP_PROD.TB_BERTHPLAN B
 		         WHERE
 		            B.VSL_CD = BO.VSL_CD AND
 		            B.CALL_YEAR = BO.CALL_YEAR AND
 		            B.CALL_SEQ = BO.CALL_SEQ AND
 		            B.PTNR_CODE = BO.PTNR_CODE) as vslAndVoy
-		FROM DNP_UAT.TB_BOOKING BO
+		FROM DNP_PROD.TB_BOOKING BO
 		WHERE BO.BOOKING_NO = #{bookingNo} AND BO.SZTP2 = #{sztp} AND BO.PTNR_CODE = #{opeCode} AND BO.FE = #{fe}
 	</select>
 	<select id="getIndexContMasterForSSRByContainerNo" parameterType="String" resultType="Date">
-		SELECT IN_DATE FROM DNP_UAT.TB_MASTER
+		SELECT IN_DATE FROM DNP_PROD.TB_MASTER
 		WHERE CNTR_NO = #{containerNo}
 	</select>
 	<select id="getIndexBooking" parameterType="ShipmentDetailEntity" resultType="ShipmentDetailEntity">
@@ -286,7 +286,7 @@
 		    BOOKING_NO AS bookingNo,
 		    PTNR_CODE AS opeCode,
 		    SZTP2 AS sztp
-		FROM DNP_UAT.TB_BOOKING
+		FROM DNP_PROD.TB_BOOKING
 		WHERE VSL_CD = #{vslNm} AND
 		      CALL_SEQ = #{voyNo} AND
 		      CALL_YEAR = #{year}
@@ -299,7 +299,7 @@
            ROWW AS roww,
            BAY AS bay,
            TIER AS tier
-        FROM DNP_UAT.TB_INVENTORY
+        FROM DNP_PROD.TB_INVENTORY
         WHERE BL_NO = #{blNo} AND CNTR_NO = #{containerNo}
 	</select>
 	<select id="checkContainerStatus" parameterType="ShipmentDetailEntity" resultType="String">
@@ -317,7 +317,7 @@
 	              WHEN CNTR_STATE = 'E' THEN 'Empty Gate Out'
 	              ELSE CNTR_STATE
 	          END AS containerStatus
-	     FROM DNP_UAT.TB_MASTER
+	     FROM DNP_PROD.TB_MASTER
          <where>
             <if test="containerNo != null  and containerNo != ''"> and CNTR_NO = #{containerNo}</if>
             <if test="sztp != null  and sztp != ''"> and SZTP2 = #{sztp}</if>
@@ -330,11 +330,11 @@
         </where>
 	</select>
 	<select id="getBlockList" parameterType="String" resultType="String">
-		SELECT BLOCK FROM DNP_UAT.TB_BLOCK
+		SELECT BLOCK FROM DNP_PROD.TB_BLOCK
         WHERE BLOCK like concat(concat('%', #{keyword}), '%')
 	</select>
 	<select id="getAreaList" parameterType="String" resultType="String">
-		SELECT AREA FROM DNP_UAT.TB_AREA
+		SELECT AREA FROM DNP_PROD.TB_AREA
         WHERE AREA like concat(concat('%', #{keyword}), '%')
         ORDER BY AREA
 	</select>
@@ -346,7 +346,7 @@
 			VSL_CD AS vslNm,
 			CALL_SEQ AS voyNo,
 			SZTP2 AS sztp
-		FROM DNP_UAT.TB_RESERVE 
+		FROM DNP_PROD.TB_RESERVE 
          <where>
             <if test="containerNo != null  and containerNo != ''"> and CNTR_NO = #{containerNo}</if>
             <if test="sztp != null  and sztp != ''"> and SZTP2 = #{sztp}</if>
@@ -359,35 +359,35 @@
 	</select>
 	<select id="checkTheNumberOfContainersNotOrderedForReceiveContEmpty" resultType="Integer">
 		SELECT
-		    (SELECT BOOK_QTY FROM DNP_UAT.TB_BOOKING B WHERE B.BOOKING_NO = #{bookingNo} AND B.SZTP2 = #{sztp}) - COUNT(*) AS RESULT
-		FROM DNP_UAT.TB_INVENTORY
+		    (SELECT BOOK_QTY FROM DNP_PROD.TB_BOOKING B WHERE B.BOOKING_NO = #{bookingNo} AND B.SZTP2 = #{sztp}) - COUNT(*) AS RESULT
+		FROM DNP_PROD.TB_INVENTORY
 		WHERE BOOKING_NO = #{bookingNo} AND FE = 'E' AND SZTP2 = #{sztp} AND JOB_ODR_NO2 IS NOT NULL
 		GROUP BY BOOKING_NO
 	</select>
 
 	<select id="checkTheNumberOfContainersOrderedForReceiveContEmpty" resultType="Integer">
 		SELECT
-		    (SELECT BOOK_QTY FROM DNP_UAT.TB_BOOKING B WHERE B.BOOKING_NO = #{bookingNo} AND B.SZTP2 = #{sztp}) - COUNT(*) AS RESULT
-		FROM DNP_UAT.TB_INVENTORY
+		    (SELECT BOOK_QTY FROM DNP_PROD.TB_BOOKING B WHERE B.BOOKING_NO = #{bookingNo} AND B.SZTP2 = #{sztp}) - COUNT(*) AS RESULT
+		FROM DNP_PROD.TB_INVENTORY
 		WHERE BOOKING_NO = #{bookingNo} AND FE = 'E' AND SZTP2 = #{sztp}
 		GROUP BY BOOKING_NO
 	</select>
 
 	<select id="checkTheNumberOfContainersNotOrderedForSendContFull" resultType="Integer">
 		SELECT
-		    (SELECT BOOK_QTY FROM DNP_UAT.TB_BOOKING B WHERE B.BOOKING_NO = #{bookingNo} AND B.SZTP2 = #{sztp}) - COUNT(*) AS RESULT
-		FROM DNP_UAT.TB_RESERVE
+		    (SELECT BOOK_QTY FROM DNP_PROD.TB_BOOKING B WHERE B.BOOKING_NO = #{bookingNo} AND B.SZTP2 = #{sztp}) - COUNT(*) AS RESULT
+		FROM DNP_PROD.TB_RESERVE
 		WHERE BOOKING_NO = #{bookingNo} AND FE = 'F' AND SZTP2 = #{sztp} AND JOB_ODR_NO IS NOT NULL
 		GROUP BY BOOKING_NO
 	</select>
 
 	<select id="selectBookingQuantity" resultType="int"> 
-		SELECT BOOK_QTY FROM DNP_UAT.TB_BOOKING B WHERE B.BOOKING_NO = #{bookingNo} AND B.SZTP2 = #{sztp}
+		SELECT BOOK_QTY FROM DNP_PROD.TB_BOOKING B WHERE B.BOOKING_NO = #{bookingNo} AND B.SZTP2 = #{sztp}
 	</select>
 
 	<select id="selectBookingOrderEmptyQuantity" resultType="int">
 		SELECT COUNT(*) 
-		FROM DNP_UAT.TB_INVENTORY
+		FROM DNP_PROD.TB_INVENTORY
 		WHERE BOOKING_NO = #{bookingNo} AND FE = 'E' AND SZTP2 = #{sztp} AND JOB_ODR_NO2 IS NOT NULL
 	</select>
 	
@@ -395,7 +395,7 @@
 		SELECT
 	    	CONCAT(TRIM(REG_NO) ,CONCAT(': ',ENG_LNM)) as groupName,
 	    	TRIM(REG_NO) AS taxCode
-		FROM DNP_UAT.TB_PTNR
+		FROM DNP_PROD.TB_PTNR
 		<where>
 			REG_NO IS NOT NULL
 			AND UNUSED_CHK = 'N'
@@ -406,14 +406,14 @@
 
 	<select id="getSztpByContainerNoMaster" parameterType="String" resultType="String">
 		SELECT SZTP
-		FROM DNP_UAT.TB_MASTER
+		FROM DNP_PROD.TB_MASTER
 		WHERE CNTR_NO = #{containerNo}
 		fetch next 1 rows only
 	</select>
 
 	<select id="getSztpByContainerNoInventory" parameterType="String" resultType="String">
 		SELECT SZTP
-		FROM DNP_UAT.TB_INVENTORY
+		FROM DNP_PROD.TB_INVENTORY
 		WHERE CNTR_NO = #{containerNo}
 		fetch next 1 rows only
 	</select>
@@ -421,7 +421,7 @@
 	<select id="getTaxCodeBySnmGroupName" parameterType="String" resultType="String">
 		SELECT 
 	    	TRIM(REG_NO) AS TAXCODE
-		FROM DNP_UAT.TB_PTNR 
+		FROM DNP_PROD.TB_PTNR 
 		WHERE PTNR_TYPE = 'CNS'
 		    AND ENG_SNM = #{consignee}
 		    AND UNUSED_CHK = 'N'
@@ -430,7 +430,7 @@
 	<select id="getblNoByJobOrderNo" parameterType="String" resultType="String">
 		SELECT 
 			BL_NO
-		FROM DNP_UAT.TB_INVENTORY
+		FROM DNP_PROD.TB_INVENTORY
 		WHERE JOB_ODR_NO2 = #{jobOrdNo2}
 		FETCH NEXT 1 ROWS ONLY
 	</select>
@@ -439,7 +439,7 @@
 		SELECT
 	    	ENG_SNM as groupName,
 	    	ADDR as address
-		FROM DNP_UAT.TB_PTNR
+		FROM DNP_PROD.TB_PTNR
 		WHERE PTNR_TYPE = 'CNS' 
 		    AND UNUSED_CHK = 'N'
 		    AND TRIM(REG_NO) = #{taxCode} AND ROWNUM = 1
@@ -447,7 +447,7 @@
 
 	<select id="getOprCodeList" resultType	="String">
 		SELECT PTNR_CODE 
-		  FROM DNP_UAT.TB_PTNR 
+		  FROM DNP_PROD.TB_PTNR 
 		  WHERE PTNR_TYPE = 'SHP' 
 		      AND PTNR_CODE NOT IN ('000','OWN')
 		      AND UNUSED_CHK = 'N'
@@ -459,8 +459,8 @@
 		       t.call_year as year,
 		       t.in_voy as voyCarrier,
 			   t.longterm_eta as eta,
-		       t.vsl_cd || ' - ' || (select vsl_nm FROM DNP_UAT.tb_vsl where vsl_cd = t.vsl_cd) ||' - '|| t.in_voy as vslAndVoy
-		 FROM DNP_UAT.tb_berthplan t
+		       t.vsl_cd || ' - ' || (select vsl_nm FROM DNP_PROD.tb_vsl where vsl_cd = t.vsl_cd) ||' - '|| t.in_voy as vslAndVoy
+		 FROM DNP_PROD.tb_berthplan t
 		 where t.vsl_cd NOT IN ('DBO','EMPTY',
 			                            'STRG',
 			                            'TBA',
@@ -479,21 +479,21 @@
 		        SELECT
 		            COUNT(*)
 		        FROM
-		            "DNP_UAT"."TB_INVENTORY" "A2"
+		            "DNP_PROD"."TB_INVENTORY" "A2"
 		        WHERE
 		            "A2"."BOOKING_NO" = "A1"."BOOKING_NO"
 		            AND "A2"."SZTP" = "A1"."SZTP"
 		            AND "A2"."JOB_ODR_NO2" IS NOT NULL
 		    ) usedQty
 		FROM
-		    "DNP_UAT"."TB_BOOKING" "A1"
+		    "DNP_PROD"."TB_BOOKING" "A1"
 		WHERE
 		    "A1"."BOOKING_NO" = #{bookingNo}
 		    AND "A1"."USER_VOY" = #{userVoy}
     </select>
     <select id="getOrderNoInInventoryByShipmentDetail" parameterType="ShipmentDetailEntity" resultType="String">
 	    SELECT JOB_ODR_NO2
-	    FROM DNP_UAT.TB_INVENTORY
+	    FROM DNP_PROD.TB_INVENTORY
 	    <where>
 	       <if test="containerNo != null  and containerNo != ''"> and CNTR_NO = #{containerNo}</if>
 	       <if test="sztp != null  and sztp != ''"> and SZTP2 = #{sztp}</if>
@@ -507,7 +507,7 @@
     </select>
     <select id="getOrderNoInReserveByShipmentDetail" parameterType="ShipmentDetailEntity" resultType="String">
 	    SELECT JOB_ODR_NO
-	    FROM DNP_UAT.TB_RESERVE
+	    FROM DNP_PROD.TB_RESERVE
 	    <where>
 	       <if test="containerNo != null  and containerNo != ''"> and CNTR_NO = #{containerNo}</if>
 	       <if test="sztp != null  and sztp != ''"> and SZTP2 = #{sztp}</if>
@@ -535,7 +535,7 @@
            TIER AS tier,
 		   JOB_ODR_NO2 AS orderNo,
 		   REMARK AS remark
-        FROM DNP_UAT.TB_INVENTORY
+        FROM DNP_PROD.TB_INVENTORY
 	    <where>
 	       <if test="containerNo != null  and containerNo != ''"> and CNTR_NO = #{containerNo}</if>
 	       <if test="sztp != null  and sztp != ''"> and SZTP2 = #{sztp}</if>
@@ -554,7 +554,7 @@
 
 	<select id="selectListBlockBySztpOpeCode" parameterType="ShipmentDetailEntity" resultType="String">
 		SELECT BLOCK 
-		FROM DNP_UAT.TB_INVENTORY
+		FROM DNP_PROD.TB_INVENTORY
 		<where>
 	       <if test="sztp != null  and sztp != ''"> and SZTP2 = #{sztp}</if>
 	       <if test="fe != null  and fe != ''"> and FE = #{fe}</if>
@@ -566,7 +566,7 @@
 
 	<select id="selectListBayBySztpOpeCode" parameterType="ShipmentDetailEntity" resultType="String">
 		SELECT BAY 
-		FROM DNP_UAT.TB_INVENTORY
+		FROM DNP_PROD.TB_INVENTORY
 		<where>
 	       <if test="sztp != null  and sztp != ''"> and SZTP2 = #{sztp}</if>
 	       <if test="fe != null  and fe != ''"> and FE = #{fe}</if>
@@ -579,7 +579,7 @@
 
 	<select id="getTruckerByRegNo" parameterType="String" resultType="String">
 		SELECT PTNR_CODE
-		FROM DNP_UAT.TB_PTNR
+		FROM DNP_PROD.TB_PTNR
 		WHERE TRIM(REG_NO) = #{taxCode}
 		    AND UNUSED_CHK = 'N'
 		FETCH NEXT 1 ROWS ONLY

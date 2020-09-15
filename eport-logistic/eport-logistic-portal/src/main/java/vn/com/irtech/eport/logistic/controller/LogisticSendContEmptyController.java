@@ -126,14 +126,15 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		return PREFIX + "/checkContListBeforeVerify";
 	}
 
-	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}/{taxCode}")
-	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds,
+	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}/{taxCode}/{shipmentId}")
+	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("shipmentId") Long shipmentId,
 			@PathVariable("creditFlag") boolean creditFlag, @PathVariable("taxCode") String taxCode, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getUser().getMobile());
 		mmap.put("shipmentId", "-");
 		mmap.put("creditFlag", creditFlag);
 		mmap.put("taxCode", taxCode);
+		mmap.put("shipmentId", shipmentId);
 		return PREFIX + "/verifyOtp";
 	}
 
@@ -199,7 +200,6 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@PostMapping("/shipment/{shipmentId}")
     @ResponseBody
     public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
-		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
 
@@ -217,7 +217,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			referenceShipment.setContainerAmount(shipment.getContainerAmount());
 			referenceShipment.setUpdateBy(getUser().getUserName());
 			
-			if (EportConstants.SHIPMENT_STATUS_INIT.equals(shipment.getStatus())) {
+			if (EportConstants.SHIPMENT_STATUS_INIT.equals(referenceShipment.getStatus())) {
 				referenceShipment.setSendContEmptyType(shipment.getSendContEmptyType());
 				referenceShipment.setOpeCode(shipment.getOpeCode());
 			}

@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="consignee"    column="consignee"    />
     </resultMap>
     <sql id="selectShipmentVo">
-        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, container_amount, edo_flg, specific_cont_flg, cont_supply_status,  status, remark, order_number, house_bill, create_by, create_time, update_by, update_time from shipment
+        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, container_amount, edo_flg, specific_cont_flg, cont_supply_status,  status, remark, order_number, house_bill, send_cont_empty_type, create_by, create_time, update_by, update_time from shipment
     </sql>
 
     <select id="selectShipmentList" parameterType="Shipment" resultMap="ShipmentResult">
@@ -207,9 +207,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
                 </if>
             </where>
+            group by s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, s.ope_code,
+            s.edo_flg, s.specific_cont_flg, s.cont_supply_status, s.status, s.remark, s.create_by, s.create_time, s.update_by, s.update_time
         ) 
         where container_amount > 0
-        
         order by create_time desc
     </select>
 
