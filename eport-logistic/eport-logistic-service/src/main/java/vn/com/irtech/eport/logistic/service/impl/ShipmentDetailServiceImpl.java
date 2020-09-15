@@ -42,6 +42,7 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.dto.PartnerInfoDto;
+import vn.com.irtech.eport.system.service.ISysDictDataService;
 import vn.com.irtech.eport.system.service.ISysDictTypeService;
 
 
@@ -67,6 +68,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Autowired
     private ICatosApiService catosApiService;
+    
+    @Autowired
+	private ISysDictDataService sysDictDataService;
+    
 
 //    @Autowired
 //    private IShipmentService shipmentService;
@@ -94,6 +99,21 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             return shipmentDetail1.getOrderNo().compareTo(shipmentDetail2.getOrderNo());
         }
     }
+    
+    /**
+     * Get trucker from tax code in dictionary defined before
+     * If defining trucker in dictionary is not exists then return tax code as default
+     * 
+     * @param taxCode
+     * @return
+     */
+    private String getTruckerFromRegNoCatos(String taxCode) {
+		String trucker = sysDictDataService.selectDictLabel("carrier_trucker_list", taxCode);
+		if (StringUtils.isNotEmpty(trucker)) {
+			return trucker;
+		}
+		return taxCode;
+	}
 
     /**
      * Get Shipment Details
@@ -471,11 +491,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
             processOrder.setBeforeAfter("Before");
         }
-        try {
-			processOrder.setTrucker(catosApiService.getTruckerByTaxCode(taxCode));
-		} catch (Exception e) {
-			logger.error("Error when try to get ptnr code by reg no: " + e);
-		}
+        processOrder.setTrucker(getTruckerFromRegNoCatos(taxCode));
         processOrder.setBlNo(detail.getBlNo());
         processOrder.setPickupDate(detail.getExpiredDem());
         processOrder.setVessel(detail.getVslNm());
@@ -568,11 +584,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
             processOrder.setBeforeAfter("Before");
         }
-        try {
-			processOrder.setTrucker(catosApiService.getTruckerByTaxCode(taxCode));
-		} catch (Exception e) {
-			logger.error("Error when try to get ptnr code by reg no: " + e);
-		}
+        processOrder.setTrucker(getTruckerFromRegNoCatos(taxCode));
         processOrder.setBookingNo(detail.getBookingNo());
         processOrder.setPickupDate(detail.getExpiredDem());
         processOrder.setVessel(detail.getVslNm());
@@ -628,11 +640,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
             processOrder.setBeforeAfter("Before");
         }
-        try {
-			processOrder.setTrucker(catosApiService.getTruckerByTaxCode(taxCode));
-		} catch (Exception e) {
-			logger.error("Error when try to get ptnr code by reg no: " + e);
-		}
+        // Set trucker from dictionary if null get tax code as default
+        processOrder.setTrucker(getTruckerFromRegNoCatos(taxCode));
         processOrder.setShipmentId(shipment.getId());
         if ("F".equalsIgnoreCase(detail.getFe())) {
             processOrder.setServiceType(EportConstants.SERVICE_DROP_FULL);
@@ -650,6 +659,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         } else {
             processOrder.setPayType("Cash");
         }
+        
+        // Case drop empty need remark empty depot location and det free time
         if (processOrder.getServiceType() == EportConstants.SERVICE_DROP_EMPTY
 				&& EportConstants.DROP_EMPTY_TO_DEPORT.equals(shipment.getSendContEmptyType())) {
             // Them remark han lenh khi ha vo
@@ -686,8 +697,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 shipmentDetail.setPayType("Cash");
             }
             shipmentDetail.setOpeCode(shipment.getOpeCode());
-            shipmentDetail.setRemark(processOrder.getRemark());
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+            
+            // Set remark has saved on process order for robot can mapping data easier
+            shipmentDetail.setRemark(processOrder.getRemark());
         }
         return processOrder;
     }
@@ -1284,4 +1297,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     public List<PickupAssignForm> selectShipmentDetailForDriverSendCont(@Param("driverId") Long driverId, @Param("pickUp") PickupAssignForm pickupAssignForm, @Param("serviceType") Integer serviceType) {
 		return shipmentDetailMapper.selectShipmentDetailForDriverSendCont(driverId, pickupAssignForm, serviceType);
 	}
+	
+	
 }
