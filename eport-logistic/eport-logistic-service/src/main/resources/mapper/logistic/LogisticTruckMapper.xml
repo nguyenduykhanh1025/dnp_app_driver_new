@@ -116,7 +116,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     <select id="checkPlateNumberUnique" parameterType="String" resultType="int">
-		select count(1) from logistic_truck where upper(plate_number)=#{plateNumber}
+		select count(1) from logistic_truck 
+		  where upper(plate_number)=#{plateNumber} 
+		  AND del_flag = 0
 	</select>
     
     <select id="selectListTruckNoByDriverId" parameterType="Long" resultType="String">

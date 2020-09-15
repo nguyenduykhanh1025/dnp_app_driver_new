@@ -475,13 +475,13 @@ public class TransportController extends BaseController {
 							// Send to mc
 							Map<String, Object> map = new HashMap<>();
 							map.put("pickupHistoryId", pickup.getPickupId().toString());
-							try {
+//							try {
 								logger.debug("Received GPS location. Request MC to plan for pickupId " + pickup.getPickupId());
-								 mqttService.sendMessageToMc(new Gson().toJson(map));
-								 mqttService.sendMessageToMcAppWindow(pickup.getPickupId());
-							} catch (MqttException e) {
-								logger.error("Api Driver Error Update Location: " + e);
-							}
+								 //mqttService.sendMessageToMc(new Gson().toJson(map));
+								 //mqttService.sendMessageToMcAppWindow(pickup.getPickupId());
+//							} catch (MqttException e) {
+//								logger.error("Api Driver Error Update Location: " + e);
+//							}
 						}
 					}
 				}

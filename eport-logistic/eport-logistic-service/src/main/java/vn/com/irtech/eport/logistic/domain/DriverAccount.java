@@ -60,7 +60,7 @@ public class DriverAccount extends BaseEntity {
     private boolean delFlag;
 
     /** Hieu Luc Den */
-    @Excel(name = "Hieu Luc Den", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "Hieu Luc Den", width = 30, dateFormat = "dd-MM-yyyy")
     private Date validDate;
 
     private LogisticGroup logisticGroup;
