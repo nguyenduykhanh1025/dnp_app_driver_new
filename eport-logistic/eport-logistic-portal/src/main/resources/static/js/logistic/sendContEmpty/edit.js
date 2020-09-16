@@ -27,9 +27,9 @@ $("#form-edit-shipment").validate({
 async function submitHandler() {
     if ($.validate.form()) {
         if ($("#opeCode option:selected").text() == 'Chọn OPR') {
-            $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
-        } else if (!$("#containerAmount").val() || $("#containerAmount").val() < shipment.containerAmount) {
-            $.modal.alertWarning("Số lượng container quý khách muốn cập nhật không hợp lệ.");
+            $.modal.alertWarning("Mã OPR là bắt buộc.");
+        } else if (!$("#containerAmount").val()) {
+            $.modal.alertWarning("Số lượng container không hợp lệ.");
         } else if ($("#blNo").val() != currentBill) {
             let res = await getBillNoUnique();
             if (res.code == 500) {
@@ -88,6 +88,7 @@ function edit(url, data) {
             } else {
                 $.modal.alertError(result.msg);
             }
+            $.modal.enable();
         }
     })
 }
