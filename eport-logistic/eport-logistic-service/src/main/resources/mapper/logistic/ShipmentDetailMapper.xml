@@ -794,7 +794,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectContainerStatusList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
-        select s.bl_no, s.booking_no, s.sztp, s.sztp_define, s.temperature, s.vsl_nm, s.voy_no, s.voy_carrier, s.container_no, s.do_status, s.fe, s.payment_status, p.pay_type as pay_type, p.payer, p.payer_name, p.service_type as service_type,
+        select s.bl_no, s.booking_no, s.sztp, s.sztp_define, s.temperature, s.vsl_nm, s.voy_no, s.voy_carrier, s.container_no, s.do_status, s.fe, s.payment_status, s.pay_type, s.payer, s.payer_name, p.service_type as service_type,
         s.create_time, count(a.shipment_detail_id) as assign_number
         from shipment_detail s
         left join process_order p on s.process_order_id = p.id
@@ -808,7 +808,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="doStatus != null  and doStatus != ''"> and s.do_status = #{doStatus}</if>
             <if test="serviceType != null"> and p.service_type = #{serviceType}</if>
             <if test="payType != null  and payType != ''"> and p.pay_type = #{payType}</if>
-            <if test="payer != null  and payer != ''"> and p.pay_type = #{payer}</if>
             <if test="params.fromDate != null"> and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
             <if test="params.toDate != null"> and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
             <if test="containerNo != null  and containerNo != ''"> and (upper(s.container_no) like concat(concat('%', #{containerNo}), '%')</if>
@@ -821,7 +820,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="voyNo != null  and voyNo != ''"> or upper(s.voy_no) like concat(concat('%', #{voyNo}), '%'))</if>
             <if test="voyCarrier != null  and voyCarrier != ''"> or upper(s.voy_carrier) like concat(concat('%', #{voyCarrier}), '%'))</if>
         </where>
-        group by s.bl_no, s.booking_no, s.sztp, s.sztp_define, s.temperature, s.vsl_nm, s.voy_no, s.voy_carrier, s.container_no, s.do_status, s.fe, s.payment_status, p.pay_type, p.payer, p.payer_name, p.service_type, s.create_time
+        group by s.bl_no, s.booking_no, s.sztp, s.sztp_define, s.temperature, s.vsl_nm, s.voy_no, s.voy_carrier, s.container_no, s.do_status, s.fe, s.payment_status, s.pay_type, s.payer, s.payer_name, p.service_type, s.create_time
         order by s.create_time desc
     </select>
 

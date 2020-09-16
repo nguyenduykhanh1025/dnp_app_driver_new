@@ -38,7 +38,7 @@ public interface ICatosApiService {
 	
 	public List<ShipmentDetail> selectShipmentDetailsByBLNo(String blNo);
 	
-	public ShipmentDetail selectShipmentDetailByContNo(String blNo, String containerNo);
+	public ShipmentDetail selectShipmentDetailByContNo(ShipmentDetail shipmentDetail);
 	
 	public List<String> selectVesselCodeBerthPlan(String opeCode);
 	
