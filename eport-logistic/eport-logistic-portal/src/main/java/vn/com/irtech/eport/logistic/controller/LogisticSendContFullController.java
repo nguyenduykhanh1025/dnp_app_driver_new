@@ -211,7 +211,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
     @ResponseBody
     public AjaxResult editShipment(Shipment input, @PathVariable Long shipmentId) {
 		LogisticAccount user = getUser();
-		Shipment shipment = shipmentService.selectShipmentById(input.getId());
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			// Chi update cac item cho phep
 			// Kiem tra co update so luong co giam -> kiem tra xem so luong details 

@@ -125,6 +125,7 @@ function edit(url, data) {
             } else {
                 $.modal.alertError(result.msg);
             }
+            $.modal.enable();
         }
     })
 }

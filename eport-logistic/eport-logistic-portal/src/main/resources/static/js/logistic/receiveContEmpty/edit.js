@@ -15,7 +15,6 @@ if (shipment != null) {
         $("input[name='specificContFlg']").prop('disabled', true);
     }
     if (shipment.status > 2) {
-        $("#containerAmount").prop('disabled', true);
         $("#opeCode").prop('disabled', true);
     }
 }
@@ -82,8 +81,9 @@ function edit(url, data) {
                 parent.loadTable(result.msg);
                 $.modal.close();
             } else {
-                $.modal.msgError(result.msg);
+                $.modal.alertError(result.msg);
             }
+            $.modal.enable();
         }
     })
 }

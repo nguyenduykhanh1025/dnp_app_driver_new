@@ -275,13 +275,11 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@PostMapping("/shipment/{shipmentId}")
     @ResponseBody
     public AjaxResult editShipment(Shipment shipment) {
-
-		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
 			// Check container amount update need to greater or equal  curren amount
 			// Or at least greater or equal the number of container has been declared
-			if(shipment.getContainerAmount() < shipment.getContainerAmount()) {
+			if(shipment.getContainerAmount() < referenceShipment.getContainerAmount()) {
 				ShipmentDetail shipmentSearch = new ShipmentDetail();
 				shipmentSearch.setShipmentId(shipment.getId());
 				long contNumber = shipmentDetailService.countShipmentDetailList(shipmentSearch);
