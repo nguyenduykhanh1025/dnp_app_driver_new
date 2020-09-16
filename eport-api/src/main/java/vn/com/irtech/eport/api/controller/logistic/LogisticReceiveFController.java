@@ -324,8 +324,11 @@ public class LogisticReceiveFController extends LogisticBaseController {
 		if ("1".equals(shipment.getEdoFlg())) {
 			// TODO : eDO
 		} else {
+			ShipmentDetail searchInput = new ShipmentDetail();
+			searchInput.setBlNo(shipment.getBlNo());
+			searchInput.setContainerNo(contNo);
 			// DO
-			shipmentDetail = catosApiService.selectShipmentDetailByContNo(shipment.getBlNo(), contNo);
+			shipmentDetail = catosApiService.selectShipmentDetailByContNo(searchInput);
 		}
 		if (shipmentDetail == null) {
 			return error("Không tìm thấy thông tin container.");
