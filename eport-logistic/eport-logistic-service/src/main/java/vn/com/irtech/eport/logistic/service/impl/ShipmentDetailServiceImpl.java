@@ -504,7 +504,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         String payer = taxCode;
         String payerName = "";
         try {
-			payerName = getGroupNameByTaxCode(taxCode).getTaxCode();
+        	logger.debug("Get payer name for shipment detail by tax code: " + taxCode);
+			payerName = getGroupNameByTaxCode(taxCode).getGroupName();
 		} catch (Exception e) {
 			logger.error("Error when get payer name for " + payer + ": " + e);
 		}
@@ -597,12 +598,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setOpr(detail.getOpeCode());
         processOrder.setPol("VNDAD");
         processOrder.setRunnable(false);
-        processOrder.setServiceType(3);
+        processOrder.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
         processOrderService.insertProcessOrder(processOrder);
         String payer = taxCode;
         String payerName = "";
         try {
-			payerName = getGroupNameByTaxCode(taxCode).getTaxCode();
+        	logger.debug("Get payer name for shipment detail by tax code: " + taxCode);
+			payerName = getGroupNameByTaxCode(taxCode).getGroupName();
 		} catch (Exception e) {
 			logger.error("Error when get payer name for " + payer + ": " + e);
 		}
@@ -681,7 +683,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         String payer = taxCode;
         String payerName = "";
         try {
-			payerName = getGroupNameByTaxCode(taxCode).getTaxCode();
+        	logger.debug("Get payer name for shipment detail by tax code: " + taxCode);
+			payerName = getGroupNameByTaxCode(taxCode).getGroupName();
 		} catch (Exception e) {
 			logger.error("Error when get payer name for " + payer + ": " + e);
 		}
@@ -762,7 +765,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         // return convertedObject.get("Title").toString().replace("\"", "");
         String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/" + taxCode;
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(url, PartnerInfoDto.class);
+        PartnerInfoDto partnerInfoDto = restTemplate.getForObject(url, PartnerInfoDto.class);
+        return partnerInfoDto;
     }
 
     @Override
