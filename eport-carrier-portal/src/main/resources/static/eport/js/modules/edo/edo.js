@@ -5,14 +5,28 @@ var coutCheck = 0;
 $(function () {
   $("#updateEdo").attr("disabled", true);
   $("#delEdo").attr("disabled", true);
-  $("#btn-collapse").click(function () {
-    handleCollapse(true);
-  });
-  $("#btn-uncollapse").click(function () {
-    handleCollapse(false);
-  });
   loadTable();
   loadTableByContainer();
+
+  $(".main-body").layout();
+
+  $(".collapse").click(function () {
+    $(".main-body__search-wrapper").height(15);
+    $(".main-body__search-wrapper--container").hide();
+    $(this).hide();
+    $(".uncollapse").show();
+  });
+
+  $(".uncollapse").click(function () {
+    $(".main-body__search-wrapper").height(SEARCH_HEIGHT + 20);
+    $(".main-body__search-wrapper--container").show();
+    $(this).hide();
+    $(".collapse").show();
+  });
+
+  $(".left-side__collapse").click(function () {
+    $('#main-layout').layout('collapse', 'west');
+  });
 
   $('#searchAll').keyup(function (event) {
     if (event.keyCode == 13) {
@@ -46,31 +60,13 @@ $(function () {
   });
 });
 
-function handleCollapse(status) {
-  if (status) {
-    $(".left").css("width", "0.5%");
-    $(".left").children().hide();
-    $("#btn-collapse").hide();
-    $("#btn-uncollapse").show();
-    $(".right").css("width", "99%");
-    loadTableByContainer();
-    return;
-  }
-  $(".left").css("width", "25%");
-  $(".left").children().show();
-  $("#btn-collapse").show();
-  $("#btn-uncollapse").hide();
-  $(".right").css("width", "74%");
-  loadTableByContainer();
-  return;
-}
 
 function loadTable(edo) {
   $("#dg").datagrid({
     url: PREFIX + "/billNo",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - 60,
+    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     clientPaging: true,
     pagination: true,
     pageSize: 20,
@@ -148,7 +144,7 @@ function formatAction(value, row, index) {
   if (row.status == '3') {
     disabled = "disabled";
   }
-  actions.push('<button ' + disabled + ' class="btn btn-success btn-xs btn-action mt5 mb5" id="updateEdo" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</button>' + '<br>');
+  actions.push('<button ' + disabled + ' class="btn btn-success btn-xs btn-action mt5 mb5" style="display: inline-block;" id="updateEdo" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</button>' + '<br>');
   actions.push('<a class="btn btn-info btn-xs btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
   return actions.join("");
 }
@@ -163,12 +159,12 @@ function viewUpdateCont(id) {
 
 function loadTableByContainer(billOfLading) {
   edo.billOfLading = billOfLading; 
-  $("#dgContainer").datagrid({
+  $("#container-grid").datagrid({
     url: PREFIX + "/edo",
     method: "POST",
     singleSelect: false,
     clientPaging: true,
-    height: $(document).height() - 60,
+    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     pagination: true,
     pageSize: 20,
     nowrap: false,
@@ -284,7 +280,7 @@ function formatStatus(value) {
 
 function multiUpdateEdo() {
   let ids = [];
-  let rows = $('#dgContainer').datagrid('getSelections');
+  let rows = $('#container-grid').datagrid('getSelections');
   if (rows.length === 0) {
     $.modal.alertWarning("Quý khách chưa chọn container để update <br>, vui lòng kiểm tra lại !");
     return;
@@ -302,7 +298,7 @@ function multiUpdateEdo() {
 
 function delEdo() {
   let ids = [];
-  let rows = $('#dgContainer').datagrid('getSelections');
+  let rows = $('#container-grid').datagrid('getSelections');
   if (rows.length === 0) {
     $.modal.alertWarning("Quý khách chưa chọn container để update <br>, vui lòng kiểm tra lại !");
     return;
@@ -465,7 +461,7 @@ $('#btnRefresh').click(function(){
 
 
 
-$('#dgContainer').datagrid({
+$('#container-grid').datagrid({
   onCheck: function(){
     coutCheck += 1;
     $("#updateEdo").attr("disabled", false);
@@ -490,3 +486,7 @@ $('#dgContainer').datagrid({
     $("#delEdo").attr("disabled", true);
   },
 })
+
+function addEdo() {
+  $.modal.openTab("Phát Hành eDO", PREFIX + "/releaseEdo");
+}

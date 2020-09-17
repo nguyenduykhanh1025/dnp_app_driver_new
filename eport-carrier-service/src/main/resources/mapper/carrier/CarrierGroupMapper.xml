@@ -95,8 +95,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createBy != null  and createBy != ''">#{createBy},</if>
 			<if test="doFlag != null  and doFlag != ''">#{doFlag},</if>
 			<if test="edoFlag != null  and edoFlag != ''">#{edoFlag},</if>
-			<if test="bookingFlag != null  and bookingFlag != ''">#{booking_flag},</if>
-			<if test="consigneeFlag != null  and consigneeFlag != ''">#{consignee_flag},</if>
+			<if test="bookingFlag != null  and bookingFlag != ''">#{bookingFlag},</if>
+			<if test="consigneeFlag != null  and consigneeFlag != ''">#{consigneeFlag},</if>
 			<if test="apiFlag != null  and apiFlag != ''">#{apiFlag},</if>
 			<if test="apiPrivateKey != null  and apiPrivateKey != ''">#{apiPrivateKey},</if>
             <if test="apiPublicKey != null  and apiPublicKey != ''">#{apiPublicKey},</if>

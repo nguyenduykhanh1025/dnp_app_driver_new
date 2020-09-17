@@ -132,4 +132,6 @@ public interface EdoMapper
     public List<Edo> selectListEdoWithHouseBill(EdoWithoutHouseBillReq edo); 
     
     public Map<String, String> getReportByCarrierGroup(String[] codes);
+
+    public Edo getBillOfLadingInfo(String blNo);
 }

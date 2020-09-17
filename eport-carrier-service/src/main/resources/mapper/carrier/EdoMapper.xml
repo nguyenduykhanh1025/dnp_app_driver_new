@@ -502,4 +502,10 @@
             FETCH NEXT 1 ROWS ONLY
 	</select>
 
+  <select id="getBillOfLadingInfo" parameterType="String" resultMap="EdoResult">
+        <include refid="selectEdoVo"/>
+        WHERE bill_of_lading = #{blNo}
+        FETCH NEXT 1 ROWS ONLY
+    </select>
+
 </mapper>
