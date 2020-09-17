@@ -218,7 +218,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
 		LogisticAccount user = getUser();
-		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
+		Shipment referenceShipment = shipmentService.selectShipmentById(shipmentId);
 		//check if current user own shipment
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
 			// Chi update cac item cho phep
@@ -412,12 +412,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
-	@GetMapping("/shipment-detail/bl-no/{blNo}/cont/{containerNo}")
+	@PostMapping("/shipment-detail/bl-no/cont/info")
 	@ResponseBody
-	public ShipmentDetail getContInfo(@PathVariable("blNo") String blNo, @PathVariable("containerNo") String containerNo) {
-		if (blNo != null && containerNo != null) {
-			ShipmentDetail shipmentDetail = catosApiService.selectShipmentDetailByContNo(blNo, containerNo);
-			return shipmentDetail;
+	public ShipmentDetail getContInfo(@RequestBody ShipmentDetail shipmentDetail) {
+		if (StringUtils.isNotEmpty(shipmentDetail.getBlNo()) && StringUtils.isNotEmpty(shipmentDetail.getContainerNo())) {
+			ShipmentDetail shipmentDetailResult = catosApiService.selectShipmentDetailByContNo(shipmentDetail);
+			return shipmentDetailResult ;
 		} else {
 			return null;
 		}
@@ -593,7 +593,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				return ajaxResult;
 			} else {
 				// check do
-				Shipment shipCatos = shipmentService.getOpeCodeCatosByBlNo(blNo);
+				Shipment shipCatos = catosApiService.getOpeCodeCatosByBlNo(blNo);
 				if (shipCatos != null) {
 					String edoFlg = carrierGroupService.getDoTypeByOpeCode(shipCatos.getOpeCode());
 					if(edoFlg == null){

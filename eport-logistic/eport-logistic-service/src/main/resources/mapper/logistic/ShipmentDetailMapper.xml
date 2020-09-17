@@ -36,6 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="emptyDepot"    column="empty_depot"    />
         <result property="emptyDepotLocation"    column="empty_depot_location"    />
         <result property="cargoType"    column="cargo_type"    />
+        <result property="commodity"    column="commodity"    />
         <result property="vgmChk"    column="vgm_chk"    />
         <result property="vgm"    column="vgm"    />
         <result property="vgmPersonInfo"    column="vgm_person_info"    />
@@ -73,6 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="deliveryMobile"    column="delivery_mobile"   />
         <result property="deliveryRemark"    column="delivery_remark"   />
         <result property="eta"    column="eta"   />
+        <result property="etd"    column="etd"   />
     </resultMap>
 
     <sql id="selectShipmentDetailVo">
@@ -82,7 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         empty_depot, empty_depot_location, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, 
         pre_pickup_payment_status, custom_status, payment_status, process_status, do_status, do_received_time, 
         user_verify_status, finish_status, status, order_no, tax_code, consignee_by_tax_code, cont_supply_status, 
-        planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, remark, pay_type, payer, payer_name, customs_no, custom_scan_time, delivery_address, delivery_mobile, delivery_remark, eta, create_by, create_time, update_by, update_time from shipment_detail
+        planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, remark, pay_type, payer, payer_name, customs_no, custom_scan_time, delivery_address, delivery_mobile, delivery_remark, eta, etd, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
      <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail
@@ -116,6 +118,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
             <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
             <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
+            <if test="commodity != null  and commodity != ''"> and commodity = #{commodity}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
@@ -164,6 +167,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
             <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
             <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
+            <if test="commodity != null  and commodity != ''"> and commodity = #{commodity}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
@@ -215,6 +219,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
             <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
             <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
+            <if test="commodity != null  and commodity != ''"> and commodity = #{commodity}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
@@ -228,8 +233,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userVerifyStatus != null  and userVerifyStatus != ''"> and user_verify_status = #{userVerifyStatus}</if>
             <if test="finishStatus != null  and finishStatus != ''"> and finish_status = #{finishStatus}</if>
             <if test="status != null "> and status = #{status}</if>
-            <if test="fromDate != null ">and (create_time = #{fromDate} OR create_time > #{fromDate})</if>
-            <if test="toDate != null ">and (create_time = #{toDate} OR create_time &lt; #{toDate})</if>
+            <if test="params.fromDate != null"> and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDate != null"> and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
             <if test="bookingNo != null  and bookingNo != ''">and (upper(booking_no) like concat(concat('%', #{bookingNo}),
                 '%')
             </if>
@@ -250,7 +255,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	carrier_name, loading_port, discharge_port, transport_type,
         	empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status,
         	custom_status, customs_no, custom_scan_time, payment_status, process_status, do_status, do_received_time, user_verify_status, finish_status,
-        	pay_type, payer, payer_name, delivery_address, delivery_mobile, delivery_remark, cont_supplier_name, eta, status, remark, create_by, create_time, update_by, update_time
+        	pay_type, payer, payer_name, delivery_address, delivery_mobile, delivery_remark, cont_supplier_name, eta, etd, status, remark, create_by, create_time, update_by, update_time
         from shipment_detail
         <where>  
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
@@ -282,6 +287,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
             <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
             <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
+            <if test="commodity != null  and commodity != ''"> and commodity = #{commodity}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
@@ -308,7 +314,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status,
         	custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, finish_status,
             cont_supply_status, planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, pay_type, payer, payer_name, customs_no, custom_scan_time, 
-        	delivery_address, delivery_mobile, delivery_remark, eta, status, remark, create_by, create_time, update_by, update_time 
+        	delivery_address, delivery_mobile, delivery_remark, eta, etd, status, remark, create_by, create_time, update_by, update_time 
         from shipment_detail
         <where>  
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
@@ -341,6 +347,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
             <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
             <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
+            <if test="commodity != null  and commodity != ''"> and commodity = #{commodity}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
@@ -404,6 +411,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emptyDepot != null  and emptyDepot != ''">empty_depot,</if>
             <if test="emptyDepotLocation != null  and emptyDepotLocation != ''">empty_depot_location,</if>
             <if test="cargoType != null  and cargoType != ''">cargo_type,</if>
+            <if test="commodity != null  and commodity != ''">commodity,</if>
             <if test="vgmChk != null ">vgm_chk,</if>
             <if test="vgm != null  and vgm != ''">vgm,</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''">vgm_person_info,</if>
@@ -434,6 +442,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deliveryMobile != null  and deliveryMobile != ''">delivery_mobile,</if>
             <if test="deliveryRemark != null  and deliveryRemark != ''">delivery_remark,</if>
             <if test="eta != null">eta,</if>
+            <if test="etd != null">etd,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -470,6 +479,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emptyDepot != null  and emptyDepot != ''">#{emptyDepot},</if>
             <if test="emptyDepotLocation != null  and emptyDepotLocation != ''">#{emptyDepotLocation},</if>
             <if test="cargoType != null  and cargoType != ''">#{cargoType},</if>
+            <if test="commodity != null  and commodity != ''">#{commodity},</if>
             <if test="vgmChk != null ">#{vgmChk},</if>
             <if test="vgm != null  and vgm != ''">#{vgm},</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''">#{vgmPersonInfo},</if>
@@ -500,6 +510,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deliveryMobile != null  and deliveryMobile != ''">#{deliveryMobile},</if>
             <if test="deliveryRemark != null  and deliveryRemark != ''">#{deliveryRemark},</if>
             <if test="eta != null">#{eta},</if>
+            <if test="etd != null">#{etd},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -538,6 +549,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emptyDepot != null  and emptyDepot != ''">empty_depot = #{emptyDepot},</if>
             <if test="emptyDepotLocation != null  and emptyDepotLocation != ''">empty_depot_location = #{emptyDepotLocation},</if>
             <if test="cargoType != null  and cargoType != ''">cargo_type = #{cargoType},</if>
+            <if test="commodity != null  and commodity != ''">commodity = #{commodity},</if>
             <if test="vgmChk != null ">vgm_chk = #{vgmChk},</if>
             <if test="vgm != null  and vgm != ''">vgm = #{vgm},</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''">vgm_person_info = #{vgmPersonInfo},</if>
@@ -569,6 +581,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deliveryMobile != null  and deliveryMobile != ''">delivery_mobile = #{deliveryMobile},</if>
             <if test="deliveryRemark != null  and deliveryRemark != ''">delivery_remark = #{deliveryRemark},</if>
             <if test="eta != null">eta = #{eta},</if>
+            <if test="etd != null">etd = #{etd},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
         </trim>
@@ -609,6 +622,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emptyDepot != null  and emptyDepot != ''">empty_depot = #{emptyDepot},</if>
             <if test="emptyDepotLocation != null  and emptyDepotLocation != ''">empty_depot_location = #{emptyDepotLocation},</if>
             <if test="cargoType != null  and cargoType != ''">cargo_type = #{cargoType},</if>
+            <if test="commodity != null  and commodity != ''">commodity = #{commodity},</if>
             <if test="vgmChk != null ">vgm_chk = #{vgmChk},</if>
             <if test="vgm != null  and vgm != ''">vgm = #{vgm},</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''">vgm_person_info = #{vgmPersonInfo},</if>
@@ -626,6 +640,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="customsNo != null and customsNo != ''">customs_no = #{customsNo},</if>
             <if test="customScanTime != null">custom_scan_time = #{customScanTime},</if>
             <if test="eta != null">eta = #{eta},</if>
+            <if test="etd != null">etd = #{etd},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
@@ -728,6 +743,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         empty_depot emptyDepot,
         empty_depot_location emptyDepotLocation,
         cargo_type cargoType,
+        commodity,
         vgm_chk as vgmChk,
         vgm,
         vgm_person_info as vgmPersonInfo,
@@ -778,6 +794,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
             <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
             <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
+            <if test="commodity != null  and commodity != ''"> and commodity = #{commodity}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
@@ -794,11 +811,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectContainerStatusList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
-        select s.bl_no, s.booking_no, s.sztp, s.sztp_define, s.temperature, s.vsl_nm, s.voy_no, s.voy_carrier, s.container_no, s.do_status, s.fe, s.payment_status, p.pay_type as pay_type, p.payer, p.payer_name, p.service_type as service_type,
+        select s.bl_no, s.booking_no, s.sztp, s.sztp_define, s.temperature, s.vsl_nm, s.voy_no, s.voy_carrier, s.container_no, s.do_status, s.fe, s.payment_status, s.pay_type, s.payer, s.payer_name, p.service_type as service_type,
         s.create_time, count(a.shipment_detail_id) as assign_number
         from shipment_detail s
-        left join process_order p on s.process_order_id = p.id
-        left join pickup_assign a on s.id = a.shipment_detail_id
+            left join process_order p on s.process_order_id = p.id
+            left join pickup_assign a on s.id = a.shipment_detail_id
         <where>  
             <if test="logisticGroupId != null "> and s.logistic_group_id = #{logisticGroupId}</if>
             <if test="customStatus != null and customStatus != ''"> and s.custom_status = #{customStatus}</if>
@@ -808,7 +825,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="doStatus != null  and doStatus != ''"> and s.do_status = #{doStatus}</if>
             <if test="serviceType != null"> and p.service_type = #{serviceType}</if>
             <if test="payType != null  and payType != ''"> and p.pay_type = #{payType}</if>
-            <if test="payer != null  and payer != ''"> and p.pay_type = #{payer}</if>
             <if test="params.fromDate != null"> and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
             <if test="params.toDate != null"> and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
             <if test="containerNo != null  and containerNo != ''"> and (upper(s.container_no) like concat(concat('%', #{containerNo}), '%')</if>
@@ -821,7 +837,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="voyNo != null  and voyNo != ''"> or upper(s.voy_no) like concat(concat('%', #{voyNo}), '%'))</if>
             <if test="voyCarrier != null  and voyCarrier != ''"> or upper(s.voy_carrier) like concat(concat('%', #{voyCarrier}), '%'))</if>
         </where>
-        group by s.bl_no, s.booking_no, s.sztp, s.sztp_define, s.temperature, s.vsl_nm, s.voy_no, s.voy_carrier, s.container_no, s.do_status, s.fe, s.payment_status, p.pay_type, p.payer, p.payer_name, p.service_type, s.create_time
+        group by s.bl_no, s.booking_no, s.sztp, s.sztp_define, s.temperature, s.vsl_nm, s.voy_no, s.voy_carrier, s.container_no, s.do_status, s.fe, s.payment_status, s.pay_type, s.payer, s.payer_name, p.service_type, s.create_time
         order by s.create_time desc
     </select>
 
@@ -863,7 +879,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		            WHEN cargo_type = 'MT' THEN 'Empty'
 		            WHEN cargo_type = 'RF' THEN 'Reefer'
 		            ELSE cargo_type
-		        END AS cargoType,           
+		        END AS cargoType, commodity, 
 		        vgm_chk as vgmChk, vgm, vgm_person_info as vgmPersonInfo, preorder_pickup as preorderPickup, pre_pickup_payment_status as prePickupPaymentStatus,
 		        custom_status as customStatus, payment_status as paymenStatus, process_status as processStatus, do_status as doStatus, do_received_time as doReceivedTime,
 		        user_verify_status as userVerifyStatus, finish_status as finishStatus, status, remark, create_by as createBy, create_time as createTime,
@@ -902,6 +918,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
             <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
             <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
+            <if test="commodity != null  and commodity != ''"> and commodity = #{commodity}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>

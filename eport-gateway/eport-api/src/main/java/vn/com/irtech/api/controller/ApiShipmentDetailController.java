@@ -33,9 +33,9 @@ public class ApiShipmentDetailController {
 		return list;
 	}
 	
-	@GetMapping("/shipmentDetail/containerInfor/{blNo}/{containerNo}")
-	public ShipmentDetailEntity getShipmentDetail(@PathVariable String blNo, @PathVariable String containerNo) {
-		ShipmentDetailEntity ship = shipmentDetailDao.selectShipmentDetailByContNo(blNo, containerNo);
+	@PostMapping("/shipmentDetail/containerInfor")
+	public ShipmentDetailEntity getShipmentDetail(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
+		ShipmentDetailEntity ship = shipmentDetailDao.selectShipmentDetailByContNo(shipmentDetailEntity.getBlNo(), shipmentDetailEntity.getContainerNo());
 		if(ship == null) {
 			return new ShipmentDetailEntity();
 		}
@@ -94,9 +94,9 @@ public class ApiShipmentDetailController {
 		return shipmentDetailDao.getCountContByBlNo(blNo);
 	}
 	
-	@GetMapping("shipmentDetail/getOpeCodeCatosByBlNo/{blNo}")
-	public ShipmentEntity getOpeCodeCatosByBlNo(@PathVariable String blNo) {
-		return shipmentDetailDao.getOpeCodeCatosByBlNo(blNo);
+	@PostMapping("shipmentDetail/getOpeCodeCatosByBlNo")
+	public ShipmentEntity getOpeCodeCatosByBlNo(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
+		return shipmentDetailDao.getOpeCodeCatosByBlNo(shipmentDetailEntity.getBlNo());
 	}
 	
 	@GetMapping("shipmentDetail/check/custom/{containerNo}/{voyNo}")

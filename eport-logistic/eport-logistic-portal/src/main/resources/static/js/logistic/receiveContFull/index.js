@@ -860,8 +860,13 @@ function configHandson() {
 
               // Call data to auto-fill
               $.ajax({
-                url: prefix + "/shipment-detail/bl-no/" + shipmentSelected.blNo + "/cont/" + containerNo,
-                type: "GET"
+                url: prefix + "/shipment-detail/bl-no/cont/info",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                  blNo: shipmentSelected.blNo,
+                  containerNo: containerNo
+                })
               }).done(function (shipmentDetail) {
                 if (shipmentDetail != null) {
                   hot.setDataAtCell(change[0], 5, shipmentDetail.consignee); //consignee
