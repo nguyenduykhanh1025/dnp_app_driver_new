@@ -156,10 +156,13 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	@Override
 	public List<ShipmentDetail> selectShipmentDetailsByBLNo(String blNo) {
 		try {
-			String url = Global.getApiUrl() + "/shipmentDetail/list/" + blNo;
+			String url = Global.getApiUrl() + "/shipmentDetail/list";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
+			Shipment shipment = new Shipment();
+			shipment.setBlNo(blNo);
+			HttpEntity<Shipment> httpEntity = new HttpEntity<Shipment>(shipment);
+			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
 			List<ShipmentDetail> shipmentDetails = response.getBody();
 			return shipmentDetails;
 		} catch (Exception e) {
