@@ -276,23 +276,15 @@ public class ShipmentDetail extends BaseEntity
     /** info for robot to know the index of record in catos */
     private Integer index;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date fromDate;
-
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date toDate;
-	
 	/** Ngay tau den theo tau va chuyen */
 	private Date eta;
+
+	/** Ngay tau di (plan)*/
+	private Date etd;
 	
-    public void setFromDate(Date fromDate) {
-		this.fromDate = fromDate;
-	}
-
-	public Date getFromDate() {
-		return fromDate;
-	}
-
+	/** Ten mat hang: Khai bao khi ha bai cho xuat*/
+	private String commodity;
+	
     public void setId(Long id) {
         this.id = id;
     }
@@ -876,6 +868,22 @@ public class ShipmentDetail extends BaseEntity
 		this.eta = eta;
 	}
 
+	public Date getEtd() {
+		return etd;
+	}
+
+	public void setEtd(Date etd) {
+		this.etd = etd;
+	}
+
+	public String getCommodity() {
+		return commodity;
+	}
+
+	public void setCommodity(String commodity) {
+		this.commodity = commodity;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -908,6 +916,7 @@ public class ShipmentDetail extends BaseEntity
             .append("transportType", getTransportType())
             .append("emptyDepot", getEmptyDepot())
             .append("cargoType", getCargoType())
+            .append("commodity", getCommodity())
             .append("vgmChk", getVgmChk())
             .append("vgm", getVgm())
             .append("vgmPersonInfo", getVgmPersonInfo())
@@ -939,7 +948,7 @@ public class ShipmentDetail extends BaseEntity
             .append("vslAndVoy", getVslAndVoy())
             .append("invoiceNo", getInvoiceNo())
             .append("vatAfterFee", getVatAfterFee())
-//            .append("consigneeTaxCode", getTaxCode())
+            .append("taxCode", getTaxCode())
             .append("consigneeByTaxCode", getConsigneeByTaxCode())
             .append("customsNo", getCustomsNo())
             .append("contSupplyStatus", getContSupplyStatus())
@@ -948,6 +957,7 @@ public class ShipmentDetail extends BaseEntity
             .append("contSupplyRemark", getContSupplyRemark())
             .append("customScanTime", getCustomScanTime())
             .append("eta", getEta())
+            .append("etd", getEtd())
             .toString();
     }
 }
