@@ -455,5 +455,9 @@ public class EdoServiceImpl implements IEdoService
 	public Map<String, String> getReportByCarrierGroup(String[] codes) {
 		return edoMapper.getReportByCarrierGroup(codes);
 	}
+
+	public Edo getBillOfLadingInfo(String blNo) {
+		return edoMapper.getBillOfLadingInfo(blNo);
+	}
 	
 }

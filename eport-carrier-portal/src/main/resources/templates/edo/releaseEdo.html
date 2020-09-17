@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+  <head>
+    <th:block th:include="include :: header('Phát Hành DO')" />
+    <th:block th:include="include :: handsontable-css" />
+  </head>
+  <style>
+    .handsontable th {
+      font-size: 1.1em;
+    }
+    .handsontable td.htInvalid {
+      color: #721c24;
+      background-color: #f8d7da !important;
+    }
+    .red {
+      color: red !important;
+      text-transform: none;
+    }
+  </style>
+  
+  <body class="white-bg full-height-layout">
+  <div class="row">
+      <div class="col-sm-12" style="margin-top: 0px; padding-bottom:5px">
+      <div class="col-sm-12 fixed-table-toolbar">
+          <div class="bs-bars pull-left" style="margin-top:5px; display: flex;">
+            <div class="btn-group-sm" id="toolbar" role="group" style="margin-right: 10px;">
+              <a class="btn btn-primary" onclick="saveDO()"><i class="fa fa-check-circle"></i> &nbsp;Phát Hành eDO</a>
+            </div>
+            <div class="btn-group-sm" id="toolbar" role="group">
+              <a class="btn btn-default" onclick="closeItem()"><i class="fa fa-times"></i> &nbsp;Hủy Bỏ</a>
+            </div>
+            <small style="margin-left: 5px;">Các mục có đấu <i>(*)</i> là bắt buộc</small>
+          </div>
+      </div>
+      <div class="col-sm-12 table-container">
+	    <form id="form-do-add">
+	        <div id="dogrid" class="hot handsontable htColumnHeaders"></div>
+	    </form>
+	  </div>
+    </div></div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: handsontable-js" />
+	<script th:src="@{/eport/js/modules/edo/releaseEdo.js}"></script>
+  </body>
+</html>
