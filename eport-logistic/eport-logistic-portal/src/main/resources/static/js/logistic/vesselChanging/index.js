@@ -43,11 +43,11 @@ $(document).ready(function () {
   });
 });
 
-document.getElementById("bookingSearch").addEventListener("keyup", function (event) {
-  event.preventDefault();
-  if (event.keyCode === 13) {
-    shipmentSearch.bookingNo = $("#bookingSearch").val().toUpperCase();
-    loadTable();
+$("#bookingSearch").textbox('textbox').bind('keydown', function (e) {
+  // enter key
+  if (e.keyCode == 13) {
+      shipmentSearch.bookingSearch = $("#blNo").textbox('getText').toUpperCase();
+      loadTable();
   }
 });
 

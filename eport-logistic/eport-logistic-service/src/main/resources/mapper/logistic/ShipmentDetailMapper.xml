@@ -84,7 +84,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         empty_depot, empty_depot_location, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, 
         pre_pickup_payment_status, custom_status, payment_status, process_status, do_status, do_received_time, 
         user_verify_status, finish_status, status, order_no, tax_code, consignee_by_tax_code, cont_supply_status, 
-        planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, remark, pay_type, payer, payer_name, customs_no, custom_scan_time, delivery_address, delivery_mobile, delivery_remark, eta, etd, create_by, create_time, update_by, update_time from shipment_detail
+        planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, remark, pay_type, payer, payer_name, customs_no, 
+        custom_scan_time, delivery_address, delivery_mobile, delivery_remark, eta, etd, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
      <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail
@@ -311,7 +312,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	vsl_nm || ' - ' || vsl_name|| ' - ' || voy_carrier as vsl_nm,
         	ope_code || ': ' || carrier_name as ope_code,
         	carrier_name, loading_port, discharge_port, transport_type,
-        	empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status,
+        	empty_depot, cargo_type, commodity, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status,
         	custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, finish_status,
             cont_supply_status, planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, pay_type, payer, payer_name, customs_no, custom_scan_time, 
         	delivery_address, delivery_mobile, delivery_remark, eta, etd, status, remark, create_by, create_time, update_by, update_time 

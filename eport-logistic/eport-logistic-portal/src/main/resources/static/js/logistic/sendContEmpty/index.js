@@ -113,6 +113,13 @@ $('#main-layout').layout({
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
+    $("#shipmentStatus").combobox({
+        onSelect: function (option) {
+            shipmentSearch.status = option.value;
+            loadTable();
+        }
+    });
+
     $("#blNo").textbox('textbox').bind('keydown', function (e) {
         // enter key
         if (e.keyCode == 13) {
@@ -1560,7 +1567,7 @@ function exportReceipt(){
     $.modal.openTab("In Biên Nhận", ctx +"logistic/print/receipt/shipment/"+shipmentSelected.id);
 }
 
-function removeShipmentSendEmpty(){
+function removeShipment(){
 	if (!shipmentSelected) {
 		$.modal.alertError("Bạn chưa chọn Lô!");
 		return

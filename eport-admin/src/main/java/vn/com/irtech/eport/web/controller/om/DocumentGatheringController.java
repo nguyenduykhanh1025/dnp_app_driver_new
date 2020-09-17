@@ -132,8 +132,8 @@ public class DocumentGatheringController extends AdminBaseController  {
 			shipmentComment.setUserAlias(getUser().getDept().getDeptName());
 			shipmentComment.setCommentTime(new Date());
 			shipmentComment.setContent(content);
-			// TODO : set topic
-			shipmentCommentService.updateShipmentComment(shipmentComment);
+			shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_OM_DOCUMENT);
+			shipmentCommentService.insertShipmentComment(shipmentComment);
 		}
  		return success("Thu chứng từ gốc thành công");
 	}

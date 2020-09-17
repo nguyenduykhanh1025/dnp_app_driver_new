@@ -113,6 +113,13 @@ $('#main-layout').layout({
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
+    $("#shipmentStatus").combobox({
+        onSelect: function (option) {
+            shipmentSearch.status = option.value;
+            loadTable();
+        }
+    });
+
     $("#bookingNo").textbox('textbox').bind('keydown', function (e) {
         // enter key
         if (e.keyCode == 13) {
@@ -391,7 +398,20 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
-    if (sourceData[row] && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].finishStatus) {
+    if (sourceData[row] && sourceData[row].contSupplyStatus && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].finishStatus) {
+        // Command container supply status
+        let contSupply = '<i id="contSupply" class="fa fa-check easyui-tooltip" title="Chưa yêu cầu cấp container" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
+        switch (sourceData[row].contSupplyStatus) {
+            case 'R':
+                contSupply = '<i id="contSupply" class="fa fa-check easyui-tooltip" title="Đang chờ cấp container" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
+                break;
+            case 'Y':
+                contSupply = '<i id="contSupply" class="fa fa-check easyui-tooltip" title="Đã cấp container" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+                break;
+            case 'N':
+                contSupply = '<i id="contSupply" class="fa fa-check easyui-tooltip" title="Có thể yêu cầu cấp container" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+                break;
+        }
         // Command process status
         let process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
         switch (sourceData[row].processStatus) {
@@ -435,7 +455,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 break;
         }
         // Return the content
-        let content = '<div>' + process + payment + released + '</div>';
+        let content = '<div>' + contSupply + process + payment + released + '</div>';
         $(td).html(content);
     }
     return td;
@@ -1031,6 +1051,7 @@ function reloadShipmentDetail() {
     $("#exportBillBtn").prop("disabled", true);
     $("#exportReceiptBtn").prop("disabled", true);
     setLayoutRegisterStatus();
+    loadTable();
     loadShipmentDetail(shipmentSelected.id);
 }
 
@@ -1062,6 +1083,7 @@ function getDataSelectedFromTable(isValidate) {
         shipmentDetail.status = object["status"];
         shipmentDetail.eta = object["eta"];
         shipmentDetail.shipmentId = shipmentSelected.id;
+        shipmentDetail.contSupplyStatus = object["contSupplyStatus"];
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);
         if (object["registerNo"] != null && !regiterNos.includes(object["registerNo"])) {
@@ -1317,27 +1339,79 @@ function deleteShipmentDetail() {
 
 // Handling logic
 function requestContSupply() {
-    $.modal.confirmShipment("Xác nhận yêu cầu cấp rỗng những container này?", function () {
-        getDataSelectedFromTable(true);
-        if (shipmentDetails.length > 0) {
-            $.ajax({
-                url: prefix + "/cont-req/shipment-detail/" + shipmentDetailIds,
-                method: "POST",
-                success: function (result) {
-                    if (result.code == 0) {
-                        $.modal.alertSuccess(result.msg);
-                        reloadShipmentDetail();
-                    } else {
-                        $.modal.alertError(result.msg);
-                    }
-                    $.modal.closeLoading();
-                },
-                error: function (result) {
-                    $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-                    $.modal.closeLoading();
-                },
+    getDataSelectedFromTable(true);
+    if (shipmentDetails.length > 0) {
+
+        // Check if list cont exists cont has been supplied
+        let containers = '';
+        shipmentDetails.forEach(function(element) {
+            console.log(element);
+            if (element.contSupplyStatus == 'Y') {
+                containers += element.containerNo + ',';
+            }
+        });
+        if (containers.length > 0) {
+            containers = containers.substring(0, containers.length-1);
+            layer.confirm("Quý khách đang yêu cầu cấp rỗng lại cho số container: " + containers + ".", {
+                icon: 3,
+                title: "Xác Nhận",
+                btn: ['Đồng Ý', 'Hủy Bỏ']
+            }, function () {
+                layer.close(layer.index);
+                openFormRemarkBeforeReqCont();
+            }, function () {
+                // close form
             });
+        } else {
+            openFormRemarkBeforeReqCont();
         }
+    }
+}
+
+function openFormRemarkBeforeReqCont() {
+    // Form confirm req supply cont
+    layer.open({
+        type: 2,
+        area: [500 + 'px', 230 + 'px'],
+        fix: true,
+        maxmin: true,
+        shade: 0.3,
+        title: 'Xác Nhận',
+        content: prefix + "/req/supply/confirmation",
+        btn: ["Xác Nhận", "Hủy"],
+        shadeClose: false,
+        yes: function(index, layero) {
+            requestCont(index, layero);
+        },
+        cancel: function(index) {
+            return true;
+        }
+    });
+}
+
+function requestCont(index, layero) {
+    let childLayer = layero.find("iframe")[0].contentWindow.document;
+    $.modal.loading("Đang xử lý ...");
+    $.ajax({
+        url: prefix + "/cont-req/shipment-detail",
+        method: "POST",
+        data: {
+            shipmentDetailIds: shipmentDetailIds,
+            contReqRemark: $(childLayer).find("#message").val()
+        },
+        success: function (result) {
+            if (result.code == 0) {
+                $.modal.alertSuccess(result.msg);
+                reloadShipmentDetail();
+            } else {
+                $.modal.alertError(result.msg);
+            }
+            $.modal.closeLoading();
+        },
+        error: function (result) {
+            $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+            $.modal.closeLoading();
+        },
     });
 }
 
@@ -1570,7 +1644,7 @@ function exportReceipt(){
     $.modal.openTab("In Biên Nhận", ctx +"logistic/print/receipt/shipment/"+shipmentSelected.id);
 }
 
-function removeShipmentReceiveEmpty(){
+function removeShipment(){
 	if (!shipmentSelected) {
 		$.modal.alertError("Bạn chưa chọn Lô!");
 		return
