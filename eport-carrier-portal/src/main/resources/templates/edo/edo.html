@@ -22,22 +22,25 @@
         <div class="flex__right w-80">
           <div class="justify-content-around align-items-center" id="ff">
             <div class="d-inline">
-              <input id="logisticGroups" class="easyui-combobox">
+              <input id="vessel" class="easyui-combobox">
             </div>
             <div class="d-inline">
-              <input class="easyui-textbox" id="blNo" data-options="prompt:'B/L No'" />
+              <input id="voyNo" class="easyui-combobox">
             </div>
             <div class="d-inline">
-              <input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
+              <input class="easyui-textbox" id="searchBillNo" data-options="prompt:'B/L No'" />
             </div>
             <div class="d-inline">
-              <input class="easyui-textbox" id="consignee" data-options="prompt:'Chủ Hàng'" />
+              <input class="easyui-textbox" id="searchContNo" data-options="prompt:'Container No'" />
             </div>
             <div class="d-inline">
-              <input id="vesselAndVoyages" class="easyui-combobox">
+              <input id="fromDate" class="easyui-datebox" style="width: 100px;" data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
             </div>
             <div class="d-inline">
-              <button class="btn btn-success" onclick="search()">Tìm kiếm</button>
+                <input id="toDate" class="easyui-datebox" style="width: 100px;" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
+            </div>
+            <div class="d-inline">
+              <button class="btn btn-success" onclick="searchDo()">Tìm kiếm</button>
             </div>
             <div class="d-inline">
               <button class="btn btn-success btn-outline" onclick="clearInput()">Làm mới</button>
@@ -76,7 +79,9 @@
         </div>
         <div data-options="region:'center'" style="width:100%;">
           <div>
-            <button class="btn btn-sm btn-primary" id="checkCustomStatusByProcessOrderId" onclick="notifyResult()"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Action</button>
+            <button class="btn btn-sm btn-danger" id="delEdo" onclick="delEdo()"><i class="fa fa-times text-primary"></i> Xóa eDO</button>
+            <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i class="fa fa-pencil-square-o"></i> Cập Nhật eDO</button>
+            <button class="btn btn-sm btn-success" id="releaseEdo" onclick="addEdo()"><i class="fa fa-check-circle"></i> Phát hành DO</button>
           </div>
           <table id="container-grid" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead data-options="frozen:true">
@@ -121,10 +126,10 @@
                   Voy No
                 </th>
                 <th data-options="field:'pol',align:'left'" width="110">
-                  Pol
+                  POL
                 </th>
                 <th data-options="field:'pod',align:'left'" width="110">
-                  Pod
+                  POD
                 </th>
                 <th data-options="field:'status',align:'left',formatter:formatStatus" width="91">
                   Status

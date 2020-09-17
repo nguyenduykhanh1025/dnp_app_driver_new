@@ -386,7 +386,7 @@ public class EdoServiceImpl implements IEdoService
 		return edoMapper.selectVoyNos(edo);
 	} 
 
-	public List<String> selectVessels(Edo edo)
+	public List<Edo> selectVessels(Edo edo)
 	{
 		return edoMapper.selectVessels(edo);
 	}

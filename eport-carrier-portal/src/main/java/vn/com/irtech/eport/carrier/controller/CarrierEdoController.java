@@ -90,6 +90,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		edo.setCarrierCode(null);
 		edo.setParams(groupCodes);
 		edo.setDelFlg(0);
+		edo.setContainerNumber(null);
 		List<Edo> dataList = edoService.selectEdoList(edo);
 		return getDataTable(dataList);
 	}
@@ -241,15 +242,15 @@ public class CarrierEdoController extends CarrierBaseController {
 		return edoService.selectVoyNos(edo);
 	}
 
-	@GetMapping("/getVessel")
+	@PostMapping("/getVessel")
 	@ResponseBody
-	public List<String> listVessels(String keyString) {
+	public List<Edo> listVessels() {
 		Edo edo = new Edo();
-		edo.setVessel(keyString);
 		Map<String, Object> groupCodes = new HashMap<>();
 		groupCodes.put("groupCode", super.getGroupCodes());
 		edo.setParams(groupCodes);
-		return edoService.selectVessels(edo);
+		List<Edo> edos = edoService.selectVessels(edo);
+		return edos;
 	}
 
 	@GetMapping("/getEmptyContainerDeport")

@@ -62,19 +62,22 @@ config = {
   colHeaders: [
     "Hãng tàu <i class='red'>(*)</i><br>OPR Code",
     "Số vận đơn <i class='red'>(*)</i><br>B/L No.",
+    "Order Number",
     "Số container <i class='red'>(*)</i><br> Container No.",
-    "Sztp <i class='red'>(*)</i><br> Sztp.",
+    "SZTP",
     "Tên khách hàng <i class='red'>(*)</i><br> Consignee",
     "Hạn lệnh <i class='red'>(*)</i><br> Valid to date",
     "Nơi hạ vỏ <br> Empty depot",
     "Ngày miễn lưu <br> DET free time",
     "Tên tàu <br> Vessel",
     "Chuyến <br> Voyage",
-    "Trọng tải <br> Weight",
+    "Trọng lượng <br> Weight",
+    "POL",
+    "POD",
     "Số seal <br> Seal No",
     "Ghi chú",
   ],
-  colWidths: [10, 10, 10, 10, 20, 12, 15, 8, 8, 8, 10, 10, 15],
+  colWidths: [10, 12, 12, 15, 10, 20, 12, 15, 12, 8, 8, 10, 10, 10, 10, 15],
   filter: "true",
   columns: [
     {
@@ -86,6 +89,9 @@ config = {
     {
       data: "blNo",
       validator: emptyValidator,
+    },
+    {
+      data: "orderNumber",
     },
     {
       data: "containerNo",
@@ -125,10 +131,16 @@ config = {
       strict: false
     },
     {
-      data: "voyage",
+      data: "voyNo",
     },
     {
       data: "weight",
+    },
+    {
+      data: "pol",
+    },
+    {
+      data: "pod",
     },
     {
       data: "sealNo",
@@ -241,21 +253,29 @@ function saveDO() {
     }
     doObj.carrierCode = item["carrierCode"];
     doObj.billOfLading = item["blNo"];
+    doObj.orderNumber = item["orderNumber"];
     doObj.containerNumber = item["containerNo"];
     doObj.sztp = item["sztp"];
     doObj.consignee = item["consignee"];
     doObj.expiredDem = date.getTime();
     doObj.detFreeTime = item["detFreetime"];
     doObj.emptyContainerDepot = item["emptyDepot"];
-    doObj.voyNo = item["voyage"];
+    doObj.voyNo = item["voyNo"];
     doObj.vessel = item["vessel"];
     doObj.remark = item["remark"];
     doObj.weight = item["weight"];
+    doObj.pol = item["pol"];
+    doObj.pod = item["pod"];
     doObj.sealNo = item["sealNo"];
     doList.push(doObj);
   });
-
+  
   $.each(doList, function (index, item) {
+  console.log("TCL: saveDO -> item", item)
+    let billNoCheck = doList[0]["billOfLading"];
+    let consigneeCheck = doList[0]["consignee"];
+    let voyageCheck = doList[0]["voyNo"];
+    let vesselCheck = doList[0]["vessel"];
     if (item["carrierCode"] == null || item["carrierCode"] == "") {
       $.modal.alertError(
         "Có lỗi tại hàng [" +
@@ -264,12 +284,23 @@ function saveDO() {
       );
       errorFlg = true;
       return false;
-    }
-    if (item["billOfLading"] == null || item["billOfLading"] == "") {
+    }   
+    if (item["billOfLading"] == null || item["billOfLading"] == "" || item["billOfLading"] != billNoCheck) {
+     
       $.modal.alertError(
         "Có lỗi tại hàng [" +
           (index + 1) +
-          "].<br>Lỗi: Số vận đơn (B/L No) không được trống."
+          "].<br>Lỗi: Số vận đơn (B/L No) không được trống. Hoặc không được khác nhau"
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["billOfLading"] != billNoCheck) {
+     
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi: Số vận đơn (B/L No) không được khác nhau"
       );
       errorFlg = true;
       return false;
@@ -283,11 +314,57 @@ function saveDO() {
       errorFlg = true;
       return false;
     }
-    if (item["consignee"] == null || item["consignee"] == "") {
+    
+    if (item["vessel"] == null || item["vessel"] == "") {
       $.modal.alertError(
         "Có lỗi tại hàng [" +
           (index + 1) +
-          "].<br>Lỗi: Tên khách hàng không được trống."
+          "].<br>Lỗi:Tên tàu không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["vessel"] != vesselCheck) {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:Tên tàu không được khác nhau."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["voyNo"] == null || item["voyNo"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:Chuyến không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["voyNo"] != voyageCheck) {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:Chuyến không được khác nhau."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["consignee"] == null || item["consignee"] == "" || item["consignee"] != consigneeCheck) {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi: Tên khách hàng không được trống. Hoặc không được khác nhau"
+      );
+      errorFlg = true;
+      return false;
+    }
+    if ( item["consignee"] != consigneeCheck) {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi: Tên khách hàng không được khác nhau"
       );
       errorFlg = true;
       return false;
@@ -315,6 +392,8 @@ function saveDO() {
         return false;
       }
     }
+
+    
   });
   if (!errorFlg && doList.length == 0) {
     $.modal.alert("Bạn chưa nhập thông tin.");
@@ -346,6 +425,7 @@ function saveDO() {
               reload();
             } else {
               $.modal.alertError(result.msg);
+              $.modal.closeLoading();
             }
             },
             error: function (result) {

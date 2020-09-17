@@ -393,7 +393,7 @@
     </where>
   </select>
 
-  <select id="selectVessels" parameterType="Edo" resultType="String">
+  <select id="selectVessels" parameterType="Edo" resultMap="EdoResult">
     select distinct vessel
     from edo
     <where>

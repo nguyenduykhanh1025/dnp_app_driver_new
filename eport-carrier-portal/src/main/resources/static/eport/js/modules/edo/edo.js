@@ -1,7 +1,9 @@
 const PREFIX = ctx + "edo";
+const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var bill;
+var fromDate, toDate;
 var edo = new Object();
-var coutCheck = 0;
+var countCheck = 0;
 $(function () {
   $("#updateEdo").attr("disabled", true);
   $("#delEdo").attr("disabled", true);
@@ -36,28 +38,71 @@ $(function () {
     }
 
   });
-  $('#searchBillNo').keyup(function (event) {
-    if (event.keyCode == 13) {
-      billOfLading = $('#searchBillNo').val().toUpperCase();
-      if (billOfLading == "") {
-        loadTable(edo);
-      }
-      edo = new Object();
-      edo.billOfLading = billOfLading;
+
+  $("#searchBillNo").textbox('textbox').bind('keydown', function(e) {
+    // enter key
+    if (e.keyCode == 13) {
+      edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
       loadTable(edo);
     }
   });
-  $("#searchContNo").keyup(function (event) {
-    if (event.keyCode == 13) {
-      containerNumber = $("#searchContNo").val().toUpperCase();
-      if (containerNumber == "") {
-        loadTable(edo);
-      }
-      edo = new Object();
-      edo.containerNumber = containerNumber;
+
+  $("#searchContNo").textbox('textbox').bind('keydown', function(e) {
+    // enter key
+    if (e.keyCode == 13) {
+      edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
       loadTable(edo);
     }
   });
+  $('#fromDate').datebox({
+    onSelect: function(date){
+      date.setHours(0,0,0);
+      fromDate = date;
+      if (toDate != null && date.getTime() > toDate.getTime()) {
+        $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
+      } else {
+        fromDate.setHours(23, 59, 59);
+        edo.fromDate = fromDate.getTime();
+        edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
+        edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
+        loadTable(edo);
+      }
+      return date;
+    }
+  });
+
+  $('#toDate').datebox({
+    onSelect: function(date){
+      date.setHours(23,59,59);
+      toDate = date;
+      if (fromDate != null && date.getTime() < fromDate.getTime()) {
+        $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
+      } else {
+        toDate.setHours(23, 59, 59);
+        edo.toDate = toDate.getTime();
+        edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
+        edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
+        loadTable(edo);
+      }
+    }
+  });
+
+});
+
+
+
+$("#vessel").combobox({
+  valueField: 'id',
+  textField: 'vessel',
+  url: PREFIX + "/getVessel",
+  onSelect: function (logistic) {
+    var url = PREFIX + '/logistic/' + logistic.id + '/drivers';
+    $('#voyNo').combobox({
+      valueField: 'id',
+      textField: 'mobileNumber',
+      url: url
+    });
+  }
 });
 
 
@@ -144,7 +189,7 @@ function formatAction(value, row, index) {
   if (row.status == '3') {
     disabled = "disabled";
   }
-  actions.push('<button ' + disabled + ' class="btn btn-success btn-xs btn-action mt5 mb5" style="display: inline-block;" id="updateEdo" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</button>' + '<br>');
+  actions.push('<button ' + disabled + ' class="btn btn-success btn-xs btn-action mt5 mb5" id="updateEdo" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</button>' + '<br>');
   actions.push('<a class="btn btn-info btn-xs btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
   return actions.join("");
 }
@@ -448,40 +493,42 @@ function generatePDF() {
 
 }
 
-$('#btnRefresh').click(function(){
+
+function clearInput()
+{
   $(".c-search-box-vessel").text(null);
   $(".c-search-box-voy-no").text(null);
-  $("#fromDate").val(null);
-  $("#toDate").val(null);
-  $("#searchBillNo").val(null);
-  $("#searchContNo").val(null);
+  $("#fromDate").datebox('setValue', '');
+  $("#toDate").datebox('setValue', '');
+  $("#searchBillNo").textbox('setText', '');
+  $("#searchContNo").textbox('setText', '');
   edo.vessel = null;
-  loadTable();
-});
+  loadTable(edo);
+}
 
 
 
 $('#container-grid').datagrid({
   onCheck: function(){
-    coutCheck += 1;
+    countCheck += 1;
     $("#updateEdo").attr("disabled", false);
     $("#delEdo").attr("disabled", false);
   },
   onCheckAll: function(index){
-    coutCheck = index.length;
+    countCheck = index.length;
     $("#updateEdo").attr("disabled", false);
     $("#delEdo").attr("disabled", false);
   },
   onUncheck: function(){
-    coutCheck = coutCheck - 1;
-    if(coutCheck == 0)
+    countCheck = countCheck - 1;
+    if(countCheck == 0)
     {
       $("#updateEdo").attr("disabled", true);
       $("#delEdo").attr("disabled", true);
     }
   },
   onUncheckAll: function(){
-    coutCheck = 0;
+    countCheck = 0;
     $("#updateEdo").attr("disabled", true);
     $("#delEdo").attr("disabled", true);
   },
@@ -489,4 +536,27 @@ $('#container-grid').datagrid({
 
 function addEdo() {
   $.modal.openTab("Phát Hành eDO", PREFIX + "/releaseEdo");
+}
+
+function dateformatter(date){
+  var y = date.getFullYear();
+  var m = date.getMonth()+1;
+  var d = date.getDate();
+  return (d<10?('0'+d):d) + '/' + (m<10?('0'+m):m) + '/' + y;
+}
+
+function dateparser(s){
+  var ss = (s.split('\.'));
+  var d = parseInt(ss[0],10);
+  var m = parseInt(ss[1],10);
+  var y = parseInt(ss[2],10);
+  if (!isNaN(y) && !isNaN(m) && !isNaN(d)){
+    return new Date(y,m-1,d);
+  } 
+}
+
+
+function dateToString(date) {
+  return ("0" + date.getDate()).slice(-2) + "/" + ("0"+(date.getMonth()+1)).slice(-2) + "/" + date.getFullYear()
+  + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
 }
