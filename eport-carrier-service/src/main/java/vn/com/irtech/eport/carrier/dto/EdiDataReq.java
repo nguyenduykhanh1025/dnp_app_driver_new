@@ -3,7 +3,6 @@ package vn.com.irtech.eport.carrier.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -32,8 +31,7 @@ public class EdiDataReq implements Serializable {
 
 	private String releaseNo;
 
-	@Max(30)
-	private Integer detFreeDays;
+	private String detFreeDays;
 
 	@NotNull
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
@@ -102,11 +100,11 @@ public class EdiDataReq implements Serializable {
 		this.releaseNo = releaseNo;
 	}
 
-	public Integer getDetFreeDays() {
+	public String getDetFreeDays() {
 		return detFreeDays;
 	}
 
-	public void setDetFreeDays(Integer detFreeDays) {
+	public void setDetFreeDays(String detFreeDays) {
 		this.detFreeDays = detFreeDays;
 	}
 

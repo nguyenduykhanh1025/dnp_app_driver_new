@@ -303,8 +303,9 @@ public class EdoServiceImpl implements IEdoService
 				haulage[4] = haulage[4].substring(0, haulage[4].length());
 				if (!haulage[4].isEmpty()) {
 					try{
-						int i = Integer.parseInt(haulage[4]);
-						edi.setDetFreeTime(i);
+//						int i = Integer.parseInt(haulage[4]);
+//						edi.setDetFreeTime(i);
+						edi.setDetFreeTime(haulage[4]);
 					}catch (Exception e) {
 						e.printStackTrace();
 					}
