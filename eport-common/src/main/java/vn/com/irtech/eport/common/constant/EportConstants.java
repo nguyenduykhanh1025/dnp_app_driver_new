@@ -78,6 +78,20 @@ public interface EportConstants {
 	public static final Integer SHIPMENT_SUPPLY_STATUS_WAITING = 0;
 	/** Finish supply container */
 	public static final Integer SHIPMENT_SUPPLY_STATUS_FINISH = 1;
+
+	// Container supply status
+	/** Container status init */
+	public static final Integer CONTAINER_STATUS_INIT = 0;
+	/** Container status saved */
+	public static final Integer CONTAINER_STATUS_SAVED = 1;
+	/** Container status process order */
+	public static final Integer CONTAINER_STATUS_PROCESSING = 2;
+	/** Container status process order */
+//	public static final Integer CONTAINER_STATUS_PAYMENT = 3;
+//	/** Container status process order */
+//	public static final Integer CONTAINER_STATUS_CUSTOM = 4;
+//	/** Container status process order */
+//	public static final Integer CONTAINER_STATUS_FINISH = 5;
 	
 	// Container supply status
 	/** Container supply status init */

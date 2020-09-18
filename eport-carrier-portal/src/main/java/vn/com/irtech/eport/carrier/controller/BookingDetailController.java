@@ -175,11 +175,7 @@ public class BookingDetailController extends CarrierBaseController
 	@ResponseBody
 	public AjaxResult getConsigneeList() {
 		AjaxResult ajaxResult = success();
-		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeListTaxCode");
-		if (listConsignee == null) {
-			listConsignee = shipmentDetailService.getConsigneeList();
-			CacheUtils.put("consigneeListTaxCode", listConsignee);
-		}
+		List<String> listConsignee = shipmentDetailService.getConsigneeList();
 		ajaxResult.put("consigneeList", listConsignee);
 		return ajaxResult;
     }
