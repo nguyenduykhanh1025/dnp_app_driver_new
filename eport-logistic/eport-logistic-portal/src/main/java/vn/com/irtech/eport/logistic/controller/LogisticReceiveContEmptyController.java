@@ -149,12 +149,8 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	// FORM ADD NEW SHIPMENT
 	@GetMapping("/shipment/add")
 	public String add(ModelMap mmap) {
-		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
-		if (oprCodeList == null) {
-			oprCodeList = catosApiService.getOprCodeList();
-			oprCodeList.add(0, "Chọn OPR");
-			CacheUtils.put("oprCodeList", oprCodeList);
-		}
+		List<String> oprCodeList = catosApiService.getOprCodeList();
+		oprCodeList.add(0, "Chọn OPR");
 		
 		mmap.put("oprCodeList", oprCodeList);
 		mmap.put("taxCode", getGroup().getMst());
@@ -168,12 +164,8 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			mmap.put("shipment", shipment);
 		}
-		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
-		if (oprCodeList == null) {
-			oprCodeList = catosApiService.getOprCodeList();
-			oprCodeList.add(0, "Chọn OPR");
-			CacheUtils.put("oprCodeList", oprCodeList);
-		}
+		List<String> oprCodeList = catosApiService.getOprCodeList();
+		oprCodeList.add(0, "Chọn OPR");
 		
 		mmap.put("oprCodeList", oprCodeList);
         return PREFIX + "/edit";
