@@ -361,11 +361,11 @@ public class CarrierEdoController extends CarrierBaseController {
 					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
 							+ "'.<br/>Lỗi: Hạn lệnh không được phép là ngày quá khứ");
 				}
-				// DEM Free date la so
-				if (e.getDetFreeTime() != null && e.getDetFreeTime() >= 10000) {
-					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
-							+ "'.<br/>Lỗi: Ngày miễn lưu không được lớn hơn 9999");
-				}
+				// // DEM Free date la so
+				// if (e.getDetFreeTime() != null && e.getDetFreeTime() >= 10000) {
+				// 	return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
+				// 			+ "'.<br/>Lỗi: Ngày miễn lưu không được lớn hơn 9999");
+				// }
 
 				// Bill is the same
 				if (!e.getBillOfLading().equals(billOfLading)) {
