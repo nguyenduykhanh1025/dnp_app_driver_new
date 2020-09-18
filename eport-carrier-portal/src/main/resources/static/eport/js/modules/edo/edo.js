@@ -1,7 +1,9 @@
 const PREFIX = ctx + "edo";
+const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var bill;
+var fromDate, toDate;
 var edo = new Object();
-var coutCheck = 0;
+var countCheck = 0;
 $(function () {
   $("#updateEdo").attr("disabled", true);
   $("#delEdo").attr("disabled", true);
@@ -36,28 +38,82 @@ $(function () {
     }
 
   });
-  $('#searchBillNo').keyup(function (event) {
-    if (event.keyCode == 13) {
-      billOfLading = $('#searchBillNo').val().toUpperCase();
-      if (billOfLading == "") {
-        loadTable(edo);
-      }
-      edo = new Object();
-      edo.billOfLading = billOfLading;
+
+  $("#searchBillNo").textbox('textbox').bind('keydown', function(e) {
+    // enter key
+    if (e.keyCode == 13) {
+      edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
       loadTable(edo);
     }
   });
-  $("#searchContNo").keyup(function (event) {
-    if (event.keyCode == 13) {
-      containerNumber = $("#searchContNo").val().toUpperCase();
-      if (containerNumber == "") {
-        loadTable(edo);
-      }
-      edo = new Object();
-      edo.containerNumber = containerNumber;
+
+  $("#searchContNo").textbox('textbox').bind('keydown', function(e) {
+    // enter key
+    if (e.keyCode == 13) {
+      edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
       loadTable(edo);
     }
   });
+  $('#fromDate').datebox({
+    onSelect: function(date){
+      date.setHours(0,0,0);
+      fromDate = date;
+      if (toDate != null && date.getTime() > toDate.getTime()) {
+        $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
+      } else {
+        fromDate.setHours(23, 59, 59);
+        edo.fromDate = fromDate.getTime();
+        edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
+        edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
+        loadTable(edo);
+      }
+      return date;
+    }
+  });
+
+  $('#toDate').datebox({
+    onSelect: function(date){
+      date.setHours(23,59,59);
+      toDate = date;
+      if (fromDate != null && date.getTime() < fromDate.getTime()) {
+        $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
+      } else {
+        toDate.setHours(23, 59, 59);
+        edo.toDate = toDate.getTime();
+        edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
+        edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
+        loadTable(edo);
+      }
+    }
+  });
+
+});
+
+
+$("#vessel2").combobox({
+  valueField: 'vessel',
+  textField: 'vessel',
+  url: PREFIX + "/getVessel",
+  onSelect: function (vessel) {
+    $("#fromDate").datebox('setValue', '');
+    $("#toDate").datebox('setValue', '');
+    $("#searchBillNo").textbox('setText', '');
+    $("#searchContNo").textbox('setText', '');
+    edo = new Object();
+    edo.vessel = vessel.vessel
+    edo.voyNo = null;
+    loadTable(edo);
+    var url = PREFIX + '/getVoyNo/' + vessel.vessel;
+    $('#voyNo').combobox({
+      valueField: 'voyNo',
+      textField: 'voyNo',
+      url: url,
+      onSelect: function (voyNo) {
+        edo.voyNo = voyNo.voyNo
+        loadTable(edo);
+      }
+    });
+  }
 });
 
 
@@ -144,8 +200,8 @@ function formatAction(value, row, index) {
   if (row.status == '3') {
     disabled = "disabled";
   }
-  actions.push('<button ' + disabled + ' class="btn btn-success btn-xs btn-action mt5 mb5" style="display: inline-block;" id="updateEdo" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</button>' + '<br>');
-  actions.push('<a class="btn btn-info btn-xs btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
+  actions.push('<a class="btn btn-success btn-xs" id="viewUpdateCont" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</a> ');
+  actions.push('<a class="btn btn-info btn-xs" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
   return actions.join("");
 }
 
@@ -154,7 +210,7 @@ function viewHistoryCont(id) {
 }
 
 function viewUpdateCont(id) {
-  $.modal.openOption("Cập nhật container", PREFIX + "/update/" + id, 500, 420);
+  $.modal.openOption("Cập nhật container", PREFIX + "/update/" + id, 550, 420);
 }
 
 function loadTableByContainer(billOfLading) {
@@ -202,7 +258,8 @@ function loadTableByContainer(billOfLading) {
 }
 
 function getSelectedRow() {
-  var coutCheck = 0;
+  $("#updateEdo").attr("disabled", true);
+  $("#delEdo").attr("disabled", true);
   var row = $("#dg").datagrid("getSelected");
   if (row) {
     bill = row.billOfLading;
@@ -293,14 +350,14 @@ function multiUpdateEdo() {
     }
     ids.push(row.id);
   }
-  $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 500, 370);
+  $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 550, 370);
 }
 
 function delEdo() {
   let ids = [];
   let rows = $('#container-grid').datagrid('getSelections');
   if (rows.length === 0) {
-    $.modal.alertWarning("Quý khách chưa chọn container để update <br>, vui lòng kiểm tra lại !");
+    $.modal.alertWarning("Quý khách chưa chọn container nào để xóa <br>, vui lòng kiểm tra lại !");
     return;
   }
   for (let i = 0; i < rows.length; i++) {
@@ -354,90 +411,90 @@ function delEdo() {
 
 
 // SEARCH INFO VESSEL AREA
-$('.c-search-box-vessel').on("select2:opening", function(e) {
-  $(".c-search-box-voy-no").text(null);
-  $(this).text(null);
-  edo.vessel = null;
-  edo.voyNo = null;
-  loadTable(edo);
-});
-$(".c-search-box-vessel").select2({
-  theme: "bootstrap",
-  allowClear: true,
-  delay: 250,
-  ajax: {
-    url: PREFIX + "/getVessel",
-    dataType: "json",
-    method: "GET",
-    data: function (params) {
-      return {
-        keyString: params.term,
-      };
-    },
-    processResults: function (data) {
-      let results = []
-      data.forEach(function (element, i) {
-        let obj = {};
-        obj.id = i;
-        obj.text = element;
-        results.push(obj);
-      })
-      return {
-        results: results,
-      };
-    },
-  },
-  placeholder: "Vessel",
-});
-$('.c-search-box-voy-no').on("select2:opening", function(e) {
-  edo = new Object();
-  $(this).text(null);
-  edo.vessel = $('.c-search-box-vessel').text().trim();
-  loadTable(edo);
-});
-  $(".c-search-box-voy-no").select2({
-    theme: "bootstrap",
-    allowClear: true,
-    delay: 250,
-    ajax: {
-      url: PREFIX + "/getVoyNo",
-      dataType: "json",
-      method: "GET",
-      data: function (params) {
-        return {
-          keyString: params.term,
-          vessel: edo.vessel,
-        };
-      },
-      processResults: function (data) {
-        let results = []
-        data.forEach(function (element, i) {
-          let obj = {};
-          obj.id = i;
-          obj.text = element;
-          results.push(obj);
+// $('.c-search-box-vessel').on("select2:opening", function(e) {
+//   $(".c-search-box-voy-no").text(null);
+//   $(this).text(null);
+//   edo.vessel = null;
+//   edo.voyNo = null;
+//   loadTable(edo);
+// });
+// $(".c-search-box-vessel").select2({
+//   theme: "bootstrap",
+//   allowClear: true,
+//   delay: 250,
+//   ajax: {
+//     url: PREFIX + "/getVessel",
+//     dataType: "json",
+//     method: "GET",
+//     data: function (params) {
+//       return {
+//         keyString: params.term,
+//       };
+//     },
+//     processResults: function (data) {
+//       let results = []
+//       data.forEach(function (element, i) {
+//         let obj = {};
+//         obj.id = i;
+//         obj.text = element;
+//         results.push(obj);
+//       })
+//       return {
+//         results: results,
+//       };
+//     },
+//   },
+//   placeholder: "Vessel",
+// });
+// $('.c-search-box-voy-no').on("select2:opening", function(e) {
+//   edo = new Object();
+//   $(this).text(null);
+//   edo.vessel = $('.c-search-box-vessel').text().trim();
+//   loadTable(edo);
+// });
+//   $(".c-search-box-voy-no").select2({
+//     theme: "bootstrap",
+//     allowClear: true,
+//     delay: 250,
+//     ajax: {
+//       url: PREFIX + "/getVoyNo",
+//       dataType: "json",
+//       method: "GET",
+//       data: function (params) {
+//         return {
+//           keyString: params.term,
+//           vessel: edo.vessel,
+//         };
+//       },
+//       processResults: function (data) {
+//         let results = []
+//         data.forEach(function (element, i) {
+//           let obj = {};
+//           obj.id = i;
+//           obj.text = element;
+//           results.push(obj);
   
-        })
-        return {
-          results: results,
-        };
-      },
-    },
-    placeholder: "Voy No",
-  });
+//         })
+//         return {
+//           results: results,
+//         };
+//       },
+//     },
+//     placeholder: "Voy No",
+//   });
 
 
-// For submit search
-$(".c-search-box-vessel").change(function () {
-  edo = new Object();
-  edo.vessel = $(this).text().trim();
-  loadTable(edo);
-});
+// // For submit search
+// $(".c-search-box-vessel").change(function () {
+//   edo = new Object();
+//   edo.vessel = $(this).text().trim();
+//   loadTable(edo);
+// });
 
-$(".c-search-box-voy-no").change(function () {
-  edo.voyNo = $(this).text().trim();
-  loadTable(edo);
-});
+// $(".c-search-box-voy-no").change(function () {
+//   edo.voyNo = $(this).text().trim();
+//   loadTable(edo);
+// });
 
 function generatePDF() {
   if (!bill) {
@@ -448,40 +505,41 @@ function generatePDF() {
 
 }
 
-$('#btnRefresh').click(function(){
-  $(".c-search-box-vessel").text(null);
-  $(".c-search-box-voy-no").text(null);
-  $("#fromDate").val(null);
-  $("#toDate").val(null);
-  $("#searchBillNo").val(null);
-  $("#searchContNo").val(null);
+
+function clearInput()
+{
+  edo = new Object();
+  $("#fromDate").datebox('setValue', '');
+  $("#toDate").datebox('setValue', '');
+  $("#searchBillNo").textbox('setText', '');
+  $("#searchContNo").textbox('setText', '');
   edo.vessel = null;
-  loadTable();
-});
+  loadTable(edo);
+}
 
 
 
 $('#container-grid').datagrid({
   onCheck: function(){
-    coutCheck += 1;
+    countCheck += 1;
     $("#updateEdo").attr("disabled", false);
     $("#delEdo").attr("disabled", false);
   },
   onCheckAll: function(index){
-    coutCheck = index.length;
+    countCheck = index.length;
     $("#updateEdo").attr("disabled", false);
     $("#delEdo").attr("disabled", false);
   },
   onUncheck: function(){
-    coutCheck = coutCheck - 1;
-    if(coutCheck == 0)
+    countCheck = countCheck - 1;
+    if(countCheck == 0)
     {
       $("#updateEdo").attr("disabled", true);
       $("#delEdo").attr("disabled", true);
     }
   },
   onUncheckAll: function(){
-    coutCheck = 0;
+    countCheck = 0;
     $("#updateEdo").attr("disabled", true);
     $("#delEdo").attr("disabled", true);
   },
@@ -489,4 +547,27 @@ $('#container-grid').datagrid({
 
 function addEdo() {
   $.modal.openTab("Phát Hành eDO", PREFIX + "/releaseEdo");
+}
+
+function dateformatter(date){
+  var y = date.getFullYear();
+  var m = date.getMonth()+1;
+  var d = date.getDate();
+  return (d<10?('0'+d):d) + '/' + (m<10?('0'+m):m) + '/' + y;
+}
+
+function dateparser(s){
+  var ss = (s.split('\.'));
+  var d = parseInt(ss[0],10);
+  var m = parseInt(ss[1],10);
+  var y = parseInt(ss[2],10);
+  if (!isNaN(y) && !isNaN(m) && !isNaN(d)){
+    return new Date(y,m-1,d);
+  } 
+}
+
+
+function dateToString(date) {
+  return ("0" + date.getDate()).slice(-2) + "/" + ("0"+(date.getMonth()+1)).slice(-2) + "/" + date.getFullYear()
+  + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
 }
