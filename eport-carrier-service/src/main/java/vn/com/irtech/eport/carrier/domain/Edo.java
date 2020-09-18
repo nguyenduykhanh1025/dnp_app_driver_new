@@ -61,7 +61,7 @@ public class Edo extends BaseEntity {
 
 	/** So Ngay Mien Luu Vo Cont */
 	@Excel(name = "So Ngay Mien Luu")
-	private Integer detFreeTime;
+	private String detFreeTime;
 
 	/** Ma Bao Mat (optional) */
 	@Excel(name = "Ma Nhan Cont")
@@ -291,11 +291,11 @@ public class Edo extends BaseEntity {
 		return emptyContainerDepot;
 	}
 
-	public void setDetFreeTime(Integer detFreeTime) {
+	public void setDetFreeTime(String detFreeTime) {
 		this.detFreeTime = detFreeTime;
 	}
 
-	public Integer getDetFreeTime() {
+	public String getDetFreeTime() {
 		return detFreeTime;
 	}
 
