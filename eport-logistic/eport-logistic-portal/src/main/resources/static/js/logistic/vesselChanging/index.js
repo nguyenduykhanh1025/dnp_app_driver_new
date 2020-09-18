@@ -11,6 +11,14 @@ var shipmentSearch = new Object();
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
   //DEFAULT SEARCH FOLLOW DATE
+  $("#bookingSearch").textbox('textbox').bind('keydown', function (e) {
+    // enter key
+    if (e.keyCode == 13) {
+        shipmentSearch.bookingNo = $("#bookingSearch").textbox('getText').toUpperCase();
+        loadTable();
+    }
+  });
+
   loadTable();
   $(".main-body").layout();
   $(".collapse").click(function () {
@@ -43,19 +51,10 @@ $(document).ready(function () {
   });
 });
 
-$("#bookingSearch").textbox('textbox').bind('keydown', function (e) {
-  // enter key
-  if (e.keyCode == 13) {
-      shipmentSearch.bookingSearch = $("#blNo").textbox('getText').toUpperCase();
-      loadTable();
-  }
-});
+
 
 // LOAD SHIPMENT LIST
-function loadTable(msg) {
-  if (msg) {
-    $.modal.alertSuccess(msg);
-  }
+function loadTable() {
   $("#dg").datagrid({
     url: prefix + "/shipments",
     height: window.innerHeight - 110,
@@ -592,4 +591,14 @@ function hideProgress() {
   currentPercent = 0;
   $(".percent-text").text("0%");
   setProgressPercent(0);
+}
+
+function search() {
+  loadTable();
+}
+
+function clearInput() {
+  $("#bookingSearch").textbox('setText', '');
+  shipmentSearch = new Object();
+  loadTable();
 }

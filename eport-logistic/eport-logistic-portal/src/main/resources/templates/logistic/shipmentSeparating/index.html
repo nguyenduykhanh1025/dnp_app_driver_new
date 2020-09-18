@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <th:block th:include="include :: header('Tách Lô từ Master Bill')" />
     <th:block th:include="include :: easyui-css" />
-    <th:block th:include="include :: datetimepicker-css" />
     <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
     <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
   </head>
@@ -99,113 +98,12 @@
         </div>
       </div>
     </div>
-    <!-- <div id="wrapper">
-      <div class="left-side">
-        <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
-        <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
-        <div class="left-infor-top row mt5 px5">
-          <div class="form-group col-lg-3 col-sm-6 col-xs-6">
-            <input type="text" class="form-control" id="search" placeholder="Tìm kiếm" />
-          </div>
-          <div class="form-group col-lg-3 col-sm-6 col-xs-6">
-            <input type="text" class="form-control from-date date" id="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" readonly />
-          </div>
-          <div class="form-group col-lg-3 col-sm-6 col-xs-6">
-            <input type="text" class="form-control to-date date" id="toDate" onchange="changeToDate()" placeholder="Đến ngày" readonly />
-          </div>
-          <div class="form-group col-lg-3 col-sm-6 col-xs-12">
-            <button type="submit" class="btn btn-sm btn-success pr5" style="border-radius: 20px;"><i class="fa fa-search"></i> Tìm kiếm</button>
-          </div>
-        </div>
-        <div class="left-infor-top px5" style="display: flex;">
-          <div class="form-group mr5">
-            <button type="submit" class="btn btn-w-m btn-rounder btn-success" onclick="openFormSeparate()"><i class="fa fa-plus"></i> Tách lô từ Master Bill</button>
-          </div>
-          <div class="form-group">
-            <button type="submit" class="btn btn-w-m btn-rounder btn-danger"><i class="fa fa-trash"></i> Xóa lô</button>
-          </div>
-        </div>
-        <div class="table-content" style="border: none;">
-          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
-            <thead>
-              <tr>
-                <th data-options="field:'masterBillNo', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Master Bill</th>
-                <th data-options="field:'houseBillNo', halign:'center', fixed:true" sortable="true" width="100">House Bill</th>
-                <th data-options="field:'carrierCode', align:'right', halign:'center', fixed:true" sortable="true" width="70">Hãng tàu</th>
-                <th data-options="field:'contNumber',align:'right',halign:'center'" sortable="true" width="150">SL Cont</th>
-                <th data-options="field:'createTime', align:'right', halign:'center', formatter: formatDate, fixed:true" sortable="true" width="150">Ngày tạo</th>
-              </tr>
-            </thead>
-          </table>
-        </div>
-      </div>
-      <div class="right-side">
-        <div class="left-infor-top row mt5 px5">
-          <div class="form-group col-lg-4 col-sm-6 col-xs-6" style="height: 40px; line-height: 40px; margin-bottom: 0;">
-            <span class="label-title">Master Bill:</span>
-              <span id="masterBillNo"></span>
-          </div>
-          <div class="form-group col-lg-4 col-sm-6 col-xs-6" style="height: 40px; line-height: 40px; margin-bottom: 0;">
-            <span class="label-title">Chủ Hàng: </span>
-            <span id="consignee"></span>
-          </div>
-        </div>
-        <div class="title-top row px5" style="justify-content: start; margin-left: 0; margin-bottom: 15px;">
-          <div class="left-button-bar">
-            <button id="btnAddContToHouseBill" class="btn btn-rounder btn-primary" onclick="openFormAddCont()"><i class="fa fa-plus"></i> Thêm Cont vào House Bill</button>
-            <button id="deleteBtn" class="btn btn-rounder btn-danger"><i class="fa fa-trash"></i> Xóa Cont</button>
-            <button class="btn btn-rounder btn-default" onclick="printHouseBill()"><i class="fa fa-print"></i> In House Bill</button>
-          </div>
-        </div>
-        <div class="table-content" style="border: none;">
-          <table id="dg2" style="width: 100%;" pageList="[20,50,100,150,200]">
-            <thead>
-              <tr>
-                <th data-options="field:'id', fixed:true" width="1"></th>
-                <th data-options="field:'ck', checkbox:true" width="50"></th>
-                <th data-options="field:'containerNumber', halign:'center', resizable:true, fixed:true" sortable="true"
-                    width="150">
-                  Container No
-                </th>
-                <th data-options="field:'sztp', align:'left', halign:'center', fixed:true" sortable="true"
-                    width="150">SZTP
-                </th>
-                <th data-options="field:'carrierCode', halign:'center', fixed:true" sortable="true" width="100">Hãng tàu</th>
-                <th data-options="field:'consignee2', halign:'center', fixed:true" sortable="true" width="180">Tên khách hàng</th>
-                <th data-options="field:'expiredDem', halign:'center', formatter: formatExpiredDem, fixed:true" sortable="true" width="180">Hạn lệnh</th>
-                <th data-options="field:'vessel', align:'left', halign:'center', fixed:true" sortable="true"
-                    width="150">Tàu
-                </th>
-                <th data-options="field:'voyNo', align:'left', halign:'center', fixed:true" sortable="true"
-                    width="150">Chuyến
-                </th>
-                <th data-options="field:'createTime', halign:'center', formatter: formatDate, fixed:true" sortable="true" width="180">Ngày tách bill</th>
-                <th data-options="field:'status', align:'center', halign:'center', fixed:true, formatter: formatStatus"
-                    sortable="true" ,
-                    width="150">Trạng thái cont
-                </th>
-              </tr>
-            </thead>
-          </table>
-        </div>
-        <div class="progress-wrapper">
-          <p class="text-white" id="titleProgress"></p>
-          <div class="progress">
-            <span class="percent-text"></span>
-            <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
-          </div>
-        </div>
-      </div>
-      <div class="dim-bg"></div>
-    </div> -->
     <th:block th:include="include :: footer" />
     <script>
       $(".main-body").height($(document).height() - 10);
       $(".easyui-layout").height($(".main-body").height() - 50);
     </script>
     <th:block th:include="include :: easyui-js" />
-    <th:block th:include="include :: datetimepicker-js" />
-    <th:block th:include="include :: websocket" />
     <script th:src="@{/js/logistic/shipmentSeparating/shipmentSeparating.js}"></script>
   </body>
 </html>
