@@ -142,7 +142,7 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 			shipment = new Shipment();
 		}
 		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
-		shipment.setStatus("3");
+		shipment.setStatus(EportConstants.SHIPMENT_STATUS_PROCESSING);
 		shipment.setLogisticGroupId(user.getGroupId());
 		List<Shipment> shipments = shipmentService.selectShipmentListForExtensionDate(shipment);
 		return getDataTable(shipments);

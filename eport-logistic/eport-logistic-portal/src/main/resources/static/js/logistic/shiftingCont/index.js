@@ -8,45 +8,44 @@ var shipmentSearch = new Object;
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
     //DEFAULT SEARCH FOLLOW DATE
+    $("#blNo").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+            shipmentSearch.blNo = $("#blNo").textbox('getText').toUpperCase();
+            loadTable();
+        }
+    });
 
     loadTable();
     $(".main-body").layout();
-  $(".collapse").click(function () {
-    $(".main-body__search-wrapper").hide();
-    $(".main-body__search-wrapper--container").hide();
-    $(this).hide();
-    $(".uncollapse").show();
-  });
+    $(".collapse").click(function () {
+        $(".main-body__search-wrapper").hide();
+        $(".main-body__search-wrapper--container").hide();
+        $(this).hide();
+        $(".uncollapse").show();
+    });
 
-  $(".uncollapse").click(function () {
-    $(".main-body__search-wrapper").show();
-    $(".main-body__search-wrapper--container").show();
-    $(this).hide();
-    $(".collapse").show();
-  });
+    $(".uncollapse").click(function () {
+        $(".main-body__search-wrapper").show();
+        $(".main-body__search-wrapper--container").show();
+        $(this).hide();
+        $(".collapse").show();
+    });
 
-  $(".left-side__collapse").click(function () {
-    $("#main-layout").layout("collapse", "west");
-    setTimeout(() => {
-      hot.render();
-    }, 200);
-  });
+    $(".left-side__collapse").click(function () {
+        $("#main-layout").layout("collapse", "west");
+        setTimeout(() => {
+            hot.render();
+        }, 200);
+    });
 
-  $("#main-layout").layout({
-    onExpand: function (region) {
-      if (region == "west") {
-        hot.render();
-      }
-    },
-  });
-});
-
-document.getElementById("blSearch").addEventListener("keyup", function (event) {
-    event.preventDefault();
-    if (event.keyCode === 13) {
-        shipmentSearch.blNo = $('#blSearch').val().toUpperCase();
-        loadTable();
-    }
+    $("#main-layout").layout({
+        onExpand: function (region) {
+            if (region == "west") {
+                hot.render();
+            }
+        },
+    });
 });
 
 // LOAD SHIPMENT LIST
@@ -56,7 +55,7 @@ function loadTable(msg) {
     }
     $("#dg").datagrid({
         url: prefix + "/shipments",
-        height: window.innerHeight - 110,
+        height: window.innerHeight - 95,
         method: 'post',
         singleSelect: true,
         collapsible: true,
@@ -253,7 +252,7 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 function configHandson() {
     config = {
         stretchH: "all",
-        height: document.documentElement.clientHeight - 105,
+        height: document.documentElement.clientHeight - 120,
         minRows: rowAmount,
         maxRows: rowAmount,
         width: "100%",
@@ -544,6 +543,17 @@ function napasPaymentFormForShifting() {
 
 function payment() {
     $.modal.openCustomForm("Thanh toán phí dịch chuyển", prefix + "/shipment/" + shipmentSelected.id + "/payment/shifting", 800, 400);
+}
+
+function search() {
+    shipmentSearch.blNo = $("#blNo").textbox('getText');
+    loadTable();
+}
+
+function clearInput() {
+    $("#blNo").textbox('setText', '');
+    shipmentSearch = new Object();
+    loadTable();
 }
 
 

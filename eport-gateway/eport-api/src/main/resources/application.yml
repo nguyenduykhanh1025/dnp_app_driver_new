@@ -19,12 +19,13 @@ spring:
       max-request-size: 100MB
       enabled: true
   redis:
+    enabled: false
     database: 0
-    host: localhost
+    host: 127.0.0.1
     port: 6379
     password:      # 
     timeout: 6000ms  # 
-    jedis:
+    lettuce:
       pool:
         max-active: 1000  
         max-wait: -1ms      
