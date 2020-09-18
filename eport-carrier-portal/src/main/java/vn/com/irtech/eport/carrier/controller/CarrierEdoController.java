@@ -90,6 +90,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		edo.setCarrierCode(null);
 		edo.setParams(groupCodes);
 		edo.setDelFlg(0);
+		edo.setContainerNumber(null);
 		List<Edo> dataList = edoService.selectEdoList(edo);
 		return getDataTable(dataList);
 	}
@@ -229,27 +230,26 @@ public class CarrierEdoController extends CarrierBaseController {
 	}
 
 
-	@GetMapping("/getVoyNo")
+	@PostMapping("/getVoyNo/{vessel}")
 	@ResponseBody
-	public List<String> listVoyNos(String keyString, String vessel) {
+	public List<Edo> listVoyNos(@PathVariable("vessel") String vessel) {
 		Edo edo = new Edo();
 		edo.setVessel(vessel);
-		edo.setVoyNo(keyString);
 		Map<String, Object> groupCodes = new HashMap<>();
 		groupCodes.put("groupCode", super.getGroupCodes());
 		edo.setParams(groupCodes);
 		return edoService.selectVoyNos(edo);
 	}
 
-	@GetMapping("/getVessel")
+	@PostMapping("/getVessel")
 	@ResponseBody
-	public List<String> listVessels(String keyString) {
+	public List<Edo> listVessels() {
 		Edo edo = new Edo();
-		edo.setVessel(keyString);
 		Map<String, Object> groupCodes = new HashMap<>();
 		groupCodes.put("groupCode", super.getGroupCodes());
 		edo.setParams(groupCodes);
-		return edoService.selectVessels(edo);
+		List<Edo> edos = edoService.selectVessels(edo);
+		return edos;
 	}
 
 	@GetMapping("/getEmptyContainerDeport")
@@ -323,6 +323,12 @@ public class CarrierEdoController extends CarrierBaseController {
 		}
 		if (edos != null) {
 			String consignee = edos.get(0).getConsignee();
+			String billOfLading = edos.get(0).getBillOfLading();
+			if (edoService.getBillOfLadingInfo(edos.get(0).getBillOfLading()) != null) {
+				// exist B/L
+				return AjaxResult.error("Có lỗi xảy ra ở container '" + edos.get(0).getBillOfLading()
+						+ "'.<br/>Lỗi: Mã vận đơn (B/L No.) " + edos.get(0).getBillOfLading() + " đã tồn tại.");
+			}
 			String containerNumber = "";
 			for (Edo e : edos) {
 				e.setCarrierId(super.getUser().getGroupId());
@@ -339,11 +345,7 @@ public class CarrierEdoController extends CarrierBaseController {
 					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
 							+ "'.<br/>Lỗi: Mã hãng tàu '" + e.getCarrierCode() + "' không đúng.");
 				}
-				if (edoService.getBillOfLadingInfo(e.getBillOfLading()) != null) {
-					// exist B/L
-					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
-							+ "'.<br/>Lỗi: Mã vận đơn (B/L No.) " + e.getBillOfLading() + " đã tồn tại.");
-				}
+				
 				if (!isContainerNumber(e.getContainerNumber())) {
 					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
 							+ "'.<br/>Lỗi: Mã container không đúng tiêu chuẩn.");
@@ -359,11 +361,17 @@ public class CarrierEdoController extends CarrierBaseController {
 					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
 							+ "'.<br/>Lỗi: Hạn lệnh không được phép là ngày quá khứ");
 				}
-				// DEM Free date la so
-//				if (e.getDetFreeTime() != null) {
-//					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
-//							+ "'.<br/>Lỗi: Ngày miễn lưu không được lớn hơn 9999");
-//				}
+				// // DEM Free date la so
+				// if (e.getDetFreeTime() != null && e.getDetFreeTime() >= 10000) {
+				// 	return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
+				// 			+ "'.<br/>Lỗi: Ngày miễn lưu không được lớn hơn 9999");
+				// }
+
+				// Bill is the same
+				if (!e.getBillOfLading().equals(billOfLading)) {
+					return AjaxResult.error(" Số bill không được khác nhau");
+				}
+				billOfLading = e.getBillOfLading();
 				// Consignee is the same
 				if (!e.getConsignee().equals(consignee)) {
 					return AjaxResult.error("Tên khách hàng không được khác nhau");
