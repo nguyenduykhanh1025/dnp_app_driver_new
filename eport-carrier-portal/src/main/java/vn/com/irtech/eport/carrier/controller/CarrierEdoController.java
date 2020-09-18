@@ -369,12 +369,12 @@ public class CarrierEdoController extends CarrierBaseController {
 
 				// Bill is the same
 				if (!e.getBillOfLading().equals(billOfLading)) {
-					return AjaxResult.error("Tên khách hàng không được khác nhau");
+					return AjaxResult.error(" Số bill không được khác nhau");
 				}
 				billOfLading = e.getBillOfLading();
 				// Consignee is the same
 				if (!e.getConsignee().equals(consignee)) {
-					return AjaxResult.error("Số bill không được khác nhau");
+					return AjaxResult.error("Tên khách hàng không được khác nhau");
 				}
 				consignee = e.getConsignee();
 				// Container number is unique

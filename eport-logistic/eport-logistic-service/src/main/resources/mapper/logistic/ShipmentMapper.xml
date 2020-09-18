@@ -287,7 +287,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="edoFlg != null  and edoFlg != ''"> and s.edo_flg = #{edoFlg}</if>
                 <if test="specificContFlg != null"> and s.specific_cont_flg = #{specificContFlg}</if>
                 <if test="contSupplyStatus != null"> and s.cont_supply_status = #{contSupplyStatus}</if>
-                <if test="status != null  and status != ''"> and s.status = #{status}</if>
+                <if test="status != null  and status != '' and status != 4"> and s.status != 4</if>
+                <if test="status != null  and status != '' and status == 4"> and s.status = #{status}</if>
                 <if test="remark != null  and remark != ''"> and s.remark = #{remark}</if>
                 <if test="params.containerNo != null  and params.containerNo != ''"> and upper(sh.container_no) like concat(concat('%', #{params.containerNo}), '%')</if>
                 <if test="params.consignee != null  and params.consignee != ''"> and upper(sh.consignee) like concat(concat('%', #{params.consignee}), '%')</if>

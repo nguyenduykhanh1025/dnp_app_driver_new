@@ -446,7 +446,6 @@
       <if test="carrierCode != null  and carrierCode != ''">and carrier_code = #{carrierCode}</if>
       <if test="expiredDem != null and expiredDem != ''">and TO_CHAR(expired_dem, 'DD/MM/YYYY') = #{expiredDem}</if>
       <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
-      <if test="releaseNo != null  and releaseNo != ''">and release_no = #{releaseNo}</if>
     ORDER BY create_time DESC
   </select>
 

@@ -131,6 +131,12 @@ public interface EportConstants {
 	/** Driver commentor */
 	public static final String COMMENTOR_DRIVER = "D";
 	
+	// Topic for shipment comment
+	/** Topic comment container supplier */
+	public static final String TOPIC_COMMENT_CONT_SUPPLIER = "Cấp container rỗng";
+	/** Topic comment om support document */
+	public static final String TOPIC_COMMENT_OM_DOCUMENT = "Xác nhận giấy tờ thủ tục";
+	
 	//User type on notification app window
 	/** User type om in app notification */
 	public static final String APP_USER_TYPE_OM = "om";

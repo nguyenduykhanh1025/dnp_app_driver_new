@@ -112,6 +112,13 @@ $('#main-layout').layout({
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
 
+  $("#shipmentStatus").combobox({
+    onSelect: function (option) {
+      shipmentSearch.status = option.value;
+      loadTable();
+    }
+  });
+
   $("#blNo").textbox('textbox').bind('keydown', function(e) {
     // enter key
     if (e.keyCode == 13) {

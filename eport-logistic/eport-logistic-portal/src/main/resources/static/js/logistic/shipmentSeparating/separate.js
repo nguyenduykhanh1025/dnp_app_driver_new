@@ -30,7 +30,7 @@ $(document).ready(function () {
 function loadTable(dataSearch) {
   if (dataSearch == null) {
     $("#dg").datagrid({
-      height: document.documentElement.clientHeight - 230,
+      height: document.documentElement.clientHeight - 270,
       collapsible: true,
       clientPaging: false,
       pagination: true,
@@ -46,7 +46,7 @@ function loadTable(dataSearch) {
   } else {
     $("#dg").datagrid({
       url: PREFIX + "/separate/search",
-      height: document.documentElement.clientHeight - 230,
+      height: document.documentElement.clientHeight - 270,
       method: "post",
       collapsible: true,
       clientPaging: false,
@@ -96,6 +96,7 @@ function checkTaxCodeExists() {
       method: "get",
       success: function(res) {
         if (res.code == 0) {
+          $("input[name='taxCode']").val(res.companyName);
           return true;
         } else {
           $.modal.alertWarning("Mã số thuế không tồn tại.");
@@ -170,6 +171,7 @@ async function submitHandler(index, layer, dg) {
   if ($.validate.form()) {
     let res = await checkTaxCodeExistsRes();
     if (res.code == 0) {
+      $("input[name='taxCode']").val(res.companyName);
       let reqData = {
         houseBill: $("input[name='houseBill']").val(),
         orderNumber: $("input[name='orderNumberRegister']").val(),

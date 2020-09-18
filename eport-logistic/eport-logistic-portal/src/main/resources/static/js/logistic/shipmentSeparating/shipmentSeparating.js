@@ -1,24 +1,5 @@
-var prefix = ctx + "logistic/send-cont-full";
 var prefix_main = ctx + "logistic/shipmentSeparating";
-var interval, currentPercent, timeout;
-var dogrid = document.getElementById("container-grid"),
-  hot;
-var shipmentSelected,
-  shipmentDetails,
-  shipmentDetailIds,
-  sourceData,
-  processOrderIds,
-  houseBillSelected;
-var contList = [],
-  temperatureDisable = [];
-var conts = "";
-var allChecked = false;
-var checkList = [];
-var rowAmount = 0;
-var shipmentSearch = new Object();
-shipmentSearch.serviceType = 4;
-var sizeList = [];
-var berthplanList; // get infor
+var houseBillSelected;
 var toolbar = [
   {
     text: '<button type="submit" class="btn btn-w-m btn-rounder btn-success"><i class="fa fa-plus"></i> Tách lô từ Master Bill</button>',
@@ -32,57 +13,6 @@ var toolbar = [
       //alert("sua");
     },
   },
-];
-//dictionary sizeList
-$.ajax({
-  type: "GET",
-  url: ctx + "logistic/size/container/list",
-  success(data) {
-    if (data.code == 0) {
-      data.data.forEach((element) => {
-        sizeList.push(element["dictLabel"]);
-      });
-    }
-  },
-});
-var consigneeList,
-  opeCodeList,
-  vslNmList,
-  currentProcessId,
-  currentSubscription;
-
-$.ajax({
-  url: ctx + "logistic/source/option",
-  method: "GET",
-  success: function (data) {
-    if (data.code == 0) {
-      //            opeCodeList = data.opeCodeList;
-      //            vslNmList = data.vslNmList;
-      consigneeList = data.consigneeList;
-    }
-  },
-});
-//get opeCodeList BerthPlan
-$.ajax({
-  url: prefix + "/berthplan/ope-code/list",
-  method: "GET",
-  success: function (data) {
-    if (data.code == 0) {
-      opeCodeList = data.opeCodeList;
-    }
-  },
-});
-var cargoTypeList = [
-  "AK:Over Dimension",
-  "BB:Break Bulk",
-  "BN:Bundle",
-  "DG:Dangerous",
-  "DR:Reefer & DG",
-  "DE:Dangerous Empty",
-  "FR:Fragile",
-  "GP:General",
-  "MT:Empty",
-  "RF:Reefer",
 ];
 
 $(".main-body").layout();
@@ -117,110 +47,18 @@ $("#main-layout").layout({
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
-  //DEFAULT SEARCH FOLLOW DATE
-  let fromMonth =
-    new Date().getMonth() < 10
-      ? "0" + new Date().getMonth()
-      : new Date().getMonth();
-  let toMonth =
-    new Date().getMonth() + 2 < 10
-      ? "0" + (new Date().getMonth() + 2)
-      : new Date().getMonth() + 2;
-  $("#fromDate").val("01/" + fromMonth + "/" + new Date().getFullYear());
-  $("#toDate").val(
-    "01/" +
-      (toMonth > 12
-        ? "01" + "/" + (new Date().getFullYear() + 1)
-        : toMonth + "/" + new Date().getFullYear())
-  );
-  let fromDate = stringToDate($("#fromDate").val());
-  let toDate = stringToDate($("#toDate").val());
-  fromDate.setHours(0, 0, 0);
-  toDate.setHours(23, 59, 59);
-  shipmentSearch.fromDate = fromDate.getTime();
-  shipmentSearch.toDate = toDate.getTime();
 
   loadTable();
-  $(".left-side").css("height", $(document).height());
-  $("#btn-collapse").click(function () {
-    handleCollapse(true);
-  });
-  $("#btn-uncollapse").click(function () {
-    handleCollapse(false);
-  });
-  //find date
-  $(".from-date").datetimepicker({
-    language: "en",
-    format: "dd/mm/yyyy",
-    autoclose: true,
-    todayBtn: true,
-    todayHighlight: true,
-    pickTime: false,
-    minView: 2,
-  });
-  $(".to-date").datetimepicker({
-    language: "en",
-    format: "dd/mm/yyyy",
-    autoclose: true,
-    todayBtn: true,
-    todayHighlight: true,
-    pickTime: false,
-    minView: 2,
+  $("#dg2").datagrid({
+    height: $('.main-body').height() - 110
   });
 });
-//search date
-function changeFromDate() {
-  let fromDate = stringToDate($("#fromDate").val());
-  if (
-    $("#toDate").val() != "" &&
-    stringToDate($("#toDate").val()).getTime() < fromDate.getTime()
-  ) {
-    $.modal.alertError("Quý khách không thể chọn từ ngày cao hơn đến ngày.");
-    $("#fromDate").val("");
-  } else {
-    shipmentSearch.fromDate = fromDate.getTime();
-    loadTable();
-  }
-}
-
-function changeToDate() {
-  let toDate = stringToDate($(".to-date").val());
-  if (
-    $(".from-date").val() != "" &&
-    stringToDate($(".from-date").val()).getTime() > toDate.getTime()
-  ) {
-    $.modal.alertError("Quý khách không thể chọn đến ngày thấp hơn từ ngày.");
-    $(".to-date").val("");
-  } else {
-    toDate.setHours(23, 59, 59);
-    shipmentSearch.toDate = toDate.getTime();
-    loadTable();
-  }
-}
-
-function stringToDate(dateStr) {
-  let dateParts = dateStr.split("/");
-  return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
-}
-
-document
-  .getElementById("search")
-  .addEventListener("keyup", function (event) {
-    event.preventDefault();
-    if (event.keyCode === 13) {
-      shipmentSearch.bookingNo = $("#search").val().toUpperCase();
-      loadTable();
-    }
-  });
 
 // LOAD SHIPMENT LIST
-function loadTable(msg) {
-  if (msg) {
-    $.modal.alertSuccess(msg);
-  }
+function loadTable() {
   $("#dg").datagrid({
-    url: ctx + "logistic/shipmentSeparating/houseBill/list",
-    height: window.innerHeight - 110,
+    url: prefix_main + "/houseBill/list",
+    height: $('.main-body').height() - 85,
     method: "post",
     toolbar: toolbar,
     singleSelect: true,
@@ -251,7 +89,6 @@ function loadTable(msg) {
         }),
         success: function (data) {
           success(data);
-          // $("#dg").datagrid("hideColumn", "id");
         },
         error: function () {
           error.apply(this, arguments);
@@ -259,7 +96,6 @@ function loadTable(msg) {
       });
     },
   });
-  $("#dg2").datagrid({});
 }
 
 // FORMAT DATE FOR SHIPMENT LIST
@@ -302,13 +138,12 @@ function getSelected() {
 function loadHouseBillDetail(houseBillNo) {
   $("#dg2").datagrid({
     url: ctx + "logistic/shipmentSeparating/houseBill/detail",
-    height: window.innerHeight - 110,
+    height: $('.main-body').height() - 85,
     method: "post",
     collapsible: true,
     clientPaging: false,
-    pagination: true,
+    pagination: false,
     rownumbers: true,
-    pageSize: 50,
     nowrap: true,
     striped: true,
     loadMsg: " Đang xử lý...",
