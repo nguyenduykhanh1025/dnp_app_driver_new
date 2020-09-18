@@ -181,6 +181,8 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
   public AjaxResult getConsgineeByTaxCode(@PathVariable String taxCode) {
 	  PartnerInfoDto partner = catosApiService.getGroupNameByTaxCode(taxCode);
 	  if (partner != null && partner.getGroupName() != null) {
+		  AjaxResult ajaxResult = AjaxResult.success();
+		  ajaxResult.put("companyName", partner.getGroupName());
 		  return success();
 	  }
 	  return error();
