@@ -45,6 +45,7 @@ import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
@@ -57,6 +58,7 @@ import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
+import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -104,6 +106,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
     
     @Autowired
     private ConfigService configService;
+    
+    @Autowired
+    private IShipmentCommentService shipmentCommentService;
 
     // VIEW RECEIVE CONT EMPTY
     @GetMapping()
@@ -213,6 +218,11 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
 		return PREFIX + "/paymentForm";
+	}
+	
+	@GetMapping("/req/supply/confirmation")
+	public String getSupplyConfirmationForm() {
+		return PREFIX + "/confirmRequestCont";
 	}
 
 	// CHECK BOOKING NO IS UNIQUE
@@ -543,9 +553,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		return error();
 	}
 	
-	@PostMapping("/cont-req/shipment-detail/{shipmentDetailIds}")
+	@PostMapping("/cont-req/shipment-detail")
 	@ResponseBody
-	public AjaxResult reqSupplyContainer(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
+	public AjaxResult reqSupplyContainer(String shipmentDetailIds, String contReqRemark) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
@@ -556,6 +566,22 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 				shipmentDetail.setStatus(1);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
+			
+			// Write comment for topic supply container 
+			if (StringUtils.isNotEmpty(contReqRemark)) {
+				ShipmentDetail shipmentDetail = shipmentDetails.get(0);
+				ShipmentComment shipmentComment = new ShipmentComment();
+				shipmentComment.setLogisticGroupId(getUser().getGroupId());
+				shipmentComment.setShipmentId(shipmentDetail.getShipmentId());
+				shipmentComment.setUserId(getUserId());
+				shipmentComment.setUserType(EportConstants.COMMENTOR_LOGISTIC);
+				shipmentComment.setUserAlias(getGroup().getGroupName());
+				shipmentComment.setCommentTime(new Date());
+				shipmentComment.setContent(contReqRemark);
+				shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CONT_SUPPLIER);
+				shipmentCommentService.insertShipmentComment(shipmentComment);
+			}
+			
 			
 			// Set up data to send app notificaton 
 			String title = "ePort: Yêu cầu cấp container rỗng.";

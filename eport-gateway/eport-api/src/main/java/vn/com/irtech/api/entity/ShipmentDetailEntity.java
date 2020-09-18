@@ -150,6 +150,9 @@ public class ShipmentDetailEntity extends BaseEntity
     /** Ngay tau den */
     private Date eta;
     
+    /** Ngay tau di */
+    private Date etd;
+    
     public void setCargoType(String cargoType) {
         this.cargoType = cargoType;
     }
@@ -543,6 +546,14 @@ public class ShipmentDetailEntity extends BaseEntity
 		this.eta = eta;
 	}
 
+	public Date getEtd() {
+		return etd;
+	}
+
+	public void setEtd(Date etd) {
+		this.etd = etd;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -595,6 +606,7 @@ public class ShipmentDetailEntity extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("orderNo", getOrderNo())
             .append("eta", getEta())
+            .append("etd", getEtd())
             .toString();
     }
 }

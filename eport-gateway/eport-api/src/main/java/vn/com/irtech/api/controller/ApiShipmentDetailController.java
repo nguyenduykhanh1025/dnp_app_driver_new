@@ -27,9 +27,9 @@ public class ApiShipmentDetailController {
 	@Autowired
 	private ShipmentDetailDao shipmentDetailDao;
 	
-	@GetMapping("/shipmentDetail/list/{blNo}")
-	public List<ShipmentDetailEntity> listShipmentDetail(@PathVariable String blNo) {
-		List<ShipmentDetailEntity> list = shipmentDetailDao.selectShipmentDetailsByBLNo(blNo);
+	@GetMapping("/shipmentDetail/list")
+	public List<ShipmentDetailEntity> listShipmentDetail(@RequestBody ShipmentEntity shipmentEntity) {
+		List<ShipmentDetailEntity> list = shipmentDetailDao.selectShipmentDetailsByBLNo(shipmentEntity.getBlNo());
 		return list;
 	}
 	
