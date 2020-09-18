@@ -22,10 +22,10 @@
         <div class="flex__right w-80">
           <div class="justify-content-around align-items-center" id="ff">
             <div class="d-inline">
-              <input id="vessel" class="easyui-combobox">
+              <input id="vessel2" class="easyui-combobox" data-options="prompt:'Vessel'">
             </div>
             <div class="d-inline">
-              <input id="voyNo" class="easyui-combobox">
+              <input id="voyNo" class="easyui-combobox"  data-options="prompt:'Voy No'">
             </div>
             <div class="d-inline">
               <input class="easyui-textbox" id="searchBillNo" data-options="prompt:'B/L No'" />
@@ -140,7 +140,7 @@
                 <th data-options="field:'createTime',align:'left',formatter:formatToYDMHMS" width="115">
                   Receive Time
                 </th>
-                <th data-options="field:'action',align:'center',formatter: formatAction" fixed:true width="150">
+                <th data-options="field:'action',align:'center',formatter: formatAction" fixed:true width="170">
                   Action
                 </th>
               </tr>

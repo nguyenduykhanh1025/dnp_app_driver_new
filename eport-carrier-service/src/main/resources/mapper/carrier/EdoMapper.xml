@@ -353,11 +353,11 @@
     ORDER BY create_time DESC
   </select>
 
-  <select id="selectVoyNos" parameterType="Edo" resultType="String">
+  <select id="selectVoyNos" parameterType="Edo" resultMap="EdoResult">
     select distinct voy_no
     from edo
     <where>
-      <if test="params.groupCode != null">
+      <if test="params.groupCode != null"> 
         and carrier_code in
         <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
           #{carrier_code}
@@ -379,7 +379,7 @@
     </where>
   </select>
 
-  <select id="selectVesselNo" parameterType="Edo" resultType="String">
+  <select id="selectVesselNo" parameterType="Edo" resultMap="EdoResult">
     select distinct vessel_no
     from edo
     <where>

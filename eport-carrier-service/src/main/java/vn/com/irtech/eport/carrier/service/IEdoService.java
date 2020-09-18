@@ -87,7 +87,7 @@ public interface IEdoService {
 
 	public List<String> selectOprCode(Edo edo);
 
-	public List<String> selectVoyNos(Edo edo);
+	public List<Edo> selectVoyNos(Edo edo);
 
 	public List<Edo> selectVessels(Edo edo);
 
