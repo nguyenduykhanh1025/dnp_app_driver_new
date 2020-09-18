@@ -120,10 +120,10 @@ $(document).ready(function () {
         }
     });
 
-    let now = new Date();
-    let nowStr = ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear();
-    $('#fromDate').datebox('setValue', nowStr);
-    shipmentSearch.params.fromDate = dateToString(now);
+    // let now = new Date();
+    // let nowStr = ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear();
+    // $('#fromDate').datebox('setValue', nowStr);
+    // shipmentSearch.params.fromDate = dateToString(now);
 
     $('#toDate').datebox({
         onSelect: function (date) {
