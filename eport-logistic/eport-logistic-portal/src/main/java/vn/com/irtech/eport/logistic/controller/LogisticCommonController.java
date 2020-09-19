@@ -43,6 +43,7 @@ import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.PaymentHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.INapasApiService;
@@ -50,6 +51,7 @@ import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IPaymentHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
+import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.dto.PartnerInfoDto;
@@ -87,6 +89,9 @@ public class LogisticCommonController extends LogisticBaseController {
 
 	@Autowired
 	private IPaymentHistoryService paymentHistoryService;
+	
+	@Autowired
+	private IShipmentCommentService shipmentCommentService;
 	
 	@Autowired
 	private DictService dictDataService;
@@ -563,5 +568,33 @@ public class LogisticCommonController extends LogisticBaseController {
 			return success();
 		}
 		return error();
+	}
+	
+	@PostMapping("/comment/list")
+	@ResponseBody
+	public AjaxResult getCommentList(@RequestBody ShipmentComment shipmentComment) {
+		if (shipmentComment == null) {
+			return error("Invalid input!");
+		}
+		shipmentComment.setLogisticGroupId(getUser().getGroupId());
+		List<ShipmentComment> shipmentComments = shipmentCommentService.selectShipmentCommentListCustom(shipmentComment);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentComments", shipmentComments);
+		return ajaxResult;
+	}
+	
+	@PostMapping("/comment/update")
+	@ResponseBody
+	public AjaxResult updateCommentSeenFlg(@RequestBody ShipmentComment shipmentComment) {
+		if (shipmentComment == null || shipmentComment.getShipmentId() == null) {
+			return error("Invalid input!");
+		}
+		
+		ShipmentComment shipmentCommentParam = new ShipmentComment();
+		shipmentCommentParam.setShipmentId(shipmentComment.getShipmentId());
+		shipmentCommentParam.setLogisticGroupId(getUser().getGroupId());
+		shipmentCommentParam.setSeenFlg(true);
+		shipmentCommentService.updateFlgShipmentComment(shipmentCommentParam);
+		return success();
 	}
 }

@@ -76,76 +76,110 @@
           </table>
         </div>
         <div class="right-side" data-options="region:'center'" style="width: 100%;">
-          <div class="panel-header" style="width: 100%; background-color: #f3f7fa;">
-            <div class="panel-title" style="color: #333;">Thông tin lô</div>
-            <div class="panel-tool" id="step-area">
-              <ul class="right-info">
-                <li><a id="registerStatus" class="disable">Khai báo</a></li>
-                <li><a id="contSupplyStatus" class="disable">Cấp container</a></li>
-                <li><a id="verifyStatus" class="disable">Xác thực</a></li>
-                <li><a id="paymentStatus" class="disable">Thanh toán</a></li>
-                <li><a id="finishStatus" class="disable">Hoàn thành</a></li>
-              </ul>
+          <div class="easyui-layout" id="right-layout" data-options="fit:true" style="position: relative;">
+            <div style="height: 50%;" data-options="region:'south', split:true">
+              <span class="right-side__collapse"><i class="fa fa-chevron-down"></i></span>
+              <div class="panel-header" style="width: 100%; background-color: #f3f7fa;">
+                <div class="panel-title" style="color: #333;">Thảo Luận</div>
+              </div>
+              <div id="comment-div" style="padding: 10px 20px 10px 20px;">
+                <div id="commentList"></div>
+                <div style="text-align: right;">
+                  <div class="form-group row">
+                    <label class="col-md-1 col-sm-2 col-xs-3">Tiêu đề <span style="color: red;">*</span></label>
+                    <div class="col-md-11 col-sm-10 col-xs-9">
+                      <input class="easyui-textbox" id="topic" style="width: 100%;"/>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-1 col-sm-2 col-xs-3">Nội dung <span style="color: red;">*</span></label>
+                    <div class="col-md-11 col-sm-10 col-xs-9">
+                      <input class="easyui-textbox" id="content" data-options="multiline:'true'" style="width: 100%; height: 74px;"/>
+                    </div>
+                  </div>
+                  <div>
+                    <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
+                      <span class="l-btn-left"><span class="l-btn-text">
+                      <button id="sendComment" onclick="addComment()" class="btn btn-sm btn-primary">
+                      <i class="fa fa-send text-primary"></i> Gửi</button></span></span>
+                    </a>  
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="right-side__toolbar">
-            <div class="datagrid-toolbar">
-              <table cellspacing="0" cellpadding="0">
-                <tbody>
-                  <tr>
-                    <td>
-                      <button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()" class="btn btn-sm btn-primary"><i
-                        class="fa fa-save text-primary"></i> Lưu khai báo
-                      </button>
-                    </td>
-                    <td>
-                      <button id="contSupplyBtn" onclick="requestContSupply()" disabled class="btn btn-sm btn-primary"><i
-                        class="fa fa-plus text-primary"></i> Yêu cầu cấp rỗng
-                      </button>
-                    </td>
-                    <td>
-                      <button id="verifyBtn" onclick="verify()" disabled class="btn btn-sm btn-primary"><i
-                        class="fa fa-check text-primary"></i> Xác nhận
-                      </button>
-                    </td>
-                    <td>
-                      <button id="payBtn" onclick="pay()" disabled class="btn btn-sm btn-primary"><i
-                        class="fa fa-credit-card text-primary"></i> Thanh toán
-                      </button>
-                    </td>
-                    <td>
-                      <button id="deleteBtn" onclick="deleteShipmentDetail()" disabled class="btn btn-sm btn-danger"><i
-                        class="fa fa-times text-primary"></i> Xóa
-                      </button>
-                    </td>
-                    <td>
-                      <a id="attachIcon" class="hidden" href="javascript:void(0)"
-                         th:attr="data-url=@{/logistic/receive-cont-empty/shipments/{shipmentId}/shipment-images}">
-                        <i class="fa fa-paperclip" style="font-size:2rem;" title="Xem hình ảnh booking đính kèm"></i>
-                      </a>
-                    </td>
-                    <td width="100%"></td>
-                    <td>
-                      <button id="exportReceiptBtn" onclick="exportReceipt()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-print text-primary"></i> In biên nhận
-                      </button>
-                    </td>
-                    <td>
-                      <button id="exportBill" onclick="exportBill()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-external-link text-primary"></i> Xuất hóa đơn
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
-          <div class="progress-wrapper">
-            <p id="titleProgress"></p>
-            <div class="progress">
-              <span class="percent-text"></span>
-              <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+            <div data-options="region:'center'" id="right-side__main-table">
+              <div class="panel-header" style="width: 100%; background-color: #f3f7fa;">
+                <div class="panel-title" style="color: #333;">Thông tin lô</div>
+                <div class="panel-tool" id="step-area">
+                  <ul class="right-info">
+                    <li><a id="registerStatus" class="disable">Khai báo</a></li>
+                    <li><a id="contSupplyStatus" class="disable">Cấp container</a></li>
+                    <li><a id="verifyStatus" class="disable">Xác thực</a></li>
+                    <li><a id="paymentStatus" class="disable">Thanh toán</a></li>
+                    <li><a id="finishStatus" class="disable">Hoàn thành</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="right-side__toolbar">
+                <div class="datagrid-toolbar">
+                  <table cellspacing="0" cellpadding="0">
+                    <tbody>
+                      <tr>
+                        <td>
+                          <button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()" class="btn btn-sm btn-primary"><i
+                            class="fa fa-save text-primary"></i> Lưu khai báo
+                          </button>
+                        </td>
+                        <td>
+                          <button id="contSupplyBtn" onclick="requestContSupply()" disabled class="btn btn-sm btn-primary"><i
+                            class="fa fa-plus text-primary"></i> Yêu cầu cấp rỗng
+                          </button>
+                        </td>
+                        <td>
+                          <button id="verifyBtn" onclick="verify()" disabled class="btn btn-sm btn-primary"><i
+                            class="fa fa-check text-primary"></i> Xác nhận
+                          </button>
+                        </td>
+                        <td>
+                          <button id="payBtn" onclick="pay()" disabled class="btn btn-sm btn-primary"><i
+                            class="fa fa-credit-card text-primary"></i> Thanh toán
+                          </button>
+                        </td>
+                        <td>
+                          <button id="deleteBtn" onclick="deleteShipmentDetail()" disabled class="btn btn-sm btn-danger"><i
+                            class="fa fa-times text-primary"></i> Xóa
+                          </button>
+                        </td>
+                        <td>
+                          <a id="attachIcon" class="hidden" href="javascript:void(0)"
+                             th:attr="data-url=@{/logistic/receive-cont-empty/shipments/{shipmentId}/shipment-images}">
+                            <i class="fa fa-paperclip" style="font-size:2rem;" title="Xem hình ảnh booking đính kèm"></i>
+                          </a>
+                        </td>
+                        <td width="100%"></td>
+                        <td>
+                          <button id="exportReceiptBtn" onclick="exportReceipt()" disabled class="btn btn-sm btn-default"><i
+                            class="fa fa-print text-primary"></i> In biên nhận
+                          </button>
+                        </td>
+                        <td>
+                          <button id="exportBill" onclick="exportBill()" disabled class="btn btn-sm btn-default"><i
+                            class="fa fa-external-link text-primary"></i> Xuất hóa đơn
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+              <div class="progress-wrapper">
+                <p id="titleProgress"></p>
+                <div class="progress">
+                  <span class="percent-text"></span>
+                  <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                  </div>
+                </div>
               </div>
             </div>
           </div>

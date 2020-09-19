@@ -613,4 +613,32 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		}
 		return error();
 	}
+	
+	@PostMapping("/shipment/comment")
+	@ResponseBody
+	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
+		LogisticAccount user = getUser();
+		shipmentComment.setCreateBy(user.getUserName());
+		shipmentComment.setLogisticGroupId(user.getGroupId());
+		shipmentComment.setUserId(getUserId());
+		shipmentComment.setUserType(EportConstants.COMMENTOR_LOGISTIC);
+		shipmentComment.setUserAlias(getGroup().getGroupName());
+		shipmentComment.setUserName(user.getUserName());
+		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
+		shipmentComment.setCommentTime(new Date());
+		shipmentComment.setSeenFlg(true);
+		shipmentCommentService.insertShipmentComment(shipmentComment);
+		
+		// Send notification to om
+		try {
+			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, shipmentComment.getTopic(), shipmentComment.getContent(), "", EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
+		} catch (MqttException e) {
+			logger.error("Fail to send message om notification app: " + e);
+		}
+		
+		// Add id to make background grey (different from other comment)
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
+		return ajaxResult;
+	}
 }

@@ -94,4 +94,26 @@ public class ShipmentCommentServiceImpl implements IShipmentCommentService
     {
         return shipmentCommentMapper.deleteShipmentCommentById(id);
     }
+    
+    /**
+     * Get Shipment Comment List
+     * 
+     * @param shipmentComment Shipment Comment
+     * @return Shipment Comment List
+     */
+    @Override
+    public List<ShipmentComment> selectShipmentCommentListCustom(ShipmentComment shipmentComment) {
+    	return shipmentCommentMapper.selectShipmentCommentListCustom(shipmentComment);
+    }
+    
+    /**
+     * Update Shipment Comment Flag include seen flag and resolved flag
+     * 
+     * @param shipmentComment Shipment Comment
+     * @return Result
+     */
+    @Override
+    public int updateFlgShipmentComment(ShipmentComment shipmentComment) {
+    	return shipmentCommentMapper.updateFlgShipmentComment(shipmentComment);
+    }
 }

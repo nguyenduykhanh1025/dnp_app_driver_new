@@ -15,14 +15,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="commentTime"    column="comment_time"    />
         <result property="topic"    column="topic"    />
         <result property="content"    column="content"    />
+        <result property="serviceType"    column="service_type"    />
+        <result property="seenFlg"    column="seen_flg"    />
+        <result property="resolvedFlg"    column="resolved_flg"    />
         <result property="createTime"    column="create_time"    />
-        <result property="column1"    column="column1"    />
+        <result property="createBy"    column="create_by"    />
         <result property="updateTime"    column="update_time"    />
-        <result property="updatedBy"    column="updated_by"    />
+        <result property="updateBy"    column="update_by"    />
     </resultMap>
 
     <sql id="selectShipmentCommentVo">
-        select id, shipment_id, logistic_group_id, user_id, user_type, user_name, user_alias, comment_time, topic, content, create_time, column1, update_time, updated_by from shipment_comment
+        select id, shipment_id, logistic_group_id, user_id, user_type, user_name, user_alias, comment_time, topic, content, service_type, seen_flg, resolved_flg, create_time, create_by, update_time, update_by from shipment_comment
     </sql>
 
     <select id="selectShipmentCommentList" parameterType="ShipmentComment" resultMap="ShipmentCommentResult">
@@ -37,8 +40,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="commentTime != null "> and comment_time = #{commentTime}</if>
             <if test="topic != null  and topic != ''"> and topic = #{topic}</if>
             <if test="content != null  and content != ''"> and content = #{content}</if>
-            <if test="column1 != null  and column1 != ''"> and column1 = #{column1}</if>
-            <if test="updatedBy != null  and updatedBy != ''"> and updated_by = #{updatedBy}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="seenFlg != null"> and seen_flg = #{seenFlg}</if>
+            <if test="resolvedFlg != null"> and resolved_flg = #{resolvedFlg}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_by = #{updateBy}</if>
         </where>
     </select>
     
@@ -63,10 +69,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="commentTime != null">comment_time,</if>
             <if test="topic != null">topic,</if>
             <if test="content != null">content,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="column1 != null">column1,</if>
+            <if test="serviceType != null">service_type,</if>
+            <if test="seenFlg != null">seen_flg,</if>
+            <if test="resolvedFlg != null">resolved_flg,</if>
+            <if test="createBy != null">create_by,</if>
             <if test="updateTime != null">update_time,</if>
-            <if test="updatedBy != null">updated_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -79,10 +88,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="commentTime != null">#{commentTime},</if>
             <if test="topic != null">#{topic},</if>
             <if test="content != null">#{content},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="column1 != null">#{column1},</if>
+            <if test="serviceType != null">#{serviceType},</if>
+            <if test="seenFlg != null">#{seenFlg},</if>
+            <if test="resolvedFlg != null">#{resolvedFlg},</if>
+            <if test="createBy != null">#{createBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-            <if test="updatedBy != null">#{updatedBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -98,10 +110,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="commentTime != null">comment_time = #{commentTime},</if>
             <if test="topic != null">topic = #{topic},</if>
             <if test="content != null">content = #{content},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="column1 != null">column1 = #{column1},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="updatedBy != null">updated_by = #{updatedBy},</if>
+            <if test="serviceType != null">service_type = #{serviceType},</if>
+            <if test="seenFlg != null">seen_flg = #{seenFlg},</if>
+            <if test="resolvedFlg != null">resolved_flg = #{resolvedFlg},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
@@ -116,4 +129,49 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="selectShipmentCommentListCustom" parameterType="ShipmentComment" resultMap="ShipmentCommentResult">
+        <include refid="selectShipmentCommentVo"/>
+        <where>  
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userType != null  and userType != ''"> and user_type = #{userType}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat(concat('%', #{userName}), '%')</if>
+            <if test="userAlias != null  and userAlias != ''"> and user_alias = #{userAlias}</if>
+            <if test="commentTime != null "> and comment_time = #{commentTime}</if>
+            <if test="topic != null  and topic != ''"> and topic = #{topic}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="seenFlg != null"> and service_type = #{seenFlg}</if>
+            <if test="resolvedFlg != null"> and resolved_flg = #{resolvedFlg}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_by = #{updateBy}</if>
+        </where>
+        order by create_time asc
+    </select>
+
+     <update id="updateFlgShipmentComment" parameterType="ShipmentComment">
+        update shipment_comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="seenFlg != null">seen_flg = #{seenFlg},</if>
+            <if test="resolvedFlg != null">resolved_flg = #{resolvedFlg},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = sysdate
+        </trim>
+        <where>
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userType != null  and userType != ''"> and user_type = #{userType}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat(concat('%', #{userName}), '%')</if>
+            <if test="userAlias != null  and userAlias != ''"> and user_alias = #{userAlias}</if>
+            <if test="commentTime != null "> and comment_time = #{commentTime}</if>
+            <if test="topic != null  and topic != ''"> and topic = #{topic}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_by = #{updateBy}</if>
+        </where>
+    </update>
 </mapper>
