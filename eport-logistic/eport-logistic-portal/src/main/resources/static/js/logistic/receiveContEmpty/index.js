@@ -158,11 +158,11 @@ $(document).ready(function () {
         }
     });
 
-    let now = new Date();
-    now = new Date(now.getFullYear(), now.getMonth(), 1);
-    let nowStr = ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear();
-    $('#fromDate').datebox('setValue', nowStr);
-    shipmentSearch.params.fromDate = dateToString(now);
+    // let now = new Date();
+    // now = new Date(now.getFullYear(), now.getMonth(), 1);
+    // let nowStr = ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear();
+    // $('#fromDate').datebox('setValue', nowStr);
+    // shipmentSearch.params.fromDate = dateToString(now);
 
     $('#toDate').datebox({
         onSelect: function (date) {
@@ -1682,6 +1682,11 @@ function dateToString(date) {
 }
 
 function search() {
+    shipmentSearch.bookingNo = $("#bookingNo").textbox('getText');
+    shipmentSearch.params.containerNo = $("#containerNo").textbox('getValue');
+    shipmentSearch.params.consignee = $("#consignee").textbox('getValue');
+    shipmentSearch.params.fromDate = $('#fromDate').datebox('getValue');
+  shipmentSearch.params.toDate = $('#toDate').datebox('getValue');
     loadTable();
 }
 

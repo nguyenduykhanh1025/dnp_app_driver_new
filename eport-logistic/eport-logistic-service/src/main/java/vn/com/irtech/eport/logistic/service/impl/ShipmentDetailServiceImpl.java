@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -793,25 +794,31 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         return listCont;
     }
 
-    @Override
-    public List<String> getVesselCodeList() {
-        String url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<String>>() {
-                });
-        List<String> vslNms = response.getBody();
-        return vslNms;
-    }
+	@Override
+	public List<String> getVesselCodeList() {
+		List<String> vslNms = (List<String>) CacheUtils.get("vslNmList");
+		if (vslNms == null) {
+			String url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
+					new ParameterizedTypeReference<List<String>>() {});
+			vslNms = response.getBody();
+			CacheUtils.put("vslNmList", vslNms);
+		}
+		return vslNms;
+	}
 
     @Override
     public List<String> getConsigneeList() {
+//		List<String> consignees = (List<String>) CacheUtils.get("consigneeListTaxCode");
+//		if (consignees == null) {
         String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<String>>() {
-                });
+                new ParameterizedTypeReference<List<String>>() {});
         List<String> consignees = response.getBody();
+//			CacheUtils.put("consigneeListTaxCode", consignees);
+//		}
         return consignees;
     }
     
@@ -826,16 +833,18 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         return consignees;
     }
 
-    @Override
-    public List<String> getOpeCodeList() {
-        String url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeList";
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<String>>() {
-                });
-        List<String> opeCodes = response.getBody();
-        return opeCodes;
-    }
+	@Override
+	public List<String> getOpeCodeList() {
+		List<String> opeCodes = (List<String>) CacheUtils.get("opeCodeList");
+		if (opeCodes == null) {
+			String url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeList";
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
+			opeCodes = response.getBody();
+			CacheUtils.put("opeCodeList", opeCodes);
+		}
+		return opeCodes;
+	}
 
     @Override
     public List<String> getVoyageNoList(String vesselCode) {
