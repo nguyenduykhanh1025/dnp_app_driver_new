@@ -19,54 +19,39 @@
             <div class="select-list">
               <ul>
                 <li>
-                  <div class="form-group">
-                    <label class="sr-only" for="vessel">Vessel</label>
-                    <div class="input-group width150">
-                      <select class="c-search-box-vessel">
-                        <option selected="selected"></option>
-                      </select>
-                    </div>
+                  <div class="d-inline">
+                    <input id="vessel2" class="easyui-combobox" data-options="prompt:'Vessel'">
                   </div>
                 </li>
                 <li>
-                  <div class="form-group">
-                    <label class="sr-only" for="voyNo">Voy No </label>
-                    <div class="input-group width150" style="width: 110%;">
-                      <select class="c-search-box-voy-no">
-                        <option selected="selected"></option>
-                      </select>
-                    </div>
+                  <div class="d-inline">
+                    <input id="voyNo" class="easyui-combobox"  data-options="prompt:'Voy No'">
                   </div>
                 </li>
                 <li>
-                  <div class="form-group">
-                    <label class="sr-only" for="search-All">Seacrh All</label>
-                    <div class="input-group">
-                      <input class="form-control" type="text" name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
-                    </div>
+                  <div class="d-inline">
+                    <input class="easyui-textbox" id="searchAll" data-options="prompt:'Tìm kiếm'" />
                   </div>
                 </li>
                 <li>
-                  <div class="form-group">
-                    <label class="sr-only" for="from-Date">From Date</label>
-                    <div class="input-group">
-                      <input class="time-input" id="fromDate" name="fromDate" onchange="changeFromDate()"
-                        placeholder="Từ ngày" />
-                    </div>
+                  <div class="d-inline">
+                    <input id="fromDate" class="easyui-datebox" style="width: 100px;" data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
                   </div>
                 </li>
                 <li>
-                  <div class="form-group">
-                    <label class="sr-only" for="to-Date">To Date</label>
-                    <div class="input-group">
-                      <input class="time-input" id="toDate" name="toDate" onchange="changeToDate()"
-                        placeholder="Đến ngày" />
-                    </div>
+                  <div class="d-inline">
+                    <input id="toDate" class="easyui-datebox" style="width: 100px;" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
+                </div>
+                </li>
+                <li>
+                  <div class="d-inline">
+                    <button class="btn btn-success" onclick="searchDo()">Tìm kiếm</button>
                   </div>
                 </li>
                 <li>
-                  <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i
-                      class="glyphicon glyphicon-search"></i> Tìm Kiếm</a></li>
+                  <div class="d-inline">
+                    <button class="btn btn-success btn-outline" onclick="clearInput()">Làm mới</button>
+                  </div>
                 </li>
               </ul>
             </div>

@@ -457,7 +457,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
 
-      <select id="selectVessels" parameterType="EquipmentDo" resultType="String">
+      <select id="selectVessels" parameterType="EquipmentDo" resultMap="EquipmentDoResult">
     	select distinct vessel
     	from equipment_do 
         <where> 
@@ -472,7 +472,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where> 
      </select>
 
-      <select id="selectVoyNos" parameterType="EquipmentDo" resultType="String">
+      <select id="selectVoyNos" parameterType="EquipmentDo" resultMap="EquipmentDoResult">
     	select distinct voy_no 
     	from equipment_do
          <where> 
@@ -575,7 +575,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         ORDER BY create_time DESC
     </select>
-    <select id="selectOprCode" parameterType="EquipmentDo" resultType="String">
+    <select id="selectOprCode" parameterType="EquipmentDo" resultMap="EquipmentDoResult">
     select distinct carrier_code
     from equipment_do
     <where>

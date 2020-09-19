@@ -120,9 +120,9 @@ public interface EquipmentDoMapper {
 
 	public List<EquipmentDo> selectEdoListByBillNo(EquipmentDo edo);
 
-	public List<String> selectVoyNos(EquipmentDo edo);
+	public List<EquipmentDo> selectVoyNos(EquipmentDo edo);
 	
-	public List<String> selectVessels(EquipmentDo edo);
+	public List<EquipmentDo> selectVessels(EquipmentDo edo);
 
 	public EquipmentDo selectFirstEdo(EquipmentDo edo);
 
@@ -130,6 +130,6 @@ public interface EquipmentDoMapper {
 
 	public List<EquipmentDo> selectEdoListForReport(EquipmentDo edo);
 
-	public List<String> selectOprCode(EquipmentDo edo);
+	public List<EquipmentDo> selectOprCode(EquipmentDo edo);
 
 }

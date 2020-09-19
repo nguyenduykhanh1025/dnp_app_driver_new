@@ -1,177 +1,163 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <th:block th:include="include :: header('DNP ePort: Danh Sách eDO')" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <th:block th:include="include :: header('General Controlling')" />
   <th:block th:include="include :: easyui-css" />
-  <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet" />
-  <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet" />
-  <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
-  <link rel="stylesheet" th:href="@{/css/edo/style.css}" />
-  <link rel="stylesheet" th:href="@{/eport/css/edo.css}" />
+  <th:block th:include="include :: handsontable-css" />
+  <link th:href="@{/eport/common/style.css}" rel="stylesheet" />
 </head>
 
-<body class="white-bg container-fluid ">
-  <div class="col-sm-12 wrapper">
-    <div class="form-inline mt10 mb10">
-      <div class="form-group">
-        <label class="sr-only col-md-12" for="voyNo">Vessel </label>
-        <div class="input-group width150" style="width: 170px;">
-          <select class="c-search-box-vessel">
-          </select>
+<body class="grey-background">
+  <div class="main-body">
+    <div class="main-body__search-wrapper mb-2">
+      <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+      <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+      <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+        <div class="flex__left w-20">
+          <h3 class="mt-10">Quản Lý DO</h3>
+        </div>
+        <div class="flex__right w-80">
+          <div class="justify-content-around align-items-center" id="ff">
+            <div class="d-inline">
+              <input id="vessel2" class="easyui-combobox" data-options="prompt:'Vessel'">
+            </div>
+            <div class="d-inline">
+              <input id="voyNo" class="easyui-combobox"  data-options="prompt:'Voy No'">
+            </div>
+            <div class="d-inline">
+              <input class="easyui-textbox" id="searchBillNo" data-options="prompt:'B/L No'" />
+            </div>
+            <div class="d-inline">
+              <input class="easyui-textbox" id="searchContNo" data-options="prompt:'Container No'" />
+            </div>
+            <div class="d-inline">
+              <input id="fromDate" class="easyui-datebox" style="width: 100px;" data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
+            </div>
+            <div class="d-inline">
+                <input id="toDate" class="easyui-datebox" style="width: 100px;" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
+            </div>
+            <div class="d-inline">
+              <button class="btn btn-success" onclick="searchDo()">Tìm kiếm</button>
+            </div>
+            <div class="d-inline">
+              <button class="btn btn-success btn-outline" onclick="clearInput()">Làm mới</button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="form-group">
-        <label class="sr-only" for="voyNo">Voy No </label>
-        <div class="input-group width150" style="width: 170px;">
-          <select class="c-search-box-voy-no">
-          </select>
+    </div>
+    <div class="main-body__table-wrapper">
+      <div class="easyui-layout" id="main-layout" style="width:100%">
+        <div class="left-side" data-options="region:'west',split:true, collapsible:false" title="Danh sách lô"
+          style="width:30%;">
+          <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
+          <table id="dg" style="width: 100%;">
+            <thead>
+                <tr>
+                  <th data-options="field:'billOfLading',align:'left'" width="130">
+                    Bill Of Lading
+                  </th>
+                  <th data-options="field:'vessel',align:'left'" width="110">
+                    Vessel
+                  </th>
+                  <th data-options="field:'voyNo',align:'left'" width="80">
+                    Voy No
+                  </th>
+                  <th data-options="field:'numberContainer',align:'center'" width="90">
+                    Number <br/>
+                    Container
+                  </th>
+                  <th data-options="field:'createTime',align:'left'" width="130">
+                    Receive Time
+                  </th>
+                </tr>
+              </thead>  
+          </table>
+        </div>
+        <div data-options="region:'center'" style="width:100%;">
+          <div>
+            <!-- <button class="btn btn-sm btn-danger" id="delEdo" onclick="delEdo()"><i class="fa fa-times text-primary"></i> Xóa eDO</button> -->
+            <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i class="fa fa-pencil-square-o"></i> Cập Nhật eDO</button>
+            <button class="btn btn-sm btn-success" id="releaseEdo" onclick="addDo()"><i class="fa fa-check-circle"></i> Phát hành DO</button>
+          </div>
+          <table id="container-grid" style="width: 100%;" pageList="[20,50,100,150,200]">
+            <thead data-options="frozen:true">
+              <tr>
+                <th data-options="field:'id',checkbox:true"></th>
+                <th data-options="field:'containerNumber',align:'left'" width="120">
+                  Container No
+                </th>
+              </tr>
+            </thead>
+            <thead>
+              <tr>
+                <th data-options="field:'sztp',align:'left'" width="50">
+                  Sztp
+                </th>
+                <th data-options="field:'carrierCode',align:'center'" width="90">
+                  Opr <br/>
+                  Code
+                </th>
+                <th data-options="field:'orderNumber',align:'left'" width="120">
+                  Order <br> Number
+                </th>
+                <th data-options="field:'consignee',align:'left'" width="250">
+                  Consignee
+                </th>
+                <th data-options="field:'expiredDem',align:'left',formatter:formatToYDMHMS" width="110">
+                  Expired <br/>
+                  Dem
+                </th>
+                <th data-options="field:'detFreeTime',align:'center'" width="80">
+                  Det Free <br/>
+                  Time
+                </th>
+                <th data-options="field:'emptyContainerDepot',align:'left'" width="150">
+                  Empty Container <br/>
+                  Depot
+                </th>
+                <th data-options="field:'vessel',align:'left'" width="110">
+                  Vessel
+                </th>
+                <th data-options="field:'voyNo',align:'left'" width="90">
+                  Voy No
+                </th>
+                <th data-options="field:'pol',align:'left'" width="110">
+                  POL
+                </th>
+                <th data-options="field:'pod',align:'left'" width="110">
+                  POD
+                </th>
+                <th data-options="field:'status',align:'left',formatter:formatStatus" width="91">
+                  Status
+                </th>
+                <th data-options="field:'fileCreateTime',align:'center',formatter:formatToYDMHMS" width="110">
+                  Create Time
+                </th>
+                <th data-options="field:'createTime',align:'left',formatter:formatToYDMHMS" width="115">
+                  Receive Time
+                </th>
+                <th data-options="field:'action',align:'center',formatter: formatAction" fixed:true width="170">
+                  Action
+                </th>
+              </tr>
+            </thead>
+          </table>
+
         </div>
       </div>
-      <div class="form-group searchBill" style="width: 170px;">
-        <label class="sr-only" for="searchBillNo">Tìm kiếm</label>
-        <div class="input-group">
-          <input type="text" class="form-control" name="searchBillNo" id="searchBillNo"
-          placeholder="Tìm kiếm Bill No" />
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="input-group">
-          <input type="text" class="form-control" name="searchContNo" id="searchContNo" placeholder="Tìm kiếm Container" />
-        </div>
-      </div>
-      <div class="form-group width100px">
-        <label class="sr-only" for="fromDate">From Date</label>
-        <div class="input-group">
-          <input class="form-control time-input" id="fromDate" name="fromDate" onchange="changeFromDate()"
-            placeholder="Từ ngày" />
-        </div>
-      </div>
-      <div class="form-group width100px">
-        <label class="sr-only" for="toDate">To Date</label>
-        <div class="input-group">
-          <input class="form-control time-input" id="toDate" name="toDate" onchange="changeToDate()"
-            placeholder="Đến ngày" />
-        </div>
-      </div>
-      <div class="form-group ">
-        <div class="input-group">
-          <a class="btn btn-primary btn-rounded btn-sm" onclick="searchDo()" id="searchInfoEdo"><i
-              class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
-        </div>
-      </div>
-      <div class="form-group ">
-        <a class="btn btn-warning btn-rounded btn-sm margin-botton-5" id="btnRefresh"><i class="fa fa-refresh"> Làm
-            mới</i>&nbsp;</a>
-      </div>
-      <div class="form-group margin-input">
-        <label class="sr-only">Cập Nhật DO</label>
-        <div class="input-group">
-          <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i
-              class="fa fa-pencil-square-o"></i>Cập Nhật DO</button>
-        </div>
-      </div>
-      <div class="input-group margin-botton-5">
-        <div class="btn-group-sm" id="toolbar" role="group">
-          <a class="btn btn-success" onclick="addDo()">
-            <i class="fa fa-check-circle"></i> Phát hành DO
-          </a>
-        </div>
-      </div>
-    </div> <!-- //end form -->
-  </div>
-  <div class="col-sm-12 container-fluid wrapper">
-  <section class="left">
-    <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
-    <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
-    <table id="dg">
-        <thead>
-          <tr>
-            <th data-options="field:'billOfLading',align:'left'" width="130">
-              BILL OF LADING
-            </th>
-            <th data-options="field:'vessel',align:'left'" width="110">
-              VESSEL
-            </th>
-            <th data-options="field:'voyNo',align:'left'" width="110">
-              VOY NO
-            </th>
-            <th data-options="field:'numberContainer',align:'center'" width="90">
-              NUMBER <br />
-              CONTAINER
-            </th>
-            <th data-options="field:'createTime',align:'center'" width="110">
-              CREATE TIME
-            </th>
-          </tr>
-        </thead>
-      </table>
-    </section>
-  <section class="right" style="max-height:654px;">
-    <table id="dgContainer">
-      <thead data-options="frozen:true">
-        <tr>
-          <th data-options="field:'id',checkbox:true"></th>
-          <th data-options="field:'containerNumber',align:'left'" width="120">
-            CONTAINER NO
-          </th>
-        </tr>
-      </thead>
-      <thead>
-        <tr>
-          <th data-options="field:'sztp',align:'left'" width="50">
-            SZTP
-          </th>
-          <th data-options="field:'carrierCode',align:'center'" width="90">
-            OPR <br />
-            CODE
-          </th>
-          <th data-options="field:'consignee',align:'left'" width="250">
-            CONSIGNEE
-          </th>
-          <th data-options="field:'expiredDem',align:'left',formatter:formatToYDMHMS" width="110">
-            EXPIRED <br />
-            DEM
-          </th>
-          <th data-options="field:'detFreeTime',align:'center'" width="80">
-            DET FREE <br />
-            TIME
-          </th>
-          <th data-options="field:'emptyContainerDepot',align:'left'" width="150">
-            EMPTY CONTAINER <br />
-            DEPOT
-          </th>
-          <th data-options="field:'vessel',align:'left'" width="110">
-            VESSEL
-          </th>
-          <th data-options="field:'voyNo',align:'left'" width="90">
-            VOY NO
-          </th>
-          <th data-options="field:'pol',align:'left'" width="110">
-            POL
-          </th>
-          <th data-options="field:'pod',align:'left'" width="110">
-            POD
-          </th>
-          <th data-options="field:'status',align:'left',formatter:formatStatus" width="91">
-            STATUS
-          </th>
-          <th data-options="field:'createTime',align:'center'" width="110">
-            CREATE TIME
-          </th>
-          <th data-options="field:'action',align:'center',formatter: formatAction" fixed:true width="150">
-            ACTION
-          </th>
-        </tr>
-      </thead>
-    </table>
-  </section>
+    </div>
   </div>
   <th:block th:include="include :: footer" />
   <th:block th:include="include :: easyui-js" />
-  <th:block th:include="include :: datetimepicker-js" />
-  <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
-  <script th:src="@{/eport/js/modules/carrier/equipmentDo.js}"></script>
+  <th:block th:include="include :: handsontable-js" />
+  <script type="text/javascript" th:inline="javascript">
+    $(".main-body").height($(document).height() - 10);
+    $(".easyui-layout").height($('.main-body').height() - 50);
+  </script>
+   <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
+   <script th:src="@{/eport/js/modules/carrier/equipmentDo.js}"></script>
 </body>
-
-</html>

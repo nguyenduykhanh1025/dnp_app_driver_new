@@ -305,9 +305,6 @@ public class CarrierEdoController extends CarrierBaseController {
 	public Map<String, List<String>> getListOptionsGrid() {
 
 		Map<String, List<String>> optionsList = new HashMap<>();
-		// optionsList.put("consigneeList", equipmentDoService.getConsignee(getUserId()));
-		// optionsList.put("emptyDepotList", equipmentDoService.getEmptyContainerDepot(getUserId()));
-		// optionsList.put("vesselList", equipmentDoService.getVessel(getUserId()));
 		return optionsList;
 	}
 

@@ -1,74 +1,137 @@
 const PREFIX = ctx + "edo/manage";
+const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var bill;
 var edo = new Object();
-var currentLeftWidth = $(".table-left").width();
-var currentRightWidth = $(".table-right").width();
+
 
 $(document).ready(function () {
-  $("#btn-collapse").click(function () {
-    handleCollapse(true);
-  });
-  $("#btn-uncollapse").click(function () {
-    handleCollapse(false);
-  });
+
   loadTable();
   loadTableByContainer();
-  $("#searchAll").keyup(function (event) {
+  $(".main-body").layout();
+
+  $(".collapse").click(function () {
+    $(".main-body__search-wrapper").height(15);
+    $(".main-body__search-wrapper--container").hide();
+    $(this).hide();
+    $(".uncollapse").show();
+  });
+
+  $(".uncollapse").click(function () {
+    $(".main-body__search-wrapper").height(SEARCH_HEIGHT + 20);
+    $(".main-body__search-wrapper--container").show();
+    $(this).hide();
+    $(".collapse").show();
+  });
+
+  $(".left-side__collapse").click(function () {
+    $('#main-layout').layout('collapse', 'west');
+  });
+
+  $('#searchAll').keyup(function (event) {
     if (event.keyCode == 13) {
-      edo.containerNumber = $("#searchAll").val().toUpperCase();
-      edo.consignee = $("#searchAll").val().toUpperCase();
+      edo.containerNumber = $('#searchAll').val().toUpperCase();
+      edo.consignee = $('#searchAll').val().toUpperCase();
       loadTableByContainer(bill);
     }
+
   });
-  $("#searchBillNo").keyup(function (event) {
-    if (event.keyCode == 13) {
-      billOfLading = $("#searchBillNo").val().toUpperCase();
-      if (billOfLading == "") {
-        loadTable(edo);
-      }
-      edo = new Object();
-      edo.billOfLading = billOfLading;
+
+  $("#searchBillNo").textbox('textbox').bind('keydown', function (e) {
+    // enter key
+    if (e.keyCode == 13) {
+      edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
       loadTable(edo);
     }
   });
-  $("#searchContNo").keyup(function (event) {
-    if (event.keyCode == 13) {
-      containerNumber = $("#searchContNo").val().toUpperCase();
-      if (containerNumber == "") {
+
+  $("#searchContNo").textbox('textbox').bind('keydown', function (e) {
+    // enter key
+    if (e.keyCode == 13) {
+      edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
+      loadTable(edo);
+    }
+  });
+  $('#fromDate').datebox({
+    onSelect: function (date) {
+      date.setHours(0, 0, 0);
+      fromDate = date;
+      if (toDate != null && date.getTime() > toDate.getTime()) {
+        $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
+      } else {
+        fromDate.setHours(23, 59, 59);
+        edo.fromDate = fromDate.getTime();
+        edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
+        edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
         loadTable(edo);
       }
-      edo = new Object();
-      edo.containerNumber = containerNumber;
-      loadTable(edo);
+      return date;
+    }
+  });
+
+  $('#toDate').datebox({
+    onSelect: function (date) {
+      date.setHours(23, 59, 59);
+      toDate = date;
+      if (fromDate != null && date.getTime() < fromDate.getTime()) {
+        $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
+      } else {
+        toDate.setHours(23, 59, 59);
+        edo.toDate = toDate.getTime();
+        edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
+        edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
+        loadTable(edo);
+      }
     }
   });
 });
 
-function handleCollapse(status) {
-  if (status) {
-    $(".left").css("width", "0.5%");
-    $(".left").children().hide();
-    $("#btn-collapse").hide();
-    $("#btn-uncollapse").show();
-    $(".right").css("width", "99%");
-    loadTableByContainer();
-    return;
+$("#opr").combobox({
+  valueField: 'carrierCode',
+  textField: 'carrierCode',
+  url: PREFIX + "/getOprCode",
+  onSelect: function (carrierCode) {
+    $("#voyNo").combobox('setText', '');
+    edo = new Object();
+    edo.carrierCode = carrierCode.carrierCode;
+    loadTable(edo);
+    $("#vessel").combobox({
+      valueField: 'vessel',
+      textField: 'vessel',
+      url: PREFIX + '/getVessel/' + carrierCode.carrierCode,
+      onSelect: function (vessel) {
+        $("#fromDate").datebox('setValue', '');
+        $("#toDate").datebox('setValue', '');
+        $("#searchBillNo").textbox('setText', '');
+        $("#searchContNo").textbox('setText', '');
+
+        edo.vessel = vessel.vessel
+        edo.voyNo = null;
+        loadTable(edo);
+        var url = PREFIX + '/getVoyNo/' + carrierCode.carrierCode + '/' + vessel.vessel;
+        $('#voyNo').combobox({
+          valueField: 'voyNo',
+          textField: 'voyNo',
+          url: url,
+          onSelect: function (voyNo) {
+            edo.voyNo = voyNo.voyNo
+            loadTable(edo);
+          }
+        });
+      }
+    });
+
   }
-  $(".left").css("width", "25%");
-  $(".left").children().show();
-  $("#btn-collapse").show();
-  $("#btn-uncollapse").hide();
-  $(".right").css("width", "74%");
-  loadTableByContainer();
-  return;
-}
+});
+
+
 
 function loadTable(edo) {
   $("#dg").datagrid({
     url: PREFIX + "/billNo",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - 60,
+    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     clientPaging: true,
     collapsible: true,
     pagination: true,
@@ -107,12 +170,12 @@ function loadTable(edo) {
 }
 
 function loadTableByContainer(billOfLading) {
-  edo.billOfLading = billOfLading; 
-  $("#dgContainer").datagrid({
+  edo.billOfLading = billOfLading;
+  $("#container-grid").datagrid({
     url: PREFIX + "/edo",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - 60,
+    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     clientPaging: true,
     pagination: true,
     pageSize: 20,
@@ -269,135 +332,7 @@ laydate.render({
   format: 'dd/MM/yyyy'
 });
 
-$('.c-search-box-vessel').on("select2:opening", function(e) {
-  $(".c-search-box-voy-no").text(null);
-  $(this).text(null);
-  edo.vessel = null;
-  edo.voyNo = null;
-  loadTable(edo);
-});
 
-$('.c-search-box-vessel').select2({
-  theme: "bootstrap",
-  placeholder: "Vessel",
-  allowClear: true,
-  ajax: {
-    url: PREFIX + "/getVessel",
-    dataType: "json",
-    method: "GET",
-    data: function (params) {
-      return {
-        keyString: params.term,
-        oprCode : edo.carrierCode,
-      };
-    },
-    processResults: function (data) {
-      let results = []
-      data.forEach(function (element, i) {
-        let obj = {};
-        obj.id = i;
-        obj.text = element;
-        results.push(obj);
-      })
-      return {
-        results: results,
-      };
-    },
-  },
-});
-
-$('.c-search-box-voy-no').on("select2:opening", function(e) {
-  edo = new Object();
-  $(this).text(null);
-  edo.vessel = $('.c-search-box-vessel').text().trim();
-  edo.carrierCode = $(".c-search-opr-code").text().trim();
-  loadTable(edo);
-});
-
-$(".c-search-box-voy-no").select2({
-  theme: "bootstrap",
-  placeholder: "Voy No",
-  allowClear: true,
-  ajax: {
-    url: PREFIX + "/getVoyNo",
-    dataType: "json",
-    method: "GET",
-    data: function (params) {
-      return {
-        keyString: params.term,
-        vessel : edo.vessel,
-        oprCode : edo.carrierCode
-      };
-    },
-    processResults: function (data) {
-      let results = []
-      data.forEach(function (element, i) {
-        let obj = {};
-        obj.id = i;
-        obj.text = element;
-        results.push(obj);
-      })
-      return {
-        results: results,
-      };
-    },
-  },
-});
-
-
-$(".c-search-opr-code").on('select2:open', function (e) {
-  $('.c-search-box-vessel').text(null);
-  $('.c-search-box-voy-no').text(null);
-  $(this).text(null);
-  edo = new Object();
-  loadTable(edo);
-});
-$(".c-search-opr-code").select2({
-  theme: "bootstrap",
-  placeholder: "Mã vận hành",
-  allowClear: true,
-  ajax: {
-    url: PREFIX + "/getOprCode",
-    dataType: "json",
-    method: "GET",
-    data: function (params) {
-      return {
-        keyString: params.term
-      };
-    },
-    processResults: function (data) {
-      let results = []
-      data.forEach(function (element, i) {
-        let obj = {};
-        obj.id = i;
-        obj.text = element;
-        results.push(obj);
-      })
-      return {
-        results: results,
-      };
-    },
-  },
-});
-
-
-// For submit search
-$('.c-search-box-vessel').change(function () {
-  edo = new Object();
-  edo.vessel = $(this).text().trim();
-  edo.carrierCode = $(".c-search-opr-code").text().trim();
-  loadTable(edo);
-});
-
-$(".c-search-box-voy-no").change(function () {
-  edo.voyNo = $(this).text().trim();
-  loadTable(edo);
-});
-
-$(".c-search-opr-code").change(function () {
-  edo.carrierCode = $(this).text().trim();
-  loadTable(edo);
-});
 
 
 
@@ -409,3 +344,33 @@ function generatePDF() {
   $.modal.openTab("In phiếu", ctx + "edo/print/bill/" + bill);
 }
 
+
+
+function dateformatter(date) {
+  var y = date.getFullYear();
+  var m = date.getMonth() + 1;
+  var d = date.getDate();
+  return (d < 10 ? ('0' + d) : d) + '/' + (m < 10 ? ('0' + m) : m) + '/' + y;
+}
+
+function dateparser(s) {
+  var ss = (s.split('\.'));
+  var d = parseInt(ss[0], 10);
+  var m = parseInt(ss[1], 10);
+  var y = parseInt(ss[2], 10);
+  if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+    return new Date(y, m - 1, d);
+  }
+}
+
+function clearInput() {
+  edo = new Object();
+  $("#fromDate").datebox('setValue', '');
+  $("#toDate").datebox('setValue', '');
+  $("#searchBillNo").textbox('setText', '');
+  $("#searchContNo").textbox('setText', '');
+  $("#opr").combobox('setText', '');
+  $("#vessel").combobox('setText', '');
+  $("#voyNo").combobox('setText', '');
+  loadTable(edo);
+}

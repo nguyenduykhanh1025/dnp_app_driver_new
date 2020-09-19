@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.carrier.domain.BookingDetail;
 import vn.com.irtech.eport.carrier.service.IBookingDetailService;
 import vn.com.irtech.eport.common.annotation.Log;
-import vn.com.irtech.eport.common.core.controller.BaseController;
+
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -31,8 +31,6 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
-import vn.com.irtech.eport.system.domain.SysDictData;
-import vn.com.irtech.eport.system.domain.SysDictType;
 
 
 /**
@@ -49,8 +47,6 @@ public class BookingDetailController extends CarrierBaseController
 	
     private String prefix = "carrier/booking/detail";
 
-    @Autowired
-	private IShipmentService shipmentService;
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
@@ -60,9 +56,6 @@ public class BookingDetailController extends CarrierBaseController
     
     @Autowired
     private IBookingDetailService bookingDetailService;
-    
-    @Autowired
-    private DictService dictService;
 
     @Autowired
 	private DictService dictDataService;
