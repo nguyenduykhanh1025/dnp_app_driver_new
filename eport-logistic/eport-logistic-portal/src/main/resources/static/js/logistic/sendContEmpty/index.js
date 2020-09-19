@@ -134,7 +134,7 @@ $('#right-layout').layout({
                 data: JSON.stringify(req),
                 success: function (res) {
                     if (res.code == 0) {
-                        let commentTitle = '<span class="round-notify-count">0</span>';
+                        let commentTitle = '<span>Thảo Luận</span> <span class="round-notify-count">0</span>';
                         $('#right-layout').layout('panel', 'expandSouth').panel('setTitle', commentTitle);
                     }
                 }
@@ -1723,7 +1723,7 @@ function loadListComment(shipmentCommentId) {
                         html += '<hr>';
                     });
                 }
-                commentTitle += '<span class="round-notify-count">' + commentNumber + '</span>';
+                commentTitle += ' <span class="round-notify-count">' + commentNumber + '</span>';
                 $('#right-layout').layout('panel', 'expandSouth').panel('setTitle', commentTitle);
                 $('#commentList').html(html);
                 // $("#comment-div").animate({ scrollTop: $("#comment-div")[0].scrollHeight}, 1000);
