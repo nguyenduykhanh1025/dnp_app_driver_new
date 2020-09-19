@@ -58,4 +58,20 @@ public interface IShipmentCommentService
      * @return result
      */
     public int deleteShipmentCommentById(Long id);
+    
+    /**
+     * Get Shipment Comment List
+     * 
+     * @param shipmentComment Shipment Comment
+     * @return Shipment Comment List
+     */
+    public List<ShipmentComment> selectShipmentCommentListCustom(ShipmentComment shipmentComment);
+    
+    /**
+     * Update Shipment Comment Flag include seen flag and resolved flag
+     * 
+     * @param shipmentComment Shipment Comment
+     * @return Result
+     */
+    public int updateFlgShipmentComment(ShipmentComment shipmentComment);
 }

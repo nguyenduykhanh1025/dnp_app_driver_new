@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,14 +35,17 @@ import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
 import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
+import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
+import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
@@ -77,6 +81,9 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	
 	@Autowired
 	private ConfigService configService;
+	
+	@Autowired
+    private IShipmentCommentService shipmentCommentService;
 	
     @GetMapping()
 	public String sendContEmpty() {    	
@@ -464,5 +471,33 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			return ajaxResult;
 		}
 		return error();
+	}
+	
+	@PostMapping("/shipment/comment")
+	@ResponseBody
+	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
+		LogisticAccount user = getUser();
+		shipmentComment.setCreateBy(user.getUserName());
+		shipmentComment.setLogisticGroupId(user.getGroupId());
+		shipmentComment.setUserId(getUserId());
+		shipmentComment.setUserType(EportConstants.COMMENTOR_LOGISTIC);
+		shipmentComment.setUserAlias(getGroup().getGroupName());
+		shipmentComment.setUserName(user.getUserName());
+		shipmentComment.setServiceType(EportConstants.SERVICE_DROP_EMPTY);
+		shipmentComment.setCommentTime(new Date());
+		shipmentComment.setSeenFlg(true);
+		shipmentCommentService.insertShipmentComment(shipmentComment);
+		
+		// Send notification to om
+		try {
+			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, shipmentComment.getTopic(), shipmentComment.getContent(), "", EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
+		} catch (MqttException e) {
+			logger.error("Fail to send message om notification app: " + e);
+		}
+		
+		// Add id to make background grey (different from other comment)
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
+		return ajaxResult;
 	}
 }

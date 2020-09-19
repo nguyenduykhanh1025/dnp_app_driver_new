@@ -48,21 +48,22 @@ public class ShipmentComment extends BaseEntity
     @Excel(name = "Comment Time", width = 30, dateFormat = "yyyy-MM-dd")
     private Date commentTime;
 
-    /** Content */
+    /** Topic */
     @Excel(name = "Topic")
     private String topic;
 
     /** Content */
     @Excel(name = "Content")
     private String content;
-
-    /** Create By */
-    @Excel(name = "Create By")
-    private String column1;
-
-    /** Update By */
-    @Excel(name = "Update By")
-    private String updatedBy;
+    
+    /** Service type */
+    private Integer serviceType;
+    
+    /** Seen flag */
+    private Boolean seenFlg;
+    
+    /** Resolved flag */
+    private Boolean resolvedFlg;
 
     public void setId(Long id) 
     {
@@ -153,26 +154,32 @@ public class ShipmentComment extends BaseEntity
     {
         return content;
     }
-    public void setColumn1(String column1) 
-    {
-        this.column1 = column1;
-    }
 
-    public String getColumn1() 
-    {
-        return column1;
-    }
-    public void setUpdatedBy(String updatedBy) 
-    {
-        this.updatedBy = updatedBy;
-    }
+    public Integer getServiceType() {
+		return serviceType;
+	}
 
-    public String getUpdatedBy() 
-    {
-        return updatedBy;
-    }
+	public void setServiceType(Integer serviceType) {
+		this.serviceType = serviceType;
+	}
 
-    @Override
+	public Boolean getSeenFlg() {
+		return seenFlg;
+	}
+
+	public void setSeenFlg(Boolean seenFlg) {
+		this.seenFlg = seenFlg;
+	}
+
+	public Boolean getResolvedFlg() {
+		return resolvedFlg;
+	}
+
+	public void setResolvedFlg(Boolean resolvedFlg) {
+		this.resolvedFlg = resolvedFlg;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
@@ -184,10 +191,13 @@ public class ShipmentComment extends BaseEntity
             .append("userAlias", getUserAlias())
             .append("commentTime", getCommentTime())
             .append("content", getContent())
+            .append("serviceType", getServiceType())
+            .append("seenFlg", getSeenFlg())
+            .append("resolvedFlg", getResolvedFlg())
             .append("createTime", getCreateTime())
-            .append("column1", getColumn1())
+            .append("createBy", getCreateBy())
             .append("updateTime", getUpdateTime())
-            .append("updatedBy", getUpdatedBy())
+            .append("updateBy", getUpdateBy())
             .toString();
     }
 }

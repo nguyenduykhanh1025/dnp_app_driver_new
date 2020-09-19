@@ -4,6 +4,7 @@ var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot, isDestroy = false;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
 var contList = [], temperatureDisable = [], sztpListDisable = [];
+var conts = '';
 var allChecked = false;
 var checkList = [];
 var rowAmount = 0;
@@ -15,9 +16,7 @@ var berthplanList;// get infor
 var onChangeFlg = false, currentIndexRow, rejectChange = false, dischargePortList = [], currentVesselVoyage = '', currentEta;
 var fromDate, toDate;
 //dictionary sizeList
-var consigneeList, vslNmList, currentProcessId, currentSubscription;
-$(function() {
-  $.ajax({
+$.ajax({
     type: "GET",
     url: ctx + "logistic/size/container/list",
     success(data) {
@@ -27,9 +26,10 @@ $(function() {
             })
         }
     }
-  });
+})
+var consigneeList, vslNmList, currentProcessId, currentSubscription;
 
-  $.ajax({
+$.ajax({
     url: ctx + "logistic/source/consignee",
     method: "GET",
     success: function (data) {
@@ -37,9 +37,9 @@ $(function() {
             consigneeList = data.consigneeList;
         }
     }
-  });
+});
 
-  $.ajax({
+$.ajax({
     url: prefix + "/berthplan/vessel-voyage/list",
     method: "GET",
     success: function (data) {
@@ -48,10 +48,7 @@ $(function() {
             vslNmList = data.vesselAndVoyages;
         }
     }
-  });
-
 });
-
 var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
 
 var toolbar = [
@@ -81,6 +78,8 @@ var toolbar = [
     },
 ];
 
+$(".main-body").layout();
+
 $(".collapse").click(function () {
     $(".main-body__search-wrapper").hide();
     $(".main-body__search-wrapper--container").hide();
@@ -102,8 +101,63 @@ $(".left-side__collapse").click(function () {
     }, 200);
 });
 
+
+$('#main-layout').layout({
+    onExpand: function (region) {
+        if (region == "west") {
+            hot.render();
+        }
+    }
+});
+
+$(".right-side__collapse").click(function () {
+    $('#right-layout').layout('collapse', 'south');
+    setTimeout(() => {
+        hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
+        hot.render();
+    }, 200);
+});
+
+$('#right-layout').layout({
+    onExpand: function (region) {
+        if (region == "south") {
+            hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
+            hot.render();
+            let req = {
+                shipmentId: shipmentSelected.id
+            }
+            $.ajax({
+                url: ctx + "logistic/comment/update",
+                type: "post",
+                contentType: "application/json",
+                data: JSON.stringify(req),
+                success: function (res) {
+                    if (res.code == 0) {
+                        let commentTitle = '<span>Thảo Luận</span> <span class="round-notify-count">0</span>';
+                        $('#right-layout').layout('panel', 'expandSouth').panel('setTitle', commentTitle);
+                    }
+                }
+            });
+        }
+    }
+});
+
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
+
+    $('#right-layout').layout('collapse', 'south');
+    setTimeout(() => {
+        hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
+        hot.render();
+    }, 200);
+
+    $("#content").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+            addComment();
+        }
+    });
+
     $("#shipmentStatus").combobox({
         onSelect: function (option) {
             shipmentSearch.status = option.value;
@@ -170,15 +224,6 @@ $(document).ready(function () {
         }
     });
 
-    $(".main-body").layout();
-    $('#main-layout').layout({
-        onExpand: function (region) {
-            if (region == "west") {
-                hot.render();
-            }
-        }
-    })
-
     // Handle add
     $(function () {
         let options = {
@@ -188,6 +233,7 @@ $(document).ready(function () {
         };
         $.table.init(options);
     });
+
     loadTable();
 });
 
@@ -308,7 +354,7 @@ function getSelected(index, row) {
                     } else {
                         title += 'Trống';
                     }
-                    $('#main-layout').layout('panel', 'center').panel('setTitle', title);
+                    $('#right-layout').layout('panel', 'center').panel('setTitle', title);
                     rowAmount = row.containerAmount;
                     checkList = Array(rowAmount).fill(0);
                     temperatureDisable = Array(rowAmount).fill(1);
@@ -317,6 +363,7 @@ function getSelected(index, row) {
                     loadShipmentDetail(row.id);
                     onChangeFlg = false;
                     currentIndexRow = index;
+                    loadListComment();
                 }
                 return true;
             }, function () {
@@ -346,7 +393,7 @@ function getSelected(index, row) {
                 } else {
                     title += 'Trống';
                 }
-                $('#main-layout').layout('panel', 'center').panel('setTitle', title);
+                $('#right-layout').layout('panel', 'center').panel('setTitle', title);
                 rowAmount = row.containerAmount;
                 checkList = Array(rowAmount).fill(0);
                 temperatureDisable = Array(rowAmount).fill(1);
@@ -355,6 +402,7 @@ function getSelected(index, row) {
                 loadShipmentDetail(row.id);
                 onChangeFlg = false;
                 currentIndexRow = index;
+                loadListComment();
             }
             return true;
         }
@@ -446,7 +494,7 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
-            $(td).css("background-color", "#fafafa");
+            $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
     if (!value) {
@@ -472,7 +520,7 @@ function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) 
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
-            $(td).css("background-color", "#fafafa");
+            $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
     if (!value) {
@@ -486,7 +534,7 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
-            $(td).css("background-color", "#fafafa");
+            $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
     if (!value) {
@@ -505,7 +553,7 @@ function etaRenderer(instance, td, row, col, prop, value, cellProperties) {
         value = '';
     }
     cellProperties.readOnly = 'true';
-    $(td).css("background-color", "#fafafa");
+    $(td).css("background-color", "rgb(232, 232, 232)");
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
@@ -514,12 +562,12 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
-            $(td).css("background-color", "#fafafa");
+            $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
     if (sztpListDisable[row] == 1) {
         cellProperties.readOnly = 'true';
-        $(td).css("background-color", "#fafafa");
+        $(td).css("background-color", "rgb(232, 232, 232)");
     }
     if (!value) {
         value = '';
@@ -533,13 +581,13 @@ function temperatureRenderer(instance, td, row, col, prop, value, cellProperties
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
-            $(td).css("background-color", "#fafafa");
+            $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }  
     if (temperatureDisable[row] == 1) {
         $(td).html('');
         cellProperties.readOnly = 'true';
-        $(td).css("background-color", "#fafafa");
+        $(td).css("background-color", "rgb(232, 232, 232)");
     }
     if (!value) {
         value = '';
@@ -574,11 +622,11 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
-            $(td).css("background-color", "#fafafa");
+            $(td).css("background-color", "rgb(232, 232, 232)");
         }
         if (value > 99999) {
-            layer.msg('Trọng lượng không cho phép, vui lòng kiểm tra lại.', { icon: $.modal.icon(modal_status.FAIL), time: 2000, shift: 5 });
-            $(td).css("color", "red");
+            layer.msg('Trọng lượng không được quá 5 chữ số.', { icon: $.modal.icon(modal_status.FAIL), time: 2000, shift: 5 });
+            $(td).css("background-color", "red");
         }
         value = formatMoney(value);
     }
@@ -603,7 +651,7 @@ function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) 
         value = value.split(':')[0];
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
-            $(td).css("background-color", "#fafafa");
+            $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
     if (!value) {
@@ -617,7 +665,7 @@ function commodityRenderer(instance, td, row, col, prop, value, cellProperties) 
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
-            $(td).css("background-color", "#fafafa");
+            $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
     if (!value) {
@@ -632,7 +680,7 @@ function dischargePortRenderer(instance, td, row, col, prop, value, cellProperti
         value = value.split(':')[0];
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
-            $(td).css("background-color", "#fafafa");
+            $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
     if (!value) {
@@ -649,7 +697,7 @@ function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     cellProperties.readOnly = 'true';
-    $(td).css("background-color", "#fafafa");
+    $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
 
@@ -660,7 +708,7 @@ function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     cellProperties.readOnly = 'true';
-    $(td).css("background-color", "#fafafa");
+    $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
 
@@ -671,7 +719,7 @@ function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) 
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     cellProperties.readOnly = 'true';
-    $(td).css("background-color", "#fafafa");
+    $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
 
@@ -688,7 +736,7 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 function configHandson() {
     config = {
         stretchH: "all",
-        height: $('.main-body').height() - 110,
+        height: $('#right-side__main-table').height() - 35,
         minRows: rowAmount,
         maxRows: rowAmount,
         width: "100%",
@@ -731,7 +779,7 @@ function configHandson() {
                 case 11:
                     return "Nhiệt Độ (c)";
                 case 12:
-                    return 'P.T.T.T';
+                    return 'PTTT';
                 case 13:
                     return 'Mã Số Thuế';
                 case 14:
@@ -941,7 +989,7 @@ function onChange(changes, source) {
                         if (row == change[0] && col == 11) {
                             let cellProperties = {};
                             cellProperties.readOnly = true;
-                            $('#temperature' + row).css("background-color", "#fafafa");
+                            $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
                             return cellProperties;
                         }
                     }
@@ -1229,6 +1277,7 @@ function getDataFromTable(isValidate) {
     }
     shipmentDetails = [];
     contList = [];
+    conts = '';
     let consignee, opecode, vessel, voyage, pod;
     if (cleanedGridData.length > 0) {
         consignee = cleanedGridData[0].consignee;
@@ -1240,7 +1289,7 @@ function getDataFromTable(isValidate) {
         let shipmentDetail = new Object();
         if (isValidate) {
             if(!object["containerNo"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng nhập số container!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số container!");
                 errorFlg = true;
                 return false;
             } else if (!/^[A-Z]{4}[0-9]{7}$/g.test(object["containerNo"])) {
@@ -1248,27 +1297,31 @@ function getDataFromTable(isValidate) {
                 errorFlg = true;
                 return false;
             } else if (!object["consignee"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng nhập chủ hàng!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ hàng!");
                 errorFlg = true;
                 return false;
             } else if (!object["vslNm"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Hãy chọn tàu - chuyến!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn tàu!");
                 errorFlg = true;
                 return false;
             } else if (!object["sztp"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Hãy chọn kích thước!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
                 return false;
             } else if (!object["wgt"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Hãy nhập trọng lượng container!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn trọng tải!");
                 errorFlg = true;
                 return false;
             } else if (object["wgt"] > 99999) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Trọng lượng (kg) không hợp lệ, vui lòng kiểm tra lại!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Trọng lượng không được quá 5 chữ số!");
                 errorFlg = true;
                 return false;
             } else if (!object["dischargePort"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Hãy chọn cảng dỡ hàng!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn cảng dỡ hàng!");
+                errorFlg = true;
+                return false;
+            } else if (consignee != object["consignee"]) {
+                $.modal.alertError("Tên chủ hàng không được khác nhau!");
                 errorFlg = true;
                 return false;
             } else if (consignee != object["consignee"]) {
@@ -1290,10 +1343,13 @@ function getDataFromTable(isValidate) {
         pod = object["dischargePort"];
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
+        if (object["status"] == 1 || object["status"] == null) {
+            conts += object["containerNo"] + ',';
+        }
         contList.push(object["containerNo"]);
         let sizeType = object["sztp"].split(": ");
         if (sizeType[0] && sizeType[0].length > 3 && sizeType[0].substring(0, 4).includes("R") && !object["temperature"]) {
-            $.modal.alertError("Hàng " + (index + 1) + ": Hãy nhập nhiệt độ cho container lạnh!");
+            $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập nhiệt độ!");
             errorFlg = true;
             return false;
         }
@@ -1324,12 +1380,14 @@ function getDataFromTable(isValidate) {
         shipmentDetails.push(shipmentDetail);
     });
 
+    conts.substring(0, conts.length-1);
+
     if (isValidate) {
         contList.sort();
         let contTemp = "";
         $.each(contList, function (index, cont) {
             if (cont != "" && cont == contTemp) {
-                $.modal.alertError("Số container trùng nhau, vui lòng kiểm tra lại!");
+                $.modal.alertError("Số container không được giống nhau!");
                 errorFlg = true;
                 return false;
             }
@@ -1358,6 +1416,7 @@ function saveShipmentDetail() {
     } else {
         if (getDataFromTable(true)) {
             if (shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
+                shipmentDetails[0].processStatus = conts;
                 $.modal.loading("Đang xử lý...");
                 $.ajax({
                     url: prefix + "/" + shipmentSelected.id + "/shipment-detail",
@@ -1381,14 +1440,14 @@ function saveShipmentDetail() {
                         $.modal.closeLoading();
                     },
                     error: function (result) {
-                        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau.");
+                        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
                         $.modal.closeLoading();
                     },
                 });
             } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
-                $.modal.alertError("Số container nhập vào vượt quá số container của lô.");
+                $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
             } else {
-                $.modal.alertError("Hãy nhập thông tin chi tiết lô.");
+                $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
             }
         }
     }
@@ -1569,11 +1628,13 @@ function connectToWebsocketServer(){
 }
 
 function onConnected() {
+    console.log('Connect socket.')
     currentSubscription = $.websocket.subscribe(currentProcessId + '/response', onMessageReceived);
 }
 
 function onError(error) {
-    $.modal.alertError('Không thể kết nối đến server nhận kết quả, vui lòng thử lại sau.');
+    console.log(error);
+    $.modal.alertError('Could not connect to WebSocket server. Please refresh this page to try again!');
     setTimeout(() => {
         hideProgress();
         $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
@@ -1586,24 +1647,32 @@ function onMessageReceived(payload) {
     setProgressPercent(currentPercent=100);
     setTimeout(() => {
         hideProgress();
+
         let message = JSON.parse(payload.body);
+
         reloadShipmentDetail();
+
         if (message.code == 0){
             $.modal.alertSuccess(message.msg);
         }else{
             $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
         }
+
+        // Close loading
+        //$.modal.closeLoading();
+
         // Unsubscribe destination
         if (currentSubscription){
             currentSubscription.unsubscribe();
         }
+
         // Close websocket connection 
         $.websocket.disconnect(onDisconnected);
     }, 1000);
 }
 
 function onDisconnected(){
-    // console.log('Disconnected socket.');
+    console.log('Disconnected socket.');
 }
 
 function showProgress(title) {
@@ -1716,4 +1785,105 @@ function clearInput() {
     fromDate = null;
     toDate = null;
     loadTable();
+}
+
+function loadListComment(shipmentCommentId) {
+    let req = {
+        serviceType: 4,
+        shipmentId: shipmentSelected.id
+    };
+    $.ajax({
+        url: ctx + "logistic/comment/list",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(req),
+        success: function (data) {
+            if (data.code == 0) {
+                let html = '';
+                // set title for panel comment
+                let commentTitle = '<span>Thảo Luận<span>';
+                let commentNumber = 0;
+                if (data.shipmentComments != null) {
+                    data.shipmentComments.forEach(function (element, index) {
+                        let createTime = element.createTime;
+                        let date = '';
+                        let time = '';
+                        if (createTime) {
+                            date = createTime.substring(8, 10) + "/" + createTime.substring(5, 7) + "/" + createTime.substring(0, 4);
+                            time = createTime.substring(10, 19);
+                        }
+
+                        let seenBackground = '';
+                        if ((shipmentCommentId && shipmentCommentId == element.id) || !element.seenFlg) {
+                            seenBackground = 'style="background-color: #ececec;"';
+                            commentNumber++;
+                        }
+
+                        html += '<div ' + seenBackground + '>';
+
+                        // User name comment and date time comment
+                        html += '<div><i style="font-size: 15px; color: #015198;" class="fa fa-user-circle" aria-hidden="true"></i><span> <a>' + element.userName + ' (' + element.userAlias + ')</a>: <i>' + date + ' at ' + time + '</i></span></div>';
+
+                        // Topic comment
+                        html += '<div><span>Tiêu đề: ' + element.topic + '</span></div>';
+
+                        // Content comment
+                        html += '<div><span>Nội dung: ' + element.content + '</span></div>';
+
+                        html += '</div>';
+
+                        html += '<hr>';
+                    });
+                }
+                commentTitle += ' <span class="round-notify-count">' + commentNumber + '</span>';
+                $('#right-layout').layout('panel', 'expandSouth').panel('setTitle', commentTitle);
+                $('#commentList').html(html);
+                // $("#comment-div").animate({ scrollTop: $("#comment-div")[0].scrollHeight}, 1000);
+            }
+        }
+    });
+}
+
+function addComment() {
+    let topic = $('#topic').textbox('getText');
+    let content = $('#content').textbox('getText');
+    let errorFlg = false;
+    if (!topic) {
+        errorFlg = true;
+        $.modal.alertWarning('Quý khách chưa nhập chủ đề.');
+    } else if (!content) {
+        errorFlg = true;
+        $.modal.alertWarning('Quý khách chưa nhập nội dung.');
+    }
+    if (!errorFlg) {
+        let req = {
+            topic: topic,
+            content: content,
+            shipmentId: shipmentSelected.id
+        };
+        $.ajax({
+            url: prefix + "/shipment/comment",
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify(req),
+            beforeSend: function () {
+                $.modal.loading("Đang xử lý, vui lòng chờ...");
+            },
+            success: function (result) {
+                $.modal.closeLoading();
+                if (result.code == 0) {
+                    loadListComment(result.shipmentCommentId);
+                    $.modal.msgSuccess("Gửi thành công.");
+                    $('#topic').textbox('setText', '');
+                    $('#content').textbox('setText', '');
+                } else {
+                    $.modal.msgError("Gửi thất bại.");
+                }
+            },
+            error: function (error) {
+                $.modal.closeLoading();
+                $.modal.msgError("Gửi thất bại.");
+            }
+        });
+    }
 }
