@@ -369,7 +369,7 @@
     </where>
   </select>
 
-  <select id="selectOprCode" parameterType="Edo" resultType="String">
+  <select id="selectOprCode" parameterType="Edo" resultMap="EdoResult">
     select distinct carrier_code
     from edo
     <where>

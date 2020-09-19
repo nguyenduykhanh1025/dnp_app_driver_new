@@ -39,7 +39,7 @@ $(function () {
 
   });
 
-  $("#searchBillNo").textbox('textbox').bind('keydown', function(e) {
+  $("#searchBillNo").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
       edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
@@ -47,7 +47,7 @@ $(function () {
     }
   });
 
-  $("#searchContNo").textbox('textbox').bind('keydown', function(e) {
+  $("#searchContNo").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
       edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
@@ -55,8 +55,8 @@ $(function () {
     }
   });
   $('#fromDate').datebox({
-    onSelect: function(date){
-      date.setHours(0,0,0);
+    onSelect: function (date) {
+      date.setHours(0, 0, 0);
       fromDate = date;
       if (toDate != null && date.getTime() > toDate.getTime()) {
         $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
@@ -72,8 +72,8 @@ $(function () {
   });
 
   $('#toDate').datebox({
-    onSelect: function(date){
-      date.setHours(23,59,59);
+    onSelect: function (date) {
+      date.setHours(23, 59, 59);
       toDate = date;
       if (fromDate != null && date.getTime() < fromDate.getTime()) {
         $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
@@ -214,7 +214,7 @@ function viewUpdateCont(id) {
 }
 
 function loadTableByContainer(billOfLading) {
-  edo.billOfLading = billOfLading; 
+  edo.billOfLading = billOfLading;
   $("#container-grid").datagrid({
     url: PREFIX + "/edo",
     method: "POST",
@@ -266,6 +266,7 @@ function getSelectedRow() {
     loadTableByContainer(row.billOfLading);
   }
 }
+
 function stringToDate(dateStr) {
   let dateParts = dateStr.split("/");
   return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
@@ -384,13 +385,11 @@ function delEdo() {
         },
         success: function (data) {
           data = JSON.parse(data);
-          if(data.code == 0)
-          {
+          if (data.code == 0) {
             $.modal.msgSuccess(data.msg);
             getSelectedRow();
             $.modal.closeLoading();
-          }
-          else {
+          } else {
             $.modal.msgError(data.msg);
             $.modal.closeLoading();
           }
@@ -409,93 +408,6 @@ function delEdo() {
 }
 
 
-
-// SEARCH INFO VESSEL AREA
-// $('.c-search-box-vessel').on("select2:opening", function(e) {
-//   $(".c-search-box-voy-no").text(null);
-//   $(this).text(null);
-//   edo.vessel = null;
-//   edo.voyNo = null;
-//   loadTable(edo);
-// });
-// $(".c-search-box-vessel").select2({
-//   theme: "bootstrap",
-//   allowClear: true,
-//   delay: 250,
-//   ajax: {
-//     url: PREFIX + "/getVessel",
-//     dataType: "json",
-//     method: "GET",
-//     data: function (params) {
-//       return {
-//         keyString: params.term,
-//       };
-//     },
-//     processResults: function (data) {
-//       let results = []
-//       data.forEach(function (element, i) {
-//         let obj = {};
-//         obj.id = i;
-//         obj.text = element;
-//         results.push(obj);
-//       })
-//       return {
-//         results: results,
-//       };
-//     },
-//   },
-//   placeholder: "Vessel",
-// });
-// $('.c-search-box-voy-no').on("select2:opening", function(e) {
-//   edo = new Object();
-//   $(this).text(null);
-//   edo.vessel = $('.c-search-box-vessel').text().trim();
-//   loadTable(edo);
-// });
-//   $(".c-search-box-voy-no").select2({
-//     theme: "bootstrap",
-//     allowClear: true,
-//     delay: 250,
-//     ajax: {
-//       url: PREFIX + "/getVoyNo",
-//       dataType: "json",
-//       method: "GET",
-//       data: function (params) {
-//         return {
-//           keyString: params.term,
-//           vessel: edo.vessel,
-//         };
-//       },
-//       processResults: function (data) {
-//         let results = []
-//         data.forEach(function (element, i) {
-//           let obj = {};
-//           obj.id = i;
-//           obj.text = element;
-//           results.push(obj);
-  
-//         })
-//         return {
-//           results: results,
-//         };
-//       },
-//     },
-//     placeholder: "Voy No",
-//   });
-
-
-// // For submit search
-// $(".c-search-box-vessel").change(function () {
-//   edo = new Object();
-//   edo.vessel = $(this).text().trim();
-//   loadTable(edo);
-// });
-
-// $(".c-search-box-voy-no").change(function () {
-//   edo.voyNo = $(this).text().trim();
-//   loadTable(edo);
-// });
-
 function generatePDF() {
   if (!bill) {
     $.modal.alertError("Bạn chưa chọn Bill!");
@@ -506,39 +418,38 @@ function generatePDF() {
 }
 
 
-function clearInput()
-{
+function clearInput() {
   edo = new Object();
   $("#fromDate").datebox('setValue', '');
   $("#toDate").datebox('setValue', '');
   $("#searchBillNo").textbox('setText', '');
   $("#searchContNo").textbox('setText', '');
-  edo.vessel = null;
+  $("#vessel2").combobox('setText', '');
+  $("#voyNo").combobox('setText', '');
   loadTable(edo);
 }
 
 
 
 $('#container-grid').datagrid({
-  onCheck: function(){
+  onCheck: function () {
     countCheck += 1;
     $("#updateEdo").attr("disabled", false);
     $("#delEdo").attr("disabled", false);
   },
-  onCheckAll: function(index){
+  onCheckAll: function (index) {
     countCheck = index.length;
     $("#updateEdo").attr("disabled", false);
     $("#delEdo").attr("disabled", false);
   },
-  onUncheck: function(){
+  onUncheck: function () {
     countCheck = countCheck - 1;
-    if(countCheck == 0)
-    {
+    if (countCheck == 0) {
       $("#updateEdo").attr("disabled", true);
       $("#delEdo").attr("disabled", true);
     }
   },
-  onUncheckAll: function(){
+  onUncheckAll: function () {
     countCheck = 0;
     $("#updateEdo").attr("disabled", true);
     $("#delEdo").attr("disabled", true);
@@ -549,25 +460,25 @@ function addEdo() {
   $.modal.openTab("Phát Hành eDO", PREFIX + "/releaseEdo");
 }
 
-function dateformatter(date){
+function dateformatter(date) {
   var y = date.getFullYear();
-  var m = date.getMonth()+1;
+  var m = date.getMonth() + 1;
   var d = date.getDate();
-  return (d<10?('0'+d):d) + '/' + (m<10?('0'+m):m) + '/' + y;
+  return (d < 10 ? ('0' + d) : d) + '/' + (m < 10 ? ('0' + m) : m) + '/' + y;
 }
 
-function dateparser(s){
+function dateparser(s) {
   var ss = (s.split('\.'));
-  var d = parseInt(ss[0],10);
-  var m = parseInt(ss[1],10);
-  var y = parseInt(ss[2],10);
-  if (!isNaN(y) && !isNaN(m) && !isNaN(d)){
-    return new Date(y,m-1,d);
-  } 
+  var d = parseInt(ss[0], 10);
+  var m = parseInt(ss[1], 10);
+  var y = parseInt(ss[2], 10);
+  if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+    return new Date(y, m - 1, d);
+  }
 }
 
 
 function dateToString(date) {
-  return ("0" + date.getDate()).slice(-2) + "/" + ("0"+(date.getMonth()+1)).slice(-2) + "/" + date.getFullYear()
-  + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
+  return ("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear() +
+    " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
 }
