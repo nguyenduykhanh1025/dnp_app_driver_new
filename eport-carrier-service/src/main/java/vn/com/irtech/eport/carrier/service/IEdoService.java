@@ -85,7 +85,7 @@ public interface IEdoService {
 	// Get Bill No DISTINCT
 	public List<Edo> selectEdoListByBillNo(Edo edo);
 
-	public List<String> selectOprCode(Edo edo);
+	public List<Edo> selectOprCode(Edo edo);
 
 	public List<Edo> selectVoyNos(Edo edo);
 

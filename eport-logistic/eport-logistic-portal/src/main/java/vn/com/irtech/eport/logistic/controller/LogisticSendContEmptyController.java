@@ -92,14 +92,10 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@GetMapping("/shipment/add")
 	public String add(ModelMap mmap) {
-		mmap.put("taxCode", getGroup().getMst());
-		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
-		if (oprCodeList == null) {
-			oprCodeList = catosApiService.getOprCodeList();
-			oprCodeList.add(0, "Chọn OPR");
-			CacheUtils.put("oprCodeList", oprCodeList);
-		}
+		List<String> oprCodeList = catosApiService.getOprCodeList();
+		oprCodeList.add(0, "Chọn OPR");
 		
+		mmap.put("taxCode", getGroup().getMst());
 		mmap.put("oprCodeList", oprCodeList);
 		return PREFIX + "/add";
 	}
@@ -111,12 +107,8 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			mmap.put("shipment", shipment);
 			mmap.put("taxCode", getGroup().getMst());
 		}
-		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
-		if (oprCodeList == null) {
-			oprCodeList = catosApiService.getOprCodeList();
-			oprCodeList.add(0, "Chọn OPR");
-			CacheUtils.put("oprCodeList", oprCodeList);
-		}
+		List<String> oprCodeList = catosApiService.getOprCodeList();
+		oprCodeList.add(0, "Chọn OPR");
 		
 		mmap.put("oprCodeList", oprCodeList);
         return PREFIX + "/edit";

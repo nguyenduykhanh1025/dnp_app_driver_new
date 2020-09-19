@@ -311,7 +311,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				return error("Không tìm thấy lô cần thêm chi tiết.");
 			}
 			Shipment shipment = shipmentService.selectShipmentById(shipmentId);
-			if (!shipment.getLogisticGroupId().equals(getUser().getGroupId())) {
+			if (!verifyPermission(shipment.getLogisticGroupId())) {
 				return error("Mã lô quý khách muốn lưu thông tin chi  tiết <br>không hợp lệ.");
 			}
 			boolean updateShipment = true;
@@ -542,16 +542,11 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình xác thực!");
 	}
 
-	@SuppressWarnings("unchecked")
 	@GetMapping("/consignees")
 	@ResponseBody
 	public AjaxResult getField() {
 		AjaxResult ajaxResult = success();
-		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeList");
-		if (listConsignee == null) {
-			listConsignee = shipmentDetailService.getConsigneeList();
-			CacheUtils.put("consigneeList", listConsignee);
-		}
+		List<String> listConsignee = shipmentDetailService.getConsigneeList();
 		ajaxResult.put("consigneeList", listConsignee);
 		return ajaxResult;
 	}

@@ -182,31 +182,19 @@ public class LogisticCommonController extends LogisticBaseController {
 		return AjaxResult.success();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@GetMapping("/source/taxCode/consignee")
 	@ResponseBody
 	public AjaxResult getConsigneeList() {
 		AjaxResult ajaxResult = success();
-//		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeListTaxCode");
-//		if (listConsignee == null) {
-//			listConsignee = shipmentDetailService.getConsigneeList();
-//			CacheUtils.put("consigneeListTaxCode", listConsignee);
-//		}
 		List<String> listConsignee = shipmentDetailService.getConsigneeList();
 		ajaxResult.put("consigneeList", listConsignee);
 		return ajaxResult;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@GetMapping("/source/consignee")
 	@ResponseBody
 	public AjaxResult getConsigneeListWithoutTaxCode() {
 		AjaxResult ajaxResult = success();
-//		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeList");
-//		if (listConsignee == null) {
-//			listConsignee = shipmentDetailService.getConsigneeListWithoutTaxCode();
-//			CacheUtils.put("consigneeList", listConsignee);
-//		}
 		List<String> listConsignee = shipmentDetailService.getConsigneeListWithoutTaxCode();
 		ajaxResult.put("consigneeList", listConsignee);
 		return ajaxResult;
@@ -218,18 +206,10 @@ public class LogisticCommonController extends LogisticBaseController {
 	public AjaxResult getField() {
 		AjaxResult ajaxResult = success();
 		
-		List<String> listVessel = (List<String>) CacheUtils.get("vslNmList");
-		if (listVessel == null) {
-			listVessel = shipmentDetailService.getVesselCodeList();
-			CacheUtils.put("vslNmList", listVessel);
-		}
+		List<String> listVessel = shipmentDetailService.getVesselCodeList();
+		List<String> opeCodeList =  shipmentDetailService.getOpeCodeList();
+
 		ajaxResult.put("vslNmList", listVessel);
-		
-		List<String> opeCodeList = (List<String>) CacheUtils.get("opeCodeList");
-		if (opeCodeList == null) {
-			opeCodeList = shipmentDetailService.getOpeCodeList();
-			CacheUtils.put("opeCodeList", opeCodeList);
-		}
 		ajaxResult.put("opeCodeList", opeCodeList);
 		
 		return ajaxResult;

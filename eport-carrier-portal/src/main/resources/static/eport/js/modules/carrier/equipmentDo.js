@@ -1,17 +1,33 @@
 const PREFIX = ctx + "carrier/do";
+const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var bill;
 var edo = new Object();
 var coutCheck = 0;
 $(function () {
   $("#updateEdo").attr("disabled", true);
-  $("#btn-collapse").click(function () {
-    handleCollapse(true);
-  });
-  $("#btn-uncollapse").click(function () {
-    handleCollapse(false);
-  });
+
   loadTable();
   loadTableByContainer();
+
+  $(".main-body").layout();
+
+  $(".collapse").click(function () {
+    $(".main-body__search-wrapper").height(15);
+    $(".main-body__search-wrapper--container").hide();
+    $(this).hide();
+    $(".uncollapse").show();
+  });
+
+  $(".uncollapse").click(function () {
+    $(".main-body__search-wrapper").height(SEARCH_HEIGHT + 20);
+    $(".main-body__search-wrapper--container").show();
+    $(this).hide();
+    $(".collapse").show();
+  });
+
+  $(".left-side__collapse").click(function () {
+    $('#main-layout').layout('collapse', 'west');
+  });
 
   $('#searchAll').keyup(function (event) {
     if (event.keyCode == 13) {
@@ -21,48 +37,82 @@ $(function () {
     }
 
   });
-  $('#searchBillNo').keyup(function (event) {
-    if (event.keyCode == 13) {
-      billOfLading = $('#searchBillNo').val().toUpperCase();
-      if (billOfLading == "") {
-        loadTable(edo);
-      }
-      edo = new Object();
-      edo.billOfLading = billOfLading;
+
+  $("#searchBillNo").textbox('textbox').bind('keydown', function (e) {
+    // enter key
+    if (e.keyCode == 13) {
+      edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
       loadTable(edo);
     }
   });
-  $("#searchContNo").keyup(function (event) {
-    if (event.keyCode == 13) {
-      containerNumber = $("#searchContNo").val().toUpperCase();
-      if (containerNumber == "") {
-        loadTable(edo);
-      }
-      edo = new Object();
-      edo.containerNumber = containerNumber;
+
+  $("#searchContNo").textbox('textbox').bind('keydown', function (e) {
+    // enter key
+    if (e.keyCode == 13) {
+      edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
       loadTable(edo);
     }
   });
+  $('#fromDate').datebox({
+    onSelect: function (date) {
+      date.setHours(0, 0, 0);
+      fromDate = date;
+      if (toDate != null && date.getTime() > toDate.getTime()) {
+        $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
+      } else {
+        fromDate.setHours(23, 59, 59);
+        edo.fromDate = fromDate.getTime();
+        edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
+        edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
+        loadTable(edo);
+      }
+      return date;
+    }
+  });
+
+  $('#toDate').datebox({
+    onSelect: function (date) {
+      date.setHours(23, 59, 59);
+      toDate = date;
+      if (fromDate != null && date.getTime() < fromDate.getTime()) {
+        $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
+      } else {
+        toDate.setHours(23, 59, 59);
+        edo.toDate = toDate.getTime();
+        edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
+        edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
+        loadTable(edo);
+      }
+    }
+  });
+
 });
 
-function handleCollapse(status) {
-  if (status) {
-    $(".left").css("width", "0.5%");
-    $(".left").children().hide();
-    $("#btn-collapse").hide();
-    $("#btn-uncollapse").show();
-    $(".right").css("width", "99%");
-    loadTableByContainer();
-    return;
+$("#vessel2").combobox({
+  valueField: 'vessel',
+  textField: 'vessel',
+  url: PREFIX + "/getVessel",
+  onSelect: function (vessel) {
+    $("#fromDate").datebox('setValue', '');
+    $("#toDate").datebox('setValue', '');
+    $("#searchBillNo").textbox('setText', '');
+    $("#searchContNo").textbox('setText', '');
+    edo = new Object();
+    edo.vessel = vessel.vessel
+    edo.voyNo = null;
+    loadTable(edo);
+    var url = PREFIX + '/getVoyNo/' + vessel.vessel;
+    $('#voyNo').combobox({
+      valueField: 'voyNo',
+      textField: 'voyNo',
+      url: url,
+      onSelect: function (voyNo) {
+        edo.voyNo = voyNo.voyNo
+        loadTable(edo);
+      }
+    });
   }
-  $(".left").css("width", "25%");
-  $(".left").children().show();
-  $("#btn-collapse").show();
-  $("#btn-uncollapse").hide();
-  $(".right").css("width", "74%");
-  loadTableByContainer();
-  return;
-}
+});
 
 function loadTable(edo) {
   $("#dg").datagrid({
@@ -127,17 +177,15 @@ function searchDo() {
 }
 
 function formatToYDM(date) {
-  if(date == null || date == undefined)
-  {
-      return;
+  if (date == null || date == undefined) {
+    return;
   }
   return date.split("/").reverse().join("/");
 }
 
 function formatToYDMHMS(date) {
-  if(date == null || date == undefined)
-  {
-      return;
+  if (date == null || date == undefined) {
+    return;
   }
   let temp = date.substring(0, 10);
   return temp.split("-").reverse().join("/") + date.substring(10, 19);
@@ -149,8 +197,8 @@ function formatAction(value, row, index) {
   if (row.status == '3') {
     disabled = "disabled";
   }
-  actions.push('<button ' + disabled + ' class="btn btn-success btn-xs btn-action mt5 mb5" id="updateEdo" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</button>' + '<br>');
-  actions.push('<a class="btn btn-info btn-xs btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
+  actions.push('<a class="btn btn-success btn-xs" id="viewUpdateCont" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</a> ');
+  actions.push('<a class="btn btn-info btn-xs" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
   return actions.join("");
 }
 
@@ -164,7 +212,7 @@ function viewUpdateCont(id) {
 
 function loadTableByContainer(billOfLading) {
   edo.billOfLading = billOfLading
-  $("#dgContainer").datagrid({
+  $("#container-grid").datagrid({
     url: PREFIX + "/equipmentDo",
     method: "POST",
     singleSelect: false,
@@ -219,9 +267,8 @@ function getSelectedRow() {
 }
 
 function stringToDate(dateStr) {
-  if(dateStr == null || dateStr == undefined)
-  {
-      return;
+  if (dateStr == null || dateStr == undefined) {
+    return;
   }
   let dateParts = dateStr.split("/");
   return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
@@ -295,7 +342,7 @@ function formatStatus(value) {
 
 function multiUpdateEdo() {
   let ids = [];
-  let rows = $('#dgContainer').datagrid('getSelections');
+  let rows = $('#container-grid').datagrid('getSelections');
   if (rows.length === 0) {
     $.modal.alertWarning("Quý khách chưa chọn container để update, vui lòng kiểm tra lại !");
     return;
@@ -315,7 +362,7 @@ function multiUpdateEdo() {
 
 // SEARCH INFO VESSEL AREA
 
-$('.c-search-box-vessel').on("select2:opening", function(e) {
+$('.c-search-box-vessel').on("select2:opening", function (e) {
   $('.c-search-box-vessel').text(null);
   $('.c-search-box-voy-no').text(null);
   edo = new Object();
@@ -349,7 +396,7 @@ $(".c-search-box-vessel").select2({
   },
 });
 
-$('.c-search-box-voy-no').on("select2:opening", function(e) {
+$('.c-search-box-voy-no').on("select2:opening", function (e) {
   edo = new Object();
   $(this).text(null);
   edo.vessel = $('.c-search-box-vessel').text().trim();
@@ -401,7 +448,7 @@ $(".pagination-info").hide();
 function addDo(id) {
   $.modal.openTab("Phát Hành DO", ctx + "carrier/do/add");
 }
-$('#btnRefresh').click(function(){
+$('#btnRefresh').click(function () {
   $(".c-search-box-vessel").text(null);
   $(".c-search-box-voy-no").text(null);
   $("#fromDate").val(null);
@@ -412,24 +459,51 @@ $('#btnRefresh').click(function(){
   loadTable();
 });
 
-$('#dgContainer').datagrid({
-  onCheck: function(){
+$('#container-grid').datagrid({
+  onCheck: function () {
     coutCheck += 1;
     $("#updateEdo").attr("disabled", false);
   },
-  onCheckAll: function(index){
+  onCheckAll: function (index) {
     coutCheck = index.length;
     $("#updateEdo").attr("disabled", false);
   },
-  onUncheck: function(){
+  onUncheck: function () {
     coutCheck = coutCheck - 1;
-    if(coutCheck == 0)
-    {
+    if (coutCheck == 0) {
       $("#updateEdo").attr("disabled", true);
     }
   },
-  onUncheckAll: function(){
+  onUncheckAll: function () {
     coutCheck = 0;
     $("#updateEdo").attr("disabled", true);
   },
 })
+
+function dateformatter(date) {
+  var y = date.getFullYear();
+  var m = date.getMonth() + 1;
+  var d = date.getDate();
+  return (d < 10 ? ('0' + d) : d) + '/' + (m < 10 ? ('0' + m) : m) + '/' + y;
+}
+
+function dateparser(s) {
+  var ss = (s.split('\.'));
+  var d = parseInt(ss[0], 10);
+  var m = parseInt(ss[1], 10);
+  var y = parseInt(ss[2], 10);
+  if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+    return new Date(y, m - 1, d);
+  }
+}
+
+function clearInput() {
+  edo = new Object();
+  $("#fromDate").datebox('setValue', '');
+  $("#toDate").datebox('setValue', '');
+  $("#searchBillNo").textbox('setText', '');
+  $("#searchContNo").textbox('setText', '');
+  $("#vessel2").combobox('setText', '');
+  $("#voyNo").combobox('setText', '');
+  loadTable(edo);
+}

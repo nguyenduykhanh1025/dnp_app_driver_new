@@ -97,31 +97,29 @@ public class EdoManageController extends BaseController {
 		return edo;
   }
 
-  @GetMapping("/getOprCode")
+  @PostMapping("/getOprCode")
   @ResponseBody
-  public List<String> lisOprCode(String keyString)
+  public List<Edo> lisOprCode()
   {
       Edo edo = new Edo();
-      edo.setCarrierCode(keyString);
       return edoService.selectOprCode(edo);
   }
 
 
-  @GetMapping("/getVoyNo")
+  @PostMapping("/getVoyNo/{carrierCode}/{vessel}")
 	@ResponseBody
-	public List<Edo> listVoyNos(String keyString, String vessel, String oprCode) {
+	public List<Edo> listVoyNos(@PathVariable("carrierCode") String carrierCode,@PathVariable("vessel") String vessel) {
     Edo edo = new Edo();
-    edo.setVoyNo(keyString);
     edo.setVessel(vessel);
-    edo.setCarrierCode(oprCode);
+    edo.setCarrierCode(carrierCode);
 		return edoService.selectVoyNos(edo);
 	}
 
-	@GetMapping("/getVessel")
+	@PostMapping("/getVessel/{carrierCode}")
 	@ResponseBody
-	public List<Edo> listVessels(String oprCode) {
-		Edo edo = new Edo();
-    edo.setCarrierCode(oprCode);
+	public List<Edo> listVessels(@PathVariable("carrierCode") String carrierCode) {
+    Edo edo = new Edo();
+    edo.setCarrierCode(carrierCode);
 		return edoService.selectVessels(edo);
 	}
 }

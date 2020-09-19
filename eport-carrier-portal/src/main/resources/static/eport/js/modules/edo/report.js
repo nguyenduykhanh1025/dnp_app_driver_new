@@ -2,7 +2,75 @@ const PREFIX = ctx + "edo";
 var edo = new Object();
 
 $(function () {
-  loadTable(edo)
+  loadTable(edo);
+  $("#searchAll").textbox('textbox').bind('keydown', function (e) {
+    // enter key
+    if (e.keyCode == 13) {
+      edo.billOfLading = $("#searchAll").textbox('getText').toUpperCase();
+      edo.containerNumber = $("#searchAll").textbox('getText').toUpperCase();
+      edo.consignee = $("#searchAll").textbox('getText').toUpperCase();
+      loadTable(edo);
+    }
+  });
+
+  $('#fromDate').datebox({
+    onSelect: function (date) {
+      date.setHours(0, 0, 0);
+      fromDate = date;
+      if (toDate != null && date.getTime() > toDate.getTime()) {
+        $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
+      } else {
+        fromDate.setHours(23, 59, 59);
+        edo.fromDate = fromDate.getTime();
+        edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
+        edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
+        loadTable(edo);
+      }
+      return date;
+    }
+  });
+
+  $('#toDate').datebox({
+    onSelect: function (date) {
+      date.setHours(23, 59, 59);
+      toDate = date;
+      if (fromDate != null && date.getTime() < fromDate.getTime()) {
+        $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
+      } else {
+        toDate.setHours(23, 59, 59);
+        edo.toDate = toDate.getTime();
+        edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
+        edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
+        loadTable(edo);
+      }
+    }
+  });
+});
+
+
+$("#vessel2").combobox({
+  valueField: 'vessel',
+  textField: 'vessel',
+  url: PREFIX + "/getVessel",
+  onSelect: function (vessel) {
+    $("#fromDate").datebox('setValue', '');
+    $("#toDate").datebox('setValue', '');
+    $("#searchAll").textbox('setText', '');
+    edo = new Object();
+    edo.vessel = vessel.vessel
+    edo.voyNo = null;
+    loadTable(edo);
+    var url = PREFIX + '/getVoyNo/' + vessel.vessel;
+    $('#voyNo').combobox({
+      valueField: 'voyNo',
+      textField: 'voyNo',
+      url: url,
+      onSelect: function (voyNo) {
+        edo.voyNo = voyNo.voyNo
+        loadTable(edo);
+      }
+    });
+  }
 });
 
 function loadTable(edo) {
@@ -76,9 +144,8 @@ function searchInfoEdo() {
 }
 
 function stringToDate(dateStr) {
-  if(dateStr == null || dateStr == undefined)
-  {
-      return;
+  if (dateStr == null || dateStr == undefined) {
+    return;
   }
   let dateParts = dateStr.split("/");
   return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
@@ -94,88 +161,6 @@ laydate.render({
 });
 
 
-// SEARCH INFO VESSEL AREA
-$('.c-search-box-vessel').on("select2:opening", function(e) {
-  $('.c-search-box-vessel').text(null);
-  $('.c-search-box-voy-no').text(null);
-  edo = new Object();
-  loadTable(edo);
-});
-$(".c-search-box-vessel").select2({
-  theme: "bootstrap",
-  placeholder: "Vessel",
-  allowClear: true,
-  ajax: {
-    url: PREFIX + "/getVessel",
-    dataType: "json",
-    method: "GET",
-    data: function (params) {
-      return {
-        keyString: params.term,
-      };
-    },
-    processResults: function (data) {
-      let results = []
-      data.forEach(function (element, i) {
-        let obj = {};
-        obj.id = i;
-        obj.text = element;
-        results.push(obj);
-      })
-      return {
-        results: results,
-      };
-    },
-  },
-});
-
-$('.c-search-box-voy-no').on("select2:opening", function(e) {
-  edo = new Object();
-  $(this).text(null);
-  edo.vessel = $('.c-search-box-vessel').text().trim();
-  loadTable(edo);
-});
-$(".c-search-box-voy-no").select2({
-  theme: "bootstrap",
-  placeholder: "Voy No",
-  allowClear: true,
-  ajax: {
-    url: PREFIX + "/getVoyNo",
-    dataType: "json",
-    method: "GET",
-    data: function (params) {
-      return {
-        keyString: params.term,
-        vessel : edo.vessel
-      };
-    },
-    processResults: function (data) {
-      let results = []
-      data.forEach(function (element, i) {
-        let obj = {};
-        obj.id = i;
-        obj.text = element;
-        results.push(obj);
-
-      })
-      return {
-        results: results,
-      };
-    },
-  },
-});
-// For submit search
-$(".c-search-box-vessel").change(function () {
-  edo = new Object();
-  edo.vessel = $(this).text().trim();
-  loadTable(edo);
-});
-$(".c-search-box-voy-no").change(function () {
-  edo = new Object();
-  edo.voyNo = $(this).text().trim();
-  loadTable(edo);
-});
-
 function formatStatus(value) {
   switch (value) {
     case '1':
@@ -185,4 +170,49 @@ function formatStatus(value) {
     case '3':
       return "<span class='label label-success'>Gate-in</span>";
   }
+}
+
+function dateformatter(date) {
+  var y = date.getFullYear();
+  var m = date.getMonth() + 1;
+  var d = date.getDate();
+  return (d < 10 ? ('0' + d) : d) + '/' + (m < 10 ? ('0' + m) : m) + '/' + y;
+}
+
+function dateparser(s) {
+  var ss = (s.split('\.'));
+  var d = parseInt(ss[0], 10);
+  var m = parseInt(ss[1], 10);
+  var y = parseInt(ss[2], 10);
+  if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+    return new Date(y, m - 1, d);
+  }
+}
+
+function searchDo() {
+  edo.billOfLading = $("#searchAll").textbox('getText').toUpperCase();
+  edo.containerNumber = $("#searchAll").textbox('getText').toUpperCase();
+  edo.consignee = $("#searchAll").textbox('getText').toUpperCase();
+  edo.fromDate = stringToDate($("#fromDate").val()).getTime();
+  let toDate = stringToDate($("#toDate").val());
+  if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
+    $.modal.alertError("Quý khách không thể chọn đến ngày thấp hơn từ ngày.");
+    $("#toDate").val("");
+  } else {
+    toDate.setHours(23, 59, 59);
+    edo.toDate = toDate.getTime();
+    loadTable(edo);
+  };
+  loadTable(edo);
+}
+
+function clearInput() {
+  edo = new Object();
+  $("#fromDate").datebox('setValue', '');
+  $("#toDate").datebox('setValue', '');
+  $("#searchBillNo").textbox('setText', '');
+  $("#searchContNo").textbox('setText', '');
+  $("#vessel2").combobox('setText', '');
+  $("#voyNo").combobox('setText', '');
+  loadTable(edo);
 }

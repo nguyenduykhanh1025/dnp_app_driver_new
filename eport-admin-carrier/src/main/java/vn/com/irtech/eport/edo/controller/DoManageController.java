@@ -79,33 +79,31 @@ public class DoManageController extends BaseController {
         return getDataTable(edoAuditLogsList);
     }
 
-    @GetMapping("/getOprCode")
-    @ResponseBody
-    public List < String > lisOprCode(String keyString) {
+    @PostMapping("/getOprCode")
+  @ResponseBody
+  public List<EquipmentDo> lisOprCode()
+  {
         EquipmentDo equipmentDo = new EquipmentDo();
-        equipmentDo.setCarrierCode(keyString);
-        return equipmentDoService.selectOprCode(equipmentDo);
-    }
+      return equipmentDoService.selectOprCode(equipmentDo);
+  }
 
 
-    @GetMapping("/getVoyNo")
-    @ResponseBody
-    public List < String > listVoyNos(String keyString, String vessel, String oprCode) {
+  @PostMapping("/getVoyNo/{carrierCode}/{vessel}")
+	@ResponseBody
+	public List<EquipmentDo> listVoyNos(@PathVariable("carrierCode") String carrierCode,@PathVariable("vessel") String vessel) {
         EquipmentDo equipmentDo = new EquipmentDo();
-        equipmentDo.setVoyNo(keyString);
         equipmentDo.setVessel(vessel);
-        equipmentDo.setCarrierCode(oprCode);
-        return equipmentDoService.selectVoyNos(equipmentDo);
-    }
+        equipmentDo.setCarrierCode(carrierCode);
+		return equipmentDoService.selectVoyNos(equipmentDo);
+	}
 
-    @GetMapping("/getVessel")
-    @ResponseBody
-    public List < String > listVessels(String keyString, String oprCode) {
+	@PostMapping("/getVessel/{carrierCode}")
+	@ResponseBody
+        public List<EquipmentDo> listVessels(@PathVariable("carrierCode") String carrierCode) {
         EquipmentDo equipmentDo = new EquipmentDo();
-        equipmentDo.setVessel(keyString);
-        equipmentDo.setCarrierCode(oprCode);
+        equipmentDo.setCarrierCode(carrierCode);
         return equipmentDoService.selectVessels(equipmentDo);
-    }
+	}
 
 
 }

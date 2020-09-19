@@ -699,27 +699,25 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		return super.getGroupCodes();
 	}
 
-	@GetMapping("/getVoyNo")
+	@PostMapping("/getVoyNo/{vessel}")
 	@ResponseBody
-	public List<String> listVoyNo(String keyString, String vessel) {
-		EquipmentDo edo = new EquipmentDo();
-		edo.setVessel(vessel);
-		edo.setVoyNo(keyString);
+	public List<EquipmentDo> listVoyNos(@PathVariable("vessel") String vessel) {
+		EquipmentDo equipmentDo = new EquipmentDo();
+		equipmentDo.setVessel(vessel);
 		Map<String, Object> groupCodes = new HashMap<>();
 		groupCodes.put("groupCode", super.getGroupCodes());
-		edo.setParams(groupCodes);
-		return equipmentDoService.selectVoyNos(edo);
+		equipmentDo.setParams(groupCodes);
+		return equipmentDoService.selectVoyNos(equipmentDo);
 	}
 
-	@GetMapping("/getVessel")
+	@PostMapping("/getVessel")
 	@ResponseBody
-	public List<String> listVessel(String keyString) {
-		EquipmentDo edo = new EquipmentDo();
-		edo.setVessel(keyString);
+	public List<EquipmentDo> listVessels() {
+		EquipmentDo equipmentDo = new EquipmentDo();
 		Map<String, Object> groupCodes = new HashMap<>();
 		groupCodes.put("groupCode", super.getGroupCodes());
-		edo.setParams(groupCodes);
-		return equipmentDoService.selectVessels(edo);
+		equipmentDo.setParams(groupCodes);
+		return  equipmentDoService.selectVessels(equipmentDo);
 	}
 
 	@GetMapping("/update")

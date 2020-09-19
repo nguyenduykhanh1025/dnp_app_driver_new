@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +26,6 @@ import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
-import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -87,14 +85,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@GetMapping("/shipment/add")
 	public String add(ModelMap mmap) {
-		mmap.put("taxCode", getGroup().getMst());
-		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
-		if (oprCodeList == null) {
-			oprCodeList = catosApiService.getOprCodeList();
-			oprCodeList.add(0, "Chọn OPR");
-			CacheUtils.put("oprCodeList", oprCodeList);
-		}
+		List<String> oprCodeList = catosApiService.getOprCodeList();
+		oprCodeList.add(0, "Chọn OPR");
 		
+		mmap.put("taxCode", getGroup().getMst());
 		mmap.put("oprCodeList", oprCodeList);
 		return PREFIX + "/add";
 	}
@@ -106,12 +100,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			mmap.put("shipment", shipment);
 			mmap.put("taxCode", getGroup().getMst());
 		}
-		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
-		if (oprCodeList == null) {
-			oprCodeList = catosApiService.getOprCodeList();
-			oprCodeList.add(0, "Chọn OPR");
-			CacheUtils.put("oprCodeList", oprCodeList);
-		}
+		List<String> oprCodeList =  catosApiService.getOprCodeList();
+		oprCodeList.add(0, "Chọn OPR");
+		
 		mmap.put("oprCodeList", oprCodeList);
         return PREFIX + "/edit";
 	}
@@ -284,13 +275,21 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (shipmentDetails != null && shipmentDetails.size() > 0) {
 			LogisticAccount user = getUser();
 			boolean updateShipment = true;
+			String containerNos = "";
+			for(ShipmentDetail sd : shipmentDetails) {
+				if(sd.getId() == null) {
+					containerNos += sd.getContainerNo() + ",";
+				}
+			}
 			// Lay danh sach container da lam lenh booking
-			List<String> contReservedList = shipmentDetailService.checkContainerReserved(shipmentDetails.get(0).getProcessStatus());
-			if (contReservedList.size() > 0) {
-				// Thong bao loi khong the khai bao cho cac conts nay
-				AjaxResult ajaxResult = AjaxResult.error();
-				ajaxResult.put("conts", contReservedList);
-				return ajaxResult;
+			if(!"".equals(containerNos)) {
+				List<String> contReservedList = shipmentDetailService.checkContainerReserved(containerNos.substring(0, containerNos.length() - 1));
+				if (contReservedList.size() > 0) {
+					// Thong bao loi khong the khai bao cho cac conts nay
+					AjaxResult ajaxResult = AjaxResult.error();
+					ajaxResult.put("conts", contReservedList);
+					return ajaxResult;
+				}
 			}
 			// Danh sachs shipment details co 2 truong hop: co container da tao tu truoc (id != null) va container vua tao (id ==null)
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {

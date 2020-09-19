@@ -230,12 +230,12 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     }
  
 
-	public List<String> selectVoyNos(EquipmentDo edo)
+	public List<EquipmentDo> selectVoyNos(EquipmentDo edo)
 	{
 		return equipmentDoMapper.selectVoyNos(edo);
     } 
     
-    public List<String> selectVessels(EquipmentDo edo)
+    public List<EquipmentDo> selectVessels(EquipmentDo edo)
 	{
 		return equipmentDoMapper.selectVessels(edo);
     }
@@ -264,7 +264,7 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
         return equipmentDoMapper.selectEdoListForReport(edo);
     }
 
-    public List<String> selectOprCode(EquipmentDo edo)
+    public List<EquipmentDo> selectOprCode(EquipmentDo edo)
     {
         return equipmentDoMapper.selectOprCode(edo);
     }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.common.config.Global;
+import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -162,7 +163,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			Shipment shipment = new Shipment();
 			shipment.setBlNo(blNo);
 			HttpEntity<Shipment> httpEntity = new HttpEntity<Shipment>(shipment);
-			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
+			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
 			List<ShipmentDetail> shipmentDetails = response.getBody();
 			return shipmentDetails;
 		} catch (Exception e) {
@@ -635,12 +636,17 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	 */
 	@Override
 	public List<String> getOprCodeList() {
-		String url = Global.getApiUrl() + "/opr/list";
-		logger.debug("Call CATOS API :{}", url);
-		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
-		List<String> oprList = response.getBody();
-		return oprList;
+		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
+		if (oprCodeList == null) {
+			String url = Global.getApiUrl() + "/opr/list";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
+			oprCodeList = response.getBody();
+			// put to cache
+			CacheUtils.put("oprCodeList", oprCodeList);
+		}
+		return oprCodeList;
 	}
 	
 	/**
