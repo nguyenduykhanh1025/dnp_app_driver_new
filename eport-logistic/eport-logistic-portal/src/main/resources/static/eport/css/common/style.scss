@@ -209,3 +209,13 @@ body {
     }
   }
 }
+
+.round-notify-count {
+  border-radius: 50%;
+  background-color: red;
+  height: 20px;
+  width: 20px;
+  display: inline-block;
+  text-align: center;
+  color: white;
+}

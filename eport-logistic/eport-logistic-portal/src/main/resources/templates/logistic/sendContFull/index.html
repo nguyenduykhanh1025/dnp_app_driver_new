@@ -7,6 +7,7 @@
   <th:block th:include="include :: header('Giao Cont Hang')" />
   <th:block th:include="include :: handsontable-css" />
   <th:block th:include="include :: easyui-css" />
+  <th:block th:include="include :: summernote-css" />
   <link th:href="@{/css/logistic/receiveContFull/style.css?v=0916}" rel="stylesheet" />
   <link th:href="@{/eport/css/common/style.css?v=0916}" rel="stylesheet" />
 </head>
@@ -76,73 +77,107 @@
           </table>
         </div>
         <div class="right-side" data-options="region:'center'" style="width: 100%;">
-          <div class="panel-header" style="width: 100%; background-color: #f3f7fa;">
-            <div class="panel-title" style="color: #333;">Thông tin lô</div>
-            <div class="panel-tool" id="step-area">
-              <ul class="right-info">
-                <li><a id="registerStatus" class="disable">Khai báo</a></li>
-                <li><a id="verifyStatus" class="disable">Xác nhận</a></li>
-                <li><a id="paymentStatus" class="disable">Thanh toán</a></li>
-                <li><a id="customStatus" class="disable">Thông quan</a></li>
-                <li><a id="finishStatus" class="disable">Hoàn thành</a></li>
-              </ul>
+          <div class="easyui-layout" id="right-layout" data-options="fit:true" style="position: relative;">
+            <div style="height: 50%;" data-options="region:'south', split:true">
+              <span class="right-side__collapse"><i class="fa fa-chevron-down"></i></span>
+              <div class="panel-header" style="width: 100%; background-color: #f3f7fa;">
+                <div class="panel-title" style="color: #333;">Hỗ Trợ</div>
+              </div>
+              <div id="comment-div" style="padding: 10px 20px 10px 20px;">
+                <div id="commentList"></div>
+                <div style="text-align: right;">
+                  <div class="form-group row">
+                    <label class="col-md-2 col-sm-3 col-xs-4">Yêu cầu hỗ trợ <span style="color: red;">*</span></label>
+                    <div class="col-md-10 col-sm-9 col-xs-8">
+                      <input class="easyui-textbox" id="topic" style="width: 100%;"/>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-2 col-sm-3 col-xs-4">Nội Dung <span style="color: red;">*</span></label>
+                    <div class="col-md-10 col-sm-9 col-xs-8">
+                      <textarea class="summernote"></textarea>
+                    </div>
+                  </div>
+                  <div>
+                    <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
+                      <span class="l-btn-left"><span class="l-btn-text">
+                      <button id="sendComment" onclick="addComment()" class="btn btn-sm btn-primary">
+                      <i class="fa fa-send text-primary"></i> Gửi</button></span></span>
+                    </a>  
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="right-side__toolbar">
-            <div class="datagrid-toolbar">
-              <table cellspacing="0" cellpadding="0">
-                  <tr>
-                    <td>
-                      <button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()" class="btn btn-sm btn-primary"><i
-                        class="fa fa-save text-primary"></i> Lưu khai báo
-                      </button>
-                    </td>
-                    <td>
-                      <button id="verifyBtn" onclick="verify()" disabled class="btn btn-sm btn-primary"><i
-                        class="fa fa-check text-primary"></i> Xác nhận
-                      </button>
-                    </td>
-                    <td>
-                      <button id="payBtn" onclick="pay()" disabled class="btn btn-sm btn-primary"><i
-                        class="fa fa-credit-card text-primary"></i> Thanh toán
-                      </button>
-                    </td>
-                    <td>
-                      <button id="customBtn" onclick="checkCustomStatus()" disabled class="btn btn-sm btn-primary"><i
-                        class="fa fa-address-card text-primary"></i> Khai hải quan
-                      </button>
-                    </td> 
-                    <td>
-                      <button id="deleteBtn" onclick="deleteShipmentDetail()" disabled class="btn btn-sm btn-danger"><i
-                        class="fa fa-times text-primary"></i> Xóa
-                      </button>
-                    </td>
-                    <td width="100%"></td>
-                    <td>
-                      <button id="exportPackingListBtn" onclick="exportPackingList()"  class="btn btn-sm btn-default"><i
-                        class="fa fa-print text-primary"></i> In Packing List
-                      </button>
-                    </td>
-                    <td>
-                      <button id="exportReceiptBtn" onclick="exportReceipt()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-print text-primary"></i> In biên nhận
-                      </button>
-                    </td>
-                    <td>
-                      <button id="exportBill" onclick="exportBill()" disabled class="btn btn-sm btn-default"><i
-                        class="fa fa-external-link text-success"></i> Xem hóa đơn
-                      </button>
-                    </td>
-                  </tr>
-              </table>
-            </div>
-          </div>
-          <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
-          <div class="progress-wrapper">
-            <p id="titleProgress"></p>
-            <div class="progress">
-              <span class="percent-text"></span>
-              <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+            <div data-options="region:'center'" id="right-side__main-table">
+              <div class="panel-header" style="width: 100%; background-color: #f3f7fa;">
+                <div class="panel-title" style="color: #333;">Thông tin lô</div>
+                <div class="panel-tool" id="step-area">
+                  <ul class="right-info">
+                    <li><a id="registerStatus" class="disable">Khai báo</a></li>
+                    <li><a id="verifyStatus" class="disable">Xác nhận</a></li>
+                    <li><a id="paymentStatus" class="disable">Thanh toán</a></li>
+                    <li><a id="customStatus" class="disable">Thông quan</a></li>
+                    <li><a id="finishStatus" class="disable">Hoàn thành</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="right-side__toolbar">
+                <div class="datagrid-toolbar">
+                  <table cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td>
+                          <button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()" class="btn btn-sm btn-primary"><i
+                            class="fa fa-save text-primary"></i> Lưu khai báo
+                          </button>
+                        </td>
+                        <td>
+                          <button id="verifyBtn" onclick="verify()" disabled class="btn btn-sm btn-primary"><i
+                            class="fa fa-check text-primary"></i> Xác nhận
+                          </button>
+                        </td>
+                        <td>
+                          <button id="payBtn" onclick="pay()" disabled class="btn btn-sm btn-primary"><i
+                            class="fa fa-credit-card text-primary"></i> Thanh toán
+                          </button>
+                        </td>
+                        <td>
+                          <button id="customBtn" onclick="checkCustomStatus()" disabled class="btn btn-sm btn-primary"><i
+                            class="fa fa-address-card text-primary"></i> Khai hải quan
+                          </button>
+                        </td> 
+                        <td>
+                          <button id="deleteBtn" onclick="deleteShipmentDetail()" disabled class="btn btn-sm btn-danger"><i
+                            class="fa fa-times text-primary"></i> Xóa
+                          </button>
+                        </td>
+                        <td width="100%"></td>
+                        <td>
+                          <button id="exportPackingListBtn" onclick="exportPackingList()"  class="btn btn-sm btn-default"><i
+                            class="fa fa-print text-primary"></i> In Packing List
+                          </button>
+                        </td>
+                        <td>
+                          <button id="exportReceiptBtn" onclick="exportReceipt()" disabled class="btn btn-sm btn-default"><i
+                            class="fa fa-print text-primary"></i> In biên nhận
+                          </button>
+                        </td>
+                        <td>
+                          <button id="exportBill" onclick="exportBill()" disabled class="btn btn-sm btn-default"><i
+                            class="fa fa-external-link text-success"></i> Xem hóa đơn
+                          </button>
+                        </td>
+                      </tr>
+                  </table>
+                </div>
+              </div>
+              <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+              <div class="progress-wrapper">
+                <p id="titleProgress"></p>
+                <div class="progress">
+                  <span class="percent-text"></span>
+                  <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -153,6 +188,7 @@
 
   <th:block th:include="include :: footer" />
   <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: summernote-js" />
   <th:block th:include="include :: handsontable-js" />
   <th:block th:include="include :: websocket" />
   <script type="text/javascript" th:inline="javascript">
