@@ -17,25 +17,6 @@ $(document).ready(function() {
 
     loadTable();
 
-    $('.from-date').datetimepicker({
-        language: 'en',
-        format: 'dd/mm/yyyy',
-        autoclose: true,
-        todayBtn: true,
-        todayHighlight: true,
-        pickTime: false,
-        minView: 2
-    });
-    $('.to-date').datetimepicker({
-        language: 'en',
-        format: 'dd/mm/yyyy',
-        autoclose: true,
-        todayBtn: true,
-        todayHighlight: true,
-        pickTime: false,
-        minView: 2
-    });
-
     $('#searchAllInput').keyup(function(event) {
         if (event.keyCode == 13) {
             processBill.blNo = $('#searchAllInput').val().toUpperCase();
@@ -54,7 +35,7 @@ function loadTable() {
         url: PREFIX + "/list",
         method: "POST",
         singleSelect: true,
-        height: document.documentElement.clientHeight - 110,
+        height: currentHeight,
         clientPaging: false,
         pagination: true,
         rownumbers: true,

@@ -59,7 +59,7 @@ function loadTable() {
         url: PREFIX + "/list",
         method: "POST",
         singleSelect: true,
-        height: document.documentElement.clientHeight - 110,
+        height: currentHeight,
         clientPaging: false,
         pagination: true,
         rownumbers: true,
@@ -140,7 +140,6 @@ function formatDo(value) {
 }
 
 function formatBlBooking(value, row) {
-    console.log(row);
     if (row.blNo) {
         return row.blNo;
     }
