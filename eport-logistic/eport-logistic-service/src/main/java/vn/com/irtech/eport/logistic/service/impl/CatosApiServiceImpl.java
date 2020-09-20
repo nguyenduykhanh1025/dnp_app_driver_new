@@ -657,7 +657,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	@Override
 	public List<ShipmentDetail> selectVesselVoyageBerthPlanWithoutOpe() {
 		try {
-			String url = Global.getApiUrl() + "/shipmentDetail/berthplan/vessel-voyage/list" ;
+			String url = Global.getApiUrl() + "/shipmentDetail/berthplan/vessel-voyage/list";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ShipmentDetail>>() {});

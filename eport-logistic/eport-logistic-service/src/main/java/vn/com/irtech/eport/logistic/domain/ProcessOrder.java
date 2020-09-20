@@ -133,8 +133,6 @@ public class ProcessOrder extends BaseEntity
 
     private String groupName;
 
-    private ShipmentDetail shipmentDetail;
-    
     private String oldVessel;
 
     private String oldVoyAge;
@@ -449,14 +447,6 @@ public class ProcessOrder extends BaseEntity
         this.groupName = groupName;
     }
 
-    public void setShipmentDetail(ShipmentDetail shipmentDetail) {
-        this.shipmentDetail = shipmentDetail;
-    }
-
-    public ShipmentDetail getShipmentDetail() {
-        return shipmentDetail;
-    }
-    
     public String getOldVessel() {
 		return oldVessel;
 	}
@@ -599,7 +589,6 @@ public class ProcessOrder extends BaseEntity
             .append("orderNo", getOrderNo())
             .append("processData", getProcessData())
             .append("groupName", getGroupName())
-            .append("shipmentDetail", getShipmentDetail())
             .append("paymentStatus", getPaymentStatus())
             .append("doStatus", getDoStatus())
             .append("logisticName", getLogisticName())

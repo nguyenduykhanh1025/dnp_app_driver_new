@@ -77,32 +77,32 @@ public class ExecuteCatosController extends AdminBaseController {
 		return getDataTable(result);
 	}
 
-	/**
-	 * Update list shipment detail
-	 * 
-	 * @param shipmentId
-	 * @param processStatus
-	 * @param mmap
-	 * @return
-	 */
-	@GetMapping("/detail/{processOrderId}")
-	public String edit(@PathVariable("processOrderId") Long processOrderId, ModelMap mmap) {
-		ProcessOrder processOrder = new ProcessOrder();
-    	processOrder.setId(processOrderId);
-    	processOrder.setRunnable(true);
-    	List<ProcessOrder> processOrders = processOrderService.selectOrderListForOmSupport(processOrder);
-    	processOrder = processOrders.get(0);
-    	List<ProcessOrder> processOrderList = new ArrayList<>();
-    	List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderId.toString());
-    	for (ShipmentDetail shipmentDetail : shipmentDetails) {
-    		processOrder.setShipmentDetail(shipmentDetail);
-    		ProcessOrder processOrderDes = new ProcessOrder();
-    		BeanUtils.copyBeanProp(processOrderDes, processOrder);
-    		processOrderList.add(processOrderDes);
-    	}
-    	mmap.put("orderList", processOrderList);
-		return prefix + "/edit";
-	}
+//	/**
+//	 * Update list shipment detail
+//	 * 
+//	 * @param shipmentId
+//	 * @param processStatus
+//	 * @param mmap
+//	 * @return
+//	 */
+//	@GetMapping("/detail/{processOrderId}")
+//	public String edit(@PathVariable("processOrderId") Long processOrderId, ModelMap mmap) {
+//		ProcessOrder processOrder = new ProcessOrder();
+//    	processOrder.setId(processOrderId);
+//    	processOrder.setRunnable(true);
+//    	List<ProcessOrder> processOrders = processOrderService.selectOrderListForOmSupport(processOrder);
+//    	processOrder = processOrders.get(0);
+//    	List<ProcessOrder> processOrderList = new ArrayList<>();
+//    	List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderId.toString());
+//    	for (ShipmentDetail shipmentDetail : shipmentDetails) {
+//    		processOrder.setShipmentDetail(shipmentDetail);
+//    		ProcessOrder processOrderDes = new ProcessOrder();
+//    		BeanUtils.copyBeanProp(processOrderDes, processOrder);
+//    		processOrderList.add(processOrderDes);
+//    	}
+//    	mmap.put("orderList", processOrderList);
+//		return prefix + "/edit";
+//	}
 
 	@GetMapping("/process-order/doing")
   	@Transactional

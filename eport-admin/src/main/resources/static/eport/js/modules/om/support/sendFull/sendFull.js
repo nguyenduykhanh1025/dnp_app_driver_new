@@ -31,7 +31,7 @@ $(document).ready(function () {
   $(".left-side__collapse").click(function () {
     $('#main-layout').layout('collapse', 'west');
   });
-  loadTable(processOrder);
+  
   $('#checkCustomStatusByProcessOrderId').attr("disabled", true);
   $('#checkProcessStatusByProcessOrderId').attr("disabled", true);
   $("#bookingNo").textbox('textbox').bind('keydown', function(e) {
@@ -45,6 +45,8 @@ $(document).ready(function () {
       loadTable(processOrder);
     }
     });
+  // load shipment table
+  loadTable(processOrder);
 
 });
 
@@ -66,6 +68,7 @@ function handleCollapse(status) {
 }
 
 function loadTable(processOrder) {
+  console.log("load table", processOrder)
   $("#dg").datagrid({
     url: PREFIX + "/orders",
     method: "POST",
@@ -307,6 +310,9 @@ configHandson();
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
 function loadTableByContainer(processOrderId) {
+	if(processOrderId == undefined) {
+		return;
+	}
     $.ajax({
         url:  PREFIX + "/processOrderId/" + processOrderId + "/shipmentDetails",
         method: "GET",
@@ -387,13 +393,8 @@ function resetProcessStatus() {
 //}
 
 $("#logistic").combobox({
-  onSelect: function (serviceType) {
-    if(serviceType.value != 0)
-    {
-        processOrder.logisticGroupId = serviceType.value;
-    }else {
-      processOrder.logisticGroupId = '';
-    }
+  onChange: function (item, old) {
+    processOrder.logisticGroupId = item
     loadTable(processOrder);
   }
 });
@@ -419,14 +420,13 @@ function formatUpdateTime(value) {
 
 function clearInput() {
   $("#bookingNo").textbox('setText', '');
-  $('#logistic').combobox('setValue', "0");
-  $('#logistic').combobox('setText', "Chọn đơn vị Logistics");
+  $('#logistic').combobox('setValue', "");
   processOrder = new Object();
   loadTable(processOrder);
 }
 function search() {
   processOrder.bookingNo = $("#bookingNo").textbox('getText').toUpperCase();
-  processOrder.logisticGroupId = $('#logistic').combobox('getValue') == '0' ? '' : $('#logistic').combobox('getValue') ;
+  processOrder.logisticGroupId = $('#logistic').combobox('getValue');
   loadTable(processOrder);
 }
 
