@@ -56,8 +56,8 @@ public class SupportCustomSendFullController extends OmBaseController{
 	    // List<String> logisticsGroups = processOrderService.selectProcessOrderOnlyLogisticName(processOrder);
 		// mmap.put("logisticsGroups", logisticsGroups);
 		LogisticGroup logisticGroup = new LogisticGroup();
-	    logisticGroup.setGroupName("Chọn đơn vị Logistics");
-	    logisticGroup.setId(0L);
+	    logisticGroup.setGroupName("Tất cả khách hàng");
+	    logisticGroup.setId(null);
 	    LogisticGroup logisticGroupParam = new LogisticGroup();
 	    logisticGroupParam.setDelFlag("0");
 	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
@@ -117,6 +117,7 @@ public class SupportCustomSendFullController extends OmBaseController{
     	shipmentComment.setCreateTime(new Date());
     	shipmentComment.setCreateBy(getUser().getUserName());
     	shipmentComment.setTopic(Constants.SEND_CONT_FULL_CUSTOM_SUPPORT);
+		shipmentComment.setServiceType(shipment.getServiceType());
     	if(shipmentCommentService.insertShipmentComment(shipmentComment) == 1) {
     		return success();
     	}

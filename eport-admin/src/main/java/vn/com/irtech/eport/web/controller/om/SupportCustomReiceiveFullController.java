@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.web.controller.om;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -58,8 +59,8 @@ public class SupportCustomReiceiveFullController  extends OmBaseController{
     {
     	// Get list logistic group
 		LogisticGroup logisticGroup = new LogisticGroup();
-	    logisticGroup.setGroupName("Chọn đơn vị Logistics");
-	    logisticGroup.setId(0L);
+	    logisticGroup.setGroupName("Tất cả khách hàng");
+	    logisticGroup.setId(null);
 	    LogisticGroup logisticGroupParam = new LogisticGroup();
 	    logisticGroupParam.setDelFlag("0");
 	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
@@ -68,6 +69,9 @@ public class SupportCustomReiceiveFullController  extends OmBaseController{
 	    
 	    // Get list vslNm : vslNmae : voyNo
 	    List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlanWithoutOpe();
+	    if(berthplanList == null) {
+	    	berthplanList = new ArrayList<>();
+	    }
 	    ShipmentDetail shipmentDetail = new ShipmentDetail();
 	    shipmentDetail.setVslAndVoy("Chọn tàu chuyến");
 	    berthplanList.add(0, shipmentDetail);
@@ -126,6 +130,7 @@ public class SupportCustomReiceiveFullController  extends OmBaseController{
     	shipmentComment.setCreateTime(new Date());
     	shipmentComment.setCreateBy(getUser().getUserName());
     	shipmentComment.setTopic(Constants.RECEIVE_CONT_FULL_CUSTOM_SUPPORT);
+		shipmentComment.setServiceType(shipment.getServiceType());
     	if(shipmentCommentService.insertShipmentComment(shipmentComment) == 1) {
     		return success();
     	}

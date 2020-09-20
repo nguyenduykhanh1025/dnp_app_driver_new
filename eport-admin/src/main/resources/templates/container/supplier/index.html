@@ -23,12 +23,15 @@
                 <div class="flex__right w-80">
                     <div class="justify-content-around align-items-center" id="ff">
                         <div class="d-inline">
-                            <select class="easyui-combobox" onchange="changeBatchStatus()" name="batchStatus" id="batchStatus">
-                                <option value="" selected>Trạng Thái Lô</option>
-                                <option value="1">Đã Cấp Container</option>
+                            <select class="easyui-combobox" onchange="changeBatchStatus()" name="batchStatus" id="batchStatus" panelHeight="auto">
+                                <option value="" selected>Tất Cả</option>
                                 <option value="0">Chưa Cấp Container</option>
+                                <option value="1">Đã Cấp Container</option>
                             </select>
                           </div>
+                        <div class="d-inline">
+                            <input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
+                        </div>
                         <div class="d-inline">
                             <input class="easyui-textbox" id="blNo" data-options="prompt:'Booking No'" />
                         </div>
@@ -64,7 +67,9 @@
                 <div data-options="region:'center'" style="width:100%;" >
                     
                     <div class="booking-info">
-                        <button style="display: inline-block;" class="button-custom" onclick="saveInput()">Xác Nhận Cấp container</button>
+                        <button style="display: inline-block;" class="btn btn-xs btn-primary" onclick="saveInput()">Xác Nhận Cấp Container</button>&nbsp;&nbsp;
+                        <button style="display: inline-block;" class="btn btn-xs btn-warning" onclick="rejectSupply()">Không Thể Cấp Container</button>&nbsp;&nbsp;
+                        <button style="display: inline-block;" class="btn btn-xs btn-danger" onclick="deleteSupply()">Xóa Cấp Container</button>
                         <div class="booking-info">
                         <div >
                           <div >

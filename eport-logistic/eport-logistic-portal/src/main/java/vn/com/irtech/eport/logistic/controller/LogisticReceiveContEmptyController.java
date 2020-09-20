@@ -575,6 +575,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 				shipmentComment.setCommentTime(new Date());
 				shipmentComment.setContent(contReqRemark);
 				shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CONT_SUPPLIER);
+				shipmentComment.setServiceType(shipmentDetail.getServiceType());
 				shipmentCommentService.insertShipmentComment(shipmentComment);
 			}
 			

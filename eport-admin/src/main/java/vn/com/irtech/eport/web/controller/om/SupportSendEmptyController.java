@@ -23,7 +23,6 @@ import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
-import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -42,6 +41,7 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+
 @Controller
 @RequestMapping("/om/support/send-empty")
 public class SupportSendEmptyController extends OmBaseController{
@@ -209,6 +209,7 @@ public class SupportSendEmptyController extends OmBaseController{
 	    	shipmentComment.setCreateTime(new Date());
 	    	shipmentComment.setCreateBy(getUser().getUserName());
 	    	shipmentComment.setTopic(Constants.SEND_CONT_EMPTY_SUPPORT);
+			shipmentComment.setServiceType(shipment.getServiceType());
 	    	shipmentCommentService.insertShipmentComment(shipmentComment);
 		}
     	return success();
@@ -256,6 +257,7 @@ public class SupportSendEmptyController extends OmBaseController{
 		    	shipmentComment.setCreateTime(new Date());
 		    	shipmentComment.setCreateBy(getUser().getUserName());
 		    	shipmentComment.setTopic(Constants.SEND_CONT_EMPTY_SUPPORT);
+				shipmentComment.setServiceType(shipment.getServiceType());
 		    	shipmentCommentService.insertShipmentComment(shipmentComment);
 			}
 	    	return success();

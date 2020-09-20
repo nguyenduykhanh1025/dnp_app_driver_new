@@ -211,6 +211,7 @@ public class SupportSendFullController extends OmBaseController{
 	    	shipmentComment.setCreateTime(new Date());
 	    	shipmentComment.setCreateBy(getUser().getUserName());
 	    	shipmentComment.setTopic(Constants.SEND_CONT_FULL_SUPPORT);
+			shipmentComment.setServiceType(shipment.getServiceType());
 	    	shipmentCommentService.insertShipmentComment(shipmentComment);
 		}
     	return success();
@@ -258,6 +259,7 @@ public class SupportSendFullController extends OmBaseController{
 		    	shipmentComment.setCreateTime(new Date());
 		    	shipmentComment.setCreateBy(getUser().getUserName());
 		    	shipmentComment.setTopic(Constants.SEND_CONT_FULL_SUPPORT);
+				shipmentComment.setServiceType(shipment.getServiceType());
 		    	shipmentCommentService.insertShipmentComment(shipmentComment);
 			}
 	    	return success();
