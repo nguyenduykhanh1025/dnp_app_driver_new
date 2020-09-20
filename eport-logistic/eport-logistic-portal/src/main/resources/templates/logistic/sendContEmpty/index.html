@@ -7,6 +7,7 @@
   <th:block th:include="include :: header('Hạ bãi chờ xuất')" />
   <th:block th:include="include :: handsontable-css" />
   <th:block th:include="include :: easyui-css" />
+  <th:block th:include="include :: summernote-css" />
   <link th:href="@{/css/logistic/receiveContFull/style.css?v=0916}" rel="stylesheet" />
   <link th:href="@{/eport/css/common/style.css?v=0916}" rel="stylesheet" />
 </head>
@@ -79,7 +80,7 @@
             <div style="height: 50%;" data-options="region:'south', split:true">
               <span class="right-side__collapse"><i class="fa fa-chevron-down"></i></span>
               <div class="panel-header" style="width: 100%; background-color: #f3f7fa;">
-                <div class="panel-title" style="color: #333;">Thảo Luận</div>
+                <div class="panel-title" style="color: #333;">Hỗ Trợ</div>
               </div>
               <div id="comment-div" style="padding: 10px 20px 10px 20px;">
                 <div id="commentList"></div>
@@ -93,7 +94,7 @@
                   <div class="form-group row">
                     <label class="col-md-1 col-sm-2 col-xs-3">Nội dung <span style="color: red;">*</span></label>
                     <div class="col-md-11 col-sm-10 col-xs-9">
-                      <input class="easyui-textbox" id="content" data-options="multiline:'true'" style="width: 100%; height: 74px;"/>
+                      <textarea class="summernote"></textarea>
                     </div>
                   </div>
                   <div>
@@ -177,6 +178,7 @@
 
   <th:block th:include="include :: footer" />
   <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: summernote-js" />
   <th:block th:include="include :: handsontable-js" />
   <th:block th:include="include :: websocket" />
   <script type="text/javascript" th:inline="javascript">
