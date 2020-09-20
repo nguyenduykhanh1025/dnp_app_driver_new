@@ -3,6 +3,11 @@
  */
 package vn.com.irtech.eport.logistic.service.impl;
 
+import java.io.StringReader;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +17,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.HtmlUtils;
 
 import vn.com.irtech.eport.common.constant.SystemConstants;
 import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.common.json.JSONObject.JSONArray;
+import vn.com.irtech.eport.common.utils.html.EscapeUtil;
 import vn.com.irtech.eport.logistic.dto.CustomsCheckResultDto;
 import vn.com.irtech.eport.logistic.service.ICustomCheckService;
+import vn.com.irtech.eport.system.dto.CustomDeclareResult;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
 /**
@@ -68,6 +76,14 @@ public class CustomCheckServiceImpl implements ICustomCheckService {
 				resultDto.setTaxCode(data.getStr("enterpriseIdentity"));
 				resultDto.setCompanyName(data.getStr("enterpriseName"));
 				// String rs = data.get("customsStatus").toString();
+				// convert xml to object
+				if(data.getStr("msgRecvContent") != null) {
+					String xml = HtmlUtils.htmlUnescape(data.getStr("msgRecvContent"));
+					JAXBContext jaxbContext = JAXBContext.newInstance(CustomDeclareResult.class);
+					Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+					CustomDeclareResult customDeclareResult = (CustomDeclareResult) unmarshaller.unmarshal(new StringReader(xml));
+					resultDto.setCustomDeclareResult(customDeclareResult);
+				}
 				return resultDto;
 			}
 			return null;
