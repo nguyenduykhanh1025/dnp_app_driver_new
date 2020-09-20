@@ -313,13 +313,15 @@ public class DriverAccountController extends LogisticBaseController
 			List<DriverTruck> tractors = driverTruckService.selectTractorByDriverId(driverTruck.getDriverId());
 			List<DriverTruck> trailers = driverTruckService.selectTrailerByDriverId(driverTruck.getDriverId());
 			if(tractors.size() != 0){
-				for(DriverTruck i : tractors){
-					logisticTrucks.add(logisticTruckService.selectLogisticTruckById(i.getTruckId()));
+				for(DriverTruck tracktor : tractors){
+					// logisticTrucks.add(logisticTruckService.selectLogisticTruckById(i.getTruckId()));
+					logisticTrucks.add(tracktor.getLogisticTruck());
 				}
 			}
 			if(trailers.size() != 0){
-				for(DriverTruck i :trailers){
-					logisticTrucks.add(logisticTruckService.selectLogisticTruckById(i.getTruckId()));
+				for(DriverTruck trailer :trailers){
+					// logisticTrucks.add(logisticTruckService.selectLogisticTruckById(i.getTruckId()));
+					logisticTrucks.add(trailer.getLogisticTruck());
 				}
 			}
 		}
