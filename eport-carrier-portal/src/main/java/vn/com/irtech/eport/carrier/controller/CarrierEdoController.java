@@ -384,8 +384,9 @@ public class CarrierEdoController extends CarrierBaseController {
 			// Do the insert to DB
 			for (Edo edo : edos) {
 				edo.setStatus("1");
-				edoService.insertEdo(edo);
+				edo.setCarrierCode(super.getUserGroup().getGroupCode());
 				edo.setCreateBy(super.getUser().getEmail());
+				edoService.insertEdo(edo);
 				edoAuditLogService.addAuditLogFirst(edo);
 			}
 			// return toAjax(equipmentDoService.insertEquipmentDoList(doList));
