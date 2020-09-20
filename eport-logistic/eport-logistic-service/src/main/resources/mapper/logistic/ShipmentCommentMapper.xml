@@ -143,7 +143,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="topic != null  and topic != ''"> and topic = #{topic}</if>
             <if test="content != null  and content != ''"> and content = #{content}</if>
             <if test="serviceType != null"> and service_type = #{serviceType}</if>
-            <if test="seenFlg != null"> and service_type = #{seenFlg}</if>
+            <if test="seenFlg != null"> and seen_flg = #{seenFlg}</if>
             <if test="resolvedFlg != null"> and resolved_flg = #{resolvedFlg}</if>
             <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
             <if test="updateBy != null  and updateBy != ''"> and update_by = #{updateBy}</if>
