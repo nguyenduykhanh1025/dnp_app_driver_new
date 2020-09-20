@@ -381,7 +381,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         s.cont_supply_status, s.status, s.remark, s.order_number, s.house_bill, s.create_by, 
         s.create_time, s.update_by, s.update_time
 
-        order by update_time desc
+        order by create_time desc
     </select>
     <select id="getShipmentsForSupportCustom" parameterType="Shipment" resultMap="ShipmentResult">
         select s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, s.ope_code, 
