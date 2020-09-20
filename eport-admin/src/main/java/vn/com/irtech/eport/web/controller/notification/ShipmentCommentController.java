@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -68,5 +70,24 @@ public class ShipmentCommentController extends BaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentComments", shipmentComments);
 		return ajaxResult;
+	}
+	
+	@PostMapping("/shipment/list")
+	@ResponseBody
+	public AjaxResult getCommentList(@RequestBody ShipmentComment shipmentComment) {
+		if (shipmentComment == null || shipmentComment.getShipmentId() == null) {
+			return error("Invalid input!");
+		}
+		List<ShipmentComment> shipmentComments = shipmentCommentService.selectShipmentCommentListCustom(shipmentComment);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentComments", shipmentComments);
+		return ajaxResult;
+	}
+	
+	@PostMapping("/resolve")
+	@ResponseBody
+	public AjaxResult resolveComment(String shipmentCommentIds) {
+		
+		return success();
 	}
 }
