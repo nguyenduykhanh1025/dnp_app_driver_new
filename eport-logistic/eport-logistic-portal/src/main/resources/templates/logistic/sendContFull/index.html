@@ -60,7 +60,7 @@
     </div>
     <div class="main-body__table-wrapper">
       <div class="easyui-layout" id="main-layout" style="width: 100%;">
-        <div class="left-side" title="Danh sách lô" data-options="region:'west',split:true" style="width: 30%;">
+        <div class="left-side" title="Danh sách lô" data-options="region:'west',split:true, onResize: function(width, height) {setTimeout(() => {hot.render();}, 200);}" style="width: 30%;">
           <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
           <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead>
