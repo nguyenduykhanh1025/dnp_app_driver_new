@@ -144,20 +144,11 @@ $('#right-layout').layout({
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
-
     $('#right-layout').layout('collapse', 'south');
     setTimeout(() => {
         hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
         hot.render();
     }, 200);
-
-    $("#content").textbox('textbox').bind('keydown', function (e) {
-        // enter key
-        if (e.keyCode == 13) {
-            addComment();
-        }
-    });
-
     $("#shipmentStatus").combobox({
         onSelect: function (option) {
             shipmentSearch.status = option.value;
@@ -1846,14 +1837,14 @@ function loadListComment(shipmentCommentId) {
 
 function addComment() {
     let topic = $('#topic').textbox('getText');
-    let content = $('#content').textbox('getText');
+    let content = $('.summernote').summernote('code');// get editor content
     let errorFlg = false;
     if (!topic) {
         errorFlg = true;
-        $.modal.alertWarning('Quý khách chưa nhập chủ đề.');
+        $.modal.alertWarning('Vui lòng nhập chủ đề.');
     } else if (!content) {
         errorFlg = true;
-        $.modal.alertWarning('Quý khách chưa nhập nội dung.');
+        $.modal.alertWarning('Vui lòng nhập nội dung.');
     }
     if (!errorFlg) {
         let req = {
@@ -1875,7 +1866,8 @@ function addComment() {
                     loadListComment(result.shipmentCommentId);
                     $.modal.msgSuccess("Gửi thành công.");
                     $('#topic').textbox('setText', '');
-                    $('#content').textbox('setText', '');
+                    // reset editor content
+                    $('.summernote').summernote('code','');
                 } else {
                     $.modal.msgError("Gửi thất bại.");
                 }

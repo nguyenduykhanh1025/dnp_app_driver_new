@@ -349,3 +349,63 @@ function dgResize() {
 $(window).resize(function () {
     dgResize();
 });
+
+/**
+ * Resize image when upload
+ * 
+ * @param files
+ * @returns
+ */
+function summernoteOnImageUpload(files, editor) {
+    $.each(files, function(idx, file) {
+        var max_width = 1000;
+        var max_height = 1000;
+        var reader = new FileReader();
+        reader.onload = function() {
+            var tmpImg = new Image();
+            tmpImg.src = reader.result;
+
+            tmpImg.onload = function() {
+                var tmpW = tmpImg.width;
+                var tmpH = tmpImg.height;
+
+                if (tmpW > tmpH) {
+                    if (tmpW > max_width) {
+                       tmpH *= max_width / tmpW;
+                       tmpW = max_width;
+                    }
+                } else {
+                    if (tmpH > max_height) {
+                       tmpW *= max_height / tmpH;
+                       tmpH = max_height;
+                    }
+                }
+
+                var canvas = document.createElement('canvas');
+                canvas.width = tmpW;
+                canvas.height = tmpH;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(this, 0, 0, tmpW, tmpH);
+                sURL = canvas.toDataURL("image/jpeg");
+                editor.summernote('insertImage', sURL, file.name);
+            }
+        }
+        reader.readAsDataURL(file);
+    });
+}
+$(document).ready(function () {
+  $('.summernote').summernote({
+    minHeight: 100,
+    maximumImageFileSize: 150*1024, // maxsize in Kilobyte
+    toolbar: false,
+    placeholder: 'Hãy nhập nội dung cần hỗ trợ',
+    callbacks: {
+	  onImageUpload: function(files) {
+		  summernoteOnImageUpload(files, $('.summernote'));
+	  },
+	  onImageUploadError: function() {
+	        $.modal.alertError('Hình quá lớn, chỉ cho phép hình dung lượng tối đa 150kb.');
+	  }
+    }
+  });
+});
