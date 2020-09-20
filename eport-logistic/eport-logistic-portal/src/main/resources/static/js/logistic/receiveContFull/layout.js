@@ -5,8 +5,8 @@ $(".collapse").click(function () {
     $(".main-body__search-wrapper").hide();
     $(".main-body__search-wrapper--container").hide();
     $(this).hide();
-    $(".main-body").height($(document).height() - 10);
-    $(".easyui-layout").height($('.main-body').height() - 40);
+    $(".main-body").height($(document).height());
+    $(".easyui-layout").height($('.main-body').height());
     $(".uncollapse").show();
 });
 
@@ -55,7 +55,6 @@ $('#right-layout').layout({
     }
   }
 });
-
 $('#main-layout').layout({
   onExpand: function (region) {
     if (region == "west") {

@@ -111,7 +111,7 @@ body {
         }
         .left-side__uncollapse {
           @include btn-collapse-col;
-          display: none;  
+          display: none;
           &:hover {
             cursor: e-resize;
           }
@@ -129,9 +129,13 @@ body {
         .ht_clone_top th,
         .ht_clone_top_left_corner th {
           @include border-dotted;
-          background-color:#efefef;
-          background:linear-gradient(to bottom,#F9F9F9 0,#efefef 100%);
-          background-repeat:repeat-x;
+          background-color: #1c84c652;
+          background: -webkit-linear-gradient(top, #ffffff 0, #f2f2f2 100%);
+          background: -moz-linear-gradient(top, #ffffff 0, #f2f2f2 100%);
+          background: -o-linear-gradient(top, #ffffff 0, #f2f2f2 100%);
+          background: linear-gradient(to bottom, #ffffff 0, #f2f2f2 100%);
+          background-repeat: repeat-x;
+          filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff,endColorstr=#F2F2F2,GradientType=0);
         }
         .ht_master tr:nth-of-type(odd) > td,
         .htCore tr:nth-of-type(odd) > td {
@@ -201,7 +205,7 @@ body {
   table {
     .btn {
       padding: 2px 5px !important;
-      border-radius: 2px; 
+      border-radius: 2px;
       margin-right: 2px;
     }
     .l-btn-text {
