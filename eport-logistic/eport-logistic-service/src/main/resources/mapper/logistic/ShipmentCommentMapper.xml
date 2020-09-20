@@ -151,7 +151,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by create_time asc
     </select>
 
-     <update id="updateFlgShipmentComment" parameterType="ShipmentComment">
+    <update id="updateFlgShipmentComment" parameterType="ShipmentComment">
         update shipment_comment
         <trim prefix="SET" suffixOverrides=",">
             <if test="seenFlg != null">seen_flg = #{seenFlg},</if>
@@ -174,4 +174,45 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''"> and update_by = #{updateBy}</if>
         </where>
     </update>
+
+    <select id="selectCountCommentListUnSeen" parameterType="ShipmentComment" resultType="int">
+        select count(*) from shipment_comment
+        <where>  
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userType != null  and userType != ''"> and user_type = #{userType}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat(concat('%', #{userName}), '%')</if>
+            <if test="userAlias != null  and userAlias != ''"> and user_alias = #{userAlias}</if>
+            <if test="commentTime != null "> and comment_time = #{commentTime}</if>
+            <if test="topic != null  and topic != ''"> and topic = #{topic}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="seenFlg != null"> and service_type = #{seenFlg}</if>
+            <if test="resolvedFlg != null"> and resolved_flg = #{resolvedFlg}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_by = #{updateBy}</if>
+        </where>
+    </select>
+
+    <select id="selectShipmentCommentListForNotification" parameterType="ShipmentComment" resultMap="ShipmentCommentResult">
+        <include refid="selectShipmentCommentVo"/>
+        <where>  
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userType != null  and userType != ''"> and user_type = #{userType}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat(concat('%', #{userName}), '%')</if>
+            <if test="userAlias != null  and userAlias != ''"> and user_alias = #{userAlias}</if>
+            <if test="commentTime != null "> and comment_time = #{commentTime}</if>
+            <if test="topic != null  and topic != ''"> and topic = #{topic}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="seenFlg != null"> and seen_flg = #{seenFlg}</if>
+            <if test="resolvedFlg != null"> and resolved_flg = #{resolvedFlg}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_by = #{updateBy}</if>
+        </where>
+        order by create_time desc
+    </select>
 </mapper>

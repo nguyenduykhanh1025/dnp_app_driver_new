@@ -104,7 +104,7 @@
               <div class="notification-list" id="notification-list">
                 <div class="view-all">
                   <h3>Thông Báo</h3>
-                  <a onclick="viewAll()">Xem tất cả</a>
+                  <a onclick="viewAll()" id="loadAll">Xem tất cả</a>
                 </div>
                 <div class="notifications">
                   <div class="loading">
@@ -145,7 +145,7 @@
                     </div>
                   </div> -->
                 </div>
-                <div class="see-more"><a onclick="loadMore()">Xem thêm...</a></div>
+                <div class="see-more"><a onclick="loadMore()" id="loadMore">Xem thêm...</a></div>
               </div>
             </li>
             <li class="dropdown user-menu">
@@ -235,7 +235,7 @@
       var skin = storage.get("skin");
       var mode = "history";
       var historyPath = storage.get("historyPath");
-      var currentPage = 1, pageSize = 10, notiCount = 0;
+      var currentPage = 1, pageSize = 5, notiCount = 0, total = 0, currentAmount = 0;
 
       if($.common.isNotEmpty(skin)){
       	$("body").addClass(skin.split('|')[0]);
@@ -299,23 +299,43 @@
       });
 
       function loadNotification() {
+        $('#loadMore').removeClass('disabled');
+        $('#loadAll').removeClass('disabled');
+        $('#loadMore').html('Xem thêm...');
         currentPage = 1;
+        currentAmount = 0;
+        total = 0;
         $('.notification-list').show();
         $('.loading').css('top', ($('.notifications').height()/2) + 10);
         $('.loading').show();
         $.ajax({
-        url: ctx + "logistic/comment/notifications",
-        method: "GET",
-        data: {
-          pageNum: currentPage,
-          pageSize: pageSize
-        },
-        success: function (data) {
+          url: ctx + "logistic/comment/notifications",
+          method: "GET",
+          data: {
+            pageNum: currentPage,
+            pageSize: pageSize
+          },
+          success: function (data) {
             if (data.code == 0) {
               if (data.shipmentComments != null && data.shipmentComments.length > 0) {
                 let html = '<div class="loading"><div class="loader"></div><div>Đang xử lý</div></div>' + getNotificationIntoView(data.shipmentComments);
                 $('.notifications').html(html);
+                currentAmount = data.shipmentComments.length;
+                total = data.total;
+                if (currentAmount >= total) {
+                  $('#loadMore').addClass('disabled');
+                  $('#loadMore').html('Hết thông báo');
+                  $('#loadAll').addClass('disabled');
+                }
+              } else {
+                $('#loadMore').addClass('disabled');
+                $('#loadMore').html('Hết thông báo');
+                $('#loadAll').addClass('disabled');
               }
+            } else {
+              $('#loadMore').addClass('disabled');
+              $('#loadMore').html('Hết thông báo');
+              $('#loadAll').addClass('disabled');
             }
             $('.loading').hide();
           }
@@ -327,17 +347,27 @@
         $('.loading').css('top', ($('.notifications').height()/2) + 10);
         $('.loading').show();
         $.ajax({
-        url: ctx + "logistic/comment/notifications",
-        method: "GET",
-        data: {
-          pageNum: currentPage,
-          pageSize: pageSize
-        },
-        success: function (data) {
+          url: ctx + "logistic/comment/notifications",
+          method: "GET",
+          data: {
+            pageNum: currentPage,
+            pageSize: pageSize
+          },
+          success: function (data) {
             if (data.code == 0) {
               if (data.shipmentComments != null && data.shipmentComments.length > 0) {
                 let html = getNotificationIntoView(data.shipmentComments);
                 $('.notifications').append(html);
+                currentAmount += data.shipmentComments.length;
+                if (currentAmount >= total) {
+                  $('#loadMore').addClass('disabled');
+                  $('#loadMore').html('Hết thông báo');
+                  $('#loadAll').addClass('disabled');
+                }
+              } else {
+                $('#loadMore').addClass('disabled');
+                $('#loadMore').html('Hết thông báo');
+                $('#loadAll').addClass('disabled');
               }
             }
             $('.loading').hide();
@@ -373,7 +403,9 @@
 
       function goToMessageDetail(serviceType, shipmentId) {
         $('.notification-list').hide();
-        notiCount--;
+        if (notiCount > 0) {
+          notiCount--;
+        }
         $('.badge').text(notiCount);
         let url = '';
         switch (serviceType) {
@@ -418,7 +450,24 @@
       });
 
       function viewAll() {
-        $('.loading').hide();
+        $('.loading').css('top', ($('.notifications').height()/2) + 10);
+        $('.loading').show();
+        $.ajax({
+          url: ctx + "logistic/comment/notification/all",
+          method: "GET",
+          success: function (data) {
+            if (data.code == 0) {
+              if (data.shipmentComments != null && data.shipmentComments.length > 0) {
+                let html = '<div class="loading"><div class="loader"></div><div>Đang xử lý</div></div>' + getNotificationIntoView(data.shipmentComments);
+                $('.notifications').html(html);
+                $('#loadMore').addClass('disabled');
+                $('#loadAll').addClass('disabled');
+                $('#loadMore').html('Hết thông báo');
+              }
+            }
+            $('.loading').hide();
+          }
+        });
       }
     </script>
   </body>

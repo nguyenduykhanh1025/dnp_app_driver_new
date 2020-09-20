@@ -180,3 +180,8 @@
   position: absolute;
   right: 120px;
 }
+
+.disabled {
+  pointer-events: none;
+  color: #908f8f;
+}

@@ -194,6 +194,7 @@
   <script type="text/javascript" th:inline="javascript">
     $(".main-body").height($(document).height() - 10);
     $(".easyui-layout").height($('.main-body').height() - 40);
+    var sId = /*[[${sId}]]*/;
   </script>
   <script th:src="@{/js/logistic/sendContFull/index.js?v=0918}"></script>
 </body>

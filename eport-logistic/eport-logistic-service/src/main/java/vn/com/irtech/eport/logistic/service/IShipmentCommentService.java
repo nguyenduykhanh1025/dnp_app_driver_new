@@ -74,4 +74,20 @@ public interface IShipmentCommentService
      * @return Result
      */
     public int updateFlgShipmentComment(ShipmentComment shipmentComment);
+    
+    /**
+     * Select count comment list un-seen
+     * 
+     * @param shipmentComment
+     * @return int
+     */
+    public int selectCountCommentListUnSeen(ShipmentComment shipmentComment);
+    
+    /**
+     * Get Shipment Comment List
+     * 
+     * @param shipmentComment Shipment Comment
+     * @return Shipment Comment List
+     */
+    public List<ShipmentComment> selectShipmentCommentListForNotification(ShipmentComment shipmentComment);
 }

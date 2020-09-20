@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
@@ -86,7 +87,10 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
     private IShipmentCommentService shipmentCommentService;
 	
     @GetMapping()
-	public String sendContEmpty() {    	
+	public String sendContEmpty(@RequestParam(required = false) Long sId, ModelMap mmap) { 
+    	if (sId != null) {
+			mmap.put("sId", sId);
+		}
 		return PREFIX + "/index";
 	}
 

@@ -165,6 +165,10 @@ $(document).ready(function () {
       loadTable();
     }
   });
+  
+  if (sId != null) {
+    shipmentSearch.id = sId;
+  }
 
   $("#containerNo").textbox('textbox').bind('keydown', function(e) {
     // enter key
@@ -279,9 +283,7 @@ function loadTable() {
           success(data);
           $("#dg").datagrid("hideColumn", "id");
           $("#dg").datagrid("hideColumn", "edoFlg");
-          if (currentIndexRow != null) {
-            $("#dg").datagrid("selectRow", currentIndexRow);
-          }
+          $("#dg").datagrid("selectRow", 0);
         },
         error: function () {
           error.apply(this, arguments);
@@ -1020,6 +1022,9 @@ configHandson();
 
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
+// if (shipment != null) {
+//   loadShipmentDetail(shipment.id);
+// }
 
 // TRIGGER CHECK ALL SHIPMENT DETAIL
 function checkAll() {
@@ -1136,9 +1141,6 @@ function loadShipmentDetail(id) {
     	if(data.shipmentDetails[0] != null){
             voyCarrier = data.shipmentDetails[0].voyCarrier;
     	}
-        if (rowAmount < sourceData.length) {
-          sourceData = sourceData.slice(0, rowAmount);
-        }
         let saved = true;
         // let shiftingFee = false;
         taxCodeArr = Array(rowAmount).fill(new Object);
@@ -1876,6 +1878,11 @@ function loadListComment(shipmentCommentId) {
         $('#right-layout').layout('panel', 'expandSouth').panel('setTitle', commentTitle);
         $('#commentList').html(html);
         // $("#comment-div").animate({ scrollTop: $("#comment-div")[0].scrollHeight}, 1000);
+        if (sId != null) {
+          $('#right-layout').layout('expand', 'south');
+          shipmentSearch.id = null;
+          sId = null;
+        }
       }
     }
   });
