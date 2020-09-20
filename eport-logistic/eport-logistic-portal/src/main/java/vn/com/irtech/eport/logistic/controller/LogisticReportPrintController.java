@@ -341,11 +341,12 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		final Map<String, Object> parameters = new HashMap<>();
 		parameters.put("bookingNo", shipmentDetailList.get(0).getBookingNo());
 		parameters.put("consignee", shipmentDetailList.get(0).getConsignee());
-		parameters.put("etd", new Date());//TODO
-		parameters.put("feederName", "unknown");//TODO
+		parameters.put("etd", shipmentDetailList.get(0).getEtd());
+		parameters.put("feederName", shipmentDetailList.get(0).getVslName() + " - " + shipmentDetailList.get(0).getVoyCarrier());
 		parameters.put("voy", shipmentDetailList.get(0).getVoyCarrier());
-		parameters.put("pol", shipmentDetailList.get(0).getLoadingPort());
+		parameters.put("pol", "VNDAD");
 		parameters.put("pod", shipmentDetailList.get(0).getDischargePort());
+		parameters.put("logisticGroup", getGroup().getGroupName());
 
 		parameters.put("table", shipmentDetailList);
 		final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());

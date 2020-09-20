@@ -24,11 +24,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="isChangeVesselOrder"    column="is_change_vessel_order"    />
         <result property="isCreateBookingOrder"    column="is_create_booking_order"    />
         <result property="isExtensionDateOrder"    column="is_extension_date_order"    />
+        <result property="isChangeTerminalCustomHold"    column="is_change_terminal_custom_hold"    />
+        <result property="isCancelSendContFullOrder"    column="is_cancel_send_cont_full_order"    />
+        <result property="isCancelReceiveContEmptyOrder"    column="is_cancel_receive_cont_empty_order"    />
         <result property="responseTime"    column="response_time"    />
     </resultMap>
 
     <sql id="selectRobotVo">
-        select id, uuid, status, disabled, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, is_gate_in_order, ip_address, create_by, create_time, update_by, update_time, remark, is_shifting_cont_order, is_change_vessel_order, is_create_booking_order, is_extension_date_order, response_time from sys_robot
+        select id, uuid, status, disabled, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, is_gate_in_order, ip_address, create_by, create_time, update_by, update_time, remark, is_shifting_cont_order, is_change_vessel_order, is_create_booking_order, is_extension_date_order, is_change_terminal_custom_hold, is_cancel_send_cont_full_order, is_cancel_receive_cont_empty_order, response_time from sys_robot
     </sql>
 
     <select id="selectRobotList" parameterType="SysRobot" resultMap="RobotResult">
@@ -47,6 +50,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isChangeVesselOrder != null"> and is_change_vessel_order = #{isChangeVesselOrder}</if>
             <if test="isCreateBookingOrder != null"> and is_create_booking_order = #{isCreateBookingOrder}</if>
             <if test="isExtensionDateOrder != null"> and is_extension_date_order = #{isExtensionDateOrder}</if>
+            <if test="isChangeTerminalCustomHold != null"> and is_change_terminal_custom_hold = #{isChangeTerminalCustomHold}</if>
+            <if test="isCancelSendContFullOrder != null"> and is_cancel_send_cont_full_order = #{isCancelSendContFullOrder}</if>
+            <if test="isCancelReceiveContEmptyOrder != null"> and is_cancel_receive_cont_empty_order = #{isCancelReceiveContEmptyOrder}</if>
             <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
     </select>
@@ -78,6 +84,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isChangeVesselOrder != null"> and is_change_vessel_order = #{isChangeVesselOrder}</if>
             <if test="isCreateBookingOrder != null"> and is_create_booking_order = #{isCreateBookingOrder}</if>
             <if test="isExtensionDateOrder != null"> and is_extension_date_order = #{isExtensionDateOrder}</if>
+            <if test="isChangeTerminalCustomHold != null"> and is_change_terminal_custom_hold = #{isChangeTerminalCustomHold}</if>
+            <if test="isCancelSendContFullOrder != null"> and is_cancel_send_cont_full_order = #{isCancelSendContFullOrder}</if>
+            <if test="isCancelReceiveContEmptyOrder != null"> and is_cancel_receive_cont_empty_order = #{isCancelReceiveContEmptyOrder}</if>
             <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
         OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
@@ -105,6 +114,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isChangeVesselOrder != null">is_change_vessel_order,</if>
             <if test="isCreateBookingOrder != null">is_create_booking_order,</if>
             <if test="isExtensionDateOrder != null">is_extension_date_order,</if>
+            <if test="isChangeTerminalCustomHold != null">is_change_terminal_custom_hold,</if>
+            <if test="isCancelSendContFullOrder != null">is_cancel_send_cont_full_order,</if>
+            <if test="isCancelReceiveContEmptyOrder != null">is_cancel_receive_cont_empty_order,</if>
             response_time,
             create_time
          </trim>
@@ -125,6 +137,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isChangeVesselOrder != null">#{isChangeVesselOrder},</if>
             <if test="isCreateBookingOrder != null">#{isCreateBookingOrder},</if>
             <if test="isExtensionDateOrder != null">#{isExtensionDateOrder},</if>
+            <if test="isChangeTerminalCustomHold != null">#{isChangeTerminalCustomHold},</if>
+            <if test="isCancelSendContFullOrder != null">#{isCancelSendContFullOrder},</if>
+            <if test="isCancelReceiveContEmptyOrder != null">#{isCancelReceiveContEmptyOrder},</if>
             sysdate,
             sysdate
          </trim>
@@ -148,6 +163,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isChangeVesselOrder != null">is_change_vessel_order = #{isChangeVesselOrder},</if>
             <if test="isCreateBookingOrder != null">is_create_booking_order = #{isCreateBookingOrder},</if>
             <if test="isExtensionDateOrder != null">is_extension_date_order = #{isExtensionDateOrder},</if>
+            <if test="isChangeTerminalCustomHold != null">is_change_terminal_custom_hold = #{isChangeTerminalCustomHold},</if>
+            <if test="isCancelSendContFullOrder != null">is_cancel_send_cont_full_order = #{isCancelSendContFullOrder},</if>
+            <if test="isCancelReceiveContEmptyOrder != null">is_cancel_receive_cont_empty_order = #{isCancelReceiveContEmptyOrder},</if>
             <if test="responseTime != null"></if>
             response_time = sysdate,
             update_time = sysdate
@@ -195,6 +213,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isChangeVesselOrder != null">is_change_vessel_order = #{isChangeVesselOrder},</if>
             <if test="isCreateBookingOrder != null">is_create_booking_order = #{isCreateBookingOrder},</if>
             <if test="isExtensionDateOrder != null">is_extension_date_order = #{isExtensionDateOrder},</if>
+            <if test="isChangeTerminalCustomHold != null">is_change_terminal_custom_hold = #{isChangeTerminalCustomHold},</if>
+            <if test="isCancelSendContFullOrder != null">is_cancel_send_cont_full_order = #{isCancelSendContFullOrder},</if>
+            <if test="isCancelReceiveContEmptyOrder != null">is_cancel_receive_cont_empty_order = #{isCancelReceiveContEmptyOrder},</if>
             response_time = sysdate,
             update_time = sysdate
         </trim>
@@ -220,6 +241,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isChangeVesselOrder != null"> and is_change_vessel_order = #{isChangeVesselOrder}</if>
             <if test="isCreateBookingOrder != null"> and is_create_booking_order = #{isCreateBookingOrder}</if>
             <if test="isExtensionDateOrder != null"> and is_extension_date_order = #{isExtensionDateOrder}</if>
+            <if test="isChangeTerminalCustomHold != null">is_change_terminal_custom_hold = #{isChangeTerminalCustomHold},</if>
+            <if test="isCancelSendContFullOrder != null">is_cancel_send_cont_full_order = #{isCancelSendContFullOrder},</if>
+            <if test="isCancelReceiveContEmptyOrder != null">is_cancel_receive_cont_empty_order = #{isCancelReceiveContEmptyOrder},</if>
             <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
     </select>

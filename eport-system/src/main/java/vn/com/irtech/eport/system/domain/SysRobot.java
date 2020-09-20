@@ -56,6 +56,15 @@ public class SysRobot extends BaseEntity {
 	
 	@Excel(name = "Extension Date Order")
 	private Boolean isExtensionDateOrder;
+	
+	@Excel(name = "Change Terminal Custom hold")
+	private Boolean isChangeTerminalCustomHold;
+	
+	@Excel(name = "Cancel Send Cont Full Order")
+	private Boolean isCancelSendContFullOrder;
+	
+	@Excel(name = "Cancel Receive Cont Empty Order")
+	private Boolean isCancelReceiveContEmptyOrder;
 
 	/** ip address */
 	@Excel(name = "ip address")
@@ -172,6 +181,30 @@ public class SysRobot extends BaseEntity {
 		this.isExtensionDateOrder = isExtensionDateOrder;
 	}
 
+	public Boolean getIsChangeTerminalCustomHold() {
+		return isChangeTerminalCustomHold;
+	}
+
+	public void setIsChangeTerminalCustomHold(Boolean isChangeTerminalCustomHold) {
+		this.isChangeTerminalCustomHold = isChangeTerminalCustomHold;
+	}
+
+	public Boolean getIsCancelSendContFullOrder() {
+		return isCancelSendContFullOrder;
+	}
+
+	public void setIsCancelSendContFullOrder(Boolean isCancelSendContFullOrder) {
+		this.isCancelSendContFullOrder = isCancelSendContFullOrder;
+	}
+
+	public Boolean getIsCancelReceiveContEmptyOrder() {
+		return isCancelReceiveContEmptyOrder;
+	}
+
+	public void setIsCancelReceiveContEmptyOrder(Boolean isCancelReceiveContEmptyOrder) {
+		this.isCancelReceiveContEmptyOrder = isCancelReceiveContEmptyOrder;
+	}
+
 	public Date getResponseTime() {
 		return this.responseTime;
 	}
@@ -209,6 +242,9 @@ public class SysRobot extends BaseEntity {
 				.append("isCreateBookingOrder", getIsCreateBookingOrder())
 				.append("isGateInOrder", getIsGateInOrder())
 				.append("isExtensionDateOrder", getIsExtensionDateOrder())
+				.append("isChangeTerminalCustomHold", getIsChangeTerminalCustomHold())
+				.append("isCancelSendContFullOrder", getIsCancelSendContFullOrder())
+				.append("isCancelReceiveContEmptyOrder", getIsCancelReceiveContEmptyOrder())
 				.append("ipAddress", getIpAddress())
 				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
 				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("remark", getRemark())
