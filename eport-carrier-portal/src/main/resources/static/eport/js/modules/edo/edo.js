@@ -196,11 +196,10 @@ function formatToYDMHMS(date) {
 
 function formatAction(value, row, index) {
   let actions = [];
-  let disabled = "";
-  if (row.status == '3') {
-    disabled = "disabled";
+  // status == 3 cont has left port
+  if (row.status != '3') {
+    actions.push('<a class="btn btn-success btn-xs" id="viewUpdateCont" onclick="viewUpdateCont(\'' + row.id +'\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</a> ');
   }
-  actions.push('<a class="btn btn-success btn-xs" id="viewUpdateCont" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</a> ');
   actions.push('<a class="btn btn-info btn-xs" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
   return actions.join("");
 }
@@ -363,8 +362,8 @@ function delEdo() {
   }
   for (let i = 0; i < rows.length; i++) {
     let row = rows[i];
-    if (row.status == '3') {
-      $.modal.alertError("Quý khách đã chọn container đã GATE-IN ra khỏi cảng, vui lòng kiểm tra lại dữ liệu!");
+    if (row.status != '1') {
+      $.modal.alertError("Bạn không thể xóa container này <br> Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
       return;
     }
     ids.push(row.id);
