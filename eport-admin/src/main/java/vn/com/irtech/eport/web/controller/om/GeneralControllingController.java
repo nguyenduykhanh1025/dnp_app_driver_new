@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.web.controller.om;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,17 +12,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
+import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.web.controller.AdminBaseController;
 
 @Controller
@@ -42,8 +48,15 @@ public class GeneralControllingController extends AdminBaseController  {
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
 	
+	@Autowired
+	private IShipmentCommentService shipmentCommentService;
+	
 	@GetMapping()
-	public String getViewDocument(ModelMap mmap) {
+	public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
+		
+		if (sId != null) {
+			mmap.put("sId", sId);
+		}
 		
 		// Get list logistic group
 		LogisticGroup logisticGroup = new LogisticGroup();
@@ -92,5 +105,22 @@ public class GeneralControllingController extends AdminBaseController  {
 		return ajaxResult;
 	}
 	
-	
+	@PostMapping("/shipment/comment")
+	@ResponseBody
+	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
+		SysUser user = getUser();
+		shipmentComment.setCreateBy(user.getUserName());
+		shipmentComment.setUserId(user.getUserId());
+		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+		shipmentComment.setUserAlias(user.getDept().getDeptName());
+		shipmentComment.setUserName(user.getUserName());
+		shipmentComment.setCommentTime(new Date());
+		shipmentComment.setResolvedFlg(true);
+		shipmentCommentService.insertShipmentComment(shipmentComment);
+		
+		// Add id to make background grey (different from other comment)
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
+		return ajaxResult;
+	}
 }

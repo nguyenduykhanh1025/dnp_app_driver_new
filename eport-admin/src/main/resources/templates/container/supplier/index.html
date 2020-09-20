@@ -7,6 +7,7 @@
     <th:block th:include="include :: header('Document Gathering')" />
     <th:block th:include="include :: easyui-css" />
     <th:block th:include="include :: handsontable-css" />
+    <th:block th:include="include :: summernote-css" />
     <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
     <link th:href="@{/eport/css/container/supplier/index.css}" rel="stylesheet" />
 </head>
@@ -61,9 +62,40 @@
                           </thead>
                     </table>
                 </div>
-                <div data-options="region:'center'" style="width:100%;" >
-                    
-                    <div class="booking-info">
+                <div class="right-side" data-options="region:'center'" style="width:100%;" >
+                  <div class="easyui-layout" id="right-layout" data-options="fit:true" style="position: relative;">
+                    <div style="height: 50%;" data-options="region:'south', split:true">
+                      <span class="right-side__collapse"><i class="fa fa-chevron-down"></i></span>
+                      <div class="panel-header" style="width: 100%; background-color: #f3f7fa;">
+                        <div class="panel-title" style="color: #333;">Hỗ Trợ</div>
+                      </div>
+                      <div id="comment-div" style="padding: 10px 20px 10px 20px;">
+                        <div id="commentList"></div>
+                        <div style="text-align: right;">
+                          <div class="form-group row">
+                            <label class="col-md-1 col-sm-2 col-xs-3">Tiêu đề <span style="color: red;">*</span></label>
+                            <div class="col-md-11 col-sm-10 col-xs-9">
+                              <input class="easyui-textbox" id="topic" style="width: 100%;"/>
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-1 col-sm-2 col-xs-3">Nội dung <span style="color: red;">*</span></label>
+                            <div class="col-md-11 col-sm-10 col-xs-9">
+                              <textarea class="summernote"></textarea>
+                            </div>
+                          </div>
+                          <div>
+                            <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
+                              <span class="l-btn-left"><span class="l-btn-text">
+                              <button id="sendComment" onclick="addComment()" class="btn btn-sm btn-primary">
+                              <i class="fa fa-send text-primary"></i> Gửi</button></span></span>
+                            </a>  
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div data-options="region:'center'" id="right-side__main-table">
+                      <div class="booking-info">
                         <button style="display: inline-block;" class="button-custom" onclick="saveInput()">Xác Nhận Cấp container</button>
                         <div class="booking-info">
                         <div >
@@ -91,16 +123,20 @@
                       </div>
                     </div>
                     <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+                    </div>
+                  </div>
                 </div>
             </div>
         </div>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: summernote-js" />
     <th:block th:include="include :: handsontable-js" />
     <script type="text/javascript" th:inline="javascript">
-        $(".main-body").height($(document).height() - 10);
-        $(".easyui-layout").height($('.main-body').height() - 50);
+      $(".main-body").height($(document).height() - 10);
+      $(".easyui-layout").height($('.main-body').height() - 50);
+      var sId = /*[[${sId}]]*/;
     </script>
     <script th:src="@{/eport/js/modules/container/supplier/index.js}"></script>
 </body>
