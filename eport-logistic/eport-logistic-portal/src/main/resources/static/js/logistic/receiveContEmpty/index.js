@@ -288,9 +288,7 @@ function loadTable() {
                 success: function (data) {
                     success(data);
                     $("#dg").datagrid("hideColumn", "id");
-                    if (currentIndexRow != null) {
-                        $("#dg").datagrid("selectRow", currentIndexRow);
-                    }
+                    $("#dg").datagrid("selectRow", 0);
                 },
                 error: function () {
                     error.apply(this, arguments);
@@ -401,6 +399,12 @@ function getSelected(index, row) {
                 onChangeFlg = false;
                 currentIndexRow = index;
                 loadListComment();
+
+                if (sId != null) {
+                    $('#right-layout').layout('expand', 'south');
+                    shipmentSearch.id = null;
+                    sId = null;
+                }
             }
             return true;
         }

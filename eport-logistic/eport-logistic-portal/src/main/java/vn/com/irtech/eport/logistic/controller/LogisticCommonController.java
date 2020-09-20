@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.EportConstants;
@@ -35,6 +36,7 @@ import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.common.utils.bean.BeanUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -576,5 +578,44 @@ public class LogisticCommonController extends LogisticBaseController {
 		shipmentCommentParam.setSeenFlg(true);
 		shipmentCommentService.updateFlgShipmentComment(shipmentCommentParam);
 		return success();
+	}
+	
+	@GetMapping("/comment/amount")
+	@ResponseBody
+	public AjaxResult getNumberOfComment() {
+		ShipmentComment shipmentComment = new ShipmentComment();
+		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+		shipmentComment.setLogisticGroupId(getUser().getGroupId());
+		shipmentComment.setSeenFlg(false);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentCommentAmount", shipmentCommentService.selectCountCommentListUnSeen(shipmentComment));
+		return ajaxResult;
+	}
+	
+	@GetMapping("/comment/notifications")
+	@ResponseBody
+	public AjaxResult getListCommentShipmentForGeneral() {
+		startPage();
+		ShipmentComment shipmentComment = new ShipmentComment();
+		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+		shipmentComment.setLogisticGroupId(getUser().getGroupId());
+		List<ShipmentComment> shipmentComments = shipmentCommentService.selectShipmentCommentListForNotification(shipmentComment);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentComments", shipmentComments);
+		Long total = new PageInfo(shipmentComments).getTotal();
+		ajaxResult.put("total", total);
+		return ajaxResult;
+	}
+	
+	@GetMapping("/comment/notification/all")
+	@ResponseBody
+	public AjaxResult getFullListShipmentComment() {
+		ShipmentComment shipmentComment = new ShipmentComment();
+		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+		shipmentComment.setLogisticGroupId(getUser().getGroupId());
+		List<ShipmentComment> shipmentComments = shipmentCommentService.selectShipmentCommentListForNotification(shipmentComment);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentComments", shipmentComments);
+		return ajaxResult;
 	}
 }

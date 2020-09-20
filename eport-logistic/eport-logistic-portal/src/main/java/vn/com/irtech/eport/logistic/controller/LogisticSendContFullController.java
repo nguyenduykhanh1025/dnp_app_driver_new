@@ -79,7 +79,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
     private IShipmentCommentService shipmentCommentService;
 	
     @GetMapping()
-	public String sendContFull() {
+	public String sendContFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
+    	if (sId != null) {
+			mmap.put("sId", sId);
+		}
 		return PREFIX + "/index";
 	}
 

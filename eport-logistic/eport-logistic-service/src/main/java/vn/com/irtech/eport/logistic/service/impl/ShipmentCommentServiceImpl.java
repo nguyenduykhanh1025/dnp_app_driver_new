@@ -116,4 +116,26 @@ public class ShipmentCommentServiceImpl implements IShipmentCommentService
     public int updateFlgShipmentComment(ShipmentComment shipmentComment) {
     	return shipmentCommentMapper.updateFlgShipmentComment(shipmentComment);
     }
+    
+    /**
+     * Select count comment list un-seen
+     * 
+     * @param shipmentComment
+     * @return int
+     */
+    @Override
+    public int selectCountCommentListUnSeen(ShipmentComment shipmentComment) {
+    	return shipmentCommentMapper.selectCountCommentListUnSeen(shipmentComment);
+    }
+    
+    /**
+     * Get Shipment Comment List
+     * 
+     * @param shipmentComment Shipment Comment
+     * @return Shipment Comment List
+     */
+    @Override
+    public List<ShipmentComment> selectShipmentCommentListForNotification(ShipmentComment shipmentComment) {
+    	return shipmentCommentMapper.selectShipmentCommentListForNotification(shipmentComment);
+    }
 }
