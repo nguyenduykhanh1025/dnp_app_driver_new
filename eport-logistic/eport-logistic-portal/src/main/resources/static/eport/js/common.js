@@ -394,18 +394,20 @@ function summernoteOnImageUpload(files, editor) {
     });
 }
 $(document).ready(function () {
-  $('.summernote').summernote({
-    minHeight: 100,
-    maximumImageFileSize: 150*1024, // maxsize in Kilobyte
-    toolbar: false,
-    placeholder: 'Hãy nhập nội dung cần hỗ trợ',
-    callbacks: {
-	  onImageUpload: function(files) {
-		  summernoteOnImageUpload(files, $('.summernote'));
-	  },
-	  onImageUploadError: function() {
-	        $.modal.alertError('Hình quá lớn, chỉ cho phép hình dung lượng tối đa 150kb.');
-	  }
-    }
-  });
+  if($('.summernote')[0]) {
+	  $('.summernote').summernote({
+	    minHeight: 100,
+	    maximumImageFileSize: 150*1024, // maxsize in Kilobyte
+	    toolbar: false,
+	    placeholder: 'Hãy nhập nội dung cần hỗ trợ',
+	    callbacks: {
+		  onImageUpload: function(files) {
+			  summernoteOnImageUpload(files, $('.summernote'));
+		  },
+		  onImageUploadError: function() {
+		        $.modal.alertError('Hình quá lớn, chỉ cho phép hình dung lượng tối đa 150kb.');
+		  }
+	    }
+	  });
+  }
 });
