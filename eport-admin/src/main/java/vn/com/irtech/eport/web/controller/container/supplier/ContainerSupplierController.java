@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.config.ServerConfig;
@@ -24,11 +25,14 @@ import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
+import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysUser;
 
 @Controller
 @RequestMapping("/container/supplier")
@@ -48,8 +52,15 @@ public class ContainerSupplierController extends BaseController {
 	@Autowired
     private ServerConfig serverConfig;
 	
+	@Autowired
+	private IShipmentCommentService shipmentCommentService;
+	
 	@GetMapping()
-	public String getContSupplier() {
+	public String getContSupplier(@RequestParam(required = false) Long sId, ModelMap mmap) {
+		if (sId != null) {
+			mmap.put("sId", sId);
+		}
+		
 		return PREFIX + "/index";
     }
 	
@@ -152,6 +163,26 @@ public class ContainerSupplierController extends BaseController {
 		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 		int numberOfShipmentImage = shipmentImageService.countShipmentImagesByShipmentId(shipment.getId());
 		ajaxResult.put("numberOfShipmentImage", numberOfShipmentImage);
+		return ajaxResult;
+	}
+	
+	@PostMapping("/shipment/comment")
+	@ResponseBody
+	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
+		SysUser user = ShiroUtils.getSysUser();
+		shipmentComment.setCreateBy(user.getUserName());
+		shipmentComment.setUserId(user.getUserId());
+		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+		shipmentComment.setUserAlias(user.getDept().getDeptName());
+		shipmentComment.setUserName(user.getUserName());
+		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
+		shipmentComment.setCommentTime(new Date());
+		shipmentComment.setResolvedFlg(true);
+		shipmentCommentService.insertShipmentComment(shipmentComment);
+		
+		// Add id to make background grey (different from other comment)
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
 	}
 }
