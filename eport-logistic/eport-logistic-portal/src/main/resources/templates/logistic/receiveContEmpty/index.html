@@ -109,8 +109,14 @@
               </div>
             </div>
             <div data-options="region:'center'" id="right-side__main-table">
-              <div class="panel-header" style="width: 100%; background-color: #f3f7fa;">
-                <div class="panel-title" style="color: #333;">Thông tin lô</div>
+              <div class="panel-header" style="width: 100%; background-color: #f3f7fa; display: flex;">
+                <div class="panel-title" style="color: #333;">Thông tin lô  </div>
+                <div style="margin-left: 10px;">
+                    <a id="attachIcon" class="hidden" href="javascript:void(0)"
+                     th:attr="data-url=@{/logistic/receive-cont-empty/shipments/{shipmentId}/shipment-images}">
+                    <i class="fa fa-paperclip" style="font-size:2rem;" title="Xem hình ảnh booking đính kèm"></i>
+                  </a>
+                </div>
                 <div class="panel-tool" id="step-area">
                   <ul class="right-info">
                     <li><a id="registerStatus" class="disable">Khai báo</a></li>
@@ -150,12 +156,6 @@
                           <button id="deleteBtn" onclick="deleteShipmentDetail()" disabled class="btn btn-sm btn-danger"><i
                             class="fa fa-times text-primary"></i> Xóa
                           </button>
-                        </td>
-                        <td>
-                          <a id="attachIcon" class="hidden" href="javascript:void(0)"
-                             th:attr="data-url=@{/logistic/receive-cont-empty/shipments/{shipmentId}/shipment-images}">
-                            <i class="fa fa-paperclip" style="font-size:2rem;" title="Xem hình ảnh booking đính kèm"></i>
-                          </a>
                         </td>
                         <td width="100%"></td>
                         <td>
