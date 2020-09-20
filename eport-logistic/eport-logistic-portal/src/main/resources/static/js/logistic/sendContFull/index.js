@@ -133,7 +133,7 @@ $('#right-layout').layout({
                 data: JSON.stringify(req),
                 success: function (res) {
                     if (res.code == 0) {
-                        let commentTitle = '<span>Thảo Luận</span> <span class="round-notify-count">0</span>';
+                        let commentTitle = '<span>Hỗ Trợ</span>&nbsp;&nbsp;<span class="round-notify-count">0</span>';
                         $('#right-layout').layout('panel', 'expandSouth').panel('setTitle', commentTitle);
                     }
                 }
@@ -1792,7 +1792,7 @@ function loadListComment(shipmentCommentId) {
             if (data.code == 0) {
                 let html = '';
                 // set title for panel comment
-                let commentTitle = '<span>Thảo Luận<span>';
+                let commentTitle = '<span>Hỗ Trợ<span>';
                 let commentNumber = 0;
                 if (data.shipmentComments != null) {
                     data.shipmentComments.forEach(function (element, index) {
@@ -1811,18 +1811,13 @@ function loadListComment(shipmentCommentId) {
                         }
 
                         html += '<div ' + seenBackground + '>';
-
                         // User name comment and date time comment
                         html += '<div><i style="font-size: 15px; color: #015198;" class="fa fa-user-circle" aria-hidden="true"></i><span> <a>' + element.userName + ' (' + element.userAlias + ')</a>: <i>' + date + ' at ' + time + '</i></span></div>';
-
                         // Topic comment
-                        html += '<div><span>Tiêu đề: ' + element.topic + '</span></div>';
-
+                        html += '<div><span><strong>Yêu cầu:</strong> ' + element.topic + '</span></div>';
                         // Content comment
-                        html += '<div><span>Nội dung: ' + element.content + '</span></div>';
-
+                        html += '<div><span>' + element.content + '</span></div>';
                         html += '</div>';
-
                         html += '<hr>';
                     });
                 }
