@@ -154,9 +154,9 @@ public class CarrierEdoController extends CarrierBaseController {
 				if (edoService.selectFirstEdo(edoCheck) == null) {
 					return AjaxResult.error(
 							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
-				} else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("3")) {
+				} else if (!edoService.selectFirstEdo(edoCheck).getStatus().equals("0")) {
 					return AjaxResult.error(
-							"Bạn đã chọn container đã GATE-IN ra khỏi <br> cảng, vui lòng kiểm tra lại dữ liệu!");
+							"Bạn không thể xóa container này <br>Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
 				}
 			}
 			for (String id : idsList) {

@@ -193,11 +193,10 @@ function formatToYDMHMS(date) {
 
 function formatAction(value, row, index) {
   let actions = [];
-  let disabled = "";
-  if (row.status == '3') {
-    disabled = "disabled";
+  // status == 3 cont has left port
+  if (row.status != '3') {
+    actions.push('<a class="btn btn-success btn-xs" id="viewUpdateCont" onclick="viewUpdateCont(\'' + row.id +'\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</a> ');
   }
-  actions.push('<a class="btn btn-success btn-xs" id="viewUpdateCont" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</a> ');
   actions.push('<a class="btn btn-info btn-xs" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
   return actions.join("");
 }
