@@ -39,10 +39,10 @@
             <li class="dropdown user-menu">
               <a title="Đăng ký làm lệnh" class="menuItem"><i class="fa fa-calendar-check-o"></i>&nbsp; Đăng Ký Làm Lệnh</a>
               <ul class="dropdown-menu">
-                <li><a class="menuItem" th:href="@{/logistic/receive-cont-full}">Nhận Cont Hàng Từ Cảng</a></li>
-                <li><a class="menuItem" th:href="@{/logistic/send-cont-empty}">Giao Cont Rỗng Cho Cảng</a></li>
-                <li><a class="menuItem" th:href="@{/logistic/receive-cont-empty}">Nhận Cont Rỗng Từ Cảng</a></li>
-                <li><a class="menuItem" th:href="@{/logistic/send-cont-full}">Giao Cont Hàng Cho Cảng</a></li>
+                <li><a class="menuItem" id="receiveF" th:href="@{/logistic/receive-cont-full}">Nhận Cont Hàng Từ Cảng</a></li>
+                <li><a class="menuItem" id="sendE" th:href="@{/logistic/send-cont-empty}">Giao Cont Rỗng Cho Cảng</a></li>
+                <li><a class="menuItem" id="receiveE" th:href="@{/logistic/receive-cont-empty}">Nhận Cont Rỗng Từ Cảng</a></li>
+                <li><a class="menuItem" id="sendF" th:href="@{/logistic/send-cont-full}">Giao Cont Hàng Cho Cảng</a></li>
                 <div style="background-color: #3c8dbc; height: 1px;"></div>
                 <li><a class="menuItem" >Đóng Hàng Từ Cont Tại Cảng</a></li>
                 <li><a class="menuItem" >Rút Hàng Từ Cont Tại Cảng</a></li>
@@ -96,6 +96,58 @@
               <a title="Hướng dẫn sử dụng portal" th:href="@{/page/tutorial}" class="menuItem"><i
                   class="fa fa-question-circle"></i>&nbsp;Hướng dẫn</a>
             </li> -->
+            <li id="notification">
+              <a onclick="openListComment()">
+                <i class="fa fa-bell notification-icon"></i>
+                <span class="badge">0</span>
+              </a>
+              <div class="notification-list" id="notification-list">
+                <div class="view-all">
+                  <h3>Thông Báo</h3>
+                  <a onclick="viewAll()">Xem tất cả</a>
+                </div>
+                <div class="notifications">
+                  <div class="loading">
+                    <div class="loader"></div>
+                    <div>Đang xử lý</div>
+                  </div>
+                  <div class="empty-div">Không có thông báo</div>
+                  <!-- <div class="message-box bg-unseen">
+                    <div>
+                      <i class="fa fa-bell bell-icon"></i>
+                    </div>
+                    <div class="message-body">
+                      <div class="message-title">
+                        titlsdfsdsdffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                      </div>
+                      <div class="message-content">
+                        titlsdfsdsdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffftitlsdfsdsdffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                      </div>
+                      <div class="message-create-date">
+                        19/03/2020
+                      </div>
+                    </div>
+                  </div>
+                  <div class="message-box">
+                    <div>
+                      <i class="fa fa-bell-o bell-icon"></i>
+                    </div>
+                    <div class="message-body">
+                      <div class="message-title">
+                        titlsdfsdsdffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                      </div>
+                      <div class="message-content">
+                        titlsdfsdsdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffftitlsdfsdsdffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                      </div>
+                      <div class="message-create-date">
+                        19/03/2020
+                      </div>
+                    </div>
+                  </div> -->
+                </div>
+                <div class="see-more"><a onclick="loadMore()">Xem thêm...</a></div>
+              </div>
+            </li>
             <li class="dropdown user-menu">
               <a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
                 <span class="hidden-xs">[[${#strings.defaultString(groupName, '-')}]]</span
@@ -183,6 +235,7 @@
       var skin = storage.get("skin");
       var mode = "history";
       var historyPath = storage.get("historyPath");
+      var currentPage = 1, pageSize = 10, notiCount = 0;
 
       if($.common.isNotEmpty(skin)){
       	$("body").addClass(skin.split('|')[0]);
@@ -226,6 +279,147 @@
       	    }
       	}
       });
+
+      function openListComment() {
+        if ($('.notification-list').is(':visible')) {
+          $('.notification-list').hide();
+        } else {
+          loadNotification();
+        }
+      }
+
+      window.addEventListener('click', function(e){   
+        if (!document.getElementById('notification-list').contains(e.target) && !document.getElementById('notification').contains(e.target)) {
+          $('.notification-list').hide();
+        }
+      });
+
+      $(window).blur( function(e){
+        $('.notification-list').hide();
+      });
+
+      function loadNotification() {
+        currentPage = 1;
+        $('.notification-list').show();
+        $('.loading').css('top', ($('.notifications').height()/2) + 10);
+        $('.loading').show();
+        $.ajax({
+        url: ctx + "logistic/comment/notifications",
+        method: "GET",
+        data: {
+          pageNum: currentPage,
+          pageSize: pageSize
+        },
+        success: function (data) {
+            if (data.code == 0) {
+              if (data.shipmentComments != null && data.shipmentComments.length > 0) {
+                let html = '<div class="loading"><div class="loader"></div><div>Đang xử lý</div></div>' + getNotificationIntoView(data.shipmentComments);
+                $('.notifications').html(html);
+              }
+            }
+            $('.loading').hide();
+          }
+        });
+      }
+
+      function loadMore() {
+        currentPage++;
+        $('.loading').css('top', ($('.notifications').height()/2) + 10);
+        $('.loading').show();
+        $.ajax({
+        url: ctx + "logistic/comment/notifications",
+        method: "GET",
+        data: {
+          pageNum: currentPage,
+          pageSize: pageSize
+        },
+        success: function (data) {
+            if (data.code == 0) {
+              if (data.shipmentComments != null && data.shipmentComments.length > 0) {
+                let html = getNotificationIntoView(data.shipmentComments);
+                $('.notifications').append(html);
+              }
+            }
+            $('.loading').hide();
+          }
+        });
+      }
+
+      function getNotificationIntoView (shipmentComments) {
+        let html = '';
+        shipmentComments.forEach(function (element, index) {
+          if (element.seenFlg) {
+            html += '<div class="message-box" onclick="goToMessageDetail(' + element.serviceType + ',' + element.shipmentId + ')">';
+            html += '<div><i class="fa fa-bell-o bell-icon"></i></div>';
+          } else {
+            html += '<div class="message-box bg-unseen" onclick="goToMessageDetail(' + element.serviceType + ',' + element.shipmentId + ')">';
+            html += '<div><i class="fa fa-bell bell-icon"></i></div>';
+          }
+          html += '<div class="message-body"><div class="message-title">';
+          html += element.topic + '</div><div class="message-content">';
+          html += element.content + '</div><div class="message-create-date">';
+          let createTime = element.createTime;
+          let date = '';
+          let time = '';
+          if (createTime) {
+            date = createTime.substring(8, 10) + "/" + createTime.substring(5, 7) + "/" + createTime.substring(0, 4);
+            time = createTime.substring(10, 19);
+          }
+          html += date + ' at ' + time;
+          html += '</div></div></div>';
+        });
+        return html;
+      }
+
+      function goToMessageDetail(serviceType, shipmentId) {
+        $('.notification-list').hide();
+        notiCount--;
+        $('.badge').text(notiCount);
+        let url = '';
+        switch (serviceType) {
+          case 1:
+            url = ctx + 'logistic/receive-cont-full';
+            $('#receiveF').attr("href", url + "?sId=" + shipmentId);
+            $('#receiveF').trigger("click");
+            $('#receiveF').attr("href", url);
+            break;
+          case 2:
+            url = ctx + 'logistic/send-cont-empty';
+            $('#sendF').attr("href", url + "?sId=" + shipmentId);
+            $('#sendF').trigger("click");
+            $('#sendF').attr("href", url);
+            break;
+          case 3:
+            url = ctx + 'logistic/receive-cont-empty';
+            $('#receiveE').attr("href", url + "?sId=" + shipmentId);
+            $('#receiveE').trigger("click");
+            $('#receiveE').attr("href", url);
+            break;
+          case 4:
+            url = ctx + 'logistic/send-cont-full';
+            $('#sendF').attr("href", url + "?sId=" + shipmentId);
+            $('#sendF').trigger("click");
+            $('#sendF').attr("href", url);
+            break;
+        }
+      }
+
+      $(function() {
+        $.ajax({
+        url: ctx + "logistic/comment/amount",
+        method: "GET",
+        success: function (data) {
+            if (data.code == 0) {
+              notiCount = data.shipmentCommentAmount;
+              $('.badge').text(notiCount);
+            }
+          }
+        });
+      });
+
+      function viewAll() {
+        $('.loading').hide();
+      }
     </script>
   </body>
 </html>

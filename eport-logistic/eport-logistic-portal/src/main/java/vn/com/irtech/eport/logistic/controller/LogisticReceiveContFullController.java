@@ -107,7 +107,11 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	private DictService dictService;
 	
 	@GetMapping()
-	public String receiveContFull(ModelMap mmap) {
+	public String receiveContFull(@RequestParam("sId") Long shipmentId, ModelMap mmap) {
+		if (shipmentId != null) {
+			Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+			mmap.put("blNo", shipment.getBlNo());
+		}
 		List<String> emptyDepots = new ArrayList<>();
 		String danangPortName = configService.selectConfigByKey("danang.port.name");
 		if (danangPortName != null) {

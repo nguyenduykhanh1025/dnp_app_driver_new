@@ -35,6 +35,7 @@ import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.common.utils.bean.BeanUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -576,5 +577,42 @@ public class LogisticCommonController extends LogisticBaseController {
 		shipmentCommentParam.setSeenFlg(true);
 		shipmentCommentService.updateFlgShipmentComment(shipmentCommentParam);
 		return success();
+	}
+	
+	@GetMapping("/comment/amount")
+	@ResponseBody
+	public AjaxResult getNumberOfComment() {
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentCommentAmount", 3);
+		return ajaxResult;
+	}
+	
+	@GetMapping("/comment/notifications")
+	@ResponseBody
+	public AjaxResult getListCommentShipmentForGeneral() {
+		startPage();
+		List<ShipmentComment> shipmentComments = new ArrayList<>();
+		ShipmentComment shipmentComment = new ShipmentComment();
+		shipmentComment.setShipmentId(1494L);
+		shipmentComment.setServiceType(1);
+		shipmentComment.setTopic("topic test 123");
+		shipmentComment.setContent("contentTest 123123123 dai qua duojc khong nhung can xuong dong moi bt dc");
+		shipmentComment.setCreateTime(new Date());
+		shipmentComment.setSeenFlg(true);
+		shipmentComments.add(shipmentComment);
+		ShipmentComment shipmentComment2 = new ShipmentComment();
+		BeanUtils.copyBeanProp(shipmentComment2, shipmentComment);
+		shipmentComment2.setSeenFlg(false);
+		shipmentComments.add(shipmentComment2);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentComments", shipmentComments);
+		return ajaxResult;
+	}
+	
+	@GetMapping("/comment/notification/all")
+	@ResponseBody
+	public AjaxResult getFullListShipmentComment() {
+		AjaxResult ajaxResult = AjaxResult.success();
+		return ajaxResult;
 	}
 }

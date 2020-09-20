@@ -142,7 +142,6 @@ $('#main-layout').layout({
 });
 
 
-
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
 
@@ -156,13 +155,6 @@ $(document).ready(function () {
     onSelect: function (option) {
       shipmentSearch.status = option.value;
       loadTable();
-    }
-  });
-
-  $("#content").textbox('textbox').bind('keydown', function(e) {
-    // enter key
-    if (e.keyCode == 13) {
-      addComment();
     }
   });
 
