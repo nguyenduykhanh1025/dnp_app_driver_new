@@ -125,8 +125,8 @@ public class DocumentGatheringController extends AdminBaseController  {
 	@PostMapping("/confirmation")
 	@ResponseBody
 	@Transactional
-	public AjaxResult submitConfirmation(String doStatus, String content, String shipmentDetailIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+	public AjaxResult submitConfirmation(String doStatus, String content, String shipmentDetailIds, Long logisticGroupId) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, logisticGroupId);
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			shipmentDetail.setDoStatus(doStatus);
 			shipmentDetail.setUpdateBy(getUser().getUserName());
@@ -143,6 +143,7 @@ public class DocumentGatheringController extends AdminBaseController  {
 			shipmentComment.setCommentTime(new Date());
 			shipmentComment.setContent(content);
 			shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_OM_DOCUMENT);
+			shipmentComment.setServiceType(shipmentDetail.getServiceType());
 			shipmentCommentService.insertShipmentComment(shipmentComment);
 		}
  		return success("Thu chứng từ gốc thành công");

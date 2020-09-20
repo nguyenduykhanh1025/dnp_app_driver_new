@@ -735,7 +735,8 @@ function confirm(index, layero) {
     data: {
       doStatus: $(childLayer).find('input[name="acceptFlg"]:checked').val(),
       content: $(childLayer).find("#message").val(),
-      shipmentDetailIds: shipmentDetailIds 
+      shipmentDetailIds: shipmentDetailIds,
+      logisticGroupId: shipmentSelected.logisticGroupId
     },
     success: function (res) {
       layer.close(index);
