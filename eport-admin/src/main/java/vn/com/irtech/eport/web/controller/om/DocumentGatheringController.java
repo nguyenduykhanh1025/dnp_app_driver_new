@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.web.controller.om;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -71,6 +72,9 @@ public class DocumentGatheringController extends AdminBaseController  {
 	    
 	    // Get list vslNm : vslNmae : voyNo
 	    List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlanWithoutOpe();
+	    if(berthplanList == null) {
+	    	berthplanList = new ArrayList<>();
+	    }
 	    ShipmentDetail shipmentDetail = new ShipmentDetail();
 	    shipmentDetail.setVslAndVoy("Chọn tàu chuyến");
 	    berthplanList.add(0, shipmentDetail);

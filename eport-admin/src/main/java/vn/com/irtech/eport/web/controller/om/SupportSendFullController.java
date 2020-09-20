@@ -23,7 +23,6 @@ import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
-import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -81,8 +80,8 @@ public class SupportSendFullController extends OmBaseController{
 	    // List<String> logisticsGroups = processOrderService.selectProcessOrderOnlyLogisticName(processOrder);
 		// mmap.put("logisticsGroups", logisticsGroups);
 		LogisticGroup logisticGroup = new LogisticGroup();
-	    logisticGroup.setGroupName("Chọn đơn vị Logistics");
-	    logisticGroup.setId(0L);
+	    logisticGroup.setGroupName("Tất cả khách hàng");
+	    //logisticGroup.setId(null);
 	    LogisticGroup logisticGroupParam = new LogisticGroup();
 	    logisticGroupParam.setDelFlag("0");
 	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);

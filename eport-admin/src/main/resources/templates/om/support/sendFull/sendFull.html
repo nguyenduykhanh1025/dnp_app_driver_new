@@ -23,14 +23,21 @@
           <div class="justify-content-around align-items-center" id="ff">
            
             <div class="d-inline">
-                <input class="easyui-textbox" id="bookingNo"   data-options="prompt:'Booking No'"/>
+                <input class="easyui-textbox" id="bookingNo" data-options="prompt:'Booking No'"/>
             </div>
             <div class="d-inline">
                 <select class="easyui-combobox" id="logistic">
                     <option th:each="logistic, iterator : ${logisticsGroups}" th:value=${logistic.id} th:text=${logistic.groupName}>
                     </option>
                 </select>
-              </div>
+            </div>
+            <div class="d-inline">
+                <select class="easyui-combobox" id="status" panelHeight="auto" width="120px">
+                    <option value="">Tất cả</option>
+                    <option value="1">Bình thường</option>
+                    <option value="E">Lỗi</option>
+                </select>
+            </div>
             <div class="d-inline">
               <button class="btn btn-success" onclick="search()">Tìm kiếm</button>
             </div>
