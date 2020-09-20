@@ -1,82 +1,80 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <th:block th:include="include :: header('Container Report')" />
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/css/logistic/report/report.css}" rel="stylesheet" />
     <link th:href="@{/eport/css/common/style.css?v=1406}" rel="stylesheet" />
-</head>
-<body class="grey-background">
+  </head>
+  <body class="grey-background">
     <div class="main-body">
-        <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
-        <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
-        <div class="main-body__search-wrapper mb-2">
-          <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
-            <div class="flex__left w-20">
-              <h3 class="mt-10">Báo Cáo Nâng/Hạ Container</h3>
-            </div>
-            <div class="flex__right w-80 justify-content-start align-items-center d-flex">
-              <div id="ff">
-                <div class="d-inline">
-                  <input class="easyui-textbox" name="name" id="searchAllInput" data-options="prompt: 'Tìm kiếm' " />
-                </div>
-                <div class="d-inline">
-                    <select class="easyui-combobox" onchange="changeServiceType()" name="seviceTypeSelect" id="seviceTypeSelect">
-                        <option value='' selected disabled>Chọn hình thức</option>
-                        <option value=''>Tất cả</option>
-                        <option value='1'>Nhận container hàng</option>
-                        <option value='2'>Giao container rỗng</option>
-                        <option value='3'>Nhận container rỗng</option>
-                        <option value='4'>Giao container hàng</option>
-                    </select>
-                  </div>
-                <div class="d-inline">
-                    <input class="easyui-datebox from-date" id="fromDate" onchange="changeFromDate()" style="width: 150px" data-options="prompt:'Vào cổng từ ngày', formatter:dateformatter, parser:dateparser" />
-                  </div>
-                  <div class="d-inline">
-                    <input class="easyui-datebox to-date" id="toDate" onchange="changeToDate()" style="width: 150px" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser" />
-                  </div>
-                <div class="d-inline">
-                  <button class="btn btn-success btn-customs" onclick="loadTable()" id="searchBtn">Tìm kiếm</button>
-                </div>
-                <div class="d-inline">
-                  <button class="btn btn-success btn-outline btn-customs" onclick="refresh()" id="resethBtn">Làm mới</button>
-                </div>
+      <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+      <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+      <div class="main-body__search-wrapper mb-2">
+        <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+          <div class="flex__left w-20">
+            <h3 class="mt-10">Báo Cáo Nâng/Hạ Container</h3>
+          </div>
+          <div class="flex__right w-80 justify-content-start align-items-center d-flex">
+            <div id="ff">
+              <div class="d-inline">
+                <input class="easyui-textbox" name="name" id="searchAllInput" data-options="prompt: 'Tìm kiếm' " />
+              </div>
+              <div class="d-inline">
+                <select class="easyui-combobox" onchange="changeServiceType()" name="seviceTypeSelect" id="seviceTypeSelect">
+                  <option value="" selected disabled>Chọn hình thức</option>
+                  <option value="">Tất cả</option>
+                  <option value="1">Nhận container hàng</option>
+                  <option value="2">Giao container rỗng</option>
+                  <option value="3">Nhận container rỗng</option>
+                  <option value="4">Giao container hàng</option>
+                </select>
+              </div>
+              <div class="d-inline">
+                <input class="easyui-datebox from-date" id="fromDate" onchange="changeFromDate()" style="width: 150px" data-options="prompt:'Vào cổng từ ngày', formatter:dateformatter, parser:dateparser" />
+              </div>
+              <div class="d-inline">
+                <input class="easyui-datebox to-date" id="toDate" onchange="changeToDate()" style="width: 150px" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser" />
+              </div>
+              <div class="d-inline">
+                <button class="btn btn-success btn-customs" onclick="loadTable()" id="searchBtn">Tìm kiếm</button>
+              </div>
+              <div class="d-inline">
+                <button class="btn btn-success btn-outline btn-customs" onclick="refresh()" id="resethBtn">Làm mới</button>
               </div>
             </div>
           </div>
         </div>
-        <div class="main-body__table-wrapper">
-            <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
-                <thead>
-                    <tr>
-                        <th data-options="field:'blBookingNo', halign:'center', resizable:true, formatter: formatBlBooking, fixed:true" width="200">Bill/Booking No.</th>
-                        <th data-options="field:'containerNo', align:'center', halign:'center', resizable:true, fixed:true" sortable="true" width="110">Container No.</th>
-                        <th data-options="field:'sztp', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatSztp" width="100">Kích Thước</th>
-                        <th data-options="field:'serviceType', halign:'center', resizable:true, fixed:true, formatter: formatServiceType" swidth="120">Hình Thức</th>
-                        <th data-options="field:'vslNm', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatVslNm" width="120">Tàu</th>
-                        <th data-options="field:'voyNo', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatVoyNo" width="100">Chuyến</th>
-                        <th data-options="field:'gateinDate', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate" sortable="true" width="140">Ngày Vào Cổng</th>
-                        <th data-options="field:'truckNo', align:'center', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Biển Số Đầu Kéo</th>
-                        <th data-options="field:'chassisNo', align:'center', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Biển Số Rơ Mooc</th>
-                        <th data-options="field:'registerTime', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatRegisterTime" width="200">Thời gian đăng ký làm lệnh</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
       </div>
+      <div class="main-body__table-wrapper">
+        <table id="dg" style="width: 100%" pageList="[20,50,100,150,200]">
+          <thead>
+            <tr>
+              <th data-options="field:'blBookingNo', halign:'center', resizable:true, formatter: formatBlBooking, fixed:true" width="200">Bill/Booking No.</th>
+              <th data-options="field:'containerNo', align:'center', halign:'center', resizable:true, fixed:true" sortable="true" width="110">Container No.</th>
+              <th data-options="field:'sztp', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatSztp" width="100">Kích Thước</th>
+              <th data-options="field:'serviceType', halign:'center', resizable:true, fixed:true, formatter: formatServiceType" swidth="120">Hình Thức</th>
+              <th data-options="field:'vslNm', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatVslNm" width="120">Tàu</th>
+              <th data-options="field:'voyNo', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatVoyNo" width="100">Chuyến</th>
+              <th data-options="field:'gateinDate', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate" sortable="true" width="140">Ngày Vào Cổng</th>
+              <th data-options="field:'truckNo', align:'center', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Biển Số Đầu Kéo</th>
+              <th data-options="field:'chassisNo', align:'center', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Biển Số Rơ Mooc</th>
+              <th data-options="field:'registerTime', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatRegisterTime" width="200">Thời gian đăng ký làm lệnh</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
     <script type="text/javascript" th:inline="javascript">
-        $(".main-body").height($(document).height() - 10);
-        $(".easyui-layout").height($(".main-body").height() - 40);
-      </script>
+      $(".main-body").height($(document).height() - 10);
+      $(".easyui-layout").height($(".main-body").height() - 40);
+    </script>
     <script th:src="@{/js/logistic/report/container/layout.js}"></script>
     <script th:src="@{/js/logistic/report/container/index.js?v=1}"></script>
-</body>
-
+  </body>
 </html>
