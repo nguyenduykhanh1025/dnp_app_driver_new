@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
-<head>
+  <head>
     <th:block th:include="include :: header('Quản lý xe')" />
     <th:block th:include="include :: datetimepicker-css" />
     <th:block th:include="include :: easyui-css" />
-</head>
-<body class="gray-bg">
-     <!-- <div class="container-div">
+    <link th:href="@{/eport/css/common/style.css?v=0916}" rel="stylesheet" />
+  </head>
+  <body class="grey-background">
+    <!-- <div class="container-div">
         <div class="row">
             <div class="col-sm-12 search-collapse">
                 <form id="formId">
@@ -44,79 +45,57 @@
             </div>
         </div>
     </div> -->
-    <div id="wrapper">
-        <div class="row">
-          <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom:5px">
-            <!-- Table toolbar -->
-            <div class="col-sm-12 fixed-table-toolbar">
-              <div class="bs-bars pull-left" style="margin-bottom: 5px;margin-top:0px">
-                <div class="btn-group-sm" id="toolbar" role="group">
-                  <a class="btn btn-success" onclick="addTruck()">
-                    <i class="fa fa-plus"></i> Thêm mới
-                  </a>
-                </div>
+    <div class="main-body">
+      <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+      <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+      <div class="main-body__search-wrapper mb-2">
+        <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+          <div class="flex__left w-20">
+            <h3 class="mt-10">Quản Lý Xe</h3>
+          </div>
+          <div class="flex__right w-80 justify-content-start align-items-center d-flex">
+            <div id="ff">
+              <div class="d-inline">
+                <input class="easyui-textbox" name="name" id="plateNumber" data-options="prompt: 'Biển số xe' " />
               </div>
-              <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px;margin-top:0px">
-    
-                <div class="select-list">
-                  <ul>
-                    <li>
-                        <input type="text" id= "plateNumber" placeholder="Biển số xe" autocomplete=off/>
-                    </li>
-                    <li>
-                      <a class="btn btn-primary btn-rounded btn-sm" onclick="loadTable()" id="searchBtn"><i
-                          class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
-                    </li>
-                    <li>
-                      <a class="btn btn-info btn-rounded btn-sm" onclick="reset()" id="resethBtn"><i
-                          class="glyphicon glyphicon-refresh"></i> </a>
-                    </li>
-                  </ul>
-                </div>
+              <div class="d-inline">
+                <button class="btn btn-success btn-customs" onclick="loadTable()" id="searchBtn">Tìm kiếm</button>
               </div>
-            </div>
-            <!-- /table toolbar -->
-            <div class="col-sm-12 table-container">
-              <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
-                <thead>
-                  <tr>
-                    <!-- <th data-options="field:'id',align:'right',halign:'center'" width ="5%">
-                      ID
-                    </th> -->
-                    <th data-options="field:'plateNumber',align:'center', halign:'center'" sortable="true" width="15%">
-                      Biển số xe
-                    </th>
-                    <th data-options="field:'type',align:'center', halign:'center',formatter: formatType" sortable="true" width="10%">
-                      Loại xe
-                    </th>
-                    <th data-options="field:'gatepass',align:'center', halign:'center'" sortable="true" width="10%">
-                     Gate Pass
-                    </th>
-                    <th data-options="field:'selfWgt',align:'center', halign:'center'" sortable="true" width="7%">
-                      Tự trọng
-                    </th>
-                    <th data-options="field:'wgt',align:'center', halign:'center'" sortable="true" width="10%">
-                      Tải trọng cho phép
-                    </th>
-                    <th data-options="field:'registryExpiryDate', halign:'center',align:'center', formatter: formatDate" sortable="true" width="15%">
-                      Hạn đăng kiểm
-                    </th>
-                    <th data-options="field:'createTime', halign:'center',align:'center', formatter: formatDate" sortable="true" width="20%">
-                      Ngày tạo
-                    </th>
-                    <th data-options="field:'value' ,align:'center',formatter: formatAction" width="13%" >
-                      Hành động
-                    </th> 
-                  </tr>
-                </thead>
-              </table>
+              <div class="d-inline">
+                <button class="btn btn-success btn-outline btn-customs" onclick="refresh()" id="resethBtn">Làm mới</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <div class="main-body__table-wrapper">
+        <table id="dg" style="width: 100%" pageList="[20,50,100,150,200]">
+          <thead>
+            <tr>
+              <!-- <th data-options="field:'id',align:'right',halign:'center'" width ="5%">
+                ID
+              </th> -->
+              <th data-options="field:'plateNumber',align:'center', halign:'center'" sortable="true" width="15%">Biển số xe</th>
+              <th data-options="field:'type',align:'center', halign:'center',formatter: formatType" sortable="true" width="10%">Loại xe</th>
+              <th data-options="field:'gatepass',align:'center', halign:'center'" sortable="true" width="10%">Gate Pass</th>
+              <th data-options="field:'selfWgt',align:'center', halign:'center'" sortable="true" width="7%">Tự trọng</th>
+              <th data-options="field:'wgt',align:'center', halign:'center'" sortable="true" width="10%">Tải trọng cho phép</th>
+              <th data-options="field:'registryExpiryDate', halign:'center',align:'center', formatter: formatDate" sortable="true" width="15%">Hạn đăng kiểm</th>
+              <th data-options="field:'createTime', halign:'center',align:'center', formatter: formatDate" sortable="true" width="20%">Ngày tạo</th>
+              <th data-options="field:'value' ,align:'center',formatter: formatAction" width="13%">Hành động</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: easyui-js" />
-    <script th:src="@{/js/logistic/logisticTruck/logisticTruck.js}"></script>
-</body>
+    <script type="text/javascript" th:inline="javascript">
+      $(".main-body").height($(document).height() - 10);
+      $(".easyui-layout").height($(".main-body").height() - 40);
+    </script>
+    <script th:src="@{/js/logistic/logisticTruck/layout.js}"></script>
+    <script th:src="@{/js/logistic/logisticTruck/logisticTruck.js?v=1}"></script>
+  </body>
 </html>

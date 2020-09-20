@@ -3,7 +3,6 @@ var toolbar = [
   {
     text: '<a href="#" class="btn btn-sm btn-default" onclick="addTransport()"><i class="fa fa-plus text-success"></i> Thêm</a>',
     handler: function () {
-      alert("them");
     },
   },
 ];
