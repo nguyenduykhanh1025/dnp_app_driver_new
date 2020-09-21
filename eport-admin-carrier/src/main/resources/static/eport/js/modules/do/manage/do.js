@@ -1,5 +1,4 @@
 const PREFIX = ctx + "do/manage";
-const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var bill;
 var edo = new Object();
 
@@ -7,25 +6,6 @@ $(document).ready(function () {
 
   loadTable();
   loadTableByContainer();
-  $(".main-body").layout();
-
-  $(".collapse").click(function () {
-    $(".main-body__search-wrapper").height(15);
-    $(".main-body__search-wrapper--container").hide();
-    $(this).hide();
-    $(".uncollapse").show();
-  });
-
-  $(".uncollapse").click(function () {
-    $(".main-body__search-wrapper").height(SEARCH_HEIGHT + 20);
-    $(".main-body__search-wrapper--container").show();
-    $(this).hide();
-    $(".collapse").show();
-  });
-
-  $(".left-side__collapse").click(function () {
-    $('#main-layout').layout('collapse', 'west');
-  });
 
   $('#searchAll').keyup(function (event) {
     if (event.keyCode == 13) {

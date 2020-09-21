@@ -7,7 +7,7 @@ $(".collapse").click(function () {
   $(".main-body__search-wrapper--container").hide();
   $(this).hide();
   $(".uncollapse").show();
-  currentHeight = $(document).innerHeight() - 45;
+  currentHeight = $(document).innerHeight() - 30;
   $("#dg").datagrid("resize", {
     height: currentHeight,
   });
@@ -21,12 +21,12 @@ $(".uncollapse").click(function () {
   $(".main-body__search-wrapper--container").show();
   $(this).hide();
   $(".collapse").show();
-  currentHeight = $(document).innerHeight() - 110;
+  currentHeight = $(document).innerHeight() - 90;
   $("#dg").datagrid("resize", {
     height: currentHeight,
   });
   $("#container-grid").datagrid({ 
-    height: currentHeight - 10,
+    height: currentHeight,
   });
 });
 

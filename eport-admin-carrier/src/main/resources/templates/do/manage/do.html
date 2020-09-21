@@ -12,9 +12,9 @@
 
 <body class="grey-background">
   <div class="main-body">
+    <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+    <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
     <div class="main-body__search-wrapper mb-2">
-      <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
-      <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
       <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
         <div class="flex__left w-20">
           <h3 class="mt-10">Quản Lý DO</h3>
@@ -43,10 +43,10 @@
                 <input id="toDate" class="easyui-datebox" style="width: 100px;" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
             </div>
             <div class="d-inline">
-              <button class="btn btn-success" onclick="searchDo()">Tìm kiếm</button>
+              <button class="btn btn-success btn-customs" onclick="searchDo()">Tìm kiếm</button>
             </div>
             <div class="d-inline">
-              <button class="btn btn-success btn-outline" onclick="clearInput()">Làm mới</button>
+              <button class="btn btn-success btn-outline btn-customs" onclick="clearInput()">Làm mới</button>
             </div>
           </div>
         </div>
@@ -80,9 +80,23 @@
               </thead>  
           </table>
         </div>
-        <div data-options="region:'center'" style="width:100%;">
-          <div>
-            <button class="btn btn-sm btn-success" onclick="generatePDF()"><i class="fa fa-print"></i> In DO</button>
+        <div class="right-side" data-options="region:'center'" style="width:100%;">
+          <div class="right-side__toolbar">
+            <div class="datagrid-toolbar">
+              <table cellspacing="0" cellpadding="0">
+                <tr>
+                  <td>
+                    <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                      <span class="l-btn-left"
+                        ><span class="l-btn-text">
+                          <button onclick="generatePDF()" class="btn btn-sm btn-success"><i class="fa fa-print text-primary"></i> In DO</button></span
+                        ></span
+                      >
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </div>
           </div>
           <table id="container-grid" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead data-options="frozen:true">
@@ -157,8 +171,9 @@
   <th:block th:include="include :: handsontable-js" />
   <script type="text/javascript" th:inline="javascript">
     $(".main-body").height($(document).height() - 10);
-    $(".easyui-layout").height($('.main-body').height() - 50);
+    $(".easyui-layout").height($('.main-body').height());
   </script>
    <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
+   <script th:src="@{/eport/js/modules/do/manage/layout.js}"></script>
    <script th:src="@{/eport/js/modules/do/manage/do.js}"></script>
 </body>
