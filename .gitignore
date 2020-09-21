@@ -51,3 +51,8 @@ upload
 !*/build/*.xml
 /eport-admin/.vscode
 
+
+
+#Mac file
+.DS_Store
+
