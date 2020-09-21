@@ -96,22 +96,26 @@
                 <div class="right-side__toolbar">
                   <div class="datagrid-toolbar">
                     <table cellspacing="0" cellpadding="0">
-                        <tr>
-                          <td>
-                            <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
-                              <span class="l-btn-left"><span class="l-btn-text">
-                              <button id="saveShipmentDetailBtn" onclick="executedSuccess()" class="btn btn-sm btn-success">
-                              <i class="fa fa-check text-primary"></i> Xác nhận làm lệnh</button></span></span>
-                            </a>
-                          </td>
-                          <td>
-                            <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
-                              <span class="l-btn-left"><span class="l-btn-text">
-                              <button id="customBtn" onclick="resetProcessStatus()" disabled class="btn btn-sm btn-success">
-                              <i class="fa fa-refresh text-primary"></i> Reset trạng thái làm lệnh</button></span></span>
-                            </a>
-                          </td>
-                        </tr>
+                      <tr>
+                        <td>
+                          <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                            <span class="l-btn-left"
+                              ><span class="l-btn-text">
+                                <button id="saveShipmentDetailBtn" onclick="executedSuccess()" class="btn btn-sm btn-success"><i class="fa fa-check text-primary"></i> Xác nhận làm lệnh</button></span
+                              ></span
+                            >
+                          </a>
+                        </td>
+                        <td>
+                          <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                            <span class="l-btn-left"
+                              ><span class="l-btn-text">
+                                <button id="customBtn" onclick="resetProcessStatus()" disabled class="btn btn-sm btn-success"><i class="fa fa-refresh text-primary"></i> Reset trạng thái làm lệnh</button></span
+                              ></span
+                            >
+                          </a>
+                        </td>
+                      </tr>
                     </table>
                   </div>
                 </div>
@@ -128,10 +132,10 @@
     <th:block th:include="include :: handsontable-js" />
     <script type="text/javascript" th:inline="javascript">
       $(".main-body").height($(document).height() - 10);
-        $(".easyui-layout").height($('.main-body').height());
+        $(".easyui-layout").height($('.main-body').height() - 35);
       var sId = /*[[${sId}]]*/;
     </script>
     <script th:src="@{/eport/js/modules/om/support/receiveFull/layout.js}"></script>
-    <script th:src="@{/eport/js/modules/om/support/receiveFull/receiveFull.js?v=1}"></script>
+    <script th:src="@{/eport/js/modules/om/support/receiveFull/receiveFull.js}"></script>
   </body>
 </html>

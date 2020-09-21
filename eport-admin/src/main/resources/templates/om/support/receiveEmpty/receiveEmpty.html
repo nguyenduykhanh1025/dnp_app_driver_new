@@ -146,9 +146,9 @@
   <th:block th:include="include :: handsontable-js" />
   <script type="text/javascript" th:inline="javascript">
     $(".main-body").height($(document).height() - 10);
-    $(".easyui-layout").height($('.main-body').height());
+    $(".easyui-layout").height($('.main-body').height() - 35);
     var sId = /*[[${sId}]]*/;
   </script>
    <script th:src="@{/eport/js/modules/om/support/receiveEmpty/layout.js}"></script>
-   <script th:src="@{/eport/js/modules/om/support/receiveEmpty/receiveEmpty.js?v=1}"></script>
+   <script th:src="@{/eport/js/modules/om/support/receiveEmpty/receiveEmpty.js}"></script>
 </body>
