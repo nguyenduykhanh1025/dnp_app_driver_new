@@ -8,17 +8,16 @@
   <th:block th:include="include :: easyui-css" />
   <th:block th:include="include :: handsontable-css" />
   <th:block th:include="include :: summernote-css" />
-  <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+  <link th:href="@{/eport/css/common/style.css?v=1}" rel="stylesheet" />
 </head>
-
 <body class="grey-background">
   <div class="main-body">
+    <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+    <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
     <div class="main-body__search-wrapper mb-2">
-      <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
-      <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
       <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
         <div class="flex__left w-20">
-          <h3 class="mt-10">Hỗ trợ hạ rỗng</h3>
+          <h3 class="mt-10">Hỗ Trợ Hạ Rỗng</h3>
         </div>
         <div class="flex__right w-80">
           <div class="justify-content-around align-items-center" id="ff">
@@ -33,10 +32,10 @@
                 </select>
               </div>
             <div class="d-inline">
-              <button class="btn btn-success" onclick="search()">Tìm kiếm</button>
+              <button class="btn btn-success btn-customs" onclick="search()">Tìm kiếm</button>
             </div>
             <div class="d-inline">
-              <button class="btn btn-success btn-outline" onclick="clearInput()">Làm mới</button>
+              <button class="btn btn-success btn-outline btn-customs" onclick="clearInput()">Làm mới</button>
             </div>
           </div>
         </div>
@@ -108,11 +107,27 @@
               </div>
             </div>
             <div data-options="region:'center'" id="right-side__main-table">
-              <div>
-                <button id="checkCustomStatusByProcessOrderId"  onclick="executedSuccess()" class="btn btn-sm btn-primary">
-                  <i class="fa fa-check text-primary"></i> Xác Nhận Làm Lệnh OK</button>
-                <button style="display: inline-block;" id="checkProcessStatusByProcessOrderId" class="btn btn-sm btn-primary" onclick="resetProcessStatus()">
-                  <i class="fa fa-refresh" aria-hidden="true"></i> Reset Trạng Thái Làm Lệnh</button>
+              <div class="right-side__toolbar">
+                <div class="datagrid-toolbar">
+                  <table cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td>
+                          <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                            <span class="l-btn-left"><span class="l-btn-text">
+                            <button id="checkCustomStatusByProcessOrderId" onclick="executedSuccess()" class="btn btn-sm btn-success">
+                            <i class="fa fa-check text-primary"></i> Xác nhận làm lệnh OK</button></span></span>
+                          </a>
+                        </td>
+                        <td>
+                          <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                            <span class="l-btn-left"><span class="l-btn-text">
+                            <button id="checkProcessStatusByProcessOrderId"  onclick="resetProcessStatus()" disabled class="btn btn-sm btn-success">
+                            <i class="fa fa-refresh text-primary"></i> Reset trạng thái làm lệnh</button></span></span>
+                          </a>
+                        </td>
+                      </tr>
+                  </table>
+                </div>
               </div>
               <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
             </div>
@@ -126,9 +141,10 @@
   <th:block th:include="include :: summernote-js" />
   <th:block th:include="include :: handsontable-js" />
   <script type="text/javascript" th:inline="javascript">
-    $(".main-body").height($(document).height() - 10);
-    $(".easyui-layout").height($('.main-body').height() - 50);
+    $(".main-body").height($(document).height() -10);
+    $(".easyui-layout").height($('.main-body').height());
     var sId = /*[[${sId}]]*/;
   </script>
-   <script th:src="@{/eport/js/modules/om/support/sendEmpty/sendEmpty.js}"></script>
+   <script th:src="@{/eport/js/modules/om/support/sendEmpty/layout.js}"></script>
+   <script th:src="@{/eport/js/modules/om/support/sendEmpty/sendEmpty.js?v=1}"></script>
 </body>

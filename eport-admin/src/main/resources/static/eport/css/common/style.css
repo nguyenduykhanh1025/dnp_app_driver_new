@@ -421,3 +421,8 @@ body {
   display: inline-block;
   text-align: center;
   color: white; }
+
+.btn-success:active:focus {
+  background-color: #1a7bb9 !important;
+  border-color: #1a7bb9 !important;
+  color: #ffffff; }
