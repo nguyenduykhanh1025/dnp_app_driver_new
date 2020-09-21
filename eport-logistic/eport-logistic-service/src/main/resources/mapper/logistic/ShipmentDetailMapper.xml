@@ -75,6 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="deliveryRemark"    column="delivery_remark"   />
         <result property="eta"    column="eta"   />
         <result property="etd"    column="etd"   />
+        <result property="location"    column="location"   />
     </resultMap>
 
     <sql id="selectShipmentDetailVo">
@@ -444,6 +445,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deliveryRemark != null  and deliveryRemark != ''">delivery_remark,</if>
             <if test="eta != null">eta,</if>
             <if test="etd != null">etd,</if>
+            <if test="location != null">location,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -512,6 +514,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deliveryRemark != null  and deliveryRemark != ''">#{deliveryRemark},</if>
             <if test="eta != null">#{eta},</if>
             <if test="etd != null">#{etd},</if>
+            <if test="location != null">#{location},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -583,6 +586,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deliveryRemark != null  and deliveryRemark != ''">delivery_remark = #{deliveryRemark},</if>
             <if test="eta != null">eta = #{eta},</if>
             <if test="etd != null">etd = #{etd},</if>
+            <if test="location != null">location = #{location},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
         </trim>
@@ -864,7 +868,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select id, shipment_id as shipmentId, logistic_group_id as logisticGroupId,
 		        register_no as registerNo, container_no as containerNo, container_status as containerStatus, sztp, sztp_define as sztpDefine,
 		        temperature, fe, booking_no as bookingNo, bl_no as blNo, seal_no as sealNo, consignee, expired_dem as expiredDem, empty_expired_dem as emptyExpiredDem,
-		        wgt,
+		        wgt,location,
 		        (vsl_name || ' - ' || voy_carrier) as vslName,
 		        vsl_nm as vslNm, voy_no as voyNo, voy_carrier as voyCarrier, ope_code as opeCode, carrier_name as carrierName,
 		        loading_port as loadingPort, discharge_port as dischargePort, transport_type as transportType, empty_depot as emptyDepot, empty_depot_location as emptyDepotLocation,
