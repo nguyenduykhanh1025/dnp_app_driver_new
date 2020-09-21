@@ -10,109 +10,132 @@ var processOrderSelected;
 var sourceData;
 
 $(document).ready(function () {
-  loadTable(processOrder);
-  $(".main-body").layout();
+    loadTable(processOrder);
+    $(".main-body").layout();
 
-  $(".collapse").click(function () {
-      $(".main-body__search-wrapper").height(15);
-      $(".main-body__search-wrapper--container").hide();
-      $(this).hide();
-      $(".uncollapse").show();
-  })
+    $(".collapse").click(function () {
+        $(".main-body__search-wrapper").height(15);
+        $(".main-body__search-wrapper--container").hide();
+        $(this).hide();
+        $(".uncollapse").show();
+    })
 
-  $(".uncollapse").click(function () {
-      $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
-      $(".main-body__search-wrapper--container").show();
-      $(this).hide();
-      $(".collapse").show();
-  })
+    $(".uncollapse").click(function () {
+        $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
+        $(".main-body__search-wrapper--container").show();
+        $(this).hide();
+        $(".collapse").show();
+    })
 
-  $(".left-side__collapse").click(function () {
-      $('#main-layout').layout('collapse', 'west');
-  })
- 
-  $('#checkCustomStatusByProcessOrderId').attr("disabled", true);
-  $('#checkProcessStatusByProcessOrderId').attr("disabled", true);
+    $(".left-side__collapse").click(function () {
+        $('#main-layout').layout('collapse', 'west');
+    })
 
-  $("#blNo").textbox('textbox').bind('keydown', function(e) {
-    // enter key
-    if (e.keyCode == 13) {
-      blNo = $("#blNo").textbox('getText').toUpperCase();
-      if (blNo == "") {
-        loadTable(processOrder);
-      }
-      processOrder.blNo = blNo;
-      loadTable(processOrder);
-    }
+    $(".right-side__collapse").click(function () {
+        $('#right-layout').layout('collapse', 'south');
+        setTimeout(() => {
+            hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
+            hot.render();
+        }, 200);
+    });
+
+    $('#right-layout').layout({
+        onExpand: function (region) {
+            if (region == "south") {
+                hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
+                hot.render();
+            }
+        }
+    });
+
+    $('#right-layout').layout('collapse', 'south');
+    setTimeout(() => {
+        hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
+        hot.render();
+    }, 200);
+
+    $('#checkCustomStatusByProcessOrderId').attr("disabled", true);
+    $('#checkProcessStatusByProcessOrderId').attr("disabled", true);
+
+    $("#blNo").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+            blNo = $("#blNo").textbox('getText').toUpperCase();
+            if (blNo == "") {
+                loadTable(processOrder);
+            }
+            processOrder.blNo = blNo;
+            loadTable(processOrder);
+        }
     });
 });
 
 function handleCollapse(status) {
-  if (status) {
-      $(".left-side").css("width", "0.5%");
-      $(".left-side").children().hide();
-      $("#btn-collapse").hide();
-      $("#btn-uncollapse").show();
-      $(".right-side").css("width", "99%");
-      setTimeout(function () {
-          hot.render();
-      }, 500);
-      return;
-  }
-  $(".left-side").css("width", "33%");
-  $(".left-side").children().show();
-  $("#btn-collapse").show();
-  $("#btn-uncollapse").hide();
-  $(".right-side").css("width", "67%");
-  setTimeout(function () {
-      hot.render();
-  }, 500);
+    if (status) {
+        $(".left-side").css("width", "0.5%");
+        $(".left-side").children().hide();
+        $("#btn-collapse").hide();
+        $("#btn-uncollapse").show();
+        $(".right-side").css("width", "99%");
+        setTimeout(function () {
+            hot.render();
+        }, 500);
+        return;
+    }
+    $(".left-side").css("width", "33%");
+    $(".left-side").children().show();
+    $("#btn-collapse").show();
+    $("#btn-uncollapse").hide();
+    $(".right-side").css("width", "67%");
+    setTimeout(function () {
+        hot.render();
+    }, 500);
 }
 
 
 function loadTable(processOrder) {
-  $("#dg").datagrid({
-    url: PREFIX + "/orders",
-    method: "POST",
-    singleSelect: true,
-    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
-    clientPaging: true,
-    collapsible: true,
-    pagination: true,
-    pageSize: 20,
-    rownumbers: true,
-    onClickRow: function () {
-      getSelectedRow();
-    },
-    nowrap: false,
-    striped: true,
-    loader: function (param, success, error) {
-      var opts = $(this).datagrid("options");
-      if (!opts.url) return false;
-      $.ajax({
-        type: opts.method,
-        url: opts.url,
-        contentType: "application/json",
-        accept: "text/plain",
-        dataType: "text",
-        data: JSON.stringify({
-          pageNum: param.page,
-          pageSize: param.rows,
-          orderByColumn: param.sort,
-          isAsc: param.order,
-          data: processOrder,
-        }),
-        dataType: "json",
-        success: function (data) {
-          success(data);
-
+    $("#dg").datagrid({
+        url: PREFIX + "/orders",
+        method: "POST",
+        singleSelect: true,
+        height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
+        clientPaging: true,
+        collapsible: true,
+        pagination: true,
+        pageSize: 20,
+        rownumbers: true,
+        onClickRow: function () {
+            getSelectedRow();
         },
-        error: function () {
-          error.apply(this, arguments);
+        nowrap: false,
+        striped: true,
+        loader: function (param, success, error) {
+            var opts = $(this).datagrid("options");
+            if (!opts.url) return false;
+            $.ajax({
+                type: opts.method,
+                url: opts.url,
+                contentType: "application/json",
+                accept: "text/plain",
+                dataType: "text",
+                data: JSON.stringify({
+                    pageNum: param.page,
+                    pageSize: param.rows,
+                    orderByColumn: param.sort,
+                    isAsc: param.order,
+                    data: processOrder,
+                }),
+                dataType: "json",
+                success: function (data) {
+                    success(data);
+                    $("#dg").datagrid("selectRow", 0);
+                },
+                error: function () {
+                    error.apply(this, arguments);
+                },
+            });
         },
-      });
-    },
-  });
+    });
 }
 loadTableByContainer();
 
@@ -187,7 +210,7 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 function configHandson() {
     config = {
         stretchH: "all",
-        height: document.documentElement.clientHeight - 100,
+        height: $('#right-side__main-table').height() - 35,
         minRows: rowAmount,
         maxRows: rowAmount,
         width: "100%",
@@ -312,10 +335,12 @@ configHandson();
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
 function loadTableByContainer(processOrderId) {
+    $.modal.loading("Đang xử lý ...");
     $.ajax({
         url:  PREFIX + "/processOrderId/" + processOrderId + "/shipmentDetails",
         method: "GET",
         success: function (data) {
+            $.modal.closeLoading();
             if (data.code == 0) {
                 sourceData = data.shipmentDetails;
                 if(sourceData){
@@ -329,7 +354,10 @@ function loadTableByContainer(processOrderId) {
                 hot.loadData(sourceData);
                 hot.render();
             }
-        }
+        },
+        error: function (data) {
+            $.modal.closeLoading();
+        } 
     });
 }
 function getSelectedRow() {
@@ -341,6 +369,7 @@ function getSelectedRow() {
     $('#checkCustomStatusByProcessOrderId').attr("disabled", false);
     $('#checkProcessStatusByProcessOrderId').attr("disabled", false);
     loadTableByContainer(row.id);
+    loadListComment();
   }
 }
 
@@ -429,18 +458,115 @@ return toHHMMSS(totalMinutes*60);
 }
 
 function clearInput() {
-  $("#blNo").textbox('setText', '');
-  $('#logistic').combobox('setValue', "0");
-  $('#logistic').combobox('setText', "Chọn đơn vị Logistics");
-  processOrder = new Object();
-  loadTable(processOrder);
+    $("#blNo").textbox('setText', '');
+    $('#logistic').combobox('setValue', "0");
+    $('#logistic').combobox('setText', "Chọn đơn vị Logistics");
+    processOrder = new Object();
+    loadTable(processOrder);
 }
 function search() {
-  processOrder.blNo = $("#blNo").textbox('getText').toUpperCase();
-  processOrder.logisticGroupId = $('#logistic').combobox('getValue') == '0' ? '' : $('#logistic').combobox('getValue') ;
-  loadTable(processOrder);
+    processOrder.blNo = $("#blNo").textbox('getText').toUpperCase();
+    processOrder.logisticGroupId = $('#logistic').combobox('getValue') == '0' ? '' : $('#logistic').combobox('getValue');
+    loadTable(processOrder);
 }
 
 function handleRefresh() {
-  loadTable();
+    loadTable();
+}
+
+function loadListComment(shipmentCommentId) {
+    let req = {
+        serviceType: 1,
+        shipmentId: processOrderSelected.id
+    };
+    $.ajax({
+        url: ctx + "shipment-comment/shipment/list",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(req),
+        success: function (data) {
+            if (data.code == 0) {
+                let html = '';
+                // set title for panel comment
+                let commentTitle = '<span style="color: black">Hỗ Trợ<span>';
+                let commentNumber = 0;
+                if (data.shipmentComments != null) {
+                    data.shipmentComments.forEach(function (element, index) {
+                        let createTime = element.createTime;
+                        let date = '';
+                        let time = '';
+                        if (createTime) {
+                            date = createTime.substring(8, 10) + "/" + createTime.substring(5, 7) + "/" + createTime.substring(0, 4);
+                            time = createTime.substring(10, 19);
+                        }
+
+                        let resolvedBackground = '';
+                        if ((shipmentCommentId && shipmentCommentId == element.id) || !element.resolvedFlg) {
+                            resolvedBackground = 'style="background-color: #ececec;"';
+                            commentNumber++;
+                        }
+
+                        html += '<div ' + resolvedBackground + '>';
+                        // User name comment and date time comment
+                        html += '<div><i style="font-size: 15px; color: #015198;" class="fa fa-user-circle" aria-hidden="true"></i><span> <a>' + element.userName + ' (' + element.userAlias + ')</a>: <i>' + date + ' at ' + time + '</i></span></div>';
+                        // Topic comment
+                        html += '<div><span><strong>Yêu cầu:</strong> ' + element.topic + '</span></div>';
+                        // Content comment
+                        html += '<div><span>' + element.content + '</span></div>';
+                        html += '</div>';
+                        html += '<hr>';
+                    });
+                }
+                commentTitle += ' <span class="round-notify-count">' + commentNumber + '</span>';
+                $('#right-layout').layout('panel', 'expandSouth').panel('setTitle', commentTitle);
+                $('#commentList').html(html);
+                // $("#comment-div").animate({ scrollTop: $("#comment-div")[0].scrollHeight}, 1000);
+            }
+        }
+    });
+}
+
+function addComment() {
+    let topic = $('#topic').textbox('getText');
+    let content = $('.summernote').summernote('code');// get editor content
+    let errorFlg = false;
+    if (!topic) {
+        errorFlg = true;
+        $.modal.alertWarning('Vui lòng nhập chủ đề.');
+    } else if (!content) {
+        errorFlg = true;
+        $.modal.alertWarning('Vui lòng nhập nội dung.');
+    }
+    if (!errorFlg) {
+        let req = {
+            topic: topic,
+            content: content,
+            shipmentId: processOrderSelected.id,
+            logisticGroupId: processOrderSelected.logisticGroupId
+        };
+        $.ajax({
+            url: PREFIX + "/shipment/comment",
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify(req),
+            beforeSend: function () {
+                $.modal.loading("Đang xử lý, vui lòng chờ...");
+            },
+            success: function (result) {
+                $.modal.closeLoading();
+                if (result.code == 0) {
+                    loadListComment(result.shipmentCommentId);
+                    $.modal.msgSuccess("Gửi thành công.");
+                    $('#topic').textbox('setText', '');
+                    $('.summernote').summernote('code', '');
+                } else {
+                    $.modal.msgError("Gửi thất bại.");
+                }
+            },
+            error: function (error) {
+                $.modal.closeLoading();
+                $.modal.msgError("Gửi thất bại.");
+            }
+        });
+    }
 }

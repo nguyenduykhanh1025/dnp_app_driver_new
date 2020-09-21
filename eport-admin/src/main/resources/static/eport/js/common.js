@@ -305,7 +305,6 @@ var storage = {
     }
 };
 
-// 主子表操作封装处理
 var sub = {
     editColumn: function() {
     	var count = $("#" + table.options.id).bootstrapTable('getData').length;
@@ -334,14 +333,13 @@ var sub = {
     	var subColumn = $.common.isEmpty(column) ? "index" : column;
     	var ids = $.table.selectColumns(subColumn);
         if (ids.length == 0) {
-            $.modal.alertWarning("请至少选择一条记录");
+            $.modal.alertWarning("Please select at least one record");
             return;
         }
         $("#" + table.options.id).bootstrapTable('remove', { field: subColumn, values: ids });
     }
 };
 
-/** 设置全局ajax处理 */
 $.ajaxSetup({
     complete: function(XMLHttpRequest, textStatus) {
         if (textStatus == 'timeout') {
@@ -349,9 +347,69 @@ $.ajaxSetup({
         	$.modal.enable();
             $.modal.closeLoading();
         } else if (textStatus == "parsererror" || textStatus == "error") {
-        	$.modal.alertWarning("Lỗi Server, hãy liên hệ với admin.");
+        	$.modal.alertWarning("Có lỗi khi gửi yêu cầu đến server, vui lòng thử lại.");
         	$.modal.enable();
             $.modal.closeLoading();
         }
     }
+});
+
+/**
+ * Resize image when upload
+ * 
+ * @param files
+ * @returns
+ */
+function summernoteOnImageUpload(files, editor) {
+    $.each(files, function(idx, file) {
+        var max_width = 1500;
+        var max_height = 1500;
+        var reader = new FileReader();
+        reader.onload = function() {
+            var tmpImg = new Image();
+            tmpImg.src = reader.result;
+
+            tmpImg.onload = function() {
+                var tmpW = tmpImg.width;
+                var tmpH = tmpImg.height;
+
+                if (tmpW > tmpH) {
+                    if (tmpW > max_width) {
+                       tmpH *= max_width / tmpW;
+                       tmpW = max_width;
+                    }
+                } else {
+                    if (tmpH > max_height) {
+                       tmpW *= max_height / tmpH;
+                       tmpH = max_height;
+                    }
+                }
+
+                var canvas = document.createElement('canvas');
+                canvas.width = tmpW;
+                canvas.height = tmpH;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(this, 0, 0, tmpW, tmpH);
+                sURL = canvas.toDataURL("image/jpeg");
+                editor.summernote('insertImage', sURL, file.name);
+            }
+        }
+        reader.readAsDataURL(file);
+    });
+}
+$(document).ready(function () {
+  if($('.summernote')[0]) {
+	  $('.summernote').summernote({
+	    minHeight: 100,
+	    placeholder: 'Hãy nhập nội dung cần hỗ trợ',
+	    callbacks: {
+		  onImageUpload: function(files) {
+			  summernoteOnImageUpload(files, $('.summernote'));
+		  },
+		  onImageUploadError: function() {
+		        $.modal.alertError('Hình quá lớn, chỉ cho phép hình dung lượng tối đa 150kb.');
+		  }
+	    }
+	  });
+  }
 });

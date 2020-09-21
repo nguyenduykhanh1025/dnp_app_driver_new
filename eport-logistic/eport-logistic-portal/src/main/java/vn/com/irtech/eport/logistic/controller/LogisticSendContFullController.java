@@ -79,7 +79,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
     private IShipmentCommentService shipmentCommentService;
 	
     @GetMapping()
-	public String sendContFull() {
+	public String sendContFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
+    	if (sId != null) {
+			mmap.put("sId", sId);
+		}
 		return PREFIX + "/index";
 	}
 
@@ -484,7 +487,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	public AjaxResult getVesselVoyageListWithoutOpeCode() {
 		AjaxResult ajaxResult = success();
 		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlanWithoutOpe();
-		if(berthplanList.size() > 0) {
+		if(berthplanList != null && berthplanList.size() > 0) {
 			List<String> vesselAndVoyages = new ArrayList<String>();
 			for(ShipmentDetail i : berthplanList) {
 				vesselAndVoyages.add(i.getVslAndVoy());

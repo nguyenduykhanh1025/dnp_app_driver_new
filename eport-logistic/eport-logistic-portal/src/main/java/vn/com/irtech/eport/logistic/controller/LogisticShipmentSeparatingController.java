@@ -183,7 +183,7 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 	  if (partner != null && partner.getGroupName() != null) {
 		  AjaxResult ajaxResult = AjaxResult.success();
 		  ajaxResult.put("companyName", partner.getGroupName());
-		  return success();
+		  return ajaxResult;
 	  }
 	  return error();
   }

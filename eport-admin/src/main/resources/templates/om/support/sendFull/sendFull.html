@@ -7,6 +7,7 @@
   <th:block th:include="include :: header('General Controlling')" />
   <th:block th:include="include :: easyui-css" />
   <th:block th:include="include :: handsontable-css" />
+  <th:block th:include="include :: summernote-css" />
   <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
 </head>
 
@@ -23,14 +24,21 @@
           <div class="justify-content-around align-items-center" id="ff">
            
             <div class="d-inline">
-                <input class="easyui-textbox" id="bookingNo"   data-options="prompt:'Booking No'"/>
+                <input class="easyui-textbox" id="bookingNo" data-options="prompt:'Booking No'"/>
             </div>
             <div class="d-inline">
                 <select class="easyui-combobox" id="logistic">
                     <option th:each="logistic, iterator : ${logisticsGroups}" th:value=${logistic.id} th:text=${logistic.groupName}>
                     </option>
                 </select>
-              </div>
+            </div>
+            <div class="d-inline">
+                <select class="easyui-combobox" id="status" panelHeight="auto" width="120px">
+                    <option value="">Tất cả</option>
+                    <option value="1">Bình thường</option>
+                    <option value="E">Lỗi</option>
+                </select>
+            </div>
             <div class="d-inline">
               <button class="btn btn-success" onclick="search()">Tìm kiếm</button>
             </div>
@@ -74,24 +82,60 @@
             </thead>
           </table>
         </div>
-        <div data-options="region:'center'" style="width:100%;">
-          <div>
-            <button id="checkCustomStatusByProcessOrderId"  onclick="executedSuccess()" class="btn btn-sm btn-primary">
-              <i class="fa fa-check text-primary"></i> Xác Nhận Làm Lệnh OK</button>
-            <button style="display: inline-block;" id="checkProcessStatusByProcessOrderId" class="btn btn-sm btn-primary" onclick="resetProcessStatus()">
-              <i class="fa fa-refresh" aria-hidden="true"></i> Reset Trạng Thái Làm Lệnh</button>
+        <div class="right-side" data-options="region:'center'" style="width:100%;">
+          <div class="easyui-layout" id="right-layout" data-options="fit:true" style="position: relative;">
+            <div style="height: 50%;" data-options="region:'south', split:true">
+              <span class="right-side__collapse"><i class="fa fa-chevron-down"></i></span>
+              <div class="panel-header" style="width: 100%; background-color: #f3f7fa;">
+                <div class="panel-title" style="color: #333;">Hỗ Trợ</div>
+              </div>
+              <div id="comment-div" style="padding: 10px 20px 10px 20px;">
+                <div id="commentList"></div>
+                <div style="text-align: right;">
+                  <div class="form-group row">
+                    <label class="col-md-1 col-sm-2 col-xs-3">Tiêu đề <span style="color: red;">*</span></label>
+                    <div class="col-md-11 col-sm-10 col-xs-9">
+                      <input class="easyui-textbox" id="topic" style="width: 100%;"/>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-1 col-sm-2 col-xs-3">Nội dung <span style="color: red;">*</span></label>
+                    <div class="col-md-11 col-sm-10 col-xs-9">
+                      <textarea class="summernote"></textarea>
+                    </div>
+                  </div>
+                  <div>
+                    <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
+                      <span class="l-btn-left"><span class="l-btn-text">
+                      <button id="sendComment" onclick="addComment()" class="btn btn-sm btn-primary">
+                      <i class="fa fa-send text-primary"></i> Gửi</button></span></span>
+                    </a>  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div data-options="region:'center'" id="right-side__main-table">
+              <div>
+                <button id="checkCustomStatusByProcessOrderId"  onclick="executedSuccess()" class="btn btn-sm btn-primary">
+                  <i class="fa fa-check text-primary"></i> Xác Nhận Làm Lệnh OK</button>
+                <button style="display: inline-block;" id="checkProcessStatusByProcessOrderId" class="btn btn-sm btn-primary" onclick="resetProcessStatus()">
+                  <i class="fa fa-refresh" aria-hidden="true"></i> Reset Trạng Thái Làm Lệnh</button>
+              </div>
+              <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+            </div>
           </div>
-          <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
         </div>
       </div>
     </div>
   </div>
   <th:block th:include="include :: footer" />
   <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: summernote-js" />
   <th:block th:include="include :: handsontable-js" />
   <script type="text/javascript" th:inline="javascript">
     $(".main-body").height($(document).height() - 10);
     $(".easyui-layout").height($('.main-body').height() - 50);
+    var sId = /*[[${sId}]]*/;
   </script>
   <script th:src="@{/eport/js/modules/om/support/sendFull/sendFull.js}"></script>
 </body>

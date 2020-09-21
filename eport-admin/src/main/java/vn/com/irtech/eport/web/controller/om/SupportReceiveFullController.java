@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
@@ -22,7 +23,6 @@ import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
-import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -41,6 +41,7 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysUser;
 
 @Controller
 @RequestMapping("/om/support/receive-full")
@@ -73,8 +74,13 @@ public class SupportReceiveFullController extends OmBaseController{
     private IShipmentCommentService shipmentCommentService;
     
     @GetMapping("/view")
-    public String getViewSupportReceiveFull(ModelMap mmap)
+    public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap)
     {
+    	if (sId != null) {
+			mmap.put("sId", sId);
+		}
+		
+    	
 		// ProcessOrder processOrder = new ProcessOrder();
 	    // List<String> logisticsGroups = processOrderService.selectProcessOrderOnlyLogisticName(processOrder);
 		// mmap.put("logisticsGroups", logisticsGroups);
@@ -209,6 +215,7 @@ public class SupportReceiveFullController extends OmBaseController{
 	    	shipmentComment.setCreateTime(new Date());
 	    	shipmentComment.setCreateBy(getUser().getUserName());
 	    	shipmentComment.setTopic(Constants.RECEIVE_CONT_FULL_SUPPORT);
+			shipmentComment.setServiceType(shipment.getServiceType());
 	    	shipmentCommentService.insertShipmentComment(shipmentComment);
 		}
     	return success();
@@ -256,6 +263,7 @@ public class SupportReceiveFullController extends OmBaseController{
 		    	shipmentComment.setCreateTime(new Date());
 		    	shipmentComment.setCreateBy(getUser().getUserName());
 		    	shipmentComment.setTopic(Constants.RECEIVE_CONT_FULL_SUPPORT);
+				shipmentComment.setServiceType(shipment.getServiceType());
 		    	shipmentCommentService.insertShipmentComment(shipmentComment);
 			}
 	    	return success();
@@ -265,4 +273,24 @@ public class SupportReceiveFullController extends OmBaseController{
 			return error();
 		}
     }
+    
+    @PostMapping("/shipment/comment")
+	@ResponseBody
+	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
+		SysUser user = getUser();
+		shipmentComment.setCreateBy(user.getUserName());
+		shipmentComment.setUserId(user.getUserId());
+		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+		shipmentComment.setUserAlias(user.getDept().getDeptName());
+		shipmentComment.setUserName(user.getUserName());
+		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
+		shipmentComment.setCommentTime(new Date());
+		shipmentComment.setResolvedFlg(true);
+		shipmentCommentService.insertShipmentComment(shipmentComment);
+		
+		// Add id to make background grey (different from other comment)
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
+		return ajaxResult;
+	}
 }

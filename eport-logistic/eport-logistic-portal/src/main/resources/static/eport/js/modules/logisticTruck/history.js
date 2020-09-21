@@ -81,7 +81,7 @@ function loadTable() {
     url: PREFIX + "/list",
     method: "POST",
     singleSelect: true,
-    height: document.documentElement.clientHeight - 70,
+    height: currentHeight,
     clientPaging: false,
     pagination: true,
     rownumbers: true,

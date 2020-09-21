@@ -78,71 +78,6 @@ var toolbar = [
   },
 ];
 
-$(".main-body").layout();
-
-$(".collapse").click(function () {
-  $(".main-body__search-wrapper").hide();
-  $(".main-body__search-wrapper--container").hide();
-  $(this).hide();
-  $(".uncollapse").show();
-});
-
-$(".right-side__collapse").click(function () {
-  $('#right-layout').layout('collapse', 'south');
-  setTimeout(() => {
-    hot.updateSettings({height:$('#right-side__main-table').height() - 35});
-    hot.render();
-  }, 200);
-});
-
-$(".uncollapse").click(function () {
-  $(".main-body__search-wrapper").show();
-  $(".main-body__search-wrapper--container").show();
-  $(this).hide();
-  $(".collapse").show();
-});
-
-$(".left-side__collapse").click(function () {
-  $("#main-layout").layout("collapse", "west");
-  setTimeout(() => {
-    hot.render();
-  }, 200);
-});
-
-$('#right-layout').layout({
-  onExpand: function (region) {
-    if (region == "south") {
-      hot.updateSettings({height:$('#right-side__main-table').height() - 35});
-      hot.render();
-      let req = {
-        shipmentId : shipmentSelected.id
-      }
-      $.ajax({
-        url: ctx + "logistic/comment/update",
-        type: "post",
-        contentType: "application/json",
-        data: JSON.stringify(req),
-        success: function(res) {
-          if (res.code == 0) {
-            let commentTitle = '<span>Hỗ Trợ</span> <span class="round-notify-count">0</span>';
-            $('#right-layout').layout('panel', 'expandSouth').panel('setTitle', commentTitle);
-          }
-        }
-      });
-    }
-  }
-});
-
-$('#main-layout').layout({
-  onExpand: function (region) {
-    if (region == "west") {
-      hot.render();
-    }
-  }
-});
-
-
-
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
 
@@ -166,6 +101,10 @@ $(document).ready(function () {
       loadTable();
     }
   });
+  
+  if (sId != null) {
+    shipmentSearch.id = sId;
+  }
 
   $("#containerNo").textbox('textbox').bind('keydown', function(e) {
     // enter key
@@ -280,9 +219,7 @@ function loadTable() {
           success(data);
           $("#dg").datagrid("hideColumn", "id");
           $("#dg").datagrid("hideColumn", "edoFlg");
-          if (currentIndexRow != null) {
-            $("#dg").datagrid("selectRow", currentIndexRow);
-          }
+          $("#dg").datagrid("selectRow", 0);
         },
         error: function () {
           error.apply(this, arguments);
@@ -1021,6 +958,9 @@ configHandson();
 
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
+// if (shipment != null) {
+//   loadShipmentDetail(shipment.id);
+// }
 
 // TRIGGER CHECK ALL SHIPMENT DETAIL
 function checkAll() {
@@ -1137,9 +1077,6 @@ function loadShipmentDetail(id) {
     	if(data.shipmentDetails[0] != null){
             voyCarrier = data.shipmentDetails[0].voyCarrier;
     	}
-        if (rowAmount < sourceData.length) {
-          sourceData = sourceData.slice(0, rowAmount);
-        }
         let saved = true;
         // let shiftingFee = false;
         taxCodeArr = Array(rowAmount).fill(new Object);
@@ -1877,6 +1814,11 @@ function loadListComment(shipmentCommentId) {
         $('#right-layout').layout('panel', 'expandSouth').panel('setTitle', commentTitle);
         $('#commentList').html(html);
         // $("#comment-div").animate({ scrollTop: $("#comment-div")[0].scrollHeight}, 1000);
+        if (sId != null) {
+          $('#right-layout').layout('expand', 'south');
+          shipmentSearch.id = null;
+          sId = null;
+        }
       }
     }
   });

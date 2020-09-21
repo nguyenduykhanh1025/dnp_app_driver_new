@@ -2,6 +2,11 @@ package vn.com.irtech.eport.logistic.dto;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import vn.com.irtech.eport.system.dto.CustomDeclareResult;
+
 /**
  * @author GiapHD
  *
@@ -25,6 +30,8 @@ public class CustomsCheckResultDto implements Serializable {
 	private String taxCode;
 	
 	private String companyName;
+	
+	private CustomDeclareResult customDeclareResult;
 
 	/**
 	 * Check if customs is released
@@ -98,5 +105,28 @@ public class CustomsCheckResultDto implements Serializable {
 	public void setCompanyName(String companyName) {
 		this.companyName = companyName;
 	}
+
+	public CustomDeclareResult getCustomDeclareResult() {
+		return customDeclareResult;
+	}
+
+	public void setCustomDeclareResult(CustomDeclareResult customDeclareResult) {
+		this.customDeclareResult = customDeclareResult;
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+	        .append("containerNo", getCntrNo())
+	        .append("userVoy", getUserVoy())
+	        .append("appNo", getCustomsAppNo())
+	        .append("status", getCustomsStatus())
+	        .append("remark", getCustomsRemark())
+	        .append("taxCode", getTaxCode())
+	        .append("company", getCompanyName())
+	        .append("customDeclareResult", getCustomDeclareResult())
+	        .toString();
+	}
+	
 	
 }

@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.web.controller.om;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.constant.EportConstants;
@@ -31,6 +33,7 @@ import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.web.controller.AdminBaseController;
 
 @Controller
@@ -57,7 +60,11 @@ public class DocumentGatheringController extends AdminBaseController  {
 	private IShipmentCommentService shipmentCommentService;
 	
 	@GetMapping()
-	public String getViewDocument(ModelMap mmap) {
+	public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
+		
+		if (sId != null) {
+			mmap.put("sId", sId);
+		}
 		
 		// Get list logistic group
 		LogisticGroup logisticGroup = new LogisticGroup();
@@ -71,6 +78,9 @@ public class DocumentGatheringController extends AdminBaseController  {
 	    
 	    // Get list vslNm : vslNmae : voyNo
 	    List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlanWithoutOpe();
+	    if(berthplanList == null) {
+	    	berthplanList = new ArrayList<>();
+	    }
 	    ShipmentDetail shipmentDetail = new ShipmentDetail();
 	    shipmentDetail.setVslAndVoy("Chọn tàu chuyến");
 	    berthplanList.add(0, shipmentDetail);
@@ -115,8 +125,8 @@ public class DocumentGatheringController extends AdminBaseController  {
 	@PostMapping("/confirmation")
 	@ResponseBody
 	@Transactional
-	public AjaxResult submitConfirmation(String doStatus, String content, String shipmentDetailIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+	public AjaxResult submitConfirmation(String doStatus, String content, String shipmentDetailIds, Long logisticGroupId) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, logisticGroupId);
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			shipmentDetail.setDoStatus(doStatus);
 			shipmentDetail.setUpdateBy(getUser().getUserName());
@@ -133,8 +143,29 @@ public class DocumentGatheringController extends AdminBaseController  {
 			shipmentComment.setCommentTime(new Date());
 			shipmentComment.setContent(content);
 			shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_OM_DOCUMENT);
+			shipmentComment.setServiceType(shipmentDetail.getServiceType());
 			shipmentCommentService.insertShipmentComment(shipmentComment);
 		}
  		return success("Thu chứng từ gốc thành công");
+	}
+	
+	@PostMapping("/shipment/comment")
+	@ResponseBody
+	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
+		SysUser user = getUser();
+		shipmentComment.setCreateBy(user.getUserName());
+		shipmentComment.setUserId(user.getUserId());
+		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+		shipmentComment.setUserAlias(user.getDept().getDeptName());
+		shipmentComment.setUserName(user.getUserName());
+		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
+		shipmentComment.setCommentTime(new Date());
+		shipmentComment.setResolvedFlg(true);
+		shipmentCommentService.insertShipmentComment(shipmentComment);
+		
+		// Add id to make background grey (different from other comment)
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
+		return ajaxResult;
 	}
 }

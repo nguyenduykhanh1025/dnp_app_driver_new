@@ -9,57 +9,66 @@
   <th:block th:include="include :: datetimepicker-css" />
   <link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
   <link th:href="@{/css/logistic/truck/style.css}" rel="stylesheet" />
+  <link th:href="@{/eport/css/common/style.css?v=1406}" rel="stylesheet" />
 </head>
 
-<body class="container-fluid white-bg">
-  <section class="filter">
-    <div class="row section-header">
-      <div class="form-group col-md-2 col-sm-2 col-xs-2">
-        <input type="text" class="form-control" placeholder="Tìm kiếm..." id="searchAllInput" name="keyword" />
-      </div>
-      <div class="form-group col-md-8 col-sm-8 col-xs-8">
-        <span>
-          <label>Đã vào cổng từ:</label>
-          <input type="text" class="from-date date-input" id="fromDate" onchange="changeFromDate()" placeholder="dd/mm/yyyy" readonly>
-        </span>
-        <span>
-          <label>đến:</label>
-          <input type="text" class="to-date date-input" id="toDate" onchange="changeToDate()" placeholder="dd/mm/yyyy" readonly>
-        </span>
-      </div>
-      <div class="form-group col-md-2 col-sm-2 col-xs-2">
-        <button class="btn btn-warning pull-right ml5" onclick="refresh()">
-          <i class="fa fa-refresh"></i>
-        </button>
-        <button class="btn btn-primary pull-right" onclick="loadTable()">
-          <i class="fa fa-search"></i>
-        </button>
-      </div>
-    </div>
-    <div class="row section-content">
-      <div class="col-md-12">
-        <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]">
-          <thead>
-            <tr>
-              <th data-options="field: 'driver.fullName', halign: 'center', resizable: true, formatter: function(value,row){return row.driver.fullName}" width="200">Tên tài xế</th>
-              <th data-options="field: 'driver.mobileNumber', halign: 'center', align:'center', resizable: true, formatter: function(value,row){return row.driver.mobileNumber}" width="120">Số điện thoại</th>
-              <th data-options="field:'shipmentDetail.containerNo', halign:'center', align:'center', formatter: function(value,row){return row.shipmentDetail.containerNo}" width="120">Container No.</th>
-              <th data-options="field:'gateinDate', align:'center', formatter: formatDate" sortable="true" width="150">Ngày vào cổng</th>
-              <th data-options="field:'createTime', halign:'center', align:'center', formatter: formatDate" sortable="true" width="150">Ngày nhận chở</th>
-              <th data-options="field:'blNo', halign:'center', align:'left', formatter: formatBillBook" width="200">Bill/Booking No.</th>
-              <th data-options="field:'truckNo', align:'center', halign:'center'" sortable="true" width="150">Biển số xe đầu kéo</th>
-              <th data-options="field:'chassisNo', align:'center', halign:'center'" sortable="true" width="150">Biển số xe rơ móc</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+<body class="grey-background">
+  <div class="main-body">
+    <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+    <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+    <div class="main-body__search-wrapper mb-2">
+      <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+        <div class="flex__left w-20">
+          <h3 class="mt-10">Lịch Sử</h3>
+        </div>
+        <div class="flex__right w-80 justify-content-start align-items-center d-flex">
+          <div id="ff">
+            <div class="d-inline">
+              <input class="easyui-textbox" name="name" id="searchAllInput" data-options="prompt: 'Tìm kiếm' " />
+            </div>
+            <div class="d-inline">
+              <input class="easyui-datebox from-date" id="fromDate" onchange="changeFromDate()" style="width: 150px" data-options="prompt:'Vào cổng từ ngày', formatter:dateformatter, parser:dateparser" />
+            </div>
+            <div class="d-inline">
+              <input class="easyui-datebox to-date" id="toDate" onchange="changeToDate()" style="width: 150px" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser" />
+            </div>
+            <div class="d-inline">
+              <button class="btn btn-success btn-customs" onclick="loadTable()" id="searchBtn">Tìm kiếm</button>
+            </div>
+            <div class="d-inline">
+              <button class="btn btn-success btn-outline btn-customs" onclick="refresh()" id="resethBtn">Làm mới</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
+    <div class="main-body__table-wrapper">
+      <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]">
+        <thead>
+          <tr>
+            <th data-options="field: 'driver.fullName', halign: 'center', resizable: true, formatter: function(value,row){return row.driver.fullName}" width="200">Tên tài xế</th>
+            <th data-options="field: 'driver.mobileNumber', halign: 'center', align:'center', resizable: true, formatter: function(value,row){return row.driver.mobileNumber}" width="120">Số điện thoại</th>
+            <th data-options="field:'shipmentDetail.containerNo', halign:'center', align:'center', formatter: function(value,row){return row.shipmentDetail.containerNo}" width="120">Container No.</th>
+            <th data-options="field:'gateinDate', align:'center', formatter: formatDate" sortable="true" width="150">Ngày vào cổng</th>
+            <th data-options="field:'createTime', halign:'center', align:'center', formatter: formatDate" sortable="true" width="150">Ngày nhận chở</th>
+            <th data-options="field:'blNo', halign:'center', align:'left', formatter: formatBillBook" width="200">Bill/Booking No.</th>
+            <th data-options="field:'truckNo', align:'center', halign:'center'" sortable="true" width="150">Biển số xe đầu kéo</th>
+            <th data-options="field:'chassisNo', align:'center', halign:'center'" sortable="true" width="150">Biển số xe rơ móc</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
   <th:block th:include="include :: footer" />
   <th:block th:include="include :: easyui-js" />
   <th:block th:include="include :: datetimepicker-js" />
-  <script th:src="@{/eport/js/modules/logisticTruck/history.js}"></script>
+  <script type="text/javascript" th:inline="javascript">
+    $(".main-body").height($(document).height() - 10);
+    $(".easyui-layout").height($(".main-body").height() - 40);
+  </script>
+  <script th:src="@{/eport/js/modules/logisticTruck/layout.js}"></script>
+  <script th:src="@{/eport/js/modules/logisticTruck/history.js?v=1}"></script>
 </body>
 
 </html>

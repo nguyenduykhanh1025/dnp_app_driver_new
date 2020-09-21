@@ -292,8 +292,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="remark != null  and remark != ''"> and s.remark = #{remark}</if>
                 <if test="params.containerNo != null  and params.containerNo != ''"> and upper(sh.container_no) like concat(concat('%', #{params.containerNo}), '%')</if>
                 <if test="params.consignee != null  and params.consignee != ''"> and upper(sh.consignee) like concat(concat('%', #{params.consignee}), '%')</if>
-                <if test="params.fromDate != null">and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
-                <if test="params.toDate != null">and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
+                <if test="params.fromDate != null and params.fromDate != ''">and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+                <if test="params.toDate != null and params.toDate != ''">and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
             </where>
             group by s.id,
                 s.logistic_account_id,
@@ -381,7 +381,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         s.cont_supply_status, s.status, s.remark, s.order_number, s.house_bill, s.create_by, 
         s.create_time, s.update_by, s.update_time
 
-        order by update_time desc
+        order by create_time desc
     </select>
     <select id="getShipmentsForSupportCustom" parameterType="Shipment" resultMap="ShipmentResult">
         select s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, s.ope_code, 
