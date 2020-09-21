@@ -21,7 +21,9 @@ import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticDelegated;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticDelegatedService;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 
 /**
  * DelegateController
@@ -40,6 +42,9 @@ public class LogisticDelegatedController extends BaseController
 
     @Autowired
     private DictService dictService;
+
+    @Autowired
+    private ICatosApiService catosApiService;
 
     @RequiresPermissions("logistic:delegate:view")
     @GetMapping()
@@ -68,20 +73,21 @@ public class LogisticDelegatedController extends BaseController
     /**
      * Add Delegate
      */
-    @GetMapping("/addDelegated")
-    public String add(ModelMap mmap)
+    @GetMapping("/addDelegated/{logisticId}")
+    public String add(@PathVariable("logisticId") Long logisticId,ModelMap mmap)
     {
         mmap.put("delegateTypes", dictService.getType("delegate_type_list"));
-        return prefix + "/addDelegated";
+        mmap.put("logisticId", logisticId);
+        return prefix + "/add";
     }
 
     @RequiresPermissions("logistic:group:add")
     @Log(title = "Delegate", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(LogisticDelegated logisticDelegated)
+    public AjaxResult addSave(LogisticDelegated delegatedLogistic)
     {
-        return toAjax(logisticDelegatedService.insertLogisticDelegated(logisticDelegated));
+        return toAjax(logisticDelegatedService.insertLogisticDelegated(delegatedLogistic));
     }
 
     /**
@@ -117,5 +123,26 @@ public class LogisticDelegatedController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(logisticDelegatedService.deleteLogisticDelegatedByIds(ids));
+    }
+
+    @GetMapping("/consignee/{taxCode}")
+    @ResponseBody
+    public AjaxResult getConsigneeInfoByTaxcode(@PathVariable String taxCode) {
+        AjaxResult ajaxResult = AjaxResult.success();
+		if (taxCode == null || "".equals(taxCode)) {
+			return error();
+		}
+		PartnerInfoDto partner = catosApiService.getConsigneeNameByTaxCode(taxCode);
+		String groupName = partner.getGroupName();
+		String address = partner.getAddress();
+		if (address != null) {
+			ajaxResult.put("address", address);
+		}
+		if (groupName != null) {
+			ajaxResult.put("groupName", groupName);
+		} else {
+			ajaxResult = AjaxResult.error();
+		}
+		return ajaxResult;
     }
 }

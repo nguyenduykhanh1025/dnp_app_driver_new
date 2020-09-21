@@ -112,7 +112,7 @@ public class LogisticGroupController extends BaseController
     public String add(ModelMap mmap)
     {
     	mmap.put("delegateTypes", dictService.getType("delegate_type_list"));
-        return prefix + "/add";
+        return prefix + "/addLogistic";
     }
 
     /**
@@ -167,7 +167,7 @@ public class LogisticGroupController extends BaseController
         LogisticGroup logisticGroup = logisticGroupService.selectLogisticGroupById(id);
         mmap.put("logisticGroup", logisticGroup);
         mmap.put("delegateTypes", dictService.getType("delegate_type_list"));
-        return prefix + "/edit";
+        return prefix + "/editLogistic";
     }
 
     /**

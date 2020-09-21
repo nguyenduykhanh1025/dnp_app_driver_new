@@ -48,7 +48,11 @@
         <div class="left-side" data-options="region:'west',split:true, collapsible:false" title="Danh sách logistic"
           style="width:30%;">
           <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
-          
+          <div id="toolbar">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addLogistic()">Thêm Logistic</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editLogistic()">Sửa Logistic</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyUser()">Xóa Logistic</a>
+        </div>
           <table id="dg" style="width: 100%;">
             <thead>
                 <tr>
@@ -70,6 +74,7 @@
                 </tr>
               </thead>  
           </table>
+          
         </div>
         <div data-options="region:'center'" style="width:100%;">
             <tbody>
@@ -77,18 +82,10 @@
                 <td>
                   <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
                     <span class="l-btn-left"><span class="l-btn-text">
-                    <button id="saveShipmentDetailBtn" onclick="addLogistic()" class="btn btn-sm btn-primary">
-                    <i class="fa fa-save text-primary"></i> Thêm Logistic</button></span></span>
+                    <button id="saveShipmentDetailBtn" onclick="addDelegated()" class="btn btn-sm btn-primary">
+                    <i class="fa fa-plus text-primary"></i> Thêm Ủy Quyền</button></span></span>
                   </a>
                 </td>
-                <td>
-                    <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
-                      <span class="l-btn-left"><span class="l-btn-text">
-                      <button id="saveShipmentDetailBtn" onclick="editLogistic()" class="btn btn-sm btn-primary">
-                      <i class="fa fa-edit text-primary"></i> Sửa Logistic</button></span></span>
-                    </a>
-                  </td>
-              </tr>
           </tbody>
           <table id="container-grid" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead>
@@ -103,7 +100,7 @@
                 </tr>
             </thead>
           </table>
-
+        
         </div>
       </div>
     </div>
@@ -122,7 +119,7 @@
         var bill;
         var logisticGroup = new Object();
         var logisticDelegated = new Object();
-
+        var getSelected = null;
 
         $(document).ready(function () {
 
@@ -213,7 +210,7 @@
             url: PREFIX + "/list",
             method: "POST",
             singleSelect: true,
-            height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
+            height: $(document).height() - $(".main-body__search-wrapper").height() - 90,
             clientPaging: true,
             collapsible: true,
             pagination: true,
@@ -305,8 +302,8 @@
         function getSelectedRow() {
         var row = $("#dg").datagrid("getSelected");
         if (row) {
-            id = row.id;
-            loadTableByLogisticGroup(id);
+            getSelected = row.id;
+            loadTableByLogisticGroup(getSelected);
         }
         }
 
@@ -371,15 +368,15 @@
         }
 
         function clearInput() {
-        logisticGroup = new Object();
-        $("#fromDate").datebox('setValue', '');
-        $("#toDate").datebox('setValue', '');
-        $("#searchBillNo").textbox('setText', '');
-        $("#searchContNo").textbox('setText', '');
-        $("#opr").combobox('setText', '');
-        $("#vessel").combobox('setText', '');
-        $("#voyNo").combobox('setText', '');
-        loadTable(logisticGroup);
+            logisticGroup = new Object();
+            $("#fromDate").datebox('setValue', '');
+            $("#toDate").datebox('setValue', '');
+            $("#searchBillNo").textbox('setText', '');
+            $("#searchContNo").textbox('setText', '');
+            $("#opr").combobox('setText', '');
+            $("#vessel").combobox('setText', '');
+            $("#voyNo").combobox('setText', '');
+            loadTable(logisticGroup);
         }
 
 
@@ -423,11 +420,59 @@
         
         function addLogistic()
         {
-            $.modal.openTab("Thêm Danh sách ủy quyền", PREFIX + "/add");
+            $.modal.openWithOneButton("Thêm Logistic", PREFIX + "/add",500,600);
         }
         function editLogistic()
         {
-            $.modal.openTab("Sửa Danh sách ủy quyền", PREFIX + "/edit");
+            if(getSelected == null)
+            {
+                return;
+            }
+            $.modal.openWithOneButton("Sửa Logistic", PREFIX + '/edit/' + getSelected,500,600);
+        }
+        function destroyUser ()
+        {
+            if(getSelected == null)
+            {
+                return;
+            }
+            $.modal.confirm(
+                "Bạn có chắc chắn muốn XÓA đơn vị logistic này không?",
+                    function () {
+                    $.ajax({
+                        url: PREFIX + "/remove",
+                        method: "POST",
+                        data :  {ids : getSelected},
+                        success: function (res) {
+                            if(res.code == 0)
+                            {
+                                $.modal.closeLoading();
+                                $.modal.alertSuccess("Xóa logistic thành công");
+                                loadTable();
+                            }else {
+                                $.modal.closeLoading();
+                                $.modal.alertError(res.msg)
+                            }
+                        
+                        },
+                        error: function (result) {
+                        $.modal.alertError(
+                            "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin."
+                        )
+                        },
+                    })
+                    },
+                    { title: "Xác nhận xóa logistic", btn: ["Đồng Ý", "Hủy Bỏ"] }
+            );
+        }
+
+        function addDelegated()
+        {
+            if(getSelected == null)
+            {
+                return;
+            }
+            $.modal.openWithOneButton("Thêm Ủy Quyền", PREFIXDELEGATED + '/addDelegated/'+ getSelected,500,600);
         }
    </script>
 </body>
