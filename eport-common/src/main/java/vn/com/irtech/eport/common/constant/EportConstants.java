@@ -62,6 +62,7 @@ public interface EportConstants {
 	// Process order result
 	public static final String PROCESS_ORDER_RESULT_FAILED = "F";
 	public static final String PROCESS_ORDER_RESULT_SUCCESS = "S";
+	
 	// process history
 	public static final int PROCESS_HISTORY_STATUS_START = 1;
 	public static final int PROCESS_HISTORY_STATUS_FINISHED = 2;
@@ -148,6 +149,10 @@ public interface EportConstants {
 	// Topic for shipment comment
 	/** Topic comment container supplier */
 	public static final String TOPIC_COMMENT_CONT_SUPPLIER = "Cấp container rỗng";
+	/** Topic comment container supplier reject */
+	public static final String TOPIC_COMMENT_CONT_SUPPLIER_REJECT = "Từ chối cấp container rỗng";
+	/** Topic comment container supplier delete*/
+	public static final String TOPIC_COMMENT_CONT_SUPPLIER_DELETE = "Hủy yêu cầu cấp container rỗng";
 	/** Topic comment om support document */
 	public static final String TOPIC_COMMENT_OM_DOCUMENT = "Xác nhận giấy tờ thủ tục";
 	
@@ -200,4 +205,10 @@ public interface EportConstants {
 	public static final String TRUCK_TYPE_TRUCK_NO = "0";
 	/** loai xe ro mooc */
 	public static final String TRUCK_TYPE_CHASSIS_NO = "1";
+	
+	// Process status of shipment detail
+	public static final String PROCESS_STATUS_SHIPMENT_DETAIL_NO = "N";
+	public static final String PROCESS_STATUS_SHIPMENT_DETAIL_YES = "Y";
+	public static final String PROCESS_STATUS_SHIPMENT_DETAIL_ERROR = "E";
+	public static final String PROCESS_STATUS_SHIPMENT_DETAIL_DELETE = "D";
 }

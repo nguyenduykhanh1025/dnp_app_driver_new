@@ -58,6 +58,7 @@ public class CheckingCustomThread {
 									shipmentDetail.getVslNm() + shipmentDetail.getVoyNo(),
 									shipmentDetail.getContainerNo());
 							boolean releasedFlg = false;
+							logger.debug(">>>>> ACCISS RETURN:\n" + result);
 							if (result != null && result.isReleased()) {
 								// Neu lenh BocHang -> 2, HaHang -> 4 //FIXME
 								// Kiem tra số tờ khai có mapping với khai báo
