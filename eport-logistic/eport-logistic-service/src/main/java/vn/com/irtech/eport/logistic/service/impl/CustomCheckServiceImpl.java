@@ -22,14 +22,13 @@ import org.springframework.web.util.HtmlUtils;
 import vn.com.irtech.eport.common.constant.SystemConstants;
 import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.common.json.JSONObject.JSONArray;
-import vn.com.irtech.eport.common.utils.html.EscapeUtil;
 import vn.com.irtech.eport.logistic.dto.CustomsCheckResultDto;
 import vn.com.irtech.eport.logistic.service.ICustomCheckService;
 import vn.com.irtech.eport.system.dto.CustomDeclareResult;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
 /**
- * @author GiapHD
+ * @author GiapHOD
  *
  */
 @Service

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,8 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysUser;
+import vn.com.irtech.eport.web.mqtt.MqttService;
+import vn.com.irtech.eport.web.mqtt.MqttService.NotificationCode;
 
 @Controller
 @RequestMapping("/container/supplier")
@@ -55,6 +58,9 @@ public class ContainerSupplierController extends BaseController {
 	@Autowired
 	private IShipmentCommentService shipmentCommentService;
 	
+	@Autowired
+	private MqttService mqttService;
+	
 	@GetMapping()
 	public String getContSupplier(@RequestParam(required = false) Long sId, ModelMap mmap) {
 		if (sId != null) {
@@ -64,6 +70,11 @@ public class ContainerSupplierController extends BaseController {
 		return PREFIX + "/index";
     }
 	
+	@GetMapping("/confirmation")
+	public String getConfirmationForm() {
+		return PREFIX + "/confirmation";
+	}
+	
 	@PostMapping("/shipments")
 	@ResponseBody
 	public TableDataInfo listShipment(@RequestBody PageAble<Shipment> param) {
@@ -72,8 +83,8 @@ public class ContainerSupplierController extends BaseController {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
-		shipment.setServiceType(3);
-		List<Shipment> shipments = shipmentService.getShipmentListForContSupply(shipment);
+		shipment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
+		List<Shipment> shipments = shipmentService.selectShipmentListForRegister(shipment);
 		return getDataTable(shipments);
 	}
 
@@ -184,5 +195,98 @@ public class ContainerSupplierController extends BaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
+	}
+	
+	@PostMapping("/reject")
+	@ResponseBody
+	public AjaxResult rejectSupply(String content, String shipmentDetailIds, Long shipmentId, Long logisticGroupId) {
+		if (StringUtils.isEmpty(shipmentDetailIds) || shipmentId == null || logisticGroupId == null) {
+			return error("Invalid input!");
+		}
+		
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_HOLD);
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
+		
+		SysUser user = ShiroUtils.getSysUser();
+		ShipmentComment shipmentComment = new ShipmentComment();
+		shipmentComment.setShipmentId(shipmentId);
+		shipmentComment.setLogisticGroupId(logisticGroupId);
+		shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CONT_SUPPLIER_REJECT);
+		shipmentComment.setContent(content);
+		shipmentComment.setCreateBy(user.getUserName());
+		shipmentComment.setUserId(user.getUserId());
+		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+		shipmentComment.setUserAlias(user.getDept().getDeptName());
+		shipmentComment.setUserName(user.getUserName());
+		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
+		shipmentComment.setCommentTime(new Date());
+		shipmentComment.setResolvedFlg(true);
+		shipmentCommentService.insertShipmentComment(shipmentComment);
+		
+		// Send notification to om
+		try {
+			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, shipmentComment.getTopic(), shipmentComment.getContent(), "", EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
+		} catch (MqttException e) {
+			logger.error("Fail to send message om notification app: " + e);
+		}
+		
+		// Check update shipment if all container doesn't need container for supply
+		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+		shipmentDetailParam.setShipmentId(shipmentId);
+		shipmentDetailParam.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_REQ);
+		if (CollectionUtils.isEmpty(shipmentDetailService.selectShipmentDetailList(shipmentDetailParam))) {
+			Shipment shipment = new Shipment();
+			shipment.setId(shipmentId);
+			shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
+			shipmentService.updateShipment(shipment);
+		}
+		
+		return success();
+	}
+	
+	@PostMapping("/delete")
+	@ResponseBody
+	public AjaxResult deleteSupply(String content, String shipmentDetailIds, Long shipmentId,  Long logisticGroupId) {
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setProcessStatus(EportConstants.PROCESS_STATUS_SHIPMENT_DETAIL_DELETE);
+		shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_HOLD);
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
+		
+		SysUser user = ShiroUtils.getSysUser();
+		ShipmentComment shipmentComment = new ShipmentComment();
+		shipmentComment.setShipmentId(shipmentId);
+		shipmentComment.setLogisticGroupId(logisticGroupId);
+		shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CONT_SUPPLIER_DELETE);
+		shipmentComment.setContent(content);
+		shipmentComment.setCreateBy(user.getUserName());
+		shipmentComment.setUserId(user.getUserId());
+		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+		shipmentComment.setUserAlias(user.getDept().getDeptName());
+		shipmentComment.setUserName(user.getUserName());
+		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
+		shipmentComment.setCommentTime(new Date());
+		shipmentComment.setResolvedFlg(true);
+		shipmentCommentService.insertShipmentComment(shipmentComment);
+		
+		// Send notification to om
+		try {
+			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, shipmentComment.getTopic(), shipmentComment.getContent(), "", EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
+		} catch (MqttException e) {
+			logger.error("Fail to send message om notification app: " + e);
+		}
+		
+		// Check update shipment if all container doesn't need container for supply
+		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+		shipmentDetailParam.setShipmentId(shipmentId);
+		shipmentDetailParam.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_REQ);
+		if (CollectionUtils.isEmpty(shipmentDetailService.selectShipmentDetailList(shipmentDetailParam))) {
+			Shipment shipment = new Shipment();
+			shipment.setId(shipmentId);
+			shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
+			shipmentService.updateShipment(shipment);
+		}
+		
+		return success();
 	}
 }
