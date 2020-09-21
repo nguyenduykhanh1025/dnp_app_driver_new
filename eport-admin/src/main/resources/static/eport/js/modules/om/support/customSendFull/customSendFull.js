@@ -1,59 +1,14 @@
 const PREFIX = ctx + "om/support/custom-send-full";
-const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var bill;
 var shipment = new Object();
 shipment.serviceType = 4;
 var shipmentDetails = new Object();
-var currentLeftWidth = $(".table-left").width();
-var currentRightWidth = $(".table-right").width();
 var dogrid = document.getElementById("container-grid"), hot;
 var rowAmount = 0;
 var shipmentSelected;
 var sourceData;
 
 $(document).ready(function () {
-  $(".main-body").layout();
-
-  $(".collapse").click(function () {
-    $(".main-body__search-wrapper").height(15);
-    $(".main-body__search-wrapper--container").hide();
-    $(this).hide();
-    $(".uncollapse").show();
-  });
-
-  $(".uncollapse").click(function () {
-    $(".main-body__search-wrapper").height(SEARCH_HEIGHT + 20);
-    $(".main-body__search-wrapper--container").show();
-    $(this).hide();
-    $(".collapse").show();
-  });
-
-  $(".left-side__collapse").click(function () {
-    $('#main-layout').layout('collapse', 'west');
-  });
-
-  $(".right-side__collapse").click(function () {
-    $('#right-layout').layout('collapse', 'south');
-    setTimeout(() => {
-      hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
-      hot.render();
-    }, 200);
-  });
-
-  $('#right-layout').layout({
-    onExpand: function (region) {
-      if (region == "south") {
-        hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
-        hot.render();
-      }
-    }
-  });
-
-  $('#right-layout').layout('collapse', 'south');
-  setTimeout(() => {
-      hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
-      hot.render();
-  }, 200);
 
   loadTable(shipment);
   $('#notifyResult').attr("disabled", true);
@@ -94,7 +49,7 @@ function loadTable(shipment) {
     url: PREFIX + "/shipments",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
+    height: currentHeight,
     clientPaging: true,
     collapsible: true,
     pagination: true,

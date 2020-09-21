@@ -13,12 +13,12 @@
 
 <body class="grey-background">
   <div class="main-body">
+    <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+    <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
     <div class="main-body__search-wrapper mb-2">
-      <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
-      <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
       <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
         <div class="flex__left w-20">
-          <h3 class="mt-10">Thông quan bốc hàng</h3>
+          <h3 class="mt-10">Thông Quan Bốc Hàng</h3>
         </div>
         <div class="flex__right w-80">
           <div class="justify-content-around align-items-center" id="ff">
@@ -38,10 +38,10 @@
               <input id="vesselAndVoyages" class="easyui-combobox">
             </div>
             <div class="d-inline">
-              <button class="btn btn-success" onclick="search()">Tìm kiếm</button>
+              <button class="btn btn-success btn-customs" onclick="search()">Tìm kiếm</button>
             </div>
             <div class="d-inline">
-              <button class="btn btn-success btn-outline" onclick="clearInput()">Làm mới</button>
+              <button class="btn btn-success btn-outline btn-customs" onclick="clearInput()">Làm mới</button>
             </div>
           </div>
         </div>
@@ -99,8 +99,20 @@
               </div>
             </div>
             <div data-options="region:'center'" id="right-side__main-table">
-              <div>
-                <button class="btn btn-sm btn-primary" id="checkCustomStatusByProcessOrderId" onclick="notifyResult()"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Thông Báo Kết Quả</button>
+              <div class="right-side__toolbar">
+                <div class="datagrid-toolbar">
+                  <table cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td>
+                          <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                            <span class="l-btn-left"><span class="l-btn-text">
+                            <button id="checkCustomStatusByProcessOrderId" onclick="notifyResult()" class="btn btn-sm btn-success">
+                            <i class="fa fa-check text-primary"></i> Thông Báo Kết Quả</button></span></span>
+                          </a>
+                        </td>
+                      </tr>
+                  </table>
+                </div>
               </div>
               <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
             </div>
@@ -115,10 +127,11 @@
   <th:block th:include="include :: handsontable-js" />
   <script type="text/javascript" th:inline="javascript">
     $(".main-body").height($(document).height() - 10);
-    $(".easyui-layout").height($('.main-body').height() - 50);
+    $(".easyui-layout").height($('.main-body').height() - 35);
     var logisticGroups = /*[[${logisticGroups}]]*/;
     var vesselAndVoyages = /*[[${vesselAndVoyages}]]*/;
     var sId = /*[[${sId}]]*/;
   </script>
+  <script th:src="@{/eport/js/modules/om/support/customReceiveFull/layout.js}"></script>
   <script th:src="@{/eport/js/modules/om/support/customReceiveFull/customReceiveFull.js}"></script>
 </body>

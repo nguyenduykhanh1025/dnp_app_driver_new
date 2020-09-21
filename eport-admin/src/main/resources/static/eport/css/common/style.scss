@@ -6,6 +6,32 @@ $black: #000000;
 $lightblue: #f3f7fa;
 body {
   height: 98%;
+  .btn-collapse {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    font-size: 1.5em;
+    width: 25px;
+    height: 25px;
+    line-height: 20px;
+    text-align: center;
+    z-index: 1406;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    &:hover {
+      border: 1px solid #ccc;
+      background: #ccc;
+    }
+  }
+  .uncollapse {
+    display: none;
+    line-height: 25px;
+  }
+  .collapse {
+    display: block;
+  }
 }
 .mb-2 {
   margin-bottom: 2em;
@@ -28,30 +54,6 @@ body {
       transition: 0.1s all;
       overflow: hidden;
       margin-bottom: 0;
-      .btn-collapse {
-        position: fixed;
-        top: 5px;
-        right: 5px;
-        font-size: 1.5em;
-        width: 25px;
-        height: 25px;
-        line-height: 20px;
-        text-align: center;
-        z-index: 1406;
-        border: 1px solid #ccc;
-        background: #fff;
-        cursor: pointer;
-        &:hover {
-          border: 1px solid #ccc;
-          background: #ccc;
-        }
-      }
-      .uncollapse {
-        display: none;
-      }
-      .collapse {
-        display: block;
-      }
       .main-body__search-wrapper--container {
         div.flex__left {
           h3 {
@@ -95,7 +97,7 @@ body {
       }
       .btn {
         font-size: 12px;
-        padding: 3px;
+        padding: 5px;
       }
     }
     .main-body__table-wrapper {
@@ -109,7 +111,7 @@ body {
         }
         .left-side__uncollapse {
           @include btn-collapse-col;
-          display: none;  
+          display: none;
           &:hover {
             cursor: e-resize;
           }
@@ -127,6 +129,13 @@ body {
         .ht_clone_top th,
         .ht_clone_top_left_corner th {
           @include border-dotted;
+          background-color: #1c84c652;
+          background: -webkit-linear-gradient(top, #ffffff 0, #f2f2f2 100%);
+          background: -moz-linear-gradient(top, #ffffff 0, #f2f2f2 100%);
+          background: -o-linear-gradient(top, #ffffff 0, #f2f2f2 100%);
+          background: linear-gradient(to bottom, #ffffff 0, #f2f2f2 100%);
+          background-repeat: repeat-x;
+          filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff,endColorstr=#F2F2F2,GradientType=0);
         }
         .ht_master tr:nth-of-type(odd) > td,
         .htCore tr:nth-of-type(odd) > td {
@@ -151,6 +160,15 @@ body {
           z-index: 1406;
           &:hover {
             opacity: 1;
+          }
+        }
+
+        .l-btn-plain {
+          &:hover {
+            background: transparent;
+            border-width: 1;
+            border-color: transparent;
+            filter: none;
           }
         }
       }
@@ -180,11 +198,23 @@ body {
   font-weight: bold;
 }
 
+.btn-customs {
+  position: relative;
+  vertical-align: middle;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-bottom: 5px !important;
+  margin: 0;
+  padding: 4;
+  border-radius: 3px;
+}
+
 .datagrid-toolbar {
   table {
     .btn {
       padding: 2px 5px !important;
-      border-radius: 2px; 
+      border-radius: 2px;
       margin-right: 2px;
     }
     .l-btn-text {
@@ -201,4 +231,14 @@ body {
   display: inline-block;
   text-align: center;
   color: white;
+}
+
+.btn-success {
+  &:active {
+    &:focus {
+      background-color: #1a7bb9 !important;
+      border-color: #1a7bb9 !important;
+      color: #ffffff;
+    }
+  }
 }
