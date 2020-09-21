@@ -23,7 +23,9 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.web.mqtt.listener.MCRequestHandler;
 import vn.com.irtech.eport.web.mqtt.listener.RobotResponseHandler;
 
@@ -228,6 +230,30 @@ public class MqttService implements MqttCallback {
 		data.put("msg", "ping");
 		String msg = new Gson().toJson(data);
 		String topic = ROBOT_CONNECTION_REQUEST.replace("+", uuid);
+		publish(topic, new MqttMessage(msg.getBytes()));
+	}
+	
+	public void sendNotificationApp(NotificationCode code, String title, String content, String url, Integer priority) throws MqttException {
+		NotificationReq notificationReq = new NotificationReq();
+		notificationReq.setTitle(title);
+		notificationReq.setMsg(content);
+		notificationReq.setLink(url);
+		notificationReq.setPriority(priority);
+		String topic = "";
+		switch (code) {
+		case NOTIFICATION_OM:
+			notificationReq.setType(EportConstants.APP_USER_TYPE_OM);
+			topic = NOTIFICATION_OM_TOPIC;
+			break;
+		case NOTIFICATION_IT:
+			notificationReq.setType(EportConstants.APP_USER_TYPE_IT);
+			topic = NOTIFICATION_IT_TOPIC;
+			break;
+		case NOTIFICATION_CONT:
+			notificationReq.setType(EportConstants.APP_USER_TYPE_CONT);
+			topic = NOTIFICATION_CONT_TOPIC;
+		}
+		String msg = new Gson().toJson(notificationReq);
 		publish(topic, new MqttMessage(msg.getBytes()));
 	}
 }

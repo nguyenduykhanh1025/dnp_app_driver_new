@@ -1314,5 +1314,15 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		return shipmentDetailMapper.selectShipmentDetailForDriverSendCont(driverId, pickupAssignForm, serviceType);
 	}
 	
-	
+	/**
+     * Update shipment detail by shipment detail id
+     * 
+     * @param shipmentDetailIds
+     * @param shipmentDetail
+     * @return int
+     */
+	@Override
+    public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.updateShipmentDetailByIds(Convert.toStrArray(shipmentDetailIds), shipmentDetail);
+	}
 }

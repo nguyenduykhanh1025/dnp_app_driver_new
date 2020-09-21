@@ -466,9 +466,12 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
                 break;
             case 'N':
-                if (value > 1) {
+                if (value > 1 && sourceData[row].contSupplyStatus == 'Y') {
                     process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
                 }
+                break;
+            case 'D':
+                process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
                 break;
         }
         // Payment status
