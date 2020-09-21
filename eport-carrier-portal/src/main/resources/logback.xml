@@ -25,6 +25,22 @@
         </filter>
 	</appender>
 	
+    <appender name="file_debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/eport-carrier-debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/eport-carrier-debug.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
 	<appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
 	    <file>${log.path}/eport-carrier-error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -55,8 +71,9 @@
 	<logger name="vn.com.irtech.eport" level="info" />
 	<logger name="org.springframework" level="warn" />
 
-	<root level="info">
+	<root level="debug">
 		<appender-ref ref="console" />
+        <appender-ref ref="file_debug" />
 	</root>
 	
     <root level="info">
