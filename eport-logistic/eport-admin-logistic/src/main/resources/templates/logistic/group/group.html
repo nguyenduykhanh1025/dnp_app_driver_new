@@ -22,19 +22,13 @@
         <div class="flex__right w-80">
           <div class="justify-content-around align-items-center" id="ff">
             <div class="d-inline">
-                
-              </div>
-            <div class="d-inline">
-              <input class="easyui-textbox" id="searchContNo" data-options="prompt:'Container No'" />
+              <input class="easyui-textbox" id="groupName" data-options="prompt:'Tên Công Ty'" />
             </div>
             <div class="d-inline">
-              <input id="fromDate" class="easyui-datebox" style="width: 100px;" data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
+              <input class="easyui-textbox" id="mst" data-options="prompt:'Mã Số Thuế'" />
             </div>
             <div class="d-inline">
-                <input id="toDate" class="easyui-datebox" style="width: 100px;" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
-            </div>
-            <div class="d-inline">
-              <button class="btn btn-success" onclick="searchDo()">Tìm kiếm</button>
+              <button class="btn btn-success" onclick="search()">Tìm kiếm</button>
             </div>
             <div class="d-inline">
               <button class="btn btn-success btn-outline" onclick="clearInput()">Làm mới</button>
@@ -49,58 +43,65 @@
           style="width:30%;">
           <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
           <div id="toolbar">
-            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addLogistic()">Thêm Logistic</a>
-            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editLogistic()">Sửa Logistic</a>
-            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyUser()">Xóa Logistic</a>
-        </div>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true"
+              onclick="addLogistic()">Thêm Logistic</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true"
+              onclick="editLogistic()">Sửa Logistic</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true"
+              onclick="destroyUser()">Xóa Logistic</a>
+          </div>
           <table id="dg" style="width: 100%;">
             <thead>
-                <tr>
-                  <th data-options="field:'groupName',align:'left'" width="130">
-                    Tên doanh nghiệp
-                  </th>
-                  <th data-options="field:'mst',align:'left'" width="150">
-                    MST doanh nghiệp
-                  </th>
-                  <th data-options="field:'phone',align:'left'" width="110">
-                    Điện thoại cố định
-                  </th>
-                  <th data-options="field:'email',align:'center'" width="200">
-                    Email
-                  </th>
-                  <!-- <th data-options="field:'createTime',align:'left'" width="130">
+              <tr>
+                <th data-options="field:'groupName',align:'left'" width="130">
+                  Tên doanh nghiệp
+                </th>
+                <th data-options="field:'mst',align:'left'" width="150">
+                  MST doanh nghiệp
+                </th>
+                <th data-options="field:'phone',align:'left'" width="110">
+                  Điện thoại cố định
+                </th>
+                <th data-options="field:'email',align:'center'" width="200">
+                  Email
+                </th>
+                <!-- <th data-options="field:'createTime',align:'left'" width="130">
                     Receive Time
                   </th> -->
-                </tr>
-              </thead>  
+              </tr>
+            </thead>
           </table>
-          
+
         </div>
         <div data-options="region:'center'" style="width:100%;">
-            <tbody>
-                <tr>
-                <td>
-                  <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
-                    <span class="l-btn-left"><span class="l-btn-text">
-                    <button id="saveShipmentDetailBtn" onclick="addDelegated()" class="btn btn-sm btn-primary">
-                    <i class="fa fa-plus text-primary"></i> Thêm Ủy Quyền</button></span></span>
-                  </a>
-                </td>
+          <tbody>
+            <tr>
+              <td>
+                <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                  <span class="l-btn-left"><span class="l-btn-text">
+                      <button id="saveShipmentDetailBtn" onclick="addDelegated()" class="btn btn-sm btn-primary">
+                        <i class="fa fa-plus text-primary"></i> Thêm Ủy Quyền</button></span></span>
+                </a>
+              </td>
           </tbody>
           <table id="container-grid" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead>
-                <tr>
-                    <th data-options="field:'delegateTaxCode', halign:'center'" width="130">Mã Số Thuế</th>
-                    <th data-options="field:'delegateCompany', align:'center', halign:'center'" width="250">Tên Công Ty</th>
-                    <th data-options="field:'delegateType', align:'center', halign:'center', formatter:formatDelegateType" width="130">Loại Ủy Quyền</th>
-                    <th data-options="field:'validFlg', align:'center', halign:'center', formatter: formatValidFlg" width="130">Trạng Thái</th>
-                    <th data-options="field:'validFrom', halign:'center', formatter: formatDate" width="130">Từ Ngày</th>
-                    <th data-options="field:'validUntil', align:'center', halign:'center', formatter: formatDate" width="130">Đến Ngày</th>
-                    <th data-options="field:'action', align:'center', halign:'center', fixed:true, formatter: formatAction" width=150>Thao Tác</th>
-                </tr>
+              <tr>
+                <th data-options="field:'delegateTaxCode', halign:'center'" width="130">Mã Số Thuế</th>
+                <th data-options="field:'delegateCompany', align:'center', halign:'center'" width="250">Tên Công Ty</th>
+                <th data-options="field:'delegateType', align:'center', halign:'center', formatter:formatDelegateType"
+                  width="130">Loại Ủy Quyền</th>
+                <th data-options="field:'validFlg', align:'center', halign:'center', formatter: formatValidFlg"
+                  width="130">Trạng Thái</th>
+                <th data-options="field:'validFrom', halign:'center', formatter: formatDate" width="130">Từ Ngày</th>
+                <th data-options="field:'validUntil', align:'center', halign:'center', formatter: formatDate"
+                  width="130">Đến Ngày</th>
+                <th data-options="field:'action', align:'center', halign:'center', fixed:true, formatter: formatAction"
+                  width=150>Thao Tác</th>
+              </tr>
             </thead>
           </table>
-        
+
         </div>
       </div>
     </div>
@@ -112,367 +113,394 @@
     $(".main-body").height($(document).height() - 10);
     $(".easyui-layout").height($('.main-body').height() - 50);
   </script>
-   <script>
-        const PREFIX = ctx + "logistic/group";
-        const PREFIXDELEGATED = ctx + "logistic/delegate";
-        const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
-        var bill;
-        var logisticGroup = new Object();
-        var logisticDelegated = new Object();
-        var getSelected = null;
+  <script>
+    const PREFIX = ctx + "logistic/group";
+    const PREFIXDELEGATED = ctx + "logistic/delegate";
+    const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
+    var bill;
+    var logisticGroup = new Object();
+    var logisticDelegated = new Object();
+    var getSelected = null;
 
-        $(document).ready(function () {
+    $(document).ready(function () {
 
-        loadTable();
-        loadTableByLogisticGroup();
-        $(".main-body").layout();
+      loadTable();
+      loadTableByLogisticGroup();
+      $(".main-body").layout();
 
-        $(".collapse").click(function () {
-            $(".main-body__search-wrapper").height(15);
-            $(".main-body__search-wrapper--container").hide();
-            $(this).hide();
-            $(".uncollapse").show();
-        });
+      $(".collapse").click(function () {
+        $(".main-body__search-wrapper").height(15);
+        $(".main-body__search-wrapper--container").hide();
+        $(this).hide();
+        $(".uncollapse").show();
+      });
 
-        $(".uncollapse").click(function () {
-            $(".main-body__search-wrapper").height(SEARCH_HEIGHT + 20);
-            $(".main-body__search-wrapper--container").show();
-            $(this).hide();
-            $(".collapse").show();
-        });
+      $(".uncollapse").click(function () {
+        $(".main-body__search-wrapper").height(SEARCH_HEIGHT + 20);
+        $(".main-body__search-wrapper--container").show();
+        $(this).hide();
+        $(".collapse").show();
+      });
 
-        $(".left-side__collapse").click(function () {
-            $('#main-layout').layout('collapse', 'west');
-        });
+      $(".left-side__collapse").click(function () {
+        $('#main-layout').layout('collapse', 'west');
+      });
 
-        $('#searchAll').keyup(function (event) {
-            if (event.keyCode == 13) {
-            logisticGroup.containerNumber = $('#searchAll').val().toUpperCase();
-            logisticGroup.consignee = $('#searchAll').val().toUpperCase();
-            loadTableByLogisticGroup(bill);
-            }
+      $("#groupName").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+          logisticGroup.groupName = $("#groupName").textbox('getText').toUpperCase();
+          loadTable(logisticGroup);
+        }
+      });
 
-        });
-
-        $("#searchBillNo").textbox('textbox').bind('keydown', function (e) {
-            // enter key
-            if (e.keyCode == 13) {
+      $("#mst").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+          logisticGroup.mst = $("#mst").textbox('getText').toUpperCase();
+          loadTable(logisticGroup);
+        }
+      });
+      $('#fromDate').datebox({
+        onSelect: function (date) {
+          date.setHours(0, 0, 0);
+          fromDate = date;
+          if (toDate != null && date.getTime() > toDate.getTime()) {
+            $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
+          } else {
+            fromDate.setHours(23, 59, 59);
+            logisticGroup.fromDate = fromDate.getTime();
             logisticGroup.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
-            loadTable(logisticGroup);
-            }
-        });
-
-        $("#searchContNo").textbox('textbox').bind('keydown', function (e) {
-            // enter key
-            if (e.keyCode == 13) {
             logisticGroup.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
             loadTable(logisticGroup);
-            }
-        });
-        $('#fromDate').datebox({
-            onSelect: function (date) {
-            date.setHours(0, 0, 0);
-            fromDate = date;
-            if (toDate != null && date.getTime() > toDate.getTime()) {
-                $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
-            } else {
-                fromDate.setHours(23, 59, 59);
-                logisticGroup.fromDate = fromDate.getTime();
-                logisticGroup.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
-                logisticGroup.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
-                loadTable(logisticGroup);
-            }
-            return date;
-            }
-        });
-
-        $('#toDate').datebox({
-            onSelect: function (date) {
-            date.setHours(23, 59, 59);
-            toDate = date;
-            if (fromDate != null && date.getTime() < fromDate.getTime()) {
-                $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
-            } else {
-                toDate.setHours(23, 59, 59);
-                logisticGroup.toDate = toDate.getTime();
-                logisticGroup.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
-                logisticGroup.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
-                loadTable(logisticGroup);
-            }
-            }
-        });
-        });
-
-
-
-        function loadTable(logisticGroup) {
-        $("#dg").datagrid({
-            url: PREFIX + "/list",
-            method: "POST",
-            singleSelect: true,
-            height: $(document).height() - $(".main-body__search-wrapper").height() - 90,
-            clientPaging: true,
-            collapsible: true,
-            pagination: true,
-            pageSize: 20,
-            onClickRow: function () {
-            getSelectedRow();
-            },
-            nowrap: false,
-            striped: true,
-            loader: function (param, success, error) {
-            var opts = $(this).datagrid("options");
-            if (!opts.url) return false;
-            $.ajax({
-                type: opts.method,
-                url: opts.url,
-                contentType: "application/json",
-                accept: "text/plain",
-                dataType: "text",
-                data: JSON.stringify({
-                pageNum: param.page,
-                pageSize: param.rows,
-                orderByColumn: param.sort,
-                isAsc: param.order,
-                data: logisticGroup,
-                }),
-                dataType: "json",
-                success: function (data) {
-                success(data);
-                },
-                error: function () {
-                error.apply(this, arguments);
-                },
-            });
-            },
-        });
+          }
+          return date;
         }
+      });
 
-        function loadTableByLogisticGroup(id) {
-        logisticDelegated.logisticGroupId = id;
-        $("#container-grid").datagrid({
-            url: PREFIXDELEGATED + "/list",
-            method: "POST",
-            singleSelect: true,
-            height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
-            clientPaging: true,
-            pagination: true,
-            pageSize: 20,
-            nowrap: false,
-            striped: true,
-            rownumbers: true,
-            loader: function (param, success, error) {
-            var opts = $(this).datagrid("options");
-            if (id == null) {
-                return false;
-            }
-            if (!opts.url) return false;
-            $.ajax({
-                type: opts.method,
-                url: opts.url,
-                contentType: "application/json",
-                accept: "text/plain",
-                dataType: "text",
-                data: JSON.stringify({
-                pageNum: param.page,
-                pageSize: param.rows,
-                orderByColumn: param.sort,
-                isAsc: param.order,
-                data: logisticDelegated
-                }),
-                success: function (data) {
-                    success(JSON.parse(data));
-                },
-                error: function () {
-                error.apply(this, arguments);
-                },
-            });
-            },
-        });
-        }
-
-
-        function formatToYDM(date) {
-        if (date == null || date == undefined) {
-            return "-";
-        }
-        return date.split("-").reverse().join("-");
-        }
-
-        function getSelectedRow() {
-        var row = $("#dg").datagrid("getSelected");
-        if (row) {
-            getSelected = row.id;
-            loadTableByLogisticGroup(getSelected);
-        }
-        }
-
-        function stringToDate(dateStr) {
-        let dateParts = dateStr.split("/");
-        return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
-        }
-
-        $.event.special.inputchange = {
-        setup: function () {
-            var self = this,
-            val;
-            $.data(
-            this,
-            "timer",
-            window.setInterval(function () {
-                val = self.value;
-                if ($.data(self, "cache") != val) {
-                $.data(self, "cache", val);
-                $(self).trigger("inputchange");
-                }
-            }, 20)
-            );
-        },
-        teardown: function () {
-            window.clearInterval($.data(this, "timer"));
-        },
-        add: function () {
-            $.data(this, "cache", this.value);
-        },
-        };
-
-
-  
-
-        laydate.render({
-        elem: '#toDate',
-        format: 'dd/MM/yyyy'
-        });
-        laydate.render({
-        elem: '#fromDate',
-        format: 'dd/MM/yyyy'
-        });
-
-
-
-        function dateformatter(date) {
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        var d = date.getDate();
-        return (d < 10 ? ('0' + d) : d) + '/' + (m < 10 ? ('0' + m) : m) + '/' + y;
-        }
-
-        function dateparser(s) {
-        var ss = (s.split('\.'));
-        var d = parseInt(ss[0], 10);
-        var m = parseInt(ss[1], 10);
-        var y = parseInt(ss[2], 10);
-        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
-            return new Date(y, m - 1, d);
-        }
-        }
-
-        function clearInput() {
-            logisticGroup = new Object();
-            $("#fromDate").datebox('setValue', '');
-            $("#toDate").datebox('setValue', '');
-            $("#searchBillNo").textbox('setText', '');
-            $("#searchContNo").textbox('setText', '');
-            $("#opr").combobox('setText', '');
-            $("#vessel").combobox('setText', '');
-            $("#voyNo").combobox('setText', '');
+      $('#toDate').datebox({
+        onSelect: function (date) {
+          date.setHours(23, 59, 59);
+          toDate = date;
+          if (fromDate != null && date.getTime() < fromDate.getTime()) {
+            $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
+          } else {
+            toDate.setHours(23, 59, 59);
+            logisticGroup.toDate = toDate.getTime();
+            logisticGroup.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
+            logisticGroup.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
             loadTable(logisticGroup);
+          }
         }
+      });
+    });
 
 
-        function formatDate(value) {
-			if (value == null) return "";
-			var date = new Date(value);
-			return formatNumber(date.getDate())
-			+ "/" + formatNumber(date.getMonth() + 1)
-			+ "/" + date.getFullYear()
-		}
 
-		function formatNumber(number) {
-			return number < 10 ? "0" + number : number;
-		}
+    function loadTable(logisticGroup) {
+      $("#dg").datagrid({
+        url: PREFIX + "/list",
+        method: "POST",
+        singleSelect: true,
+        height: $(document).height() - $(".main-body__search-wrapper").height() - 90,
+        clientPaging: true,
+        collapsible: true,
+        pagination: true,
+        pageSize: 20,
+        onClickRow: function () {
+          getSelectedRow();
+        },
+        nowrap: false,
+        striped: true,
+        loader: function (param, success, error) {
+          var opts = $(this).datagrid("options");
+          if (!opts.url) return false;
+          $.ajax({
+            type: opts.method,
+            url: opts.url,
+            contentType: "application/json",
+            accept: "text/plain",
+            dataType: "text",
+            data: JSON.stringify({
+              pageNum: param.page,
+              pageSize: param.rows,
+              orderByColumn: param.sort,
+              isAsc: param.order,
+              data: logisticGroup,
+            }),
+            dataType: "json",
+            success: function (data) {
+              success(data);
+            },
+            error: function () {
+              error.apply(this, arguments);
+            },
+          });
+        },
+      });
+    }
 
-		function formatDelegateType(value) {
-			switch (value) {
-				case 'P':
-					return 'Làm Lệnh';
-				case 'M':
-					return 'Thanh Toán';
-			}
-			return '';
-		}
+    function loadTableByLogisticGroup(id) {
+      logisticDelegated.logisticGroupId = id;
+      $("#container-grid").datagrid({
+        url: PREFIXDELEGATED + "/list",
+        method: "POST",
+        singleSelect: true,
+        height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
+        clientPaging: true,
+        pagination: true,
+        pageSize: 20,
+        nowrap: false,
+        striped: true,
+        rownumbers: true,
+        loader: function (param, success, error) {
+          var opts = $(this).datagrid("options");
+          if (id == null) {
+            return false;
+          }
+          if (!opts.url) return false;
+          $.ajax({
+            type: opts.method,
+            url: opts.url,
+            contentType: "application/json",
+            accept: "text/plain",
+            dataType: "text",
+            data: JSON.stringify({
+              pageNum: param.page,
+              pageSize: param.rows,
+              orderByColumn: param.sort,
+              isAsc: param.order,
+              data: logisticDelegated
+            }),
+            success: function (data) {
+              success(JSON.parse(data));
+            },
+            error: function () {
+              error.apply(this, arguments);
+            },
+          });
+        },
+      });
+    }
 
-		function formatValidFlg(value) {
-			if (1 == value) {
-				return '<span style="color: green">Hiệu lực</span>';
-			}
-			return '<span style="color: red">Vô hiệu</span>';
-		}
 
-		function formatAction(value, row, index) {
-			let actions = [];
-			if (row.id) {
-				actions.push('<a class="btn btn-success btn-xs " onclick="editt(\'' + row.id + '\')"><i class="fa fa-remove"></i>Chỉnh sửa</a><span>  </span>');
-			}
-			actions.push('<a class="btn btn-danger btn-xs " onclick="remove(\'' + index + '\',\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
-			return actions.join('');
-        }
-        
-        function addLogistic()
-        {
-            $.modal.openWithOneButton("Thêm Logistic", PREFIX + "/add",500,600);
-        }
-        function editLogistic()
-        {
-            if(getSelected == null)
-            {
-                return;
+    function formatToYDM(date) {
+      if (date == null || date == undefined) {
+        return "-";
+      }
+      return date.split("-").reverse().join("-");
+    }
+
+    function getSelectedRow() {
+      var row = $("#dg").datagrid("getSelected");
+      if (row) {
+        getSelected = row.id;
+        loadTableByLogisticGroup(getSelected);
+      }
+    }
+
+    function stringToDate(dateStr) {
+      let dateParts = dateStr.split("/");
+      return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+    }
+
+    $.event.special.inputchange = {
+      setup: function () {
+        var self = this,
+          val;
+        $.data(
+          this,
+          "timer",
+          window.setInterval(function () {
+            val = self.value;
+            if ($.data(self, "cache") != val) {
+              $.data(self, "cache", val);
+              $(self).trigger("inputchange");
             }
-            $.modal.openWithOneButton("Sửa Logistic", PREFIX + '/edit/' + getSelected,500,600);
-        }
-        function destroyUser ()
-        {
-            if(getSelected == null)
-            {
-                return;
-            }
-            $.modal.confirm(
-                "Bạn có chắc chắn muốn XÓA đơn vị logistic này không?",
-                    function () {
-                    $.ajax({
-                        url: PREFIX + "/remove",
-                        method: "POST",
-                        data :  {ids : getSelected},
-                        success: function (res) {
-                            if(res.code == 0)
-                            {
-                                $.modal.closeLoading();
-                                $.modal.alertSuccess("Xóa logistic thành công");
-                                loadTable();
-                            }else {
-                                $.modal.closeLoading();
-                                $.modal.alertError(res.msg)
-                            }
-                        
-                        },
-                        error: function (result) {
-                        $.modal.alertError(
-                            "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin."
-                        )
-                        },
-                    })
-                    },
-                    { title: "Xác nhận xóa logistic", btn: ["Đồng Ý", "Hủy Bỏ"] }
-            );
-        }
+          }, 20)
+        );
+      },
+      teardown: function () {
+        window.clearInterval($.data(this, "timer"));
+      },
+      add: function () {
+        $.data(this, "cache", this.value);
+      },
+    };
 
-        function addDelegated()
-        {
-            if(getSelected == null)
-            {
-                return;
-            }
-            $.modal.openWithOneButton("Thêm Ủy Quyền", PREFIXDELEGATED + '/addDelegated/'+ getSelected,500,600);
+
+
+
+    laydate.render({
+      elem: '#toDate',
+      format: 'dd/MM/yyyy'
+    });
+    laydate.render({
+      elem: '#fromDate',
+      format: 'dd/MM/yyyy'
+    });
+
+
+
+    function dateformatter(date) {
+      var y = date.getFullYear();
+      var m = date.getMonth() + 1;
+      var d = date.getDate();
+      return (d < 10 ? ('0' + d) : d) + '/' + (m < 10 ? ('0' + m) : m) + '/' + y;
+    }
+
+    function dateparser(s) {
+      var ss = (s.split('\.'));
+      var d = parseInt(ss[0], 10);
+      var m = parseInt(ss[1], 10);
+      var y = parseInt(ss[2], 10);
+      if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+        return new Date(y, m - 1, d);
+      }
+    }
+
+    function clearInput() {
+      logisticGroup = new Object();
+      $("#fromDate").datebox('setValue', '');
+      $("#toDate").datebox('setValue', '');
+      $("#groupName").textbox('setText', '');
+      $("#mst").textbox('setText', '');
+      loadTable(logisticGroup);
+    }
+
+    function search() 
+    {
+      logisticGroup.groupName = $("#groupName").textbox('getText').toUpperCase();
+      logisticGroup.mst = $("#mst").textbox('getText').toUpperCase();
+      loadTable(logisticGroup);
+    }
+
+
+    function formatDate(value) {
+      if (value == null) return "";
+      var date = new Date(value);
+      return formatNumber(date.getDate()) +
+        "/" + formatNumber(date.getMonth() + 1) +
+        "/" + date.getFullYear()
+    }
+
+    function formatNumber(number) {
+      return number < 10 ? "0" + number : number;
+    }
+
+    function formatDelegateType(value) {
+      switch (value) {
+        case 'P':
+          return 'Làm Lệnh';
+        case 'M':
+          return 'Thanh Toán';
+      }
+      return '';
+    }
+
+    function formatValidFlg(value) {
+      if (1 == value) {
+        return '<span style="color: green">Hiệu lực</span>';
+      }
+      return '<span style="color: red">Vô hiệu</span>';
+    }
+
+    function formatAction(value, row, index) {
+      let actions = [];
+      if (row.id) {
+        actions.push('<a class="btn btn-success btn-xs " onclick="editt(\'' + row.id +
+          '\')"><i class="fa fa-remove"></i>Chỉnh sửa</a><span>  </span>');
+      }
+      actions.push('<a class="btn btn-danger btn-xs " onclick="remove(\'' + index + '\',\'' + row.id +
+        '\')"><i class="fa fa-remove"></i>Xóa</a>');
+      return actions.join('');
+    }
+
+    function addLogistic() {
+      $.modal.open("Thêm Logistic", PREFIX + "/add", 500, 600);
+    }
+
+    function editLogistic() {
+      if (getSelected == null) {
+        $.modal.alertError("Bạn chưa chọn đơn vị logistic");
+        return;
+      }
+      $.modal.open("Sửa Logistic", PREFIX + '/edit/' + getSelected, 500, 600);
+    }
+
+    function destroyUser() {
+      if (getSelected == null) {
+        $.modal.alertError("Bạn chưa chọn đơn vị logistic");
+        return;
+      }
+      $.modal.confirm(
+        "Bạn có chắc chắn muốn XÓA đơn vị logistic này không?",
+        function () {
+          $.ajax({
+            url: PREFIX + "/remove",
+            method: "POST",
+            data: {
+              ids: getSelected
+            },
+            success: function (res) {
+              if (res.code == 0) {
+                $.modal.closeLoading();
+                $.modal.alertSuccess("Xóa logistic thành công");
+                loadTable();
+              } else {
+                $.modal.closeLoading();
+                $.modal.alertError(res.msg)
+              }
+
+            },
+            error: function (result) {
+              $.modal.alertError(
+                "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin."
+              )
+            },
+          })
+        }, {
+          title: "Xác nhận xóa logistic",
+          btn: ["Đồng Ý", "Hủy Bỏ"]
         }
-   </script>
+      );
+    }
+
+    function addDelegated() {
+      if (getSelected == null) {
+        $.modal.alertError("Bạn chưa chọn đơn vị logistic");
+        return;
+      }
+      $.modal.open("Thêm Ủy Quyền", PREFIXDELEGATED + '/addDelegated/' + getSelected, 500, 600);
+    }
+
+    function editt(id) {
+      $.modal.openCustomForm("Chỉnh sửa ủy quyền", PREFIX + "/delegate/edit/" + id, 700, 600);
+    }
+
+    function remove(index, id) {
+      layer.confirm("Xác nhận xóa thông tin ủy quyền.", {
+        icon: 3,
+        title: "Xác Nhận",
+        btn: ['Đồng Ý', 'Hủy Bỏ']
+      }, function () {
+        layer.close(layer.index);
+        // UPDATE PROCESS ORDER TO DOING STATUS
+        $.ajax({
+          url: PREFIX + "/delegate/" + id + "/delete",
+          method: "DELETE"
+        }).done(function (res) {
+          if (res.code == 0) {
+            loadTableByLogisticGroup(getSelected);
+            $.modal.alertSuccess("Xóa ủy quyền thành công.");
+
+          } else {
+            $.modal.alertError("Xóa ủy quyền thất bại.");
+          }
+        });
+      }, function () {
+        // close;
+      });
+    }
+  </script>
 </body>

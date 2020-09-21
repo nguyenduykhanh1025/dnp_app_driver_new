@@ -107,4 +107,10 @@ public class LogisticDelegatedServiceImpl implements ILogisticDelegatedService
     public int updateDelFlgByGroupIds(String ids) {
     	return logisticDelegatedMapper.updateDelFlgByGroupIds(Convert.toStrArray(ids));
     }
+
+    @Override
+    public LogisticDelegated selectLogisticDelegatedByTaxDelegated(String taxDelegated)
+    {
+        return logisticDelegatedMapper.selectLogisticDelegatedByTaxDelegated(taxDelegated);
+    }
 }

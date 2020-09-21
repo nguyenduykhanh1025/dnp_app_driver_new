@@ -292,6 +292,7 @@
         function closeForm() {
             $.modal.close();
         }
+        
 
         function confirm() {
 			let errorFlg = false;
@@ -331,11 +332,12 @@
 						data: JSON.stringify(delegatedLogistic)
 					}).done(function (res) {
 						if (res.code == 0) {
-							parent.finishForm(res);
+                            $.modal.alertSuccess("Chỉnh sửa quyền thành công.");
+                            parent.loadTableByLogisticGroup(delegatedLogistic.logisticGroupId);
                             $.modal.close();
-						} else {
-							$.modal.alertError("Chỉnh sửa ủy quyền thất bại.");
-						}
+                        } else {
+                            $.modal.alertError(res.msg);
+                        }
 					});
 				}, function () {
                     // close;

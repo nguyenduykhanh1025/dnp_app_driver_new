@@ -66,6 +66,7 @@ public class LogisticDelegatedController extends BaseController
         if (logisticDelegated == null) {
             logisticDelegated = new LogisticDelegated();
         }
+        logisticDelegated.setDelFlg(0);
         List<LogisticDelegated> list = logisticDelegatedService.selectLogisticDelegatedList(logisticDelegated);
         return getDataTable(list);
     }
@@ -87,6 +88,18 @@ public class LogisticDelegatedController extends BaseController
     @ResponseBody
     public AjaxResult addSave(LogisticDelegated delegatedLogistic)
     {
+        if(delegatedLogistic.getDelegateTaxCode() == null || delegatedLogistic.getDelegateCompany() == null)
+        {
+            return AjaxResult.error("Bạn chưa nhâp đầy đủ thông tin <br> vui lòng kiểm tra dữ liệu");
+        }
+        LogisticDelegated delegatedLogisticCheck = new LogisticDelegated();
+        delegatedLogisticCheck.setDelegateTaxCode(delegatedLogistic.getDelegateTaxCode());
+        delegatedLogisticCheck.setLogisticGroupId(delegatedLogistic.getLogisticGroupId());
+        delegatedLogisticCheck.setDelegateType(delegatedLogistic.getDelegateType());
+        if(logisticDelegatedService.selectLogisticDelegatedList(delegatedLogisticCheck).size() > 0)
+        {
+            return AjaxResult.error("Đơn vị ủy quyền này đã tồn tại <br> vui lòng kiểm tra dữ liệu");
+        }
         return toAjax(logisticDelegatedService.insertLogisticDelegated(delegatedLogistic));
     }
 
