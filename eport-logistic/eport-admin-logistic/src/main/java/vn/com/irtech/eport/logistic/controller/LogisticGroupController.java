@@ -79,12 +79,14 @@ public class LogisticGroupController extends BaseController
     @RequiresPermissions("logistic:group:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(LogisticGroup logisticGroup)
+    public TableDataInfo list(@RequestBody PageAble<LogisticGroup> param)
     {
-        startPage();
+        startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+        LogisticGroup logisticGroup = param.getData();
+        if (logisticGroup == null) {
+            logisticGroup = new LogisticGroup();
+        }
         logisticGroup.setDelFlag("0");
-        logisticGroup.setGroupName(logisticGroup.getGroupName().toLowerCase());
-        logisticGroup.setEmail(logisticGroup.getEmail().toLowerCase());
         List<LogisticGroup> list = logisticGroupService.selectLogisticGroupList(logisticGroup);
         return getDataTable(list);
     }
