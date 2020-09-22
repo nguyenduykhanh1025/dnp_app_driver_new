@@ -570,50 +570,63 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		if (shipmentService.checkBillBookingNoUnique(shipment) != 0) {
 			return error("Số bill đã tồn tại");
 		}
+		
 		//check opeCode
 		String opeCode = edoService.getOpeCodeByBlNo(blNo);
 		// Long containerAmount = edoService.getCountContainerAmountByBlNo(blNo);
 		
 		// Check edo with master bill
 		if(opeCode != null) {
-			shipment.setEdoFlg("1");
-			shipment.setOpeCode(opeCode);
-			// shipment.setContainerAmount(containerAmount);
-			ajaxResult = success();
-			ajaxResult.put("shipment", shipment);
-			return ajaxResult;
-		} else {
-			// Check edo with house bill
-			EdoHouseBill edoHouseBill = edoHouseBillService.getEdoHouseBillByBlNo(blNo);
-			if (edoHouseBill != null) {
+			// Check if carrier group support edo depend on do type defining in carrier group admin
+			if (EportConstants.DO_TYPE_CARRIER_EDO.equalsIgnoreCase(carrierGroupService.getDoTypeByOpeCode(opeCode))) {
 				shipment.setEdoFlg("1");
-				shipment.setOpeCode(edoHouseBill.getCarrierCode());
-				shipment.setHouseBill(blNo);
-				shipment.setBlNo(edoService.getBlNoByHouseBillId(edoHouseBill.getId()));
+				shipment.setOpeCode(opeCode);
 				// shipment.setContainerAmount(containerAmount);
 				ajaxResult = success();
 				ajaxResult.put("shipment", shipment);
 				return ajaxResult;
-			} else {
-				// check do
-				Shipment shipCatos = catosApiService.getOpeCodeCatosByBlNo(blNo);
-				if (shipCatos != null) {
-					String edoFlg = carrierGroupService.getDoTypeByOpeCode(shipCatos.getOpeCode());
-					if(edoFlg == null){
-						return error("Mã hãng tàu:"+ shipCatos.getOpeCode() +" không có trong hệ thống. Vui lòng liên hệ Cảng!");
-					}
-//					if(edoFlg.equals("1")){
-//						return error("Bill này là eDO nhưng không có dữ liệu trong eport. Vui lòng liên hệ Cảng!");
-//					}
-					shipment.setEdoFlg(edoFlg);
+			}
+		} else {
+			// Check edo with house bill
+			EdoHouseBill edoHouseBill = edoHouseBillService.getEdoHouseBillByBlNo(blNo);
+			if (edoHouseBill != null) {
+				// Check if carrier group support edo depend on do type defining in carrier group admin
+				if (EportConstants.DO_TYPE_CARRIER_EDO.equalsIgnoreCase(carrierGroupService.getDoTypeByOpeCode(edoHouseBill.getCarrierCode()))) {
+					shipment.setEdoFlg("1");
+					shipment.setOpeCode(edoHouseBill.getCarrierCode());
+					shipment.setHouseBill(blNo);
+					shipment.setBlNo(edoService.getBlNoByHouseBillId(edoHouseBill.getId()));
+					// shipment.setContainerAmount(containerAmount);
 					ajaxResult = success();
-					shipment.setOpeCode(shipCatos.getOpeCode());
-					shipment.setContainerAmount(shipCatos.getContainerAmount());
 					ajaxResult.put("shipment", shipment);
 					return ajaxResult;
 				}
 			}
-		} 
+		}
+		
+		// check do
+		Shipment shipCatos = null;
+		try {
+			shipCatos = catosApiService.getOpeCodeCatosByBlNo(blNo);
+		} catch (Exception e) {
+			logger.error("Error when get ope code catos by bl no: " + e);
+		}
+		if (shipCatos != null) {
+			String edoFlg = carrierGroupService.getDoTypeByOpeCode(shipCatos.getOpeCode());
+			if(edoFlg == null){
+				return error("Mã hãng tàu:"+ shipCatos.getOpeCode() +" không có trong hệ thống. Vui lòng liên hệ Cảng!");
+			}
+//			if(edoFlg.equals("1")){
+//				return error("Bill này là eDO nhưng không có dữ liệu trong eport. Vui lòng liên hệ Cảng!");
+//			}
+			shipment.setEdoFlg(edoFlg);
+			ajaxResult = success();
+			shipment.setOpeCode(shipCatos.getOpeCode());
+			shipment.setContainerAmount(shipCatos.getContainerAmount());
+			ajaxResult.put("shipment", shipment);
+			return ajaxResult;
+		}
+		
 		ajaxResult = error("Số bill không tồn tại!");
 		return ajaxResult;
 	}
