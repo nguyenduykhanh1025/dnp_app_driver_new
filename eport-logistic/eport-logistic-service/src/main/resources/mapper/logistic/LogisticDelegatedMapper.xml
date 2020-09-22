@@ -36,6 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="validFlg != null "> and valid_flg = #{validFlg}</if>
             <if test="delFlg != null "> and del_flg = #{delFlg}</if>
         </where>
+        order by create_time desc
     </select>
     
     <select id="selectLogisticDelegatedById" parameterType="Long" resultMap="LogisticDelegatedResult">

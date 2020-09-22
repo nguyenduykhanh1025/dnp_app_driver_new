@@ -3,6 +3,7 @@
 
 <head>
   <th:block th:include="include :: header('Add Delegate')" />
+  <th:block th:include="include :: easyui-css" />
   <th:block th:include="include :: datetimepicker-css" />
 </head>
 
@@ -15,37 +16,32 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="col-sm-3 control-label is-required">MST Ủy Quyền：</label>
-        <div class="col-sm-8">
+        <label class="col-xs-4 control-label is-required mt5">Mã số thuế：</label>
+            <div class="col-xs-6" style="display: relative;">
           <input name="delegateTaxcode" id="delegateTaxcode" class="form-control" required/>
         </div>
       </div>
       <div class="form-group">
-        <label class="col-sm-3 control-label is-required">Tên Cty Được Ủy Quyền</label>
-        <div class="col-sm-8">
+        <label class="col-xs-4 control-label is-required mt15">Tên doanh nghiệp: </label>
+            <div class="col-xs-6 mt10">
           <input name="delegateCompany" class="form-control" onfocus="removeGroupError()" type="text" readonly required/>
         </div>
       </div>
-      <div class="form-group">
-        <label class="col-sm-3 control-label">Hiệu lực từ ngày：</label>
-        <div class="col-sm-8">
-          <div class="input-group date">
-            <input class="form-control time-input" id="validFrom" name="validFrom" />
-            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-          </div>
+      <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="col-xs-4 control-label is-required mt5">Hiệu lực ：</label>
+                <div class="col-xs-6" style="display: relative;">
+                    <input id="validFrom" name="validFrom" class="easyui-datebox" style="width: 100px;"
+                        data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
+                        <input id="validUntil" name="validUntil" class="easyui-datebox" style="width: 100px;"
+                        data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
+                </div>
+            </div>
         </div>
-      </div>
+    </div>
       <div class="form-group">
-        <label class="col-sm-3 control-label">Đến ngày: </label>
-        <div class="col-sm-8">
-          <div class="input-group date">
-            <input class="form-control time-input" id="validUntil" name="validUntil" />
-            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-3 control-label">Loại ủy quyền：</label>
+        <label class="col-sm-3 control-label is-required">Loại ủy quyền：</label>
         <div class="col-sm-3" style="display: relative;">
           <select class="form-control" id="delegateType">
             <option th:each="delegateType, iterator : ${delegateTypes}" th:value=${delegateType.dictValue}
@@ -57,6 +53,7 @@
     </form>
   </div>
   <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
   <th:block th:include="include :: datetimepicker-js" />
   <script type="text/javascript" th:inline="javascript">
     var logisticId = /*[[${logisticId}]]*/ ;
@@ -83,7 +80,9 @@
           delegatedLogistic.delegateCompany = $("input[name=delegateCompany]").val();
           delegatedLogistic.validFlg = 1;
           delegatedLogistic.delegateType = $("#delegateType option:selected").val();
-          console.log("TCL: delegatedLogistic", delegatedLogistic)
+          delegatedLogistic.validUntil =  formatDateSubmit($("#validUntil").datebox('getText', ''));
+          delegatedLogistic.validFrom = formatDateSubmit($("#validFrom").datebox('getText', ''));
+          console.log(delegatedLogistic)
           $.ajax({
             url: prefix + "/add",
             method: "POST",
@@ -108,31 +107,17 @@
       }
     }
 
-    laydate.render({
-      elem: '#validFrom',
-      format: "dd/MM/yyyy"
-    });
-
-      laydate.render({
-      elem: '#validUntil',
-      format: "dd/MM/yyyy"
-    });
-
-    $("input[name=validFrom]").on("inputchange", function () {
-        let validFrom = stringToDate($('input[name=validFrom]').val());
-        let now = new Date();
-        now.setHours(0, 0, 0, 0);
-        $("input[name=validFrom]").removeClass('error-input');
-        if ($('input[name=validUntil]').val() != '' && stringToDate($('input[name=validUntil]').val()).getTime() < validFrom.getTime()) {
-          $.modal.alertError('Bạn không thể chọn từ ngày cao hơn đến ngày.')
-          $('input[name=validFrom]').val('');
-        } else if (validFrom.getTime() < now.getTime()) {
-          $.modal.alertError("Bạn không thể chọn từ ngày trong quá khứ.");
-          $('input[name=validFrom]').val('');
-        } else {
-          delegatedLogistic.validFrom = validFrom;
-        }
-      });
+    function formatDateSubmit(value) {
+      if (value == null) {
+        return;
+      }
+      var newdate = value.split("/").reverse();
+      var date = new Date(newdate)
+      var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+      var month = date.getMonth() + 1;
+      var monthText = month < 10 ? "0" + month : month;
+      return date.getFullYear() + "-" + monthText + "-" + day;
+    }
 
     function removeGroupError() {
       $('input[name=delegateCompany]').removeClass('error-input');
@@ -142,6 +127,41 @@
       $('input[name=delegateTaxcode]').removeClass('error-input');
     }
 
+
+    $("input[name=validFrom]").on("inputchange", function () {
+			let validFrom = stringToDate($('input[name=validFrom]').val());
+			let now = new Date();
+			now.setHours(0, 0, 0, 0);
+			$("input[name=validFrom]").removeClass('error-input');
+			if ($('input[name=validUntil]').val() != '' && stringToDate($('input[name=validUntil]').val()).getTime() < validFrom.getTime()) {
+				$.modal.alertError('Bạn không thể chọn từ ngày cao hơn đến ngày.')
+				$('input[name=validFrom]').val('');
+			} else if (validFrom.getTime() < now.getTime()) {
+				$.modal.alertError("Bạn không thể chọn từ ngày trong quá khứ.");
+				$('input[name=validFrom]').val('');
+			} else {
+				delegatedLogistic.validFrom = validFrom.getTime();
+			}
+		});
+
+		$("input[name=validUntil]").on("inputchange", function () {
+			let validUntil = stringToDate($("input[name=validUntil]").val());
+			let now = new Date();
+			now.setHours(0, 0, 0, 0);
+			$("input[name=validUntil]").removeClass('error-input');
+			if ($("input[name=validFrom]").val() != "" && stringToDate($("input[name=validFrom]").val()).getTime() > validUntil.getTime()) {
+				$.modal.alertError("Bạn không thể chọn đến ngày thấp hơn từ ngày.");
+				$("input[name=validUntil]").val("");
+			} else if (validUntil.getTime() < now.getTime()) {
+				$.modal.alertError("Bạn không thể chọn đến ngày trong quá khứ.");
+				$("input[name=validUntil]").val("");
+			} else {
+				validUntil.setHours(23, 59, 59);
+				delegatedLogistic.validUntil = validUntil.getTime();
+			}
+    });
+    
+    
     function formatValidFlg(value) {
       if (1 == value) {
         return '<span style="color: green">Hiệu lực</span>';
@@ -159,7 +179,6 @@
           url: prefix + "/consignee/" + $('input[name=delegateTaxcode]').val(),
           method: "get"
         }).done(function (result) {
-        console.log("TCL: loadGroupNameForDelegated -> result", result)
           if (result.code == 0) {
             $('input[name=delegateCompany]').val(result.groupName);
             $('input[name=delegateCompany]').removeClass('error-input');
@@ -169,6 +188,22 @@
         });
       } else {
         $('input[name=delegateCompany]').val('');
+      }
+    }
+    function dateformatter(date) {
+      console.log("TCL: dateformatter -> date", date)
+      var y = date.getFullYear();
+      var m = date.getMonth() + 1;
+      var d = date.getDate();
+      return (d < 10 ? ('0' + d) : d) + '/' + (m < 10 ? ('0' + m) : m) + '/' + y;
+    }
+    function dateparser(s) {
+      var ss = (s.split('\.'));
+      var d = parseInt(ss[0], 10);
+      var m = parseInt(ss[1], 10);
+      var y = parseInt(ss[2], 10);
+      if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+        return new Date(y, m - 1, d);
       }
     }
   </script>

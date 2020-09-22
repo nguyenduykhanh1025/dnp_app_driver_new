@@ -417,7 +417,7 @@
     }
 
     function addLogistic() {
-      $.modal.open("Thêm Logistic", PREFIX + "/add", 500, 600);
+      $.modal.open("Thêm Logistic", PREFIX + "/add", 600, 600);
     }
 
     function editLogistic() {
@@ -471,11 +471,11 @@
         $.modal.alertError("Bạn chưa chọn đơn vị logistic");
         return;
       }
-      $.modal.open("Thêm Ủy Quyền", PREFIXDELEGATED + '/addDelegated/' + getSelected, 500, 600);
+      $.modal.open("Thêm Ủy Quyền", PREFIXDELEGATED + '/addDelegated/' + getSelected, 550, 450);
     }
 
     function editt(id) {
-      $.modal.openCustomForm("Chỉnh sửa ủy quyền", PREFIX + "/delegate/edit/" + id, 700, 600);
+      $.modal.openCustomForm("Chỉnh sửa ủy quyền", PREFIX + "/delegate/edit/" + id, 700, 350);
     }
 
     function remove(index, id) {
@@ -502,5 +502,7 @@
         // close;
       });
     }
+
+  
   </script>
 </body>
