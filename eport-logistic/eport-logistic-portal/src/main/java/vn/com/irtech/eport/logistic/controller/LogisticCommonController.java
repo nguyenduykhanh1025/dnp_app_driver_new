@@ -632,7 +632,7 @@ public class LogisticCommonController extends LogisticBaseController {
 	@PostMapping("/shipment/{shipmentId}/file/attach")
 	@ResponseBody
 	public AjaxResult postAttachFile(MultipartFile file, @PathVariable("shipmentId") Long shipmentId) throws IOException, InvalidExtensionException {
-		String basePath = String.format("%s/%s", Global.getUploadPath(), shipmentId);
+		String basePath = String.format("%s/%s", Global.getUploadPath() + "/comment", shipmentId);
 		String now = DateUtils.dateTimeNow();
 		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
         String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
