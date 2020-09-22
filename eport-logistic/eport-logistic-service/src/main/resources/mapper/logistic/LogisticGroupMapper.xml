@@ -44,6 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null"> and del_flag = #{delFlag}</if>
             <if test="email != null  and email != ''"> and lower(email) like concat(concat('%', #{email}),'%')</if>
         </where>
+        order by create_time desc
     </select>
     <select id="selectLogisticGroupListByName" parameterType="LogisticGroup" resultMap="LogisticGroupResult">
         <include refid="selectLogisticGroupVo"/>

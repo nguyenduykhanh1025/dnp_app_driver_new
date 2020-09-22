@@ -79,12 +79,14 @@ public class LogisticGroupController extends BaseController
     @RequiresPermissions("logistic:group:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(LogisticGroup logisticGroup)
+    public TableDataInfo list(@RequestBody PageAble<LogisticGroup> param)
     {
-        startPage();
+        startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+        LogisticGroup logisticGroup = param.getData();
+        if (logisticGroup == null) {
+            logisticGroup = new LogisticGroup();
+        }
         logisticGroup.setDelFlag("0");
-        logisticGroup.setGroupName(logisticGroup.getGroupName().toLowerCase());
-        logisticGroup.setEmail(logisticGroup.getEmail().toLowerCase());
         List<LogisticGroup> list = logisticGroupService.selectLogisticGroupList(logisticGroup);
         return getDataTable(list);
     }
@@ -110,7 +112,7 @@ public class LogisticGroupController extends BaseController
     public String add(ModelMap mmap)
     {
     	mmap.put("delegateTypes", dictService.getType("delegate_type_list"));
-        return prefix + "/add";
+        return prefix + "/addLogistic";
     }
 
     /**
@@ -165,7 +167,7 @@ public class LogisticGroupController extends BaseController
         LogisticGroup logisticGroup = logisticGroupService.selectLogisticGroupById(id);
         mmap.put("logisticGroup", logisticGroup);
         mmap.put("delegateTypes", dictService.getType("delegate_type_list"));
-        return prefix + "/edit";
+        return prefix + "/editLogistic";
     }
 
     /**
