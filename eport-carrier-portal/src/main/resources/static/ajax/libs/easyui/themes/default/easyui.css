@@ -678,7 +678,8 @@
   display: inline-block;
   vertical-align: top;
   width: auto;
-  line-height: 28px;
+  /*line-height: 28px;*/
+  line-height: 24px;
   font-size: 12px;
   padding: 0;
   margin: 0 6px;
@@ -805,9 +806,10 @@
   filter: none;
 }
 .l-btn-plain {
-  background: transparent;
-  border-width: 0;
-  filter: none;
+  background: transparent !important;
+  border-width: 0 !important;
+  filter: none !important;
+  border-radius: 3px !important;
 }
 .l-btn-outline {
   border-width: 1px;
@@ -1954,16 +1956,17 @@
 .datagrid-mask-msg {
   background: #ffffff url('images/loading.gif') no-repeat scroll 5px center;
 }
-.datagrid-header,
-.datagrid-td-rownumber {
-  background-color: #eeeeee;
-  /* background-color: #1c84c652; */
-  /* background: -webkit-linear-gradient(top,#ffffff 0,#F2F2F2 100%);
+.datagrid-header {
+  background-color: #1c84c652;
+  background: -webkit-linear-gradient(top,#ffffff 0,#F2F2F2 100%);
   background: -moz-linear-gradient(top,#ffffff 0,#F2F2F2 100%);
   background: -o-linear-gradient(top,#ffffff 0,#F2F2F2 100%);
-  background: linear-gradient(to bottom,#ffffff 0,#F2F2F2 100%); */
+  background: linear-gradient(to bottom,#ffffff 0,#F2F2F2 100%);
   background-repeat: repeat-x;
-  /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff,endColorstr=#F2F2F2,GradientType=0); */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#ffffff,endColorstr=#F2F2F2,GradientType=0);
+}
+.datagrid-td-rownumber {
+	background-color: #eeeeee;
 }
 .datagrid-cell-rownumber {
   color: #333;

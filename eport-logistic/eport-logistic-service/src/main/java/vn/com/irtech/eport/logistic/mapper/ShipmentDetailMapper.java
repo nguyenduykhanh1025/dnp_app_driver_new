@@ -160,4 +160,13 @@ public interface ShipmentDetailMapper
      * @return list pickup assign form object
      */
     public List<PickupAssignForm> selectShipmentDetailForDriverSendCont(@Param("driverId") Long driverId, @Param("pickUp") PickupAssignForm pickupAssignForm, @Param("serviceType") Integer serviceType);
+    
+    /**
+     * Update shipment detail by shipment detail id
+     * 
+     * @param shipmentDetailIds
+     * @param shipmentDetail
+     * @return int
+     */
+    public int updateShipmentDetailByIds(@Param("shipmentDetailIds") String[] shipmentDetailIds, @Param("shipmentDetail") ShipmentDetail shipmentDetail);
 }

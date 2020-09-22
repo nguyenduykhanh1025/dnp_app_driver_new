@@ -8,6 +8,7 @@
   <th:block th:include="include :: handsontable-css" />
   <th:block th:include="include :: easyui-css" />
   <th:block th:include="include :: summernote-css" />
+  <th:block th:include="include :: dropzone-css" />
   <link th:href="@{/css/logistic/receiveContFull/style.css?v=0916}" rel="stylesheet" />
   <link th:href="@{/eport/css/common/style.css?v=1406}" rel="stylesheet" />
 </head>
@@ -60,7 +61,7 @@
     </div>
     <div class="main-body__table-wrapper">
       <div class="easyui-layout" id="main-layout" style="width: 100%;">
-        <div class="left-side" title="Danh sách lô" data-options="region:'west',split:true, onResize: function(width, height) {setTimeout(() => {hot.render();}, 200);}" style="width: 30%;">
+        <div class="left-side" title="Danh sách lô" data-options="region:'west',split:true" style="width: 30%;">
           <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
           <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead>
@@ -95,10 +96,18 @@
                   <div class="form-group row">
                     <label class="col-md-2 col-sm-3 col-xs-4">Nội Dung <span style="color: red;">*</span></label>
                     <div class="col-md-10 col-sm-9 col-xs-8">
-                      <textarea class="summernote"></textarea>
+                      <textarea class="summernote" id="content"></textarea>
                     </div>
                   </div>
-                  <div>
+                  <div class="row">
+                    <span class="col-md-1 col-sm-2 col-xs-3"></span>
+                    <div id="dropzone" class="col-md-2 col-sm-2 col-xs-2" style="text-align: left;">
+                      <button id="attachButton" class="btn btn-sm btn-default">
+                        <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+                      </button>
+                    </div>
+                    <div id="previews" class="col-md-2 col-sm-2 col-xs-2">
+                    </div>
                     <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
                       <span class="l-btn-left"><span class="l-btn-text">
                       <button id="sendComment" onclick="addComment()" class="btn btn-sm btn-primary">
@@ -188,6 +197,7 @@
 
   <th:block th:include="include :: footer" />
   <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: dropzone-js" />
   <th:block th:include="include :: summernote-js" />
   <th:block th:include="include :: handsontable-js" />
   <th:block th:include="include :: websocket" />

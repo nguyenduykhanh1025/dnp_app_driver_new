@@ -285,6 +285,9 @@ public class ShipmentDetail extends BaseEntity
 	/** Ten mat hang: Khai bao khi ha bai cho xuat*/
 	private String commodity;
 	
+	/** Vị trí*/
+	private String location;
+	
     public void setId(Long id) {
         this.id = id;
     }
@@ -884,6 +887,14 @@ public class ShipmentDetail extends BaseEntity
 		this.commodity = commodity;
 	}
 
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -958,6 +969,7 @@ public class ShipmentDetail extends BaseEntity
             .append("customScanTime", getCustomScanTime())
             .append("eta", getEta())
             .append("etd", getEtd())
+            .append("location", getLocation())
             .toString();
     }
 }

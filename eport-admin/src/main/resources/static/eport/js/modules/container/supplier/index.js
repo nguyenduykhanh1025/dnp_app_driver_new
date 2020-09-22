@@ -3,7 +3,9 @@ var rowAmount = 0;
 var allChecked = false;
 var checkList = [];
 var shipment = new Object();
+shipment.params = new Object();
 var shipmentSelected;
+var shipmentDetailIds;
 var sourceData;
 
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
@@ -19,18 +21,18 @@ $(document).ready(function () {
         $(".main-body__search-wrapper--container").hide();
         $(this).hide();
         $(".uncollapse").show();
-    })
+    });
 
     $(".uncollapse").click(function () {
         $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
         $(".main-body__search-wrapper--container").show();
         $(this).hide();
         $(".collapse").show();
-    })
+    });
 
     $(".left-side__collapse").click(function () {
         $('#main-layout').layout('collapse', 'west');
-    })
+    });
 
     $(".right-side__collapse").click(function () {
         $('#right-layout').layout('collapse', 'south');
@@ -68,19 +70,26 @@ $(document).ready(function () {
         {
             window.open(url.replace("{shipmentId}", shipmentId));
         }
-        
     });
+
+    $("#containerNo").textbox('textbox').bind('keydown', function(e) {
+        // enter key
+        if (e.keyCode == 13) {
+            search();
+        }
+    });
+
     $("#blNo").textbox('textbox').bind('keydown', function(e) {
         // enter key
         if (e.keyCode == 13) {
-          shipment.bookingNo = $("#blNo").textbox('getText').toUpperCase();
-          loadTable();
+            search();
         }
-      });
+    });
 });
 
 function search() {
     shipment.bookingNo = $("#blNo").textbox('getText').toUpperCase();
+    shipment.params.containerNo = $("#containerNo").textbox('getText').toUpperCase();
     shipment.contSupplyStatus = $('#batchStatus').combobox('getValue');
     loadTable();
 }
@@ -187,6 +196,7 @@ function handleRefresh() {
 function clearInput() {
     $("#blNo").textbox('setText', '');
     shipment = new Object();
+    shipment.params = new Object();
     loadTable();
   }
   
@@ -234,9 +244,9 @@ function toggleAttachIcon(shipmentId) {
 
 
 $("#batchStatus").combobox({
-    onSelect: function (serviceType) {
+    onChange: function (serviceType) {
         shipment.contSupplyStatus = serviceType.value;
-        loadTable();
+        search();
     }
   });
 
@@ -253,6 +263,70 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
     return td;
 }
+function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
+    if (sourceData[row] && sourceData[row].contSupplyStatus && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].finishStatus) {
+        // Command container supply status
+        let contSupply = '<i id="contSupply" class="fa fa-check easyui-tooltip" title="Chưa yêu cầu cấp container" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
+        switch (sourceData[row].contSupplyStatus) {
+            case 'R':
+                contSupply = '<i id="contSupply" class="fa fa-check easyui-tooltip" title="Đang chờ cấp container" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
+                break;
+            case 'Y':
+                contSupply = '<i id="contSupply" class="fa fa-check easyui-tooltip" title="Đã cấp container" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+                break;
+        }
+        // Command process status
+        let process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
+        switch (sourceData[row].processStatus) {
+            case 'E':
+                process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
+                break;
+            case 'Y':
+                process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+                break;
+            case 'N':
+                if (value > 1 && sourceData[row].contSupplyStatus == 'Y') {
+                    process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+                }
+                break;
+            case 'D':
+                process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
+                break;
+        }
+        // Payment status
+        let payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
+        switch (sourceData[row].paymentStatus) {
+            case 'E':
+                payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Lỗi Thanh Toán" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
+                break;
+            case 'Y':
+                payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+                break;
+            case 'N':
+                if(value > 2) {
+                    payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                }
+                break;
+        }
+        // released status
+        let released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+        switch (sourceData[row].finishStatus) {
+            case 'Y':
+                released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+                break;
+            case 'N':
+                if(sourceData[row].paymentStatus == 'Y') {
+                    released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                }
+                break;
+        }
+        // Return the content
+        let content = '<div>' + contSupply + process + payment + released + '</div>';
+        $(td).html(content);
+    }
+    return td;
+}
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
     $(td).html(value);
@@ -265,19 +339,19 @@ function contSupplyRemarkRenderer(instance, td, row, col, prop, value, cellPrope
 }
 function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'sztp' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'sztp' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'opeCode' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'opeCode' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function planningDateRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'planningDate' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'planningDate' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     if (value != null && value != '') {
         if (value.substring(2, 3) != "/") {
@@ -291,64 +365,52 @@ function planningDateRenderer(instance, td, row, col, prop, value, cellPropertie
 }
 function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'cargoType' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'cargoType' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function qualityRequirementRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'qualityRequirement' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'qualityRequirement' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'consignee' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'consignee' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'vslNm' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'vslNm' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'voyNo' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'voyNo' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'dischargePort' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'dischargePort' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'remark' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'remark' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
-
-// function formatUpdateTime(instance, td, row, col, prop, value, cellProperties) {
-//     cellProperties.readOnly = 'true';
-//     $(td).attr('id', 'remark' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
-//     let updateTime = new Date(value);
-//     let now = new Date();
-//     let offset = now.getTime() - updateTime.getTime();
-//     let totalMinutes = Math.round(offset / 1000 / 60);
-//     value = totalMinutes;
-//     $(td).html(value);
-//     return td;
-//   }
 
 // CONFIGURATE HANDSONTABLE
 function configHandson() {
     config = {
         stretchH: "all",
-        height: $('#right-side__main-table').height() - 35,
+        height: $('#right-side__main-table').height() - 40,
         minRows: rowAmount,
         maxRows: rowAmount,
         width: "100%",
@@ -356,7 +418,7 @@ function configHandson() {
         rowHeights: 30,
         fixedColumnsLeft: 3,
         manualColumnResize: true,
-        manualRowResize: true,
+        manualRowResize: false,
         renderAllRows: true,
         rowHeaders: true,
         className: "htMiddle",
@@ -368,29 +430,31 @@ function configHandson() {
                     txt += ">";
                     return txt;
                 case 1:
-                    return "Số Container";
+                    return "Trạng Thái";
                 case 2:
-                    return "Ghi Chú <br>Cấp/Duyệt Container";
+                    return "Số Container";
                 case 3:
-                    return "Sztp";
+                    return "Ghi Chú <br>Cấp/Duyệt Container";
                 case 4:
-                    return "Hãng Tàu";
+                    return "Sztp";
                 case 5:
-                    return "Thời Gian <br>Dự Kiến Bốc";
+                    return "Hãng Tàu";
                 case 6:
-                    return "Loại Hàng";
+                    return "Thời Gian <br>Dự Kiến Bốc";
                 case 7:
-                    return "Yêu Cầu Chất <br>Lượng Vỏ";
+                    return "Loại Hàng";
                 case 8:
-                    return "Chủ hàng";
+                    return "Yêu Cầu Chất <br>Lượng Vỏ";
                 case 9:
-                    return "Tên Tàu";
+                    return "Chủ hàng";
                 case 10:
-                    return "Chuyến";
+                    return "Tên Tàu";
                 case 11:
-                    return "Cảng Dỡ";
+                    return "Chuyến";
                 case 12:
-                    return "Logistics Ghi Chú";
+                    return "Cảng Dỡ";
+                case 13:
+                    return "Ghi Chú (K/H)";
             }
         },
         // colWidths: [ 100, 100, 100, 120, 100, 100, 100, 150, 100, 120, 100, 80, 80, 80, 150],
@@ -401,6 +465,11 @@ function configHandson() {
                 type: "checkbox",
                 className: "htCenter",
                 renderer: checkBoxRenderer
+            },
+            {
+                data: "status",
+                readOnly: true,
+                renderer: statusIconsRenderer
             },
             {
                 data: "containerNo",
@@ -468,7 +537,7 @@ function configHandson() {
                     break;
                 // Arrow Right
                 case 39:
-                    if (selected[3] == 12) {
+                    if (selected[3] == 13) {
                         e.stopImmediatePropagation();
                     }
                     break
@@ -495,9 +564,6 @@ function checkAll() {
         allChecked = true
         checkList = Array(rowAmount).fill(0);
         for (let i=0; i<checkList.length; i++) {
-            if (hot.getDataAtCell(i, 1) == null) {
-                break;
-            }
             checkList[i] = 1;
             $('#check'+i).prop('checked', true);
         }
@@ -523,7 +589,20 @@ function check(id) {
             checkList[id] = 0;
         }
         hot.render();
+        updateLayout();
     }
+}
+function updateLayout() {
+    allChecked = true;
+    for (let i=0; i<checkList.length; i++) {
+        let cellStatus = hot.getDataAtCell(i, 1);
+        if (cellStatus != null) {
+            if (checkList[i] != 1) {
+                allChecked = false;
+            }
+        }
+    }
+    $('.checker').prop('checked', allChecked);
 }
 
 function loadShipmentDetail(id) {
@@ -543,11 +622,48 @@ function loadShipmentDetail(id) {
     });
 }
 
+// GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
+function getDataSelectedFromTable() {
+    let myTableData = hot.getSourceData();
+    let errorFlg = false;
+    let cleanedGridData = [];
+    for (let i = 0; i < myTableData.length; i++) {
+        if (myTableData[i].id != null) {
+            if (checkList[i] == 1) {
+                cleanedGridData.push(myTableData[i]);
+            }
+        }
+    }
+    shipmentDetails = [];
+    shipmentDetailIds = '';
+    $.each(cleanedGridData, function (index, object) {
+        var shipmentDetail = new Object();
+        shipmentDetail.containerNo = object["containerNo"];
+        shipmentDetail.contSupplyRemark = object["contSupplyRemark"];
+        shipmentDetail.contSupplyStatus = object["contSupplyStatus"];
+        shipmentDetail.id = object["id"];
+        shipmentDetailIds += object["id"] + ',';
+        shipmentDetails.push(shipmentDetail);
+    });
+
+    if (shipmentDetails.length == 0) {
+        $.modal.alertWarning("Bạn chưa chọn container.");
+        errorFlg = true;
+    } else {
+        shipmentDetailIds = shipmentDetailIds.substring(0, shipmentDetailIds.length-1);
+    }
+
+    if (errorFlg) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 function getDataFromTable() {
     let myTableData = hot.getSourceData();
     let errorFlg = false;
     let cleanedGridData = [];
-    console.log(checkList);
     for (let i = 0; i < myTableData.length; i++) {
         if (myTableData[i].id != null) {
             if (checkList[i] == 1) {
@@ -596,7 +712,6 @@ function saveInput() {
     if (getDataFromTable()) {
         let contAmount = 0;
         let containers = '';
-        console.log(shipmentDetails);
         $.each(shipmentDetails, function (index, object) {
             if (object['contSupplyStatus'] == 'S') {
                 contAmount++;
@@ -744,5 +859,122 @@ function addComment() {
         });
     }
 }
+
+function rejectSupply() {
+    if (getDataSelectedFromTable()) {
+        layer.open({
+            type: 2,
+            area: [600 + 'px', 240 + 'px'],
+            fix: true,
+            maxmin: true,
+            shade: 0.3,
+            title: 'Xác nhận từ chối yêu cầu cấp container',
+            content: PREFIX + "/confirmation",
+            btn: ["Xác Nhận", "Hủy"],
+            shadeClose: false,
+            yes: function (index, layero) {
+                rejectSupplyReq(index, layero);
+            },
+            cancel: function (index) {
+                return true;
+            }
+        });
+    }
+}
+
+function deleteSupply() {
+    if (getDataSelectedFromTable()) {
+        layer.open({
+            type: 2,
+            area: [600 + 'px', 240 + 'px'],
+            fix: true,
+            maxmin: true,
+            shade: 0.3,
+            title: 'Xác nhận xóa yếu cầu cấp container',
+            content: PREFIX + "/confirmation",
+            btn: ["Xác Nhận", "Hủy"],
+            shadeClose: false,
+            yes: function (index, layero) {
+                deleteSupplyReq(index, layero);
+            },
+            cancel: function (index) {
+                return true;
+            }
+        });
+    }
+}
+
+function rejectSupplyReq(index, layero) {
+    let childLayer = layero.find("iframe")[0].contentWindow.document;
+    $.modal.loading("Đang xử lý ...");
+    $.ajax({
+        url: PREFIX + "/reject",
+        method: "POST",
+        data: {
+            content: $(childLayer).find("#message").val(),
+            shipmentDetailIds: shipmentDetailIds,
+            shipmentId: shipmentSelected.id,
+            logisticGroupId: shipmentSelected.logisticGroupId
+        },
+        success: function (res) {
+            layer.close(index);
+            reloadShipmentDetail();
+            $.modal.closeLoading();
+            if (res.code == 0) {
+                $.modal.alertSuccess(res.msg);
+            } else {
+                $.modal.alertError(res.msg);
+            }
+        },
+        error: function (data) {
+            layer.close(index);
+            reloadShipmentDetail();
+            $.modal.closeLoading();
+        }
+    });
+}
+
+function deleteSupplyReq(index, layero) {
+    let childLayer = layero.find("iframe")[0].contentWindow.document;
+    $.modal.loading("Đang xử lý ...");
+    $.ajax({
+        url: PREFIX + "/delete",
+        method: "POST",
+        data: {
+            content: $(childLayer).find("#message").val(),
+            shipmentDetailIds: shipmentDetailIds,
+            shipmentId: shipmentSelected.id,
+            logisticGroupId: shipmentSelected.logisticGroupId
+        },
+        success: function (res) {
+            $.modal.closeLoading();
+            layer.close(index);
+            reloadShipmentDetail();
+            if (res.code == 0) {
+                $.modal.alertSuccess(res.msg);
+            } else {
+                $.modal.alertError(res.msg);
+            }
+        },
+        error: function (data) {
+            layer.close(index);
+            reloadShipmentDetail();
+            // $.modal.closeLoading();
+        }
+    });
+}
+
+function reloadShipmentDetail() {
+    checkList = Array(rowAmount).fill(0);
+    allChecked = false;
+    $('.checker').prop('checked', false);
+    for (let i=0; i<checkList.length; i++) {
+        $('#check'+i).prop('checked', false);
+    }
+    // loadTable();
+    loadShipmentDetail(shipmentSelected.id);
+}
+
+
 
     

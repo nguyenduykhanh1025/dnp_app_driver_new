@@ -55,10 +55,10 @@
                         <thead>
                             <tr>
                               <th data-options="field:'id', fixed:true" width="1"></th>
-                              <th data-options="field:'updateTime', lign:'right', halign:'center'" sortable="true" width="150">Ngày Yêu Cầu</th>
+                              <th data-options="field:'updateTime', lign:'right', halign:'center'" sortable="true" width="130">Ngày Yêu Cầu</th>
                               <th data-options="field:'bookingNo', halign:'center', resizable:true" width="120">Booking No</th>
-                              <th data-options="field:'containerAmount', align:'center', halign:'center'" width="70">SL</th>
-                              <th data-options="field:'logisticName', halign: 'center', align: 'left', resizable: true, formatter: formatLogistic" width="150" sortable="true">Logistics</th>
+                              <th data-options="field:'containerAmount', align:'center', halign:'center'" width="50">SL</th>
+                              <th data-options="field:'logisticName', halign: 'center', align: 'left', resizable: true, formatter: formatLogistic" width="120" sortable="true">Logistics</th>
                               <th data-options="field:'specificContFlg', align:'left', halign:'center', formatter: formatSpecificContFlg" width="100">Loại</th>
                               <th data-options="field:'remark', align:'left', halign:'center', formatter: formatRemark" width="150">Ghi chú</th>
                             </tr>
@@ -143,7 +143,7 @@
       $(".easyui-layout").height($('.main-body').height() - 50);
       var sId = /*[[${sId}]]*/;
     </script>
-    <script th:src="@{/eport/js/modules/container/supplier/index.js}"></script>
+    <script th:src="@{/eport/js/modules/container/supplier/index.js?v0920}"></script>
 </body>
 
 </html>

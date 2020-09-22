@@ -16,6 +16,7 @@ var sizeList = [];
 var voyCarrier;
 var onChangeFlg = false, currentIndexRow, rejectChange = false;
 var fromDate, toDate;
+var myDropzone;
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
@@ -80,6 +81,42 @@ var toolbar = [
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
+
+  // DROP ZONE configuration
+  // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
+
+  let previewTemplate = '<span data-dz-name></span>';
+
+  if (shipmentSelected == null) {
+    shipmentSelected = new Object();
+  }
+
+  myDropzone = new Dropzone("#dropzone", {
+    url: ctx + "logistic/shipment/" + shipmentSelected.id + "/file/attach",
+    method: "post",
+    paramName: "file",
+    maxFiles: 5,
+    maxFilesize: 10, //MB
+    // autoProcessQueue: false,
+    previewTemplate: previewTemplate,
+    previewsContainer: "#previews", // Define the container to display the previews
+    clickable: "#attachButton", // Define the element that should be used as click trigger to select files.
+    init: function () {
+      this.on("maxfilesexceeded", function (file) {
+        $.modal.alertWarning("Số lượng tệp đính kèm vượt giới hạn cho phép, quý khách vui lòng đính kèm tệp trong lần comment tiếp theo.");
+        this.removeFile(file);
+      });
+    },
+    success: function (file, response) {
+      if (response.code == 0) {
+        $.modal.msgSuccess("Đính kèm tệp thành công.");
+        let content = '<p><a href="' + response.fileLink + '" target="_blank">' + file.upload.filename + '</a></p>';
+        $('#content').summernote('editor.pasteHTML', content);
+      } else {
+        $.modal.msgError("Đính kèm tệp thất bại, quý khách vui lòng thử lại sau.");
+      }
+    }
+  });
 
   $('#right-layout').layout('collapse', 'south');
   setTimeout(() => {
@@ -262,7 +299,7 @@ function getSelected(index, row) {
     rejectChange = false;
     return true;
   } else {
-    if (onChangeFlg) {
+    if (onChangeFlg && currentIndexRow != index) {
       layer.confirm("Thông tin khái báo chưa được lưu, quý khách có muốn di chuyển qua trang khác?", {
         icon: 3,
         title: "Xác Nhận",
@@ -299,6 +336,9 @@ function getSelected(index, row) {
           onChangeFlg = false;
           currentIndexRow = index;
           loadListComment();
+
+          // Update dropzone url with the shipment id selected
+          myDropzone.options.url = ctx + "logistic/shipment/" + shipmentSelected.id + "/file/attach";
         }
         return true;
       }, function () {
@@ -338,6 +378,9 @@ function getSelected(index, row) {
         onChangeFlg = false;
         currentIndexRow = index;
         loadListComment();
+
+        // Update dropzone url with the shipment id selected
+        myDropzone.options.url = ctx + "logistic/shipment/" + shipmentSelected.id + "/file/attach";
       }
       return true;
     }
