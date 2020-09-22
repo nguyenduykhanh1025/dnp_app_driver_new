@@ -1485,7 +1485,7 @@ function saveShipmentDetail() {
             } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
                 $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
             } else {
-                $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
+                $.modal.alertError("Hãy nhập thông tin chi tiết lô.");
             }
         }
     }

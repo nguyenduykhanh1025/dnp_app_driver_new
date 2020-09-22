@@ -28,7 +28,7 @@ $("#form-edit-shipment").validate({
 async function submitHandler() {
     if ($.validate.form()) {
         if ($("#opeCode option:selected").text() == 'Chọn OPR') {
-            $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
+            $.modal.alertWarning("Hãy chưa chọn mã OPR.");
         } else if ($("#bookingNo").val() != currentBooking) {
             let res = await getBookingNoUnique();
             if (res.code == 0) {
@@ -130,7 +130,7 @@ $(document).ready(function () {
         clickable: "#attachButton", // Define the element that should be used as click trigger to select files.
         init: function () {
             this.on("maxfilesexceeded", function (file) {
-                $.modal.alertWarning("Số lượng tệp đính kèm vượt giới hạn cho phép, quý khách vui lòng đính kèm tệp trong lần comment tiếp theo.");
+                $.modal.alertWarning("Số lượng tệp đính kèm vượt quá số lượng cho phép.");
                 this.removeFile(file);
             });
         },
@@ -146,7 +146,7 @@ $(document).ready(function () {
                 </div>`
                 $('.preview-container').append(html);
             } else {
-                $.modal.msgError("Đính kèm tệp thất bại, quý khách vui lòng thử lại sau.");
+                $.modal.alertWarning("Đính kèm tệp thất bại, vui lòng thử lại sau.");
             }
         }
     });
@@ -174,7 +174,7 @@ function removeImage(element, fileIndex) {
                             $(element).parent("div.preview-block").remove();
                             shipmentFileIds.splice(index, 1);
                         } else {
-                            $.modal.msgError("Xóa tệp thất bại.");
+                            $.modal.alertWarning("Xóa tệp thất bại.");
                         }
                     }
                 });

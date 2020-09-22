@@ -1396,7 +1396,7 @@ function saveShipmentDetail() {
                 shipmentDetails[0].processStatus = conts;
                 $.modal.loading("Đang xử lý...");
                 $.ajax({
-                    url: prefix + "/shipment-detail",
+                	url: prefix + "/" + shipmentSelected.id + "/shipment-detail",
                     method: "post",
                     contentType: "application/json",
                     accept: 'text/plain',
@@ -1405,7 +1405,7 @@ function saveShipmentDetail() {
                     success: function (data) {
                         var result = JSON.parse(data);
                         if (result.code == 0) {
-                            $.modal.alertSuccess(result.msg);
+                            $.modal.msgSuccess(result.msg);
                             reloadShipmentDetail();
                         } else {
                             if (result.conts != null) {
