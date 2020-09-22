@@ -155,7 +155,7 @@
                 </div>
                 <label class="col-sm-2 control-label is-required">Tên doanh nghiệp: </label>
                 <div class="col-sm-5">
-                  <input name="delegateCompany" class="form-control" onfocus="removeGroupError()" type="text" />
+                  <input name="delegateCompany" class="form-control" onfocus="removeGroupError()" type="text" readonly/>
                 </div>
               </div>
             </div>
@@ -359,7 +359,7 @@
 
       function remove(index) {
         delegatedLogistics.splice(index, 1);
-        loadtable();
+        loadTable();
       }
 
       $.event.special.inputchange = {

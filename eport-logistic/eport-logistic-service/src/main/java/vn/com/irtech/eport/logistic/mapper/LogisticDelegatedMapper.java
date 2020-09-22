@@ -67,4 +67,6 @@ public interface LogisticDelegatedMapper
      * @return
      */
     public int updateDelFlgByGroupIds(String[] ids);
+
+    public LogisticDelegated selectLogisticDelegatedByTaxDelegated(String taxDelegated);
 }

@@ -67,4 +67,6 @@ public interface ILogisticDelegatedService
      * @return
      */
     public int updateDelFlgByGroupIds(String ids);
+
+    public LogisticDelegated selectLogisticDelegatedByTaxDelegated(String taxDelegated);
 }
