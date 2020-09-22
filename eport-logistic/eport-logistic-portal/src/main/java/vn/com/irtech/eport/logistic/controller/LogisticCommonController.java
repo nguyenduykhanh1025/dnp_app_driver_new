@@ -23,20 +23,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.config.Global;
+import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
+import vn.com.irtech.eport.common.exception.file.InvalidExtensionException;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.bean.BeanUtils;
+import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
+import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -47,6 +53,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.INapasApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
@@ -94,6 +101,9 @@ public class LogisticCommonController extends LogisticBaseController {
 	
 	@Autowired
 	private IShipmentCommentService shipmentCommentService;
+	
+	@Autowired
+    private ServerConfig serverConfig;
 	
 	@Autowired
 	private DictService dictDataService;
@@ -616,6 +626,18 @@ public class LogisticCommonController extends LogisticBaseController {
 		List<ShipmentComment> shipmentComments = shipmentCommentService.selectShipmentCommentListForNotification(shipmentComment);
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentComments", shipmentComments);
+		return ajaxResult;
+	}
+	
+	@PostMapping("/shipment/{shipmentId}/file/attach")
+	@ResponseBody
+	public AjaxResult postAttachFile(MultipartFile file, @PathVariable("shipmentId") Long shipmentId) throws IOException, InvalidExtensionException {
+		String basePath = String.format("%s/%s", Global.getUploadPath(), shipmentId);
+		String now = DateUtils.dateTimeNow();
+		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+        String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+        AjaxResult ajaxResult = AjaxResult.success();
+        ajaxResult.put("fileLink", serverConfig.getUrl() + filePath);
 		return ajaxResult;
 	}
 }

@@ -1,11 +1,13 @@
 package vn.com.irtech.eport.logistic.domain;
 
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
-import java.util.Date;
 
 /**
  * Shipment Comment Object shipment_comment

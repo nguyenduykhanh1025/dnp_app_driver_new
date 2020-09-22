@@ -36,7 +36,6 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.exception.file.InvalidExtensionException;
-import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
