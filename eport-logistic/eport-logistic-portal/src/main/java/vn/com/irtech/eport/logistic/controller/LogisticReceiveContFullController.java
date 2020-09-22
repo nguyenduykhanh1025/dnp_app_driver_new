@@ -33,7 +33,6 @@ import vn.com.irtech.eport.common.constant.SystemConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
-import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.DictService;
@@ -263,12 +262,11 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
+			// auto load containers detail for eDO for first time
 			if (shipment.getEdoFlg().equals("1") && shipmentDetails.size() == 0) {
 				if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
 					shipmentDetails = shipmentDetailService.getShipmentDetailFromHouseBill(shipment.getHouseBill());
-					
 				} else {
-					shipmentDetails = new ArrayList<>();
 					//get infor from edi
 					shipmentDetails = shipmentDetailService.getShipmentDetailsFromEDIByBlNo(shipment.getBlNo());
 				}
@@ -276,19 +274,24 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				List<ShipmentDetail> shipmentDetailsCatos = catosApiService.selectShipmentDetailsByBLNo(shipment.getBlNo());
 				//Get opecode, sealNo, wgt, pol,pod
 				if(shipmentDetailsCatos != null) {
-					for(ShipmentDetail i : shipmentDetails) {
-						i.setVoyNo(i.getVoyCarrier());
-						for(ShipmentDetail j : shipmentDetailsCatos) {
-							if(i.getContainerNo().equals(j.getContainerNo())) {
+					for(ShipmentDetail detail : shipmentDetails) {
+						// FIXME vi sao set 2 cai nay cho nhau lam gi
+						detail.setVoyNo(detail.getVoyCarrier());
+						for(ShipmentDetail catosDetail : shipmentDetailsCatos) {
+							if(detail.getContainerNo().equalsIgnoreCase(catosDetail.getContainerNo())) {
 								// Overwrite information from CATOS
-//								i.setOpeCode(j.getOpeCode());
-								i.setVslNm(j.getVslNm());					// overwrite VSL_CD:VSL_NM from CATOS
-								i.setVoyNo(j.getVoyNo());
-								i.setSealNo(j.getSealNo());
-								i.setWgt(j.getWgt());
-								i.setLoadingPort(j.getLoadingPort());		// overwrite from CATOS
-								i.setDischargePort(j.getDischargePort());	// overwrite from CATOS
-								i.setYear(j.getYear());
+								detail.setSztp(catosDetail.getSztp());
+								detail.setSztpDefine(catosDetail.getSztpDefine());
+								// Block-Bay-Row-Tier
+								detail.setLocation(String.format("%s-%s-%s-%s",catosDetail.getBlock(), catosDetail.getBay(), catosDetail.getRow(), catosDetail.getTier()));
+								detail.setOpeCode(catosDetail.getOpeCode());
+								detail.setVslNm(catosDetail.getVslNm());					// overwrite VSL_CD:VSL_NM from CATOS
+								detail.setVoyNo(catosDetail.getVoyNo());
+								detail.setSealNo(catosDetail.getSealNo());
+								detail.setWgt(catosDetail.getWgt());
+								detail.setLoadingPort(catosDetail.getLoadingPort());		// overwrite from CATOS
+								detail.setDischargePort(catosDetail.getDischargePort());	// overwrite from CATOS
+								detail.setYear(catosDetail.getYear());
 							}
 						}
 					}

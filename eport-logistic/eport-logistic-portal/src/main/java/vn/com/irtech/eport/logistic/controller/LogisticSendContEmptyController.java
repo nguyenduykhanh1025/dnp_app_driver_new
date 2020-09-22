@@ -28,7 +28,6 @@ import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
-import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
@@ -251,18 +250,39 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	}
 
 	@Log(title = "Khai Báo Cont", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/shipment-detail")
+	@PostMapping("/{shipmentId}/shipment-detail")
 	@ResponseBody
-	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
+	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails, @PathVariable("shipmentId") Long shipmentId) {
+		// Verify shipment
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		if (!verifyPermission(shipment.getLogisticGroupId())) {
+			return AjaxResult.error("Không tìm thấy lô, xin vui lòng kiểm tra lại");
+		}
 		if (shipmentDetails != null) {
 			LogisticAccount user = getUser();
-			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
 			boolean updateShipment = true;
 			List<String> contReservedList = shipmentDetailService.checkContainerReserved(shipmentDetails.get(0).getProcessStatus());
 			if (contReservedList.size() > 0) {
 				AjaxResult ajaxResult = AjaxResult.error();
 				ajaxResult.put("conts", contReservedList);
 				return ajaxResult;
+			}
+
+			// Kiem tra B/L No co ton tai o cont Boc Full khong
+			Shipment search = new Shipment();
+			search.setBlNo(shipment.getBlNo());
+			search.setLogisticGroupId(shipment.getLogisticGroupId());
+			search.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
+			List<Shipment> receiveFullList = shipmentService.selectShipmentList(search);
+			if(receiveFullList != null && receiveFullList.size() > 0) {
+				// lay 1 shipment (thong thuong chi co 1)
+				Shipment receiveFShipment = receiveFullList.get(0);
+				//Đổi opeCode operateCode -> groupCode
+				if(shipment.getOpeCode() == null || !shipment.getOpeCode().equals(receiveFShipment.getOpeCode())) {
+					return error("Mã OPR cho lô nhận container hàng và lô giao container rỗng đang khác nhau. Vui lòng kiểm tra lại.");
+				}
+			} else {
+				// TODO bat co de OM kiem tra lai chung tu goc
 			}
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setProcessStatus(null);
