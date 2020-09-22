@@ -17,7 +17,6 @@ function checkCustomStatus() {
         parent.reloadShipmentDetail();
         $.modal.close();
     } else {
-
         if (number == 0) {
             $.modal.alertError("Bạn chưa nhập số lượng tờ khai!");
         } else {
@@ -60,7 +59,7 @@ function checkCustomStatus() {
                             error: function (result) {
                                 $("#checkBtn").html("Kết thúc");
                                 $.modal.closeLoading();
-                                $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
+                                $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng thử lại sau.");
                             }
                         });
                     }, 2000);
@@ -139,7 +138,7 @@ function onConnected() {
 
 function onError(error) {
     console.log(error);
-    $.modal.alertError('Could not connect to WebSocket server. Please refresh this page to try again!');
+    $.modal.alertError('Không thể kết nối đến server kết quả. Vui lòng thử lại sau!');
     $.modal.closeLoading();
 }
 
@@ -148,8 +147,6 @@ function onMessageReceived(payload) {
     if (message.code == 0) {
         contResult.push(message.shipmentDetail);
         contAmount--;
-        //$.modal.closeLoading();
-        //$.modal.loading("Đang kiểm tra trạng thái thông quan: "+(contList.length-contAmount)+"/"+contList.length);
         changeTextLoading("Đang kiểm tra trạng thái thông quan: "+(contList.length-contAmount)+"/"+contList.length);
         if (contAmount == 0) {
             //$.modal.closeLoading();
@@ -176,9 +173,8 @@ function onMessageReceived(payload) {
                 },
             });
             $.modal.alertSuccess(message.msg);
-            
-            // loadData() 
-            $("#checkBtn").html("Kết thúc");
+
+             $("#checkBtn").html("Kết thúc");
 
             // Close websocket connection 
             $.websocket.disconnect(onDisconnected);

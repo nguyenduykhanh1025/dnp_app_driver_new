@@ -2,6 +2,7 @@ package vn.com.irtech.eport.framework.custom.queue.listener;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,10 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.CustomsCheckResultDto;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ICustomCheckService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
 @Component
@@ -31,6 +34,9 @@ public class CheckingCustomThread {
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
+
+	@Autowired
+	private ICatosApiService catosApiService;
 
 	@Autowired
 	private ISysConfigService configService;
@@ -74,8 +80,14 @@ public class CheckingCustomThread {
 							}
 							if(releasedFlg) {
 								shipmentDetail.setStatus(shipmentDetail.getStatus() + 1); // Set status thong quan
-								shipmentDetail.setTaxCode(result.getTaxCode());
-								shipmentDetail.setConsigneeByTaxCode(result.getCompanyName());
+								if(!StringUtils.isBlank(result.getTaxCode())) {
+									shipmentDetail.setTaxCode(result.getTaxCode());
+									// update lai theo catos
+									PartnerInfoDto consignee = catosApiService.getConsigneeNameByTaxCode(result.getTaxCode());
+									if(consignee != null && !StringUtils.isBlank(consignee.getGroupName())) {
+										shipmentDetail.setConsigneeByTaxCode(consignee.getGroupName());
+									}
+								}
 								shipmentDetail.setCustomStatus("R");
 								shipmentDetailService.updateShipmentDetail(shipmentDetail);
 							} else {

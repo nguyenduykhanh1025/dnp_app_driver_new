@@ -244,7 +244,7 @@ function toggleAttachIcon(shipmentId) {
 
 
 $("#batchStatus").combobox({
-    onSelect: function (serviceType) {
+    onChange: function (serviceType) {
         shipment.contSupplyStatus = serviceType.value;
         search();
     }
@@ -339,19 +339,19 @@ function contSupplyRemarkRenderer(instance, td, row, col, prop, value, cellPrope
 }
 function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'sztp' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'sztp' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'opeCode' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'opeCode' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function planningDateRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'planningDate' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'planningDate' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     if (value != null && value != '') {
         if (value.substring(2, 3) != "/") {
@@ -365,43 +365,43 @@ function planningDateRenderer(instance, td, row, col, prop, value, cellPropertie
 }
 function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'cargoType' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'cargoType' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function qualityRequirementRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'qualityRequirement' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'qualityRequirement' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'consignee' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'consignee' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'vslNm' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'vslNm' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'voyNo' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'voyNo' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'dischargePort' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'dischargePort' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'remark' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//    $(td).attr('id', 'remark' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
@@ -410,7 +410,7 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 function configHandson() {
     config = {
         stretchH: "all",
-        height: $('#right-side__main-table').height() - 35,
+        height: $('#right-side__main-table').height() - 40,
         minRows: rowAmount,
         maxRows: rowAmount,
         width: "100%",
@@ -418,7 +418,7 @@ function configHandson() {
         rowHeights: 30,
         fixedColumnsLeft: 3,
         manualColumnResize: true,
-        manualRowResize: true,
+        manualRowResize: false,
         renderAllRows: true,
         rowHeaders: true,
         className: "htMiddle",
@@ -454,7 +454,7 @@ function configHandson() {
                 case 12:
                     return "Cảng Dỡ";
                 case 13:
-                    return "Logistics Ghi Chú";
+                    return "Ghi Chú (K/H)";
             }
         },
         // colWidths: [ 100, 100, 100, 120, 100, 100, 100, 150, 100, 120, 100, 80, 80, 80, 150],
@@ -564,9 +564,6 @@ function checkAll() {
         allChecked = true
         checkList = Array(rowAmount).fill(0);
         for (let i=0; i<checkList.length; i++) {
-            if (hot.getDataAtCell(i, 1) == null) {
-                break;
-            }
             checkList[i] = 1;
             $('#check'+i).prop('checked', true);
         }
@@ -950,9 +947,9 @@ function deleteSupplyReq(index, layero) {
             logisticGroupId: shipmentSelected.logisticGroupId
         },
         success: function (res) {
+            $.modal.closeLoading();
             layer.close(index);
             reloadShipmentDetail();
-            $.modal.closeLoading();
             if (res.code == 0) {
                 $.modal.alertSuccess(res.msg);
             } else {
@@ -962,7 +959,7 @@ function deleteSupplyReq(index, layero) {
         error: function (data) {
             layer.close(index);
             reloadShipmentDetail();
-            $.modal.closeLoading();
+            // $.modal.closeLoading();
         }
     });
 }
@@ -974,7 +971,7 @@ function reloadShipmentDetail() {
     for (let i=0; i<checkList.length; i++) {
         $('#check'+i).prop('checked', false);
     }
-    loadTable();
+    // loadTable();
     loadShipmentDetail(shipmentSelected.id);
 }
 
