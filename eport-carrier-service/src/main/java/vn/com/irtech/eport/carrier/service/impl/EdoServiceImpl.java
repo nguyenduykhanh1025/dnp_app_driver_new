@@ -143,22 +143,22 @@ public class EdoServiceImpl implements IEdoService
         Edo edi = new Edo();
 		ZoneId defaultZoneId = ZoneId.systemDefault();
 		List<Edo> listEdi = new ArrayList<>();
-		String business = "";
+		String carrierCode = "";
 		Date fileCreateTime = new Date();
 		boolean checkBgm = true;
 		for(String s : text)
 		{
-			//businessUnit and createTime
+			//carrierCode and createTime
 			if(s.contains("UNB+UNOA"))
 			{
-				String[] businessUnit = s.split("\\+");
-				if(businessUnit.length > 2)
+				String[] carrierCodes = s.split("\\+");
+				if(carrierCodes.length > 2)
 				{
-					business = businessUnit[2];
+					carrierCode = carrierCodes[2];
 				}
-				if(businessUnit.length > 4)
+				if(carrierCodes.length > 4)
 				{
-					String [] timeInfo = businessUnit[4].split("\\:");
+					String [] timeInfo = carrierCodes[4].split("\\:");
 					if(timeInfo.length > 1)
 					{
 						fileCreateTime.setYear(Integer.parseInt("20"+timeInfo[0].substring(0,2))-1900);
@@ -175,7 +175,7 @@ public class EdoServiceImpl implements IEdoService
 			if(s.contains("UNH"))
 			{
 				edi = new Edo();
-				edi.setBusinessUnit(business);
+				edi.setCarrierCode(carrierCode);
 				edi.setFileCreateTime(fileCreateTime);
 				continue;
 			}
@@ -320,8 +320,8 @@ public class EdoServiceImpl implements IEdoService
 				if(infoDTD20.length > 8)
 				{
 					String [] vessel = infoDTD20[8].split("\\:");
-					String [] carrierCode = infoDTD20[5].split("\\:");
-					edi.setCarrierCode(carrierCode[0]);
+					String [] businessUnit = infoDTD20[5].split("\\:");
+					edi.setBusinessUnit(businessUnit[0]);
 					edi.setVoyNo(infoDTD20[2]);
 					edi.setVesselNo(vessel[0]);
 					edi.setVessel(vessel[3]); 
