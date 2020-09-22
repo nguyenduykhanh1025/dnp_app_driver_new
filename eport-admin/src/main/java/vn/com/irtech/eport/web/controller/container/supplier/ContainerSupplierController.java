@@ -153,18 +153,19 @@ public class ContainerSupplierController extends BaseController {
 		return getDataTable(dataList);
 	}
 	
-	// VIEW RECEIVE CONT EMPTY ATTACH IMAGE
-    @GetMapping("/shipments/{shipmentId}/shipment-images")
-    public String receiveContEmptyAttachImage(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
-
-        List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImagesByShipmentId(shipmentId);
-        if (!CollectionUtils.isEmpty(shipmentImages)) {
-            shipmentImages.forEach(image -> image.setPath(serverConfig.getUrl() + image.getPath()));
-            mmap.put("shipmentImages", shipmentImages);
-        }
-
-        return PREFIX + "/shipmentImage";
-    }
+	@GetMapping("/shipments/{shipmentId}/shipment-images")
+	@ResponseBody
+	public AjaxResult getShipmentImages(@PathVariable("shipmentId") Long shipmentId) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setShipmentId(shipmentId);
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+		for (ShipmentImage shipmentImage2 : shipmentImages) {
+			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+		}
+		ajaxResult.put("shipmentFiles", shipmentImages);
+		return ajaxResult;
+	}
 
 	// COUNT SHIPMENT IMAGE BY SHIPMENT ID
 	@GetMapping("/shipments/{shipmentId}/shipment-images/count")
@@ -289,4 +290,6 @@ public class ContainerSupplierController extends BaseController {
 		
 		return success();
 	}
+	
+	
 }

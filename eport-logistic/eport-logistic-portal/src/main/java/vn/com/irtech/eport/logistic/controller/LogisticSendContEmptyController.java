@@ -218,6 +218,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			referenceShipment.setRemark(shipment.getRemark());
 			referenceShipment.setContainerAmount(shipment.getContainerAmount());
 			referenceShipment.setUpdateBy(getUser().getUserName());
+			referenceShipment.setId(shipmentId);
 			
 			if (EportConstants.SHIPMENT_STATUS_INIT.equals(referenceShipment.getStatus())) {
 				referenceShipment.setSendContEmptyType(shipment.getSendContEmptyType());

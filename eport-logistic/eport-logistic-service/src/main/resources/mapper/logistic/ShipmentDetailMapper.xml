@@ -86,7 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         pre_pickup_payment_status, custom_status, payment_status, process_status, do_status, do_received_time, 
         user_verify_status, finish_status, status, order_no, tax_code, consignee_by_tax_code, cont_supply_status, 
         planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, remark, pay_type, payer, payer_name, customs_no, 
-        custom_scan_time, delivery_address, delivery_mobile, delivery_remark, eta, etd, create_by, create_time, update_by, update_time from shipment_detail
+        custom_scan_time, delivery_address, delivery_mobile, delivery_remark, eta, etd, det_free_time, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
      <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail

@@ -675,7 +675,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 				if (StringUtils.isNotEmpty(remark)) {
 					remark += ", ";
 				}
-				remark += ", Mien luu " + detail.getDetFreeTime();
+				remark += "free " + detail.getDetFreeTime() + " days";
 			}
 			processOrder.setRemark(remark);
 		}
