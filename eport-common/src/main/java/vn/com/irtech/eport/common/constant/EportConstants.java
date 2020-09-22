@@ -211,4 +211,10 @@ public interface EportConstants {
 	public static final String PROCESS_STATUS_SHIPMENT_DETAIL_YES = "Y";
 	public static final String PROCESS_STATUS_SHIPMENT_DETAIL_ERROR = "E";
 	public static final String PROCESS_STATUS_SHIPMENT_DETAIL_DELETE = "D";
+	
+	// DO type carriger group
+	/** Do type DO of carrier group */
+	public static final String DO_TYPE_CARRIER_DO = "0";
+	/** Do type eDO of carrier group */
+	public static final String DO_TYPE_CARRIER_EDO = "1";
 }
