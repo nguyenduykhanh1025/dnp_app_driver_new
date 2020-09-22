@@ -1,10 +1,17 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -25,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import oracle.net.aso.a;
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
@@ -33,12 +41,14 @@ import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.exception.file.InvalidExtensionException;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
+import vn.com.irtech.eport.common.utils.file.FileUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -119,34 +129,39 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
         return PREFIX + "/index";
     }
 
-    // VIEW RECEIVE CONT EMPTY ATTACH IMAGE
-    @GetMapping("/shipments/{shipmentId}/shipment-images")
-    public String receiveContEmptyAttachImage(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
-        Shipment shipment = shipmentService.selectShipmentById(shipmentId);
-        if (!verifyPermission(shipment.getLogisticGroupId())) {
-            return PREFIX + "/shipmentImage";
-        }
+//    // VIEW RECEIVE CONT EMPTY ATTACH IMAGE
+//    @GetMapping("/shipments/{shipmentId}/shipment-images")
+//    public String receiveContEmptyAttachImage(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
+//        Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+//        if (!verifyPermission(shipment.getLogisticGroupId())) {
+//            return PREFIX + "/shipmentImage";
+//        }
+//
+//        List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImagesByShipmentId(shipment.getId());
+//        if (!CollectionUtils.isEmpty(shipmentImages)) {
+//            shipmentImages.forEach(image -> image.setPath(serverConfig.getUrl() + image.getPath()));
+//            mmap.put("shipmentImages", shipmentImages);
+//        }
+//
+//        return PREFIX + "/shipmentImage";
+//    }
 
-        List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImagesByShipmentId(shipment.getId());
-        if (!CollectionUtils.isEmpty(shipmentImages)) {
-            shipmentImages.forEach(image -> image.setPath(serverConfig.getUrl() + image.getPath()));
-            mmap.put("shipmentImages", shipmentImages);
-        }
-
-        return PREFIX + "/shipmentImage";
-    }
-
-	// COUNT SHIPMENT IMAGE BY SHIPMENT ID
-	@GetMapping("/shipments/{shipmentId}/shipment-images/count")
+	@GetMapping("/shipments/{shipmentId}/shipment-images")
 	@ResponseBody
-	public AjaxResult countShipmentImage(@PathVariable("shipmentId") Long shipmentId) {
+	public AjaxResult getShipmentImages(@PathVariable("shipmentId") Long shipmentId) {
 		AjaxResult ajaxResult = AjaxResult.success();
 		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
-			int numberOfShipmentImage = shipmentImageService.countShipmentImagesByShipmentId(shipment.getId());
-			ajaxResult.put("numberOfShipmentImage", numberOfShipmentImage);
+			ShipmentImage shipmentImage = new ShipmentImage();
+			shipmentImage.setShipmentId(shipmentId);
+			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+			for (ShipmentImage shipmentImage2 : shipmentImages) {
+				shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+			}
+			ajaxResult.put("shipmentFiles", shipmentImages);
+			return ajaxResult;
 		}
-		return ajaxResult;
+		return error();
 	}
 
 	// FORM ADD NEW SHIPMENT
@@ -169,6 +184,11 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		}
 		List<String> oprCodeList = catosApiService.getOprCodeList();
 		oprCodeList.add(0, "Chọn OPR");
+		
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setShipmentId(id);
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+		mmap.put("shipmentFiles", shipmentImages);
 		
 		mmap.put("oprCodeList", oprCodeList);
         return PREFIX + "/edit";
@@ -245,17 +265,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@Log(title = "Thêm Lô Bốc Rỗng", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment")
     @ResponseBody
-    @Transactional
-    public AjaxResult addShipment(Shipment shipment) {
-
-        MultipartFile[] images = shipment.getImages();
-        if (Objects.nonNull(images) && images.length > 5) {
-            return error("Chỉ được phép đính kèm tối đa 5 hình ảnh!");
-        }
-
-        if (StringUtils.isNotEmpty(shipment.getBookingNo())) {
-        	shipment.setBookingNo(shipment.getBookingNo());
-        }
+    public AjaxResult addShipment(@RequestBody Shipment shipment) {
         LogisticAccount user = getUser();
         shipment.setLogisticAccountId(user.getId());
         shipment.setLogisticGroupId(user.getGroupId());
@@ -265,12 +275,13 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
         shipment.setStatus("1");
         shipment.setContSupplyStatus(0);
         if (shipmentService.insertShipment(shipment) == 1) {
-            try {
-                insertShipmentImages(shipment);
-                return success("Thêm lô thành công");
-            } catch (IOException | InvalidExtensionException e) {
-                return error(e.getMessage());
-           }
+        	ShipmentImage shipmentImage = new ShipmentImage();
+        	shipmentImage.setShipmentId(shipment.getId());
+        	Map<String, Object> map = new HashMap<>();
+        	map.put("ids", Convert.toStrArray(shipment.getParams().get("ids").toString()));
+        	shipmentImage.setParams(map);
+            shipmentImageService.updateShipmentImageByIds(shipmentImage);
+            return success("Thêm lô thành công");
         }
         return error("Thêm lô thất bại");
     }
@@ -279,7 +290,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@Log(title = "Chỉnh Sửa Lô", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment/{shipmentId}")
     @ResponseBody
-    public AjaxResult editShipment(Shipment shipment) {
+    public AjaxResult editShipment(@RequestBody Shipment shipment) {
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
 			// Check container amount update need to greater or equal  curren amount
@@ -293,6 +304,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 				}
 			}
 			
+			referenceShipment.setId(shipment.getId());
 			referenceShipment.setRemark(shipment.getRemark());
 			referenceShipment.setContainerAmount(shipment.getContainerAmount());
 			referenceShipment.setUpdateBy(getUser().getUserName());
@@ -308,6 +320,12 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			}
 			
 			if (shipmentService.updateShipment(referenceShipment) == 1) {
+				ShipmentImage shipmentImage = new ShipmentImage();
+	        	shipmentImage.setShipmentId(shipment.getId());
+	        	Map<String, Object> map = new HashMap<>();
+	        	map.put("ids", Convert.toStrArray(shipment.getParams().get("ids").toString()));
+	        	shipmentImage.setParams(map);
+	            shipmentImageService.updateShipmentImageByIds(shipmentImage);
 				return success("Chỉnh sửa lô thành công");
 			}
 		}
@@ -636,5 +654,38 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
+	}
+	
+	@PostMapping("/file")
+	@ResponseBody
+	public AjaxResult saveFile(MultipartFile file) throws IOException, InvalidExtensionException {
+		String basePath = String.format("%s/%s", Global.getUploadPath() + "/booking", getUser().getGroupId());
+		String now = DateUtils.dateTimeNow();
+		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+        String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+        
+        ShipmentImage shipmentImage = new ShipmentImage();
+        shipmentImage.setPath(filePath);
+        shipmentImage.setCreateTime(DateUtils.getNowDate());
+        shipmentImage.setCreateBy(getUser().getFullName());
+        shipmentImageService.insertShipmentImage(shipmentImage);
+        
+        AjaxResult ajaxResult = AjaxResult.success();
+        ajaxResult.put("shipmentFileId", shipmentImage.getId());
+        return ajaxResult;
+	}
+	
+	@DeleteMapping("/booking/file")
+	@ResponseBody
+	public AjaxResult deleteFile(Long id) throws IOException {
+		ShipmentImage shipmentImageParam = new ShipmentImage();
+		shipmentImageParam.setId(id);
+		ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+		String[] fileArr = shipmentImage.getPath().split("/");
+		File file = new File(Global.getUploadPath() + "/booking/" + getUser().getGroupId() + "/" + fileArr[fileArr.length-1]);
+		if (file.delete()) {
+			shipmentImageService.deleteShipmentImageById(id);
+		}
+		return success();
 	}
 }

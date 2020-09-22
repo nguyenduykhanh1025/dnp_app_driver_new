@@ -232,6 +232,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			// Chi update cac item cho phep
 			referenceShipment.setUpdateBy(user.getFullName());
 			referenceShipment.setRemark(shipment.getRemark());
+			referenceShipment.setId(shipment.getId());
 
 			// Can change bill of lading when status = initialize => another item change accordingly
 			if (EportConstants.SHIPMENT_STATUS_INIT.equals(referenceShipment.getStatus())) {

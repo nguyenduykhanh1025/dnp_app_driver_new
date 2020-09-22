@@ -226,16 +226,17 @@ function getSelected() {
 function toggleAttachIcon(shipmentId) {
     $.ajax({
         type: "GET",
-        url: PREFIX + "/shipments/" + shipmentId + "/shipment-images/count",
+        url: PREFIX + "/shipments/" + shipmentId + "/shipment-images",
         contentType: "application/json",
         success: function (data) {
-            let $attachIcon = $("a#attachIcon");
-            if (data.numberOfShipmentImage && data.numberOfShipmentImage > 0) {
-                $attachIcon.data("shipment-id", shipmentId);
-                $attachIcon.removeClass("hidden");
-            } else {
-                $attachIcon.removeData("shipment-id");
-                $attachIcon.addClass("hidden");
+            if (data.code == 0) {
+                if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
+                    let html = '';
+                    data.shipmentFiles.forEach(function(element, index) {
+                        html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
+                    });
+                    $('#attachIcon').html(html);
+                } 
             }
         }
     });
