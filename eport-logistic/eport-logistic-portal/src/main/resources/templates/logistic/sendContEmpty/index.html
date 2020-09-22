@@ -8,6 +8,7 @@
   <th:block th:include="include :: handsontable-css" />
   <th:block th:include="include :: easyui-css" />
   <th:block th:include="include :: summernote-css" />
+  <th:block th:include="include :: dropzone-css" />
   <link th:href="@{/css/logistic/receiveContFull/style.css?v=0916}" rel="stylesheet" />
   <link th:href="@{/eport/css/common/style.css?v=1406}" rel="stylesheet" />
 </head>
@@ -94,10 +95,18 @@
                   <div class="form-group row">
                     <label class="col-md-1 col-sm-2 col-xs-3">Nội dung <span style="color: red;">*</span></label>
                     <div class="col-md-11 col-sm-10 col-xs-9">
-                      <textarea class="summernote"></textarea>
+                      <textarea class="summernote" id="content"></textarea>
                     </div>
                   </div>
-                  <div>
+                  <div class="row">
+                    <span class="col-md-1 col-sm-2 col-xs-3"></span>
+                    <div id="dropzone" class="col-md-2 col-sm-2 col-xs-2" style="text-align: left;">
+                      <button id="attachButton" class="btn btn-sm btn-default">
+                        <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+                      </button>
+                    </div>
+                    <div id="previews" class="col-md-2 col-sm-2 col-xs-2">
+                    </div>
                     <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
                       <span class="l-btn-left"><span class="l-btn-text">
                       <button id="sendComment" onclick="addComment()" class="btn btn-sm btn-primary">
@@ -178,6 +187,7 @@
 
   <th:block th:include="include :: footer" />
   <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: dropzone-js" />
   <th:block th:include="include :: summernote-js" />
   <th:block th:include="include :: handsontable-js" />
   <th:block th:include="include :: websocket" />
