@@ -1,5 +1,4 @@
 const PREFIX = ctx + "edo/manage";
-const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var bill;
 var edo = new Object();
 
@@ -8,26 +7,6 @@ $(document).ready(function () {
 
   loadTable();
   loadTableByContainer();
-  $(".main-body").layout();
-
-  $(".collapse").click(function () {
-    $(".main-body__search-wrapper").height(15);
-    $(".main-body__search-wrapper--container").hide();
-    $(this).hide();
-    $(".uncollapse").show();
-  });
-
-  $(".uncollapse").click(function () {
-    $(".main-body__search-wrapper").height(SEARCH_HEIGHT + 20);
-    $(".main-body__search-wrapper--container").show();
-    $(this).hide();
-    $(".collapse").show();
-  });
-
-  $(".left-side__collapse").click(function () {
-    $('#main-layout').layout('collapse', 'west');
-  });
-
   $('#searchAll').keyup(function (event) {
     if (event.keyCode == 13) {
       edo.containerNumber = $('#searchAll').val().toUpperCase();
@@ -131,7 +110,7 @@ function loadTable(edo) {
     url: PREFIX + "/billNo",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
+    height: currentHeight,
     clientPaging: true,
     collapsible: true,
     pagination: true,
@@ -175,7 +154,7 @@ function loadTableByContainer(billOfLading) {
     url: PREFIX + "/edo",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
+    height: currentHeight - 25,
     clientPaging: true,
     pagination: true,
     pageSize: 20,

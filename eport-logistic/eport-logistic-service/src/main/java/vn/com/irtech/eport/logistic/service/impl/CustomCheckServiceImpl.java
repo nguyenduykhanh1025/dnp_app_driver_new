@@ -8,6 +8,7 @@ import java.io.StringReader;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,12 +77,39 @@ public class CustomCheckServiceImpl implements ICustomCheckService {
 				resultDto.setCompanyName(data.getStr("enterpriseName"));
 				// String rs = data.get("customsStatus").toString();
 				// convert xml to object
-				if(data.getStr("msgRecvContent") != null) {
-					String xml = HtmlUtils.htmlUnescape(data.getStr("msgRecvContent"));
-					JAXBContext jaxbContext = JAXBContext.newInstance(CustomDeclareResult.class);
-					Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-					CustomDeclareResult customDeclareResult = (CustomDeclareResult) unmarshaller.unmarshal(new StringReader(xml));
-					resultDto.setCustomDeclareResult(customDeclareResult);
+				String msgRecvContent = data.getStr("msgRecvContent");
+				if(msgRecvContent != null) {
+					//search customsStatus&gt;
+					if(StringUtils.isBlank(resultDto.getCustomsStatus())) {
+						int statusIdx = msgRecvContent.indexOf("customsStatus&gt;");
+						// Search status again
+						if(statusIdx > 0) {
+							String statusStr = msgRecvContent.substring(statusIdx + "customsStatus&gt;".length());
+							String status = statusStr.substring(0, statusStr.indexOf("&lt;/customsStatus&gt;"));
+							resultDto.setCustomsStatus(status);
+						}
+					}
+					if(StringUtils.isBlank(resultDto.getTaxCode())) {
+						int mstIdx = msgRecvContent.indexOf("enterpriseIdentity&gt;");
+						// Search status again
+						if(mstIdx > 0) {
+							String mstStr = msgRecvContent.substring(mstIdx + "enterpriseIdentity&gt;".length());
+							String mst = mstStr.substring(0, mstStr.indexOf("&lt;/enterpriseIdentity&gt;"));
+							resultDto.setTaxCode(mst);
+						}
+						int companyIdx = msgRecvContent.indexOf("enterpriseName&gt;");
+						// Search status again
+						if(companyIdx > 0) {
+							String companyStr = msgRecvContent.substring(companyIdx + "enterpriseName&gt;".length());
+							String company = companyStr.substring(0, companyStr.indexOf("&lt;/enterpriseName&gt;"));
+							resultDto.setCompanyName(company);
+						}
+					}
+//					String xml = HtmlUtils.htmlUnescape(msgRecvContent);
+//					JAXBContext jaxbContext = JAXBContext.newInstance(CustomDeclareResult.class);
+//					Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+//					CustomDeclareResult customDeclareResult = (CustomDeclareResult) unmarshaller.unmarshal(new StringReader(xml));
+//					resultDto.setCustomDeclareResult(customDeclareResult);
 				}
 				return resultDto;
 			}

@@ -157,6 +157,10 @@ public class LogisticReportPrintController extends LogisticBaseController {
 			        parameters.put("groupName", logisticGroup.getGroupName());
 			        Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
 			        parameters.put("remark", (shipment.getRemark() != null) ? shipment.getRemark() : "");
+			        parameters.put("emptyDepot", shipmentDetails.get(0).getEmptyDepot());
+			        parameters.put("expiredDem", shipmentDetails.get(0).getExpiredDem());
+			        parameters.put("etd", shipmentDetails.get(0).getEtd());
+			        parameters.put("eta", shipmentDetails.get(0).getEta());
 //					try {
 //						File file = new File("target/classes/static/img/logo_gray.jpeg");
 //						parameters.put("pathBackground", file.getPath());
