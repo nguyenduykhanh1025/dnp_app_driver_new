@@ -401,7 +401,7 @@ $(document).ready(function () {
   if($('.summernote')[0]) {
 	  $('.summernote').summernote({
 	    minHeight: 100,
-	    placeholder: 'Hãy nhập nội dung cần hỗ trợ',
+	    placeholder: 'Hãy nhập nội dung để hỗ trợ khách hàng',
 	    callbacks: {
 		  onImageUpload: function(files) {
 			  summernoteOnImageUpload(files, $('.summernote'));

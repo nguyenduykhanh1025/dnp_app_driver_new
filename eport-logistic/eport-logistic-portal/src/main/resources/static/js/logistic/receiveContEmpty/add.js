@@ -8,14 +8,14 @@ $("#form-add-shipment").validate({
 async function submitHandler() {
     if ($.validate.form()) {
         if ($("#opeCode option:selected").text() == 'Chọn OPR') {
-            $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
+            $.modal.alertError("Hãy chọn mã OPR.");
         } else if (shipmentFileIds.length > 0) {
             let res = await getBookingNoUnique();
             if (res.code == 0) {
                 save(prefix + "/shipment");
             }
         } else {
-            $.modal.alertWarning("Quý khách chưa đính kèm tệp booking hoặc lệnh cấp vỏ container.");
+            $.modal.alertError("Hãy đính kèm tệp booking hoặc lệnh cấp vỏ container.");
         }
     }
 }
@@ -91,7 +91,7 @@ $(document).ready(function () {
         clickable: "#attachButton", // Define the element that should be used as click trigger to select files.
         init: function () {
             this.on("maxfilesexceeded", function (file) {
-                $.modal.alertWarning("Số lượng tệp đính kèm vượt giới hạn cho phép, quý khách vui lòng đính kèm tệp trong lần comment tiếp theo.");
+                $.modal.alertError("Số lượng tệp đính kèm vượt số lượng cho phép.");
                 this.removeFile(file);
             });
         },
@@ -107,7 +107,7 @@ $(document).ready(function () {
                 </div>`
                 $('.preview-container').append(html);
             } else {
-                $.modal.msgError("Đính kèm tệp thất bại, quý khách vui lòng thử lại sau.");
+                $.modal.alertError("Đính kèm tệp thất bại, vui lòng thử lại sau.");
             }
         }
     });
