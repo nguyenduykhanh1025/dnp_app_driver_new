@@ -65,7 +65,7 @@ spring:
 #Eport Config
 eport:
     profile: /home/eport/uat/upload
-    apiUrl: http://127.0.0.1:9090/api
+    apiUrl: http://192.168.1.70:9090/api
     edi:
         rootPath: /mnt/nfs/var/sftp #/home/eport/uat/edo/upload
         backupPath: /mnt/nfs/var/sftp/backup #/home/eport/uat/edo/backup
