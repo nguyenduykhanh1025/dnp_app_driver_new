@@ -84,7 +84,7 @@ public class ContainerSupplierController extends BaseController {
 			shipment = new Shipment();
 		}
 		shipment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
-		List<Shipment> shipments = shipmentService.selectShipmentListForRegister(shipment);
+		List<Shipment> shipments = shipmentService.getShipmentListForContSupply(shipment);
 		return getDataTable(shipments);
 	}
 

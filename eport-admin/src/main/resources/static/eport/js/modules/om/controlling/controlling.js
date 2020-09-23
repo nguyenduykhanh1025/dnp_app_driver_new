@@ -981,3 +981,7 @@ function addComment() {
   }
 }
 
+function updateShipmentDetail() {
+  
+}
+

@@ -1490,6 +1490,7 @@ function requestCont(index, layero) {
                 $.modal.alertError(result.msg);
             }
             $.modal.closeLoading();
+            layer.close(index);
         },
         error: function (result) {
             $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
