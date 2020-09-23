@@ -510,7 +510,7 @@ function search() {
 function loadListComment(shipmentCommentId) {
   let req = {
     serviceType: 2,
-    shipmentId: processOrderSelected.id,
+    shipmentId: processOrderSelected.shipmentId,
   };
   $.ajax({
     url: ctx + "shipment-comment/shipment/list",
@@ -574,7 +574,7 @@ function addComment() {
     let req = {
       topic: topic,
       content: content,
-      shipmentId: processOrderSelected.id,
+      shipmentId: processOrderSelected.shipmentId,
       logisticGroupId: processOrderSelected.logisticGroupId,
     };
     $.ajax({

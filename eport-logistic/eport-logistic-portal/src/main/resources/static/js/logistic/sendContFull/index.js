@@ -27,7 +27,7 @@ $.ajax({
             })
         }
     }
-})
+});
 var consigneeList, vslNmList, currentProcessId, currentSubscription;
 
 $.ajax({

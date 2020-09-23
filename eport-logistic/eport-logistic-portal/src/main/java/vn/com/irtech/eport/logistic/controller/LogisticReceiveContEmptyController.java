@@ -517,24 +517,24 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 
-    private void insertShipmentImages(Shipment shipment) throws IOException, InvalidExtensionException {
-        Long shipmentId = shipment.getId();
-        String timeNow = DateUtils.dateTimeNow();
-        String basePath = String.format("%s/%s/%s", Global.getUploadPath(), shipment.getLogisticGroupId(), shipmentId);
-        int imageIndex = 0;
-
-        for (MultipartFile image : shipment.getImages()) {
-            String imageName = String.format("img%d_%s.%s", ++imageIndex, timeNow, FileUploadUtils.getExtension(image));
-            String imagePath = FileUploadUtils.upload(basePath, imageName, image, MimeTypeUtils.IMAGE_EXTENSION);
-
-            ShipmentImage shipmentImage = new ShipmentImage();
-            shipmentImage.setShipmentId(shipmentId);
-            shipmentImage.setPath(imagePath);
-            shipmentImage.setCreateTime(DateUtils.getNowDate());
-            shipmentImage.setCreateBy(getUser().getFullName());
-            shipmentImageService.insertShipmentImage(shipmentImage);
-        }
-    }
+//    private void insertShipmentImages(Shipment shipment) throws IOException, InvalidExtensionException {
+//        Long shipmentId = shipment.getId();
+//        String timeNow = DateUtils.dateTimeNow();
+//        String basePath = String.format("%s/%s/%s", Global.getUploadPath(), shipment.getLogisticGroupId(), shipmentId);
+//        int imageIndex = 0;
+//
+//        for (MultipartFile image : shipment.getImages()) {
+//            String imageName = String.format("img%d_%s.%s", ++imageIndex, timeNow, FileUploadUtils.getExtension(image));
+//            String imagePath = FileUploadUtils.upload(basePath, imageName, image, MimeTypeUtils.IMAGE_EXTENSION);
+//
+//            ShipmentImage shipmentImage = new ShipmentImage();
+//            shipmentImage.setShipmentId(shipmentId);
+//            shipmentImage.setPath(imagePath);
+//            shipmentImage.setCreateTime(DateUtils.getNowDate());
+//            shipmentImage.setCreateBy(getUser().getFullName());
+//            shipmentImageService.insertShipmentImage(shipmentImage);
+//        }
+//    }
 
 	@GetMapping("/berthplan/ope-code/list")
 	@ResponseBody
