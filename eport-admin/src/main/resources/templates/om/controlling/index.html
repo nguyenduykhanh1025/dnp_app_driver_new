@@ -72,7 +72,7 @@
                         </thead>
                     </table>
                 </div>
-                <div class="right-side" data-options="region:'center'" title="Danh Sách Container" style="width:100%;">
+                <div class="right-side" data-options="region:'center'" style="width:100%;">
                     <div class="easyui-layout" id="right-layout" data-options="fit:true" style="position: relative;">
                         <div style="height: 50%;" data-options="region:'south', split:true">
                             <span class="right-side__collapse"><i class="fa fa-chevron-down"></i></span>
@@ -105,6 +105,36 @@
                             </div>
                         </div>
                         <div data-options="region:'center'" id="right-side__main-table">
+                            <div class="right-side__toolbar">
+                                <div class="datagrid-toolbar">
+                                    <table cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td>
+                                                <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                                    <span class="l-btn-left"><span class="l-btn-text">
+                                                            <button id="updateBtn" onclick="updateShipmentDetail()"
+                                                                class="btn btn-sm btn-primary">
+                                                                <i class="fa fa-check text-primary"></i> Lưu Thông Tin
+                                                            </button>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                                                    <span class="l-btn-left"><span class="l-btn-text">
+                                                            <button id="cancelBtn" onclick="cancelShupmentDetail()"
+                                                                class="btn btn-sm btn-danger">
+                                                                <i class="fa fa-refresh text-primary"></i> Hủy Khai Báo
+                                                            </button>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
                             <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
                         </div>
                     </div>
