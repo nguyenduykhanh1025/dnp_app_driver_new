@@ -292,7 +292,7 @@ public class LogisticCommonController extends LogisticBaseController {
 	public String getPaymentResult(@RequestParam("napasResult") String result, ModelMap mmap) {
 		JSONObject json = JSONObject.parseObject(result);
 		String dataBase64 = json.getString("data");
-
+		
 		boolean isError = true;
 		
 		//checksum

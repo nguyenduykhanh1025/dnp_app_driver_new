@@ -13,6 +13,7 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.Pickup;
 import vn.com.irtech.eport.logistic.form.PickupHistoryDetail;
 import vn.com.irtech.eport.logistic.form.PickupHistoryForm;
+import vn.com.irtech.eport.logistic.form.VesselVoyageMc;
 import vn.com.irtech.eport.logistic.mapper.PickupHistoryMapper;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 
@@ -227,4 +228,14 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
     	return pickupHistoryMapper.checkPlateNumberIsUnavailable(pickupHistory);
     }
    
+    /**
+     * Select vessel voyage list
+     * 
+     * @param pickupHistory
+     * @return List<VesselVoyageMc>
+     */
+    @Override
+    public List<VesselVoyageMc> selectVesselVoyageList(PickupHistory pickupHistory) {
+    	return pickupHistoryMapper.selectVesselVoyageList(pickupHistory);
+    }
 }
