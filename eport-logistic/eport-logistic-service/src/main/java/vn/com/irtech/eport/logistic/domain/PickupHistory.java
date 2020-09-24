@@ -135,6 +135,10 @@ public class PickupHistory extends BaseEntity {
 
 	private String sztp;
 
+	private Double distance;
+	
+	private Date updateLocationTime;
+	
 	private String vslNm;
 
 	private String voyNo;
@@ -338,6 +342,22 @@ public class PickupHistory extends BaseEntity {
 	public String getSztp() {
 		return sztp;
 	}
+	
+	public Double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(Double distance) {
+		this.distance = distance;
+	}
+
+	public Date getUpdateLocationTime() {
+		return updateLocationTime;
+	}
+
+	public void setUpdateLocationTime(Date updateLocationTime) {
+		this.updateLocationTime = updateLocationTime;
+	}
 
 	public void setVslNm(String vslNm) {
 		this.vslNm = vslNm;
@@ -510,8 +530,9 @@ public class PickupHistory extends BaseEntity {
 				.append("gateinDate", getGateinDate()).append("gateoutDate", getGateoutDate())
 				.append("cancelDeceiptDate", getCancelDeceiptDate()).append("fromDate", getFromDate())
 				.append("toDate", getToDate()).append("serviceType", getServiceType()).append("blNo", getBlNo())
-				.append("bookingNo", getBookingNo()).append("sztp", getSztp()).append("vslNm", getVslNm())
-				.append("voyNo", getVoyNo()).append("driverName", getDriverName())
+				.append("bookingNo", getBookingNo()).append("sztp", getSztp())
+				.append("distance", getDistance()).append("updateLocationTime", getUpdateLocationTime())
+				.append("vslNm", getVslNm()).append("voyNo", getVoyNo()).append("driverName", getDriverName())
 				.append("driverPhoneNumber", getDriverPhoneNumber()).append("logisticGroupName", getLogisticGroupName())
 				.append("processOrderId", getProcessOrderId()).append("gatePass",getGatePass())
 				.append("jobOrderNo", getJobOrderNo()).append("jobOrderFlg",getJobOrderFlg())

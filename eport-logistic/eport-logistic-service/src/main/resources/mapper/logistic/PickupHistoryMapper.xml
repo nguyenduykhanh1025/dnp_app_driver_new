@@ -32,6 +32,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="jobOrderFlg" column="job_order_flg" />
 		<result property="loadableWgt" column="loadable_wgt" />
 		<result property="sztp" column="sztp" />
+		<result property="distance" column="distance" />
+		<result property="updateLocationTime" column="update_location_time" />
 		<result property="remark" column="remark" />
 		<result property="createBy" column="create_by" />
 		<result property="createTime" column="create_time" />
@@ -175,6 +177,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="jobOrderFlg != null">job_order_flg,</if>
 			<if test="loadableWgt != null">loadable_wgt,</if>
 			<if test="sztp != null and sztp != ''">sztp,</if>
+			<if test="distance != null">distance,</if>
+			<if test="updateLocationTime != null">update_location_time,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -206,6 +210,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="jobOrderFlg != null">#{jobOrderFlg},</if>
 			<if test="loadableWgt != null">#{loadableWgt},</if>
 			<if test="sztp != null and sztp != ''">#{sztp},</if>
+			<if test="distance != null">#{distance},</if>
+			<if test="updateLocationTime != null">#{update_location_time},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -240,6 +246,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="jobOrderFlg != null">job_order_flg = #{jobOrderFlg},</if>
 			<if test="loadableWgt != null">loadable_wgt = #{loadableWgt},</if>
 			<if test="sztp != null and sztp != ''">sztp = #{sztp},</if>
+			<if test="distance != null">distance = #{distance},</if>
+			<if test="updateLocationTime != null">update_location_time = #{updateLocationTime},</if>
 			<if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
@@ -487,15 +495,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from 
 			(select sh.vsl_nm, sh.voy_no, sh.sztp, sh.discharge_port,
 				(
-					select count(*) from pickup_history p2 left join shipment_detail sh2 on p2.shipment_detail_id = sh.id
-					where sh2.vsl_nm = sh.vsl_nm 
+					select count(*) from pickup_history p2 left join shipment_detail sh2 on p2.shipment_detail_id = sh2.id
+					where 
+						sh2.vsl_nm = sh.vsl_nm 
 						and sh2.voy_no = sh.voy_no 
 						and sh2.sztp = sh.sztp 
 						and sh2.discharge_port = sh.discharge_port 
 						and p2.shipment_detail_id is not null
 						and p2.status = 0
-					group by sh2.vsl_nm, sh2.voy_no, sh2.sztp, sh2.discharge_port
 				) as container_amount
+			from pickup_history p left join shipment_detail sh on p.shipment_detail_id = sh.id
+			<where>
+					sh.vsl_nm is not null
+					and sh.voy_no is not null
+					and sh.sztp is not null
+					and  p.shipment_detail_id is not null
+					and p.status = 0
+				<if test="params.vslNm != null and params.vslNm != ''"> and sh.vsl_nm = #{vslNm}</if>
+				<if test="params.voyNo != null and params.voyNo != ''"> and sh.voyNo = #{voyNo}</if>
+				<if test="params.blBookingNo != null and params.blBookingNo != ''">
+					and (sh.bl_no like concat('%', concat(#{params.blBookingNo}, '%')) or sh.booking_no like concat('%', concat(#{params.blBookingNo}, '%')))
+				</if>
+			</where>)
+		group by vsl_nm, voy_no, sztp, discharge_port, container_amount
+	</select>
+
+	<select id="selectPickupListForMcPlan" parameterType="PickupHistory" resultType="vn.com.irtech.eport.logistic.form.PickupPlanForm">
+		select distance as distance, container_no as containerNo, vsl_Nm_Voy_No as vslNmVoyNo, sztp as sztp, discharge_port as dischargePort, 
+			truck_no as truckNo, gate_pass as gatePass, update_location_time as updateLocationTime, logistic_name as logisticName
+		from
+			(select p.distance, sh.container_no, concat(sh.vsl_nm, concat(' - ', sh.voy_no)) as vsl_Nm_Voy_No, sh.sztp, 
+				sh.discharge_port, p.truck_no, p.gate_pass, p.update_location_time,
+				(select l.group_name from logistic_group l where l.id = p.logistic_group_id FETCH NEXT 1 ROWS ONLY) as logistic_name
 			from pickup_history p left join shipment_detail sh on p.shipment_detail_id = sh.id
 			<where>
 					sh.vsl_nm is not null
@@ -510,15 +541,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					</foreach>
 				</if>
 				<if test="params.voyNos != null">
-					and sh.vsl_nm in
+					and sh.voy_no in
 					<foreach item="voyNo" collection="params.voyNos" open="(" separator="," close=")">
-						#{vslNm}
+						#{voyNo}
 					</foreach>
 				</if>
+				<if test="params.sztps != null">
+					and sh.sztp in
+					<foreach item="sztp" collection="params.sztps" open="(" separator="," close=")">
+						#{sztp}
+					</foreach>
+				</if>
+				<if test="params.vslNm != null and params.vslNm != ''"> and sh.vsl_nm = #{vslNm}</if>
+				<if test="params.voyNo != null and params.voyNo != ''"> and sh.voyNo = #{voyNo}</if>
 				<if test="params.blBookingNo != null and params.blBookingNo != ''">
 					and (sh.bl_no like concat('%', concat(#{params.blBookingNo}, '%')) or sh.booking_no like concat('%', concat(#{params.blBookingNo}, '%')))
 				</if>
 			</where>)
-		group by vsl_nm, voy_no, sztp, discharge_port, container_amount
+		order by distance asc
 	</select>
 </mapper>

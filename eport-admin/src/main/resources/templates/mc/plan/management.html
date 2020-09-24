@@ -24,7 +24,7 @@
                             <input class="easyui-textbox" id="blBookingNo" data-options="prompt:'Bill No/Booking No'" />
                         </div>
                         <div class="d-inline">
-                            <input id="vslNmVoyNo" class="easyui-combobox">
+                            <input id="vesselAndVoyages" class="easyui-combobox" panelMaxHeight="200" style="width: 250px">
                         </div>
                         <div class="d-inline">
                             <button class="btn btn-success" onclick="search()">Tìm kiếm</button>
@@ -44,6 +44,7 @@
                         <thead>
                             <tr>
                                 <!-- <th data-options="field:'id', resizable:true, align:'right', fixed:true" sortable="true" width="60">Mã Lô</th> -->
+                                <th field="ck" checkbox="true"></th>
                                 <th data-options="field:'vslNm', resizable:true, align:'center', fixed:true" sortable="true" width="70">Tàu</th>
                                 <th data-options="field:'voyNo', resizable:true, align:'center', fixed:true" sortable="true" width="80">Chuyến</th>
                                 <th data-options="field:'sztp', resizable:true, align:'center', fixed:true" sortable="true" width="60">Sztp</th>
@@ -58,15 +59,15 @@
                         <thead>
                             <tr>
                                 <!-- <th data-options="field:'id', resizable:true, align:'right', fixed:true" sortable="true" width="60">Mã Lô</th> -->
-                                <th data-options="field:'distance', resizable:true, align:'right', fixed:true" width="100">Cách Cảng (km)</th>
-                                <th data-options="field:'containerNo', resizable:true, align:'center', fixed:true" sortable="true" width="100">Container</th>
-                                <th data-options="field:'vslNmVoyNo', resizable:true, align:'center', fixed:true" sortable="true" width="100">Tàu - Chuyến</th>
-                                <th data-options="field:'sztp', resizable:true, align:'center', fixed:true" sortable="true" width="60">Sztp</th>
-                                <th data-options="field:'dischargePort', resizable:true, align:'center', fixed:true" sortable="true" width="100">Cảng Dỡ</th>
-                                <th data-options="field:'logisticName', resizable:true, align:'left', fixed:true" sortable="true" width="120">Logistics</th>
-                                <th data-options="field:'truckNo', resizable:true, align:'center', fixed:true" sortable="true" width="120">Biển Số Xe</th>
-                                <th data-options="field:'gatePass', resizable:true, align:'center', fixed:true" sortable="true" width="80">Gate Pass</th>
-                                <th data-options="field:'updateLocationTime', resizable:true, align:'center', fixed:true" sortable="true" width="200">Cập Nhật Tọa Độ Lúc</th>
+                                <th data-options="field:'distance', resizable:true, halign:'center', align:'right', fixed:true" sortable="true" width="105">Cách Cảng (m)</th>
+                                <th data-options="field:'containerNo', resizable:true, halign:'center', align:'center', fixed:true" sortable="true" width="100">Container</th>
+                                <th data-options="field:'vslNmVoyNo', resizable:true, halign:'center', align:'center', fixed:true" sortable="true" width="100">Tàu - Chuyến</th>
+                                <th data-options="field:'sztp', resizable:true, halign:'center', align:'center', fixed:true" sortable="true" width="60">Sztp</th>
+                                <th data-options="field:'dischargePort', resizable:true, halign:'center', align:'center', fixed:true" sortable="true" width="80">Cảng Dỡ</th>
+                                <th data-options="field:'logisticName', resizable:true, halign:'center', align:'left', fixed:true" sortable="true" width="120">Logistics</th>
+                                <th data-options="field:'truckNo', resizable:true, halign:'center', align:'center', fixed:true" sortable="true" width="90">Biển Số Xe</th>
+                                <th data-options="field:'gatePass', resizable:true, halign:'center', align:'center', fixed:true" sortable="true" width="80">Gate Pass</th>
+                                <th data-options="field:'updateLocationTime', resizable:true, halign:'center', align:'center', fixed:true, formatter:formatDateTime" sortable="true" width="160">Cập Nhật Tọa Độ Lúc</th>
                             </tr>
                         </thead>
                     </table>
@@ -79,6 +80,7 @@
     <script type="text/javascript" th:inline="javascript">
         $(".main-body").height($(document).height() - 10);
         $(".easyui-layout").height($('.main-body').height() - 50);
+        var vesselAndVoyages = /*[[${vesselAndVoyages}]]*/;
     </script>
     <script th:src="@{/eport/js/modules/mc/plan/management.js?v=09201}"></script>
 </body>

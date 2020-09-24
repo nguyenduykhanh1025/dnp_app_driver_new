@@ -302,7 +302,7 @@ public class ShiroConfig {
         
         // result napas return when complete transaction
         filterChainDefinitionMap.put("/payment/result", "anon");
-        filterChainDefinitionMap.put("/logistic/payment/mobile/result", "anon");
+        filterChainDefinitionMap.put("/payment/mobile/result", "anon");
         
 //        filterChainDefinitionMap.put("/login", "anon,captchaValidate");
 //        filterChainDefinitionMap.put("/register", "anon,captchaValidate");

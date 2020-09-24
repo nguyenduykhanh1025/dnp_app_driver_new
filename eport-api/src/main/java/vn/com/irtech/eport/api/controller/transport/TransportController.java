@@ -3,6 +3,7 @@ package vn.com.irtech.eport.api.controller.transport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.CacheUtils;
+import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticTruck;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
@@ -444,6 +446,7 @@ public class TransportController extends BaseController {
 	 */
 	@PostMapping("/location")
 	@ResponseBody
+	@Transactional
 	public AjaxResult updateLocation(@RequestBody Map<String, Double> location) {
 		if (location == null) {
 			return error();
@@ -463,9 +466,18 @@ public class TransportController extends BaseController {
 			double distance = distance(x, latEport, y, lonEport, 0.0, 0.0);
 			logger.debug(">>>>>>>>>>>>>>>>>>..Distance from DNP: {}", distance);
 			// Check distance to request MC request yard position
+			List<Pickup> pickups = pickupHistoryService.selectPickupListByDriverId(SecurityUtils.getCurrentUser().getUser().getUserId());
+			
+			// Update location and update location time for pick up history 
+			for (Pickup pickup : pickups) {
+				PickupHistory pickupHistory = new PickupHistory();
+				pickupHistory.setId(pickup.getPickupId());
+				pickupHistory.setDistance(distance);
+				pickupHistory.setUpdateLocationTime(new Date());
+				pickupHistoryService.updatePickupHistory(pickupHistory);
+			}
+			
 			if (distanceRequire > distance(x, latEport, y, lonEport, 0.0, 0.0)) {
-				List<Pickup> pickups = pickupHistoryService.selectPickupListByDriverId(SecurityUtils.getCurrentUser().getUser().getUserId());
-
 				for (Pickup pickup : pickups) {
 					// Check if service is send cont
 					if (pickup.getServiceType().intValue() == EportConstants.SERVICE_DROP_EMPTY
