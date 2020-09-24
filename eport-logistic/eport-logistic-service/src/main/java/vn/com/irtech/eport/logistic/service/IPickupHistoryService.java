@@ -10,6 +10,7 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.Pickup;
 import vn.com.irtech.eport.logistic.form.PickupHistoryDetail;
 import vn.com.irtech.eport.logistic.form.PickupHistoryForm;
+import vn.com.irtech.eport.logistic.form.VesselVoyageMc;
 
 /**
  * Pickup history Service Interface
@@ -132,4 +133,11 @@ public interface IPickupHistoryService
      */
     public int checkPlateNumberIsUnavailable(PickupHistory pickupHistory);
 
+    /**
+     * Select vessel voyage list
+     * 
+     * @param pickupHistory
+     * @return List<VesselVoyageMc>
+     */
+    public List<VesselVoyageMc> selectVesselVoyageList(PickupHistory pickupHistory); 
 }

@@ -482,5 +482,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		and status != 2
 	</select>
 
-	
+	<select id="selectVesselVoyageList" parameterType="PickupHistory" resultType="vn.com.irtech.eport.logistic.form.VesselVoyageMc">
+		select vsl_nm as vslNm, voy_no as voyNo, sztp as sztp, discharge_port as dischargePort, container_amount as containerAmount
+		from 
+			(select sh.vsl_nm, sh.voy_no, sh.sztp, sh.discharge_port,
+				(
+					select count(*) from pickup_history p2 left join shipment_detail sh2 on p2.shipment_detail_id = sh.id
+					where sh2.vsl_nm = sh.vsl_nm 
+						and sh2.voy_no = sh.voy_no 
+						and sh2.sztp = sh.sztp 
+						and sh2.discharge_port = sh.discharge_port 
+						and p2.shipment_detail_id is not null
+						and p2.status = 0
+					group by sh2.vsl_nm, sh2.voy_no, sh2.sztp, sh2.discharge_port
+				) as container_amount
+			from pickup_history p left join shipment_detail sh on p.shipment_detail_id = sh.id
+			<where>
+					sh.vsl_nm is not null
+					and sh.voy_no is not null
+					and sh.sztp is not null
+					and  p.shipment_detail_id is not null
+					and p.status = 0
+				<if test="params.vslNms != null">
+					and sh.vsl_nm in
+					<foreach item="vslNm" collection="params.vslNms" open="(" separator="," close=")">
+						#{vslNm}
+					</foreach>
+				</if>
+				<if test="params.voyNos != null">
+					and sh.vsl_nm in
+					<foreach item="voyNo" collection="params.voyNos" open="(" separator="," close=")">
+						#{vslNm}
+					</foreach>
+				</if>
+				<if test="params.blBookingNo != null and params.blBookingNo != ''">
+					and (sh.bl_no like concat('%', concat(#{params.blBookingNo}, '%')) or sh.booking_no like concat('%', concat(#{params.blBookingNo}, '%')))
+				</if>
+			</where>)
+		group by vsl_nm, voy_no, sztp, discharge_port, container_amount
+	</select>
 </mapper>

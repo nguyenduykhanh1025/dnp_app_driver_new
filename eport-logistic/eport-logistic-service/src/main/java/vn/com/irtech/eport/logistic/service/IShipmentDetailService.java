@@ -297,4 +297,5 @@ public interface IShipmentDetailService
      * @return int
      */
     public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail);
+    
 }
