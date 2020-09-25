@@ -315,7 +315,7 @@ public class CarrierEdoController extends CarrierBaseController {
 	public AjaxResult addSave(@RequestBody List<Edo> edos) {
 		// String message = userService.importUser(userList, updateSupport, operName);
 		// return AjaxResult.success(message);
-		if (!hasDoPermission()) {
+		if (!hasEdoPermission()) {
 			return error("Tài khoản này không có quyền phát hành eDO");
 		}
 		if (edos != null) {

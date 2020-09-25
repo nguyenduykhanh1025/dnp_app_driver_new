@@ -111,6 +111,8 @@ public interface PickupHistoryMapper
      * @return PickupHistory
      */
     public List<PickupHistory> selectDeliveringDriverInfo(PickupHistory pickupHistory);
+
+    public List<PickupHistory> selectDeliveringDriverInfoTable(PickupHistory pickupHistory);
     
     /**
      * Check plate number is unavailable

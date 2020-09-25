@@ -20,7 +20,7 @@
                   <tbody>
                     <tr>
                       <td style="padding: 0 5px">
-                        <input class="easyui-textbox" name="booking" id="search" data-options="prompt: 'Tìm kiếm' " />
+                        <input class="easyui-textbox" name="search" id="search" data-options="prompt: 'Tìm kiếm' " />
                       </td>
                       <td style="padding: 0 5px">
                         <select class="easyui-combobox" name="Status" panelHeight="auto" editable="false" prompt="Trạng thái:" style="width: 100px">
@@ -39,11 +39,11 @@
             <table id="dg-left" style="width: 100%" pageList="[20,50,100,150,200]">
               <thead>
                 <tr>
-                  <th data-options="field:'id',align:'right',halign:'center'" width="5%">STT</th>
-                  <th data-options="field:'fullName',halign:'center',resizable:true" sortable="true" width="20%">BS Xe</th>
-                  <th data-options="field:'mobileNumber',align:'right',halign:'center'" sortable="true" width="15%">Điện thoại</th>
-                  <th data-options="field:'createTime',align:'center'" sortable="true" width="20%">Container</th>
-                  <th data-options="field:'status',align:'center'" sortable="true" width="15%">Cập nhật lúc</th>
+                  <th data-options="field:'truckNo',halign:'center',resizable:true" sortable="true" width="100">BS Xe</th>
+                  <th data-options="field:'chassisNo',halign:'center',resizable:true" sortable="true" width="100">BS Xe Đầu Kéo</th>
+                  <th data-options="field:'driver',align:'center',halign:'center',formatter: getFullName" sortable="true" width="150">Tên tài xế</th>
+                  <th data-options="field:'containerNo',align:'center'" sortable="true" width="100">Container</th>
+                  <th data-options="field:'receiptDate',align:'center'" sortable="true" width="70">Cập nhật lúc</th>
                 </tr>
               </thead>
             </table>
@@ -68,7 +68,22 @@
       // "use strict";
       var locations = [];
       var map;
-
+      var pickupHistory = new Object();
+      var listTruckDriver = [];
+      $(function() {
+        tableListDriver();
+        $("#search").textbox('textbox').bind('keydown', function (e) {
+        // enter key
+        if (e.keyCode == 13) {
+          pickupHistory.containerNo = $("#search").textbox('getText').toUpperCase();
+          pickupHistory.truckNo = $("#search").textbox('getText').toUpperCase();
+          pickupHistory.chassisNo = $("#search").textbox('getText').toUpperCase();
+          pickupHistory.driverName = $("#search").textbox('getText').toUpperCase();
+          pickupHistory.driverPhoneNumber = $("#search").textbox('getText').toUpperCase();
+          tableListDriver();
+        }
+      });
+      })
       function initMap() {
         map = new google.maps.Map(document.getElementById("c-map"), {
           center: { lat: Number(16.047079), lng: Number(108.20623) },
@@ -343,6 +358,154 @@
           comparison = -1;
         }
         return comparison;
+      }
+
+      
+
+      function tableListDriver()
+      {
+        $("#dg-left").datagrid({
+        url: PREFIX + "/tableList",
+        method: "POST",
+        singleSelect: true,
+        height: $(document).height() - $(".main-body__search-wrapper").height() - 135,
+        clientPaging: true,
+        collapsible: true,
+        pagination: true,
+        pageSize: 20,
+        onClickRow: function () {
+          getSelectedRow();
+        },
+        nowrap: false,
+        striped: true,
+        rownumbers: true,
+        loader: function (param, success, error) {
+          var opts = $(this).datagrid("options");
+          if (!opts.url) return false;
+          $.ajax({
+            type: opts.method,
+            url: opts.url,
+            contentType: "application/json",
+            accept: "text/plain",
+            dataType: "text",
+            data: JSON.stringify({
+              pageNum: param.page,
+              pageSize: param.rows,
+              orderByColumn: param.sort,
+              isAsc: param.order,
+              data: pickupHistory,
+            }),
+            dataType: "json",
+            success: function (data) {
+            console.log("TCL: data", data)
+              sortData(data);
+              success(listTruckDriver);
+            },
+            error: function () {
+              error.apply(this, arguments);
+            },
+          });
+        },
+      });
+      }
+      function getFullName(row)
+      {
+        if(row != null)
+        {
+          return row.fullName;
+        }
+      }
+
+      function getSelectedRow()
+      {
+        var row = $("#dg-left").datagrid("getSelected");
+        if(row.x == null || row.y == null)
+        {
+            $.modal.alertWarning('Tài xế chưa bật app <br> Thông tin tài xế : ' + row.driver.fullName + '<br> Đầu kéo : ' + row.truckNo + '<br> Rơ móoc : ' + row.chassisNo)
+        }else {
+          getMap(row);
+        }
+      }
+
+      function sortData(data)
+      {
+        let truckNoCheck; 
+        let chassisNoCheck;
+        for(let i = 0;i < data.rows.length ; i++)
+        {
+            if(data.rows[i].truckNo == truckNoCheck && data.rows[i].chassisNo == chassisNoCheck)
+            {
+                listTruckDriver[i-1].containerNo += ',<br>'+ data.rows[i].containerNo;
+            }else {
+              listTruckDriver.push(data.rows[i]);
+            }
+            truckNoCheck = data.rows[i].truckNo;
+            chassisNoCheck = data.rows[i].chassisNo;
+            
+        }
+      }
+
+      function getMap(row)
+      {
+        let myCenter=new google.maps.LatLng(row.x, row.y);
+        map = new google.maps.Map(document.getElementById("c-map"), {
+          center: { lat: Number(row.x), lng: Number(row.y) },
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          zoom: 18,
+        });
+        let image = {
+          url: ctx + "img/truck32x32.png",
+          size: new google.maps.Size(32, 32),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(16, 16),
+        };
+
+        let shape = {
+          coords: [1, 1, 1, 25, 20, 25, 20, 1],
+          type: "poly",
+        };
+        var marker = new google.maps.Marker({
+            position: myCenter,
+            map: map,
+            icon: image,
+            shape: shape,
+            animation: google.maps.Animation.DROP,
+            title: row.truckNo,
+            html:
+              "    <div>\n" +
+              "		<h2>Thông tin chi tiết</h2>" +
+              '        <table class="table table-striped">\n' +
+              "			<tr>" +
+              "			<td>Tài xế: " +
+              "</td>" +
+              "			<td>" +
+                row.driver.fullName +
+              "</td></tr>" +
+              "			<tr><td>Số điện thoại: " +
+              "</td>" +
+              "			<td>" +
+                row.driver.mobileNumber +
+              "</td></tr>" +
+              "			<tr><td>Biển số đầu kéo: " +
+              "</td>" +
+              "			<td>" +
+                row.truckNo +
+              "</td></tr>" +
+              "			</tr>" +
+              "            <tr>\n" +
+              "                <td>Biển số xe rơ moóc:</td>\n" +
+              "                <td> " +
+                row.chassisNo +
+              "</td></tr>" +
+              "			<tr><td>Container: " +
+              "</td>" +
+              "			<td>" +
+                row.containerNo +
+              " </td></tr>\n" +
+              "        </table>\n" +
+              "    </div>",
+          });
+          bindMarkerinfo(marker);
       }
     </script>
   </body>

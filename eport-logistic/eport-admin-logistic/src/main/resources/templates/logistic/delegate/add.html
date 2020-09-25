@@ -16,40 +16,42 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="col-xs-4 control-label is-required mt5">Mã số thuế：</label>
-            <div class="col-xs-6" style="display: relative;">
-          <input name="delegateTaxcode" id="delegateTaxcode" class="form-control" required/>
+        <label class="col-xs-3 control-label is-required mt5">Mã Số Thuế：</label>
+        <div class="col-xs-7" style="display: relative;">
+          <input name="delegateTaxcode" id="delegateTaxcode" class="form-control" required />
         </div>
       </div>
       <div class="form-group">
-        <label class="col-xs-4 control-label is-required mt15">Tên doanh nghiệp: </label>
-            <div class="col-xs-6 mt10">
-          <input name="delegateCompany" class="form-control" onfocus="removeGroupError()" type="text" readonly required/>
+        <label class="col-xs-3 control-label is-required mt15">Tên Doanh Nghiệp: </label>
+        <div class="col-xs-7 mt10">
+          <input name="delegateCompany" class="form-control" onfocus="removeGroupError()" type="text" readonly
+            required />
         </div>
       </div>
       <div class="row">
         <div class="col-sm-12">
-            <div class="form-group">
-                <label class="col-xs-4 control-label is-required mt5">Hiệu lực ：</label>
-                <div class="col-xs-6" style="display: relative;">
-                    <input id="validFrom" name="validFrom" class="easyui-datebox" style="width: 100px;"
-                        data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
-                        <input id="validUntil" name="validUntil" class="easyui-datebox" style="width: 100px;"
-                        data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
-                </div>
+          <div class="form-group">
+            <label class="col-xs-3 control-label is-required mt5">Hiệu Lực ：</label>
+            <div class="col-xs-9" style="display: relative;">
+              <input id="validFrom" name="validFrom" class="easyui-datebox" style="width: 176px;"
+                data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser,onSelect:checkDateValidFrom">
+              <input id="validUntil" name="validUntil" class="easyui-datebox" style="width: 176px;"
+                data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser,onSelect:checkDateValidUntil">
             </div>
+          </div>
         </div>
-    </div>
+      </div>
       <div class="form-group">
-        <label class="col-sm-3 control-label is-required">Loại ủy quyền：</label>
-        <div class="col-sm-3" style="display: relative;">
-          <select class="form-control" id="delegateType">
+        <label class="col-xs-3 control-label is-required mt15">Loại Ủy Quyền </label>
+        <div class="col-xs-7 mt10">
+          <select class=" form-control" id="delegateType">
             <option th:each="delegateType, iterator : ${delegateTypes}" th:value=${delegateType.dictValue}
               th:text=${delegateType.dictLabel}>
             </option>
           </select>
         </div>
       </div>
+
     </form>
   </div>
   <th:block th:include="include :: footer" />
@@ -80,7 +82,7 @@
           delegatedLogistic.delegateCompany = $("input[name=delegateCompany]").val();
           delegatedLogistic.validFlg = 1;
           delegatedLogistic.delegateType = $("#delegateType option:selected").val();
-          delegatedLogistic.validUntil =  formatDateSubmit($("#validUntil").datebox('getText', ''));
+          delegatedLogistic.validUntil = formatDateSubmit($("#validUntil").datebox('getText', ''));
           delegatedLogistic.validFrom = formatDateSubmit($("#validFrom").datebox('getText', ''));
           console.log(delegatedLogistic)
           $.ajax({
@@ -90,8 +92,9 @@
             success: function (res) {
               if (res.code == 0) {
                 $.modal.closeLoading();
-                $.modal.alertSuccess("Thêm Ủy Quyền Thành Công");
+                setTimeout(function(){ $.modal.alertSuccess("Thêm Ủy Quyền Thành Công"); }, 1000);
                 parent.loadTableByLogisticGroup(logisticId);
+                $.modal.close();
               } else {
                 $.modal.closeLoading();
                 $.modal.alertError(res.msg)
@@ -128,40 +131,40 @@
     }
 
 
-    $("input[name=validFrom]").on("inputchange", function () {
-			let validFrom = stringToDate($('input[name=validFrom]').val());
-			let now = new Date();
-			now.setHours(0, 0, 0, 0);
-			$("input[name=validFrom]").removeClass('error-input');
-			if ($('input[name=validUntil]').val() != '' && stringToDate($('input[name=validUntil]').val()).getTime() < validFrom.getTime()) {
-				$.modal.alertError('Bạn không thể chọn từ ngày cao hơn đến ngày.')
-				$('input[name=validFrom]').val('');
-			} else if (validFrom.getTime() < now.getTime()) {
-				$.modal.alertError("Bạn không thể chọn từ ngày trong quá khứ.");
-				$('input[name=validFrom]').val('');
-			} else {
-				delegatedLogistic.validFrom = validFrom.getTime();
-			}
-		});
+    function checkDateValidFrom(date) {
+      let validFrom = date;
+      let now = new Date();
+      now.setHours(0, 0, 0, 0);
+      $("input[name=validFrom]").removeClass('error-input');
+      if ($('input[name=validUntil]').val() != '' && date.getTime() < validFrom.getTime()) {
+        $.modal.alertError('Bạn không thể chọn từ ngày cao hơn đến ngày.')
+        $('#validFrom').datebox('setValue', date);
+      } else if (validFrom.getTime() < now.getTime()) {
+        $.modal.alertError("Bạn không thể chọn từ ngày trong quá khứ.");
+        $('#validFrom').datebox('setValue', date);
+      } else {
+        delegatedLogistic.validFrom = validFrom.getTime();
+      }
+    }
 
-		$("input[name=validUntil]").on("inputchange", function () {
-			let validUntil = stringToDate($("input[name=validUntil]").val());
-			let now = new Date();
-			now.setHours(0, 0, 0, 0);
-			$("input[name=validUntil]").removeClass('error-input');
-			if ($("input[name=validFrom]").val() != "" && stringToDate($("input[name=validFrom]").val()).getTime() > validUntil.getTime()) {
-				$.modal.alertError("Bạn không thể chọn đến ngày thấp hơn từ ngày.");
-				$("input[name=validUntil]").val("");
-			} else if (validUntil.getTime() < now.getTime()) {
-				$.modal.alertError("Bạn không thể chọn đến ngày trong quá khứ.");
-				$("input[name=validUntil]").val("");
-			} else {
-				validUntil.setHours(23, 59, 59);
-				delegatedLogistic.validUntil = validUntil.getTime();
-			}
-    });
-    
-    
+    function checkDateValidUntil(date) {
+      let validUntil = date;
+      let now = new Date();
+      now.setHours(0, 0, 0, 0);
+      $("input[name=validUntil]").removeClass('error-input');
+      if ($("input[name=validFrom]").val() != "" && date.getTime() > validUntil.getTime()) {
+        $.modal.alertError("Bạn không thể chọn đến ngày thấp hơn từ ngày.");
+        $('#validUntil').datebox('setValue', date);
+      } else if (validUntil.getTime() < now.getTime()) {
+        $.modal.alertError("Bạn không thể chọn đến ngày trong quá khứ.");
+        $('#validUntil').datebox('setValue', date);
+      } else {
+        validUntil.setHours(23, 59, 59);
+        delegatedLogistic.validUntil = validUntil.getTime();
+      }
+    }
+
+
     function formatValidFlg(value) {
       if (1 == value) {
         return '<span style="color: green">Hiệu lực</span>';
@@ -169,8 +172,8 @@
       return '<span style="color: red">Vô hiệu</span>';
     }
 
-    $("#delegateTaxcode").change(function() {
-        loadGroupNameForDelegated();
+    $("#delegateTaxcode").change(function () {
+      loadGroupNameForDelegated();
     });
 
     function loadGroupNameForDelegated() {
@@ -190,13 +193,14 @@
         $('input[name=delegateCompany]').val('');
       }
     }
+
     function dateformatter(date) {
-      console.log("TCL: dateformatter -> date", date)
       var y = date.getFullYear();
       var m = date.getMonth() + 1;
       var d = date.getDate();
       return (d < 10 ? ('0' + d) : d) + '/' + (m < 10 ? ('0' + m) : m) + '/' + y;
     }
+
     function dateparser(s) {
       var ss = (s.split('\.'));
       var d = parseInt(ss[0], 10);

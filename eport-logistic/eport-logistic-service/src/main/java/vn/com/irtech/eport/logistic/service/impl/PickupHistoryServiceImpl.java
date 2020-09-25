@@ -217,9 +217,14 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
     public List<PickupHistory> selectDeliveringDriverInfo(PickupHistory pickupHistory) {
         return pickupHistoryMapper.selectDeliveringDriverInfo(pickupHistory);
     }
+
+    @Override
+    public List<PickupHistory> selectDeliveringDriverInfoTable(PickupHistory pickupHistory) {
+        return pickupHistoryMapper.selectDeliveringDriverInfoTable(pickupHistory);
+    }
     
     /**
-     * Check plate number is unavailable
+     * Check plate number is unavailable public List<PickupHistory>
      * 
      * @param driverId
      * @return int
