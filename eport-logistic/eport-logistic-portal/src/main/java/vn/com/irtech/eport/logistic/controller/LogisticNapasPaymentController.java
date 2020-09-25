@@ -75,7 +75,7 @@ public class LogisticNapasPaymentController extends LogisticBaseController {
 					PaymentHistory paymentHistory = paymentHistories.get(0);
 
 					// Update payment history
-					paymentHistory.setUpdateBy(getUser().getFullName());
+					// paymentHistory.setUpdateBy(getUser().getFullName());	 // NULL?
 					paymentHistory.setStatus("1");
 					paymentHistoryService.updatePaymentHistory(paymentHistory);
 
@@ -97,10 +97,15 @@ public class LogisticNapasPaymentController extends LogisticBaseController {
 					processBillService.updateBillListByProcessOrderIds(paymentHistory.getProcessOrderIds());
 
 					isError = false;
+				} else {
+					logger.error("[NAPAS] Receive SUCCESS but OrderId Not Found: " + decodeData);
 				}
+			} else {
+				logger.debug("[NAPAS] PAYMENT ERROR:" + decodeData);
 			}
 		}
 		if (isError) {
+			logger.debug("[NAPAS] Receive ERROR: " + json);
 			mmap.put("result", "ERROR");
 		} else {
 			mmap.put("result", "SUCCESS");
@@ -137,7 +142,7 @@ public class LogisticNapasPaymentController extends LogisticBaseController {
 					PaymentHistory paymentHistory = paymentHistories.get(0);
 
 					// Update payment history
-					paymentHistory.setUpdateBy(getUser().getFullName());
+//					paymentHistory.setUpdateBy(getUser().getFullName());
 					paymentHistory.setStatus("1");
 					paymentHistoryService.updatePaymentHistory(paymentHistory);
 
@@ -198,7 +203,7 @@ public class LogisticNapasPaymentController extends LogisticBaseController {
 					PaymentHistory paymentHistory = paymentHistories.get(0);
 
 					// Update payment history
-					paymentHistory.setUpdateBy(getUser().getFullName());
+//					paymentHistory.setUpdateBy(getUser().getFullName());
 					paymentHistory.setStatus("1");
 					paymentHistoryService.updatePaymentHistory(paymentHistory);
 

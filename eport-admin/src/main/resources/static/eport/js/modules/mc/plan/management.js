@@ -63,10 +63,10 @@ $( document ).ready(function() {
     loadTableLeft();
     loadTableRight();
 
-    setInterval(() => {
-        loadTableLeft();
-        loadTableRight();
-    }, 10000);
+//    setInterval(() => {
+//        loadTableLeft();
+//        loadTableRight();
+//    }, 10000);
 });
 
 function loadTableLeft() {
