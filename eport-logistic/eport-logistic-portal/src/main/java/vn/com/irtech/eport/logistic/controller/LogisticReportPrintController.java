@@ -2,7 +2,6 @@ package vn.com.irtech.eport.logistic.controller;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -120,8 +120,11 @@ public class LogisticReportPrintController extends LogisticBaseController {
 
 	private void createPdfReport(final List<ShipmentDetail> shipmentDetails, OutputStream out) throws JRException {
 		// Fetching the report file from the resources folder.
-		final JasperReport report = (JasperReport) JRLoader
-				.loadObject(this.getClass().getResourceAsStream("/report/equipment_interchange_order.jasper"));
+		// FIXME Build jasper
+//		final JasperReport report = (JasperReport) JRLoader
+//				.loadObject(this.getClass().getResourceAsStream("/report/equipment_interchange_order.jasper"));
+
+		JasperReport report = JasperCompileManager.compileReport(this.getClass().getResourceAsStream("/report/jrxml/equipment_interchange_order.jrxml"));
 
 		// Fetching the shipmentDetails from the data source.
 		List<ExporterInputItem> jpList = new ArrayList<>();
@@ -131,36 +134,37 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		shipmentDetail.setPaymentStatus("Y");
 		List<Long> commands = shipmentDetailService.getProcessOrderIdListByShipment(shipmentDetail);
 		if(commands.size()>0) {
-			for(Long i : commands) {
+			for(Long cmd : commands) {
 				List<ShipmentDetail> list = new ArrayList<ShipmentDetail>();
-				for(ShipmentDetail j : shipmentDetails) {
-					if(j.getProcessOrderId().equals(i)) {
-						list.add(j);
+				for(ShipmentDetail detail : shipmentDetails) {
+					if(detail.getProcessOrderId().equals(cmd)) {
+						list.add(detail);
 					}
 				}
 				if(list.size()>0) {
+					ShipmentDetail detail = list.get(0);
 					//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(list);
 			        final Map<String, Object> parameters = new HashMap<>();
 			        parameters.put("user", getGroup().getGroupName());
-			        parameters.put("qrCode", list.get(0).getOrderNo());
-			        parameters.put("orderNo", list.get(0).getOrderNo());
-			        parameters.put("billingBooking", (list.get(0).getBlNo() != null? list.get(0).getBlNo():"") +"/"
-			        		+ (list.get(0).getBookingNo() != null ? list.get(0).getBookingNo() : "") + "/" +
-			        		(list.get(0).getOrderNo() != null ? list.get(0).getOrderNo() : ""));
-			        parameters.put("consignee", list.get(0).getConsignee());
-			        parameters.put("vslName", list.get(0).getVslName());
-			        parameters.put("voyCarrier", list.get(0).getVoyCarrier());
-			        parameters.put("opeCode", list.get(0).getOpeCode());
-			        parameters.put("invoiceNo", list.get(0).getInvoiceNo());
+			        parameters.put("qrCode", detail.getOrderNo());
+			        parameters.put("orderNo", detail.getOrderNo());
+			        parameters.put("billingBooking", (detail.getBlNo() != null? detail.getBlNo():"") +"/"
+			        		+ (detail.getBookingNo() != null ? detail.getBookingNo() : "") + "/" +
+			        		(detail.getOrderNo() != null ? detail.getOrderNo() : ""));
+			        parameters.put("consignee", detail.getConsignee());
+			        parameters.put("vslName", detail.getVslName());
+			        parameters.put("voyCarrier", detail.getVoyCarrier());
+			        parameters.put("opeCode", detail.getOpeCode());
+			        parameters.put("invoiceNo", detail.getInvoiceNo());
 			        parameters.put("list", list);
 			        LogisticGroup logisticGroup = logisticGroupService.selectLogisticGroupById(getUser().getGroupId());
 			        parameters.put("groupName", logisticGroup.getGroupName());
-			        Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-			        parameters.put("remark", (shipment.getRemark() != null) ? shipment.getRemark() : "");
-			        parameters.put("emptyDepot", shipmentDetails.get(0).getEmptyDepot());
-			        parameters.put("expiredDem", shipmentDetails.get(0).getExpiredDem());
-			        parameters.put("etd", shipmentDetails.get(0).getEtd());
-			        parameters.put("eta", shipmentDetails.get(0).getEta());
+			        Shipment shipment = shipmentService.selectShipmentById(detail.getShipmentId());
+			        parameters.put("remark", (detail.getContainerRemark() != null) ? detail.getContainerRemark() : "");
+			        parameters.put("emptyDepot", detail.getEmptyDepot());
+			        parameters.put("expiredDem", detail.getExpiredDem());
+			        parameters.put("etd", detail.getEtd());
+			        parameters.put("eta", detail.getEta());
 //					try {
 //						File file = new File("target/classes/static/img/logo_gray.jpeg");
 //						parameters.put("pathBackground", file.getPath());

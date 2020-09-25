@@ -261,12 +261,13 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		if (shipmentDetails != null) {
 			LogisticAccount user = getUser();
 			boolean updateShipment = true;
-			List<String> contReservedList = shipmentDetailService.checkContainerReserved(shipmentDetails.get(0).getProcessStatus());
-			if (contReservedList.size() > 0) {
-				AjaxResult ajaxResult = AjaxResult.error();
-				ajaxResult.put("conts", contReservedList);
-				return ajaxResult;
-			}
+			//TODO tam thoi bo check cont da lam lenh
+//			List<String> contReservedList = shipmentDetailService.checkContainerReserved(shipmentDetails.get(0).getProcessStatus());
+//			if (contReservedList.size() > 0) {
+//				AjaxResult ajaxResult = AjaxResult.error();
+//				ajaxResult.put("conts", contReservedList);
+//				return ajaxResult;
+//			}
 
 			// Kiem tra B/L No co ton tai o cont Boc Full khong
 			Shipment search = new Shipment();

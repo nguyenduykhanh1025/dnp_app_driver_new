@@ -285,15 +285,16 @@ public class LogisticSendContFullController extends LogisticBaseController {
 				}
 			}
 			// Lay danh sach container da lam lenh booking
-			if(!"".equals(containerNos)) {
-				List<String> contReservedList = shipmentDetailService.checkContainerReserved(containerNos.substring(0, containerNos.length() - 1));
-				if (contReservedList.size() > 0) {
-					// Thong bao loi khong the khai bao cho cac conts nay
-					AjaxResult ajaxResult = AjaxResult.error();
-					ajaxResult.put("conts", contReservedList);
-					return ajaxResult;
-				}
-			}
+			//TODO tam thoi remove logic check cont da ha hang tren catos
+//			if(!"".equals(containerNos)) {
+//				List<String> contReservedList = shipmentDetailService.checkContainerReserved(containerNos.substring(0, containerNos.length() - 1));
+//				if (contReservedList.size() > 0) {
+//					// Thong bao loi khong the khai bao cho cac conts nay
+//					AjaxResult ajaxResult = AjaxResult.error();
+//					ajaxResult.put("conts", contReservedList);
+//					return ajaxResult;
+//				}
+//			}
 			// Danh sachs shipment details co 2 truong hop: co container da tao tu truoc (id != null) va container vua tao (id ==null)
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				// ? Vi sao update process status = null ??
