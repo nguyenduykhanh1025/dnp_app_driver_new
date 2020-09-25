@@ -153,6 +153,12 @@ public class ShipmentDetailEntity extends BaseEntity
     /** Ngay tau di */
     private Date etd;
     
+    /** Yard Position */
+    private String location;
+    
+    /** Container Remark */
+    private String containerRemark;
+    
     public void setCargoType(String cargoType) {
         this.cargoType = cargoType;
     }
@@ -554,6 +560,22 @@ public class ShipmentDetailEntity extends BaseEntity
 		this.etd = etd;
 	}
 
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	
+	public String getContainerRemark() {
+		return containerRemark;
+	}
+
+	public void setContainerRemark(String containerRemark) {
+		this.containerRemark = containerRemark;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -607,6 +629,8 @@ public class ShipmentDetailEntity extends BaseEntity
             .append("orderNo", getOrderNo())
             .append("eta", getEta())
             .append("etd", getEtd())
+            .append("location", getLocation())
+            .append("containerRemark", getContainerRemark())
             .toString();
     }
 }

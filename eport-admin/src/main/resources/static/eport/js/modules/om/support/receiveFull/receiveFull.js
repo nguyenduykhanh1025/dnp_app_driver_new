@@ -247,6 +247,17 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html(value);
   return td;
 }
+function msgRenderer(instance, td, row, col, prop, value, cellProperties) {
+  // cellProperties.readOnly = "true";
+  $(td)
+    .attr("id", "msg" + row)
+    .addClass("htMiddle");
+  if (processOrderSelected.msg == null) {
+    value = ''
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
 //CONFIGURATE HANDSONTABLE
 function configHandson() {
   config = {
@@ -287,9 +298,11 @@ function configHandson() {
           return "Số Tham Chiếu";
         case 10:
           return "Ghi Chú";
+        case 11:
+          return "Thông Báo Lỗi"
       }
     },
-    colWidths: [100, 50, 200, 280, 100, 100, 100, 100, 100, 150, 100],
+    colWidths: [100, 50, 200, 280, 100, 100, 100, 100, 100, 150, 150, 200],
     filter: "true",
     columns: [
       {
@@ -336,6 +349,10 @@ function configHandson() {
       {
         data: "remark",
         renderer: remarkRenderer,
+      },
+      {
+        data: "msg",
+        renderer: msgRenderer,
       },
     ],
     beforeKeyDown: function (e) {
@@ -387,6 +404,7 @@ function loadTableByContainer(processOrderId) {
         if (sourceData) {
           for (let i = 0; i < sourceData.length; i++) {
             sourceData[i].vslNm = sourceData[i].vslNm + " - " + sourceData[i].vslName + " - " + sourceData[i].voyCarrier;
+            sourceData[i].msg = processOrderSelected.msg;
           }
         }
         hot.destroy();

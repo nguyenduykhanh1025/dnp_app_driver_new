@@ -17,6 +17,8 @@ var voyCarrier;
 var onChangeFlg = false, currentIndexRow, rejectChange = false;
 var fromDate, toDate;
 var myDropzone;
+var containerRemarkArr = []; // array container remark get from catos mapping with row in handsontable by index of element in array
+var locations = [];
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
@@ -934,6 +936,8 @@ function configHandson() {
               hot.setDataAtCell(change[0], 12, ''); //wgt
               hot.setDataAtCell(change[0], 13, ''); //loadingPort
               hot.setDataAtCell(change[0], 14, ''); //dischargePort
+              containerRemarkArr[change[0]] = ''; // container remark from catos
+              locations[change[0]] = ''; // yard position from catos
 
               // Call data to auto-fill
               $.ajax({
@@ -955,6 +959,8 @@ function configHandson() {
                   hot.setDataAtCell(change[0], 12, shipmentDetail.wgt); //wgt
                   hot.setDataAtCell(change[0], 13, shipmentDetail.loadingPort); //loadingPort
                   hot.setDataAtCell(change[0], 14, shipmentDetail.dischargePort); //dischargePort
+                  containerRemarkArr[change[0]] = shipmentDetail.containerRemark; // container remark from catos
+                  locations[change[0]] = shipmentDetail.location; // yard position from catos
                   voyCarrier = shipmentDetail.voyCarrier;
                 }
               });
@@ -1123,12 +1129,17 @@ function loadShipmentDetail(id) {
         let saved = true;
         // let shiftingFee = false;
         taxCodeArr = Array(rowAmount).fill(new Object);
+        containerRemarkArr = Array(rowAmount).fill('');
+        locations = Array(rowAmount).fill('');
         sourceData.forEach(function iterate(shipmentDetail, index) {
           if (shipmentDetail.id == null) {
             saved = false;
           }
           taxCodeArr[index].taxCode = shipmentDetail.taxCode;
           taxCodeArr[index].consigneeByTaxCode = shipmentDetail.consigneeByTaxCode;
+          locations[index] = shipmentDetail.location;
+          containerRemarkArr[index] = shipmentDetail.containerRemark;
+          
         });
         if (saved) {
           $('#pickContOnDemandBtn').prop('disabled', false);
@@ -1342,6 +1353,8 @@ function getDataFromTable(isValidate) {
     shipmentDetail.consigneeByTaxCode = object["consigneeByTaxCode"];
     shipmentDetail.shipmentId = shipmentSelected.id;
     shipmentDetail.id = object["id"];
+    shipmentDetail.containerRemark = containerRemarkArr[index];
+    shipmentDetail.location = locations[index];
     shipmentDetail.processStatus = shipmentSelected.taxCode;
     shipmentDetail.customStatus = shipmentSelected.groupName;
     shipmentDetail.tier = shipmentSelected.containerAmount;
@@ -1639,7 +1652,8 @@ function finishVerifyForm(result) {
 }
 
 function napasPaymentForm() {
-  $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
+  // $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
+  window.open(ctx + "logistic/payment/napas/" + processOrderIds, "_blank"); 
 }
 
 function napasPaymentFormForShifting() {

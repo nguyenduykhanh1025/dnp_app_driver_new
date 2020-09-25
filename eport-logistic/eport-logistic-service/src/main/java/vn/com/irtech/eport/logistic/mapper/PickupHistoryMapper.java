@@ -135,4 +135,21 @@ public interface PickupHistoryMapper
      * @return List<PickupPlanForm>
      */
     public List<PickupPlanForm> selectPickupListForMcPlan(PickupHistory pickupHistory);
+    
+    /**
+     * 
+     * Count pickup history list
+     * 
+     * @param pickupHistory
+     * @return int
+     */
+    public int countPickupHistoryList(PickupHistory pickupHistory);
+    
+    /**
+     * Delete pickup history by condition
+     * 
+     * @param pickupHistory
+     * @return int
+     */
+    public int deletePickupHistoryByCondition(PickupHistory pickupHistory);
 }

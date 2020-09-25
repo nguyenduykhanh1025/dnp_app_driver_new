@@ -7,21 +7,44 @@
     <th:block th:include="include :: header('NAPAS PAYMENT RESULT')" />
 </head>
 <body>
+    <div style="width: 100%; height: 100%; text-align: center;">
+        <div id="success-nottify" style="margin-top: 200px; color: #015198; font-size: 30px; font-weight: bold;    ">
+            <h>Thanh Toán Thành Công</h>
+        </div>
+        <div id="error-nottify" style="margin-top: 200px; color: red; font-size: 30px; font-weight: bold;">
+            <h>Thanh Toán Thất Bại</h>
+        </div>
+        <div style="margin-top: 30px;">
+            <button onclick="closePage()" class="btn btn-sm btn-primary"><i class="fa fa-refresh text-primary"></i>Đóng</button>
+        </div>
+    </div>
     <th:block th:include="include :: footer" />
     <script type="text/javascript" th:inline="javascript">
         var result = /*[[${result}]]*/;
     </script>
     <script type="text/javascript" th:inline="javascript">
+        result = 'SUCCESS';
         var res = new Object();
         if ('SUCCESS' == result) {
+            $('#success-notify').show();
+            $('#error-notify').hide();
             res.code = 0;
             res.msg = 'Thanh toán thành công!';
         } else {
+            $('#success-notify').hide();
+            $('#error-notify').show();
             res.code = 500;
             res.msg = 'Thanh toán thất bại, vui lòng thử lại hoặc liên hệ với bộ phận thủ tục!';
         }
-        parent.finishForm(res);
-        $.modal.close();
+        
+        function closePage() {
+            try {
+                opener.finishForm(res);
+            } catch(err) {
+                console.log(err);
+            }
+            window.close();
+        }
     </script>
 </body>
 </html>

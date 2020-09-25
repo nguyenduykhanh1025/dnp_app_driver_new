@@ -250,4 +250,27 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
     public List<PickupPlanForm> selectPickupListForMcPlan(PickupHistory pickupHistory) {
     	return pickupHistoryMapper.selectPickupListForMcPlan(pickupHistory);
     }
+    
+    /**
+     * 
+     * Count pickup history list
+     * 
+     * @param pickupHistory
+     * @return int
+     */
+    @Override
+    public int countPickupHistoryList(PickupHistory pickupHistory) {
+    	return pickupHistoryMapper.countPickupHistoryList(pickupHistory);
+    }
+    
+    /**
+     * Delete pickup history by condition
+     * 
+     * @param pickupHistory
+     * @return int
+     */
+    @Override
+    public int deletePickupHistoryByCondition(PickupHistory pickupHistory) {
+    	return pickupHistoryMapper.deletePickupHistoryByCondition(pickupHistory);
+    }
 }

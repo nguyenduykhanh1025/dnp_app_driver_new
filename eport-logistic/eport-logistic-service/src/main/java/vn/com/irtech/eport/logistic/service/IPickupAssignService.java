@@ -101,4 +101,20 @@ public interface IPickupAssignService
      * @param groupId
      */
 	public void deleteAllShipmentPickupAssign(Long shipmentId, Long groupId);
+	
+	/**
+	 * Count pickup assign list
+	 * 
+	 * @param pickupAssign
+	 * @return int
+	 */
+	public int countPickupAssignList(PickupAssign pickupAssign);
+	
+	/**
+	 * Delete pickup assign by condition
+	 * 
+	 * @param pickupAssign
+	 * @return int
+	 */
+	public int deletePickupAssignByCondition(PickupAssign pickupAssign);
 }

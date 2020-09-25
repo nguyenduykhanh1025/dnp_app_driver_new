@@ -283,7 +283,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 								detail.setSztp(catosDetail.getSztp());
 								detail.setSztpDefine(catosDetail.getSztpDefine());
 								// Block-Bay-Row-Tier
-								detail.setLocation(String.format("%s-%s-%s-%s",catosDetail.getBlock(), catosDetail.getBay(), catosDetail.getRow(), catosDetail.getTier()));
+								detail.setLocation(catosDetail.getLocation());
+								detail.setContainerRemark(catosDetail.getContainerRemark());
 								detail.setOpeCode(catosDetail.getOpeCode());
 								detail.setVslNm(catosDetail.getVslNm());					// overwrite VSL_CD:VSL_NM from CATOS
 								detail.setVoyNo(catosDetail.getVoyNo());

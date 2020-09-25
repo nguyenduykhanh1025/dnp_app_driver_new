@@ -137,5 +137,26 @@ public class PickupAssignServiceImpl implements IPickupAssignService {
 	public void deleteAllShipmentPickupAssign(Long shipmentId, Long groupId) {
 		pickupAssignMapper.deleteAllShipmentPickupAssign(shipmentId, groupId);
 	}
-    
+	/**
+	 * Count pickup assign list
+	 * 
+	 * @param pickupAssign
+	 * @return int
+	 */
+	@Override
+	public int countPickupAssignList(PickupAssign pickupAssign) {
+		return pickupAssignMapper.countPickupAssignList(pickupAssign);
+	}
+	
+	/**
+	 * Delete pickup assign by condition
+	 * 
+	 * @param pickupAssign
+	 * @return int
+	 */
+	@Override
+	public int deletePickupAssignByCondition(PickupAssign pickupAssign) {
+		return pickupAssignMapper.deletePickupAssignByCondition(pickupAssign);
+	}
+	
 }
