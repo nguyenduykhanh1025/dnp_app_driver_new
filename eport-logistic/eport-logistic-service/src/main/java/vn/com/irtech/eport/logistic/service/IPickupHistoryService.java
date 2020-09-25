@@ -132,4 +132,6 @@ public interface IPickupHistoryService
      */
     public int checkPlateNumberIsUnavailable(PickupHistory pickupHistory);
 
+    public List<PickupHistory> selectDeliveringDriverInfoTable(PickupHistory pickupHistory);
+
 }

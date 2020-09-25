@@ -474,6 +474,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		p.container_no, p.truck_no, p.chassis_no, p.status, p.gatein_date, d.mobile_number, d.full_name
 	</select>
 
+	<select id="selectDeliveringDriverInfoTable" parameterType="PickupHistory" resultMap="PickupHistoryResult">
+		select p.id, p.logistic_group_id, p.shipment_id, p.shipment_detail_id, p.driver_id, p.pickup_assign_id, 
+		p.container_no, p.truck_no, p.chassis_no, p.status, p.gatein_date, d.mobile_number, d.full_name
+		from pickup_history p
+		left join driver_account d on p.driver_id = d.id
+		<where>
+			p.status != 2
+			<if test="logisticGroupId != null "> and p.logistic_group_id = #{logisticGroupId}</if>
+			<if test="containerNo != null  and containerNo != ''"> and (upper(p.container_no) like concat(concat('%', #{containerNo}), '%')</if>
+			<if test="truckNo != null  and truckNo != ''"> or upper(p.truck_no) like concat(concat('%', #{truckNo}), '%')</if>
+			<if test="chassisNo != null  and chassisNo != ''"> or upper(p.chassis_no) like concat(concat('%', #{chassisNo}), '%')</if>
+			<if test="driverName != null  and driverName != ''"> or upper(d.full_name) like concat(concat('%', #{driverName}), '%')</if>
+			<if test="driverPhoneNumber != null  and driverPhoneNumber != ''"> or upper(d.mobile_number) like concat(concat('%', #{driverPhoneNumber}), '%'))</if>
+		</where>
+		group by p.id, p.logistic_group_id, p.shipment_id, p.shipment_detail_id, p.driver_id, p.pickup_assign_id, 
+		p.container_no, p.truck_no, p.chassis_no, p.status, p.gatein_date, d.mobile_number, d.full_name
+	</select>
+
 	<select id="checkPlateNumberIsUnavailable" parameterType="PickupHistory" resultType="int">
 		select count(*) from pickup_history
 		where driver_id != #{driverId}
