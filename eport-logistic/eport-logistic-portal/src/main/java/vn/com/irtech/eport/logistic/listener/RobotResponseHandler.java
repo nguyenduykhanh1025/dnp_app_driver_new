@@ -130,6 +130,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		String result = map.get("result") == null ? null : map.get("result").toString();
 		String receiptId = map.get("receiptId") == null ? null : map.get("receiptId").toString();
 		String invoiceNo = map.get("invoiceNo") == null ? "" : map.get("invoiceNo").toString(); 
+		String msg = map.get("msg") == null ? "" : map.get("msg").toString(); 
 
 		if (receiptId != null) {
 			if (EportConstants.ROBOT_STATUS_AVAILABLE.equals(status)) {
@@ -138,7 +139,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 						|| serviceType == EportConstants.SERVICE_PICKUP_EMPTY 
 						|| serviceType == EportConstants.SERVICE_DROP_FULL 
 						|| serviceType == EportConstants.SERVICE_SHIFTING) {
-					this.updateShipmentDetail(result, receiptId, invoiceNo, uuId, orderNo, serviceType);
+					this.updateShipmentDetail(result, receiptId, invoiceNo, uuId, orderNo, serviceType, msg);
 				}	
 				switch (serviceType) {
 					case EportConstants.SERVICE_CHANGE_VESSEL:
@@ -173,7 +174,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	 * @param receiptId
 	 */
 	@Transactional
-	private void updateShipmentDetail(String result, String receiptId, String invoiceNo, String robotUuId, String orderNo, Integer serviceType) {
+	private void updateShipmentDetail(String result, String receiptId, String invoiceNo, String robotUuId, String orderNo, Integer serviceType, String msgError) {
 		// INIT PROCESS HISTORY
 		Long processOrderId = Long.parseLong(receiptId);
 
@@ -256,8 +257,8 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			}
 			
 			// Send notification order success to om to check whether some data is wrong or not
-			title = "ePort: Thông báo làm lệnh " + serviceName + " thành công bởi robot " + robotUuId + ".";
-			msg = "Robot làm lệnh " + serviceName + " thành công cho mã lô " + processOrder.getShipmentId() + " Job Order No " + processOrder.getOrderNo();
+//			title = "ePort: Thông báo làm lệnh " + serviceName + " thành công bởi robot " + robotUuId + ".";
+//			msg = "Robot làm lệnh " + serviceName + " thành công cho mã lô " + processOrder.getShipmentId() + " Job Order No " + processOrder.getOrderNo();
 			
 			// SET RESULT FOR HISTORY SUCCESS
 			historyResult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
@@ -265,11 +266,12 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			
 			// Send notification order success to om to check whether some data is wrong or not
 			title = "ePort: Thông báo làm lệnh " + serviceName + " bị lỗi bởi robot " + robotUuId + ".";
-			msg = "Robot làm lệnh " + serviceName + " thất bại cho mã lô " + processOrder.getShipmentId() + " Job Order No " + processOrder.getOrderNo();
+			msg = "Robot làm lệnh " + serviceName + " thất bại cho mã lô " + processOrder.getShipmentId() + " Job Order No " + processOrder.getOrderNo() + ": " + msgError;
 			
 			// INIT PROCESS ORDER TO UPDATE
 			processOrder.setResult("F"); // RESULT FAILED
 			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			processOrder.setMsg(msgError); // Set message error from robot
 			if (orderNo != null) {
 				processOrder.setOrderNo(orderNo);
 			}
@@ -284,13 +286,13 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			}
 			// SET RESULT FOR HISTORY FAILED
 			historyResult = EportConstants.PROCESS_HISTORY_RESULT_FAILED;
-		}
-		
-		// Send notification for om
-		try {
-			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg, configService.getKey("domain.admin.name") + url, EportConstants.NOTIFICATION_PRIORITY_LOW);
-		} catch (Exception e) {
-			logger.warn(e.getMessage());
+			
+			// Send notification for om
+			try {
+				mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg, configService.getKey("domain.admin.name") + url, EportConstants.NOTIFICATION_PRIORITY_LOW);
+			} catch (Exception e) {
+				logger.warn(e.getMessage());
+			}
 		}
 		
 		// Update history

@@ -288,6 +288,9 @@ public class ShipmentDetail extends BaseEntity
 	/** Vị trí*/
 	private String location;
 	
+	/** Tinh trang container */
+	private String containerRemark;
+	
     public void setId(Long id) {
         this.id = id;
     }
@@ -894,6 +897,14 @@ public class ShipmentDetail extends BaseEntity
 	public void setLocation(String location) {
 		this.location = location;
 	}
+	
+	public String getContainerRemark() {
+		return containerRemark;
+	}
+
+	public void setContainerRemark(String containerRemark) {
+		this.containerRemark = containerRemark;
+	}
 
 	@Override
     public String toString() {
@@ -970,6 +981,7 @@ public class ShipmentDetail extends BaseEntity
             .append("eta", getEta())
             .append("etd", getEtd())
             .append("location", getLocation())
+            .append("containerRemark", getContainerRemark())
             .toString();
     }
 }

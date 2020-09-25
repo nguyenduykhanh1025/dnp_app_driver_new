@@ -76,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="eta"    column="eta"   />
         <result property="etd"    column="etd"   />
         <result property="location"    column="location"   />
+        <result property="containerRemark"    column="container_remark"   />
     </resultMap>
 
     <sql id="selectShipmentDetailVo">
@@ -86,7 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         pre_pickup_payment_status, custom_status, payment_status, process_status, do_status, do_received_time, 
         user_verify_status, finish_status, status, order_no, tax_code, consignee_by_tax_code, cont_supply_status, 
         planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, remark, pay_type, payer, payer_name, customs_no, 
-        custom_scan_time, delivery_address, delivery_mobile, delivery_remark, eta, etd, det_free_time, create_by, create_time, update_by, update_time from shipment_detail
+        custom_scan_time, delivery_address, delivery_mobile, delivery_remark, eta, etd, container_remark, det_free_time, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
      <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail
@@ -445,7 +446,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deliveryRemark != null  and deliveryRemark != ''">delivery_remark,</if>
             <if test="eta != null">eta,</if>
             <if test="etd != null">etd,</if>
-            <if test="location != null">location,</if>
+            <if test="location != null and location != ''">location,</if>
+            <if test="containerRemark != null and containerRemark != ''">container_remark,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -514,7 +516,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deliveryRemark != null  and deliveryRemark != ''">#{deliveryRemark},</if>
             <if test="eta != null">#{eta},</if>
             <if test="etd != null">#{etd},</if>
-            <if test="location != null">#{location},</if>
+            <if test="location != null and location != ''">#{location},</if>
+            <if test="containerRemark != null and containerRemark != ''">#{containerRemark},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -586,7 +589,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deliveryRemark != null  and deliveryRemark != ''">delivery_remark = #{deliveryRemark},</if>
             <if test="eta != null">eta = #{eta},</if>
             <if test="etd != null">etd = #{etd},</if>
-            <if test="location != null">location = #{location},</if>
+            <if test="location != null and location != ''">location = #{location},</if>
+            <if test="containerRemark != null and containerRemark != ''">container_remark = #{containerRemark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
         </trim>
@@ -672,8 +676,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <foreach item="id" collection="shipmentDetailIds" open="(" separator="," close=")">
             #{id}
         </foreach>
-        AND logistic_group_id = #{logisticGroupId}
-
+        <if test="logisticGroupId != null">AND logistic_group_id = #{logisticGroupId}</if>
+        
     </select>
 
     <resultMap id="ShipmentWaitExecResult" type="vn.com.irtech.eport.logistic.dto.ShipmentWaitExec">

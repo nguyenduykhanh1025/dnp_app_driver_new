@@ -560,4 +560,66 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</where>)
 		order by distance asc
 	</select>
+
+	<select id="countPickupHistoryList" parameterType="PickupHistory" resultType="int">
+		select count(*) from pickup_history
+		<where>
+			<if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+			<if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+			<if test="shipmentDetailId != null "> and shipment_detail_id = #{shipmentDetailId}</if>
+			<if test="driverId != null "> and driver_id = #{driverId}</if>
+			<if test="pickupAssignId != null "> and pickup_assign_id = #{pickupAssignId}</if>
+			<if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
+			<if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
+			<if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+			<if test="area != null  and area != ''"> and area = #{area}</if>
+			<if test="bay != null  and bay != ''"> and bay = #{bay}</if>
+			<if test="block != null  and block != ''"> and block = #{block}</if>
+			<if test="line != null  and line != ''"> and line = #{line}</if>
+			<if test="tier != null  and tier != ''"> and tier = #{tier}</if>
+			<if test="status != null "> and status = #{status}</if>
+			<if test="receiptDate != null "> and receipt_date = #{receiptDate}</if>
+			<if test="gateinDate != null "> and gatein_date = #{gateinDate}</if>
+			<if test="gateoutDate != null "> and gateout_date = #{gateoutDate}</if>
+			<if test="cancelDeceiptDate != null "> and cancel_receipt_date = #{cancelDeceiptDate}</if>
+			<if test="planningDate != null "> and planning_date = #{planningDate}</if>
+            <if test="fromDate != null ">and (gatein_date = #{fromDate} OR gatein_date > #{fromDate})</if>
+            <if test="toDate != null ">and (gatein_date = #{toDate} OR gatein_date &lt; #{toDate})</if>
+            <if test="processOrderId != null ">and process_order_id = #{processOrderId}</if>
+		</where>
+	</select>
+
+	<delete id="deletePickupHistoryByCondition" parameterType="PickupHistory">
+		delete from pickup_history
+		<where>
+			<if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+			<if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+			<if test="shipmentDetailId != null "> and shipment_detail_id = #{shipmentDetailId}</if>
+			<if test="driverId != null "> and driver_id = #{driverId}</if>
+			<if test="pickupAssignId != null "> and pickup_assign_id = #{pickupAssignId}</if>
+			<if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
+			<if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
+			<if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+			<if test="area != null  and area != ''"> and area = #{area}</if>
+			<if test="bay != null  and bay != ''"> and bay = #{bay}</if>
+			<if test="block != null  and block != ''"> and block = #{block}</if>
+			<if test="line != null  and line != ''"> and line = #{line}</if>
+			<if test="tier != null  and tier != ''"> and tier = #{tier}</if>
+			<if test="status != null "> and status = #{status}</if>
+			<if test="receiptDate != null "> and receipt_date = #{receiptDate}</if>
+			<if test="gateinDate != null "> and gatein_date = #{gateinDate}</if>
+			<if test="gateoutDate != null "> and gateout_date = #{gateoutDate}</if>
+			<if test="cancelDeceiptDate != null "> and cancel_receipt_date = #{cancelDeceiptDate}</if>
+			<if test="planningDate != null "> and planning_date = #{planningDate}</if>
+            <if test="fromDate != null ">and (gatein_date = #{fromDate} OR gatein_date > #{fromDate})</if>
+            <if test="toDate != null ">and (gatein_date = #{toDate} OR gatein_date &lt; #{toDate})</if>
+            <if test="processOrderId != null ">and process_order_id = #{processOrderId}</if>
+			<if test="params.shipmentDetailIds != null">
+                and shipment_detail_id in
+                <foreach item="shipmentDetailId" collection="params.shipmentDetailIds" open="(" separator="," close=")">
+                    #{shipmentDetailId}
+                </foreach>
+            </if>
+		</where>
+	</delete>
 </mapper>

@@ -101,4 +101,20 @@ public interface PickupAssignMapper {
      * @param groupId
      */
 	public void deleteAllShipmentPickupAssign(@Param("shipmentId") Long shipmentId, @Param("groupId") Long groupId);
+	
+	/**
+	 * Count pickup assign list
+	 * 
+	 * @param pickupAssign
+	 * @return int
+	 */
+	public int countPickupAssignList(PickupAssign pickupAssign);
+	
+	/**
+	 * Delete pickup assign by condition
+	 * 
+	 * @param pickupAssign
+	 * @return int
+	 */
+	public int deletePickupAssignByCondition(PickupAssign pickupAssign);
 }

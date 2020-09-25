@@ -2,7 +2,9 @@ package vn.com.irtech.eport.web.controller.om;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,17 +22,24 @@ import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
+import vn.com.irtech.eport.logistic.domain.PickupAssign;
+import vn.com.irtech.eport.logistic.domain.PickupHistory;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
+import vn.com.irtech.eport.logistic.service.IPickupAssignService;
+import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -64,6 +73,15 @@ public class GeneralControllingController extends AdminBaseController  {
 	
 	@Autowired
 	private ISysConfigService configService;
+	
+	@Autowired
+	private IProcessOrderService processOrderService;
+	
+	@Autowired
+	private IPickupAssignService pickupAssignService;
+	
+	@Autowired
+	private IPickupHistoryService pickupHistoryService;
 	
 	@GetMapping()
 	public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
@@ -218,9 +236,64 @@ public class GeneralControllingController extends AdminBaseController  {
 	@Log(title = "Xóa container", businessType = BusinessType.DELETE, operatorType = OperatorType.MANAGE)
 	@PostMapping("/shipment-detail/cancel")
 	@ResponseBody
-	@Transactional
 	public AjaxResult deleteShipmentDetail(String shipmentDetailIds, Long shipmentId) {
+		
+		logger.debug("Delete all shipment detail om want to delete");
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
 		shipmentDetailService.deleteShipmentDetailByIds(shipmentId, shipmentDetailIds);
+		
+		// check to delete process order when empty
+		logger.debug("Check and delete all process order mapping with shipment detail has been deleted");
+		List<Long> processOrderId = new ArrayList<>();
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			if (!processOrderId.contains(shipmentDetail.getProcessOrderId())) {
+				processOrderId.add(shipmentDetail.getProcessOrderId());
+				ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+				shipmentDetailParam.setProcessOrderId(shipmentDetail.getProcessOrderId());
+				if (shipmentDetailService.countShipmentDetailList(shipmentDetailParam) == 0) {
+					processOrderService.deleteProcessOrderById(shipmentDetail.getProcessOrderId());
+				}
+			}
+		}
+		
+		// Delete all pick up assign
+		logger.debug("Check shipment is empty");
+		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+		shipmentDetailParam.setShipmentId(shipmentId);
+		
+		// Check if shipment has shipment detail after delete
+		// if it is then delete both pickup by shipment and shipment detail else only shipment detail
+		if (shipmentDetailService.countShipmentDetailList(shipmentDetailParam) == 0) {
+			// delete all pickup assign and history include pickup by shipment
+			PickupAssign pickupAssignParam = new PickupAssign();
+			pickupAssignParam.setShipmentId(shipmentId);
+			logger.debug("delete pickup assign list by shipment id");
+			pickupAssignService.deletePickupAssignByCondition(pickupAssignParam);
+			
+			PickupHistory pickupHistoryParam = new PickupHistory();
+			pickupHistoryParam.setShipmentId(shipmentId);
+			logger.debug("delete pickup history list by shipment id");
+			pickupHistoryService.deletePickupHistoryByCondition(pickupHistoryParam);
+		} else {
+			Map<String, Object> map = new HashMap<>();
+			map.put("shipmentDetailIds", Convert.toStrArray(shipmentDetailIds));
+			
+			// delete all pickup assign and history by shipment detail id
+			PickupAssign pickupAssignParam = new PickupAssign();
+			pickupAssignParam.setShipmentId(shipmentId);
+			pickupAssignParam.setParams(map);
+			logger.debug("delete pickup assign list by shipment ids");
+			pickupAssignService.deletePickupAssignByCondition(pickupAssignParam);
+			
+			PickupHistory pickupHistoryParam = new PickupHistory();
+			pickupHistoryParam.setShipmentId(shipmentId);
+			pickupHistoryParam.setParams(map);
+			logger.debug("delete pickup history list by shipment id");
+			pickupHistoryService.deletePickupHistoryByCondition(pickupHistoryParam);
+		}
+		
+		// TODO: Send notification
+		
 		return success();
 	}
 }
