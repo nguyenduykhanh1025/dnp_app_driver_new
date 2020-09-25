@@ -3,12 +3,12 @@ package vn.com.irtech.eport.api.controller.transport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
-
 import vn.com.irtech.eport.api.consts.BusinessConsts;
 import vn.com.irtech.eport.api.consts.MessageConsts;
 import vn.com.irtech.eport.api.message.MessageHelper;
-import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.api.util.SecurityUtils;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.EportConstants;
@@ -40,7 +37,6 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticTruck;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
-import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.Pickup;
@@ -49,7 +45,6 @@ import vn.com.irtech.eport.logistic.form.PickupHistoryDetail;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
-import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
@@ -81,11 +76,11 @@ public class TransportController extends BaseController {
 	@Autowired 
 	private IShipmentDetailService shipmentDetailService;
 	
-	@Autowired
-	private MqttService mqttService;
-	
-	@Autowired
-	private IProcessOrderService processOrderService;
+//	@Autowired
+//	private MqttService mqttService;
+//	
+//	@Autowired
+//	private IProcessOrderService processOrderService;
 	
 	@Autowired
 	private ISysNotificationReceiverService sysNotificationReceiverService;
@@ -444,13 +439,14 @@ public class TransportController extends BaseController {
 	 */
 	@PostMapping("/location")
 	@ResponseBody
+	@Transactional
 	public AjaxResult updateLocation(@RequestBody Map<String, Double> location) {
 		if (location == null) {
 			return error();
 		}
 		logger.debug(">>>>>>>>>>>>>>>>>>.. Receive GPS location: {} : {} , {}", location, location.get("x"), location.get("y"));
 		
-		double distanceRequire = Double.parseDouble(configService.selectConfigByKey("driver.distance.port"));
+//		double distanceRequire = Double.parseDouble(configService.selectConfigByKey("driver.distance.port"));
 		double latEport = Double.parseDouble(configService.selectConfigByKey("location.port.lat"));
 		double lonEport = Double.parseDouble(configService.selectConfigByKey("location.port.long"));
 
@@ -463,28 +459,23 @@ public class TransportController extends BaseController {
 			double distance = distance(x, latEport, y, lonEport, 0.0, 0.0);
 			logger.debug(">>>>>>>>>>>>>>>>>>..Distance from DNP: {}", distance);
 			// Check distance to request MC request yard position
-			if (distanceRequire > distance(x, latEport, y, lonEport, 0.0, 0.0)) {
-				List<Pickup> pickups = pickupHistoryService.selectPickupListByDriverId(SecurityUtils.getCurrentUser().getUser().getUserId());
-
-				for (Pickup pickup : pickups) {
-					// Check if service is send cont
-					if (pickup.getServiceType().intValue() == EportConstants.SERVICE_DROP_EMPTY
-							|| pickup.getServiceType().intValue() == EportConstants.SERVICE_DROP_FULL) {
-						// Check if cont has not position
-						if (pickup.getStatus() < 2 && !checkContHasPosition(pickup)) {
-							// Send to mc
-							Map<String, Object> map = new HashMap<>();
-							map.put("pickupHistoryId", pickup.getPickupId().toString());
-//							try {
-								logger.debug("Received GPS location. Request MC to plan for pickupId " + pickup.getPickupId());
-								 //mqttService.sendMessageToMc(new Gson().toJson(map));
-								 //mqttService.sendMessageToMcAppWindow(pickup.getPickupId());
-//							} catch (MqttException e) {
-//								logger.error("Api Driver Error Update Location: " + e);
-//							}
-						}
-					}
-				}
+			// TODO Cache list
+			List<Pickup> pickups = pickupHistoryService.selectPickupListByDriverId(SecurityUtils.getCurrentUser().getUser().getUserId());
+			
+			// Update location and update location time for pick up history
+			PickupHistory pickupHistory = null;
+			for (Pickup pickup : pickups) {
+				// Update location for driver DROP F/E
+//				if (pickup.getServiceType().intValue() == EportConstants.SERVICE_DROP_EMPTY
+//						|| pickup.getServiceType().intValue() == EportConstants.SERVICE_DROP_FULL) {
+//					
+//				}
+				//FIXME fix lai perfomance
+				pickupHistory = new PickupHistory();
+				pickupHistory.setId(pickup.getPickupId());
+				pickupHistory.setDistance(distance);
+				pickupHistory.setUpdateLocationTime(new Date());
+				pickupHistoryService.updatePickupHistory(pickupHistory);
 			}
 		}
 		return success();
@@ -534,22 +525,22 @@ public class TransportController extends BaseController {
 		return Math.sqrt(distance);
 	}
 	
-	/**
-	 * Check container has position
-	 * 
-	 * @param pickup
-	 * @return Boolean
-	 */
-	private Boolean checkContHasPosition(Pickup pickup) {
-		// PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(pickup.getPickupId());
-
-		if (StringUtils.isNotBlank(pickup.getArea()) || StringUtils.isNotBlank(pickup.getBlock())
-				&& StringUtils.isNotBlank(pickup.getBay()) && StringUtils.isNotBlank(pickup.getLine())
-				&& StringUtils.isNotBlank(pickup.getTier())) {
-			return true;
-		}
-		return false;
-	}
+//	/**
+//	 * Check container has position
+//	 * 
+//	 * @param pickup
+//	 * @return Boolean
+//	 */
+//	private Boolean checkContHasPosition(Pickup pickup) {
+//		// PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(pickup.getPickupId());
+//
+//		if (StringUtils.isNotBlank(pickup.getArea()) || StringUtils.isNotBlank(pickup.getBlock())
+//				&& StringUtils.isNotBlank(pickup.getBay()) && StringUtils.isNotBlank(pickup.getLine())
+//				&& StringUtils.isNotBlank(pickup.getTier())) {
+//			return true;
+//		}
+//		return false;
+//	}
 	
 	class AssignContComparator implements Comparator<PickupAssignForm> {
 		public int compare(PickupAssignForm pickupAssignForm1, PickupAssignForm pickupAssignForm2) {

@@ -9,6 +9,8 @@ import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.form.Pickup;
 import vn.com.irtech.eport.logistic.form.PickupHistoryDetail;
 import vn.com.irtech.eport.logistic.form.PickupHistoryForm;
+import vn.com.irtech.eport.logistic.form.PickupPlanForm;
+import vn.com.irtech.eport.logistic.form.VesselVoyageMc;
 
 /**
  * Pickup history Mapper Interface
@@ -119,5 +121,37 @@ public interface PickupHistoryMapper
      * @return int
      */
     public int checkPlateNumberIsUnavailable(PickupHistory pickupHistory);
+    
+    /**
+     * Select vessel voyage list
+     * 
+     * @param pickupHistory
+     * @return List<VesselVoyageMc>
+     */
+    public List<VesselVoyageMc> selectVesselVoyageList(PickupHistory pickupHistory); 
    
+    /**
+     * Select pickup list form mc plan
+     * 
+     * @param pickupHistory
+     * @return List<PickupPlanForm>
+     */
+    public List<PickupPlanForm> selectPickupListForMcPlan(PickupHistory pickupHistory);
+    
+    /**
+     * 
+     * Count pickup history list
+     * 
+     * @param pickupHistory
+     * @return int
+     */
+    public int countPickupHistoryList(PickupHistory pickupHistory);
+    
+    /**
+     * Delete pickup history by condition
+     * 
+     * @param pickupHistory
+     * @return int
+     */
+    public int deletePickupHistoryByCondition(PickupHistory pickupHistory);
 }

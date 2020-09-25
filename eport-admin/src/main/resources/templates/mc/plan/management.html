@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('MC Plan Management')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+</head>
+
+<body class="grey-background">
+    <div class="main-body">
+        <div class="main-body__search-wrapper mb-2">
+            <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+            <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+            <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+                <div class="flex__left w-20">
+                    <h3 class="mt-10">Lập Kế Hoạch Bãi Cảng</h3>
+                </div>
+                <div class="flex__right w-80">
+                    <div class="justify-content-around align-items-center" id="ff">
+                        <div class="d-inline">
+                            <input class="easyui-textbox" id="blBookingNo" data-options="prompt:'Bill No/Booking No'" />
+                        </div>
+                        <div class="d-inline">
+                            <input id="vesselAndVoyages" class="easyui-combobox" panelMaxHeight="200" style="width: 250px">
+                        </div>
+                        <div class="d-inline">
+                            <button class="btn btn-success" onclick="search()">Tìm kiếm</button>
+                        </div>
+                        <div class="d-inline">
+                            <button class="btn btn-success btn-outline" onclick="clearInput()">Làm mới</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-body__table-wrapper">
+            <div class="easyui-layout" id="main-layout" style="width:100%">
+                <div class="left-side" data-options="region:'west',split:true, collapsible:false" title="Danh sách lô" style="width:30%;">
+                    <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
+                    <table id="dg-left" style="width: 100%;" pageList="[20,50,100,150,200]">
+                        <thead>
+                            <tr>
+                                <!-- <th data-options="field:'id', resizable:true, align:'right', fixed:true" sortable="true" width="60">Mã Lô</th> -->
+                                <th field="ck" checkbox="true"></th>
+                                <th data-options="field:'vslNm', resizable:true, align:'center', fixed:true" sortable="true" width="70">Tàu</th>
+                                <th data-options="field:'voyNo', resizable:true, align:'center', fixed:true" sortable="true" width="80">Chuyến</th>
+                                <th data-options="field:'sztp', resizable:true, align:'center', fixed:true" sortable="true" width="60">Sztp</th>
+                                <th data-options="field:'dischargePort', resizable:true, align:'center', fixed:true" sortable="true" width="90">Cảng Dỡ</th>
+                                <th data-options="field:'containerAmount', resizable:true, align:'right', fixed:true" sortable="true" width="40">S/L</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="right-side" data-options="region:'center'" title="Danh sách xe vào bãi cảng" style="width:100%;">
+                    <table id="dg-right" style="width: 100%;" pageList="[20,50,100,150,200]">
+                        <thead>
+                            <tr>
+                                <!-- <th data-options="field:'id', resizable:true, align:'right', fixed:true" sortable="true" width="60">Mã Lô</th> -->
+                                <th data-options="field:'distance', resizable:true, halign:'center', align:'right', fixed:true" sortable="true" width="105">Cách Cảng (m)</th>
+                                <th data-options="field:'containerNo', resizable:true, halign:'center', align:'center', fixed:true" sortable="true" width="100">Container</th>
+                                <th data-options="field:'vslNmVoyNo', resizable:true, halign:'center', align:'center', fixed:true" sortable="true" width="100">Tàu - Chuyến</th>
+                                <th data-options="field:'sztp', resizable:true, halign:'center', align:'center', fixed:true" sortable="true" width="60">Sztp</th>
+                                <th data-options="field:'dischargePort', resizable:true, halign:'center', align:'center', fixed:true" sortable="true" width="80">Cảng Dỡ</th>
+                                <th data-options="field:'logisticName', resizable:true, halign:'center', align:'left', fixed:true" sortable="true" width="120">Logistics</th>
+                                <th data-options="field:'truckNo', resizable:true, halign:'center', align:'center', fixed:true" sortable="true" width="90">Biển Số Xe</th>
+                                <th data-options="field:'gatePass', resizable:true, halign:'center', align:'center', fixed:true" sortable="true" width="80">Gate Pass</th>
+                                <th data-options="field:'updateLocationTime', resizable:true, halign:'center', align:'center', fixed:true, formatter:formatDateTime" sortable="true" width="160">Cập Nhật Tọa Độ Lúc</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script type="text/javascript" th:inline="javascript">
+        $(".main-body").height($(document).height() - 10);
+        $(".easyui-layout").height($('.main-body').height() - 50);
+        var vesselAndVoyages = /*[[${vesselAndVoyages}]]*/;
+    </script>
+    <script th:src="@{/eport/js/modules/mc/plan/management.js?v=09201}"></script>
+</body>
+
+</html>

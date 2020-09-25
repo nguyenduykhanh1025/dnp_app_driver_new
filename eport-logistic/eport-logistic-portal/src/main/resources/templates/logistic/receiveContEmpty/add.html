@@ -3,6 +3,7 @@
 
 <head>
   <th:block th:include="include :: header('Thêm lô')" />
+  <th:block th:include="include :: dropzone-css" />
   <link th:href="@{/css/logistic/add-shipment.css}" rel="stylesheet" />
 </head>
 
@@ -23,13 +24,14 @@
             required />
         </div>
       </div>
-      <div class="form-group row">
-        <a class="upload-file" href="javascript:void(0)">
-          <i class="fa fa-paperclip"></i>
-          <label for="uploadFiles">Đính kèm hình ảnh booking hoặc lệnh cấp vỏ container</label>
-        </a>
-        <input type="file" class="hidden" id="uploadFiles" name="images" accept=".bmp, .gif, .jpg, .jpeg, .png" multiple>
-        <div class="preview-container"></div>
+      <div class="form-group row" id="dropzone">
+        <span class="col-md-2 col-sm-3 col-xs-4"></span>
+        <div class="col-md-4 col-sm-3 col-xs-2">
+          <button type="button" id="attachButton" class="btn btn-sm btn-default">
+            <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+          </button>
+        </div>
+        <div class="preview-container col-md-6 col-sm-6 col-xs-6"></div>
       </div>
       <div class="form-group row">
         <label style="margin-top: 4px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Loại Lệnh</label>
@@ -64,6 +66,7 @@
     </form>
   </div>
   <th:block th:include="include :: footer" />
+  <th:block th:include="include :: dropzone-js" />
   <script th:src="@{/js/logistic/receiveContEmpty/add.js}"></script>
 </body>
 

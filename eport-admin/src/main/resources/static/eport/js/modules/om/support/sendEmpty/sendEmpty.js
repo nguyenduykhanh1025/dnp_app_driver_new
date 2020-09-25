@@ -252,6 +252,17 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html(value);
   return td;
 }
+function msgRenderer(instance, td, row, col, prop, value, cellProperties) {
+  // cellProperties.readOnly = "true";
+  $(td)
+    .attr("id", "msg" + row)
+    .addClass("htMiddle");
+  if (processOrderSelected.msg == null) {
+    value = ''
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
 //CONFIGURATE HANDSONTABLE
 function configHandson() {
   config = {
@@ -294,9 +305,11 @@ function configHandson() {
           return "Số Tham Chiếu";
         case 11:
           return "Ghi Chú";
+        case 12:
+          return "Thông Báo Lỗi";
       }
     },
-    colWidths: [100, 50, 200, 150, 100, 100, 100, 150, 100, 100, 150, 100],
+    colWidths: [100, 50, 200, 150, 100, 100, 100, 150, 100, 100, 150, 150, 150],
     filter: "true",
     columns: [
       {
@@ -348,6 +361,10 @@ function configHandson() {
         data: "remark",
         renderer: remarkRenderer,
       },
+      {
+        data: "msg",
+        renderer: msgRenderer,
+      },
     ],
     beforeKeyDown: function (e) {
       let selected = hot.getSelected()[0];
@@ -395,6 +412,11 @@ function loadTableByContainer(processOrderId) {
       $.modal.closeLoading();
       if (data.code == 0) {
         sourceData = data.shipmentDetails;
+        if (sourceData) {
+          for (let i = 0; i < sourceData.length; i++) {
+            sourceData[i].msg = processOrderSelected.msg;
+          }
+        }
         hot.destroy();
         configHandson();
         hot = new Handsontable(dogrid, config);
@@ -510,7 +532,7 @@ function search() {
 function loadListComment(shipmentCommentId) {
   let req = {
     serviceType: 2,
-    shipmentId: processOrderSelected.id,
+    shipmentId: processOrderSelected.shipmentId,
   };
   $.ajax({
     url: ctx + "shipment-comment/shipment/list",
@@ -574,7 +596,7 @@ function addComment() {
     let req = {
       topic: topic,
       content: content,
-      shipmentId: processOrderSelected.id,
+      shipmentId: processOrderSelected.shipmentId,
       logisticGroupId: processOrderSelected.logisticGroupId,
     };
     $.ajax({

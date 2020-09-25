@@ -1,4 +1,5 @@
 var prefix = ctx + "logistic/receive-cont-empty";
+var shipmentFileIds = [];
 
 $("#form-add-shipment").validate({
     focusCleanup: true
@@ -7,14 +8,14 @@ $("#form-add-shipment").validate({
 async function submitHandler() {
     if ($.validate.form()) {
         if ($("#opeCode option:selected").text() == 'Chọn OPR') {
-            $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
-        } else if (Array.from($("input#uploadFiles")[0].files).length > 0) {
+            $.modal.alertError("Hãy chọn mã OPR.");
+        } else if (shipmentFileIds.length > 0) {
             let res = await getBookingNoUnique();
             if (res.code == 0) {
-                save(prefix + "/shipment", new FormData($('#form-add-shipment')[0]));
+                save(prefix + "/shipment");
             }
         } else {
-            $.modal.alertWarning("Quý khách chưa đính kèm hình ảnh booking hoặc lệnh cấp vỏ container.");
+            $.modal.alertError("Hãy đính kèm tệp booking hoặc lệnh cấp vỏ container.");
         }
     }
 }
@@ -46,14 +47,19 @@ function checkBookingNoUnique() {
     }
 }
 
-function save(url, data) {
+function save(url) {
+    let shipment = new Object();
+    shipment.bookingNo = $('#bookingNo').val();
+    shipment.specificContFlg = $("input[name='specificContFlg']:checked"). val();
+    shipment.opeCode = $('#opeCode').val();
+    shipment.containerAmount = $('#containerAmount').val();
+    shipment.params = new Object();
+    shipment.params.ids = shipmentFileIds.join();
     $.ajax({
         url: url,
-        type: "post",
-        dataType: "json",
-        data: data,
-        processData: false,
-        contentType: false,
+        method: "post",
+        contentType: "application/json",
+        data: JSON.stringify(shipment),
         beforeSend: function () {
             $.modal.loading("Đang xử lý, vui lòng chờ...");
             $.modal.disable();
@@ -67,69 +73,70 @@ function save(url, data) {
                 $.modal.alertError(result.msg);
             }
         }
-    })
+    });
 }
 
-$("#uploadFiles").change(function () {
-    previewImages(this);
+$(document).ready(function () {
+    let previewTemplate = '<span data-dz-name></span>';
+
+    myDropzone = new Dropzone("#dropzone", {
+        url: prefix + "/file",
+        method: "post",
+        paramName: "file",
+        maxFiles: 5,
+        maxFilesize: 10, //MB
+        // autoProcessQueue: false,
+        previewTemplate: previewTemplate,
+        previewsContainer: ".preview-container", // Define the container to display the previews
+        clickable: "#attachButton", // Define the element that should be used as click trigger to select files.
+        init: function () {
+            this.on("maxfilesexceeded", function (file) {
+                $.modal.alertError("Số lượng tệp đính kèm vượt số lượng cho phép.");
+                this.removeFile(file);
+            });
+        },
+        success: function(file, response){
+            if (response.code == 0) {
+                $.modal.msgSuccess("Đính kèm tệp thành công.");
+                shipmentFileIds.push(response.shipmentFileId);
+                let html = `<div class="preview-block">
+                    <img src="` + ctx + `img/document.png" alt="Tài liệu" />
+                    <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + response.shipmentFileId + `)" >
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>`
+                $('.preview-container').append(html);
+            } else {
+                $.modal.alertError("Đính kèm tệp thất bại, vui lòng thử lại sau.");
+            }
+        }
+    });
 });
 
-function previewImages($input) {
-    if (!$input.files) {
-        return;
-    }
-
-    if (!isValidFiles($input.files)) {
-        return;
-    }
-
-    const $parent = $("div.preview-container");
-    $parent.empty();
-
-    $.each($input.files, function (index, file) {
-        const $previewContainer = $(`<div class="preview-block">
-                                        <img src="#" alt="Preview image" />
-                                        <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ${index})" >
-                                          <span aria-hidden="true">&times;</span>
-                                        </button>
-                                     </div>`);
-        $parent.append($previewContainer);
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            $previewContainer.find("img").attr("src", e.target.result);
-        };
-
-        // Convert to base64 string
-        reader.readAsDataURL(file);
-    });
-}
-
-function isValidFiles(files) {
-    if (files.length > 5) {
-        $.modal.alertError("Chỉ được phép đính kèm tối đa 5 hình ảnh!");
-        return false;
-    }
-
-    let totalFileSize = 0;
-    $.each(files, function (index, file) {
-        if (!/\.(jpe?g|png|gif|bmp)$/i.test(file.name)) {
-            $.modal.alertError("Vui lòng chọn hình ảnh có định dạng (.bmp/.gif/.jpg/.jpeg/.png)!");
+function removeImage(element, fileIndex) {
+    shipmentFileIds.forEach(function (value, index) {
+        if (value == fileIndex) {
+            $.ajax({
+                url: prefix + "/booking/file",
+                method: "DELETE",
+                data: {
+                    id: value
+                },
+                beforeSend: function () {
+                    $.modal.loading("Đang xử lý, vui lòng chờ...");
+                },
+                success: function (result) {
+                    $.modal.closeLoading();
+                    if (result.code == 0) {
+                        $.modal.msgSuccess("Xóa tệp thành công.");
+                        $(element).parent("div.preview-block").remove();
+                        shipmentFileIds.splice(index, 1);
+                    } else {
+                        $.modal.msgError("Xóa tệp thất bại.");
+                    }
+                }
+            });
+            return false;
         }
-
-        totalFileSize += file.size;
     });
-
-    // Check total file size larger than 25MB or not ?
-    if (totalFileSize > 2000000) {
-        $.modal.alertError("Tổng dung lượng ảnh đính kèm chỉ được phép dưới 20MB!");
-        return false;
-    }
-
-    return true;
-}
-
-function removeImage(element, imageIndex) {
-    $(element).parent("div.preview-block").remove();
-    Array.from($("input#uploadFiles")[0].files).splice(imageIndex, 1);
 }

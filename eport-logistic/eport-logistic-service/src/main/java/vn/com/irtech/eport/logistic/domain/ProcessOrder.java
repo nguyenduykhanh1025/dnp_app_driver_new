@@ -172,6 +172,10 @@ public class ProcessOrder extends BaseEntity
     /** Trucker */
     @Excel(name = "Trucker")
     private String trucker;
+    
+    /** Message Error Robot*/
+    @Excel(name = "Message Error")
+    private String msg;
 
     public String getLogisticName() {
 		return this.logisticName;
@@ -552,6 +556,14 @@ public class ProcessOrder extends BaseEntity
 		this.trucker = trucker;
 	}
 
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -601,6 +613,7 @@ public class ProcessOrder extends BaseEntity
             .append("pod", getPod())
             .append("cargoType", getCargoType())
             .append("trucker", getTrucker())
+            .append("msg", getMsg())
             .toString();
     }
 }

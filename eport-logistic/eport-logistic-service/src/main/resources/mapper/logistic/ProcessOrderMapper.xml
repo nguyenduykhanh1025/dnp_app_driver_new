@@ -51,6 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="pod"    column="pod"    />
         <result property="cargoType"    column="cargo_type"    />
         <result property="trucker"    column="trucker"    />
+        <result property="msg"    column="msg"    />
 <!--         <association property="shipmentDetail"    column="id" javaType="ShipmentDetail" resultMap="ShipmentDetailResult" /> -->
     </resultMap>
 
@@ -72,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, 
             result, data, create_by, create_time, update_by, update_time, robot_uuid, ssr_code, sys_user_id, 
             post_process_id, runnable, order_no, domestic_flg, booking_create_mode, booking_index, process_data, 
-            fe, opr, pol, pod, cargo_type, trucker 
+            fe, opr, pol, pod, cargo_type, trucker, msg
         FROM process_order
     </sql>
 
@@ -105,6 +106,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sysUserId != null"> and sys_user_id = #{sysUserId}</if>
             <if test="postProcessId != null"> and post_process_id = #{postProcessId}</if>
             <if test="runnable != null"> and runnable = #{runnable}</if>
+            <if test="msg != null and msg != ''"> and msg = #{msg}</if>
         </where>
     </select>
 
@@ -113,7 +115,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             id, shipment_id, logistic_group_id, service_type, invoice_no, pay_type, sztp, modee, consignee, truck_co, opr,
             tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, 
             result, data, create_by, create_time, update_by, update_time, robot_uuid, ssr_code, sys_user_id, 
-            post_process_id, runnable, order_no, process_data, 
+            post_process_id, runnable, order_no, process_data, msg,
             (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as logistic_name 
         FROM process_order s
         <where>  
@@ -143,6 +145,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sysUserId != null"> and sys_user_id = #{sysUserId}</if>
             <if test="postProcessId != null"> and post_process_id = #{postProcessId}</if>
             <if test="runnable != null"> and runnable = #{runnable}</if>
+            <if test="msg != null and msg != ''"> and msg = #{msg}</if>
         </where>
         order by update_time asc
     </select>
@@ -178,6 +181,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sysUserId != null"> and sys_user_id = #{sysUserId}</if>
             <if test="postProcessId != null"> and post_process_id = #{postProcessId}</if>
             <if test="runnable != null"> and runnable = #{runnable}</if>
+            <if test="msg != null and msg != ''"> and msg = #{msg}</if>
         </where>
     </select>
     
@@ -230,6 +234,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pod != null and pod != ''">pod,</if>
             <if test="cargoType != null and cargoType != ''">cargo_type,</if>
             <if test="trucker != null and trucker != ''">trucker,</if>
+            <if test="msg != null and msg != ''">msg,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
          </trim>
@@ -272,6 +277,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pod != null and pod != ''">#{pod},</if>
             <if test="cargoType != null and cargoType != ''">#{cargoType},</if>
             <if test="trucker != null and trucker != ''">#{trucker},</if>
+            <if test="msg != null and msg != ''">#{msg},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
          </trim>
@@ -318,6 +324,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pod != null and pod != ''">pod = #{pod},</if>
             <if test="cargoType != null and cargoType != ''">cargo_type = #{cargoType},</if>
             <if test="trucker != null and trucker != ''">trucker = #{trucker},</if>
+            <if test="msg != null and msg != ''">msg = #{msg},</if>
             update_time = sysdate
         </trim>
         where id = #{id}
@@ -337,7 +344,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectOrderListForOmSupport" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
         select 
             p.id, p.shipment_id, p.logistic_group_id, p.service_type, p.pay_type, p.tax_code, p.bl_no, p.booking_no, p.pickup_date, p.robot_uuid,
-            p.vessel, p.voyage, p.cont_number, p.status, p.result, p.invoice_no, l.group_name as group_name
+            p.vessel, p.voyage, p.cont_number, p.status, p.result, p.invoice_no, l.group_name as group_name, p.msg
         FROM process_order p
             right join shipment_detail s on p.id = s.process_order_id
             left join logistic_group l on p.logistic_group_id = l.id
@@ -436,7 +443,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectOrdersByShipmentId" resultMap="ProcessOrderResult" parameterType="ProcessOrder">
-        select p.id, p.shipment_id, p.logistic_group_id, p.service_type, p.order_no, p.invoice_no, p.cont_number, p.status, p.pay_type, p.create_time, p.robot_uuid,
+        select p.id, p.shipment_id, p.logistic_group_id, p.service_type, p.order_no, p.invoice_no, p.cont_number, p.status, p.pay_type, p.create_time, p.robot_uuid, p.msg,
         (select sh.payment_status from shipment_detail sh where sh.process_order_id = p.id FETCH NEXT 1 ROWS ONLY) as payment_status, 
         (select sh.do_status from shipment_detail sh where sh.process_order_id = p.id FETCH NEXT 1 ROWS ONLY) as do_status
         from process_order p

@@ -156,194 +156,211 @@ loadTableByContainer();
 
 //FORMAT HANDSONTABLE COLUMN
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'sztp' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'consignee' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'consignee' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'wgt' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'wgt' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'payType' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'payType' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'payer' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'payer' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'orderNo' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'orderNo' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'remark' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'remark' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
+}
+function msgRenderer(instance, td, row, col, prop, value, cellProperties) {
+  // cellProperties.readOnly = "true";
+  $(td)
+    .attr("id", "msg" + row)
+    .addClass("htMiddle");
+  if (processOrderSelected.msg == null) {
+    value = ''
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
 }
 //CONFIGURATE HANDSONTABLE
 function configHandson() {
-    config = {
-        stretchH: "all",
-        height: $('#right-side__main-table').height() - 35,
-        minRows: rowAmount,
-        maxRows: rowAmount,
-        width: "100%",
-        minSpareRows: 0,
-        rowHeights: 30,
-        fixedColumnsLeft: 3,
-        manualColumnResize: true,
-        manualRowResize: true,
-        renderAllRows: true,
-        rowHeaders: true,
-        className: "htMiddle",
-        colHeaders: function (col) {
-            switch (col) {
-                case 0:
-                    return "Số Container";
-                case 1:
-                    return "Sztp";
-                case 2:
-                    return "Chủ hàng";
-                case 3:
-                    return "Tàu - Chuyến";
-                case 4:
-                    return "Trọng lượng";
-                case 5:
-                    return "Loại hàng";
-                case 6:
-                	return "Cảng Dở Hàng";
-                case 7:
-                    return "PTTT";
-                case 8:
-                    return "Payer";
-                case 9:
-                    return "Số Tham Chiếu";
-                case 10:
-                    return "Ghi Chú";
-            }
-        },
-        colWidths: [ 100, 50, 200, 280, 100, 100, 100, 100, 100, 150, 100],
-        filter: "true",
-        columns: [
-            {
-                data: "containerNo",
-                renderer: containerNoRenderer
-            },
-            {
-                data: "sztp",
-                renderer: sztpRenderer
-            },
-            {
-                data: "consignee",
-                renderer: consigneeRenderer
-            },
-            //vslNm = vslNm + "-" + "voyCarrier"
-            {
-                data: "vslNm",
-                renderer: vslNmRenderer
-            },
-            {
-                data: "wgt",
-                renderer: wgtRenderer
-            },
-            {
-                data: "cargoType",
-                renderer: cargoTypeRenderer
-            },
-            {
-                data: "dischargePort",
-                renderer: dischargePortRenderer
-            },
-            {
-                data: "payType",
-                renderer: payTypeRenderer
-            },
-            {
-                data: "payer",
-                renderer: payerRenderer
-            },
-            {
-                data: "orderNo",
-                renderer: orderNoRenderer
-            },
-            {
-                data: "remark",
-                renderer: remarkRenderer
-            }
-        ],
-        beforeKeyDown: function (e) {
-            let selected = hot.getSelected()[0];
-            switch (e.keyCode) {
-                // Arrow Left
-                case 37:
-                    if (selected[3] == 0) {
-                        e.stopImmediatePropagation();
-                    }
-                    break;
-                // Arrow Up
-                case 38:
-                    if (selected[2] == 0) {
-                        e.stopImmediatePropagation();
-                    }
-                    break;
-                // Arrow Right
-                case 39:
-                    if (selected[3] == 12) {
-                        e.stopImmediatePropagation();
-                    }
-                    break
-                // Arrow Down
-                case 40:
-                    if (selected[2] == rowAmount - 1) {
-                        e.stopImmediatePropagation();
-                    }
-                    break
-                default:
-                    break;
-            }
-        },
-    };
+  config = {
+    stretchH: "all",
+    height: $('#right-side__main-table').height() - 35,
+    minRows: rowAmount,
+    maxRows: rowAmount,
+    width: "100%",
+    minSpareRows: 0,
+    rowHeights: 30,
+    fixedColumnsLeft: 3,
+    manualColumnResize: true,
+    manualRowResize: true,
+    renderAllRows: true,
+    rowHeaders: true,
+    className: "htMiddle",
+    colHeaders: function (col) {
+      switch (col) {
+        case 0:
+          return "Số Container";
+        case 1:
+          return "Sztp";
+        case 2:
+          return "Chủ hàng";
+        case 3:
+          return "Tàu - Chuyến";
+        case 4:
+          return "Trọng lượng";
+        case 5:
+          return "Loại hàng";
+        case 6:
+          return "Cảng Dở Hàng";
+        case 7:
+          return "PTTT";
+        case 8:
+          return "Payer";
+        case 9:
+          return "Số Tham Chiếu";
+        case 10:
+          return "Ghi Chú";
+        case 11:
+          return "Thông Báo Lỗi"
+      }
+    },
+    colWidths: [100, 50, 200, 280, 100, 100, 100, 100, 100, 150, 150, 150],
+    filter: "true",
+    columns: [
+      {
+        data: "containerNo",
+        renderer: containerNoRenderer
+      },
+      {
+        data: "sztp",
+        renderer: sztpRenderer
+      },
+      {
+        data: "consignee",
+        renderer: consigneeRenderer
+      },
+      //vslNm = vslNm + "-" + "voyCarrier"
+      {
+        data: "vslNm",
+        renderer: vslNmRenderer
+      },
+      {
+        data: "wgt",
+        renderer: wgtRenderer
+      },
+      {
+        data: "cargoType",
+        renderer: cargoTypeRenderer
+      },
+      {
+        data: "dischargePort",
+        renderer: dischargePortRenderer
+      },
+      {
+        data: "payType",
+        renderer: payTypeRenderer
+      },
+      {
+        data: "payer",
+        renderer: payerRenderer
+      },
+      {
+        data: "orderNo",
+        renderer: orderNoRenderer
+      },
+      {
+        data: "remark",
+        renderer: remarkRenderer
+      },
+      {
+        data: "msg",
+        renderer: msgRenderer,
+      },
+    ],
+    beforeKeyDown: function (e) {
+      let selected = hot.getSelected()[0];
+      switch (e.keyCode) {
+        // Arrow Left
+        case 37:
+          if (selected[3] == 0) {
+            e.stopImmediatePropagation();
+          }
+          break;
+        // Arrow Up
+        case 38:
+          if (selected[2] == 0) {
+            e.stopImmediatePropagation();
+          }
+          break;
+        // Arrow Right
+        case 39:
+          if (selected[3] == 12) {
+            e.stopImmediatePropagation();
+          }
+          break
+        // Arrow Down
+        case 40:
+          if (selected[2] == rowAmount - 1) {
+            e.stopImmediatePropagation();
+          }
+          break
+        default:
+          break;
+      }
+    },
+  };
 }
 configHandson();
 
@@ -364,6 +381,7 @@ function loadTableByContainer(processOrderId) {
         if (sourceData) {
           for (let i = 0; i < sourceData.length; i++) {
             sourceData[i].vslNm = sourceData[i].vslNm + " - " + sourceData[i].vslName + " - " + sourceData[i].voyCarrier;
+            sourceData[i].msg = processOrderSelected.msg;
           }
         }
         hot.destroy();
@@ -479,7 +497,7 @@ function search() {
 function loadListComment(shipmentCommentId) {
   let req = {
     serviceType: 4,
-    shipmentId: processOrderSelected.id
+    shipmentId: processOrderSelected.shipmentId
   };
   $.ajax({
     url: ctx + "shipment-comment/shipment/list",
@@ -543,7 +561,7 @@ function addComment() {
     let req = {
       topic: topic,
       content: content,
-      shipmentId: processOrderSelected.id,
+      shipmentId: processOrderSelected.shipmentId,
       logisticGroupId: processOrderSelected.logisticGroupId
     };
     $.ajax({

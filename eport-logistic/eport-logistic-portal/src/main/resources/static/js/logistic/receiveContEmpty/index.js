@@ -252,15 +252,6 @@ $(document).ready(function () {
         }
     });
 
-    $("#attachIcon").on("click", function () {
-        let shipmentId = $(this).data("shipment-id");
-        if (!shipmentId) {
-            return;
-        }
-        let url = $(this).data("url");
-        $.modal.openTab(`Đính kèm - Cont [${shipmentId}]`, url.replace("{shipmentId}", shipmentId));
-    });
-
     $(function () {
         var options = {
             createUrl: prefix + "/shipment/add",
@@ -389,6 +380,7 @@ function getSelected(index, row) {
                     } else {
                         title += 'Trống';
                     }
+                    title += '<span id="attachFile"></span>';
                     $('#right-layout').layout('panel', 'center').panel('setTitle', title);
                     rowAmount = row.containerAmount;
                     checkList = Array(rowAmount).fill(0);
@@ -430,6 +422,7 @@ function getSelected(index, row) {
                 } else {
                     title += 'Trống';
                 }
+                title += '<span id="attachFile"></span>';
                 $('#right-layout').layout('panel', 'center').panel('setTitle', title);
                 rowAmount = row.containerAmount;
                 checkList = Array(rowAmount).fill(0);
@@ -457,16 +450,17 @@ function getSelected(index, row) {
 function toggleAttachIcon(shipmentId) {
     $.ajax({
         type: "GET",
-        url: prefix + "/shipments/" + shipmentId + "/shipment-images/count",
+        url: prefix + "/shipments/" + shipmentId + "/shipment-images",
         contentType: "application/json",
         success: function (data) {
-            let $attachIcon = $("a#attachIcon");
-            if (data.numberOfShipmentImage && data.numberOfShipmentImage > 0) {
-                $attachIcon.data("shipment-id", shipmentId);
-                $attachIcon.removeClass("hidden");
-            } else {
-                $attachIcon.removeData("shipment-id");
-                $attachIcon.addClass("hidden");
+            if (data.code == 0) {
+                if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
+                    let html = '';
+                    data.shipmentFiles.forEach(function(element, index) {
+                        html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
+                    });
+                    $('#attachFile').html(html);
+                } 
             }
         }
     });
@@ -1496,6 +1490,7 @@ function requestCont(index, layero) {
                 $.modal.alertError(result.msg);
             }
             $.modal.closeLoading();
+            layer.close(index);
         },
         error: function (result) {
             $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
@@ -1630,7 +1625,8 @@ function finishVerifyForm(result) {
 }
 
 function napasPaymentForm() {
-    $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
+    // $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
+    window.open(ctx + "logistic/payment/napas/" + processOrderIds, "_blank"); 
 }
 
 function connectToWebsocketServer() {

@@ -13,6 +13,8 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.Pickup;
 import vn.com.irtech.eport.logistic.form.PickupHistoryDetail;
 import vn.com.irtech.eport.logistic.form.PickupHistoryForm;
+import vn.com.irtech.eport.logistic.form.PickupPlanForm;
+import vn.com.irtech.eport.logistic.form.VesselVoyageMc;
 import vn.com.irtech.eport.logistic.mapper.PickupHistoryMapper;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 
@@ -232,4 +234,48 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
     	return pickupHistoryMapper.checkPlateNumberIsUnavailable(pickupHistory);
     }
    
+    /**
+     * Select vessel voyage list
+     * 
+     * @param pickupHistory
+     * @return List<VesselVoyageMc>
+     */
+    @Override
+    public List<VesselVoyageMc> selectVesselVoyageList(PickupHistory pickupHistory) {
+    	return pickupHistoryMapper.selectVesselVoyageList(pickupHistory);
+    }
+    
+    /**
+     * Select pickup list form mc plan
+     * 
+     * @param pickupHistory
+     * @return List<PickupPlanForm>
+     */
+    @Override
+    public List<PickupPlanForm> selectPickupListForMcPlan(PickupHistory pickupHistory) {
+    	return pickupHistoryMapper.selectPickupListForMcPlan(pickupHistory);
+    }
+    
+    /**
+     * 
+     * Count pickup history list
+     * 
+     * @param pickupHistory
+     * @return int
+     */
+    @Override
+    public int countPickupHistoryList(PickupHistory pickupHistory) {
+    	return pickupHistoryMapper.countPickupHistoryList(pickupHistory);
+    }
+    
+    /**
+     * Delete pickup history by condition
+     * 
+     * @param pickupHistory
+     * @return int
+     */
+    @Override
+    public int deletePickupHistoryByCondition(PickupHistory pickupHistory) {
+    	return pickupHistoryMapper.deletePickupHistoryByCondition(pickupHistory);
+    }
 }
