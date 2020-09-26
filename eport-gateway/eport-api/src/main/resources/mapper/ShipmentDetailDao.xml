@@ -203,6 +203,12 @@
     	FROM DNP_UAT.TB_INVENTORY
     	   WHERE BL_NO = #{blNo}
     	   GROUP BY PTNR_CODE
+		UNION
+		SELECT PTNR_CODE AS opeCode, COUNT(*) AS containerAmount
+    	FROM DNP_UAT.TB_RESERVE
+    	   WHERE BL_NO = #{blNo}
+			AND PTNR_CODE IN ('GLS','HAL','VFC','VLC')
+    	   GROUP BY PTNR_CODE
     </select>
     <select id="checkCustomStatus" resultType="java.lang.Boolean">
     	SELECT CASE
@@ -517,7 +523,7 @@
 	       <if test="containerNo != null  and containerNo != ''"> and CNTR_NO = #{containerNo}</if>
 	       <if test="sztp != null  and sztp != ''"> and SZTP2 = #{sztp}</if>
 	       <if test="fe != null  and fe != ''"> and FE = #{fe}</if>
-	       <if test="bookingNo != null  and bookingNo != ''"> and BOOKING_NO = #{bookingNo}</if>
+	       <!-- <if test="bookingNo != null  and bookingNo != ''"> and BOOKING_NO = #{bookingNo}</if> -->
 	       <if test="blNo != null  and blNo != ''"> and BL_NO = #{blNo}</if>
 	       <if test="vslNm != null  and vslNm != ''"> and VSL_CD = #{vslNm}</if>
 	       <if test="voyNo != null  and voyNo != ''"> and CALL_SEQ = #{voyNo}</if>
