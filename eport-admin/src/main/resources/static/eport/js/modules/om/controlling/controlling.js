@@ -325,10 +325,16 @@ function getSelected() {
   dischargePortList = [];
   loadShipmentDetails(shipmentSelected.id);
   loadListComment();
+  let serviceType = shipmentSelected.serviceType;
+  if (serviceType == 1 || serviceType == 2) {
+    let html = `<span>Mã lô: ` + shipmentSelected.id + ` - B/L No: ` + shipmentSelected.blNo + `</span>`;
+    $('#shipment-info').html(html);
+  } else {
+    let html = `<span>Mã lô: ` + shipmentSelected.id + ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`
+    $('#shipment-info').html(html);
+  }
   if (shipmentSelected.serviceType == 3) {
     toggleAttachIcon(shipmentSelected.id);
-  } else {
-    $('#attachFile').html('');
   }
 }
 
@@ -344,7 +350,7 @@ function toggleAttachIcon(shipmentId) {
           data.shipmentFiles.forEach(function (element, index) {
             html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
           });
-          $('#attachFile').html(html);
+          $('#shipment-info').append(html);
         }
       }
     }
@@ -1252,6 +1258,9 @@ function getDataSelectedFromTable() {
         cargoType: cargoType,
         loadingPort: loadingPort,
         dischargePort: dischargePort,
+        payType : object["payType"],
+        payer : object["payer"],
+        orderNo : object["orderNo"]
       };
       if(berthplanList){
         for (let i= 0; i < berthplanList.length;i++){
