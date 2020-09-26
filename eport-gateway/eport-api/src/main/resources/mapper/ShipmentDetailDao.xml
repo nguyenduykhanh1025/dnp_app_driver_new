@@ -98,10 +98,17 @@
 				REMARK AS containerRemark,
 				BLOCK || '-' || BAY || '-' || ROWW || '-' || TIER AS location
 			          FROM DNP_UAT.TB_INVENTORY M
-		WHERE BL_NO = #{blNo} AND CNTR_NO = #{containerNo}
+		<where>
+			<if test="containerNo != null and containerNo != ''"> AND CNTR_NO = #{containerNo}</if>
+			<if test="blNo != null and blNo != ''">
+				AND BL_NO = #{blNo}
 				AND OPR_EXPIRE_DATE IS NULL
 				AND JOB_ODR_NO2 IS NULL
 				AND IX_CD = 'I'
+			</if>
+		</where>
+		FETCH NEXT 1 ROWS ONLY
+
     </select>
     
     <select id="selectCoordinateOfContainers" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
