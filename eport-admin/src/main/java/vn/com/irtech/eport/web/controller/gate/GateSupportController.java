@@ -45,6 +45,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.web.dto.DetectionInfomation;
 import vn.com.irtech.eport.web.dto.GateInDataReq;
 import vn.com.irtech.eport.web.dto.GateInTestDataReq;
+import vn.com.irtech.eport.web.dto.SensorResult;
 
 @Controller
 @RequestMapping("/gate/support")
@@ -97,6 +98,15 @@ public class GateSupportController extends BaseController {
 		
 		// Send to monitor
 		webSocketService.sendMessage("/gate/detection/monitor", detectionInfo);
+		return success();
+	}
+	
+	@PostMapping("/sensor")
+	@ResponseBody
+	public AjaxResult submitSensorResult(@Validated @RequestBody SensorResult sensorResult) {
+		
+		logger.debug(">>>>> Receive sensor result info: " + new Gson().toJson(sensorResult));
+		CacheUtils.put("sensorInfo_" + sensorResult.getGateId(), sensorResult);
 		return success();
 	}
 	
