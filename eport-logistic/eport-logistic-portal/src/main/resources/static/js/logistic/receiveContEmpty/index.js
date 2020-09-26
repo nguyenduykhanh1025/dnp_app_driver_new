@@ -920,7 +920,7 @@ function configHandson() {
                     break;
                 // Arrow Right
                 case 39:
-                    if (selected[3] == 15) {
+                    if (selected[3] == 16) {
                         e.stopImmediatePropagation();
                     }
                     break

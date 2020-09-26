@@ -16,7 +16,7 @@ import vn.com.irtech.api.form.BookingInfo;
 public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
     public List<ShipmentDetailEntity> selectShipmentDetailsByBLNo(String blNo);
     
-    public ShipmentDetailEntity selectShipmentDetailByContNo(@Param("blNo") String blNo, @Param("containerNo") String containerNo);
+    public ShipmentDetailEntity selectShipmentDetailByContNo(ShipmentDetailEntity shipmentDetailEntity);
     
     public List<ShipmentDetailEntity> selectCoordinateOfContainers(String blNo);
     

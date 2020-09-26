@@ -325,6 +325,30 @@ function getSelected() {
   dischargePortList = [];
   loadShipmentDetails(shipmentSelected.id);
   loadListComment();
+  if (shipmentSelected.serviceType == 3) {
+    toggleAttachIcon(shipmentSelected.id);
+  } else {
+    $('#attachFile').html('');
+  }
+}
+
+function toggleAttachIcon(shipmentId) {
+  $.ajax({
+    type: "GET",
+    url: PREFIX + "/shipments/" + shipmentId + "/shipment-images",
+    contentType: "application/json",
+    success: function (data) {
+      if (data.code == 0) {
+        if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
+          let html = '';
+          data.shipmentFiles.forEach(function (element, index) {
+            html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
+          });
+          $('#attachFile').html(html);
+        }
+      }
+    }
+  });
 }
 
 // FORMAT HANDSONTABLE COLUMN
@@ -368,17 +392,17 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
       case 'E':
         process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
         break;
-    case 'Y':
-      process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+      case 'Y':
+        process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+          break;
+      case 'N':
+        if((value > 1 && shipmentSelected.serviceType != 1) || (value > 2 && shipmentSelected.serviceType == 1)) {
+          process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+        } 
         break;
-    case 'N':
-      if((value > 1 && shipmentSelected.serviceType != 1) || (value > 2 && shipmentSelected.serviceType == 1)) {
-        process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
-      } 
-      break;
-    case 'D':
-      process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
-      break;
+      case 'D':
+        process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
+        break;
     }
     // Payment status
     let payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';

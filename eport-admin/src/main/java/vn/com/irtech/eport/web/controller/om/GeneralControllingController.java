@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
@@ -35,6 +36,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
@@ -42,6 +44,7 @@ import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.service.ISysConfigService;
@@ -82,6 +85,12 @@ public class GeneralControllingController extends AdminBaseController  {
 	
 	@Autowired
 	private IPickupHistoryService pickupHistoryService;
+	
+	@Autowired
+	private ServerConfig serverConfig;
+	
+	@Autowired
+	private IShipmentImageService shipmentImageService;
 	
 	@GetMapping()
 	public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
@@ -274,6 +283,12 @@ public class GeneralControllingController extends AdminBaseController  {
 			pickupHistoryParam.setShipmentId(shipmentId);
 			logger.debug("delete pickup history list by shipment id");
 			pickupHistoryService.deletePickupHistoryByCondition(pickupHistoryParam);
+			
+			// Set status shipment to init
+			Shipment shipment = new Shipment();
+			shipment.setId(shipmentId);
+			shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
+			shipmentService.updateShipment(shipment);
 		} else {
 			Map<String, Object> map = new HashMap<>();
 			map.put("shipmentDetailIds", Convert.toStrArray(shipmentDetailIds));
@@ -295,5 +310,19 @@ public class GeneralControllingController extends AdminBaseController  {
 		// TODO: Send notification
 		
 		return success();
+	}
+	
+	@GetMapping("/shipments/{shipmentId}/shipment-images")
+	@ResponseBody
+	public AjaxResult getShipmentImages(@PathVariable("shipmentId") Long shipmentId) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setShipmentId(shipmentId);
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+		for (ShipmentImage shipmentImage2 : shipmentImages) {
+			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+		}
+		ajaxResult.put("shipmentFiles", shipmentImages);
+		return ajaxResult;
 	}
 }
