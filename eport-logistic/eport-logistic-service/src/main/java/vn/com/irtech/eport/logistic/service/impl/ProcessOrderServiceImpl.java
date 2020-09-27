@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,4 +174,14 @@ public class ProcessOrderServiceImpl implements IProcessOrderService {
 	public List<String> selectProcessOrderOnlyLogisticName(ProcessOrder processOrder) {
 		return processOrderMapper.selectProcessOrderOnlyLogisticName(processOrder);
 	}
+	
+	/**
+     * Get number of order error need for om support for each service type
+     * 
+     * @return Map<String, Long>
+     */
+	@Override
+    public Map<String, Long> getSupportNumberReportForOm() {
+    	return processOrderMapper.getSupportNumberReportForOm();
+    }
 }

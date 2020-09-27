@@ -1,10 +1,13 @@
 package vn.com.irtech.eport.web.controller.om;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +23,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
@@ -526,4 +536,58 @@ public class GeneralControllingController extends AdminBaseController  {
 			return error();
 		}
     }
+    
+    /**
+	 * Print Packing List
+	 */
+	@GetMapping("/shipment/{id}/packing-list")
+	public String packingList(@PathVariable("id") Long id, ModelMap mmap) {
+		mmap.put("shipmentId", id);
+		return PREFIX + "/packingList";
+	}
+	
+	@GetMapping("create-packing-list/{shipmentId}")
+	public void packingListReport( @PathVariable("shipmentId") Long shipmentId, HttpServletResponse response) {
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setShipmentId(shipmentId);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		if(shipmentDetails.isEmpty()) {
+			logger.error("Error when print packing list: " + shipmentId);
+			return;
+		}
+		try {
+			response.setContentType("application/pdf");
+			createPackingListReport(shipmentDetails, response.getOutputStream());
+		} catch (final Exception e) {
+			logger.debug(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	private void createPackingListReport(final List<ShipmentDetail> shipmentDetailList, OutputStream out) throws JRException {
+		// Fetching the report file from the resources folder.
+		final JasperReport report = (JasperReport) JRLoader
+				.loadObject(this.getClass().getResourceAsStream("/report/packinglist.jasper"));
+
+		// Fetching the shipmentDetails from the data source.
+		//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(shipmentDetails);
+
+
+		// Adding the additional parameters to the pdf.
+		ShipmentDetail shipmentDetail = shipmentDetailList.get(0);
+		final Map<String, Object> parameters = new HashMap<>();
+		parameters.put("bookingNo", shipmentDetail.getBookingNo());
+		parameters.put("consignee", shipmentDetail.getConsignee());
+		parameters.put("etd", shipmentDetail.getEtd());
+		parameters.put("feederName", shipmentDetail.getVslName() + " - " + shipmentDetail.getVoyCarrier());
+		parameters.put("voy", shipmentDetail.getVoyCarrier());
+		parameters.put("pol", "VNDAD");
+		parameters.put("pod", shipmentDetail.getDischargePort());
+		parameters.put("logisticGroup", logisticGroupService.selectLogisticGroupById(shipmentDetail.getLogisticGroupId()).getGroupName());
+
+		parameters.put("table", shipmentDetailList);
+		final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
+//		final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
+		// Export DPF to output stream
+		JasperExportManager.exportReportToPdfStream(print, out);
+	}
 }
