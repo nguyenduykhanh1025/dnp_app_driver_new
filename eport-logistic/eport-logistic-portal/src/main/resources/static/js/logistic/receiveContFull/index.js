@@ -494,6 +494,10 @@ function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties)
     }
     $(td).attr('id', 'expiredDem' + row).addClass("htMiddle").addClass("htCenter");
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
   } else {
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;"></div>');
   }
@@ -710,6 +714,12 @@ function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties
   if (shipmentSelected.edoFlg == "1") {
     cellProperties.readOnly = 'true';
     $(td).css("background-color", "rgb(232, 232, 232)");
+  }
+  if (value != null && value != '') {
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
   }
   $(td).attr('id', 'detFreeTime' + row).addClass("htMiddle").addClass("htRight");
   if (!value) {
