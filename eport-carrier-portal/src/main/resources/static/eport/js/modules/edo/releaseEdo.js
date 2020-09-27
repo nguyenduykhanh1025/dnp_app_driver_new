@@ -1,10 +1,24 @@
 const PREFIX = ctx + "edo";
 
 var carrierCodeList = [];
+var sizeTypeList = [];
 var consigneeList = [];
 var emptyDepotList = [];
 var vesselList = [];
 
+$(function() {
+  hot = new Handsontable(dogrid, config);
+  hot.updateSettings({
+    cells: function (row, col) {
+      var cellProp = {};
+      if (col === 5 && isGoodDate(hot.getDataAtCell(row, col))) {
+      } else if (col === 5) {
+        cellProp.className = " not-date";
+      }
+      return cellProp;
+    },
+  });
+});
 
 function submitHandler() {
   // add condition to validate before submit add do
@@ -13,10 +27,8 @@ function submitHandler() {
   }
 }
 getOptionsColumn();
-var dogrid = document.getElementById("dogrid"),
-  hot,
-  $hooksList,
-  hooks;
+var dogrid = document.getElementById("container-grid"),
+  hot;
 var groupName = null;
 var config;
 // Empty row and format date
@@ -41,7 +53,7 @@ emptyValidator = function (value, callback) {
 };
 
 var doRenderer = function (instance, td, row, col, prop, value, cellProperties) {
-  if ($("#dogrid").handsontable("getDataAtCell", row, errorFlagCol) == "") {
+  if ($("#container-grid").handsontable("getDataAtCell", row, errorFlagCol) == "") {
     $(td).parent().css("background-color", "#205199");
   } else {
     $(td).parent().css("background-color", "#FFFFFF");
@@ -52,7 +64,7 @@ var doRenderer = function (instance, td, row, col, prop, value, cellProperties) 
 config = {
   stretchH: "all",
   height: document.documentElement.clientHeight - 70,
-  minRows: 100,
+  minRows: 50,
   width: "100%",
   minSpareRows: 1,
   rowHeights: 30,
@@ -64,20 +76,18 @@ config = {
     "Số vận đơn <i class='red'>(*)</i><br>B/L No.",
     "Order Number",
     "Số container <i class='red'>(*)</i><br> Container No.",
-    "SZTP",
+    "SZTP <i class='red'>(*)",
     "Tên khách hàng <i class='red'>(*)</i><br> Consignee",
     "Hạn lệnh <i class='red'>(*)</i><br> Valid to date",
-    "Nơi hạ vỏ <br> Empty depot",
-    "Ngày miễn lưu <br> DET free time",
-    "Tên tàu <br> Vessel",
-    "Chuyến <br> Voyage",
-    "Trọng lượng <br> Weight",
+    "Nơi hạ vỏ <i class='red'>(*)</i><br> Empty depot",
+    "Ngày miễn lưu <i class='red'>(*)</i><br> DET free time",
+    "Tên tàu <i class='red'>(*)</i> Vessel",
+    "Chuyến <i class='red'>(*)</i> Voyage",
     "POL",
     "POD",
-    "Số seal <br> Seal No",
     "Ghi chú",
   ],
-  colWidths: [10, 12, 12, 15, 10, 20, 12, 15, 12, 8, 8, 10, 10, 10, 10, 15],
+  colWidths: [10, 12, 12, 15, 10, 20, 12, 15, 12, 8, 8, 10, 10, 15],
   filter: "true",
   columns: [
     {
@@ -96,15 +106,19 @@ config = {
     {
       data: "containerNo",
       validator: emptyValidator,
+      renderer : containerNoRenderer,
     },
     {
       data: "sztp",
+      type: "autocomplete",
+      source: sizeTypeList,
+      strict: true,
     },
     {
       data: "consignee",
       type: "autocomplete",
       source: consigneeList,
-      strict: false
+      strict: true,
     },
     {
       data: "expiredDem",
@@ -116,34 +130,25 @@ config = {
     },
     {
       data: "emptyDepot",
-      type: "autocomplete",
-      source: emptyDepotList,
-      strict: false
+      strict: false,
     },
     {
       data: "detFreetime",
       type: "numeric",
+      validator: emptyValidator,
     },
     {
       data: "vessel",
-      type: "autocomplete",
-      source: vesselList,
       strict: false
     },
     {
       data: "voyNo",
     },
     {
-      data: "weight",
-    },
-    {
       data: "pol",
     },
     {
       data: "pod",
-    },
-    {
-      data: "sealNo",
     },
     {
       data: "remark",
@@ -165,43 +170,21 @@ function getOptionsColumn() {
     url: PREFIX + "/getListOptions",
     method: "get",
   }).done(function (result) {
-    var list1 = result.consigneeList;
-    var list2 = result.emptyDepotList;
-    var list3 = result.vesselList;
-    for (var i = 0; i < list1.length; i++) {
-      if (list1[i] != null) {
-        consigneeList.push(list1[i]);
+    for (var i = 0; i < result.sizeList.length; i++) {
+      if (result.sizeList[i]['dictValue'] != null) {
+          sizeTypeList.push(result.sizeList[i]['dictValue'])
       }
     }
-    for (var i = 0; i< list2.length; i++) {
-      if (list1[i] != null) {
-        emptyDepotList.push(list2[i]);
+    for (var i = 0; i < result.consigneeList.length; i++) {
+      if (result.consigneeList[i] != null) {
+          consigneeList.push(result.consigneeList[i])
       }
     }
-    for (var i = 0; i< list3.length; i++) {
-      if (list1[i] != null) {
-        vesselList.push(list3[i]);
-      }
-    }
+
+
   });
 }
 // Load table
-document.addEventListener("DOMContentLoaded", function () {
-  setTimeout(function () {
-    hot = new Handsontable(dogrid, config);
-    hot.updateSettings({
-      cells: function (row, col) {
-        var cellProp = {};
-        if (col === 5 && isGoodDate(hot.getDataAtCell(row, col))) {
-        } else if (col === 5) {
-          cellProp.className = " not-date";
-        }
-        return cellProp;
-      },
-    });
-  }, 200);
-});
-
 function isGoodDate(dt) {
   var reGoodDate = /^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|(([1][26]|[2468][048]|[3579][26])00))))$/g;
   return reGoodDate.test(dt);
@@ -266,12 +249,10 @@ function saveDO() {
     doObj.weight = item["weight"];
     doObj.pol = item["pol"];
     doObj.pod = item["pod"];
-    doObj.sealNo = item["sealNo"];
     doList.push(doObj);
   });
   
   $.each(doList, function (index, item) {
-  console.log("TCL: saveDO -> item", item)
     let billNoCheck = doList[0]["billOfLading"];
     let consigneeCheck = doList[0]["consignee"];
     let voyageCheck = doList[0]["voyNo"];
@@ -305,6 +286,7 @@ function saveDO() {
       errorFlg = true;
       return false;
     }
+    
     if (item["containerNumber"] == null || item["containerNumber"] == "") {
       $.modal.alertError(
         "Có lỗi tại hàng [" +
@@ -324,11 +306,39 @@ function saveDO() {
       errorFlg = true;
       return false;
     }
+    
     if (item["vessel"] != vesselCheck) {
       $.modal.alertError(
         "Có lỗi tại hàng [" +
           (index + 1) +
           "].<br>Lỗi:Tên tàu không được khác nhau."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["emptyContainerDepot"] == null || item["emptyContainerDepot"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:Empty Depot không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["detFreeTime"] == null || item["detFreeTime"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:Det Free Time không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["sztp"] == null || item["sztp"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:SZTP không được trống."
       );
       errorFlg = true;
       return false;
@@ -369,6 +379,16 @@ function saveDO() {
       errorFlg = true;
       return false;
     }
+    if (item["sztp"] == null || item["sztp"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:SZTP không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
+
     var regexNuber = /^[0-9]*$/;
     if (item["detFreeTime"] != null && item["detFreeTime"] != "" && item["detFreeTime"] != undefined) {
       if (!regexNuber.test(item["detFreeTime"])) {
@@ -452,4 +472,18 @@ function reload() {
   }
   $.modal.closeLoading();
   $.modal.enable();
+}
+
+function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle");
+  if(value != null)
+  {
+    if(value != value.toUpperCase())
+    {
+      value = value.toUpperCase();
+      hot.setDataAtCell(row,col,value);
+    }
+  }
+  $(td).html(value);
+  return td;
 }

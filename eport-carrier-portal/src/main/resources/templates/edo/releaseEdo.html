@@ -3,6 +3,7 @@
   <head>
     <th:block th:include="include :: header('Phát Hành DO')" />
     <th:block th:include="include :: handsontable-css" />
+    <link th:href="@{/eport/common/style.css}" rel="stylesheet" />
   </head>
   <style>
     .handsontable th {
@@ -29,12 +30,12 @@
             <div class="btn-group-sm" id="toolbar" role="group">
               <a class="btn btn-default" onclick="closeItem()"><i class="fa fa-times"></i> &nbsp;Hủy Bỏ</a>
             </div>
-            <small style="margin-left: 5px;">Các mục có đấu <i>(*)</i> là bắt buộc</small>
+            <small style="margin-left: 5px;">Các mục có đấu <i class='red'>(*)</i> là bắt buộc</small>
           </div>
       </div>
       <div class="col-sm-12 table-container">
 	    <form id="form-do-add">
-	        <div id="dogrid" class="hot handsontable htColumnHeaders"></div>
+	        <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
 	    </form>
 	  </div>
     </div></div>

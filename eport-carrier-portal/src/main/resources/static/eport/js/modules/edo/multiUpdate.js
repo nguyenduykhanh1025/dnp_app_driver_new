@@ -13,11 +13,26 @@ $(function () {
 
 function confirm() {
   if (formatDate(expiredDem) == $("#expiredDem").val() && $("#detFreeTime").val() == detFreeTime && $("#emptyContainerDepot").val() == emptyContainerDepot && $("#consignee").val() == consignee) {
-    $.modal.alertError("Không có thông tin nào được thay đổi !!!")
+    $.modal.alertError("Không có thông tin nào được thay đổi !")
     return;
   }
   if (validateDateUpdate($("#expiredDem").val()) == 1 && formatDate(expiredDem) != $("#expiredDem").val()) {
-    $.modal.alertError("Hạn lệnh chỉ có thể thay đổi về quá khứ nhiều nhất là 1 ngày !!!")
+    $.modal.alertError("Hạn lệnh chỉ có thể thay đổi về quá khứ nhiều nhất là 1 ngày !")
+    return;
+  }
+  if($("#detFreeTime").val() == null || $("#detFreeTime").val() == '')
+  {
+    $.modal.alertError("Ngày miễn lưu vỏ không được để trống !")
+    return;
+  }
+  if($("#detFreeTime").val() <= 0)
+  {
+    $.modal.alertError("Ngày miễn lưu vỏ phải lớn hơn 0 !")
+    return;
+  }
+  if($("#consignee").val() == null || $("#consignee").val() == '')
+  {
+    $.modal.alertError("Tên khách hàng không được để trống !")
     return;
   }
   $.modal.confirm(
