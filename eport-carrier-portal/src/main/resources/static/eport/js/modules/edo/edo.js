@@ -363,7 +363,7 @@ function delEdo() {
   for (let i = 0; i < rows.length; i++) {
     let row = rows[i];
     if (row.status != '1') {
-      $.modal.alertError("Bạn không thể xóa container này <br> Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
+      setTimeout(function(){ $.modal.alertError("Bạn không thể xóa container này <br> Thông tin cont đã được khách hàng khai báo trên cảng điện tử!"); }, 3000);
       return;
     }
     ids.push(row.id);
