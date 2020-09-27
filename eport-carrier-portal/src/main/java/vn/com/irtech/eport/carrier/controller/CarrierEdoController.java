@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.tomcat.jni.Mmap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -154,7 +155,7 @@ public class CarrierEdoController extends CarrierBaseController {
 				if (edoService.selectFirstEdo(edoCheck) == null) {
 					return AjaxResult.error(
 							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
-				} else if (!edoService.selectFirstEdo(edoCheck).getStatus().equals("0")) {
+				} else if (!edoService.selectFirstEdo(edoCheck).getStatus().equals("1")) {
 					return AjaxResult.error(
 							"Bạn không thể xóa container này <br>Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
 				}
@@ -194,7 +195,7 @@ public class CarrierEdoController extends CarrierBaseController {
 				if (edoService.selectFirstEdo(edoCheck) == null) {
 					return AjaxResult.error(
 							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
-				} else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("3")) {
+				} else if (!edoService.selectFirstEdo(edoCheck).getStatus().equals("1")) {
 					return AjaxResult.error(
 							"Bạn đã chọn container đã GATE-IN ra khỏi <br> cảng, vui lòng kiểm tra lại dữ liệu!");
 				}
@@ -284,10 +285,11 @@ public class CarrierEdoController extends CarrierBaseController {
 	}
 
 	@GetMapping("/releaseEdo")
-	public String releaseEdo() {
+	public String releaseEdo(ModelMap mapp) {
 		if (!hasEdoPermission()) {
 			return "error/404";
 		}
+		mapp.put("sizeList", dictDataService.selectDictDataByType("sys_size_container_eport"));
 		return PREFIX + "/releaseEdo";
 	}
 
