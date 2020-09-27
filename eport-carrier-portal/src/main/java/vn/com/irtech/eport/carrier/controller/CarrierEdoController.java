@@ -32,6 +32,7 @@ import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.service.ISysDictDataService;
 
@@ -53,6 +54,9 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@Autowired
 	private IEdoAuditLogService edoAuditLogService;
+
+	@Autowired
+    private ICatosApiService catosApiService;
 
 	@GetMapping("/index")
 	public String EquipmentDo() {
@@ -195,7 +199,7 @@ public class CarrierEdoController extends CarrierBaseController {
 				if (edoService.selectFirstEdo(edoCheck) == null) {
 					return AjaxResult.error(
 							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
-				} else if (!edoService.selectFirstEdo(edoCheck).getStatus().equals("1")) {
+				} else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("3")) {
 					return AjaxResult.error(
 							"Bạn đã chọn container đã GATE-IN ra khỏi <br> cảng, vui lòng kiểm tra lại dữ liệu!");
 				}
@@ -285,11 +289,10 @@ public class CarrierEdoController extends CarrierBaseController {
 	}
 
 	@GetMapping("/releaseEdo")
-	public String releaseEdo(ModelMap mapp) {
+	public String releaseEdo() {
 		if (!hasEdoPermission()) {
 			return "error/404";
 		}
-		mapp.put("sizeList", dictDataService.selectDictDataByType("sys_size_container_eport"));
 		return PREFIX + "/releaseEdo";
 	}
 
@@ -304,10 +307,11 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@GetMapping("/getListOptions")
 	@ResponseBody
-	public Map<String, List<String>> getListOptionsGrid() {
-
-		Map<String, List<String>> optionsList = new HashMap<>();
-		return optionsList;
+	public AjaxResult getListOptionsGrid() {
+		AjaxResult ajaxResult = success();
+		ajaxResult.put("sizeList", dictDataService.selectDictDataByType("sys_size_container_eport"));
+		ajaxResult.put("consigneeList", catosApiService.getConsigneeList());
+		return ajaxResult;
 	}
 
 	@Log(title = "Phát Hành eDO", businessType = BusinessType.INSERT, operatorType = OperatorType.SHIPPINGLINE)
@@ -323,6 +327,8 @@ public class CarrierEdoController extends CarrierBaseController {
 		if (edos != null) {
 			String consignee = edos.get(0).getConsignee();
 			String billOfLading = edos.get(0).getBillOfLading();
+			String vessel = edos.get(0).getVessel();
+			String voyNo = edos.get(0).getVoyNo();
 			if (edoService.getBillOfLadingInfo(edos.get(0).getBillOfLading()) != null) {
 				// exist B/L
 				return AjaxResult.error("Có lỗi xảy ra ở container '" + edos.get(0).getBillOfLading()
@@ -376,6 +382,19 @@ public class CarrierEdoController extends CarrierBaseController {
 					return AjaxResult.error("Tên khách hàng không được khác nhau");
 				}
 				consignee = e.getConsignee();
+
+				// Vessel is unique
+				if (!e.getVessel().equals(vessel)) {
+					return AjaxResult.error("Tên tàu không được khác nhau");
+				}
+				vessel = e.getVessel();
+
+				// voyNo is unique
+				if (!e.getVoyNo().equals(voyNo)) {
+					return AjaxResult.error("Tên chuyến không được khác nhau");
+				}
+				voyNo = e.getVoyNo();
+
 				// Container number is unique
 				if (e.getContainerNumber().equals(containerNumber)) {
 					return AjaxResult.error("Số container " + containerNumber + " bị trùng");

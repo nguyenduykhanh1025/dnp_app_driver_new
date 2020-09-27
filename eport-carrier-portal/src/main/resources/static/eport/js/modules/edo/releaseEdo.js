@@ -1,6 +1,7 @@
 const PREFIX = ctx + "edo";
 
 var carrierCodeList = [];
+var sizeTypeList = [];
 var consigneeList = [];
 var emptyDepotList = [];
 var vesselList = [];
@@ -13,7 +14,7 @@ function submitHandler() {
   }
 }
 getOptionsColumn();
-var dogrid = document.getElementById("dogrid"),
+var dogrid = document.getElementById("container-grid"),
   hot,
   $hooksList,
   hooks;
@@ -41,7 +42,7 @@ emptyValidator = function (value, callback) {
 };
 
 var doRenderer = function (instance, td, row, col, prop, value, cellProperties) {
-  if ($("#dogrid").handsontable("getDataAtCell", row, errorFlagCol) == "") {
+  if ($("#container-grid").handsontable("getDataAtCell", row, errorFlagCol) == "") {
     $(td).parent().css("background-color", "#205199");
   } else {
     $(td).parent().css("background-color", "#FFFFFF");
@@ -71,13 +72,11 @@ config = {
     "Ngày miễn lưu <br> DET free time",
     "Tên tàu <br> Vessel",
     "Chuyến <br> Voyage",
-    "Trọng lượng <br> Weight",
     "POL",
     "POD",
-    "Số seal <br> Seal No",
     "Ghi chú",
   ],
-  colWidths: [10, 12, 12, 15, 10, 20, 12, 15, 12, 8, 8, 10, 10, 10, 10, 15],
+  colWidths: [10, 12, 12, 15, 10, 20, 12, 15, 12, 8, 8, 10, 10, 15],
   filter: "true",
   columns: [
     {
@@ -99,12 +98,15 @@ config = {
     },
     {
       data: "sztp",
+      type: "autocomplete",
+      source: sizeTypeList,
+      strict: true,
     },
     {
       data: "consignee",
       type: "autocomplete",
       source: consigneeList,
-      strict: false
+      strict: true,
     },
     {
       data: "expiredDem",
@@ -116,8 +118,6 @@ config = {
     },
     {
       data: "emptyDepot",
-      type: "autocomplete",
-      source: emptyDepotList,
       strict: false
     },
     {
@@ -126,24 +126,16 @@ config = {
     },
     {
       data: "vessel",
-      type: "autocomplete",
-      source: vesselList,
       strict: false
     },
     {
       data: "voyNo",
     },
     {
-      data: "weight",
-    },
-    {
       data: "pol",
     },
     {
       data: "pod",
-    },
-    {
-      data: "sealNo",
     },
     {
       data: "remark",
@@ -165,22 +157,14 @@ function getOptionsColumn() {
     url: PREFIX + "/getListOptions",
     method: "get",
   }).done(function (result) {
-    var list1 = result.consigneeList;
-    var list2 = result.emptyDepotList;
-    var list3 = result.vesselList;
-    for (var i = 0; i < list1.length; i++) {
-      if (list1[i] != null) {
-        consigneeList.push(list1[i]);
+    for (var i = 0; i < result.sizeList.length; i++) {
+      if (result.sizeList[i]['dictValue'] != null) {
+          sizeTypeList.push(result.sizeList[i]['dictValue'])
       }
     }
-    for (var i = 0; i< list2.length; i++) {
-      if (list1[i] != null) {
-        emptyDepotList.push(list2[i]);
-      }
-    }
-    for (var i = 0; i< list3.length; i++) {
-      if (list1[i] != null) {
-        vesselList.push(list3[i]);
+    for (var i = 0; i < result.consigneeList.length; i++) {
+      if (result.consigneeList[i] != null) {
+          consigneeList.push(result.consigneeList[i])
       }
     }
   });
