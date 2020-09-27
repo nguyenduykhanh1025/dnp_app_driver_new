@@ -157,6 +157,8 @@
   <script type="text/javascript" th:inline="javascript">
     $(".main-body").height($(document).height() - 10);
     $(".easyui-layout").height($('.main-body').height() - 50);
+    var sizeList = /*[[${sizeList}]]*/ ;
+    console.log("TCL: sizeList", sizeList)
   </script>
    <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
   <script th:src="@{/eport/js/modules/edo/edo.js}"></script>
