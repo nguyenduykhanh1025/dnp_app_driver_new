@@ -1,5 +1,5 @@
 var PREFIX = ctx + "edo";
-
+var originalValue;
 $(function () {
     loadTable();
 });
@@ -27,6 +27,8 @@ function loadTable() {
                 url: opts.url,
                 dataType: "json",
                 success: function (data) {
+                    let lenghtRow = data.rows.length;
+                    originalValue = data.rows[lenghtRow-1].newValue
                     success(data);
                 },
                 error: function () {
@@ -48,4 +50,21 @@ function formatToYDMHMS(date) {
     }
     let temp = date.substring(0, 10);
     return temp.split("-").reverse().join("/") + "</br>" + date.substring(10, 19);
+}
+
+function formatOldValue(val,row)
+{
+    if(val == 'ORIGINAL VALUE')
+    {
+        let originalArray = originalValue.split(',');
+        for(let i = 0 ;i < originalArray.length ; i++)
+        {
+           let checkOldValue = originalArray[i].split(':');
+           if(checkOldValue[0].trim() == row.fieldName)
+           {
+                return checkOldValue[1]; 
+           }
+        }
+    }
+    return val;
 }

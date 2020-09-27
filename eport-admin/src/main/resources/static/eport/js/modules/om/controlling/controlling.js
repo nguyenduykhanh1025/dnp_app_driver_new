@@ -336,6 +336,11 @@ function getSelected() {
   if (shipmentSelected.serviceType == 3) {
     toggleAttachIcon(shipmentSelected.id);
   }
+  if (serviceType == 4) {
+    $('#exportPackingListBtn').show();
+  } else {
+    $('#exportPackingListBtn').hide();
+  }
 }
 
 function toggleAttachIcon(shipmentId) {
@@ -1602,5 +1607,13 @@ function confirmResetProcess(index, layero) {
       $.modal.closeLoading();
     }
   });
+}
+
+function exportPackingList(){
+	if(!shipmentSelected){
+		$.modal.alertError("Bạn chưa chọn Lô!");
+		return
+	}
+    $.modal.openTab("In Packing List", PREFIX +"/shipment/"+shipmentSelected.id + "/packing-list");
 }
 

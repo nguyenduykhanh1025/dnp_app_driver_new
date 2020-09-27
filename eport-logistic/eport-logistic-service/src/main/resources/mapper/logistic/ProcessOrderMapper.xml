@@ -456,4 +456,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null "> and p.status = #{status}</if>
         </where>
     </select>
+
+    <select id="getSupportNumberReportForOm" parameterType="String" resultType="hashmap">
+		SELECT 
+			(SELECT COUNT(*) FROM process_order where result = 'F' and service_type = 1) AS receiveFullOrder,
+			(SELECT COUNT(*) FROM process_order where result = 'F' and service_type = 2) AS sendEmptyOrder,
+			(SELECT COUNT(*) FROM process_order where result = 'F' and service_type = 3) AS receiveEmptyOrder,
+			(SELECT COUNT(*) FROM process_order where result = 'F' and service_type = 4) AS sendFullOrder,
+            (SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh left join shipment s on sh.shipment_id = s.id where sh.custom_status = 'Y' and s.service_type = 1) AS receiveCustom,
+            (SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh left join shipment s on sh.shipment_id = s.id where sh.custom_status = 'Y' and s.service_type = 4) AS sendCustom
+        from process_order
+        FETCH NEXT 1 ROWS ONLY
+	</select>
 </mapper>
