@@ -387,6 +387,7 @@ function delEdo() {
           if (data.code == 0) {
             $.modal.msgSuccess(data.msg);
             getSelectedRow();
+            loadTable();
             $.modal.closeLoading();
           } else {
             $.modal.msgError(data.msg);

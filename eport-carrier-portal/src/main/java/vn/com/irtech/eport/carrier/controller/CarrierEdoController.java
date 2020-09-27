@@ -341,7 +341,9 @@ public class CarrierEdoController extends CarrierBaseController {
 				e.setUpdateTime(new Date());
 				e.setUpdateBy(getUser().getFullName());
 				if (StringUtils.isBlank(e.getCarrierCode()) || StringUtils.isBlank(e.getBillOfLading())
-						|| StringUtils.isBlank(e.getContainerNumber()) || StringUtils.isBlank(e.getConsignee())) {
+						|| StringUtils.isBlank(e.getContainerNumber()) || StringUtils.isBlank(e.getConsignee()) ||
+						StringUtils.isBlank(e.getDetFreeTime()) || StringUtils.isBlank(e.getEmptyContainerDepot()) || 
+						StringUtils.isBlank(e.getVessel()) || StringUtils.isBlank(e.getVoyNo())) {
 					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
 							+ "'.<br/>Lỗi: Hãy nhập đầy đủ các trường bắt buộc.");
 				}

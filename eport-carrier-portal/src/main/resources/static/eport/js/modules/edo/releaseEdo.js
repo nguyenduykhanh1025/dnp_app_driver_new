@@ -64,7 +64,7 @@ var doRenderer = function (instance, td, row, col, prop, value, cellProperties) 
 config = {
   stretchH: "all",
   height: document.documentElement.clientHeight - 70,
-  minRows: 100,
+  minRows: 50,
   width: "100%",
   minSpareRows: 1,
   rowHeights: 30,
@@ -76,13 +76,13 @@ config = {
     "Số vận đơn <i class='red'>(*)</i><br>B/L No.",
     "Order Number",
     "Số container <i class='red'>(*)</i><br> Container No.",
-    "SZTP",
+    "SZTP <i class='red'>(*)",
     "Tên khách hàng <i class='red'>(*)</i><br> Consignee",
     "Hạn lệnh <i class='red'>(*)</i><br> Valid to date",
-    "Nơi hạ vỏ <br> Empty depot",
-    "Ngày miễn lưu <br> DET free time",
-    "Tên tàu <br> Vessel",
-    "Chuyến <br> Voyage",
+    "Nơi hạ vỏ <i class='red'>(*)</i><br> Empty depot",
+    "Ngày miễn lưu <i class='red'>(*)</i><br> DET free time",
+    "Tên tàu <i class='red'>(*)</i> Vessel",
+    "Chuyến <i class='red'>(*)</i> Voyage",
     "POL",
     "POD",
     "Ghi chú",
@@ -130,11 +130,12 @@ config = {
     },
     {
       data: "emptyDepot",
-      strict: false
+      strict: false,
     },
     {
       data: "detFreetime",
       type: "numeric",
+      validator: emptyValidator,
     },
     {
       data: "vessel",
@@ -248,12 +249,10 @@ function saveDO() {
     doObj.weight = item["weight"];
     doObj.pol = item["pol"];
     doObj.pod = item["pod"];
-    doObj.sealNo = item["sealNo"];
     doList.push(doObj);
   });
   
   $.each(doList, function (index, item) {
-  console.log("TCL: saveDO -> item", item)
     let billNoCheck = doList[0]["billOfLading"];
     let consigneeCheck = doList[0]["consignee"];
     let voyageCheck = doList[0]["voyNo"];
@@ -287,6 +286,7 @@ function saveDO() {
       errorFlg = true;
       return false;
     }
+    
     if (item["containerNumber"] == null || item["containerNumber"] == "") {
       $.modal.alertError(
         "Có lỗi tại hàng [" +
@@ -306,11 +306,39 @@ function saveDO() {
       errorFlg = true;
       return false;
     }
+    
     if (item["vessel"] != vesselCheck) {
       $.modal.alertError(
         "Có lỗi tại hàng [" +
           (index + 1) +
           "].<br>Lỗi:Tên tàu không được khác nhau."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["emptyContainerDepot"] == null || item["emptyContainerDepot"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:Empty Depot không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["detFreeTime"] == null || item["detFreeTime"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:Det Free Time không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["sztp"] == null || item["sztp"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:SZTP không được trống."
       );
       errorFlg = true;
       return false;
@@ -351,6 +379,16 @@ function saveDO() {
       errorFlg = true;
       return false;
     }
+    if (item["sztp"] == null || item["sztp"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:SZTP không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
+
     var regexNuber = /^[0-9]*$/;
     if (item["detFreeTime"] != null && item["detFreeTime"] != "" && item["detFreeTime"] != undefined) {
       if (!regexNuber.test(item["detFreeTime"])) {
