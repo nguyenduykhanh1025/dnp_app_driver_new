@@ -221,7 +221,7 @@
       <if test="billOfLading != null  and billOfLading != ''">#{billOfLading},</if>
       <if test="businessUnit != null  and businessUnit != ''">#{businessUnit},</if>
       <if test="consignee != null  and consignee != ''">#{consignee},</if>
-      <if test="containerNumber != null  and containerNumber != ''">#{containerNumber},</if>
+      <if test="containerNumber != null  and containerNumber != ''"> UPPER(#{containerNumber}),</if>
       <if test="expiredDem != null ">#{expiredDem},</if>
       <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">#{emptyContainerDepot},</if>
       <if test="detFreeTime != null ">#{detFreeTime},</if>
