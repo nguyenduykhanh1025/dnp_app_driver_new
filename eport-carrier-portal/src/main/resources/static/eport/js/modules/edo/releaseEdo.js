@@ -6,6 +6,19 @@ var consigneeList = [];
 var emptyDepotList = [];
 var vesselList = [];
 
+$(function() {
+  hot = new Handsontable(dogrid, config);
+  hot.updateSettings({
+    cells: function (row, col) {
+      var cellProp = {};
+      if (col === 5 && isGoodDate(hot.getDataAtCell(row, col))) {
+      } else if (col === 5) {
+        cellProp.className = " not-date";
+      }
+      return cellProp;
+    },
+  });
+});
 
 function submitHandler() {
   // add condition to validate before submit add do
@@ -15,9 +28,7 @@ function submitHandler() {
 }
 getOptionsColumn();
 var dogrid = document.getElementById("container-grid"),
-  hot,
-  $hooksList,
-  hooks;
+  hot;
 var groupName = null;
 var config;
 // Empty row and format date
@@ -95,6 +106,7 @@ config = {
     {
       data: "containerNo",
       validator: emptyValidator,
+      renderer : containerNoRenderer,
     },
     {
       data: "sztp",
@@ -167,25 +179,11 @@ function getOptionsColumn() {
           consigneeList.push(result.consigneeList[i])
       }
     }
+
+
   });
 }
 // Load table
-document.addEventListener("DOMContentLoaded", function () {
-  setTimeout(function () {
-    hot = new Handsontable(dogrid, config);
-    hot.updateSettings({
-      cells: function (row, col) {
-        var cellProp = {};
-        if (col === 5 && isGoodDate(hot.getDataAtCell(row, col))) {
-        } else if (col === 5) {
-          cellProp.className = " not-date";
-        }
-        return cellProp;
-      },
-    });
-  }, 200);
-});
-
 function isGoodDate(dt) {
   var reGoodDate = /^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|(([1][26]|[2468][048]|[3579][26])00))))$/g;
   return reGoodDate.test(dt);
@@ -436,4 +434,18 @@ function reload() {
   }
   $.modal.closeLoading();
   $.modal.enable();
+}
+
+function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle");
+  if(value != null)
+  {
+    if(value != value.toUpperCase())
+    {
+      value = value.toUpperCase();
+      hot.setDataAtCell(row,col,value);
+    }
+  }
+  $(td).html(value);
+  return td;
 }
