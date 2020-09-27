@@ -1217,12 +1217,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 						shipmentDetail.setVslNm(processOrder.getVessel());
 						shipmentDetail.setVoyNo(processOrder.getVoyage());
 						shipmentDetail.setYear(processOrder.getYear());
+						shipmentDetail.setBookingNo(processOrder.getBookingNo());
+						shipmentDetail.setSztp(processOrder.getSztp());
 						bookingOrder.setBookingIndex(catosApiService.getIndexBooking(shipmentDetail));
 						processOrderService.insertProcessOrder(bookingOrder);
 						processOrders.add(bookingOrder);
-						
-						
-						
 						
 //						// Check if sztp has enough quantity for order receive empty
 //						// If not then update booking with extra amount for the number lacking of sztp

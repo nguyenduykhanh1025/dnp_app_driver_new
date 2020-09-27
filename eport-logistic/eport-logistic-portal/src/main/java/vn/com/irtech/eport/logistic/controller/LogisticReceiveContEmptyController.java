@@ -169,7 +169,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	public String add(ModelMap mmap) {
 		List<String> oprCodeList = catosApiService.getOprCodeList();
 		oprCodeList.add(0, "Chọn OPR");
-		
 		mmap.put("oprCodeList", oprCodeList);
 		mmap.put("taxCode", getGroup().getMst());
 		return PREFIX + "/add";

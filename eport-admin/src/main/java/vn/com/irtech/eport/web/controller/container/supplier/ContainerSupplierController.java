@@ -29,6 +29,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
@@ -60,6 +61,9 @@ public class ContainerSupplierController extends BaseController {
 	
 	@Autowired
 	private MqttService mqttService;
+	
+	@Autowired
+	private ICatosApiService catosApiService;
 	
 	@GetMapping()
 	public String getContSupplier(@RequestParam(required = false) Long sId, ModelMap mmap) {
@@ -291,5 +295,28 @@ public class ContainerSupplierController extends BaseController {
 		return success();
 	}
 	
-	
+	@PostMapping("/shipment-detail/cont/info")
+	@ResponseBody
+	public AjaxResult getContInfo(@RequestBody ShipmentDetail shipmentDetail) {
+		if (StringUtils.isNotEmpty(shipmentDetail.getContainerNo())) {
+			shipmentDetail.setFe("E");
+			ShipmentDetail shipmentDetailResult = catosApiService.selectShipmentDetailByContNo(shipmentDetail);
+			AjaxResult ajaxResult = AjaxResult.success();
+			ajaxResult.put("shipmentDetailResult", shipmentDetailResult);
+			
+			// Check container da lam lenh 
+			if (shipmentDetail.getId() != null) {
+				ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+				shipmentDetailParam.setContainerNo(shipmentDetail.getContainerNo());
+				shipmentDetailParam.setProcessStatus("Y");
+				if (shipmentDetailService.countShipmentDetailList(shipmentDetailParam) > 0) {
+					ajaxResult.put("isOrder", true);
+				}
+			}
+			
+			return ajaxResult;
+		} else {
+			return AjaxResult.warn("Không tìm thấy thông tin container");
+		}
+	}
 }

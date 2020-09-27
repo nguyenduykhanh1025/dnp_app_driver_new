@@ -98,10 +98,74 @@
 				REMARK AS containerRemark,
 				BLOCK || '-' || BAY || '-' || ROWW || '-' || TIER AS location
 			          FROM DNP_UAT.TB_INVENTORY M
-		WHERE BL_NO = #{blNo} AND CNTR_NO = #{containerNo}
+		<where>
+			<if test="containerNo != null and containerNo != ''"> AND CNTR_NO = #{containerNo}</if>
+			<if test="blNo != null and blNo != ''">
+				AND BL_NO = #{blNo}
 				AND OPR_EXPIRE_DATE IS NULL
 				AND JOB_ODR_NO2 IS NULL
 				AND IX_CD = 'I'
+			</if>
+		</where>
+		UNION
+		SELECT            
+                M.CNTR_NO AS containerNo,
+                M.SZTP2 AS sztp,
+                M.FE AS fe,
+                M.PTNR_CODE ||': ' || (SELECT ENG_SNM FROM DNP_UAT.TB_PTNR WHERE PTNR_CODE = M.PTNR_CODE AND PTNR_TYPE = 'SHP') AS opeCode,
+                (SELECT VSL_NM FROM DNP_UAT.TB_VSL V WHERE V.VSL_CD = M.VSL_CD) AS vslName,
+                M.VSL_CD ||': '|| (SELECT VSL_NM FROM DNP_UAT.TB_VSL V WHERE V.VSL_CD = M.VSL_CD) AS vslNm,
+                M.CALL_YEAR AS year,
+                (SELECT B.IN_VOY FROM DNP_UAT.TB_BERTHPLAN B WHERE B.VSL_CD = M.VSL_CD AND B.CALL_YEAR = M.CALL_YEAR AND B.CALL_SEQ = M.CALL_SEQ) AS voyCarrier,
+                M.BOOKING_NO AS bookingNo,
+                M.BL_NO AS blNo,
+                M.SEAL_NO1 AS sealNo,
+                M.WGT AS wgt,
+                M.CONSIGNEE AS consignee,
+                M.VGM AS vgm,
+                M.CALL_SEQ AS voyNo,
+                CASE
+                	WHEN M.chold_chk = 'N' then 'R'
+                	WHEN M.chold_chk = 'Y' then 'N'
+                END AS customStatus,
+                M.POD AS dischargePort,
+                M.POL AS loadingPort,
+                CASE
+                    WHEN M.TRANS_TYPE = 'T' THEN 'Truck'
+                    WHEN M.TRANS_TYPE = 'V' THEN 'Vessel'
+                    WHEN M.TRANS_TYPE = 'C' THEN 'CFS'
+                    WHEN M.TRANS_TYPE = 'P' THEN 'Bundle'
+                    WHEN M.TRANS_TYPE = 'M' THEN 'Mode change'
+                    ELSE M.TRANS_TYPE
+                END AS transportType,           
+                
+                CASE
+                    WHEN M.CNTR_STATE = 'R' THEN 'Before Reconcile'
+                    WHEN M.CNTR_STATE = 'B' THEN 'After Reconcile'
+                    WHEN M.CNTR_STATE = 'M' THEN 'Manifested'
+                    WHEN M.CNTR_STATE = 'Y' THEN 'Stacking'
+                    WHEN M.CNTR_STATE = 'G' THEN 'In Progress Outgoing'
+                    WHEN M.CNTR_STATE = 'O' THEN 'In Progress Incoming'
+                    WHEN M.CNTR_STATE = 'P' THEN 'Assigned by Trucker'
+                    WHEN M.CNTR_STATE = 'Z' THEN 'Under Shifting'
+                    WHEN M.CNTR_STATE = 'D' THEN 'Delivered'
+                    WHEN M.CNTR_STATE = 'E' THEN 'Empty Gate Out'
+                    ELSE M.CNTR_STATE
+                END AS containerStatus,
+				REMARK AS containerRemark,
+				BLOCK || '-' || BAY || '-' || ROWW || '-' || TIER AS location
+			          FROM DNP_UAT.TB_RESERVE M
+		<where>
+			<if test="containerNo != null and containerNo != ''"> AND CNTR_NO = #{containerNo}</if>
+			<if test="blNo != null and blNo != ''">
+				AND BL_NO = #{blNo}
+				AND OPR_EXPIRE_DATE IS NULL
+				AND JOB_ODR_NO2 IS NULL
+				AND IX_CD = 'I'
+			</if>
+		</where>
+		FETCH NEXT 1 ROWS ONLY
+
     </select>
     
     <select id="selectCoordinateOfContainers" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
@@ -195,6 +259,12 @@
     	SELECT PTNR_CODE AS opeCode, COUNT(*) AS containerAmount
     	FROM DNP_UAT.TB_INVENTORY
     	   WHERE BL_NO = #{blNo}
+    	   GROUP BY PTNR_CODE
+		UNION
+		SELECT PTNR_CODE AS opeCode, COUNT(*) AS containerAmount
+    	FROM DNP_UAT.TB_RESERVE
+    	   WHERE BL_NO = #{blNo}
+			AND PTNR_CODE IN ('GLS','HAL','VFC','VLC')
     	   GROUP BY PTNR_CODE
     </select>
     <select id="checkCustomStatus" resultType="java.lang.Boolean">
@@ -510,7 +580,7 @@
 	       <if test="containerNo != null  and containerNo != ''"> and CNTR_NO = #{containerNo}</if>
 	       <if test="sztp != null  and sztp != ''"> and SZTP2 = #{sztp}</if>
 	       <if test="fe != null  and fe != ''"> and FE = #{fe}</if>
-	       <if test="bookingNo != null  and bookingNo != ''"> and BOOKING_NO = #{bookingNo}</if>
+	       <!-- <if test="bookingNo != null  and bookingNo != ''"> and BOOKING_NO = #{bookingNo}</if> -->
 	       <if test="blNo != null  and blNo != ''"> and BL_NO = #{blNo}</if>
 	       <if test="vslNm != null  and vslNm != ''"> and VSL_CD = #{vslNm}</if>
 	       <if test="voyNo != null  and voyNo != ''"> and CALL_SEQ = #{voyNo}</if>

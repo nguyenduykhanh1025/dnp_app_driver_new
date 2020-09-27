@@ -309,7 +309,8 @@ public class ShiroConfig
         // filterChainDefinitionMap.putAll(SpringUtils.getBean(IMenuService.class).selectPermsAll());
         filterChainDefinitionMap.put("/app/login", "anon");
         // Api for gate detection information
-        filterChainDefinitionMap.put("/gate/test/detection", "anon");
+        filterChainDefinitionMap.put("/gate/support/detection", "anon");
+        filterChainDefinitionMap.put("/gate/support/sensor", "anon");
 
         Map<String, Filter> filters = new LinkedHashMap<String, Filter>();
         filters.put("onlineSession", onlineSessionFilter());
