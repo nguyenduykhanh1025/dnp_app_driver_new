@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <th:block th:include="include :: header('General Controlling')" />
+  <th:block th:include="include :: header('DNP ePort: eDO')" />
   <th:block th:include="include :: easyui-css" />
   <th:block th:include="include :: handsontable-css" />
   <link th:href="@{/eport/common/style.css}" rel="stylesheet" />
@@ -22,10 +22,10 @@
         <div class="flex__right w-80">
           <div class="justify-content-around align-items-center" id="ff">
             <div class="d-inline">
-              <input id="vessel2" class="easyui-combobox" data-options="prompt:'Vessel'">
+              <input id="vessel2" class="easyui-combobox" data-options="prompt:'Vessel'" panelHeight="auto">
             </div>
             <div class="d-inline">
-              <input id="voyNo" class="easyui-combobox"  data-options="prompt:'Voy No'">
+              <input id="voyNo" class="easyui-combobox"  data-options="prompt:'Voy No'" style="width:100px" panelHeight="auto">
             </div>
             <div class="d-inline">
               <input class="easyui-textbox" id="searchBillNo" data-options="prompt:'B/L No'" />
@@ -57,21 +57,20 @@
           <table id="dg" style="width: 100%;">
             <thead>
                 <tr>
-                  <th data-options="field:'billOfLading',align:'left'" width="130">
+                  <th data-options="field:'billOfLading',align:'left'" width="110">
                     Bill Of Lading
                   </th>
                   <th data-options="field:'vessel',align:'left'" width="110">
                     Vessel
                   </th>
-                  <th data-options="field:'voyNo',align:'left'" width="80">
+                  <th data-options="field:'voyNo',align:'left'" width="50">
                     Voy No
                   </th>
-                  <th data-options="field:'numberContainer',align:'center'" width="90">
-                    Number <br/>
-                    Container
+                  <th data-options="field:'numberContainer',align:'center'" width="60">
+                    Amount
                   </th>
                   <th data-options="field:'createTime',align:'left'" width="130">
-                    Receive Time
+                    Create Time
                   </th>
                 </tr>
               </thead>  
@@ -81,7 +80,6 @@
           <div>
             <button class="btn btn-sm btn-danger" id="delEdo" onclick="delEdo()"><i class="fa fa-times text-primary"></i> Xóa eDO</button>
             <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i class="fa fa-pencil-square-o"></i> Cập Nhật eDO</button>
-            <button class="btn btn-sm btn-success" id="releaseEdo" onclick="addEdo()"><i class="fa fa-check-circle"></i> Phát hành eDO</button>
           </div>
           <table id="container-grid" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead data-options="frozen:true">
@@ -98,26 +96,22 @@
                   Sztp
                 </th>
                 <th data-options="field:'carrierCode',align:'center'" width="90">
-                  Opr <br/>
-                  Code
+                  Opr Code
                 </th>
                 <th data-options="field:'orderNumber',align:'left'" width="120">
-                  Order <br> Number
+                  Order Number
                 </th>
                 <th data-options="field:'consignee',align:'left'" width="250">
                   Consignee
                 </th>
-                <th data-options="field:'expiredDem',align:'left',formatter:formatToYDMHMS" width="110">
-                  Expired <br/>
-                  Dem
+                <th data-options="field:'expiredDem',align:'left',formatter:formatToYDMHMS" width="120">
+                  Expired Dem
                 </th>
                 <th data-options="field:'detFreeTime',align:'center'" width="80">
-                  Det Free <br/>
-                  Time
+                  Det Free Time
                 </th>
                 <th data-options="field:'emptyContainerDepot',align:'left'" width="150">
-                  Empty Container <br/>
-                  Depot
+                  Empty Container Depot
                 </th>
                 <th data-options="field:'vessel',align:'left'" width="110">
                   Vessel
@@ -131,14 +125,11 @@
                 <th data-options="field:'pod',align:'left'" width="110">
                   POD
                 </th>
-                <th data-options="field:'status',align:'left',formatter:formatStatus" width="91">
-                  Status
-                </th>
-                <th data-options="field:'fileCreateTime',align:'center',formatter:formatToYDMHMS" width="110">
+                <th data-options="field:'createTime',align:'left',formatter:formatToYDMHMS" width="120">
                   Create Time
                 </th>
-                <th data-options="field:'createTime',align:'left',formatter:formatToYDMHMS" width="115">
-                  Receive Time
+                <th data-options="field:'status',align:'left',formatter:formatStatus" width="91">
+                  Status
                 </th>
                 <th data-options="field:'action',align:'center',formatter: formatAction" fixed:true width="170">
                   Action
