@@ -13,6 +13,8 @@ import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
+import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysMenu;
 import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.service.ISysConfigService;
@@ -34,6 +36,9 @@ public class SysIndexController extends BaseController
     
     @Autowired
     private IEquipmentDoService doService;
+    
+    @Autowired
+    private IProcessOrderService processOrderService;
 
     // System Home
     @GetMapping("/index")
@@ -51,6 +56,10 @@ public class SysIndexController extends BaseController
         mmap.put("appVersion", Global.getVersion());
         mmap.put("copyrightYear", Global.getCopyrightYear());
         mmap.put("demoEnabled", Global.isDemoEnabled());
+        
+        Map<String, Long> report = processOrderService.getSupportNumberReportForOm();
+        mmap.put("report", report);
+        
         return "index";
     }
 

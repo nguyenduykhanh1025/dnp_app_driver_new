@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -119,4 +120,10 @@ public interface IProcessOrderService
     
     public List<String> selectProcessOrderOnlyLogisticName(ProcessOrder processOrder);
     
+    /**
+     * Get number of order error need for om support for each service type
+     * 
+     * @return Map<String, Long>
+     */
+    public Map<String, Long> getSupportNumberReportForOm();
 }

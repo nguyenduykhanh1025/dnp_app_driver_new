@@ -61,6 +61,10 @@ $( document ).ready(function() {
     });
 
     loadTableLeft();
+    // $("#dg-left").datagrid('enableCellEditing').datagrid('gotoCell', {
+    //     index: 0,
+    //     field: 'availableSlot'
+    // });
     loadTableRight();
 
 //    setInterval(() => {
@@ -88,6 +92,11 @@ function loadTableLeft() {
         pageSize: 50,
         nowrap: true,
         striped: true,
+        clickToEdit: false,
+        dblclickToEdit: true,
+        onEndEdit:function(index,row){
+            console.log(index, row);
+        },
         loadMsg: " Đang xử lý...",
         loader: function (param, success, error) {
             $("#dg-left").datagrid('loaded');

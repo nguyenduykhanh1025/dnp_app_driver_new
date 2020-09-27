@@ -94,6 +94,7 @@
                   th:if="${iterator.count &lt; 7}"
                   th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
                   th:href="@{${menu.url == ''} ? |#| : ${menu.url}}"
+                  th:id="${menu.menuId}"
                 > 
                   
                   <i class="fa fa-bar-chart-o" th:class="${menu.icon}"></i>
@@ -110,6 +111,7 @@
                       th:if="${#lists.isEmpty(cmenu.children)}"
                       th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}"
                       th:href="@{${cmenu.url}}"
+                      th:id="${cmenu.menuId}"
                       >
                       <i class="fa fa-bar-chart-o" th:class="${cmenu.icon}"></i>
 	                  <span class="nav-label" th:text="${cmenu.menuName}"
@@ -130,6 +132,7 @@
                           th:if="${#lists.isEmpty(emenu.children)}"
                           th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}"
                           th:href="@{${emenu.url}}"
+                          th:id="${emenu.menuId}"
                           >
                           <i class="fa fa-bar-chart-o" style="margin-left: 4px;margin-right: 8px;" th:class="${emenu.icon}"></i>
 	                      <span class="nav-label" th:text="${emenu.menuName}"
@@ -149,6 +152,7 @@
                               th:class="${fmenu.target == ''} ? |menuItem| : ${fmenu.target}"
                               th:text="${fmenu.menuName}"
                               th:href="@{${fmenu.url}}"
+                              th:id="${fmenu.menuId}"
                               >4th Menu</a
                             >
                           </li>
@@ -171,6 +175,7 @@
                     th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
                     th:href="@{${menu.url == ''} ? |#| : ${menu.url}}"
                     style="color: #fff"
+                    th:id="${menu.menuId}"
                   > 
                     
                     <i class="fa fa-bar-chart-o" th:class="${menu.icon}"></i>
@@ -187,6 +192,7 @@
                         th:if="${#lists.isEmpty(cmenu.children)}"
                         th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}"
                         th:href="@{${cmenu.url}}"
+                        th:id="${cmenu.menuId}"
                         >
                         <i class="fa fa-bar-chart-o" th:class="${cmenu.icon}"></i>
                       <span class="nav-label" th:text="${cmenu.menuName}"
@@ -207,6 +213,7 @@
                             th:if="${#lists.isEmpty(emenu.children)}"
                             th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}"
                             th:href="@{${emenu.url}}"
+                            th:id="${emenu.menuId}"
                             >
                             <i class="fa fa-bar-chart-o" style="margin-left: 4px;margin-right: 8px;" th:class="${emenu.icon}"></i>
                           <span class="nav-label" th:text="${emenu.menuName}"
@@ -225,6 +232,7 @@
                                 th:if="${#lists.isEmpty(fmenu.children)}"
                                 th:class="${fmenu.target == ''} ? |menuItem| : ${fmenu.target}"
                                 th:text="${fmenu.menuName}"
+                                th:id="${fmenu.menuId}"
                                 th:href="@{${fmenu.url}}"
                                 >4th Menu</a
                               >
@@ -304,6 +312,20 @@
       var mode = "history";
       var historyPath = storage.get("historyPath");
       var currentPage = 1, pageSize = 5, notiCount = 0, total = 0, currentAmount = 0;
+      var report = /*[[${report}]]*/;
+
+      $(document).ready(function() {
+        $('#2425').append(' <span class="round-notify-count">' + report.RECEIVECUSTOM + '</span>');
+        $('#2205').append(' <span class="round-notify-count">' + report.RECEIVEEMPTYORDER + '</span>');
+        $('#2350').append(' <span class="round-notify-count">' + report.RECEIVEFULLORDER + '</span>');
+        $('#2465').append(' <span class="round-notify-count">' + report.SENDCUSTOM + '</span>');
+        $('#2245').append(' <span class="round-notify-count">' + report.SENDEMPTYORDER + '</span>');
+        $('#2365').append(' <span class="round-notify-count">' + report.SENDFULLORDER + '</span>');
+        $('#2047').append(' <span class="round-notify-count">' + (
+          report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER
+          ) + '</span>');
+      });
+
       if($.common.isNotEmpty(skin)){
       	$("body").addClass(skin.split('|')[0]);
       	$("body").addClass(skin.split('|')[1]);
