@@ -18,8 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.Gson;
+
+import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.config.ServerConfig;
+import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
@@ -37,10 +42,12 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
+import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
+import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -91,6 +98,12 @@ public class GeneralControllingController extends AdminBaseController  {
 	
 	@Autowired
 	private IShipmentImageService shipmentImageService;
+	
+	@Autowired
+	private IProcessBillService processBillService;
+	
+	@Autowired
+	private IEdoService edoService;
 	
 	@GetMapping()
 	public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
@@ -325,4 +338,192 @@ public class GeneralControllingController extends AdminBaseController  {
 		ajaxResult.put("shipmentFiles", shipmentImages);
 		return ajaxResult;
 	}
+	
+	@GetMapping("/verify-executed-command-success")
+    public String verifyExecutedCommandSuccess() {
+  	  return PREFIX + "/verifyExecutedCommandSuccess";
+    }
+    
+    @GetMapping("/reset-process-status")
+    public String resetProcessStatus() {
+  	  return PREFIX + "/verifyResetProcessStatus";
+    }
+    
+    @Log(title = "Xác nhận làm lệnh OK(OM)", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
+    @PostMapping("/sync-catos")
+    @ResponseBody
+    public AjaxResult executedTheCommandCatosSuccess(String processOrderIds, String content) {
+    	String[] processOrderIdArr = processOrderIds.split(",");
+    	for (int i=0; i<processOrderIdArr.length; i++) {
+    		Long processOrderId = Long.parseLong(processOrderIdArr[i]);
+        	ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
+    		if(processOrder == null) {
+    			// Co loi bat thuong xay ra. order khong ton tai
+    			throw new IllegalArgumentException("Process order not exist");
+    		}
+    		// GET LIST SHIPMENT DETAIL BY PROCESS ORDER ID
+    		ShipmentDetail shipmentDetail = new ShipmentDetail();
+    		shipmentDetail.setProcessOrderId(processOrderId);
+    		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+        	//get orderNo from catos
+    		String orderNo = null, invoiceNo = null;
+        	if(shipmentDetails.size() >0) {
+    			if (processOrder.getServiceType().equals(Constants.RECEIVE_CONT_FULL) ||
+        				processOrder.getServiceType().equals(Constants.RECEIVE_CONT_EMPTY))
+    				orderNo = catosApiService.getOrderNoInInventoryByShipmentDetail(shipmentDetails.get(0));
+    			if(processOrder.getServiceType().equals(Constants.SEND_CONT_FULL) ||
+        				processOrder.getServiceType().equals(Constants.SEND_CONT_EMPTY))
+    				orderNo = catosApiService.getOrderNoInReserveByShipmentDetail(shipmentDetails.get(0));
+        	}
+        	if(orderNo == null || orderNo.equals("")) {
+        		return error();
+        	}
+        	//get Invoice
+        	if(processOrder.getPayType().equals("Cash") && orderNo != null) {
+        		invoiceNo = catosApiService.getInvoiceNoByOrderNo(orderNo);
+        	}
+        	//update processOrder
+        	processOrder.setOrderNo(orderNo);
+    		processOrder.setInvoiceNo(invoiceNo);
+    		processOrder.setStatus(2); // FINISH		
+    		processOrder.setResult("S"); // RESULT SUCESS	
+    		processOrderService.updateProcessOrder(processOrder);
+    		// SAVE BILL TO PROCESS BILL BY INVOICE NO
+    		if (invoiceNo != null && !invoiceNo.equals("")) {
+    			processBillService.saveProcessBillByInvoiceNo(processOrder);
+    		} else if (processOrder.getServiceType() != EportConstants.SERVICE_SHIFTING) {
+    			processBillService.saveProcessBillWithCredit(shipmentDetails, processOrder);
+    		} else if (processOrder.getProcessData() != null) {
+    			ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+    			processBillService.saveShiftingBillWithCredit(processJsonData.getShipmentDetailIds(), processOrder);
+    			for (Long shipmentDetailId : processJsonData.getPrePickupContIds()) {
+    				ShipmentDetail prePickupShipmentDetail = new ShipmentDetail();
+    				prePickupShipmentDetail.setId(shipmentDetailId);
+    				prePickupShipmentDetail.setPrePickupPaymentStatus("Y");
+    				shipmentDetailService.updateShipmentDetail(prePickupShipmentDetail);
+    			}
+    		}
+    		// UPDATE STATUS OF SHIPMENT DETAIL AFTER MAKE ORDER SUCCESS
+    		if (processOrder.getServiceType() != EportConstants.SERVICE_SHIFTING) {
+    			shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo, processOrder);
+    			Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
+    			if (processOrder.getServiceType() == EportConstants.SERVICE_PICKUP_FULL && "1".equals(shipment.getEdoFlg())) {
+    				for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
+    					Edo edo = new Edo();
+    					edo.setBillOfLading(shipment.getBlNo());
+    					edo.setContainerNumber(shipmentDetail2.getContainerNo());
+    					edo.setStatus("2"); // status process order has been made for this edo
+    					edoService.updateEdoByBlCont(edo);
+    				}
+    			}
+    		}
+    		//notify msg to Logistic
+    		if(content != null && content != "") {
+    			ShipmentComment shipmentComment = new ShipmentComment();
+    	    	Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
+    	    	shipmentComment.setShipmentId(shipment.getId());
+    	    	shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
+    	    	shipmentComment.setUserId(getUserId());
+    	    	shipmentComment.setUserType("S");// S: DNP Staff
+    	    	shipmentComment.setUserName(getUser().getUserName());
+    	    	shipmentComment.setUserAlias(getUser().getUserName());//TODO get tạm username
+    	    	shipmentComment.setCommentTime(new Date());
+    	    	shipmentComment.setContent(content);
+    	    	shipmentComment.setCreateTime(new Date());
+    	    	shipmentComment.setCreateBy(getUser().getUserName());
+    	    	switch (shipment.getServiceType()) {
+				case EportConstants.SERVICE_PICKUP_FULL:
+					shipmentComment.setTopic(Constants.RECEIVE_CONT_FULL_SUPPORT);
+					break;
+				case EportConstants.SERVICE_PICKUP_EMPTY:
+					shipmentComment.setTopic(Constants.RECEIVE_CONT_EMPTY_SUPPORT);
+					break;
+				case EportConstants.SERVICE_DROP_FULL:
+					shipmentComment.setTopic(Constants.SEND_CONT_FULL_SUPPORT);
+					break;
+				case EportConstants.SERVICE_DROP_EMPTY:
+					shipmentComment.setTopic(Constants.SEND_CONT_EMPTY_SUPPORT);
+					break;
+				default:
+					break;
+    	    	}
+    			shipmentComment.setServiceType(shipment.getServiceType());
+    	    	shipmentCommentService.insertShipmentComment(shipmentComment);
+    		}
+    	}
+    	return success();
+    }
+    
+    @Log(title = "Reset Proccess Status(OM)", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
+    @PostMapping("/order/reset")
+    @Transactional
+    @ResponseBody
+    public AjaxResult resetProcessStatus(String shipmentDetailIds, Long ShipmentId, String content) {
+		// GET LIST SHIPMENT DETAIL BY shipmentDetailIds (id seperated by comma)
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+		//update shipment detail 2 truong processOrderId, registerNo processStatus, status
+		String processOrderIds = "";
+		Long currentProcessId = 0L;
+		try {
+			if(shipmentDetails.size() > 0) {
+				for(ShipmentDetail i: shipmentDetails) {
+					if (!currentProcessId.equals(i.getProcessOrderId())) {
+						currentProcessId = i.getProcessOrderId();
+						processOrderIds += currentProcessId + ",";
+					}
+					i.setProcessOrderId(null);
+					i.setRegisterNo(null);
+					i.setProcessStatus("N");
+					i.setStatus(1);
+					i.setUserVerifyStatus("N");
+					shipmentDetailService.resetShipmentDetailProcessStatus(i);
+				}
+			}
+			//delete record table process_order
+			if (processOrderIds.length() > 0) {
+				processOrderIds = processOrderIds.substring(0, processOrderIds.length()-1);
+				processOrderService.deleteProcessOrderByIds(processOrderIds);
+			}
+			
+			//notify msg to Logistic
+			if(content != null && content != "") {
+				SysUser user = getUser();
+				ShipmentComment shipmentComment = new ShipmentComment();
+		    	Shipment shipment = shipmentService.selectShipmentById(ShipmentId);
+		    	shipmentComment.setShipmentId(shipment.getId());
+		    	shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
+		    	shipmentComment.setUserId(getUserId());
+		    	shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);// S: DNP Staff
+		    	shipmentComment.setUserName(user.getUserName());
+		    	shipmentComment.setUserAlias(user.getDept().getDeptName()); 
+		    	shipmentComment.setCommentTime(new Date());
+		    	shipmentComment.setContent(content);
+		    	shipmentComment.setCreateTime(new Date());
+		    	shipmentComment.setCreateBy(getUser().getUserName());
+		    	switch (shipment.getServiceType()) {
+					case EportConstants.SERVICE_PICKUP_FULL:
+						shipmentComment.setTopic(Constants.RECEIVE_CONT_FULL_SUPPORT);
+						break;
+					case EportConstants.SERVICE_PICKUP_EMPTY:
+						shipmentComment.setTopic(Constants.RECEIVE_CONT_EMPTY_SUPPORT);
+						break;
+					case EportConstants.SERVICE_DROP_FULL:
+						shipmentComment.setTopic(Constants.SEND_CONT_FULL_SUPPORT);
+						break;
+					case EportConstants.SERVICE_DROP_EMPTY:
+						shipmentComment.setTopic(Constants.SEND_CONT_EMPTY_SUPPORT);
+						break;
+					default:
+						break;
+				}
+				shipmentComment.setServiceType(shipment.getServiceType());
+		    	shipmentCommentService.insertShipmentComment(shipmentComment);
+			}
+	    	return success();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			e.getStackTrace();
+			return error();
+		}
+    }
 }
