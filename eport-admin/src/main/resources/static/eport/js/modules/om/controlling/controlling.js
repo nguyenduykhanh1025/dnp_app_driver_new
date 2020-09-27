@@ -1,7 +1,7 @@
 const PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var dogrid = document.getElementById("container-grid"), hot;
-var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipmentDetailIds;
+var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipmentDetailIds, processOrderIds;
 var shipmentDetails;
 var fromDate, toDate;
 var shipment = new Object();
@@ -1221,6 +1221,8 @@ function getDataSelectedFromTable() {
     }
     shipmentDetailIds = "";
     shipmentDetails = [];
+    processOrderIds = '';
+    let temProcessOrderIds = [];
     $.each(cleanedGridData, function (index, object) {
       let cargoType = '', dischargePort = '', loadingPort = '', sztp = '';
       let expiredDem, emptyExpiredDem;
@@ -1277,7 +1279,15 @@ function getDataSelectedFromTable() {
       }
       shipmentDetails.push(shipmentDetail);
       shipmentDetailIds += object["id"] + ",";
+      if (object["processOrderId"] != null && !temProcessOrderIds.includes(object["processOrderId"])) {
+        temProcessOrderIds.push(object["processOrderId"]);
+        processOrderIds += object["processOrderId"] + ',';
+      }
     });
+
+    if (processOrderIds != '') {
+      processOrderIds = processOrderIds.substring(0, processOrderIds.length-1);
+    }
   
     if (shipmentDetailIds.length == 0) {
       $.modal.alertWarning("Bạn chưa chọn container nào.")
@@ -1492,5 +1502,105 @@ function cancelShupmentDetail() {
     }, function () {
     });
   }
+}
+
+function executedSuccess() {
+  if (getDataSelectedFromTable()) {
+    layer.open({
+      type: 2,
+      area: [430 + 'px', 270 + 'px'],
+      fix: true,
+      maxmin: true,
+      shade: 0.3,
+      title: 'Xác Nhận',
+      content: PREFIX + "/verify-executed-command-success",
+      btn: ["Xác Nhận", "Hủy"],
+      shadeClose: false,
+      yes: function(index, layero) {
+        confirmExecutaedSuccess(index, layero);
+      },
+      cancel: function(index) {
+        return true;
+      }
+    });
+  }
+}
+
+function confirmExecutaedSuccess(index, layero) {
+  let childLayer = layero.find("iframe")[0].contentWindow.document;
+  $.modal.loading("Đang xử lý ...");
+  $.ajax({
+    url: PREFIX + "/sync-catos",
+    method: "POST",
+    data: {
+      content: $(childLayer).find("#remarkToLogistic").val(),
+      processOrderIds: processOrderIds,
+      shipmentId: shipmentSelected.id
+    },
+    success: function (res) {
+      layer.close(index);
+      $.modal.closeLoading();
+      if (res.code == 0) {
+        $.modal.alertSuccess(res.msg);
+        loadShipmentDetails(shipmentSelected.id);
+      } else {
+        $.modal.alertError(res.msg);
+      }
+    },
+    error: function (data) {
+      layer.close(index);
+      $.modal.closeLoading();
+    }
+  });
+}
+
+function resetProcessStatus() {
+  if (getDataSelectedFromTable()) {
+    layer.open({
+      type: 2,
+      area: [430 + 'px', 270 + 'px'],
+      fix: true,
+      maxmin: true,
+      shade: 0.3,
+      title: 'Xác Nhận',
+      content: PREFIX + "/reset-process-status",
+      btn: ["Xác Nhận", "Hủy"],
+      shadeClose: false,
+      yes: function(index, layero) {
+        confirmResetProcess(index, layero);
+      },
+      cancel: function(index) {
+        return true;
+      }
+    });
+  }
+}
+
+function confirmResetProcess(index, layero) {
+  let childLayer = layero.find("iframe")[0].contentWindow.document;
+  $.modal.loading("Đang xử lý ...");
+  $.ajax({
+    url: PREFIX + "/order/reset",
+    method: "POST",
+    data: {
+      content: $(childLayer).find("#remarkToLogistic").val(),
+      shipmentDetailIds: shipmentDetailIds,
+      shipmentId: shipmentSelected.id
+    },
+    success: function (res) {
+      layer.close(index);
+      $.modal.closeLoading();
+      if (res.code == 0) {
+        $.modal.alertSuccess(res.msg);
+        loadShipmentDetails(shipmentSelected.id);
+      } else {
+        $.modal.alertError(res.msg);
+      }
+    },
+    error: function (data) {
+      layer.close(index);
+      $.modal.closeLoading();
+    }
+  });
 }
 
