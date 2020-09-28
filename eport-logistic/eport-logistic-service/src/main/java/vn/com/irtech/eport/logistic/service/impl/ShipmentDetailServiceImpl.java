@@ -37,7 +37,6 @@ import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.form.BookingInfo;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
-import vn.com.irtech.eport.logistic.form.VesselVoyageMc;
 import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -1324,5 +1323,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	@Override
     public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.updateShipmentDetailByIds(Convert.toStrArray(shipmentDetailIds), shipmentDetail);
+	}
+
+	@Override
+	public void resetCustomStatus(Long shipmentId) {
+		shipmentDetailMapper.resetCustomStatus(shipmentId);
 	}
 }

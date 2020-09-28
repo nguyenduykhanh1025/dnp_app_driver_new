@@ -657,6 +657,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
     
+    <update id="resetCustomStatus" parameterType="Long">
+        UPDATE shipment_detail
+            SET custom_status ='N'
+        WHERE shipment_id = #{shipmentId}
+            AND custom_status = 'Y'
+    </update>
     <delete id="deleteShipmentDetailById" parameterType="Long">
         delete from shipment_detail where id = #{id}
     </delete>
