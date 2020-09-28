@@ -40,7 +40,7 @@ function confirm() {
         data: {
           ids: ids,
           expiredDem: formatDateForSubmit($("#expiredDem").val()),
-          detFreeTime: $("#detFreeTime").val() == detFreeTime ? detFreeTime : $("#detFreeTime").val(),
+          detFreeTime: $("#detFreeTime").val() == detFreeTime ? "" : $("#detFreeTime").val(),
           emptyContainerDepot: $("#emptyContainerDepot").val() == emptyContainerDepot ? "" : $("#emptyContainerDepot").val(),
           consignee: $("#consignee").val() == consignee ? "" : $("#consignee").val()
         },

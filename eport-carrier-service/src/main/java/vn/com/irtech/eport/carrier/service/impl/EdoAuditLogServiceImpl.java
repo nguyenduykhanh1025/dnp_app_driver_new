@@ -244,12 +244,12 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
             }
             
         }
-        if(edoItem.getDetFreeTime() != null)
+        if(edoItem.getDetFreeTime() != null && !edoItem.getDetFreeTime().equals(""))
         {
             edoAuditLog.setFieldName("Det Free Time");
             EdoAuditLog edoAuditLogCheck = selectEdoAuditLogByEdo(edoAuditLog);
             // check not default value
-            if(edoAuditLogCheck != null)
+            if(edoAuditLogCheck != null && !edoItem.getDetFreeTime().toString().equals(edoAuditLogCheck.getNewValue()))
             {
                 edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
                 edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);

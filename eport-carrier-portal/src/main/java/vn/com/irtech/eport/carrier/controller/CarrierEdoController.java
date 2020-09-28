@@ -90,6 +90,10 @@ public class CarrierEdoController extends CarrierBaseController {
 		if (edo == null) {
 			edo = new Edo();
 		}
+		if(edo.getBillOfLading() == null)
+		{
+			return null;
+		}
 		Map<String, Object> groupCodes = new HashMap<>();
 		groupCodes.put("groupCode", super.getGroupCodes());
 		edo.setCarrierCode(null);
