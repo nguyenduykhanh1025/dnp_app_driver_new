@@ -51,7 +51,12 @@
 
 
   <select id="selectEdoList" parameterType="Edo" resultMap="EdoResult">
-    <include refid="selectEdoVo"/>
+    select distinct e.id, e.carrier_id, e.carrier_code, e.order_number, e.release_no, e.bill_of_lading, e.business_unit, e.consignee, e.container_number,
+    e.expired_dem, e.empty_container_depot, e.det_free_time, e.secure_code, e.release_date, e.vessel, e.vessel_no , e.voy_no, e.sztp,
+    e.release_status, e.create_source, e.remark, e.del_flg, e.create_by, e.file_create_time, e.create_time, e.update_by,
+    e.update_time, e.transaction_id, e.pol, e.pod, e.house_bill_id, e.consignee_by_tax_code, e.tax_code , s.status as status
+    from edo e
+    left join shipment_detail s on e.bill_of_lading = s.bl_no and e.container_number = s.container_no
     <where>
       <if test="params.groupCode != null">
         and carrier_code in
@@ -59,6 +64,7 @@
           #{carrier_code}
         </foreach>
       </if>
+      <if test="id != null ">and id = #{id}</if>
       <if test="carrierId != null ">and carrier_id = #{carrierId}</if>
       <if test="carrierCode != null  and carrierCode != ''">and carrier_code = #{carrierCode}</if>
       <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
@@ -135,12 +141,17 @@
   </select>
 
   <select id="selectEdoById" parameterType="Long" resultMap="EdoResult">
-    <include refid="selectEdoVo"/>
-    where id = #{id}
+    select distinct e.id, e.carrier_id, e.carrier_code, e.order_number, e.release_no, e.bill_of_lading, e.business_unit, e.consignee, e.container_number,
+    e.expired_dem, e.empty_container_depot, e.det_free_time, e.secure_code, e.release_date, e.vessel, e.vessel_no , e.voy_no, e.sztp,
+    e.release_status, e.create_source, e.remark, e.del_flg, e.create_by, e.file_create_time, e.create_time, e.update_by,
+    e.update_time, e.transaction_id, e.pol, e.pod, e.house_bill_id, e.consignee_by_tax_code, e.tax_code , s.status as status
+    from edo e
+    left join shipment_detail s on e.bill_of_lading = s.bl_no and e.container_number = s.container_no
+    where e.id = #{id}
   </select>
 
   <select id="selectFirstEdo" parameterType="Edo" resultMap="EdoResult">
-    <include refid="selectEdoVo"/>
+   <include refid="selectEdoVo"/>
     <where>
       <if test="id != null ">and id = #{id}</if>
       <if test="carrierId != null ">and carrier_id = #{carrierId}</if>
@@ -501,10 +512,18 @@
             FETCH NEXT 1 ROWS ONLY
 	</select>
 
-  <select id="getBillOfLadingInfo" parameterType="String" resultMap="EdoResult">
-        <include refid="selectEdoVo"/>
-        WHERE bill_of_lading = #{blNo}
-        FETCH NEXT 1 ROWS ONLY
+  <select id="getBillOfLadingInfo" parameterType="Edo" resultMap="EdoResult">
+      <include refid="selectEdoVo"/>	
+		<where>
+ 		<if test="billOfLading != null  and billOfLading != ''">and bill_of_lading = #{billOfLading}</if>
+	     <if test="params.groupCode != null">
+        	and carrier_code in
+        <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+          #{carrier_code}
+        </foreach>
+      	</if>
+		</where>
+		FETCH NEXT 1 ROWS ONLY
     </select>
-
+	
 </mapper>
