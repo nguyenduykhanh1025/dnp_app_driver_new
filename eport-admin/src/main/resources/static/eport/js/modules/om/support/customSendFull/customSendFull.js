@@ -142,6 +142,7 @@ function loadTable(shipment) {
         success: function (data) {
           success(data);
           $("#dg").datagrid("selectRow", 0);
+          parent.updateReportNumberOm();
         },
         error: function () {
           error.apply(this, arguments);

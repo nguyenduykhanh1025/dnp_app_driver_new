@@ -168,6 +168,7 @@ function loadTable() {
           if (res.code == 0) {
             success(res.shipments);
             $("#dg").datagrid("selectRow", 0);
+            parent.updateReportNumberOm();
           } else {
             success([]);
           }

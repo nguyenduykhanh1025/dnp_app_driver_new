@@ -148,6 +148,7 @@ function loadTable(processOrder) {
         success: function (data) {
           success(data);
           $("#dg").datagrid("selectRow", 0);
+          parent.updateReportNumberOm();
         },
         error: function () {
           error.apply(this, arguments);
@@ -156,7 +157,8 @@ function loadTable(processOrder) {
     },
   });
 }
-loadTableByContainer();
+
+// loadTableByContainer();
 
 //FORMAT HANDSONTABLE COLUMN
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
