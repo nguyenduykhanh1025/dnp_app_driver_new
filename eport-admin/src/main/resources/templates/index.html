@@ -316,15 +316,28 @@
       var report = /*[[${report}]]*/;
 
       $(document).ready(function() {
-        $('#2425').append(' <span class="round-notify-count">' + report.RECEIVECUSTOM + '</span>');
-        $('#2205').append(' <span class="round-notify-count">' + report.RECEIVEEMPTYORDER + '</span>');
-        $('#2350').append(' <span class="round-notify-count">' + report.RECEIVEFULLORDER + '</span>');
-        $('#2465').append(' <span class="round-notify-count">' + report.SENDCUSTOM + '</span>');
-        $('#2245').append(' <span class="round-notify-count">' + report.SENDEMPTYORDER + '</span>');
-        $('#2365').append(' <span class="round-notify-count">' + report.SENDFULLORDER + '</span>');
-        $('#2047').append(' <span class="round-notify-count">' + (
-          report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER
-          ) + '</span>');
+    	  $('#2047').append(' <span class="round-notify-count">' + (
+    	          report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER
+    	          ) + '</span>');
+    	if(report.RECEIVEFULLORDER > 0) {
+          $('#2205').append(' <span class="round-notify-count">' + report.RECEIVEFULLORDER + '</span>');
+    	}
+    	if(report.RECEIVEEMPTYORDER > 0) {
+          $('#2350').append(' <span class="round-notify-count">' + report.RECEIVEEMPTYORDER + '</span>');
+    	}
+    	if(report.SENDEMPTYORDER > 0) {
+          $('#2245').append(' <span class="round-notify-count">' + report.SENDEMPTYORDER + '</span>');
+    	}
+    	if(report.SENDFULLORDER > 0) {
+          $('#2365').append(' <span class="round-notify-count">' + report.SENDFULLORDER + '</span>');
+    	}
+    	if(report.SENDCUSTOM > 0) {
+          $('#2465').append(' <span class="round-notify-count">' + report.SENDCUSTOM + '</span>');
+    	}
+        if(report.RECEIVECUSTOM > 0) {
+          $('#2425').append(' <span class="round-notify-count">' + report.RECEIVECUSTOM + '</span>');
+        }
+        
       });
 
       if($.common.isNotEmpty(skin)){

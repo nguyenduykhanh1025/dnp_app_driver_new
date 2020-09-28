@@ -106,27 +106,28 @@ public class SupportCustomSendFullController extends OmBaseController{
     	return PREFIX + "/confirmResultNotification";
     }
     
-    @Log(title = "Gửi thông báo Hỗ trợ Hải Quan Hạ Hàng(OM)", businessType = BusinessType.INSERT, operatorType = OperatorType.MANAGE)
+    @Log(title = "Hỗ trợ Hải Quan", businessType = BusinessType.INSERT, operatorType = OperatorType.MANAGE)
     @PostMapping("/confirm-result-notification")
     @ResponseBody
     public AjaxResult sendNotification(@RequestBody ShipmentComment shipmentComment) {
+    	
+    	Shipment shipment = shipmentService.selectShipmentById(shipmentComment.getShipmentId());
+    	shipmentDetailService.resetCustomStatus(shipment.getId());
     	if(shipmentComment == null || shipmentComment.getContent() == null ||
     			shipmentComment.getContent() == "") {
-    		return error();
-    	}
-    	Shipment shipment = shipmentService.selectShipmentById(shipmentComment.getShipmentId());
-    	shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
-    	shipmentComment.setUserId(getUserId());
-    	shipmentComment.setUserType("S");// S: DNP Staff
-    	shipmentComment.setUserName(getUser().getUserName());
-    	shipmentComment.setUserAlias(getUser().getUserName());//TODO get tạm username
-    	shipmentComment.setCommentTime(new Date());
-    	shipmentComment.setCreateTime(new Date());
-    	shipmentComment.setCreateBy(getUser().getUserName());
-    	shipmentComment.setTopic(Constants.SEND_CONT_FULL_CUSTOM_SUPPORT);
-		shipmentComment.setServiceType(shipment.getServiceType());
-    	if(shipmentCommentService.insertShipmentComment(shipmentComment) == 1) {
-    		return success();
+	    	shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
+	    	shipmentComment.setUserId(getUserId());
+	    	shipmentComment.setUserType("S");// S: DNP Staff
+	    	shipmentComment.setUserName(getUser().getUserName());
+	    	shipmentComment.setUserAlias(getUser().getUserName());//TODO get tạm username
+	    	shipmentComment.setCommentTime(new Date());
+	    	shipmentComment.setCreateTime(new Date());
+	    	shipmentComment.setCreateBy(getUser().getUserName());
+	    	shipmentComment.setTopic(Constants.SEND_CONT_FULL_CUSTOM_SUPPORT);
+			shipmentComment.setServiceType(shipment.getServiceType());
+	    	if(shipmentCommentService.insertShipmentComment(shipmentComment) == 1) {
+	    		return success();
+	    	}
     	}
     	return error();
     }
