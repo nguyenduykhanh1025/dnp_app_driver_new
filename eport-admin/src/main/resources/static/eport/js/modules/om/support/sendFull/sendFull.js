@@ -48,7 +48,7 @@ $(document).ready(function () {
   $(".left-side__collapse").click(function () {
     $('#main-layout').layout('collapse', 'west');
   });
-  
+
   $(".right-side__collapse").click(function () {
     $('#right-layout').layout('collapse', 'south');
     setTimeout(() => {
@@ -68,13 +68,13 @@ $(document).ready(function () {
 
   $('#right-layout').layout('collapse', 'south');
   setTimeout(() => {
-      hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
-      hot.render();
+    hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
+    hot.render();
   }, 200);
 
   $('#checkCustomStatusByProcessOrderId').attr("disabled", true);
   $('#checkProcessStatusByProcessOrderId').attr("disabled", true);
-  $("#bookingNo").textbox('textbox').bind('keydown', function(e) {
+  $("#bookingNo").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
       bookingNo = $("#bookingNo").textbox('getText').toUpperCase();
@@ -84,7 +84,7 @@ $(document).ready(function () {
       processOrder.bookingNo = bookingNo;
       loadTable(processOrder);
     }
-    });
+  });
   // load shipment table
   loadTable(processOrder);
 
@@ -108,7 +108,6 @@ function handleCollapse(status) {
 }
 
 function loadTable(processOrder) {
-  console.log("load table", processOrder)
   $("#dg").datagrid({
     url: PREFIX + "/orders",
     method: "POST",
@@ -119,8 +118,8 @@ function loadTable(processOrder) {
     pagination: true,
     pageSize: 20,
     rownumbers: true,
-    onClickRow: function () {
-      getSelectedRow();
+    onBeforeSelect: function (index, row) {
+      getSelectedRow(index, row);
     },
     nowrap: false,
     striped: true,
@@ -393,11 +392,10 @@ function loadTableByContainer(processOrderId) {
     },
     error: function (data) {
       $.modal.closeLoading();
-    } 
+    }
   });
 }
-function getSelectedRow() {
-  var row = $("#dg").datagrid("getSelected");
+function getSelectedRow(index, row) {
   if (row) {
     processOrderSelected = row;
     rowAmount = processOrderSelected.contAmount;
@@ -420,8 +418,8 @@ function formatBlBooking(value, row) {
 }
 
 function formatBatch(value, row, index) {
-	  return '<a onclick="shipmentDetailsInfo(' + row.shipmentId + ")\"> " + value + "</a>";
-	}
+  return '<a onclick="shipmentDetailsInfo(' + row.shipmentId + ")\"> " + value + "</a>";
+}
 function shipmentDetailsInfo(shipmentId) {
   $.modal.openShipmentDetailsInfo("Thông Tin Lô: " + shipmentId, ctx + "om/support/shipment/" + shipmentId + "/shipmentDetails/info", 1100, 470, function () {
     $.modal.close();
@@ -436,20 +434,20 @@ function logisticInfo(id, logistics) {
   });
 }
 function executedSuccess() {
-  $.modal.open("Xác nhận", PREFIX + "/verify-executed-command-success/process-order/" + processOrderSelected.id , 430, 270);
+  $.modal.open("Xác nhận", PREFIX + "/verify-executed-command-success/process-order/" + processOrderSelected.id, 430, 270);
 
 }
 
 function msgSuccess(msg) {
-	$.modal.alertSuccess(msg);
-	loadTable(processOrder);
+  $.modal.alertSuccess(msg);
+  loadTable(processOrder);
 }
 function msgError(msg) {
-	$.modal.alertError(msg);
+  $.modal.alertError(msg);
 }
 
 function resetProcessStatus() {
-	$.modal.open("Xác nhận", PREFIX + "/reset-process-status/process-order/" + processOrderSelected.id , 430, 270);
+  $.modal.open("Xác nhận", PREFIX + "/reset-process-status/process-order/" + processOrderSelected.id, 430, 270);
 }
 
 //function formatVessel(value, row) {
@@ -469,17 +467,17 @@ function formatUpdateTime(value) {
   let offset = now.getTime() - updateTime.getTime();
   let totalMinutes = Math.round(offset / 1000 / 60);
   var toHHMMSS = (secs) => {
-	    var sec_num = parseInt(secs, 10)
-	    var hours   = Math.floor(sec_num / 3600)
-	    var minutes = Math.floor(sec_num / 60) % 60
-	    var seconds = sec_num % 60
+    var sec_num = parseInt(secs, 10)
+    var hours = Math.floor(sec_num / 3600)
+    var minutes = Math.floor(sec_num / 60) % 60
+    var seconds = sec_num % 60
 
-	    return [hours,minutes]
-	        .map(v => v < 10 ? "0" + v : v)
-	        .filter((v,i) => v !== "00" || i > 0)
-	        .join(":")
-	}
-  return toHHMMSS(totalMinutes*60);
+    return [hours, minutes]
+      .map(v => v < 10 ? "0" + v : v)
+      .filter((v, i) => v !== "00" || i > 0)
+      .join(":")
+  }
+  return toHHMMSS(totalMinutes * 60);
 }
 
 function clearInput() {

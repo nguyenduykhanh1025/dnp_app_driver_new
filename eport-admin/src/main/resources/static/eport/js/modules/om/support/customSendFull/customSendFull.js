@@ -68,14 +68,14 @@ $(document).ready(function () {
 
   $('#right-layout').layout('collapse', 'south');
   setTimeout(() => {
-      hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
-      hot.render();
+    hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
+    hot.render();
   }, 200);
 
   loadTable(shipment);
   $('#notifyResult').attr("disabled", true);
 
-  $("#blNo").textbox('textbox').bind('keydown', function(e) {
+  $("#blNo").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
       blNo = $("#blNo").textbox('getText').toUpperCase();
@@ -85,7 +85,7 @@ $(document).ready(function () {
       shipment.blNo = blNo;
       loadTable(shipment);
     }
-    });
+  });
 
 });
 
@@ -117,8 +117,8 @@ function loadTable(shipment) {
     pagination: true,
     pageSize: 20,
     rownumbers: true,
-    onClickRow: function () {
-      getSelectedRow();
+    onBeforeSelect: function (index, row) {
+      getSelectedRow(index, row);
     },
     nowrap: false,
     striped: true,
@@ -154,182 +154,182 @@ loadTableByContainer();
 
 //FORMAT HANDSONTABLE COLUMN
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'sztp' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function customsNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'customsNo' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'customsNo' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function customStatusRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'customStatus' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'customStatus' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'consignee' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'consignee' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'wgt' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'wgt' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'remark' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'remark' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 //CONFIGURATE HANDSONTABLE
 function configHandson() {
-    config = {
-        stretchH: "all",
-        height: $('#right-side__main-table').height() - 35,
-        minRows: rowAmount,
-        maxRows: rowAmount,
-        width: "100%",
-        minSpareRows: 0,
-        rowHeights: 30,
-        fixedColumnsLeft: 3,
-        manualColumnResize: true,
-        manualRowResize: true,
-        renderAllRows: true,
-        rowHeaders: true,
-        className: "htMiddle",
-        colHeaders: function (col) {
-            switch (col) {
-                case 0:
-                    return "Số Container";
-                case 1:
-                    return "Sztp";
-                case 2:
-                    return "Số Tờ Khai HQ";
-                case 3:
-                    return "T.T.T.Quan";
-                case 4:
-                    return "Chủ hàng";
-                case 5:
-                    return "Tàu - Chuyến";
-                case 6:
-                    return "Trọng lượng";
-                case 7:
-                    return "Loại hàng";
-                case 8:
-                	return "Cảng Dở Hàng";
-                case 9:
-                    return "Ghi Chú";
-            }
-        },
-         colWidths: [ 100, 50, 100, 100, 200, 250, 100, 100, 100, 150],
-        filter: "true",
-        columns: [
-            {
-                data: "containerNo",
-                renderer: containerNoRenderer
-            },
-            {
-                data: "sztp",
-                renderer: sztpRenderer
-            },
-            {
-                data: "customsNo",
-                renderer: customsNoRenderer
-            },
-            {
-                data: "customStatus",
-                renderer: customStatusRenderer
-            },
-            {
-                data: "consignee",
-                renderer: consigneeRenderer
-            },
-            //vslNm = vslNm + "-" + "voyCarrier"
-            {
-                data: "vslNm",
-                renderer: vslNmRenderer
-            },
-            {
-                data: "wgt",
-                renderer: wgtRenderer
-            },
-            {
-                data: "cargoType",
-                renderer: cargoTypeRenderer
-            },
-            {
-                data: "dischargePort",
-                renderer: dischargePortRenderer
-            },
-            {
-                data: "remark",
-                renderer: remarkRenderer
-            }
-        ],
-        beforeKeyDown: function (e) {
-            let selected = hot.getSelected()[0];
-            switch (e.keyCode) {
-                // Arrow Left
-                case 37:
-                    if (selected[3] == 0) {
-                        e.stopImmediatePropagation();
-                    }
-                    break;
-                // Arrow Up
-                case 38:
-                    if (selected[2] == 0) {
-                        e.stopImmediatePropagation();
-                    }
-                    break;
-                // Arrow Right
-                case 39:
-                    if (selected[3] == 12) {
-                        e.stopImmediatePropagation();
-                    }
-                    break
-                // Arrow Down
-                case 40:
-                    if (selected[2] == rowAmount - 1) {
-                        e.stopImmediatePropagation();
-                    }
-                    break
-                default:
-                    break;
-            }
-        },
-    };
+  config = {
+    stretchH: "all",
+    height: $('#right-side__main-table').height() - 35,
+    minRows: rowAmount,
+    maxRows: rowAmount,
+    width: "100%",
+    minSpareRows: 0,
+    rowHeights: 30,
+    fixedColumnsLeft: 3,
+    manualColumnResize: true,
+    manualRowResize: true,
+    renderAllRows: true,
+    rowHeaders: true,
+    className: "htMiddle",
+    colHeaders: function (col) {
+      switch (col) {
+        case 0:
+          return "Số Container";
+        case 1:
+          return "Sztp";
+        case 2:
+          return "Số Tờ Khai HQ";
+        case 3:
+          return "T.T.T.Quan";
+        case 4:
+          return "Chủ hàng";
+        case 5:
+          return "Tàu - Chuyến";
+        case 6:
+          return "Trọng lượng";
+        case 7:
+          return "Loại hàng";
+        case 8:
+          return "Cảng Dở Hàng";
+        case 9:
+          return "Ghi Chú";
+      }
+    },
+    colWidths: [100, 50, 100, 100, 200, 250, 100, 100, 100, 150],
+    filter: "true",
+    columns: [
+      {
+        data: "containerNo",
+        renderer: containerNoRenderer
+      },
+      {
+        data: "sztp",
+        renderer: sztpRenderer
+      },
+      {
+        data: "customsNo",
+        renderer: customsNoRenderer
+      },
+      {
+        data: "customStatus",
+        renderer: customStatusRenderer
+      },
+      {
+        data: "consignee",
+        renderer: consigneeRenderer
+      },
+      //vslNm = vslNm + "-" + "voyCarrier"
+      {
+        data: "vslNm",
+        renderer: vslNmRenderer
+      },
+      {
+        data: "wgt",
+        renderer: wgtRenderer
+      },
+      {
+        data: "cargoType",
+        renderer: cargoTypeRenderer
+      },
+      {
+        data: "dischargePort",
+        renderer: dischargePortRenderer
+      },
+      {
+        data: "remark",
+        renderer: remarkRenderer
+      }
+    ],
+    beforeKeyDown: function (e) {
+      let selected = hot.getSelected()[0];
+      switch (e.keyCode) {
+        // Arrow Left
+        case 37:
+          if (selected[3] == 0) {
+            e.stopImmediatePropagation();
+          }
+          break;
+        // Arrow Up
+        case 38:
+          if (selected[2] == 0) {
+            e.stopImmediatePropagation();
+          }
+          break;
+        // Arrow Right
+        case 39:
+          if (selected[3] == 12) {
+            e.stopImmediatePropagation();
+          }
+          break
+        // Arrow Down
+        case 40:
+          if (selected[2] == rowAmount - 1) {
+            e.stopImmediatePropagation();
+          }
+          break
+        default:
+          break;
+      }
+    },
+  };
 }
 configHandson();
 
@@ -358,17 +358,16 @@ function loadTableByContainer(shipmentId) {
     },
     error: function (data) {
       $.modal.closeLoading();
-    } 
+    }
   });
 }
-function getSelectedRow() {
-  var row = $("#dg").datagrid("getSelected");
+function getSelectedRow(index, row) {
   if (row) {
     shipmentSelected = row;
     rowAmount = shipmentSelected.contAmount;
     shipmentDetails.shipmentId = row.id;
     $('#notifyResult').attr("disabled", false);
-    $('#notifyResult').css( "background-color", "#1C84C6");
+    $('#notifyResult').css("background-color", "#1C84C6");
     loadTableByContainer(row.id);
     loadListComment();
   }
@@ -393,15 +392,15 @@ function logisticInfo(id, logistics) {
 }
 
 function notifyResult() {
-  $.modal.open("Xác nhận", PREFIX + "/confirm-result-notification/shipmentId/" + shipmentSelected.id , 430, 330);
+  $.modal.open("Xác nhận", PREFIX + "/confirm-result-notification/shipmentId/" + shipmentSelected.id, 430, 330);
 }
 
 function msgSuccess(msg) {
-	$.modal.alertSuccess(msg);
-	loadTable(shipment);
+  $.modal.alertSuccess(msg);
+  loadTable(shipment);
 }
 function msgError(msg) {
-	$.modal.alertError(msg);
+  $.modal.alertError(msg);
 }
 
 
@@ -412,10 +411,9 @@ function msgError(msg) {
 
 $("#logistic").combobox({
   onSelect: function (serviceType) {
-    if(serviceType.value != 0)
-    {
+    if (serviceType.value != 0) {
       shipment.logisticGroupId = serviceType.value;
-    }else {
+    } else {
       shipment.logisticGroupId = '';
     }
     loadTable(shipment);
@@ -423,25 +421,25 @@ $("#logistic").combobox({
 });
 
 function formatUpdateTime(value, row, index) {
-  if(!row.customScanTime){
-	  return null
+  if (!row.customScanTime) {
+    return null
   }
   let customScanTime = new Date(row.customScanTime);
   let now = new Date();
   let offset = now.getTime() - customScanTime.getTime();
   let totalMinutes = Math.round(offset / 1000 / 60);
   var toHHMMSS = (secs) => {
-	    var sec_num = parseInt(secs, 10)
-	    var hours   = Math.floor(sec_num / 3600)
-	    var minutes = Math.floor(sec_num / 60) % 60
-	    var seconds = sec_num % 60
+    var sec_num = parseInt(secs, 10)
+    var hours = Math.floor(sec_num / 3600)
+    var minutes = Math.floor(sec_num / 60) % 60
+    var seconds = sec_num % 60
 
-	    return [hours,minutes]
-	        .map(v => v < 10 ? "0" + v : v)
-	        .filter((v,i) => v !== "00" || i > 0)
-	        .join(":")
-	}
-  return toHHMMSS(totalMinutes*60);
+    return [hours, minutes]
+      .map(v => v < 10 ? "0" + v : v)
+      .filter((v, i) => v !== "00" || i > 0)
+      .join(":")
+  }
+  return toHHMMSS(totalMinutes * 60);
 }
 
 function clearInput() {
@@ -453,7 +451,7 @@ function clearInput() {
 }
 function search() {
   shipment.blNo = $("#blNo").textbox('getText').toUpperCase();
-  shipment.logisticGroupId = $('#logistic').combobox('getValue') == '0' ? '' : $('#logistic').combobox('getValue') ;
+  shipment.logisticGroupId = $('#logistic').combobox('getValue') == '0' ? '' : $('#logistic').combobox('getValue');
   loadTable(shipment);
 }
 

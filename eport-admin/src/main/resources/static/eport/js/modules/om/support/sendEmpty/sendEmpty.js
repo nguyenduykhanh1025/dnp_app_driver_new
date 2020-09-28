@@ -120,8 +120,8 @@ function loadTable(processOrder) {
     pagination: true,
     pageSize: 20,
     rownumbers: true,
-    onClickRow: function () {
-      getSelectedRow();
+    onBeforeSelect: function (index, row) {
+      getSelectedRow(index, row);
     },
     nowrap: false,
     striped: true,
@@ -429,8 +429,7 @@ function loadTableByContainer(processOrderId) {
     },
   });
 }
-function getSelectedRow() {
-  var row = $("#dg").datagrid("getSelected");
+function getSelectedRow(index, row) {
   if (row) {
     processOrderSelected = row;
     rowAmount = processOrderSelected.contAmount;
@@ -465,7 +464,7 @@ function formatLogistic(value, row, index) {
 }
 
 function logisticInfo(id, logistics) {
-  $.modal.openLogisticInfo("Thông tin: " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function () {});
+  $.modal.openLogisticInfo("Thông tin: " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function () { });
 }
 function executedSuccess() {
   $.modal.open("Xác nhận", PREFIX + "/verify-executed-command-success/process-order/" + processOrderSelected.id, 430, 270);

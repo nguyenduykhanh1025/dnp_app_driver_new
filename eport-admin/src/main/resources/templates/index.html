@@ -1,60 +1,53 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="renderer" content="webkit" />
-    <title>DaNangPort:ePort - Admin Portal</title>
-    <!-- Avoid IE using compatibility mode -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <link th:href="@{favicon.ico}" rel="stylesheet" />
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
-    <link th:href="@{/css/jquery.contextMenu.min.css}" rel="stylesheet" />
-    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" />
-    <link th:href="@{/css/animate.css}" rel="stylesheet" />
-    <link th:href="@{/css/style.css}" rel="stylesheet" />
-    <link th:href="@{/css/skins.css}" rel="stylesheet" />
-    <link th:href="@{/eport/css/eport.css}" rel="stylesheet"/>
-    <link th:href="@{/css/index.css}" rel="stylesheet" />
-  </head>
-  <body class="fixed-sidebar full-height-layout gray-bg ">
-    <div id="wrapper">
-      <div id="page-wrapper" class="gray-bg dashbard-1">
-        <div class="row border-bottom">
-          <nav
-            class="navbar navbar-static-top"
-            role="navigation"
-            style="margin-bottom: 0;"
-          >
-            <ul class="nav navbar-top-links navbar-right welcome-message">
-              <li id="notification">
-                <a onclick="openListComment()">
-                  <i class="fa fa-bell notification-icon"></i>
-                  <span class="badge">0</span>
-                </a>
-                <div class="notification-list" id="notification-list">
-                  <div class="view-all">
-                    <h3>Thông Báo</h3>
-                    <a onclick="viewAll()" id="loadAll">Xem tất cả</a>
-                  </div>
-                  <div class="notifications">
-                    <div class="loading">
-                      <div class="loader"></div>
-                      <div>Đang xử lý</div>
-                    </div>
-                    <div class="empty-div">Không có thông báo</div>
-                  </div>
-                  <div class="see-more"><a onclick="loadMore()" id="loadMore">Xem thêm...</a></div>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="renderer" content="webkit" />
+  <title>DaNangPort:ePort - Admin Portal</title>
+  <!-- Avoid IE using compatibility mode -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link th:href="@{favicon.ico}" rel="stylesheet" />
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+  <link th:href="@{/css/jquery.contextMenu.min.css}" rel="stylesheet" />
+  <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" />
+  <link th:href="@{/css/animate.css}" rel="stylesheet" />
+  <link th:href="@{/css/style.css}" rel="stylesheet" />
+  <link th:href="@{/css/skins.css}" rel="stylesheet" />
+  <link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
+  <link th:href="@{/css/index.css}" rel="stylesheet" />
+</head>
+
+<body class="fixed-sidebar full-height-layout gray-bg ">
+  <div id="wrapper">
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+      <div class="row border-bottom">
+        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0;">
+          <ul class="nav navbar-top-links navbar-right welcome-message">
+            <li id="notification">
+              <a onclick="openListComment()">
+                <i class="fa fa-bell notification-icon"></i>
+                <span class="badge">0</span>
+              </a>
+              <div class="notification-list" id="notification-list">
+                <div class="view-all">
+                  <h3>Thông Báo</h3>
+                  <a onclick="viewAll()" id="loadAll">Xem tất cả</a>
                 </div>
-              </li>
-              <li class="dropdown user-menu">
-                <a
-                  href="javascript:void(0)"
-                  class="dropdown-toggle"
-                  data-hover="dropdown"
-                >
-                  <span class="hidden-xs"
-                    >[[${#strings.defaultString(user.userName, '-')}]]</span
+                <div class="notifications">
+                  <div class="loading">
+                    <div class="loader"></div>
+                    <div>Đang xử lý</div>
+                  </div>
+                  <div class="empty-div">Không có thông báo</div>
+                </div>
+                <div class="see-more"><a onclick="loadMore()" id="loadMore">Xem thêm...</a></div>
+              </div>
+            </li>
+            <li class="dropdown user-menu">
+              <a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
+                <span class="hidden-xs">[[${#strings.defaultString(user.userName, '-')}]]</span
                   >
                 </a>
                 <ul class="dropdown-menu">
@@ -314,7 +307,7 @@
       var currentPage = 1, pageSize = 5, notiCount = 0, total = 0, currentAmount = 0;
       var report = /*[[${report}]]*/;
 
-      $(document).ready(function() {
+      $(document).ready(function () {
         $('#2425').append(' <span class="round-notify-count">' + report.RECEIVECUSTOM + '</span>');
         $('#2205').append(' <span class="round-notify-count">' + report.RECEIVEEMPTYORDER + '</span>');
         $('#2350').append(' <span class="round-notify-count">' + report.RECEIVEFULLORDER + '</span>');
@@ -323,66 +316,68 @@
         $('#2365').append(' <span class="round-notify-count">' + report.SENDFULLORDER + '</span>');
         $('#2047').append(' <span class="round-notify-count">' + (
           report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER
-          ) + '</span>');
+        ) + '</span>');
+
+        $("#2047").click(updateReportNumberOm);
       });
 
-      if($.common.isNotEmpty(skin)){
-      	$("body").addClass(skin.split('|')[0]);
-      	$("body").addClass(skin.split('|')[1]);
+      if ($.common.isNotEmpty(skin)) {
+        $("body").addClass(skin.split('|')[0]);
+        $("body").addClass(skin.split('|')[1]);
       } else {
-      	$("body").addClass([[${sideTheme}]]);
-      	$("body").addClass([[${skinName}]]);
+        $("body").addClass([[${ sideTheme }]]);
+        $("body").addClass([[${ skinName }]]);
       }
       function resetPwd() {
-          var url = ctx + 'system/user/profile/resetPwd';
-          $.modal.open("Reset Password", url, '770', '380');
+        var url = ctx + 'system/user/profile/resetPwd';
+        $.modal.open("Reset Password", url, '770', '380');
       }
       function switchSkin() {
-          layer.open({
-      		type : 2,
-      		shadeClose : true,
-      		title : "Thay đổi nền",
-      		area : ["530px", "386px"],
-      		content : [ctx + "system/switchSkin", 'no']
-      	})
+        layer.open({
+          type: 2,
+          shadeClose: true,
+          title: "Thay đổi nền",
+          area: ["530px", "386px"],
+          content: [ctx + "system/switchSkin", 'no']
+        })
       }
       function applyPath(url) {
-      	$('a[href$="' + decodeURI(url) + '"]').click();
-          $('a[href$="' + url + '"]').parent("li").addClass("selected").parents("li :not(.user-panel)").addClass("active").end().parents("ul").addClass("in");
+        $('a[href$="' + decodeURI(url) + '"]').click();
+        $('a[href$="' + url + '"]').parent("li").addClass("selected").parents("li :not(.user-panel)").addClass("active").end().parents("ul").addClass("in");
       }
 
-      $(function() {
-      	if($.common.equals("history", mode) && window.performance.navigation.type == 1) {
-      		var url = storage.get('publicPath');
-      	    if ($.common.isNotEmpty(url)) {
-      	    	applyPath(url);
-      	    }
-      	} else {
-      		var hash = location.hash;
-      	    if ($.common.isNotEmpty(hash)) {
-      	        var url = hash.substring(1, hash.length);
-      	        applyPath(url);
-      	    }
-      	}
+      $(function () {
+        if ($.common.equals("history", mode) && window.performance.navigation.type == 1) {
+          var url = storage.get('publicPath');
+          if ($.common.isNotEmpty(url)) {
+            applyPath(url);
+          }
+        } else {
+          var hash = location.hash;
+          if ($.common.isNotEmpty(hash)) {
+            var url = hash.substring(1, hash.length);
+            applyPath(url);
+          }
+        }
       });
 
       function showMenu() {
         $(".more-menu").css("display", "flex");
       }
-      
-      $(function() {
-      	if($.common.equals("history", mode) && window.performance.navigation.type == 1) {
-      		var url = storage.get('publicPath');
-      	    if ($.common.isNotEmpty(url)) {
-      	    	applyPath(url);
-      	    }
-      	} else {
-      		var hash = location.hash;
-      	    if ($.common.isNotEmpty(hash)) {
-      	        var url = hash.substring(1, hash.length);
-      	        applyPath(url);
-      	    }
-      	}
+
+      $(function () {
+        if ($.common.equals("history", mode) && window.performance.navigation.type == 1) {
+          var url = storage.get('publicPath');
+          if ($.common.isNotEmpty(url)) {
+            applyPath(url);
+          }
+        } else {
+          var hash = location.hash;
+          if ($.common.isNotEmpty(hash)) {
+            var url = hash.substring(1, hash.length);
+            applyPath(url);
+          }
+        }
       });
 
       function openListComment() {
@@ -393,13 +388,13 @@
         }
       }
 
-      window.addEventListener('click', function(e){   
+      window.addEventListener('click', function (e) {
         if (!document.getElementById('notification-list').contains(e.target) && !document.getElementById('notification').contains(e.target)) {
           $('.notification-list').hide();
         }
       });
 
-      $(window).blur( function(e){
+      $(window).blur(function (e) {
         $('.notification-list').hide();
       });
 
@@ -411,7 +406,7 @@
         currentAmount = 0;
         total = 0;
         $('.notification-list').show();
-        $('.loading').css('top', ($('.notifications').height()/2) + 10);
+        $('.loading').css('top', ($('.notifications').height() / 2) + 10);
         $('.loading').show();
         $.ajax({
           url: ctx + "shipment-comment/list",
@@ -449,7 +444,7 @@
 
       function loadMore() {
         currentPage++;
-        $('.loading').css('top', ($('.notifications').height()/2) + 10);
+        $('.loading').css('top', ($('.notifications').height() / 2) + 10);
         $('.loading').show();
         $.ajax({
           url: ctx + "shipment-comment/list",
@@ -480,7 +475,7 @@
         });
       }
 
-      function getNotificationIntoView (shipmentComments) {
+      function getNotificationIntoView(shipmentComments) {
         let html = '';
         shipmentComments.forEach(function (element, index) {
           if (element.seenFlg) {
@@ -512,14 +507,17 @@
           notiCount--;
         }
         $('.badge').text(notiCount);
-        // TODO go to page detail
+        let url = ctx + 'om/controlling';
+        $('#2445').attr("href", url + "?sId=" + shipmentId);
+        $('#2445').trigger("click");
+        $('#2445').attr("href", url);
       }
 
-      $(function() {
+      $(function () {
         $.ajax({
-        url: ctx + "shipment-comment/amount",
-        method: "GET",
-        success: function (data) {
+          url: ctx + "shipment-comment/amount",
+          method: "GET",
+          success: function (data) {
             if (data.code == 0) {
               notiCount = data.shipmentCommentAmount;
               $('.badge').text(notiCount);
@@ -529,7 +527,7 @@
       });
 
       function viewAll() {
-        $('.loading').css('top', ($('.notifications').height()/2) + 10);
+        $('.loading').css('top', ($('.notifications').height() / 2) + 10);
         $('.loading').show();
         $.ajax({
           url: ctx + "shipment-comment/list/all",
@@ -549,6 +547,25 @@
         });
       }
 
+      function updateReportNumberOm() {
+        $.ajax({
+          url: ctx + "report/count",
+          method: "GET",
+          success: function (data) {
+            if (data.code == 0) {
+              $('#2425').append(' <span class="round-notify-count">' + report.RECEIVECUSTOM + '</span>');
+              $('#2205').append(' <span class="round-notify-count">' + report.RECEIVEEMPTYORDER + '</span>');
+              $('#2350').append(' <span class="round-notify-count">' + report.RECEIVEFULLORDER + '</span>');
+              $('#2465').append(' <span class="round-notify-count">' + report.SENDCUSTOM + '</span>');
+              $('#2245').append(' <span class="round-notify-count">' + report.SENDEMPTYORDER + '</span>');
+              $('#2365').append(' <span class="round-notify-count">' + report.SENDFULLORDER + '</span>');
+              $('#2047').append(' <span class="round-notify-count">' + (
+                report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER
+              ) + '</span>');
+            }
+          }
+        });
+      }
     </script>
   </body>
 </html>
