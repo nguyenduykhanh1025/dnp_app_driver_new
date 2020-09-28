@@ -135,5 +135,5 @@ public interface IEdoService {
 
 	public Map<String, String> getReportByCarrierGroup(String[] codes);
 
-	public Edo getBillOfLadingInfo(String blNo);
+	public Edo getBillOfLadingInfo(Edo edo);
 }

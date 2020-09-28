@@ -501,10 +501,18 @@
             FETCH NEXT 1 ROWS ONLY
 	</select>
 
-  <select id="getBillOfLadingInfo" parameterType="String" resultMap="EdoResult">
-        <include refid="selectEdoVo"/>
-        WHERE bill_of_lading = #{blNo}
-        FETCH NEXT 1 ROWS ONLY
+  <select id="getBillOfLadingInfo" parameterType="Edo" resultMap="EdoResult">
+      <include refid="selectEdoVo"/>	
+		<where>
+ 		<if test="billOfLading != null  and billOfLading != ''">and bill_of_lading = #{billOfLading}</if>
+	     <if test="params.groupCode != null">
+        	and carrier_code in
+        <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+          #{carrier_code}
+        </foreach>
+      	</if>
+		</where>
+		FETCH NEXT 1 ROWS ONLY
     </select>
-
+	
 </mapper>

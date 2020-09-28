@@ -324,12 +324,17 @@ public class CarrierEdoController extends CarrierBaseController {
 		if (!hasEdoPermission()) {
 			return error("Tài khoản này không có quyền phát hành eDO");
 		}
+		Map<String, Object> groupCodes = new HashMap<>();
+		groupCodes.put("groupCode", super.getGroupCodes());
 		if (edos != null) {
 			String consignee = edos.get(0).getConsignee();
 			String billOfLading = edos.get(0).getBillOfLading();
 			String vessel = edos.get(0).getVessel();
 			String voyNo = edos.get(0).getVoyNo();
-			if (edoService.getBillOfLadingInfo(edos.get(0).getBillOfLading()) != null) {
+			Edo edoCheckBilll = new Edo();
+			edoCheckBilll.setBillOfLading(edos.get(0).getBillOfLading());
+			edoCheckBilll.setParams(groupCodes);
+			if (edoService.getBillOfLadingInfo(edoCheckBilll) != null) {
 				// exist B/L
 				return AjaxResult.error("Có lỗi xảy ra ở container '" + edos.get(0).getBillOfLading()
 						+ "'.<br/>Lỗi: Mã vận đơn (B/L No.) " + edos.get(0).getBillOfLading() + " đã tồn tại.");
