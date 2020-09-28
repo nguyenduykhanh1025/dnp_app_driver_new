@@ -12,22 +12,17 @@ $(function () {
 })
 
 function confirm() {
-  if (formatDate(expiredDem) == $("#expiredDem").val() && $("#detFreeTime").val() == detFreeTime && $("#emptyContainerDepot").val() == emptyContainerDepot && $("#consignee").val() == consignee) {
-    $.modal.alertError("Không có thông tin nào được thay đổi !")
-    return;
-  }
   if (validateDateUpdate($("#expiredDem").val()) == 1 && formatDate(expiredDem) != $("#expiredDem").val()) {
     $.modal.alertError("Hạn lệnh chỉ có thể thay đổi về quá khứ nhiều nhất là 1 ngày !")
     return;
   }
   if($("#detFreeTime").val() == null || $("#detFreeTime").val() == '')
   {
-    $.modal.alertError("Ngày miễn lưu vỏ không được để trống !")
-    return;
+    detFreeTime = 0;
   }
-  if($("#detFreeTime").val() <= 0)
+  if($("#detFreeTime").val() < 0)
   {
-    $.modal.alertError("Ngày miễn lưu vỏ phải lớn hơn 0 !")
+    $.modal.alertError("Ngày miễn lưu vỏ phải là số nguyên dương !")
     return;
   }
   if($("#consignee").val() == null || $("#consignee").val() == '')
@@ -45,7 +40,7 @@ function confirm() {
         data: {
           ids: ids,
           expiredDem: formatDateForSubmit($("#expiredDem").val()),
-          detFreeTime: $("#detFreeTime").val() == detFreeTime ? "" : $("#detFreeTime").val(),
+          detFreeTime: $("#detFreeTime").val() == detFreeTime ? detFreeTime : $("#detFreeTime").val(),
           emptyContainerDepot: $("#emptyContainerDepot").val() == emptyContainerDepot ? "" : $("#emptyContainerDepot").val(),
           consignee: $("#consignee").val() == consignee ? "" : $("#consignee").val()
         },

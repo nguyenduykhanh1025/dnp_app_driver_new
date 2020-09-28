@@ -159,7 +159,7 @@ public class CarrierEdoController extends CarrierBaseController {
 				if (edoService.selectFirstEdo(edoCheck) == null) {
 					return AjaxResult.error(
 							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
-				} else if (edoService.selectFirstEdo(edoCheck).getStatus() != null) {
+				} else if (edoService.selectEdoById(Long.parseLong(id)).getStatus() != null) {
 					return AjaxResult.error(
 							"Bạn không thể xóa container này <br>Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
 				}
@@ -199,7 +199,7 @@ public class CarrierEdoController extends CarrierBaseController {
 				if (edoService.selectFirstEdo(edoCheck) == null) {
 					return AjaxResult.error(
 							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
-				} else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("3")) {
+				} else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("5")) {
 					return AjaxResult.error(
 							"Bạn đã chọn container đã GATE-IN ra khỏi <br> cảng, vui lòng kiểm tra lại dữ liệu!");
 				}
