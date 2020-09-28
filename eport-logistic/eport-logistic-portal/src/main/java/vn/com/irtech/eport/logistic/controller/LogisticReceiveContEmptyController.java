@@ -36,6 +36,7 @@ import oracle.net.aso.a;
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.annotation.RepeatSubmit;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
@@ -422,6 +423,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@Log(title = "Xác Nhận OTP", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/otp/{otp}/verification")
 	@ResponseBody
+	@RepeatSubmit
 	public AjaxResult verifyOtp(@PathVariable("otp") String otp, String shipmentDetailIds, String taxCode, boolean creditFlag) {
 		try {
 			Long.parseLong(otp);
