@@ -27,6 +27,7 @@ import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoHouseBillService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.annotation.RepeatSubmit;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.constant.SystemConstants;
@@ -472,6 +473,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@Log(title = "Xác Nhận OTP", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/otp/{otp}/verification")
 	@ResponseBody
+	@RepeatSubmit
 	public AjaxResult verifyOtp(String shipmentDetailIds, @PathVariable("otp") String otp, String taxCode, boolean creditFlag, boolean isSendContEmpty) {
 		try {
 			Long.parseLong(otp);

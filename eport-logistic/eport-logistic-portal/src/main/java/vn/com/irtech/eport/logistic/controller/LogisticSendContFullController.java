@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.annotation.RepeatSubmit;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -364,6 +365,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@Log(title = "Xác Nhận OTP", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/otp/{otp}/verification")
 	@ResponseBody
+	@RepeatSubmit
 	public AjaxResult verifyOtp(@PathVariable String otp, String shipmentDetailIds, String taxCode, boolean creditFlag) {
 		try {
 			Long.parseLong(otp);
