@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="renderer" content="webkit" />
-    <title>DaNangPort:ePort - Admin Portal</title>
+    <title>DNP ePort - DNP Portal</title>
     <!-- Avoid IE using compatibility mode -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link th:href="@{favicon.ico}" rel="stylesheet" />
@@ -295,6 +295,7 @@
         </div>
       </div>
     </div>
+
     <script th:src="@{/js/jquery.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
@@ -315,15 +316,28 @@
       var report = /*[[${report}]]*/;
 
       $(document).ready(function() {
-        $('#2425').append(' <span class="round-notify-count">' + report.RECEIVECUSTOM + '</span>');
-        $('#2205').append(' <span class="round-notify-count">' + report.RECEIVEEMPTYORDER + '</span>');
-        $('#2350').append(' <span class="round-notify-count">' + report.RECEIVEFULLORDER + '</span>');
-        $('#2465').append(' <span class="round-notify-count">' + report.SENDCUSTOM + '</span>');
-        $('#2245').append(' <span class="round-notify-count">' + report.SENDEMPTYORDER + '</span>');
-        $('#2365').append(' <span class="round-notify-count">' + report.SENDFULLORDER + '</span>');
-        $('#2047').append(' <span class="round-notify-count">' + (
-          report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER
-          ) + '</span>');
+    	  $('#2047').append(' <span class="round-notify-count">' + (
+    	          report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER
+    	          ) + '</span>');
+    	if(report.RECEIVEFULLORDER > 0) {
+          $('#2205').append(' <span class="round-notify-count">' + report.RECEIVEFULLORDER + '</span>');
+    	}
+    	if(report.RECEIVEEMPTYORDER > 0) {
+          $('#2350').append(' <span class="round-notify-count">' + report.RECEIVEEMPTYORDER + '</span>');
+    	}
+    	if(report.SENDEMPTYORDER > 0) {
+          $('#2245').append(' <span class="round-notify-count">' + report.SENDEMPTYORDER + '</span>');
+    	}
+    	if(report.SENDFULLORDER > 0) {
+          $('#2365').append(' <span class="round-notify-count">' + report.SENDFULLORDER + '</span>');
+    	}
+    	if(report.SENDCUSTOM > 0) {
+          $('#2465').append(' <span class="round-notify-count">' + report.SENDCUSTOM + '</span>');
+    	}
+        if(report.RECEIVECUSTOM > 0) {
+          $('#2425').append(' <span class="round-notify-count">' + report.RECEIVECUSTOM + '</span>');
+        }
+        
       });
 
       if($.common.isNotEmpty(skin)){
