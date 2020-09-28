@@ -298,4 +298,11 @@ public interface IShipmentDetailService
      */
     public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail);
     
+    /**
+     * Reset custom status to null for shipmentId
+     * 
+     * @param shipmentId
+     */
+	public void resetCustomStatus(Long shipmentId);
+    
 }

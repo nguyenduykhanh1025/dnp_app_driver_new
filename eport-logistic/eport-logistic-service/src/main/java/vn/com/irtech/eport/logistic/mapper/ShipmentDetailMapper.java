@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Param;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
-import vn.com.irtech.eport.logistic.form.VesselVoyageMc;
 
 /**
  * Shipment DetailsMapper Interface
@@ -170,5 +169,11 @@ public interface ShipmentDetailMapper
      * @return int
      */
     public int updateShipmentDetailByIds(@Param("shipmentDetailIds") String[] shipmentDetailIds, @Param("shipmentDetail") ShipmentDetail shipmentDetail);
+
+    /**
+     * Reset custom status to null
+     * @param shipmentId shipmentId
+     */
+	public void resetCustomStatus(@Param("shipmentId")Long shipmentId);
     
 }
