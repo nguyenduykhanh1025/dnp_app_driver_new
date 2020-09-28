@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.controller.BaseController;
+import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -61,6 +63,16 @@ public class SysIndexController extends BaseController
         mmap.put("report", report);
         
         return "index";
+    }
+    
+    // Get report number for om
+    @GetMapping("/report/count")
+    @ResponseBody
+    public AjaxResult getReportNumber() {
+    	AjaxResult ajaxResult = AjaxResult.success();
+    	Map<String, Long> report = processOrderService.getSupportNumberReportForOm();
+    	ajaxResult.put("report", report);
+    	return ajaxResult;
     }
 
     // switch theme

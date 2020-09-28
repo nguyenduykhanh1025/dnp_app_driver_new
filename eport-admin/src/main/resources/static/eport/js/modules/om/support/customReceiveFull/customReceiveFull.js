@@ -69,8 +69,8 @@ $(document).ready(function () {
 
   $('#right-layout').layout('collapse', 'south');
   setTimeout(() => {
-      hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
-      hot.render();
+    hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
+    hot.render();
   }, 200);
 
   $("#logisticGroups").combobox({
@@ -90,7 +90,7 @@ $(document).ready(function () {
     }
   });
 
-  $("#blNo").textbox('textbox').bind('keydown', function(e) {
+  $("#blNo").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
       shipment.blNo = $("#blNo").textbox('getText').toUpperCase();
@@ -98,7 +98,7 @@ $(document).ready(function () {
     }
   });
 
-  $("#containerNo").textbox('textbox').bind('keydown', function(e) {
+  $("#containerNo").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
       shipment.params.containerNo = $("#containerNo").textbox('getText').toUpperCase();
@@ -106,7 +106,7 @@ $(document).ready(function () {
     }
   });
 
-  $("#consignee").textbox('textbox').bind('keydown', function(e) {
+  $("#consignee").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
       shipment.params.consignee = $("#consignee").textbox('getText').toUpperCase();
@@ -145,8 +145,8 @@ function loadTable() {
     pagination: true,
     pageSize: 20,
     rownumbers: true,
-    onClickRow: function () {
-      getSelectedRow();
+    onBeforeSelect: function (index, row) {
+      getSelectedRow(index, row);
     },
     nowrap: false,
     striped: true,
@@ -168,6 +168,7 @@ function loadTable() {
           if (res.code == 0) {
             success(res.shipments);
             $("#dg").datagrid("selectRow", 0);
+            parent.updateReportNumberOm();
           } else {
             success([]);
           }
@@ -183,218 +184,218 @@ loadTableByContainer();
 
 //FORMAT HANDSONTABLE COLUMN
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'sztp' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function customsNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'customsNo' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'customsNo' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function customStatusRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'customStatus' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'customStatus' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'expiredDem' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'expiredDem' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'emptyDepot' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'emptyDepot' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'detFreeTime' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'detFreeTime' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'consignee' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'consignee' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'wgt' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'wgt' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'remark' + row).addClass("htMiddle");
-    $(td).html(value);
-    return td;
+  cellProperties.readOnly = 'true';
+  $(td).attr('id', 'remark' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
 }
 //CONFIGURATE HANDSONTABLE
 function configHandson() {
-    config = {
-        stretchH: "all",
-        height: $('#right-side__main-table').height() - 35,
-        minRows: rowAmount,
-        maxRows: rowAmount,
-        width: "100%",
-        minSpareRows: 0,
-        rowHeights: 30,
-        fixedColumnsLeft: 3,
-        manualColumnResize: true,
-        manualRowResize: true,
-        renderAllRows: true,
-        rowHeaders: true,
-        className: "htMiddle",
-        colHeaders: function (col) {
-            switch (col) {
-                case 0:
-                    return "Số Container";
-                case 1:
-                    return "Sztp";
-                case 2:
-                    return "Số Tờ Khai HQ";
-                case 3:
-                    return "T.T.T.Quan";
-                case 4:
-                    return "Hạn Lệnh";
-                case 5:
-                    return "Nơi Trả Vỏ";
-                case 6:
-                    return "Ngày <br> Miễn <br>Lưu";
-                case 7:
-                    return "Chủ hàng";
-                case 8:
-                    return "Tàu - Chuyến";
-                case 9:
-                    return "Trọng lượng";
-                case 10:
-                    return "Loại hàng";
-                case 11:
-                	return "Cảng Dở Hàng";
-                case 12:
-                    return "Ghi Chú";
-            }
-        },
-         colWidths: [ 100, 50, 100, 100, 150, 200, 70, 200, 250, 100, 100, 100, 150],
-        filter: "true",
-        columns: [
-            {
-                data: "containerNo",
-                renderer: containerNoRenderer
-            },
-            {
-                data: "sztp",
-                renderer: sztpRenderer
-            },
-            {
-                data: "customsNo",
-                renderer: customsNoRenderer
-            },
-            {
-                data: "customStatus",
-                renderer: customStatusRenderer
-            },
-            {
-                data: "expiredDem",
-                renderer: expiredDemRenderer
-            },
-            {
-                data: "emptyDepot",
-                renderer: emptyDepotRenderer
-            },
-            {
-                data: "detFreeTime",
-                renderer: detFreeTimeRenderer
-            },
-            {
-                data: "consignee",
-                renderer: consigneeRenderer
-            },
-            //vslNm = vslNm + "-" + "voyCarrier"
-            {
-                data: "vslNm",
-                renderer: vslNmRenderer
-            },
-            {
-                data: "wgt",
-                renderer: wgtRenderer
-            },
-            {
-                data: "cargoType",
-                renderer: cargoTypeRenderer
-            },
-            {
-                data: "dischargePort",
-                renderer: dischargePortRenderer
-            },
-            {
-                data: "remark",
-                renderer: remarkRenderer
-            }
-        ],
-        beforeKeyDown: function (e) {
-            let selected = hot.getSelected()[0];
-            switch (e.keyCode) {
-                // Arrow Left
-                case 37:
-                    if (selected[3] == 0) {
-                        e.stopImmediatePropagation();
-                    }
-                    break;
-                // Arrow Up
-                case 38:
-                    if (selected[2] == 0) {
-                        e.stopImmediatePropagation();
-                    }
-                    break;
-                // Arrow Right
-                case 39:
-                    if (selected[3] == 12) {
-                        e.stopImmediatePropagation();
-                    }
-                    break
-                // Arrow Down
-                case 40:
-                    if (selected[2] == rowAmount - 1) {
-                        e.stopImmediatePropagation();
-                    }
-                    break
-                default:
-                    break;
-            }
-        },
-    };
+  config = {
+    stretchH: "all",
+    height: $('#right-side__main-table').height() - 35,
+    minRows: rowAmount,
+    maxRows: rowAmount,
+    width: "100%",
+    minSpareRows: 0,
+    rowHeights: 30,
+    fixedColumnsLeft: 3,
+    manualColumnResize: true,
+    manualRowResize: true,
+    renderAllRows: true,
+    rowHeaders: true,
+    className: "htMiddle",
+    colHeaders: function (col) {
+      switch (col) {
+        case 0:
+          return "Số Container";
+        case 1:
+          return "Sztp";
+        case 2:
+          return "Số Tờ Khai HQ";
+        case 3:
+          return "T.T.T.Quan";
+        case 4:
+          return "Hạn Lệnh";
+        case 5:
+          return "Nơi Trả Vỏ";
+        case 6:
+          return "Ngày <br> Miễn <br>Lưu";
+        case 7:
+          return "Chủ hàng";
+        case 8:
+          return "Tàu - Chuyến";
+        case 9:
+          return "Trọng lượng";
+        case 10:
+          return "Loại hàng";
+        case 11:
+          return "Cảng Dở Hàng";
+        case 12:
+          return "Ghi Chú";
+      }
+    },
+    colWidths: [100, 50, 100, 100, 150, 200, 70, 200, 250, 100, 100, 100, 150],
+    filter: "true",
+    columns: [
+      {
+        data: "containerNo",
+        renderer: containerNoRenderer
+      },
+      {
+        data: "sztp",
+        renderer: sztpRenderer
+      },
+      {
+        data: "customsNo",
+        renderer: customsNoRenderer
+      },
+      {
+        data: "customStatus",
+        renderer: customStatusRenderer
+      },
+      {
+        data: "expiredDem",
+        renderer: expiredDemRenderer
+      },
+      {
+        data: "emptyDepot",
+        renderer: emptyDepotRenderer
+      },
+      {
+        data: "detFreeTime",
+        renderer: detFreeTimeRenderer
+      },
+      {
+        data: "consignee",
+        renderer: consigneeRenderer
+      },
+      //vslNm = vslNm + "-" + "voyCarrier"
+      {
+        data: "vslNm",
+        renderer: vslNmRenderer
+      },
+      {
+        data: "wgt",
+        renderer: wgtRenderer
+      },
+      {
+        data: "cargoType",
+        renderer: cargoTypeRenderer
+      },
+      {
+        data: "dischargePort",
+        renderer: dischargePortRenderer
+      },
+      {
+        data: "remark",
+        renderer: remarkRenderer
+      }
+    ],
+    beforeKeyDown: function (e) {
+      let selected = hot.getSelected()[0];
+      switch (e.keyCode) {
+        // Arrow Left
+        case 37:
+          if (selected[3] == 0) {
+            e.stopImmediatePropagation();
+          }
+          break;
+        // Arrow Up
+        case 38:
+          if (selected[2] == 0) {
+            e.stopImmediatePropagation();
+          }
+          break;
+        // Arrow Right
+        case 39:
+          if (selected[3] == 12) {
+            e.stopImmediatePropagation();
+          }
+          break
+        // Arrow Down
+        case 40:
+          if (selected[2] == rowAmount - 1) {
+            e.stopImmediatePropagation();
+          }
+          break
+        default:
+          break;
+      }
+    },
+  };
 }
 configHandson();
 
@@ -423,11 +424,10 @@ function loadTableByContainer(shipmentId) {
     },
     error: function (data) {
       $.modal.closeLoading();
-    } 
+    }
   });
 }
-function getSelectedRow() {
-  var row = $("#dg").datagrid("getSelected");
+function getSelectedRow(index, row) {
   if (row) {
     shipmentSelected = row;
     rowAmount = shipmentSelected.contAmount;
@@ -448,10 +448,10 @@ function formatBlBooking(value, row) {
   return "";
 }
 function formatType(value, row, index) {
-	if (value == 1){
-		return "eDO";
-	}
-	return "DO";
+  if (value == 1) {
+    return "eDO";
+  }
+  return "DO";
 }
 function formatLogistic(value, row, index) {
   return '<a onclick="logisticInfo(' + row.logisticGroupId + "," + "'" + value + "')\"> " + value + "</a>";
@@ -463,20 +463,20 @@ function logisticInfo(id, logistics) {
 }
 
 function notifyResult() {
-  $.modal.open("Xác nhận", PREFIX + "/confirm-result-notification/shipmentId/" + shipmentSelected.id , 430, 330);
+  $.modal.open("Xác nhận", PREFIX + "/confirm-result-notification/shipmentId/" + shipmentSelected.id, 430, 330);
 }
 
 function msgSuccess(msg) {
-	$.modal.alertSuccess(msg);
-	loadTable(shipment);
+  $.modal.alertSuccess(msg);
+  loadTable(shipment);
 }
 function msgError(msg) {
-	$.modal.alertError(msg);
+  $.modal.alertError(msg);
 }
 
 function formatUpdateTime(value, row, index) {
-  if(!row.customScanTime){
-	  return null
+  if (!row.customScanTime) {
+    return null
   }
 
   let customScanTime = new Date(row.customScanTime);
@@ -484,17 +484,17 @@ function formatUpdateTime(value, row, index) {
   let offset = now.getTime() - customScanTime.getTime();
   let totalMinutes = Math.round(offset / 1000 / 60);
   var toHHMMSS = (secs) => {
-	    var sec_num = parseInt(secs, 10)
-	    var hours   = Math.floor(sec_num / 3600)
-	    var minutes = Math.floor(sec_num / 60) % 60
-	    var seconds = sec_num % 60
+    var sec_num = parseInt(secs, 10)
+    var hours = Math.floor(sec_num / 3600)
+    var minutes = Math.floor(sec_num / 60) % 60
+    var seconds = sec_num % 60
 
-	    return [hours,minutes]
-	        .map(v => v < 10 ? "0" + v : v)
-	        .filter((v,i) => v !== "00" || i > 0)
-	        .join(":")
-	}
-  return toHHMMSS(totalMinutes*60);
+    return [hours, minutes]
+      .map(v => v < 10 ? "0" + v : v)
+      .filter((v, i) => v !== "00" || i > 0)
+      .join(":")
+  }
+  return toHHMMSS(totalMinutes * 60);
 }
 
 function search() {
