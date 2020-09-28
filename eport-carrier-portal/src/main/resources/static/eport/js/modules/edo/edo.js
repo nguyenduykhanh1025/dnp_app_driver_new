@@ -4,6 +4,7 @@ var bill;
 var fromDate, toDate;
 var edo = new Object();
 var countCheck = 0;
+var billOfLadingFresh;
 $(function () {
   $("#updateEdo").attr("disabled", true);
   $("#delEdo").attr("disabled", true);
@@ -212,13 +213,12 @@ function viewUpdateCont(id) {
   $.modal.openOption("Cập nhật container", PREFIX + "/update/" + id, 550, 420);
 }
 
-function loadTableByContainer(billOfLading) {
-  edo.billOfLading = billOfLading;
+function loadTableByContainer() {
   $("#container-grid").datagrid({
     url: PREFIX + "/edo",
     method: "POST",
     singleSelect: false,
-    clientPaging: true,
+    clientPaging: false,
     height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     pagination: true,
     pageSize: 20,
@@ -227,10 +227,11 @@ function loadTableByContainer(billOfLading) {
     rownumbers: true,
     loader: function (param, success, error) {
       var opts = $(this).datagrid("options");
-      if (billOfLading == null) {
-        return false;
-      }
       if (!opts.url) return false;
+      if(edo.billOfLading == null)
+      {
+        edo.billOfLading = billOfLadingFresh;
+      }
       $.ajax({
         type: opts.method,
         url: opts.url,
@@ -245,6 +246,10 @@ function loadTableByContainer(billOfLading) {
           data: edo
         }),
         success: function (data) {
+          if(data == null || data == '' || data == undefined)
+          {
+            success(data);
+          }
           success(JSON.parse(data));
           edo.billOfLading = null;
         },
@@ -261,8 +266,9 @@ function getSelectedRow() {
   $("#delEdo").attr("disabled", true);
   var row = $("#dg").datagrid("getSelected");
   if (row) {
-    bill = row.billOfLading;
-    loadTableByContainer(row.billOfLading);
+    edo.billOfLading = row.billOfLading;
+    billOfLadingFresh = row.billOfLading;
+    loadTableByContainer();
   }
 }
 
@@ -489,3 +495,7 @@ function dateToString(date) {
   return ("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear() +
     " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
 }
+
+$('.l-btn l-btn-small l-btn-plain').click(function(){
+      console.log('sss');
+});
