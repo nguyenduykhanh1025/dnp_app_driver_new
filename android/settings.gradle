@@ -1,4 +1,4 @@
-rootProject.name = 'Dnp_Driver'
+rootProject.name = 'vn.com.irtech.mobile.eport.driver'
 include ':react-native-android-location-services-dialog-box'
 project(':react-native-android-location-services-dialog-box').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-android-location-services-dialog-box/android')
 include ':react-native-firebase'

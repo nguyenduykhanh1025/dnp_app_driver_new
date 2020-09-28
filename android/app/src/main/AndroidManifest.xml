@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="Dnp_Driver">
+  package="vn.com.irtech.mobile.eport.driver">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,9 +10,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <permission
-        android:name="Dnp_Driver.permission.C2D_MESSAGE"
+        android:name="vn.com.irtech.mobile.eport.driver.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-    <uses-permission android:name="Dnp_Driver.permission.C2D_MESSAGE" />
+    <uses-permission android:name="vn.com.irtech.mobile.eport.driver.permission.C2D_MESSAGE" />
 
     <application
       android:name=".MainApplication"

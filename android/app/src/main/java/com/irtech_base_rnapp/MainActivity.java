@@ -1,4 +1,4 @@
-package Dnp_Driver;
+package vn.com.irtech.mobile.eport.driver;
 
 import com.facebook.react.ReactActivity;
 
@@ -10,6 +10,6 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "Dnp_Driver";
+    return "vn.com.irtech.mobile.eport.driver";
   }
 }

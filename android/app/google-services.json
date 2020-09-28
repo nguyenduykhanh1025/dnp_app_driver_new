@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:202345796819:android:dab08dfb0001dc39087026",
         "android_client_info": {
-          "package_name": "Dnp_Driver"
+          "package_name": "vn.com.irtech.mobile.eport.driver"
         }
       },
       "oauth_client": [
@@ -35,7 +35,7 @@
               "client_id": "202345796819-3dmhr16i29mqek2ts4107vpecldpnt4h.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "Dnp_Driver"
+                "bundle_id": "vn.com.irtech.mobile.eport.driver"
               }
             }
           ]
