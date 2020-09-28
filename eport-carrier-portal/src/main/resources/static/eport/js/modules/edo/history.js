@@ -60,6 +60,10 @@ function formatOldValue(val,row)
         for(let i = 0 ;i < originalArray.length ; i++)
         {
            let checkOldValue = originalArray[i].split(':');
+           if(checkOldValue.length > 2)
+           {
+            return checkOldValue[1] + ":" + checkOldValue[2] + ":" + checkOldValue[3]; 
+           }
            if(checkOldValue[0].trim() == row.fieldName)
            {
                 return checkOldValue[1]; 
