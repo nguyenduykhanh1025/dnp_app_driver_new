@@ -74,15 +74,15 @@ config = {
   colHeaders: [
     "Hãng tàu <i class='red'>(*)</i><br>OPR Code",
     "Số vận đơn <i class='red'>(*)</i><br>B/L No.",
-    "Order Number",
+    "Order Number <i class='red'>(*)</i>",
     "Số container <i class='red'>(*)</i><br> Container No.",
     "SZTP <i class='red'>(*)",
     "Tên khách hàng <i class='red'>(*)</i><br> Consignee",
     "Hạn lệnh <i class='red'>(*)</i><br> Valid to date",
     "Nơi hạ vỏ <i class='red'>(*)</i><br> Empty depot",
-    "Ngày miễn lưu <i class='red'>(*)</i><br> DET free time",
-    "Tên tàu <i class='red'>(*)</i> Vessel",
-    "Chuyến <i class='red'>(*)</i> Voyage",
+    "Ngày miễn lưu <br> DET free time",
+    "Tên tàu <i class='red'>(*)</i> <br> Vessel",
+    "Chuyến <i class='red'>(*)</i> <br> Voyage",
     "POL",
     "POD",
     "Ghi chú",
@@ -307,6 +307,15 @@ function saveDO() {
       return false;
     }
     
+    if (item["orderNumber"] == null || item["orderNumber"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:Order Number không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
     if (item["vessel"] != vesselCheck) {
       $.modal.alertError(
         "Có lỗi tại hàng [" +
@@ -321,15 +330,6 @@ function saveDO() {
         "Có lỗi tại hàng [" +
           (index + 1) +
           "].<br>Lỗi:Empty Depot không được trống."
-      );
-      errorFlg = true;
-      return false;
-    }
-    if (item["detFreeTime"] == null || item["detFreeTime"] == "") {
-      $.modal.alertError(
-        "Có lỗi tại hàng [" +
-          (index + 1) +
-          "].<br>Lỗi:Det Free Time không được trống."
       );
       errorFlg = true;
       return false;

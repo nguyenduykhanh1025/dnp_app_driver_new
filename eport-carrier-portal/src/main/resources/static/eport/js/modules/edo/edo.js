@@ -197,7 +197,7 @@ function formatToYDMHMS(date) {
 function formatAction(value, row, index) {
   let actions = [];
   // status == 3 cont has left port
-  if (row.status != '3') {
+  if (row.status != '5') {
     actions.push('<a class="btn btn-success btn-xs" id="viewUpdateCont" onclick="viewUpdateCont(\'' + row.id +'\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</a> ');
   }
   actions.push('<a class="btn btn-info btn-xs" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
@@ -323,13 +323,20 @@ function searchInfoEdo() {
 
 
 function formatStatus(value) {
+  if(value == null || value == '' || value == undefined)
+  {
+    return "<span class='label label-success'>Chưa làm lệnh</span>";
+  }
+
   switch (value) {
     case '1':
-      return "<span class='label label-success'>Chưa làm lệnh</span>";
+      return "<span class='label label-success'>Đã khai báo</span>";
     case '2':
-      return "<span class='label label-success'>Đã làm lệnh</span>";
+      return "<span class='label label-success'>Đã khai báo</span>";
     case '3':
-      return "<span class='label label-success'>Gate-in</span>";
+      return "<span class='label label-success'>Đã khai báo</span>";
+    case '5':
+    return "<span class='label label-success'>Đã Gate - Out</span>";
   }
 }
 
@@ -344,7 +351,7 @@ function multiUpdateEdo() {
   }
   for (let i = 0; i < rows.length; i++) {
     let row = rows[i];
-    if (row.status == '3') {
+    if (row.status == '5') {
       $.modal.alertError("Quý khách đã chọn container đã GATE-IN ra khỏi cảng, vui lòng kiểm tra lại dữ liệu!");
       return;
     }
@@ -362,8 +369,8 @@ function delEdo() {
   }
   for (let i = 0; i < rows.length; i++) {
     let row = rows[i];
-    if (row.status != '1') {
-      setTimeout(function(){ $.modal.alertError("Bạn không thể xóa container này <br> Thông tin cont đã được khách hàng khai báo trên cảng điện tử!"); }, 3000);
+    if (row.status != null) {
+      $.modal.alertError("Bạn không thể xóa container này <br> Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
       return;
     }
     ids.push(row.id);
