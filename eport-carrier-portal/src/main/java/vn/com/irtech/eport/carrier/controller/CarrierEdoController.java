@@ -90,6 +90,10 @@ public class CarrierEdoController extends CarrierBaseController {
 		if (edo == null) {
 			edo = new Edo();
 		}
+		if(edo.getBillOfLading() == null)
+		{
+			return null;
+		}
 		Map<String, Object> groupCodes = new HashMap<>();
 		groupCodes.put("groupCode", super.getGroupCodes());
 		edo.setCarrierCode(null);
@@ -159,7 +163,7 @@ public class CarrierEdoController extends CarrierBaseController {
 				if (edoService.selectFirstEdo(edoCheck) == null) {
 					return AjaxResult.error(
 							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
-				} else if (!edoService.selectFirstEdo(edoCheck).getStatus().equals("1")) {
+				} else if (edoService.selectEdoById(Long.parseLong(id)).getStatus() != null) {
 					return AjaxResult.error(
 							"Bạn không thể xóa container này <br>Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
 				}
@@ -199,7 +203,7 @@ public class CarrierEdoController extends CarrierBaseController {
 				if (edoService.selectFirstEdo(edoCheck) == null) {
 					return AjaxResult.error(
 							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
-				} else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("3")) {
+				} else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("5")) {
 					return AjaxResult.error(
 							"Bạn đã chọn container đã GATE-IN ra khỏi <br> cảng, vui lòng kiểm tra lại dữ liệu!");
 				}
@@ -324,12 +328,17 @@ public class CarrierEdoController extends CarrierBaseController {
 		if (!hasEdoPermission()) {
 			return error("Tài khoản này không có quyền phát hành eDO");
 		}
+		Map<String, Object> groupCodes = new HashMap<>();
+		groupCodes.put("groupCode", super.getGroupCodes());
 		if (edos != null) {
 			String consignee = edos.get(0).getConsignee();
 			String billOfLading = edos.get(0).getBillOfLading();
 			String vessel = edos.get(0).getVessel();
 			String voyNo = edos.get(0).getVoyNo();
-			if (edoService.getBillOfLadingInfo(edos.get(0).getBillOfLading()) != null) {
+			Edo edoCheckBilll = new Edo();
+			edoCheckBilll.setBillOfLading(edos.get(0).getBillOfLading());
+			edoCheckBilll.setParams(groupCodes);
+			if (edoService.getBillOfLadingInfo(edoCheckBilll) != null) {
 				// exist B/L
 				return AjaxResult.error("Có lỗi xảy ra ở container '" + edos.get(0).getBillOfLading()
 						+ "'.<br/>Lỗi: Mã vận đơn (B/L No.) " + edos.get(0).getBillOfLading() + " đã tồn tại.");
@@ -341,8 +350,8 @@ public class CarrierEdoController extends CarrierBaseController {
 				e.setUpdateTime(new Date());
 				e.setUpdateBy(getUser().getFullName());
 				if (StringUtils.isBlank(e.getCarrierCode()) || StringUtils.isBlank(e.getBillOfLading())
-						|| StringUtils.isBlank(e.getContainerNumber()) || StringUtils.isBlank(e.getConsignee()) ||
-						StringUtils.isBlank(e.getDetFreeTime()) || StringUtils.isBlank(e.getEmptyContainerDepot()) || 
+						|| StringUtils.isBlank(e.getContainerNumber()) || StringUtils.isBlank(e.getConsignee())
+						 || StringUtils.isBlank(e.getEmptyContainerDepot()) || 
 						StringUtils.isBlank(e.getVessel()) || StringUtils.isBlank(e.getVoyNo())) {
 					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
 							+ "'.<br/>Lỗi: Hãy nhập đầy đủ các trường bắt buộc.");

@@ -4,6 +4,7 @@ var bill;
 var fromDate, toDate;
 var edo = new Object();
 var countCheck = 0;
+var billOfLadingFresh;
 $(function () {
   $("#updateEdo").attr("disabled", true);
   $("#delEdo").attr("disabled", true);
@@ -197,7 +198,7 @@ function formatToYDMHMS(date) {
 function formatAction(value, row, index) {
   let actions = [];
   // status == 3 cont has left port
-  if (row.status != '3') {
+  if (row.status != '5') {
     actions.push('<a class="btn btn-success btn-xs" id="viewUpdateCont" onclick="viewUpdateCont(\'' + row.id +'\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</a> ');
   }
   actions.push('<a class="btn btn-info btn-xs" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
@@ -212,13 +213,12 @@ function viewUpdateCont(id) {
   $.modal.openOption("Cập nhật container", PREFIX + "/update/" + id, 550, 420);
 }
 
-function loadTableByContainer(billOfLading) {
-  edo.billOfLading = billOfLading;
+function loadTableByContainer() {
   $("#container-grid").datagrid({
     url: PREFIX + "/edo",
     method: "POST",
     singleSelect: false,
-    clientPaging: true,
+    clientPaging: false,
     height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     pagination: true,
     pageSize: 20,
@@ -227,10 +227,11 @@ function loadTableByContainer(billOfLading) {
     rownumbers: true,
     loader: function (param, success, error) {
       var opts = $(this).datagrid("options");
-      if (billOfLading == null) {
-        return false;
-      }
       if (!opts.url) return false;
+      if(edo.billOfLading == null)
+      {
+        edo.billOfLading = billOfLadingFresh;
+      }
       $.ajax({
         type: opts.method,
         url: opts.url,
@@ -245,6 +246,10 @@ function loadTableByContainer(billOfLading) {
           data: edo
         }),
         success: function (data) {
+          if(data == null || data == '' || data == undefined)
+          {
+            success(data);
+          }
           success(JSON.parse(data));
           edo.billOfLading = null;
         },
@@ -261,8 +266,9 @@ function getSelectedRow() {
   $("#delEdo").attr("disabled", true);
   var row = $("#dg").datagrid("getSelected");
   if (row) {
-    bill = row.billOfLading;
-    loadTableByContainer(row.billOfLading);
+    edo.billOfLading = row.billOfLading;
+    billOfLadingFresh = row.billOfLading;
+    loadTableByContainer();
   }
 }
 
@@ -323,13 +329,20 @@ function searchInfoEdo() {
 
 
 function formatStatus(value) {
+  if(value == null || value == '' || value == undefined)
+  {
+    return "<span class='label label-success'>Chưa làm lệnh</span>";
+  }
+
   switch (value) {
     case '1':
-      return "<span class='label label-success'>Chưa làm lệnh</span>";
+      return "<span class='label label-success'>Đã khai báo</span>";
     case '2':
-      return "<span class='label label-success'>Đã làm lệnh</span>";
+      return "<span class='label label-success'>Đã khai báo</span>";
     case '3':
-      return "<span class='label label-success'>Gate-in</span>";
+      return "<span class='label label-success'>Đã khai báo</span>";
+    case '5':
+    return "<span class='label label-success'>Đã Gate - Out</span>";
   }
 }
 
@@ -344,7 +357,7 @@ function multiUpdateEdo() {
   }
   for (let i = 0; i < rows.length; i++) {
     let row = rows[i];
-    if (row.status == '3') {
+    if (row.status == '5') {
       $.modal.alertError("Quý khách đã chọn container đã GATE-IN ra khỏi cảng, vui lòng kiểm tra lại dữ liệu!");
       return;
     }
@@ -362,8 +375,8 @@ function delEdo() {
   }
   for (let i = 0; i < rows.length; i++) {
     let row = rows[i];
-    if (row.status != '1') {
-      setTimeout(function(){ $.modal.alertError("Bạn không thể xóa container này <br> Thông tin cont đã được khách hàng khai báo trên cảng điện tử!"); }, 3000);
+    if (row.status != null) {
+      $.modal.alertError("Bạn không thể xóa container này <br> Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
       return;
     }
     ids.push(row.id);
@@ -482,3 +495,7 @@ function dateToString(date) {
   return ("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear() +
     " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
 }
+
+$('.l-btn l-btn-small l-btn-plain').click(function(){
+      console.log('sss');
+});

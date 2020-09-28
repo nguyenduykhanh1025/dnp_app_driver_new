@@ -39,12 +39,11 @@ function confirm() {
   }
   if($("#detFreeTime").val() == null || $("#detFreeTime").val() == '')
   {
-    $.modal.alertError("Ngày miễn lưu vỏ không được để trống !")
-    return;
+    detFreeTime = 0;
   }
-  if($("#detFreeTime").val() <= 0)
+  if($("#detFreeTime").val() < 0)
   {
-    $.modal.alertError("Ngày miễn lưu vỏ phải lớn hơn 0 !")
+    $.modal.alertError("Ngày miễn lưu vỏ phải là số nguyên dương !")
     return;
   }
   if($("#consignee").val() == null || $("#consignee").val() == '')
@@ -62,7 +61,7 @@ function confirm() {
         data: {
           id: id,
           expiredDem: formatDateForSubmit($("#expiredDem").val()),
-          detFreeTime: $("#detFreeTime").val() == detFreeTime ? "" : $("#detFreeTime").val(),
+          detFreeTime: $("#detFreeTime").val() == detFreeTime ? detFreeTime : $("#detFreeTime").val(),
           emptyContainerDepot: $("#emptyContainerDepot").val() == emptyContainerDepot ? "" : $("#emptyContainerDepot").val(),
           consignee: $("#consignee").val() == consignee ? "" : $("#consignee").val()
         },
