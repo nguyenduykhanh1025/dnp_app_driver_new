@@ -264,7 +264,6 @@
 		SELECT PTNR_CODE AS opeCode, COUNT(*) AS containerAmount
     	FROM DNP_PROD.TB_RESERVE
     	   WHERE BL_NO = #{blNo}
-			AND PTNR_CODE IN ('GLS','HAL','VFC','VLC')
     	   GROUP BY PTNR_CODE
     </select>
     <select id="checkCustomStatus" resultType="java.lang.Boolean">
