@@ -23,6 +23,10 @@ function edit() {
     isExtensionDateOrder: $("input[name='isExtensionDateOrder']").is(':checked') == true,
     isCreateBookingOrder: $("input[name='isCreateBookingOrder']").is(':checked') == true,
     isGateInOrder: $("input[name='isGateInOrder']").is(':checked') == true,
+    isChangeTerminalCustomHold: $("input[name='isChangeTerminalCustomHold']").is(':checked') == true,
+    isCancelSendContFullOrder: $("input[name='isCancelSendContFullOrder']").is(':checked') == true,
+    isCancelReceiveContEmptyOrder: $("input[name='isCancelReceiveContEmptyOrder']").is(':checked') == true,
+    isExportReceipt: $("input[name='isExportReceipt']").is(':checked') == true,
     remark: $("textarea[name='remark']").val()
   }
   $.ajax({

@@ -26,6 +26,14 @@ public interface EportConstants {
 	public static final int SERVICE_GATE_IN = 8;
 	/** Gia han lenh*/
 	public static final int SERVICE_EXTEND_DATE = 9;
+	/** Terminal/Custom hold */
+	public static final int SERVICE_TERMINAL_CUSTOM_HOLD = 10;
+	/** Huy lenh ha hang*/
+	public static final int SERVICE_CANCEL_DROP_FULL = 11;
+	/** Huy lenh boc rong*/
+	public static final int SERVICE_CANCEL_PICKUP_EMPTY = 12;
+	/** Xuat hoa don*/
+	public static final int SERVICE_EXPORT_RECEIPT = 13;
 	/** Update booking*/
 	public static final int BOOKING_UPDATE = 1;
 	/** Update booking*/ 
