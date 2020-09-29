@@ -113,7 +113,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <sql id="selectRobotHistoryVo">
-        select h.id, h.process_order_id, h.robot_uuid, h.result, h.status, h.service_type, h.start_time, h.finish_time, h.remark, h.create_by, h.create_time, h.update_by, h.update_time, p.service_type 
+        select h.id, h.process_order_id, h.robot_uuid, h.result, h.status, h.start_time, h.finish_time, h.remark, h.create_by, h.create_time, h.update_by, h.update_time, p.service_type 
         from process_history h 
         left join process_order p on h.process_order_id = p.id
     </sql>
