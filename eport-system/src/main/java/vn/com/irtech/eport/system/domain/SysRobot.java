@@ -65,6 +65,9 @@ public class SysRobot extends BaseEntity {
 	
 	@Excel(name = "Cancel Receive Cont Empty Order")
 	private Boolean isCancelReceiveContEmptyOrder;
+	
+	@Excel(name = "Export Receipt")
+	private Boolean isExportReceipt;
 
 	/** ip address */
 	@Excel(name = "ip address")
@@ -229,6 +232,14 @@ public class SysRobot extends BaseEntity {
 		this.disabled = disabled;
 	}
 
+	public Boolean getIsExportReceipt() {
+		return isExportReceipt;
+	}
+
+	public void setIsExportReceipt(Boolean isExportReceipt) {
+		this.isExportReceipt = isExportReceipt;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -245,6 +256,7 @@ public class SysRobot extends BaseEntity {
 				.append("isChangeTerminalCustomHold", getIsChangeTerminalCustomHold())
 				.append("isCancelSendContFullOrder", getIsCancelSendContFullOrder())
 				.append("isCancelReceiveContEmptyOrder", getIsCancelReceiveContEmptyOrder())
+				.append("isExportReceipt", getIsExportReceipt())
 				.append("ipAddress", getIpAddress())
 				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
 				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("remark", getRemark())

@@ -26,6 +26,10 @@
           <option value="9">Gia hạn lệnh</option>
           <option value="7">Tạo booking</option>
           <option value="8">Gate-in</option>
+          <option value="10">Terminal/Custom Hold</option>
+          <option value="11">Hủy hạ hàng</option>
+          <option value="12">Hủy bốc rỗng</option>
+          <option value="13">Xuất hóa đơn</option>
         </select>
       </div>
       <div class="form-group col-md-2 col-sm-2 col-xs-2">
@@ -54,11 +58,19 @@
         <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]" fitColumns="true">
           <thead>
             <tr>
-              <th data-options="field: 'robotUuid', halign: 'center', resizable: true" sortable="true" width="150">Tên robot</th>
-              <th data-options="field: 'serviceType', halign: 'center', resizable: true, formatter: formatServiceType" sortable="true" width="150">Loại lệnh</th>
-              <th data-options="field:'result', halign:'center', align:'center', formatter: formatResult" sortable="true" width="150">Kết quả</th>
-              <th data-options="field: 'status', halign: 'center', align: 'center', formatter: formatStatus" sortable="true" width="150">Trạng thái</th>
-              <th data-options="field:'createTime', align: 'center', halign:'center', formatter: formatDate, fixed: true" sortable="true" width="150">Thời gian</th>
+              <th data-options="field: 'robotUuid', halign: 'center', resizable: true" sortable="true" width="150">Tên
+                robot</th>
+              <th data-options="field: 'serviceType', halign: 'center', resizable: true, formatter: formatServiceType"
+                sortable="true" width="150">Loại lệnh</th>
+              <th data-options="field:'result', halign:'center', align:'center', formatter: formatResult"
+                sortable="true" width="150">Kết quả</th>
+              <!-- <th data-options="field: 'status', halign: 'center', align: 'center', formatter: formatStatus"
+                sortable="true" width="150">Trạng thái</th> -->
+              <th data-options="field:'startTime', align: 'center', halign:'center', formatter: formatDate, fixed: true"
+                sortable="true" width="150">Thời gian bắt đầu</th>
+              <th
+                data-options="field:'finishTime', align: 'center', halign:'center', formatter: formatDate, fixed: true"
+                sortable="true" width="150">Thời gian kết thúc</th>
             </tr>
           </thead>
           <tbody></tbody>

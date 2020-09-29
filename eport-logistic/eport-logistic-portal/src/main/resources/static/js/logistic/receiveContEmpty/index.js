@@ -171,7 +171,7 @@ $(document).ready(function () {
                 this.removeFile(file);
             });
         },
-        success: function(file, response){
+        success: function (file, response) {
             if (response.code == 0) {
                 $.modal.msgSuccess("Đính kèm tệp thành công.");
                 let content = '<p><a href="' + response.fileLink + '" target="_blank">' + file.upload.filename + '</a></p>';
@@ -194,6 +194,10 @@ $(document).ready(function () {
             loadTable();
         }
     });
+
+    if (sId != null) {
+        shipmentSearch.id = sId;
+    }
 
     $("#bookingNo").textbox('textbox').bind('keydown', function (e) {
         // enter key
@@ -289,12 +293,12 @@ function loadTable() {
         singleSelect: true,
         collapsible: true,
         clientPaging: false,
-        rownumbers:true,
+        rownumbers: true,
         pagination: true,
         toolbar: toolbar,
         onBeforeSelect: function (index, row) {
             getSelected(index, row);
-        },	
+        },
         pageSize: 50,
         nowrap: false,
         striped: true,
@@ -307,11 +311,11 @@ function loadTable() {
                 url: opts.url,
                 contentType: "application/json",
                 data: JSON.stringify({
-                  pageNum: param.page,
-                  pageSize: param.rows,
-                  orderByColumn: param.sort,
-                  isAsc: param.order,
-                  data: shipmentSearch
+                    pageNum: param.page,
+                    pageSize: param.rows,
+                    orderByColumn: param.sort,
+                    isAsc: param.order,
+                    data: shipmentSearch
                 }),
                 success: function (data) {
                     success(data);
@@ -456,11 +460,11 @@ function toggleAttachIcon(shipmentId) {
             if (data.code == 0) {
                 if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
                     let html = '';
-                    data.shipmentFiles.forEach(function(element, index) {
+                    data.shipmentFiles.forEach(function (element, index) {
                         html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
                     });
                     $('#attachFile').html(html);
-                } 
+                }
             }
         }
     });
@@ -521,7 +525,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
                 break;
             case 'N':
-                if(value > 2) {
+                if (value > 2) {
                     payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
                 }
                 break;
@@ -533,7 +537,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
                 break;
             case 'N':
-                if(sourceData[row].paymentStatus == 'Y') {
+                if (sourceData[row].paymentStatus == 'Y') {
                     released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
                 }
                 break;
@@ -547,7 +551,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
 
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'containerNo' + row).addClass("htMiddle").addClass("htCenter");
-    
+
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
             cellProperties.readOnly = 'true';
@@ -568,7 +572,7 @@ function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties)
     $(td).attr('id', 'expiredDem' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
         if (value.substring(2, 3) != "/") {
-            value = value.substring(8, 10)+"/"+value.substring(5, 7)+"/"+value.substring(0,4);
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
         }
     } else {
         value = '';
@@ -594,7 +598,7 @@ function planningDateRenderer(instance, td, row, col, prop, value, cellPropertie
     $(td).attr('id', 'planningDate' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
         if (value.substring(2, 3) != "/") {
-            value = value.substring(8, 10)+"/"+value.substring(5, 7)+"/"+value.substring(0,4);
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
         }
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
             cellProperties.readOnly = 'true';
@@ -953,8 +957,8 @@ function onChange(changes, source) {
                 if (currentVesselVoyage != vesselAndVoy) {
                     currentVesselVoyage = vesselAndVoy;
                     let shipmentDetail = new Object();
-                    for (let i= 0; i < berthplanList.length;i++){
-                        if(vesselAndVoy == berthplanList[i].vslAndVoy){
+                    for (let i = 0; i < berthplanList.length; i++) {
+                        if (vesselAndVoy == berthplanList[i].vslAndVoy) {
                             currentEta = berthplanList[i].eta;
                             shipmentDetail.vslNm = berthplanList[i].vslNm;
                             shipmentDetail.voyNo = berthplanList[i].voyNo;
@@ -966,7 +970,7 @@ function onChange(changes, source) {
                                 contentType: "application/json",
                                 data: JSON.stringify(shipmentDetail),
                                 success: function (data) {
-                                $.modal.closeLoading();
+                                    $.modal.closeLoading();
                                     if (data.code == 0) {
                                         hot.updateSettings({
                                             cells: function (row, col, prop) {
@@ -998,18 +1002,18 @@ function checkAll() {
     if (!allChecked) {
         allChecked = true
         checkList = Array(rowAmount).fill(0);
-        for (let i=0; i<checkList.length; i++) {
+        for (let i = 0; i < checkList.length; i++) {
             if (hot.getDataAtCell(i, 1) == null) {
                 break;
             }
             checkList[i] = 1;
-            $('#check'+i).prop('checked', true);
+            $('#check' + i).prop('checked', true);
         }
     } else {
         allChecked = false;
         checkList = Array(rowAmount).fill(0);
-        for (let i=0; i<checkList.length; i++) {
-            $('#check'+i).prop('checked', false);
+        for (let i = 0; i < checkList.length; i++) {
+            $('#check' + i).prop('checked', false);
         }
     }
     let tempCheck = allChecked;
@@ -1021,10 +1025,10 @@ function checkAll() {
 function check(id) {
     if (sourceData[id].id != null) {
         if (checkList[id] == 0) {
-            $('#check'+id).prop('checked', true);
+            $('#check' + id).prop('checked', true);
             checkList[id] = 1;
         } else {
-            $('#check'+id).prop('checked', false);
+            $('#check' + id).prop('checked', false);
             checkList[id] = 0;
         }
         hot.render();
@@ -1034,11 +1038,11 @@ function check(id) {
 function updateLayout() {
     let disposable = true, status = 1, diff = false, check = false, verify = false, contNull = false;
     allChecked = true;
-    for (let i=0; i<checkList.length; i++) {
+    for (let i = 0; i < checkList.length; i++) {
         let cellStatus = hot.getDataAtCell(i, 1);
         if (cellStatus != null) {
             if (checkList[i] == 1) {
-                if(cellStatus == 2 && 'Y' == sourceData[i].userVerifyStatus) {
+                if (cellStatus == 2 && 'Y' == sourceData[i].userVerifyStatus) {
                     verify = true;
                 }
                 check = true;
@@ -1097,12 +1101,12 @@ function updateLayout() {
 
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) {
-	$.modal.loading("Đang xử lý ...");
+    $.modal.loading("Đang xử lý ...");
     $.ajax({
         url: prefix + "/shipment/" + id + "/shipment-detail",
         method: "GET",
         success: function (data) {
-        	$.modal.closeLoading();
+            $.modal.closeLoading();
             if (data.code == 0) {
                 sourceData = data.shipmentDetails;
                 if (rowAmount < sourceData.length) {
@@ -1126,8 +1130,8 @@ function reloadShipmentDetail() {
     checkList = Array(rowAmount).fill(0);
     allChecked = false;
     $('.checker').prop('checked', false);
-    for (let i=0; i<checkList.length; i++) {
-        $('#check'+i).prop('checked', false);
+    for (let i = 0; i < checkList.length; i++) {
+        $('#check' + i).prop('checked', false);
     }
     $("#deleteBtn").prop("disabled", true);
     $("#verifyBtn").prop("disabled", true);
@@ -1179,7 +1183,7 @@ function getDataSelectedFromTable(isValidate) {
     let temProcessOrderIds = [];
     processOrderIds = '';
     $.each(cleanedGridData, function (index, object) {
-        for (let i=0; i<regiterNos.length; i++) {
+        for (let i = 0; i < regiterNos.length; i++) {
             if (object["processOrderId"] != null && !temProcessOrderIds.includes(object["processOrderId"]) && regiterNos[i] == object["registerNo"]) {
                 temProcessOrderIds.push(object["processOrderId"]);
                 processOrderIds += object["processOrderId"] + ',';
@@ -1213,10 +1217,10 @@ function getDataFromTable(isValidate) {
     for (let i = 0; i < checkList.length; i++) {
         if (Object.keys(myTableData[i]).length > 0) {
             if (myTableData[i].containerNo || myTableData[i].expiredDem || myTableData[i].vslNm ||
-                myTableData[i].planningDate || myTableData[i].cargoType || myTableData[i].qualityRequirement || 
+                myTableData[i].planningDate || myTableData[i].cargoType || myTableData[i].qualityRequirement ||
                 myTableData[i].sztp || myTableData[i].dischargePort || myTableData[i].remark) {
-                    cleanedGridData.push(myTableData[i]);
-                }
+                cleanedGridData.push(myTableData[i]);
+            }
         }
     }
     shipmentDetails = [];
@@ -1225,13 +1229,13 @@ function getDataFromTable(isValidate) {
     if (cleanedGridData.length > 0) {
         // opecode = cleanedGridData[0].opeCode;
         vessel = cleanedGridData[0].vslNm;
-//        voyage = cleanedGridData[0].voyNo;
+        //        voyage = cleanedGridData[0].voyNo;
         pod = cleanedGridData[0].dischargePort;
     }
     $.each(cleanedGridData, function (index, object) {
         var shipmentDetail = new Object();
         if (isValidate) {
-            if(!object["containerNo"] && shipmentSelected.specificContFlg == 1) {
+            if (!object["containerNo"] && shipmentSelected.specificContFlg == 1) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số container!");
                 errorFlg = true;
                 return false;
@@ -1247,10 +1251,10 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ hàng!");
                 errorFlg = true;
                 return false;
-            // } else if (!object["opeCode"]) {
-            //     $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Hãng tàu!");
-            //     errorFlg = true;
-            //     return false;
+                // } else if (!object["opeCode"]) {
+                //     $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Hãng tàu!");
+                //     errorFlg = true;
+                //     return false;
             } else if (!object["vslNm"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Tàu và chuyến!");
                 errorFlg = true;
@@ -1271,10 +1275,10 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Cảng dở hàng!");
                 errorFlg = true;
                 return false;
-            // } else if (opecode != object["opeCode"]) {
-            //     $.modal.alertError("Hãng tàu không được khác nhau!");
-            //     errorFlg = true;
-            //     return false;
+                // } else if (opecode != object["opeCode"]) {
+                //     $.modal.alertError("Hãng tàu không được khác nhau!");
+                //     errorFlg = true;
+                //     return false;
             } else if (vessel != object["vslNm"]) {
                 $.modal.alertError("Tàu và Chuyến không được khác nhau!");
                 errorFlg = true;
@@ -1306,15 +1310,15 @@ function getDataFromTable(isValidate) {
         shipmentDetail.eta = object["eta"];
         shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
         shipmentDetail.remark = object["remark"];
-        if(berthplanList){
-            for (let i= 0; i < berthplanList.length;i++){
-            	if(object["vslNm"] == berthplanList[i].vslAndVoy){
-            		shipmentDetail.vslNm = berthplanList[i].vslNm;
-            		shipmentDetail.voyNo = berthplanList[i].voyNo;
-            		shipmentDetail.year = berthplanList[i].year;
-            		shipmentDetail.vslName = berthplanList[i].vslAndVoy.split(" - ")[1];
-            		shipmentDetail.voyCarrier = berthplanList[i].voyCarrier;
-            	}
+        if (berthplanList) {
+            for (let i = 0; i < berthplanList.length; i++) {
+                if (object["vslNm"] == berthplanList[i].vslAndVoy) {
+                    shipmentDetail.vslNm = berthplanList[i].vslNm;
+                    shipmentDetail.voyNo = berthplanList[i].voyNo;
+                    shipmentDetail.year = berthplanList[i].year;
+                    shipmentDetail.vslName = berthplanList[i].vslAndVoy.split(" - ")[1];
+                    shipmentDetail.voyCarrier = berthplanList[i].voyCarrier;
+                }
             }
         }
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
@@ -1428,13 +1432,13 @@ function requestContSupply() {
 
         // Check if list cont exists cont has been supplied
         let containers = '';
-        shipmentDetails.forEach(function(element) {
+        shipmentDetails.forEach(function (element) {
             if (element.contSupplyStatus == 'Y') {
                 containers += element.containerNo + ',';
             }
         });
         if (containers.length > 0) {
-            containers = containers.substring(0, containers.length-1);
+            containers = containers.substring(0, containers.length - 1);
             layer.confirm("Quý khách đang yêu cầu cấp rỗng lại cho số container: " + containers + ".", {
                 icon: 3,
                 title: "Xác Nhận",
@@ -1463,10 +1467,10 @@ function openFormRemarkBeforeReqCont() {
         content: prefix + "/req/supply/confirmation",
         btn: ["Xác Nhận", "Hủy"],
         shadeClose: false,
-        yes: function(index, layero) {
+        yes: function (index, layero) {
             requestCont(index, layero);
         },
-        cancel: function(index) {
+        cancel: function (index) {
             return true;
         }
     });
@@ -1626,7 +1630,7 @@ function finishVerifyForm(result) {
 
 function napasPaymentForm() {
     // $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
-    window.open(ctx + "logistic/payment/napas/" + processOrderIds, "_blank"); 
+    window.open(ctx + "logistic/payment/napas/" + processOrderIds, "_blank");
 }
 
 function connectToWebsocketServer() {
@@ -1646,7 +1650,7 @@ function onMessageReceived(payload) {
 
         clearTimeout(timeout);
 
-        setProgressPercent(currentPercent=100);
+        setProgressPercent(currentPercent = 100);
         setTimeout(() => {
             hideProgress();
 
@@ -1663,10 +1667,10 @@ function onMessageReceived(payload) {
     } else {
         orderNumber--;
         if (orderNumber == 0) {
-            
+
             clearTimeout(timeout);
 
-            setProgressPercent(currentPercent=100);
+            setProgressPercent(currentPercent = 100);
             setTimeout(() => {
                 hideProgress();
 
@@ -1698,8 +1702,8 @@ function showProgress(title) {
     $('#titleProgress').text(title);
     $('.percent-text').text("0%");
     currentPercent = 0;
-    interval = setInterval(function() {
-        if (currentPercent <=99) {
+    interval = setInterval(function () {
+        if (currentPercent <= 99) {
             setProgressPercent(++currentPercent);
         }
         if (currentPercent >= 99) {
@@ -1721,49 +1725,49 @@ function hideProgress() {
     $('.percent-text').text("0%");
     setProgressPercent(0);
 }
-function exportReceipt(){
-	if(!shipmentSelected){
-		$.modal.alertError("Bạn chưa chọn Lô!");
-		return
-	}
-    $.modal.openTab("In Biên Nhận", ctx +"logistic/print/receipt/shipment/"+shipmentSelected.id);
+function exportReceipt() {
+    if (!shipmentSelected) {
+        $.modal.alertError("Bạn chưa chọn Lô!");
+        return
+    }
+    $.modal.openTab("In Biên Nhận", ctx + "logistic/print/receipt/shipment/" + shipmentSelected.id);
 }
 
-function removeShipment(){
-	if (!shipmentSelected) {
-		$.modal.alertError("Bạn chưa chọn Lô!");
-		return
-	}else {
-		//1- chua khai bao cont, 2- khai bao nhung chua lam cac buoc tiep theo
-		if(shipmentSelected.status == '1' || shipmentSelected.status == '2'){
-			$.modal.confirmShipment("Xác nhận thực hiện xóa Lô " + shipmentSelected.id + "  ?", function() {
-				$.modal.loading("Đang xử lý...");
-			    $.ajax({
-			        url: ctx + 'logistic/shipment/remove',
-			        type: 'POST',
-			        data: {
-			            id: shipmentSelected.id,
-			        }
-			    }).done(function(rs) {
-			    	$.modal.closeLoading();
-			        if(rs.code  == 0){
-			        	$.modal.msgSuccess(rs.msg);
-			        	loadTable();
-			        }
-			        else{
-			        	$.modal.msgError(rs.msg)
-			        }
-			    });
-			});
-		} else {
-			$.modal.msgError("Không thể xóa Lô " + shipmentSelected.id);
-		}
-	}
+function removeShipment() {
+    if (!shipmentSelected) {
+        $.modal.alertError("Bạn chưa chọn Lô!");
+        return
+    } else {
+        //1- chua khai bao cont, 2- khai bao nhung chua lam cac buoc tiep theo
+        if (shipmentSelected.status == '1' || shipmentSelected.status == '2') {
+            $.modal.confirmShipment("Xác nhận thực hiện xóa Lô " + shipmentSelected.id + "  ?", function () {
+                $.modal.loading("Đang xử lý...");
+                $.ajax({
+                    url: ctx + 'logistic/shipment/remove',
+                    type: 'POST',
+                    data: {
+                        id: shipmentSelected.id,
+                    }
+                }).done(function (rs) {
+                    $.modal.closeLoading();
+                    if (rs.code == 0) {
+                        $.modal.msgSuccess(rs.msg);
+                        loadTable();
+                    }
+                    else {
+                        $.modal.msgError(rs.msg)
+                    }
+                });
+            });
+        } else {
+            $.modal.msgError("Không thể xóa Lô " + shipmentSelected.id);
+        }
+    }
 }
 
 function dateToString(date) {
-    return ("0" + date.getDate()).slice(-2) + "/" + ("0"+(date.getMonth()+1)).slice(-2) + "/" + date.getFullYear()
-    + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
+    return ("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear()
+        + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2) + ":" + ("0" + date.getSeconds()).slice(-2);
 }
 
 function search() {
@@ -1771,7 +1775,7 @@ function search() {
     shipmentSearch.params.containerNo = $("#containerNo").textbox('getValue');
     shipmentSearch.params.consignee = $("#consignee").textbox('getValue');
     shipmentSearch.params.fromDate = $('#fromDate').datebox('getValue');
-  shipmentSearch.params.toDate = $('#toDate').datebox('getValue');
+    shipmentSearch.params.toDate = $('#toDate').datebox('getValue');
     loadTable();
 }
 
@@ -1872,7 +1876,7 @@ function addComment() {
                     loadListComment(result.shipmentCommentId);
                     $.modal.msgSuccess("Gửi thành công.");
                     $('#topic').textbox('setText', '');
-                    $('.summernote').summernote('code','');
+                    $('.summernote').summernote('code', '');
                 } else {
                     $.modal.msgError("Gửi thất bại.");
                 }

@@ -4,7 +4,7 @@ const PREFIX = ctx + "system/robot";
 $(document).ready(function () {
   loadListRobot();
 
-  $("input").keyup(function(event){
+  $("input").keyup(function (event) {
     if (event.keyCode == 13) {
       $.table.search();
       event.preventDefault();
@@ -126,19 +126,51 @@ function loadListRobot() {
         },
       },
       {
+        field: "isChangeTerminalCustomHold",
+        title: "Terminal/Custom Hold",
+        align: "center",
+        formatter: function (value, row, index) {
+          return isChangeTerminalCustomHoldFormater(value, row, index);
+        },
+      },
+      {
+        field: "isCancelSendContFullOrder",
+        title: "Hủy hạ hàng",
+        align: "center",
+        formatter: function (value, row, index) {
+          return isCancelSendContFullOrderFormater(value, row, index);
+        },
+      },
+      {
+        field: "isCancelReceiveContEmptyOrder",
+        title: "Hủy bốc rỗng",
+        align: "center",
+        formatter: function (value, row, index) {
+          return isCancelReceiveContEmptyOrderFormater(value, row, index);
+        },
+      },
+      {
+        field: "isExportReceipt",
+        title: "Xuất hóa đơn",
+        align: "center",
+        formatter: function (value, row, index) {
+          return isExportReceiptFormater(value, row, index);
+        },
+      },
+      {
         title: "Hành động",
         align: "center",
         formatter: function (value, row, index) {
           var actions = [];
           actions.push(
             '<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.operate.edit(\'' +
-              row.id +
-              '\')"><i class="fa fa-edit"  ></i></a> '
+            row.id +
+            '\')"><i class="fa fa-edit"  ></i></a> '
           );
           actions.push(
             '<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="$.operate.remove(\'' +
-              row.id +
-              '\')"><i class="fa fa-remove"></i></a> '
+            row.id +
+            '\')"><i class="fa fa-remove"></i></a> '
           );
           return actions.join("");
         },
@@ -243,6 +275,42 @@ function isCreateBookingOrderFormater(value, row, index) {
 /* formatter for Gate In column */
 function isGateInFormater(value, row, index) {
   if (row.isGateInOrder == true) {
+    return '<span class="badge badge-primary">Yes</span>';
+  } else {
+    return '<span class="badge badge-danger">No</span>';
+  }
+}
+
+/* formatter for change terminal custom hold column */
+function isChangeTerminalCustomHoldFormater(value, row, index) {
+  if (row.isChangeTerminalCustomHold == true) {
+    return '<span class="badge badge-primary">Yes</span>';
+  } else {
+    return '<span class="badge badge-danger">No</span>';
+  }
+}
+
+/* formatter for send cont full order column */
+function isCancelSendContFullOrderFormater(value, row, index) {
+  if (row.isCancelSendContFullOrder == true) {
+    return '<span class="badge badge-primary">Yes</span>';
+  } else {
+    return '<span class="badge badge-danger">No</span>';
+  }
+}
+
+/* formatter for Cancel receive cont empty order column */
+function isCancelReceiveContEmptyOrderFormater(value, row, index) {
+  if (row.isCancelReceiveContEmptyOrder == true) {
+    return '<span class="badge badge-primary">Yes</span>';
+  } else {
+    return '<span class="badge badge-danger">No</span>';
+  }
+}
+
+/* formatter for export receipt column */
+function isExportReceiptFormater(value, row, index) {
+  if (row.isExportReceipt == true) {
     return '<span class="badge badge-primary">Yes</span>';
   } else {
     return '<span class="badge badge-danger">No</span>';
