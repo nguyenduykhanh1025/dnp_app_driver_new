@@ -1,20 +1,36 @@
+
+
+var PREFIX = ctx + "carrier/do";
+
 var carrierCodeList = [];
+var sizeTypeList = [];
 var consigneeList = [];
 var emptyDepotList = [];
 var vesselList = [];
 
-var prefix = ctx + "carrier/do";
+$(function() {
+  hot = new Handsontable(dogrid, config);
+  hot.updateSettings({
+    cells: function (row, col) {
+      var cellProp = {};
+      if (col === 5 && isGoodDate(hot.getDataAtCell(row, col))) {
+      } else if (col === 5) {
+        cellProp.className = " not-date";
+      }
+      return cellProp;
+    },
+  });
+});
+
 function submitHandler() {
   // add condition to validate before submit add do
   if (true) {
-    $.operate.save(prefix + "/add", $("#form-do-add").serialize());
+    $.operate.save(PREFIX + "/add", $("#form-do-add").serialize());
   }
 }
 getOptionsColumn();
-var dogrid = document.getElementById("dogrid"),
-  hot,
-  $hooksList,
-  hooks;
+var dogrid = document.getElementById("container-grid"),
+  hot;
 var groupName = null;
 var config;
 // Empty row and format date
@@ -39,7 +55,7 @@ emptyValidator = function (value, callback) {
 };
 
 var doRenderer = function (instance, td, row, col, prop, value, cellProperties) {
-  if ($("#dogrid").handsontable("getDataAtCell", row, errorFlagCol) == "") {
+  if ($("#container-grid").handsontable("getDataAtCell", row, errorFlagCol) == "") {
     $(td).parent().css("background-color", "#205199");
   } else {
     $(td).parent().css("background-color", "#FFFFFF");
@@ -50,7 +66,7 @@ var doRenderer = function (instance, td, row, col, prop, value, cellProperties) 
 config = {
   stretchH: "all",
   height: document.documentElement.clientHeight - 70,
-  minRows: 100,
+  minRows: 50,
   width: "100%",
   minSpareRows: 1,
   rowHeights: 30,
@@ -60,18 +76,20 @@ config = {
   colHeaders: [
     "Hãng tàu <i class='red'>(*)</i><br>OPR Code",
     "Số vận đơn <i class='red'>(*)</i><br>B/L No.",
+    "Order Number <i class='red'>(*)</i>",
     "Số container <i class='red'>(*)</i><br> Container No.",
+    "SZTP <i class='red'>(*)",
     "Tên khách hàng <i class='red'>(*)</i><br> Consignee",
     "Hạn lệnh <i class='red'>(*)</i><br> Valid to date",
-    "Nơi hạ vỏ <br> Empty depot",
+    "Nơi hạ vỏ <i class='red'>(*)</i><br> Empty depot",
     "Ngày miễn lưu <br> DET free time",
-    "Tên tàu <br> Vessel",
-    "Chuyến <br> Voyage",
-    "Trọng tải <br> Weight",
-    "Số seal <br> Seal No",
+    "Tên tàu <i class='red'>(*)</i> <br> Vessel",
+    "Chuyến <i class='red'>(*)</i> <br> Voyage",
+    "POL",
+    "POD",
     "Ghi chú",
   ],
-  colWidths: [10, 10, 10, 20, 12, 15, 8, 8, 8, 10, 10, 15],
+  colWidths: [10, 12, 12, 15, 10, 20, 12, 15, 12, 8, 8, 10, 10, 15],
   filter: "true",
   columns: [
     {
@@ -85,14 +103,24 @@ config = {
       validator: emptyValidator,
     },
     {
+      data: "orderNumber",
+    },
+    {
       data: "containerNo",
       validator: emptyValidator,
+      renderer : containerNoRenderer,
+    },
+    {
+      data: "sztp",
+      type: "autocomplete",
+      source: sizeTypeList,
+      strict: true,
     },
     {
       data: "consignee",
       type: "autocomplete",
       source: consigneeList,
-      strict: false
+      strict: true,
     },
     {
       data: "expiredDem",
@@ -104,28 +132,25 @@ config = {
     },
     {
       data: "emptyDepot",
-      type: "autocomplete",
-      source: emptyDepotList,
-      strict: false
+      strict: false,
     },
     {
       data: "detFreetime",
       type: "numeric",
+      validator: emptyValidator,
     },
     {
       data: "vessel",
-      type: "autocomplete",
-      source: vesselList,
       strict: false
     },
     {
-      data: "voyage",
+      data: "voyNo",
     },
     {
-      data: "weight",
+      data: "pol",
     },
     {
-      data: "sealNo",
+      data: "pod",
     },
     {
       data: "remark",
@@ -135,7 +160,7 @@ config = {
 
 function getOptionsColumn() {
   $.ajax({
-    url: prefix + "/getOperateCode",
+    url: PREFIX + "/getOperateCode",
     method: "get",
   }).done(function (result) {
     for (var i = 0; i < result.length; i++) {
@@ -144,46 +169,24 @@ function getOptionsColumn() {
   });
 
   $.ajax({
-    url: prefix + "/getListOptions",
+    url: PREFIX + "/getListOptions",
     method: "get",
   }).done(function (result) {
-    var list1 = result.consigneeList;
-    var list2 = result.emptyDepotList;
-    var list3 = result.vesselList;
-    for (var i = 0; i < list1.length; i++) {
-      if (list1[i] != null) {
-        consigneeList.push(list1[i]);
+    for (var i = 0; i < result.sizeList.length; i++) {
+      if (result.sizeList[i]['dictValue'] != null) {
+          sizeTypeList.push(result.sizeList[i]['dictValue'])
       }
     }
-    for (var i = 0; i< list2.length; i++) {
-      if (list1[i] != null) {
-        emptyDepotList.push(list2[i]);
+    for (var i = 0; i < result.consigneeList.length; i++) {
+      if (result.consigneeList[i] != null) {
+          consigneeList.push(result.consigneeList[i])
       }
     }
-    for (var i = 0; i< list3.length; i++) {
-      if (list1[i] != null) {
-        vesselList.push(list3[i]);
-      }
-    }
+
+
   });
 }
 // Load table
-document.addEventListener("DOMContentLoaded", function () {
-  setTimeout(function () {
-    hot = new Handsontable(dogrid, config);
-    hot.updateSettings({
-      cells: function (row, col) {
-        var cellProp = {};
-        if (col === 5 && isGoodDate(hot.getDataAtCell(row, col))) {
-        } else if (col === 5) {
-          cellProp.className = " not-date";
-        }
-        return cellProp;
-      },
-    });
-  }, 200);
-});
-
 function isGoodDate(dt) {
   var reGoodDate = /^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|(([1][26]|[2468][048]|[3579][26])00))))$/g;
   return reGoodDate.test(dt);
@@ -235,20 +238,27 @@ function saveDO() {
     }
     doObj.carrierCode = item["carrierCode"];
     doObj.billOfLading = item["blNo"];
+    doObj.orderNumber = item["orderNumber"];
     doObj.containerNumber = item["containerNo"];
+    doObj.sztp = item["sztp"];
     doObj.consignee = item["consignee"];
     doObj.expiredDem = date.getTime();
     doObj.detFreeTime = item["detFreetime"];
     doObj.emptyContainerDepot = item["emptyDepot"];
-    doObj.voyNo = item["voyage"];
+    doObj.voyNo = item["voyNo"];
     doObj.vessel = item["vessel"];
     doObj.remark = item["remark"];
     doObj.weight = item["weight"];
-    doObj.sealNo = item["sealNo"];
+    doObj.pol = item["pol"];
+    doObj.pod = item["pod"];
     doList.push(doObj);
   });
-
+  
   $.each(doList, function (index, item) {
+    let billNoCheck = doList[0]["billOfLading"];
+    let consigneeCheck = doList[0]["consignee"];
+    let voyageCheck = doList[0]["voyNo"];
+    let vesselCheck = doList[0]["vessel"];
     if (item["carrierCode"] == null || item["carrierCode"] == "") {
       $.modal.alertError(
         "Có lỗi tại hàng [" +
@@ -257,16 +267,28 @@ function saveDO() {
       );
       errorFlg = true;
       return false;
-    }
-    if (item["billOfLading"] == null || item["billOfLading"] == "") {
+    }   
+    if (item["billOfLading"] == null || item["billOfLading"] == "" || item["billOfLading"] != billNoCheck) {
+     
       $.modal.alertError(
         "Có lỗi tại hàng [" +
           (index + 1) +
-          "].<br>Lỗi: Số vận đơn (B/L No) không được trống."
+          "].<br>Lỗi: Số vận đơn (B/L No) không được trống. Hoặc không được khác nhau"
       );
       errorFlg = true;
       return false;
     }
+    if (item["billOfLading"] != billNoCheck) {
+     
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi: Số vận đơn (B/L No) không được khác nhau"
+      );
+      errorFlg = true;
+      return false;
+    }
+    
     if (item["containerNumber"] == null || item["containerNumber"] == "") {
       $.modal.alertError(
         "Có lỗi tại hàng [" +
@@ -276,15 +298,99 @@ function saveDO() {
       errorFlg = true;
       return false;
     }
-    if (item["consignee"] == null || item["consignee"] == "") {
+    
+    if (item["vessel"] == null || item["vessel"] == "") {
       $.modal.alertError(
         "Có lỗi tại hàng [" +
           (index + 1) +
-          "].<br>Lỗi: Tên khách hàng không được trống."
+          "].<br>Lỗi:Tên tàu không được trống."
       );
       errorFlg = true;
       return false;
     }
+    
+    if (item["orderNumber"] == null || item["orderNumber"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:Order Number không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["vessel"] != vesselCheck) {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:Tên tàu không được khác nhau."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["emptyContainerDepot"] == null || item["emptyContainerDepot"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:Empty Depot không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["sztp"] == null || item["sztp"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:SZTP không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["voyNo"] == null || item["voyNo"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:Chuyến không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["voyNo"] != voyageCheck) {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:Chuyến không được khác nhau."
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["consignee"] == null || item["consignee"] == "" || item["consignee"] != consigneeCheck) {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi: Tên khách hàng không được trống. Hoặc không được khác nhau"
+      );
+      errorFlg = true;
+      return false;
+    }
+    if ( item["consignee"] != consigneeCheck) {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi: Tên khách hàng không được khác nhau"
+      );
+      errorFlg = true;
+      return false;
+    }
+    if (item["sztp"] == null || item["sztp"] == "") {
+      $.modal.alertError(
+        "Có lỗi tại hàng [" +
+          (index + 1) +
+          "].<br>Lỗi:SZTP không được trống."
+      );
+      errorFlg = true;
+      return false;
+    }
+
     var regexNuber = /^[0-9]*$/;
     if (item["detFreeTime"] != null && item["detFreeTime"] != "" && item["detFreeTime"] != undefined) {
       if (!regexNuber.test(item["detFreeTime"])) {
@@ -308,6 +414,8 @@ function saveDO() {
         return false;
       }
     }
+
+    
   });
   if (!errorFlg && doList.length == 0) {
     $.modal.alert("Bạn chưa nhập thông tin.");
@@ -323,8 +431,9 @@ function saveDO() {
  
   if (!errorFlg) {
     $.modal.confirm("Bạn có chắc chắn cập nhật DO này lên Web Portal của Cảng Đà Nẵng không?", function() {
+    $.modal.loading(" Đang xử lý...");
           $.ajax({
-            url: prefix + "/add",
+            url: PREFIX + "/add",
             method: "post",
             contentType : "application/json",
             accept: 'text/plain',
@@ -333,10 +442,12 @@ function saveDO() {
             success: function (data) {
             var result = JSON.parse(data);
             if(result.code == 0) {
+              $.modal.closeLoading();
               $.modal.alert("Khai báo DO thành công!", function() { },{title:"Thông báo",btn:["Đồng Ý"]});
               reload();
             } else {
               $.modal.alertError(result.msg);
+              $.modal.closeLoading();
             }
             },
             error: function (result) {
@@ -364,3 +475,19 @@ function reload() {
   $.modal.closeLoading();
   $.modal.enable();
 }
+
+function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle");
+  if(value != null)
+  {
+    if(value != value.toUpperCase())
+    {
+      value = value.toUpperCase();
+      hot.setDataAtCell(row,col,value);
+    }
+  }
+  $(td).html(value);
+  return td;
+}
+
+
