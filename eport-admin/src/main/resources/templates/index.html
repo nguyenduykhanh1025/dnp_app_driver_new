@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="renderer" content="webkit" />
@@ -32,59 +33,16 @@
                 <div class="view-all">
                   <h3>Thông Báo</h3>
                   <a onclick="viewAll()" id="loadAll">Xem tất cả</a>
+                  </div>
+                  <div class="notifications">
+                    <div class="loading">
+                      <div class="loader"></div>
+                      <div>Đang xử lý</div>
+                    </div>
+                    <div class="empty-div">Không có thông báo</div>
+                  </div>
+                  <div class="see-more"><a onclick="loadMore()" id="loadMore">Xem thêm...</a></div>
                 </div>
-                <div class="notifications">
-                  <div class="loading">
-                    <div class="loader"></div>
-                    <div>Đang xử lý</div>
-                    =======
-
-                    <head>
-                      <meta charset="utf-8" />
-                      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                      <meta name="renderer" content="webkit" />
-                      <title>DNP ePort - DNP Portal</title>
-                      <!-- Avoid IE using compatibility mode -->
-                      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                      <link th:href="@{favicon.ico}" rel="stylesheet" />
-                      <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
-                      <link th:href="@{/css/jquery.contextMenu.min.css}" rel="stylesheet" />
-                      <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" />
-                      <link th:href="@{/css/animate.css}" rel="stylesheet" />
-                      <link th:href="@{/css/style.css}" rel="stylesheet" />
-                      <link th:href="@{/css/skins.css}" rel="stylesheet" />
-                      <link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
-                      <link th:href="@{/css/index.css}" rel="stylesheet" />
-                    </head>
-
-                    <body class="fixed-sidebar full-height-layout gray-bg ">
-                      <div id="wrapper">
-                        <div id="page-wrapper" class="gray-bg dashbard-1">
-                          <div class="row border-bottom">
-                            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0;">
-                              <ul class="nav navbar-top-links navbar-right welcome-message">
-                                <li id="notification">
-                                  <a onclick="openListComment()">
-                                    <i class="fa fa-bell notification-icon"></i>
-                                    <span class="badge">0</span>
-                                  </a>
-                                  <div class="notification-list" id="notification-list">
-                                    <div class="view-all">
-                                      <h3>Thông Báo</h3>
-                                      <a onclick="viewAll()" id="loadAll">Xem tất cả</a>
-                                    </div>
-                                    <div class="notifications">
-                                      <div class="loading">
-                                        <div class="loader"></div>
-                                        <div>Đang xử lý</div>
-                                      </div>
-                                      <div class="empty-div">Không có thông báo</div>
-                                      >>>>>>> 6cad8ea35c2182dcc4998677bee22a8381eab300
-                                    </div>
-                                    <div class="empty-div">Không có thông báo</div>
-                                  </div>
-                                  <div class="see-more"><a onclick="loadMore()" id="loadMore">Xem thêm...</a></div>
-                          </div>
             </li>
             <li class="dropdown user-menu">
               <a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
@@ -104,7 +62,7 @@
                   </li>
                   <li class="divider"></li>
                   <li>
-                    <a th:href="@{logout}">
+                    <a th:href="@{/logout}">
                       <i class="fa fa-sign-out"></i> Đăng xuất</a
                     >
                   </li>
