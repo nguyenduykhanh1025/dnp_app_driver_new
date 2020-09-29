@@ -2,6 +2,7 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
   <head>
     <th:block th:include="include :: header('Phát Hành DO')" />
+    <th:block th:include="include :: easyui-css" />
     <th:block th:include="include :: handsontable-css" />
     <link th:href="@{/eport/common/style.css}" rel="stylesheet" />
   </head>
@@ -23,6 +24,7 @@
   <div class="row">
       <div class="col-sm-12" style="margin-top: 0px; padding-bottom:5px">
       <div class="col-sm-12 fixed-table-toolbar">
+       
           <div class="bs-bars pull-left" style="margin-top:5px; display: flex;">
             <div class="btn-group-sm" id="toolbar" role="group" style="margin-right: 10px;">
               <a class="btn btn-primary" onclick="saveDO()"><i class="fa fa-check-circle"></i> &nbsp;Phát Hành eDO</a>
@@ -41,6 +43,7 @@
     </div></div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: handsontable-js" />
+    <th:block th:include="include :: easyui-js" />
 	<script th:src="@{/eport/js/modules/edo/releaseEdo.js}"></script>
   </body>
 </html>

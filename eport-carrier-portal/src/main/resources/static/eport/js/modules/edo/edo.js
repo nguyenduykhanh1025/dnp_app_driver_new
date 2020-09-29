@@ -266,6 +266,7 @@ function getSelectedRow() {
   $("#delEdo").attr("disabled", true);
   var row = $("#dg").datagrid("getSelected");
   if (row) {
+    edo = new Object();
     edo.billOfLading = row.billOfLading;
     billOfLadingFresh = row.billOfLading;
     loadTableByContainer();

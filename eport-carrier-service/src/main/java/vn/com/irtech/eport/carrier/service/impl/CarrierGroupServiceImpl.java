@@ -162,5 +162,11 @@ public class CarrierGroupServiceImpl implements ICarrierGroupService
 	@Override
     public List<CarrierGroup> selectCarrierGroupName() {
 		return carrierGroupMapper.selectCarrierGroupName();
-	}
+    }
+    
+    @Override
+    public List<String> getCarrierCode()
+    {
+        return carrierGroupMapper.getCarrierCode();
+    }
 }

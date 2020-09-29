@@ -81,4 +81,6 @@ public interface ICarrierAccountService {
 	 * @return
 	 */
 	public boolean checkEmailExist(String email);
+
+
 }

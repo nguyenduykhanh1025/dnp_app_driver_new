@@ -129,5 +129,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select count(1) from carrier_account where lower(email)=#{email}
 	</select>
 
+     
+
 
 </mapper>
