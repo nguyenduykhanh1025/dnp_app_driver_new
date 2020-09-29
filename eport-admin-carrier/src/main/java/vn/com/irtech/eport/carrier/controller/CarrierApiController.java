@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 
 import vn.com.irtech.eport.carrier.domain.CarrierApi;
 import vn.com.irtech.eport.carrier.service.ICarrierApiService;
@@ -36,11 +37,30 @@ public class CarrierApiController extends BaseController
     @Autowired
     private ICarrierApiService carrierApiService;
 
+    @Autowired
+    private ICarrierGroupService carrierGroupService;
+
     @RequiresPermissions("carrier:api:view")
     @GetMapping()
     public String api()
     {
         return prefix + "/api";
+    }
+
+
+    @GetMapping("/getOprCode")
+    @ResponseBody
+    public AjaxResult lisOprCode()
+    {
+        AjaxResult ajaxResult =  AjaxResult.success();
+        ajaxResult.put("oprCode",carrierGroupService.getCarrierCode()) ;
+        return ajaxResult;
+    }
+    @RequiresPermissions("carrier:api:view")
+    @GetMapping("/addApi")
+    public String addApi()
+    {
+        return prefix + "/addApi";
     }
 
     /**
@@ -88,6 +108,8 @@ public class CarrierApiController extends BaseController
     @ResponseBody
     public AjaxResult addSave(CarrierApi carrierApi)
     {
+        carrierApi.setApiPublicKey("apiPublicKey");
+        carrierApi.setApiPrivateKey("apiPrivateKey");
         return toAjax(carrierApiService.insertCarrierApi(carrierApi));
     }
 

@@ -117,4 +117,6 @@ public class CarrierAccountServiceImpl implements ICarrierAccountService
 	public boolean checkEmailExist(String email) {
         return carrierAccountMapper.checkEmailUnique(email) > 0;
     }
+
+   
 }

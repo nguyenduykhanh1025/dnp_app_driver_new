@@ -36,7 +36,7 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:api:add">
+                <a class="btn btn-success" onclick="addNewApi()" shiro:hasPermission="system:api:add">
                     <i class="fa fa-plus"></i> Add
                 </a>
                 <a class="btn btn-primary single disabled" onclick="$.operate.edit()"
@@ -111,6 +111,11 @@
             };
             $.table.init(options);
         });
+
+        function addNewApi()
+        {
+            $.modal.open("Thêm API", prefix + '/addApi', 500, 300);     
+        }
     </script>
 </body>
 

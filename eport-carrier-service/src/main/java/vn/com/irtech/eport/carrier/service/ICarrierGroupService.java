@@ -103,4 +103,6 @@ public interface ICarrierGroupService
      * @return List<String>
      */
     public List<CarrierGroup> selectCarrierGroupName();
+
+    public List<String> getCarrierCode();
 }
