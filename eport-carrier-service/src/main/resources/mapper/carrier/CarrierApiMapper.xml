@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.carrier.mapper.CarrierApiMapper">
+    
+    <resultMap type="CarrierApi" id="CarrierApiResult">
+        <result property="id"    column="id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="oprCode"    column="opr_code"    />
+        <result property="apiPublicKey"    column="api_public_key"    />
+        <result property="apiPrivateKey"    column="api_private_key"    />
+        <result property="blockedFlg"    column="blocked_flg"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCarrierApiVo">
+        select id, group_id, opr_code, api_public_key, api_private_key, blocked_flg, create_by, create_time, update_by, update_time from carrier_api
+    </sql>
+
+    <select id="selectCarrierApiList" parameterType="CarrierApi" resultMap="CarrierApiResult">
+        <include refid="selectCarrierApiVo"/>
+        <where>  
+            <if test="groupId != null "> and group_id = #{groupId}</if>
+            <if test="oprCode != null  and oprCode != ''"> and opr_code = #{oprCode}</if>
+            <if test="apiPublicKey != null  and apiPublicKey != ''"> and api_public_key = #{apiPublicKey}</if>
+            <if test="apiPrivateKey != null  and apiPrivateKey != ''"> and api_private_key = #{apiPrivateKey}</if>
+            <if test="blockedFlg != null "> and blocked_flg = #{blockedFlg}</if>
+        </where>
+    </select>
+    
+    <select id="selectCarrierApiById" parameterType="Long" resultMap="CarrierApiResult">
+        <include refid="selectCarrierApiVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCarrierApi" parameterType="CarrierApi">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT seq_carrier_api.NEXTVAL as id FROM DUAL
+        </selectKey>
+        insert into carrier_api
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="oprCode != null and oprCode != ''">opr_code,</if>
+            <if test="apiPublicKey != null">api_public_key,</if>
+            <if test="apiPrivateKey != null">api_private_key,</if>
+            <if test="blockedFlg != null">blocked_flg,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="oprCode != null and oprCode != ''">#{oprCode},</if>
+            <if test="apiPublicKey != null">#{apiPublicKey},</if>
+            <if test="apiPrivateKey != null">#{apiPrivateKey},</if>
+            <if test="blockedFlg != null">#{blockedFlg},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCarrierApi" parameterType="CarrierApi">
+        update carrier_api
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupId != null">group_id = #{groupId},</if>
+            <if test="oprCode != null and oprCode != ''">opr_code = #{oprCode},</if>
+            <if test="apiPublicKey != null">api_public_key = #{apiPublicKey},</if>
+            <if test="apiPrivateKey != null">api_private_key = #{apiPrivateKey},</if>
+            <if test="blockedFlg != null">blocked_flg = #{blockedFlg},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCarrierApiById" parameterType="Long">
+        delete from carrier_api where id = #{id}
+    </delete>
+
+    <delete id="deleteCarrierApiByIds" parameterType="String">
+        delete from carrier_api where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
