@@ -238,6 +238,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			if (EportConstants.SHIPMENT_STATUS_INIT.equals(referenceShipment.getStatus())) {
 				if (StringUtils.isNotEmpty(shipment.getBlNo())) {
 					referenceShipment.setBlNo(shipment.getBlNo().toUpperCase());
+					referenceShipment.setContainerAmount(shipment.getContainerAmount());
 				}
 				
 				if (StringUtils.isNotEmpty(shipment.getHouseBill())) {

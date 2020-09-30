@@ -28,7 +28,7 @@ if (shipment != null) {
     } else {
         $("#blNoTemp").val(shipment.blNo);
     }
-    
+
     if (shipment.status > 1) {
         $("#blNoTemp").prop('disabled', true);
     }
@@ -58,6 +58,7 @@ async function submitHandler() {
                 } else {
                     $('#edoFlg').val(res.shipment.edoFlg).text("Lệnh giao hàng (DO)");
                     $('#edoFlgInput').val(res.shipment.edoFlg);
+                    $('#blNo').val($('#blNoTemp').val());
                 }
                 edit(prefix + "/shipment/" + $("#id").val(), $('#form-edit-shipment').serialize())
             }
@@ -72,7 +73,7 @@ function getBillNoUnique() {
         url: prefix + "/shipment/bl-no",
         method: "post",
         contentType: "application/json",
-        data: JSON.stringify({"blNo": $("#blNoTemp").val()}),
+        data: JSON.stringify({ "blNo": $("#blNoTemp").val() }),
     });
 }
 
@@ -83,7 +84,7 @@ function checkBlNoUnique() {
             url: prefix + "/shipment/bl-no",
             method: "post",
             contentType: "application/json",
-            data: JSON.stringify({"blNo": $("#blNoTemp").val()}),
+            data: JSON.stringify({ "blNo": $("#blNoTemp").val() }),
         }).done(function (result) {
             if (result.code == 500) {
                 $.modal.alertError(result.msg);
@@ -92,7 +93,7 @@ function checkBlNoUnique() {
                 $('#containerAmount').val("");
                 $('#edoFlg').val(null).text("");
             } else {
-            	$("#blNoTemp").removeClass("error-input");
+                $("#blNoTemp").removeClass("error-input");
                 $('#opeCode').val(result.shipment.opeCode);
                 $('#containerAmount').val(result.shipment.containerAmount);
                 if (result.shipment.edoFlg == "1") {
@@ -117,7 +118,7 @@ function edit(url, data) {
             $.modal.loading("Đang xử lý, vui lòng chờ...");
             $.modal.disable();
         },
-        success: function(result) {
+        success: function (result) {
             $.modal.closeLoading();
             if (result.code == 0) {
                 parent.loadTable(result.msg);

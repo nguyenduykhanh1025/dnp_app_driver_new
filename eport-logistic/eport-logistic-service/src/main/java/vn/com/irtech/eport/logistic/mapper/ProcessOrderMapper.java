@@ -119,4 +119,12 @@ public interface ProcessOrderMapper
      * @return Map<String, Long>
      */
     public Map<String, Long> getSupportNumberReportForOm();
+    
+    /**
+     * Select process order list by ids
+     * 
+     * @param processOrderIds
+     * @return List<ProcessOrder>
+     */
+    public List<ProcessOrder> selectProcessOrderListByIds(String[] processOrderIds);
 }

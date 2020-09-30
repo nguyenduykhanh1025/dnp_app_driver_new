@@ -203,7 +203,11 @@ public class MqttService implements MqttCallback {
 		CHANGE_VESSEL, // Doi tau chuyen
 		CREATE_BOOKING, // Tao booking
 		EXTENSION_DATE, // Gia han lenh
-		GATE_IN // Gate in
+		GATE_IN, // Gate in
+		TERMINAL_CUSTOM_HOLD, // Terminal custom hold
+		CANCEL_DROP_FULL, // Cancel drop full
+		CANCEL_PICKUP_EMPTY, // Cancel pickup empty
+		EXPORT_RECEIPT // Export receipt
 	}
 
 	@Transactional
@@ -265,7 +269,7 @@ public class MqttService implements MqttCallback {
 		processOrderService.updateProcessOrder(processOrder);
 	}
 	
-	public void publicBookingOrderToDemandRobot(ProcessOrder payLoad, EServiceRobot serviceRobot, String uuid) throws MqttException {
+	public void publicOrderToDemandRobot(ProcessOrder payLoad, EServiceRobot serviceRobot, String uuid) throws MqttException {
 		String msg = new Gson().toJson(payLoad);
 		String topic = REQUEST_TOPIC.replace("+", uuid);
 		publish(topic, new MqttMessage(msg.getBytes()));
@@ -307,6 +311,18 @@ public class MqttService implements MqttCallback {
 			break;
 		case EXTENSION_DATE:
 			sysRobot.setIsExtensionDateOrder(true);
+			break;
+		case TERMINAL_CUSTOM_HOLD:
+			sysRobot.setIsChangeTerminalCustomHold(true);
+			break;
+		case CANCEL_DROP_FULL:
+			sysRobot.setIsCancelSendContFullOrder(true);
+			break;
+		case CANCEL_PICKUP_EMPTY:
+			sysRobot.setIsCancelReceiveContEmptyOrder(true);
+			break;
+		case EXPORT_RECEIPT:
+			sysRobot.setIsExportReceipt(true);
 			break;
 		}
 		sysRobot.setDisabled(false);

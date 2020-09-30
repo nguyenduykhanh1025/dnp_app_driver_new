@@ -290,4 +290,9 @@ public class ApiShipmentDetailController {
 	public String getPtnrCodeByTaxCode(@PathVariable("taxCode") String taxCode) {
 		return shipmentDetailDao.getTruckerByRegNo(taxCode);
 	}
+	
+	@PostMapping("/none-terminal/containers")
+	public List<String> getListContainerNotCheckTerminalHold(String containers) {
+		return shipmentDetailDao.getContainerListNoneTerminalHold(Convert.toStrArray(containers));
+	}
 }

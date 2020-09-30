@@ -225,4 +225,12 @@ public interface ICatosApiService {
 	 * @return String
 	 */
 	public String getTruckerByTaxCode(String taxCode);
+	
+	/**
+	 * Get list container no not hold terminal
+	 * 
+	 * @param containers
+	 * @return List<String> 
+	 */
+	public List<String> getListContainerNotHoldTerminal(String containers);
 }
