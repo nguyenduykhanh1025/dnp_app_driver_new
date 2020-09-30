@@ -28,7 +28,9 @@ function loadTable() {
                 dataType: "json",
                 success: function (data) {
                     let lenghtRow = data.rows.length;
-                    originalValue = data.rows[lenghtRow-1].newValue
+                    if(lenghtRow > 0) {
+                        originalValue = data.rows[lenghtRow-1].newValue
+                    }
                     success(data);
                 },
                 error: function () {

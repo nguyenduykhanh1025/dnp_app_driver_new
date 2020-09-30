@@ -25,7 +25,7 @@ public class EdiServiceImpl implements IEdiService {
 	private IEdoAuditLogService edoAuditLogService;
 
 	@Override
-	public void executeListEdi(List<EdiDataReq> ediDataReqs, String partnerCode, String transactionId) {
+	public void executeListEdi(List<EdiDataReq> ediDataReqs, String partnerCode, Long carrierGroupId, String transactionId) {
 		for (EdiDataReq ediDataReq : ediDataReqs) {
 			if (ediDataReq.getMsgFunc() == null) {
 				continue;
@@ -33,13 +33,13 @@ public class EdiServiceImpl implements IEdiService {
 
 			switch (ediDataReq.getMsgFunc().toUpperCase()) {
 			case "N": // insert
-				this.insert(ediDataReq, partnerCode, transactionId);
+				this.insert(ediDataReq, partnerCode, carrierGroupId, transactionId);
 				break;
 			case "U": // update
-				this.update(ediDataReq, partnerCode, transactionId);
+				this.update(ediDataReq, partnerCode, carrierGroupId, transactionId);
 				break;
 			case "D": // delete
-				this.delete(ediDataReq);
+				this.delete(ediDataReq, partnerCode);
 				break;
 			default:
 				break;
@@ -47,10 +47,11 @@ public class EdiServiceImpl implements IEdiService {
 		}
 	}
 
-	private int insert(EdiDataReq ediDataReq, String partnerCode, String transactionId) {
+	private int insert(EdiDataReq ediDataReq, String partnerCode, Long carrierGroupId, String transactionId) {
 		Edo edo = new Edo();
 		edo.setContainerNumber(ediDataReq.getContainerNo());
 		edo.setBillOfLading(ediDataReq.getBillOfLading());
+		edo.setCarrierCode(partnerCode);
 		edo.setDelFlg(0);
 
 		 if (edoService.selectFirstEdo(edo) != null) {
@@ -61,7 +62,9 @@ public class EdiServiceImpl implements IEdiService {
 		
 		Edo edoInsert = new Edo();
 		this.settingEdoData(edoInsert, ediDataReq, partnerCode, transactionId);
-		edoInsert.setCreateBy(API);
+		edoInsert.setCarrierId(carrierGroupId);
+		edoInsert.setCreateBy(partnerCode);
+		edoInsert.setCreateSource(API);
 		edoInsert.setDelFlg(0);
 		// edoInsert.setCarrierId(Long.valueOf(1));
 		Date setTimeUpdatExpicedDem = edoInsert.getExpiredDem();
@@ -74,18 +77,20 @@ public class EdiServiceImpl implements IEdiService {
 		return statusInsert;
 	}
 
-	private int update(EdiDataReq ediDataReq, String partnerCode, String transactionId) {
+	private int update(EdiDataReq ediDataReq, String partnerCode, Long carrierGroupId, String transactionId) {
 		Edo edo = new Edo();
 		edo.setContainerNumber(ediDataReq.getContainerNo());
 		edo.setBillOfLading(ediDataReq.getBillOfLading());
+		edo.setCarrierCode(partnerCode);
 		edo.setDelFlg(0);
 
 		Edo edoUpdate = edoService.selectFirstEdo(edo);
-		if (edoUpdate == null) {
+		if (edoUpdate == null || !edoUpdate.getCarrierCode().equals(partnerCode)) {
 			throw new BusinessException(String.format("Edo to update is not exist (containerNo='%s', billOfLading=%s)",
 					ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
 		}
-		edoUpdate.setUpdateBy(API);
+		edoUpdate.setUpdateBy(partnerCode);
+		edoUpdate.setCarrierId(carrierGroupId);
 		this.settingEdoData(edoUpdate, ediDataReq, partnerCode, transactionId);
 		Edo odlEdo = edoService.selectEdoById(edoUpdate.getId());
 		if(edoUpdate.getExpiredDem() != null)
@@ -113,19 +118,19 @@ public class EdiServiceImpl implements IEdiService {
 		return statusUpdate;
 	}
 
-	private int delete(EdiDataReq ediDataReq) {
+	private int delete(EdiDataReq ediDataReq, String partnerCode) {
 		Edo edo = new Edo();
 		edo.setContainerNumber(ediDataReq.getContainerNo());
 		edo.setBillOfLading(ediDataReq.getBillOfLading());
 		edo.setDelFlg(0);
 		Edo edoUpdate = edoService.selectFirstEdo(edo);
-		if (edoUpdate == null) {
+		if (edoUpdate == null || !edoUpdate.getCarrierCode().equals(partnerCode)) {
 			throw new BusinessException(String.format("Edo to delete is not exist (containerNo='%s', billOfLading=%s)",
 					ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
 		}
 
 		edoUpdate.setDelFlg(1);
-		edoUpdate.setUpdateBy(API);
+		edoUpdate.setUpdateBy(partnerCode);
 		return edoService.updateEdo(edoUpdate);
 	}
 

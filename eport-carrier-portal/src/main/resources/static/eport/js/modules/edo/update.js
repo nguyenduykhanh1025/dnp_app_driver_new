@@ -4,7 +4,7 @@ const PREFIX = ctx + "edo";
 $(function () {
   if(hasConsigneeUpdatePermission == true)
   {
-    $( "#consignee" ).prop( "disabled", false );
+    $( "#consignee" ).hide();
   }
   $("#containerNumber").val(containerNumber);
   $("#expiredDem").val(formatDate(expiredDem));
@@ -30,29 +30,29 @@ function closeForm() {
 
 function confirm() {
   if (formatDate(expiredDem) == $("#expiredDem").val() && $("#detFreeTime").val() == detFreeTime && $("#emptyContainerDepot").val() == emptyContainerDepot && $("#consignee").val() == consignee) {
-    $.modal.alertError("Không có thông tin nào được thay đổi !")
+    $.modal.alertError("Không có thông tin nào được thay đổi, vui lòng kiểm tra lại !")
     return;
   }
   if (validateDateUpdate($("#expiredDem").val()) == 1 && formatDate(expiredDem) != $("#expiredDem").val()) {
     $.modal.alertError("Hạn lệnh chỉ có thể thay đổi về quá khứ nhiều nhất là 1 ngày !")
     return;
   }
+
   if($("#detFreeTime").val() == null || $("#detFreeTime").val() == '')
   {
     detFreeTime = 0;
   }
-  if($("#detFreeTime").val() < 0)
-  {
-    $.modal.alertError("Ngày miễn lưu vỏ phải là số nguyên dương !")
-    return;
+  if(!checkValidDET($("#detFreeTime").val())) {
+	  $.modal.alertError("Ngày miễn lưu vỏ phải là số hoặc ngày tháng năm (dd/mm/yyyy) !")
+	  return;
   }
   if($("#consignee").val() == null || $("#consignee").val() == '')
   {
-    $.modal.alertError("Tên khách hàng không được để trống !")
+    $.modal.alertError("Tên khách hàng là bắt buộc !");
     return;
   }
   $.modal.confirm(
-    "Bạn có chắc chắn muốn cập nhật DO không? Hành động này không thể hoàn tác",
+    "Bạn có chắc chắn muốn cập nhật eDO không? Hành động này không thể hoàn tác",
     function () {
       $.ajax({
         url: PREFIX + "/update",
@@ -79,7 +79,7 @@ function confirm() {
           }, 1000)
         },
         error: function (data) {
-          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.")
+          $.modal.alertError("Có lỗi trong quá trình cập nhật dữ liệu, vui lòng thử lại sau.")
         },
       })
     }, {
@@ -87,6 +87,18 @@ function confirm() {
       btn: ["Đồng Ý", "Hủy Bỏ"]
     }
   )
+}
+
+
+function checkValidDET(value) {
+  if(isNaN(value)) {
+	  var separators = ['\\/'];
+	  var bits = value.split(new RegExp(separators.join('|'), 'g'));
+	  var d = new Date(bits[2], bits[1] - 1, bits[0]);
+	  return d.getFullYear() == bits[2] && d.getMonth() + 1 == bits[1];
+  } else {
+	  return true;
+  }
 }
 
 function formatDateForSubmit(value) {

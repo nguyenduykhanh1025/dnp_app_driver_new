@@ -95,4 +95,14 @@ public class CarrierApiServiceImpl implements ICarrierApiService
     {
         return carrierApiMapper.deleteCarrierApiById(id);
     }
+
+	@Override
+	public boolean checkOprCodeExist(String oprCode) {
+		return carrierApiMapper.checkOprCodeExist(oprCode) > 0;
+	}
+
+	@Override
+	public CarrierApi selectCarrierApiByOprCode(String oprCode) {
+		return carrierApiMapper.selectCarrierApiByOprCode(oprCode);
+	}
 }
