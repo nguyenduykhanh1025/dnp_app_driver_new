@@ -112,7 +112,6 @@ public class CarrierEdoFolderMonitorTask {
 					while (true) {
 						try {
 							String filePath = ediFileQueue.take();
-							logger.info("Connect To Acciss.");
 							readEdiFile(new File(filePath));
 						} catch (Exception e) {
 							e.printStackTrace();

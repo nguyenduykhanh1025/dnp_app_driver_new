@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import vn.com.irtech.eport.carrier.domain.CarrierGroup;
+import vn.com.irtech.eport.carrier.domain.CarrierApi;
 import vn.com.irtech.eport.carrier.dto.EdiHashcodeReq;
 import vn.com.irtech.eport.carrier.dto.EdiReq;
 import vn.com.irtech.eport.carrier.dto.EdiRes;
-import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
+import vn.com.irtech.eport.carrier.service.ICarrierApiService;
 import vn.com.irtech.eport.carrier.service.IEdiService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -48,7 +48,7 @@ public class CarrierEdiController {
 	private static final String DATE_FORMAT_GSON = "yyyy-MM-dd HH:mm:ss";
 	
 	@Autowired
-	private ICarrierGroupService carrierGroupService;
+	private ICarrierApiService carrierApiService;
 
 	@Autowired
 	private IEdiService ediService;
@@ -62,36 +62,33 @@ public class CarrierEdiController {
 		// Validate
 		this.validateRequest(ediReq, transactionId);
 		// Get carrier group by partnerCode
-		CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupByGroupCode(ediReq.getPartnerCode());
+		CarrierApi carrierApi = carrierApiService.selectCarrierApiByOprCode(ediReq.getPartnerCode());
 
 		// check if carrier exist or API is enabled for this carrier
-		if (carrierGroup == null || !"1".equals(carrierGroup.getApiFlag())) {
+		if (carrierApi == null || carrierApi.getBlockedFlg() != 0) {
 			throw new EdiApiException(EdiRes.error(HttpServletResponse.SC_PRECONDITION_FAILED, "Partner code is not exist", transactionId, ediReq.getData()));
 		}
 		// Authentication
 		Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT_GSON).create();
 		String plainText = gson.toJson(ediReq.getData());
-		PublicKey publicKey = SignatureUtils.getPublicKey(carrierGroup.getApiPublicKey());
+		PublicKey publicKey = SignatureUtils.getPublicKey(carrierApi.getApiPublicKey());
 		
 		logger.debug("Received EDI API: " + gson.toJson(ediReq));
 		// Get public key
 		if (publicKey == null) {
 			logger.debug("EDI API KEY is NULL");
-			throw new EdiApiException(
-					EdiRes.error(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "The Edi key is not created", transactionId, ediReq.getData()));
+			throw new EdiApiException(EdiRes.error(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "The Edi key is not created", transactionId, ediReq.getData()));
 		}
 		if (!SignatureUtils.verify(plainText, ediReq.getHashCode(), publicKey)) {
 			logger.debug("EDI Hashcode Failed: " + ediReq.getHashCode());
-			throw new EdiApiException(
-					EdiRes.error(HttpServletResponse.SC_UNAUTHORIZED, "The Edi secure key is wrong", transactionId, ediReq.getData()));
+			throw new EdiApiException(EdiRes.error(HttpServletResponse.SC_UNAUTHORIZED, "The Edi secure key is wrong", transactionId, ediReq.getData()));
 		}
 
 		try {
-			ediService.executeListEdi(ediReq.getData(), ediReq.getPartnerCode(), transactionId);
+			ediService.executeListEdi(ediReq.getData(), ediReq.getPartnerCode(), carrierApi.getGroupId(), transactionId);
 		} catch (Exception e) {
 			logger.error("Error while call EDI API", e);
-			throw new EdiApiException(
-					EdiRes.error(HttpServletResponse.SC_BAD_REQUEST, e.getMessage(), transactionId, ediReq.getData()));
+			throw new EdiApiException(EdiRes.error(HttpServletResponse.SC_BAD_REQUEST, e.getMessage(), transactionId, ediReq.getData()));
 		}
 
 		EdiRes ediRes = EdiRes.success("", transactionId, ediReq.getData());

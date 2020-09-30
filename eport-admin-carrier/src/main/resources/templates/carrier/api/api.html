@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
-
 <head>
-    <th:block th:include="include :: header('List Carrie Api')" />
+    <th:block th:include="include :: header('Carrie Api')" />
 </head>
-
 <body class="gray-bg">
     <div class="container-div">
         <div class="row">
@@ -26,9 +24,9 @@
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
-                                        class="fa fa-search"></i>&nbsp;Search</a>
+                                        class="fa fa-search"></i>&nbsp;Tìm Kiếm</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
-                                        class="fa fa-refresh"></i>&nbsp;Reset</a>
+                                        class="fa fa-refresh"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -37,18 +35,15 @@
 
             <div class="btn-group-sm" id="toolbar" role="group">
                 <a class="btn btn-success" onclick="addNewApi()" shiro:hasPermission="system:api:add">
-                    <i class="fa fa-plus"></i> Add
+                    <i class="fa fa-plus"></i> Thêm
                 </a>
                 <a class="btn btn-primary single disabled" onclick="$.operate.edit()"
                     shiro:hasPermission="system:api:edit">
-                    <i class="fa fa-edit"></i> Edit
+                    <i class="fa fa-edit"></i> Chỉnh Sửa
                 </a>
                 <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
                     shiro:hasPermission="system:api:remove">
-                    <i class="fa fa-remove"></i> Delete
-                </a>
-                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:api:export">
-                    <i class="fa fa-download"></i> Export
+                    <i class="fa fa-remove"></i> Xóa
                 </a>
             </div>
             <div class="col-sm-12 select-table table-striped">
@@ -80,31 +75,24 @@
                 },
                 {
                     field: 'groupId',
-                    title: 'ID'
+                    title: 'Group ID'
                 },
                 {
                     field: 'oprCode',
-                    title: 'ID'
-                },
-                {
-                    field: 'apiPublicKey',
-                    title: 'ID'
-                },
-                {
-                    field: 'apiPrivateKey',
-                    title: 'ID'
+                    title: 'OPR'
                 },
                 {
                     field: 'blockedFlg',
-                    title: 'ID'
+                    title: 'Blocked'
                 },
                 {
                     title: 'Action',
                     align: 'center',
                     formatter: function (value, row, index) {
                         var actions = [];
-                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>Edit</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Delete</a>');
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>Chỉnh Sửa</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="renewKey(\'' + row.id + '\')"><i class="fa fa-refresh"></i>Làm Mới API Key</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
                         return actions.join('');
                     }
                 }]
@@ -114,7 +102,13 @@
 
         function addNewApi()
         {
-            $.modal.open("Thêm API", prefix + '/addApi', 500, 300);     
+            $.modal.open("Thêm API", prefix + '/addApi', 550, 400);     
+        }
+        
+        function renewKey(id) {
+            $.modal.confirm("Bạn có chắc muốn làm mới API Key? Key cũ sẽ bị ngừng hoạt động", function() {
+                $.operate.post(prefix + "/renew/" + id);
+            })
         }
     </script>
 </body>

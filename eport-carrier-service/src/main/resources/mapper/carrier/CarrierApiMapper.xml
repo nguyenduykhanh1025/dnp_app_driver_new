@@ -36,7 +36,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectCarrierApiVo"/>
         where id = #{id}
     </select>
-        
+    
+    <select id="checkOprCodeExist" parameterType="String" resultType="int">
+        select count(1) from carrier_api where
+            upper(OPR_CODE) like concat(concat('%', upper(#{oprCode})), '%')
+    </select>
+    
+    <select id="selectCarrierApiByOprCode" parameterType="String" resultMap="CarrierApiResult">
+        <include refid="selectCarrierApiVo"/>
+        where OPR_CODE like concat(concat('%', #{oprCode}), '%')
+        FETCH NEXT 1 ROWS ONLY
+    </select>
+
     <insert id="insertCarrierApi" parameterType="CarrierApi">
         <selectKey keyProperty="id" resultType="long" order="BEFORE">
             SELECT seq_carrier_api.NEXTVAL as id FROM DUAL
