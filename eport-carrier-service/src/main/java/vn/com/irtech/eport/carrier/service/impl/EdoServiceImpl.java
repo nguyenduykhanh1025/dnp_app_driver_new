@@ -464,4 +464,25 @@ public class EdoServiceImpl implements IEdoService
 		return edoMapper.getBillOfLadingInfo(edo);
 	}
 	
+	/**
+     * Select list edo by ids
+     * 
+     * @param ids
+     * @return List<Edo>
+     */
+	@Override
+    public List<Edo> selectEdoByIds(String ids) {
+		return edoMapper.selectEdoByIds(Convert.toStrArray(ids));
+	}
+	
+	/**
+     * Update edo by condition
+     * 
+     * @param edo
+     * @return int
+     */
+	@Override
+    public int updateEdoByCondition(Edo edo) {
+		return edoMapper.updateEdoByCondition(edo);
+	}
 }

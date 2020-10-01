@@ -18,6 +18,10 @@ public class HouseBillRes implements Serializable {
   private String consignee2;
 
   private String carrierCode;
+  
+  private String orderNumber;
+  
+  private String consignee2TaxCode;
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private Date createTime;
@@ -70,4 +74,21 @@ public class HouseBillRes implements Serializable {
   public void setCarrierCode(String carrierCode) {
     this.carrierCode = carrierCode;
   }
+
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+
+	public String getConsignee2TaxCode() {
+		return consignee2TaxCode;
+	}
+
+	public void setConsignee2TaxCode(String consignee2TaxCode) {
+		this.consignee2TaxCode = consignee2TaxCode;
+	}
+  
 }

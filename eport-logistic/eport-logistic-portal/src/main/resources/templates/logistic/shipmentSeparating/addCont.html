@@ -28,7 +28,7 @@
           </div>
           <label class="col-lg-3 col-md-4 col-sm-4 col-form-label mt5" for="expiredDem"><b>Hạn lệnh</b></label>
           <div class="col-lg-9 col-md-8 col-sm-8 mt5">
-            <input disabled name="expiredDem" class="form-control" type="text" th:value="${houseBill.edo.expiredDem}"/>
+            <input disabled name="expiredDem" class="form-control" type="text" th:value="${houseBill.params.expiredDem}"/>
           </div>
         </div>
       </div>
@@ -43,7 +43,7 @@
               Container No
             </th>
             <th data-options="field:'carrierCode', halign:'center', fixed:true" sortable="true" width="100">Company</th>
-            <th data-options="field:'expiredDem', align:'left', halign:'center', fixed:true" sortable="true"
+            <th data-options="field:'expiredDem', align:'left', halign:'center', fixed:true, formatter: formatExpiredDem" sortable="true"
                 width="150">Expried Dem
             </th>
             <th data-options="field:'detFreeTime',align:'right',halign:'center'" sortable="true" width="100">DET</th>

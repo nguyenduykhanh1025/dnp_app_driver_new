@@ -2,6 +2,8 @@ package vn.com.irtech.eport.carrier.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoHouseBill;
 import vn.com.irtech.eport.carrier.dto.HouseBillRes;
@@ -117,4 +119,37 @@ public interface IEdoHouseBillService
      * @return List<EdoHouseBill>
      */
     public List<EdoHouseBill> selectHouseBillForShipment(String blNo);
+    
+    /**
+     * Update edo house bill by condition
+     * 
+     * @param edoHouseBill
+     * @return int
+     */
+    public int updateEdoHouseBillByCondition(EdoHouseBill edoHouseBill);
+    
+    /**
+     * Select edo house bill by ids
+     * 
+     * @param ids
+     * @param logisticGroupId
+     * @return
+     */
+    public List<EdoHouseBill> selectEdoHouseBillByIds(String ids, Long logisticGroupId);
+    
+    /**
+     * Select edo house bill by house bill nos 2
+     * 
+     * @param edoHouseBill
+     * @return List<EdoHouseBill>
+     */
+    public List<EdoHouseBill> selectEdoHouseBillByHouseBillNo2s(EdoHouseBill edoHouseBill);
+    
+    /**
+     * Update old house bill to new house bill
+     * 
+     * @param edoHouseBill
+     * @return int
+     */
+    public int updateOldHouseBillToNewHouseBill(EdoHouseBill edoHouseBill);
 }

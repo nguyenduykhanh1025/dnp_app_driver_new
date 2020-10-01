@@ -27,11 +27,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="carrierCode"    column="carrier_code"    />
         <result property="consignee2TaxCode"    column="consignee2_tax_code"    />
+        <result property="releaseFlg"    column="release_flg"    />
         <association property="edo" column="edo_id" javaType="Edo" select="selectEdo" />
     </resultMap>
 
     <sql id="selectEdoHouseBillVo">
-        select id, logistic_group_id, logistic_account_id, edo_id, bill_of_lading, order_number, master_bill_no, consignee, house_bill_no, house_bill_no2, consignee2, container_number, sztp, opr, vessel, voy_no, create_by, create_time, update_by, update_time, carrier_code from edo_house_bill
+        select id, logistic_group_id, logistic_account_id, edo_id, bill_of_lading, order_number, master_bill_no, consignee, house_bill_no, house_bill_no2, consignee2, container_number, sztp, opr, vessel, voy_no, create_by, create_time, update_by, update_time, carrier_code, release_flg from edo_house_bill
     </sql>
 
     <select id="selectEdoHouseBillList" parameterType="EdoHouseBill" resultMap="EdoHouseBillResult">
@@ -45,6 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="houseBillNo != null  and houseBillNo != ''"> and house_bill_no = #{houseBillNo}</if>
             <if test="houseBillNo2 != null  and houseBillNo2 != ''"> and house_bill_no2 = #{houseBillNo2}</if>
             <if test="consignee2TaxCode != null  and consignee2TaxCode != ''"> and consignee2_tax_code = #{consignee2TaxCode}</if>
+            <if test="releaseFlg != null"> and release_flg = #{releaseFlg}</if>
         </where>
     </select>
 
@@ -58,6 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="houseBillNo != null  and houseBillNo != ''"> and house_bill_no = #{houseBillNo}</if>
             <if test="houseBillNo2 != null  and houseBillNo2 != ''"> and house_bill_no2 = #{houseBillNo2}</if>
+            <if test="releaseFlg != null"> and release_flg = #{releaseFlg}</if>
         </where>
         FETCH NEXT 1 ROWS ONLY
     </select>
@@ -94,6 +97,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time,</if>
             <if test="carrierCode != null">carrier_code,</if>
             <if test="consignee2TaxCode != null">consignee2_tax_code,</if>
+            <if test="releaseFlg != null">release_flg,</if>
             create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -118,6 +122,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">#{updateTime},</if>
             <if test="carrierCode != null">#{carrierCode},</if>
             <if test="consignee2TaxCode != null">#{consignee2TaxCode},</if>
+            <if test="releaseFlg != null">#{releaseFlg},</if>
             SYSDATE
          </trim>
     </insert>
@@ -146,6 +151,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="carrierCode != null and carrierCode != ''">carrier_code = #{carrierCode},</if>
             <if test="consignee2TaxCode != null">consignee2_tax_code = #{consignee2TaxCode},</if>
+            <if test="releaseFlg != null">release_flg = #{releaseFlg},</if>
         </trim>
         where id = #{id}
     </update>

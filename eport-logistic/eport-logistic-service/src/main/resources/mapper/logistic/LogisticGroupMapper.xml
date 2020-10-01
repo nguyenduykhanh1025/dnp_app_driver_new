@@ -26,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="dateOfIssueIdentify"    column="date_of_issue_identify"    />
         <result property="placeOfIssueIdentify"    column="place_of_issue_identify"    />
         <result property="email"    column="email"    />
+        <result property="fwdFlg"    column="fwd_flg"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -33,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectLogisticGroupVo">
-        select id, group_name, address, mst, phone, mobile_phone, credit_flag,fax, del_flag, business_registration_certificate, date_of_issue_registration, place_of_issue_registration, authorized_representative, representative_position, following_authorization_form_no, sign_date, owned, identify_card_no, date_of_issue_identify, place_of_issue_identify, email, create_by, create_time, update_by, update_time from logistic_group
+        select id, group_name, address, mst, phone, mobile_phone, credit_flag,fax, del_flag, business_registration_certificate, date_of_issue_registration, place_of_issue_registration, authorized_representative, representative_position, following_authorization_form_no, sign_date, owned, identify_card_no, date_of_issue_identify, place_of_issue_identify, email, fwd_flg, create_by, create_time, update_by, update_time from logistic_group
     </sql>
 
     <select id="selectLogisticGroupList" parameterType="LogisticGroup" resultMap="LogisticGroupResult">
@@ -85,6 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dateOfIssueIdentify != null">date_of_issue_identify,</if>
             <if test="placeOfIssueIdentify != null  and placeOfIssueIdentify != ''">place_of_issue_identify,</if>
             <if test="email != null  and email != ''">email,</if>
+            <if test="fwdFlg != null">fwd_flg,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
         </trim>
@@ -110,6 +112,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dateOfIssueIdentify != null">#{dateOfIssueIdentify},</if>
             <if test="placeOfIssueIdentify != null  and placeOfIssueIdentify != ''">#{placeOfIssueIdentify},</if>
             <if test="email != null  and email != ''">#{email},</if>
+            <if test="fwdFlg != null">#{fwdFlg},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
         </trim>
@@ -138,6 +141,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dateOfIssueIdentify != null">date_of_issue_identify = #{dateOfIssueIdentify},</if>
             <if test="placeOfIssueIdentify != null  and placeOfIssueIdentify != ''">place_of_issue_identify = #{placeOfIssueIdentify},</if>
             <if test="email != null  and email != ''">email = #{email},</if>
+            <if test="fwdFlg != null">fwd_flg = #{fwdFlg},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
         </trim>

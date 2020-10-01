@@ -101,6 +101,10 @@ public class LogisticGroup extends BaseEntity
     /** email */
     @Excel(name = "email")
     private String email;
+    
+    /** Forwarder Flag */
+    @Excel(name = "Forwarder Flag")
+    private String fwdFlg;
 
     public void setId(Long id) 
     {
@@ -303,7 +307,15 @@ public class LogisticGroup extends BaseEntity
         return email;
     }
 
-    @Override
+    public String getFwdFlg() {
+		return fwdFlg;
+	}
+
+	public void setFwdFlg(String fwdFlg) {
+		this.fwdFlg = fwdFlg;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
@@ -328,6 +340,7 @@ public class LogisticGroup extends BaseEntity
             .append("identifyCardNo", getIdentifyCardNo())
             .append("dateOfIssueIdentify", getDateOfIssueIdentify())
             .append("placeOfIssueIdentify", getPlaceOfIssueIdentify())
+            .append("fwdFlg", getFwdFlg())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

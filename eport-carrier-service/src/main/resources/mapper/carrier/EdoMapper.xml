@@ -524,6 +524,29 @@
       	</if>
 		</where>
 		FETCH NEXT 1 ROWS ONLY
-    </select>
+  </select>
 	
+  <select id="selectEdoByIds" resultMap="EdoResult">
+    select * from edo
+    where id in
+    <foreach item="id" collection="array" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </select>
+
+  <update id="updateEdoByCondition" parameterType="Edo">
+    update edo
+    <trim prefix="SET" suffixOverrides=",">
+      <if test="houseBillId == null">house_bill_id = null,</if>
+      update_time = sysdate
+    </trim>
+    <where>
+      <if test="params.houseBillIds != null">
+        and house_bill_id in
+        <foreach item="hBillId" collection="params.houseBillIds" open="(" separator="," close=")">
+          #{hBillId}
+        </foreach>
+      </if>
+    </where>
+  </update>
 </mapper>

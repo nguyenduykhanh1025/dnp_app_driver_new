@@ -791,7 +791,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		List<String> containerList = catosApiService.getListContainerNotHoldTerminal(containers);
 		
 		// Send list container not check terminal hold to robot
-		if (CollectionUtils.isNotEmpty(containerList)) {
+		if (containers.length() > 0) {
 			logger.debug("Create process order to send terminal hold.");
 			ProcessOrder processOrder = new ProcessOrder();
 			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);
@@ -800,7 +800,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			processOrder.setContNumber(containerList.size());
 			processOrder.setModee(EportConstants.MODE_TERMINAL_HOLD);
 			Map<String, Object> processData = new HashMap<>();
-			processData.put("containers", String.join(",", containerList));
+			processData.put("containers", containers);
 			processOrder.setProcessData(new Gson().toJson(processData));
 			processOrder.setHoldFlg(true);
 			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);

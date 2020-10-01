@@ -47,29 +47,23 @@
                 <tr>
                   <td>
                     <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
-                      <span class="l-btn-left"
-                        ><span class="l-btn-text">
-                          <button id="saveShipmentDetailBtn" onclick="addLogistic()" class="btn btn-sm btn-success"><i class="fa fa-plus text-primary"></i> Thêm Logistic</button></span
-                        ></span
-                      >
+                      <span class="l-btn-left"><span class="l-btn-text">
+                          <button id="saveShipmentDetailBtn" onclick="addLogistic()" class="btn btn-sm btn-success"><i
+                              class="fa fa-plus text-primary"></i> Thêm Logistic</button></span></span>
                     </a>
                   </td>
                   <td>
                     <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
-                      <span class="l-btn-left"
-                        ><span class="l-btn-text">
-                          <button id="saveShipmentDetailBtn" onclick="editLogistic()" class="btn btn-sm btn-success"><i class="fa fa-edit text-primary"></i> Sửa Logistic</button></span
-                        ></span
-                      >
+                      <span class="l-btn-left"><span class="l-btn-text">
+                          <button id="saveShipmentDetailBtn" onclick="editLogistic()" class="btn btn-sm btn-success"><i
+                              class="fa fa-edit text-primary"></i> Sửa Logistic</button></span></span>
                     </a>
                   </td>
                   <td>
                     <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
-                      <span class="l-btn-left"
-                        ><span class="l-btn-text">
-                          <button id="saveShipmentDetailBtn" onclick="destroyUser()" class="btn btn-sm btn-danger"><i class="fa fa-remove text-primary"></i> Xóa Logistic</button></span
-                        ></span
-                      >
+                      <span class="l-btn-left"><span class="l-btn-text">
+                          <button id="saveShipmentDetailBtn" onclick="destroyUser()" class="btn btn-sm btn-danger"><i
+                              class="fa fa-remove text-primary"></i> Xóa Logistic</button></span></span>
                     </a>
                   </td>
                 </tr>
@@ -86,7 +80,7 @@
                   MST doanh nghiệp
                 </th>
                 <th data-options="field:'creditFlag',align:'left',formatter:formatCredit" sortable="true" width="150">
-                 Thanh Toán
+                  Thanh Toán
                 </th>
                 <th data-options="field:'mobilePhone',align:'left'" width="110">
                   Điện thoại cố định
@@ -109,11 +103,9 @@
                 <tr>
                   <td>
                     <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
-                      <span class="l-btn-left"
-                        ><span class="l-btn-text">
-                          <button id="saveShipmentDetailBtn" onclick="addDelegated()" class="btn btn-sm btn-success"><i class="fa fa-plus text-primary"></i> Thêm Ủy Quyền</button></span
-                        ></span
-                      >
+                      <span class="l-btn-left"><span class="l-btn-text">
+                          <button id="saveShipmentDetailBtn" onclick="addDelegated()" class="btn btn-sm btn-success"><i
+                              class="fa fa-plus text-primary"></i> Thêm Ủy Quyền</button></span></span>
                     </a>
                   </td>
                 </tr>
@@ -124,7 +116,8 @@
             <thead>
               <tr>
                 <th data-options="field:'delegateTaxCode', halign:'center'" sortable="true" width="130">Mã Số Thuế</th>
-                <th data-options="field:'delegateCompany', align:'center', halign:'center'" sortable="true" width="250">Tên Công Ty</th>
+                <th data-options="field:'delegateCompany', align:'center', halign:'center'" sortable="true" width="250">
+                  Tên Công Ty</th>
                 <th data-options="field:'delegateType', align:'center', halign:'center', formatter:formatDelegateType"
                   width="130" sortable="true">Loại Ủy Quyền</th>
                 <th data-options="field:'validFlg', align:'center', halign:'center', formatter: formatValidFlg"
@@ -404,8 +397,7 @@
       loadTable(logisticGroup);
     }
 
-    function search() 
-    {
+    function search() {
       logisticGroup.groupName = $("#groupName").textbox('getText').toUpperCase();
       logisticGroup.mst = $("#mst").textbox('getText').toUpperCase();
       loadTable(logisticGroup);
@@ -453,7 +445,7 @@
     }
 
     function addLogistic() {
-      $.modal.open("Thêm Logistic", PREFIX + "/add", 600, 550);
+      $.modal.open("Thêm Logistic", PREFIX + "/add", 600, 580);
     }
 
     function editLogistic() {
@@ -461,7 +453,7 @@
         $.modal.alertError("Bạn chưa chọn đơn vị logistic");
         return;
       }
-      $.modal.open("Sửa Logistic", PREFIX + '/edit/' + getSelected, 600, 550);
+      $.modal.open("Sửa Logistic", PREFIX + '/edit/' + getSelected, 600, 580);
     }
 
     function destroyUser() {
@@ -496,9 +488,9 @@
             },
           })
         }, {
-          title: "Xác nhận xóa logistic",
-          btn: ["Đồng Ý", "Hủy Bỏ"]
-        }
+        title: "Xác nhận xóa logistic",
+        btn: ["Đồng Ý", "Hủy Bỏ"]
+      }
       );
     }
 
@@ -539,16 +531,14 @@
       });
     }
 
-    function formatCredit(value)
-    {
-      if(value == null || value == '' || value == undefined)
-      {
+    function formatCredit(value) {
+      if (value == null || value == '' || value == undefined) {
         return;
       }
       else {
         return value == 1 ? 'Credit' : 'Cash';
       }
     }
-  
+
   </script>
 </body>
