@@ -259,6 +259,9 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 		String ids = "";
 		String houseBillNos = "";
 		for (EdoHouseBill edoHouseBill : edoHouseBills) {
+			if (edoHouseBill.getReleaseFlg()) {
+				return error("House bill đã được phát hành không thể xóa.");
+			}
 			ids += edoHouseBill.getId() + ",";
 			houseBillNos += edoHouseBill.getHouseBillNo() + ",";
 		}

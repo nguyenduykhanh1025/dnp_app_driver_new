@@ -455,7 +455,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					// Neu bat buoc check to khai thi phai goi lai acciss
 					if (!customsNoMappingFlg && catosApiService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
-						shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+						if (shipmentDetail.getStatus() == 1) {
+							shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+						}
 						shipmentDetail.setCustomStatus("R");
 						shipmentDetailService.updateShipmentDetail(shipmentDetail);
 						AjaxResult ajaxResult = AjaxResult.success();

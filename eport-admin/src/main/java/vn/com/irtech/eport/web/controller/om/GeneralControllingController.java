@@ -473,6 +473,7 @@ public class GeneralControllingController extends AdminBaseController  {
 		//update shipment detail 2 truong processOrderId, registerNo processStatus, status
 		String processOrderIds = "";
 		Long currentProcessId = 0L;
+		Shipment shipment = shipmentService.selectShipmentById(ShipmentId);
 		try {
 			if(shipmentDetails.size() > 0) {
 				for(ShipmentDetail i: shipmentDetails) {
@@ -483,7 +484,12 @@ public class GeneralControllingController extends AdminBaseController  {
 					i.setProcessOrderId(null);
 					i.setRegisterNo(null);
 					i.setProcessStatus("N");
-					i.setStatus(1);
+					if (shipment.getServiceType() == EportConstants.SERVICE_PICKUP_FULL) {
+						i.setStatus(2);
+					} else {
+						i.setStatus(1);
+					}
+					i.setPaymentStatus("N");
 					i.setUserVerifyStatus("N");
 					shipmentDetailService.resetShipmentDetailProcessStatus(i);
 				}
@@ -498,7 +504,6 @@ public class GeneralControllingController extends AdminBaseController  {
 			if(content != null && content != "") {
 				SysUser user = getUser();
 				ShipmentComment shipmentComment = new ShipmentComment();
-		    	Shipment shipment = shipmentService.selectShipmentById(ShipmentId);
 		    	shipmentComment.setShipmentId(shipment.getId());
 		    	shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
 		    	shipmentComment.setUserId(getUserId());
