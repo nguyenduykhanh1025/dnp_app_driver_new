@@ -132,6 +132,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		String receiptId = map.get("receiptId") == null ? null : map.get("receiptId").toString();
 		String invoiceNo = map.get("invoiceNo") == null ? "" : map.get("invoiceNo").toString(); 
 		String msg = map.get("msg") == null ? "" : map.get("msg").toString(); 
+		String errorImagePath = map.get("errorImagePath") == null ? "" : map.get("errorImagePath").toString(); 
 
 		if (receiptId != null) {
 			if (EportConstants.ROBOT_STATUS_AVAILABLE.equals(status)) {
@@ -140,7 +141,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 						|| serviceType == EportConstants.SERVICE_PICKUP_EMPTY 
 						|| serviceType == EportConstants.SERVICE_DROP_FULL 
 						|| serviceType == EportConstants.SERVICE_SHIFTING) {
-					this.updateShipmentDetail(result, receiptId, invoiceNo, uuId, orderNo, serviceType, msg);
+					this.updateShipmentDetail(result, receiptId, invoiceNo, uuId, orderNo, serviceType, msg, errorImagePath);
 				}	
 				switch (serviceType) {
 					case EportConstants.SERVICE_CHANGE_VESSEL:
@@ -185,7 +186,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	 * @param receiptId
 	 */
 	@Transactional
-	private void updateShipmentDetail(String result, String receiptId, String invoiceNo, String robotUuId, String orderNo, Integer serviceType, String msgError) {
+	private void updateShipmentDetail(String result, String receiptId, String invoiceNo, String robotUuId, String orderNo, Integer serviceType, String msgError, String errorImagePath) {
 		// INIT PROCESS HISTORY
 		Long processOrderId = Long.parseLong(receiptId);
 
@@ -199,26 +200,26 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		String serviceName = "";
 		String url = "";
 		switch (processOrder.getServiceType()) {
-		case EportConstants.SERVICE_PICKUP_FULL:
-			serviceName = "bốc container hàng";
-			url = EportConstants.URL_OM_RECEIVE_F_SUPPORT;
-			break;
-		case EportConstants.SERVICE_PICKUP_EMPTY:
-			serviceName = "bốc container rỗng";
-			url = EportConstants.URL_OM_RECEIVE_E_SUPPORT;
-			break;
-		case EportConstants.SERVICE_DROP_FULL:
-			serviceName = "hạ container hàng";
-			url = EportConstants.URL_OM_SEND_F_SUPPORT;
-			break;
-		case EportConstants.SERVICE_DROP_EMPTY:
-			serviceName = "hạ container rỗng";
-			url = EportConstants.URL_OM_SEND_E_SUPPORT;
-			break;
-		case EportConstants.SERVICE_SHIFTING:
-			serviceName = "dịch chuyển container";
-		default:
-			break;
+			case EportConstants.SERVICE_PICKUP_FULL:
+				serviceName = "bốc container hàng";
+				url = EportConstants.URL_OM_RECEIVE_F_SUPPORT;
+				break;
+			case EportConstants.SERVICE_PICKUP_EMPTY:
+				serviceName = "bốc container rỗng";
+				url = EportConstants.URL_OM_RECEIVE_E_SUPPORT;
+				break;
+			case EportConstants.SERVICE_DROP_FULL:
+				serviceName = "hạ container hàng";
+				url = EportConstants.URL_OM_SEND_F_SUPPORT;
+				break;
+			case EportConstants.SERVICE_DROP_EMPTY:
+				serviceName = "hạ container rỗng";
+				url = EportConstants.URL_OM_SEND_E_SUPPORT;
+				break;
+			case EportConstants.SERVICE_SHIFTING:
+				serviceName = "dịch chuyển container";
+			default:
+				break;
 		}
 		
 		String title = "";
@@ -286,6 +287,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			processOrder.setResult("F"); // RESULT FAILED
 			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
 			processOrder.setMsg(msgError); // Set message error from robot
+			processOrder.setErrorImagePath(errorImagePath); // Set error image path for om check
 			if (orderNo != null) {
 				processOrder.setOrderNo(orderNo);
 			}

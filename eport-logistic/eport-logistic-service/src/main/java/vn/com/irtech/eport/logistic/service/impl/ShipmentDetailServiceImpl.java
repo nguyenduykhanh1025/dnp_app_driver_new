@@ -587,7 +587,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setBeforeAfter("Before");
         }
         processOrder.setTrucker(getTruckerFromRegNoCatos(taxCode));
-        processOrder.setBookingNo(detail.getBookingNo());
+        processOrder.setBookingNo(detail.getBookingNo().replaceAll("/", ""));
         processOrder.setPickupDate(detail.getExpiredDem());
         processOrder.setVessel(detail.getVslNm());
         processOrder.setVoyage(detail.getVoyNo());
