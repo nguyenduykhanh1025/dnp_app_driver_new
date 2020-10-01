@@ -15,10 +15,10 @@ $(document).ready(function () {
 
   $("select[name='carrierCode']").select2({
     closeOnSelect: true,
-    placeholder :'Chọn hãng tàu',
+    placeholder: 'Chọn hãng tàu',
     allowClear: true
   });
-  $("select[name='carrierCode']").val(null).trigger("change"); 
+  $("select[name='carrierCode']").val(null).trigger("change");
 
   // $("select[name='consignee2']").select2({
   //   closeOnSelect: true,
@@ -94,16 +94,16 @@ function checkTaxCodeExists() {
     $.ajax({
       url: PREFIX + "/taxcode/" + $("input[name='taxCode']").val() + "/consignee",
       method: "get",
-      success: function(res) {
+      success: function (res) {
         if (res.code == 0) {
-          $("input[name='taxCode']").val(res.companyName);
+          $("input[name='companyName']").val(res.companyName);
           return true;
         } else {
           $.modal.alertWarning("Mã số thuế không tồn tại.");
           return false;
         }
       },
-      error: function(err) {
+      error: function (err) {
         $.modal.msgError("Có lỗi xảy ra.");
         return false;
       }

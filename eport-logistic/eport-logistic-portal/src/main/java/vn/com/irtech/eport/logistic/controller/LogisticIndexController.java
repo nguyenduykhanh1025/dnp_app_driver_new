@@ -32,6 +32,7 @@ public class LogisticIndexController extends LogisticBaseController
         mmap.put("appName", Global.getName());
         mmap.put("appVersion", Global.getVersion());
         mmap.put("copyrightYear", Global.getCopyrightYear());
+        mmap.put("fwdFlg", getGroup().getFwdFlg());
         return "index";
     }
     @GetMapping("/switchSkin")

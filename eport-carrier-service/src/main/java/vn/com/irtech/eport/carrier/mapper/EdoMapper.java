@@ -134,4 +134,20 @@ public interface EdoMapper
     public Map<String, String> getReportByCarrierGroup(String[] codes);
 
     public Edo getBillOfLadingInfo(Edo edo);
+    
+    /**
+     * Select list edo by ids
+     * 
+     * @param ids
+     * @return List<Edo>
+     */
+    public List<Edo> selectEdoByIds(String[] ids);
+    
+    /**
+     * Update edo by condition
+     * 
+     * @param edo
+     * @return int
+     */
+    public int updateEdoByCondition(Edo edo);
 }

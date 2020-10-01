@@ -27,11 +27,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime" column="update_time" />
         <result property="carrierCode" column="carrier_code" />
         <result property="consignee2TaxCode" column="consignee2_tax_code" />
+        <result property="releaseFlg" column="release_flg" />
         <association property="edo" column="edo_id" javaType="Edo" select="selectEdo" />
     </resultMap>
 
     <sql id="selectEdoHouseBillVo">
-        select id, logistic_group_id, logistic_account_id, edo_id, bill_of_lading, order_number, master_bill_no, consignee, house_bill_no, house_bill_no2, consignee2, container_number, sztp, opr, vessel, voy_no, create_by, create_time, update_by, update_time, carrier_code from edo_house_bill
+        select id, logistic_group_id, logistic_account_id, edo_id, bill_of_lading, order_number, master_bill_no, consignee, house_bill_no, house_bill_no2, consignee2, container_number, sztp, opr, vessel, voy_no, create_by, create_time, update_by, update_time, carrier_code, release_flg from edo_house_bill
     </sql>
 
     <select id="selectEdoHouseBillList" parameterType="EdoHouseBill" resultMap="EdoHouseBillResult">
@@ -45,6 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="houseBillNo != null and houseBillNo != ''"> and house_bill_no = #{houseBillNo}</if>
             <if test="houseBillNo2 != null and houseBillNo2 != ''"> and house_bill_no2 = #{houseBillNo2}</if>
             <if test="consignee2TaxCode != null and consignee2TaxCode != ''"> and consignee2_tax_code = #{consignee2TaxCode}</if>
+            <if test="releaseFlg != null"> and release_flg = #{releaseFlg}</if>
         </where>
     </select>
 
@@ -58,6 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderNumber != null and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="houseBillNo != null and houseBillNo != ''"> and house_bill_no = #{houseBillNo}</if>
             <if test="houseBillNo2 != null and houseBillNo2 != ''"> and house_bill_no2 = #{houseBillNo2}</if>
+            <if test="releaseFlg != null"> and release_flg = #{releaseFlg}</if>
         </where>
         FETCH NEXT 1 ROWS ONLY
     </select>
@@ -94,6 +97,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time,</if>
             <if test="carrierCode != null">carrier_code,</if>
             <if test="consignee2TaxCode != null">consignee2_tax_code,</if>
+            <if test="releaseFlg != null">release_flg,</if>
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -118,6 +122,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">#{updateTime},</if>
             <if test="carrierCode != null">#{carrierCode},</if>
             <if test="consignee2TaxCode != null">#{consignee2TaxCode},</if>
+            <if test="releaseFlg != null">#{releaseFlg},</if>
             SYSDATE
         </trim>
     </insert>
@@ -146,6 +151,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="carrierCode != null and carrierCode != ''">carrier_code = #{carrierCode},</if>
             <if test="consignee2TaxCode != null">consignee2_tax_code = #{consignee2TaxCode},</if>
+            <if test="releaseFlg != null">release_flg = #{releaseFlg},</if>
         </trim>
         where id = #{id}
     </update>
@@ -177,23 +183,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="contNumber" column="cont_number" />
         <result property="createTime" column="create_time" />
         <result property="carrierCode" column="carrier_code" />
+        <result property="orderNumber" column="order_number" />
+        <result property="consignee2TaxCode" column="consignee2_tax_code" />
     </resultMap>
 
     <select id="selectListHouseBillRes" parameterType="vn.com.irtech.eport.carrier.dto.HouseBillSearchReq" resultMap="HouseBillResResult">
         SELECT
         master_bill_no,
         house_bill_no,
-        create_time,
+        (select min(e2.create_time) from edo_house_bill e2 where e2.house_bill_no = e1.house_bill_no and e2.house_bill_no2 is null) as create_time,
         carrier_code,
         consignee2,
+        order_number,
+        consignee2_tax_code,
         count(*) as cont_number
         FROM
-        edo_house_bill
+        edo_house_bill e1
         <where>
+            house_bill_no2 is null
             <if test="logisticGroupId != null"> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="masterBill != null and masterBill != ''"> and upper(master_bill_no) like concat('%', concat(#{masterBill}, '%'))</if>
+            <if test="houseBill != null and houseBill != ''"> and upper(house_bill_no) like concat('%', concat(#{houseBill}, '%'))</if>
         </where>
         GROUP BY
-        house_bill_no, master_bill_no, create_time, consignee2, carrier_code
+        house_bill_no, master_bill_no, consignee2, carrier_code, order_number, consignee2_tax_code
         ORDER BY
         create_time desc
     </select>
@@ -261,4 +274,79 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where house_bill_no = #{blNo} and house_bill_no2 is null
         FETCH NEXT 1 ROWS ONLY
     </select>
+
+    <update id="updateEdoHouseBillByCondition" parameterType="EdoHouseBill">
+        update edo_house_bill
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="logisticGroupId != null">logistic_group_id = #{logisticGroupId},</if>
+            <if test="logisticAccountId != null">logistic_account_id = #{logisticAccountId},</if>
+            <if test="edoId != null">edo_id = #{edoId},</if>
+            <if test="billOfLading != null">bill_of_lading = #{billOfLading},</if>
+            <if test="orderNumber != null">order_number = #{orderNumber},</if>
+            <if test="masterBillNo != null and masterBillNo != ''">master_bill_no = #{masterBillNo},</if>
+            <if test="consignee != null and consignee != ''">consignee = #{consignee},</if>
+            <if test="houseBillNo != null and houseBillNo != ''">house_bill_no = #{houseBillNo},</if>
+            <if test="houseBillNo2 != null">house_bill_no2 = #{houseBillNo2},</if>
+            <if test="consignee2 != null and consignee2 != ''">consignee2 = #{consignee2},</if>
+            <if test="containerNumber != null and containerNumber != ''">container_number = #{containerNumber},</if>
+            <if test="sztp != null and sztp != ''">sztp = #{sztp},</if>
+            <if test="opr != null and opr != ''">opr = #{opr},</if>
+            <if test="vessel != null and vessel != ''">vessel = #{vessel},</if>
+            <if test="voyNo != null and voyNo != ''">voy_no = #{voyNo},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="carrierCode != null and carrierCode != ''">carrier_code = #{carrierCode},</if>
+            <if test="consignee2TaxCode != null">consignee2_tax_code = #{consignee2TaxCode},</if>
+            <if test="releaseFlg != null">release_flg = #{releaseFlg},</if>
+        </trim>
+        <where>
+            <if test="houseBillNo != null and houseBillNo != ''"> and house_bill_no = #{houseBillNo}</if>
+        </where>
+    </update>
+
+    <select id="selectEdoHouseBillByIds" resultMap="EdoHouseBillResult">
+        select * from edo_house_bill
+        <where>
+            <if test="ids != null">
+                and id in 
+                 <foreach item="id" collection="ids" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="logisticGroupId != null">and logistic_group_id = #{logisticGroupId}</if>
+        </where>
+    </select>
+
+    <select id="selectEdoHouseBillByHouseBillNo2s" parameterType="EdoHouseBill" resultMap="EdoHouseBillResult">
+        select * from edo_house_bill
+        <where>
+            <if test="params.houseBillNos != null">
+                and house_bill_no2 in 
+                <foreach item="hBillNo" collection="params.houseBillNos" open="(" separator="," close=")">
+                    #{hBillNo}
+                </foreach>
+            </if>
+            <if test="logisticGroupId != null">and logistic_group_id = #{logisticGroupId}</if>
+        </where>
+    </select>
+
+    <update id="updateOldHouseBillToNewHouseBill" parameterType="EdoHouseBill">
+        update edo_house_bill
+        <trim prefix="SET" suffixOverrides=",">
+            house_bill_no2 = null,
+            update_time = sysdate
+        </trim>
+        <where>
+            <if test="params.houseBillNos != null">
+                and house_bill_no2 in 
+                <foreach item="hBillNo" collection="params.houseBillNos" open="(" separator="," close=")">
+                    #{hBillNo}
+                </foreach>
+            </if>
+            <if test="logisticGroupId != null">and logistic_group_id = #{logisticGroupId}</if>
+            <if test="id != null">and id = #{id}</if>
+        </where>
+    </update>
 </mapper>

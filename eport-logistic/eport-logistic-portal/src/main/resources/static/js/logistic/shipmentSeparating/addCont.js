@@ -4,7 +4,6 @@ $(document).ready(function () {
   let dataSearch = {
     billOfLading: houseBill.masterBillNo
   }
-  console.log(dataSearch);
   loadTable(dataSearch);
 });
 
@@ -14,7 +13,7 @@ function loadTable(dataSearch) {
   } else {
     $("#dg").datagrid({
       url: PREFIX + "/separate/search",
-      height: document.documentElement.clientHeight - 230,
+      height: document.documentElement.clientHeight - 125,
       method: "post",
       collapsible: true,
       clientPaging: false,
@@ -58,4 +57,49 @@ function formatStatus(value) {
   } else {
     return '<span class="badge badge-success">Đã làm lệnh</span>';
   }
+}
+
+function formatExpiredDem(value) {
+  if (value) {
+    return value.substring(8, 10) + '/' + value.substring(5, 7) + '/' + value.substring(0, 4) + value.substring(10, 19);
+  }
+  return '';
+}
+
+function submitHandler(index, layer, dg, edoHouseBill) {
+  let rows = $("#dg").datagrid("getSelections");
+  if (rows == null || rows.length == 0) {
+    $.modal.alertWarning("Không có cont để tách, vui lòng kiểm tra lại.");
+    return false;
+  }
+
+  let edoIds = rows.map((e) => e.id);
+  console.log(edoHouseBill);
+
+  let reqData = {
+    houseBill: edoHouseBill.houseBillNo,
+    orderNumber: edoHouseBill.orderNumber,
+    consignee2TaxCode: edoHouseBill.consignee2TaxCode,
+    edoIds: edoIds,
+  };
+  $.ajax({
+    url: PREFIX + "/separate/add",
+    method: "POST",
+    contentType: "application/json",
+    data: JSON.stringify(reqData),
+    async: false,
+    error: function (request) {
+      $.modal.alertError("System error");
+    },
+    success: function (result) {
+      if (result.code == web_status.SUCCESS) {
+        $.modal.alert("Thành công!");
+        layer.close(index);
+      } else if (result.code == web_status.WARNING) {
+        $.modal.alertWarning(result.msg);
+      } else {
+        $.modal.alertError(result.msg);
+      }
+    },
+  });
 }

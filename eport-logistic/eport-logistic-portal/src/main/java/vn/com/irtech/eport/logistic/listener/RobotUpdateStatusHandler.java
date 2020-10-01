@@ -136,6 +136,18 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		
 		Boolean isExtensionDateOrder = "1"
 				.equals(map.get("isExtensionDateOrder") == null ? null : map.get("isExtensionDateOrder").toString());
+		
+		Boolean isChangeTerminalCustomHold = "1"
+				.equals(map.get("isChangeTerminalCustomHold") == null ? null : map.get("isChangeTerminalCustomHold").toString());
+		
+		Boolean isCancelSendContFullOrder = "1"
+				.equals(map.get("isCancelSendContFullOrder") == null ? null : map.get("isCancelSendContFullOrder").toString());
+		
+		Boolean isCancelReceiveContEmptyOrder = "1"
+				.equals(map.get("isCancelReceiveContEmptyOrder") == null ? null : map.get("isCancelReceiveContEmptyOrder").toString());
+		
+		Boolean isExportReceipt = "1"
+				.equals(map.get("isExportReceipt") == null ? null : map.get("isExportReceipt").toString());
 
 		// Check Service robot support anh make into a string split by comma for query db
 		String serviceTypes = "";
@@ -166,6 +178,18 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		if (isExtensionDateOrder) {
 			serviceTypes += EportConstants.SERVICE_EXTEND_DATE + ",";
 		}
+		if (isChangeTerminalCustomHold) {
+			serviceTypes += EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD + ",";
+		}
+		if (isCancelSendContFullOrder) {
+			serviceTypes += EportConstants.SERVICE_CANCEL_PICKUP_EMPTY + ",";
+		}
+		if (isCancelReceiveContEmptyOrder) {
+			serviceTypes += EportConstants.SERVICE_CANCEL_DROP_FULL + ",";
+		}
+		if (isExportReceipt) {
+			serviceTypes += EportConstants.SERVICE_EXPORT_RECEIPT + ",";
+		}
 		
 		if (serviceTypes.length() > 0) {
 			serviceTypes = serviceTypes.substring(0, serviceTypes.length()-1);
@@ -187,6 +211,10 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		sysRobot.setIsCreateBookingOrder(isCreateBookingOrder);
 		sysRobot.setIsGateInOrder(isGateInOrder);
 		sysRobot.setIsExtensionDateOrder(isExtensionDateOrder);
+		sysRobot.setIsChangeTerminalCustomHold(isChangeTerminalCustomHold);
+		sysRobot.setIsCancelSendContFullOrder(isCancelSendContFullOrder);
+		sysRobot.setIsCancelReceiveContEmptyOrder(isCancelReceiveContEmptyOrder);
+		sysRobot.setIsExportReceipt(isExportReceipt);
 
 		// check if robot is exists but be disabled then just update robot infor but not validate or assign new order to robot
 		SysRobot robotExist = robotService.selectRobotByUuId(uuId);
@@ -288,7 +316,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 								sendShiftingOrderToRobot(reqProcessOrder, uuId);
 								break;
 							case EportConstants.SERVICE_CREATE_BOOKING:
-								mqttService.publicBookingOrderToDemandRobot(reqProcessOrder, EServiceRobot.CREATE_BOOKING, uuId);
+								mqttService.publicOrderToDemandRobot(reqProcessOrder, EServiceRobot.CREATE_BOOKING, uuId);
 								break;
 							case EportConstants.SERVICE_GATE_IN:
 								sendGateInOrderToRobot(reqProcessOrder, sysRobot.getUuId());
@@ -298,6 +326,18 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 								break;
 							case EportConstants.SERVICE_EXTEND_DATE:
 								sendExtendDateOrderToRobot(reqProcessOrder, uuId);
+								break;
+							case EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD:
+								sendTerminalCustomHoldToRobot(reqProcessOrder, uuId);
+								break;
+							case EportConstants.SERVICE_CANCEL_DROP_FULL:
+								sendCancelDropFullOrderToRobot(reqProcessOrder, uuId);
+								break;
+							case EportConstants.SERVICE_CANCEL_PICKUP_EMPTY:
+								sendCancelPickupEmptyOrderToRobot(reqProcessOrder, uuId);
+								break;
+							case EportConstants.SERVICE_EXPORT_RECEIPT:
+								sendExportReceiptToRobot(reqProcessOrder, uuId);
 								break;
 						}
 					}
@@ -446,6 +486,62 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 			mqttService.publicMessageToDemandRobot(req, EServiceRobot.CHANGE_VESSEL, uuid);
 		} catch (MqttException e) {
 			logger.error("Error when send waiting change vessel order to robot: " + e);
+		}
+	}
+	
+	/**
+	 * Send terminal custom hold to robot
+	 * 
+	 * @param processOrder
+	 * @param uuid
+	 */
+	public void sendTerminalCustomHoldToRobot(ProcessOrder processOrder, String uuid) {
+		try {
+			mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.TERMINAL_CUSTOM_HOLD, uuid);
+		} catch (MqttException e) {
+			logger.error("Error when send terminal hold to robot: " + e);
+		}
+	}
+	
+	/**
+	 * Send cancel drop full order to robot
+	 * 
+	 * @param processOrder
+	 * @param uuid
+	 */
+	public void sendCancelDropFullOrderToRobot(ProcessOrder processOrder, String uuid) {
+		try {
+			mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.CANCEL_DROP_FULL, uuid);
+		} catch (MqttException e) {
+			logger.error("Error when send drop full to robot: " + e);
+		}
+	}
+	
+	/**
+	 * Send cancel pickup empty order to robot
+	 * 
+	 * @param processOrder
+	 * @param uuid
+	 */
+	public void sendCancelPickupEmptyOrderToRobot(ProcessOrder processOrder, String uuid) {
+		try {
+			mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.CANCEL_PICKUP_EMPTY, uuid);
+		} catch (MqttException e) {
+			logger.error("Error when send pickup empty to robot: " + e);
+		}
+	}
+	
+	/**
+	 * Send export receipt to robot
+	 * 
+	 * @param processOrder
+	 * @param uuid
+	 */
+	public void sendExportReceiptToRobot(ProcessOrder processOrder, String uuid) {
+		try {
+			mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.EXPORT_RECEIPT, uuid);
+		} catch (MqttException e) {
+			logger.error("Error when send export receipt to robot: " + e);
 		}
 	}
 }

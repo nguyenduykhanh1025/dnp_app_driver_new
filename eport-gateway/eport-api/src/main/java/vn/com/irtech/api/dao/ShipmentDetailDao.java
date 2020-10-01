@@ -187,4 +187,12 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return String
 	 */
 	public String getTruckerByRegNo(String taxCode);
+	
+	/**
+	 * Get container list none termianl hold
+	 * 
+	 * @param containers
+	 * @return List<String>
+	 */
+	public List<String> getContainerListNoneTerminalHold(String[] containers);
 }

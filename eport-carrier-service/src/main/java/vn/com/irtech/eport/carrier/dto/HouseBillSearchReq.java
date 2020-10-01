@@ -13,6 +13,10 @@ public class HouseBillSearchReq implements Serializable {
 	private String toDate;
 
 	private Long logisticGroupId;
+	
+	private String masterBill;
+	
+	private String houseBill;
 
 	public String getKeyWord() {
 		return keyWord;
@@ -44,6 +48,22 @@ public class HouseBillSearchReq implements Serializable {
 
 	public void setLogisticGroupId(Long logisticGroupId) {
 		this.logisticGroupId = logisticGroupId;
+	}
+
+	public String getMasterBill() {
+		return masterBill;
+	}
+
+	public void setMasterBill(String masterBill) {
+		this.masterBill = masterBill;
+	}
+
+	public String getHouseBill() {
+		return houseBill;
+	}
+
+	public void setHouseBill(String houseBill) {
+		this.houseBill = houseBill;
 	}
 
 }

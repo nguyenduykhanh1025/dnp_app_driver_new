@@ -176,6 +176,14 @@ public class ProcessOrder extends BaseEntity
     /** Message Error Robot*/
     @Excel(name = "Message Error")
     private String msg;
+    
+    /** Error Image Path*/
+    @Excel(name = "Error Image Path")
+    private String errorImagePath;
+    
+    /** Hold Flag*/
+    @Excel(name = "Hold Flag")
+    private Boolean holdFlg;
 
     public String getLogisticName() {
 		return this.logisticName;
@@ -564,6 +572,22 @@ public class ProcessOrder extends BaseEntity
 		this.msg = msg;
 	}
 
+	public String getErrorImagePath() {
+		return errorImagePath;
+	}
+
+	public void setErrorImagePath(String errorImagePath) {
+		this.errorImagePath = errorImagePath;
+	}
+
+	public Boolean getHoldFlg() {
+		return holdFlg;
+	}
+
+	public void setHoldFlg(Boolean holdFlg) {
+		this.holdFlg = holdFlg;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -614,6 +638,8 @@ public class ProcessOrder extends BaseEntity
             .append("cargoType", getCargoType())
             .append("trucker", getTrucker())
             .append("msg", getMsg())
+            .append("errorImagePath", getErrorImagePath())
+            .append("holdFlg", getHoldFlg())
             .toString();
     }
 }

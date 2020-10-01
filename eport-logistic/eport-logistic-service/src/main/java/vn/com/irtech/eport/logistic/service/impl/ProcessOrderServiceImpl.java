@@ -184,4 +184,15 @@ public class ProcessOrderServiceImpl implements IProcessOrderService {
     public Map<String, Long> getSupportNumberReportForOm() {
     	return processOrderMapper.getSupportNumberReportForOm();
     }
+	
+	/**
+     * Select process order list by ids
+     * 
+     * @param processOrderIds
+     * @return List<ProcessOrder>
+     */
+	@Override
+    public List<ProcessOrder> selectProcessOrderListByIds(String processOrderIds) {
+		return processOrderMapper.selectProcessOrderListByIds(Convert.toStrArray(processOrderIds));
+	}
 }

@@ -1,6 +1,8 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -822,6 +824,30 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return  trucker;
 		} catch (Exception e) {
 			logger.error("Error while call CATOS Api get trucker: ", e);
+			return null;
+		}
+	}
+	
+	/**
+	 * Get list container no not hold terminal
+	 * 
+	 * @param containers
+	 * @return List<String> 
+	 */
+	@Override
+	public List<String> getListContainerNotHoldTerminal(String containers) {
+		try {
+			String url = Global.getApiUrl() + "/none-terminal/containers";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			Map<String, Object> map = new HashMap<>();
+			map.put("containers", containers);
+			HttpEntity httpEntity = new HttpEntity<Map<String, Object>>(map);
+			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<String>>() {});
+			List<String> containerList = response.getBody();
+			return containerList;
+		}catch (Exception e) {
+			logger.error("Error while call CATOS Api get list container not check terminal hold", e);
 			return null;
 		}
 	}

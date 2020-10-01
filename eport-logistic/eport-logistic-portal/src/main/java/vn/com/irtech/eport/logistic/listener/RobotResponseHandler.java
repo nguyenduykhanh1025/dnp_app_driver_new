@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.listener;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -146,10 +147,20 @@ public class RobotResponseHandler implements IMqttMessageListener{
 						this.updateChangeVesselOrder(result, receiptId, uuId);
 						break;
 					case EportConstants.SERVICE_CREATE_BOOKING:
-						this.updateCreateBookingOrder(result, receiptId, uuId);
+						this.updateCreateBookingOrder(result, receiptId, uuId, msg);
 						break;
 					case EportConstants.SERVICE_EXTEND_DATE:
 						this.updateExtensionDateOrder(result, receiptId, uuId);
+						break;
+					case EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD:
+						this.updateTerminalCustomHold(result, receiptId, uuId);
+						break;
+					case EportConstants.SERVICE_CANCEL_DROP_FULL:
+						break;
+					case EportConstants.SERVICE_CANCEL_PICKUP_EMPTY:
+						break;
+					case EportConstants.SERVICE_EXPORT_RECEIPT:
+						this.updateExportReceipt(result, receiptId, uuId);
 						break;
 					default:
 						break;
@@ -262,6 +273,9 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			
 			// SET RESULT FOR HISTORY SUCCESS
 			historyResult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
+			if (EportConstants.SERVICE_PICKUP_FULL == processOrder.getServiceType()) {
+				this.sendProcessOrderHoldTerminal(processOrder, shipmentDetails);
+			}
 		} else {
 			
 			// Send notification order success to om to check whether some data is wrong or not
@@ -357,6 +371,18 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		if (robot.getIsExtensionDateOrder()) {
 			serviceTypes += EportConstants.SERVICE_EXTEND_DATE + ",";
 		}
+		if (robot.getIsChangeTerminalCustomHold()) {
+			serviceTypes += EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD + ",";
+		}
+		if (robot.getIsCancelSendContFullOrder()) {
+			serviceTypes += EportConstants.SERVICE_CANCEL_DROP_FULL + ",";
+		}
+		if (robot.getIsCancelReceiveContEmptyOrder()) {
+			serviceTypes += EportConstants.SERVICE_CANCEL_PICKUP_EMPTY + ",";
+		}
+		if (robot.getIsExportReceipt()) {
+			serviceTypes += EportConstants.SERVICE_EXPORT_RECEIPT + ",";
+		}
 
 		if (serviceTypes.length() > 0) {
 			serviceTypes = serviceTypes.substring(0, serviceTypes.length()-1);
@@ -391,10 +417,22 @@ public class RobotResponseHandler implements IMqttMessageListener{
 					sendChangeVesselOrderToRobot(reqProcessOrder, robot.getUuId());
 					break;
 				case EportConstants.SERVICE_CREATE_BOOKING:
-					mqttService.publicBookingOrderToDemandRobot(reqProcessOrder, EServiceRobot.CREATE_BOOKING, robot.getUuId());
+					mqttService.publicOrderToDemandRobot(reqProcessOrder, EServiceRobot.CREATE_BOOKING, robot.getUuId());
 					break;
 				case EportConstants.SERVICE_EXTEND_DATE:
 					sendExtendDateOrderToRobot(reqProcessOrder, robot.getUuId());
+					break;
+				case EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD:
+					sendTerminalCustomHoldToRobot(reqProcessOrder, robot.getUuId());
+					break;
+				case EportConstants.SERVICE_CANCEL_DROP_FULL:
+					sendCancelDropFullOrderToRobot(reqProcessOrder, robot.getUuId());
+					break;
+				case EportConstants.SERVICE_CANCEL_PICKUP_EMPTY:
+					sendCancelPickupEmptyOrderToRobot(reqProcessOrder, robot.getUuId());
+					break;
+				case EportConstants.SERVICE_EXPORT_RECEIPT:
+					sendExportReceiptToRobot(reqProcessOrder, robot.getUuId());
 					break;
 			}
 			return "1";
@@ -468,7 +506,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	 * @param receiptId
 	 * @param uuId
 	 */
-	private void updateCreateBookingOrder(String result, String receiptId, String uuId) {
+	private void updateCreateBookingOrder(String result, String receiptId, String uuId, String msgError) {
 		// INIT PROCESS HISTORY
 		Long processOrderId = Long.parseLong(receiptId);
 		String hresult = null;
@@ -498,12 +536,31 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			hresult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
 		} else {
 			
+			String title = "ePort: Thông báo tạo/cập nhật booking bị lỗi bởi robot " + uuId + ".";
+			String msg = "Robot làm lệnh bốc rỗng thất bại tại bước tạo/cập nhật booking cho mã lô " + processOrder.getShipmentId();
+			
+			receiveEmptyOrder.setResult(EportConstants.PROCESS_ORDER_RESULT_FAILED);
+			receiveEmptyOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_FINISHED);
+			receiveEmptyOrder.setMsg(msgError);
+			receiveEmptyOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_FINISHED);
+			receiveEmptyOrder.setResult(EportConstants.PROCESS_ORDER_RESULT_SUCCESS);
+			processOrderService.updateProcessOrder(receiveEmptyOrder);
+			
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setProcessOrderId(Long.parseLong(receiptId));
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
+				shipmentDetail2.setProcessStatus("E");
+				shipmentDetailService.updateShipmentDetail(shipmentDetail2);
+			}
+			
 			// Send notification for om about receive empty order mapping with create booking order
 			receiveEmptyOrder.setResult("F");
 			processOrderService.updateProcessOrder(receiveEmptyOrder);
 			
+			// Send notification for om
 			try {
-				mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + receiveEmptyOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + receiveEmptyOrder.getId());
+				mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg, configService.getKey("domain.admin.name") + EportConstants.URL_OM_RECEIVE_E_SUPPORT, EportConstants.NOTIFICATION_PRIORITY_LOW);
 			} catch (Exception e) {
 				logger.warn(e.getMessage());
 			}
@@ -533,6 +590,68 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				shipmentDetail.setExpiredDem(processOrder.getPickupDate());
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
+			processOrder.setStatus(2); // FINISH		
+			processOrder.setResult("S"); // RESULT SUCESS	
+			processOrderService.updateProcessOrder(processOrder);
+			hresult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
+		} else {
+
+			// INIT PROCESS ORDER TO UPDATE
+			processOrder.setResult("F"); // RESULT FAILED
+			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			processOrder.setRunnable(false);
+			processOrderService.updateProcessOrder(processOrder);
+
+			// SET RESULT FOR HISTORY FAILED
+			hresult = EportConstants.PROCESS_HISTORY_RESULT_FAILED;
+		}
+		updateHistory(processOrderId, uuId, EportConstants.SERVICE_EXTEND_DATE, hresult);
+	}
+	
+	/**
+	 * Update terminal custom hold status
+	 * 
+	 * @param result
+	 * @param receiptId
+	 * @param uuId
+	 */
+	private void updateTerminalCustomHold(String result, String receiptId, String uuId) {
+		// INIT PROCESS HISTORY
+		Long processOrderId = Long.parseLong(receiptId);
+		String hresult = null;
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
+		if ("success".equalsIgnoreCase(result)) {
+			processOrder.setStatus(2); // FINISH		
+			processOrder.setResult("S"); // RESULT SUCESS	
+			processOrderService.updateProcessOrder(processOrder);
+			hresult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
+		} else {
+
+			// INIT PROCESS ORDER TO UPDATE
+			processOrder.setResult("F"); // RESULT FAILED
+			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			processOrder.setRunnable(false);
+			processOrderService.updateProcessOrder(processOrder);
+
+			// SET RESULT FOR HISTORY FAILED
+			hresult = EportConstants.PROCESS_HISTORY_RESULT_FAILED;
+		}
+		updateHistory(processOrderId, uuId, EportConstants.SERVICE_EXTEND_DATE, hresult);
+	}
+	
+	/**
+	 * Update export receipt status
+	 * 
+	 * @param result
+	 * @param receiptId
+	 * @param uuId
+	 */
+	private void updateExportReceipt(String result, String receiptId, String uuId) {
+		// INIT PROCESS HISTORY
+		Long processOrderId = Long.parseLong(receiptId);
+		String hresult = null;
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
+		if ("success".equalsIgnoreCase(result)) {
 			processOrder.setStatus(2); // FINISH		
 			processOrder.setResult("S"); // RESULT SUCESS	
 			processOrderService.updateProcessOrder(processOrder);
@@ -603,5 +722,104 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		} catch (MqttException e) {
 			logger.error("Error when send waiting extend date order to robot: " + e);
 		}
+	}
+	
+	/**
+	 * Send terminal custom hold to robot
+	 * 
+	 * @param processOrder
+	 * @param uuid
+	 */
+	public void sendTerminalCustomHoldToRobot(ProcessOrder processOrder, String uuid) {
+		try {
+			mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.TERMINAL_CUSTOM_HOLD, uuid);
+		} catch (MqttException e) {
+			logger.error("Error when send terminal hold to robot: " + e);
+		}
+	}
+	
+	/**
+	 * Send cancel drop full order to robot
+	 * 
+	 * @param processOrder
+	 * @param uuid
+	 */
+	public void sendCancelDropFullOrderToRobot(ProcessOrder processOrder, String uuid) {
+		try {
+			mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.CANCEL_DROP_FULL, uuid);
+		} catch (MqttException e) {
+			logger.error("Error when send drop full to robot: " + e);
+		}
+	}
+	
+	/**
+	 * Send cancel pickup empty order to robot
+	 * 
+	 * @param processOrder
+	 * @param uuid
+	 */
+	public void sendCancelPickupEmptyOrderToRobot(ProcessOrder processOrder, String uuid) {
+		try {
+			mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.CANCEL_PICKUP_EMPTY, uuid);
+		} catch (MqttException e) {
+			logger.error("Error when send pickup empty to robot: " + e);
+		}
+	}
+	
+	/**
+	 * Send export receipt to robot
+	 * 
+	 * @param processOrder
+	 * @param uuid
+	 */
+	public void sendExportReceiptToRobot(ProcessOrder processOrder, String uuid) {
+		try {
+			mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.EXPORT_RECEIPT, uuid);
+		} catch (MqttException e) {
+			logger.error("Error when send export receipt to robot: " + e);
+		}
+	}
+	
+	private void sendProcessOrderHoldTerminal(ProcessOrder pickupFullOrder, List<ShipmentDetail> shipmentDetails) {
+		// Get list container for shipmentDetails
+		String containers = "";
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			containers += shipmentDetail.getContainerNo() + ",";
+		}
+		containers = containers.substring(0, containers.length()-1);
+		// Get list container need to check terminal hold
+		List<String> containerList = catosApiService.getListContainerNotHoldTerminal(containers);
+		
+		// Send list container not check terminal hold to robot
+		if (containers.length() > 0) {
+			logger.debug("Create process order to send terminal hold.");
+			ProcessOrder processOrder = new ProcessOrder();
+			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);
+			processOrder.setShipmentId(pickupFullOrder.getShipmentId());
+			processOrder.setLogisticGroupId(pickupFullOrder.getLogisticGroupId());
+			processOrder.setContNumber(containerList.size());
+			processOrder.setModee(EportConstants.MODE_TERMINAL_HOLD);
+			Map<String, Object> processData = new HashMap<>();
+			processData.put("containers", containers);
+			processOrder.setProcessData(new Gson().toJson(processData));
+			processOrder.setHoldFlg(true);
+			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);
+			processOrder.setRemark("Chua nhan DO goc");
+			processOrder.setRunnable(true);
+			processOrderService.insertProcessOrder(processOrder);
+			
+			logger.debug("Find robot terminal hold available.");
+			SysRobot sysRobot = new SysRobot();
+			sysRobot.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);
+			sysRobot.setStatus(EportConstants.ROBOT_STATUS_AVAILABLE);
+			sysRobot.setDisabled(false);
+			SysRobot robot = robotService.findFirstRobot(sysRobot);
+			try {
+				mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.TERMINAL_CUSTOM_HOLD, robot.getUuId());
+			} catch (MqttException e) {
+				logger.error("Error when send pickup empty to robot: " + e);
+			}
+		}
+		
 	}
 }

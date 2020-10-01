@@ -225,4 +225,12 @@ public interface EportConstants {
 	public static final String DO_TYPE_CARRIER_DO = "0";
 	/** Do type eDO of carrier group */
 	public static final String DO_TYPE_CARRIER_EDO = "1";
+	
+	// Mode check hold
+	/** terminal hold mode */
+	public static final String MODE_TERMINAL_HOLD = "Terminal Hold";
+	
+	// Payment history status
+	/** Payment history success status */
+	public static final String PAYMENT_HISTORY_SUCCESS = "1";
 }

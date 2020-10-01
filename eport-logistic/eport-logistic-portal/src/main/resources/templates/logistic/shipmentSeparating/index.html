@@ -1,109 +1,134 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <th:block th:include="include :: header('Tách Lô từ Master Bill')" />
-    <th:block th:include="include :: easyui-css" />
-    <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
-    <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
-  </head>
-  <body class="grey-background">
-    <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
-    <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
-    <div class="main-body">
-      <div class="main-body__search-wrapper mb-2">
-        <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
-          <div class="flex__left w-20">
-            <h3 class="mt-10">Tách Bill từ House Bill</h3>
-          </div>
-          <div class="flex__right w-80 justify-content-start align-items-center d-flex">
-            <div class="mr-20">
-              <div class="d-inline">
-                <input class="easyui-textbox" name="booking" id="search" data-options="prompt: 'Tìm kiếm' " />
-              </div>
-              <div class="d-inline">
-                <input class="easyui-textbox" name="booking" id="search" data-options="prompt: 'Tìm kiếm' " />
-              </div>
-              <div class="d-inline">
-                <input class="easyui-textbox" name="booking" id="search" data-options="prompt: 'Tìm kiếm' " />
-              </div>
-              <div class="d-inline">
-                <button class="btn btn-success" style="margin-bottom: 5px" onclick="search()">Tìm kiếm</button>
-              </div>
-              <div class="d-inline">
-                <button class="btn btn-success btn-outline" style="margin-bottom: 5px" onclick="clearInput()">Làm mới</button>
-              </div>
-            </div>
-          </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <th:block th:include="include :: header('Tách Lô từ Master Bill')" />
+  <th:block th:include="include :: easyui-css" />
+  <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
+  <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+</head>
+
+<body class="grey-background">
+  <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+  <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+  <div class="main-body">
+    <div class="main-body__search-wrapper mb-2">
+      <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+        <div class="flex__left w-20">
+          <h3 class="mt-10">Tách Bill từ House Bill</h3>
         </div>
-      </div>
-      <div class="main-body__table-wrapper">
-        <div class="easyui-layout" id="main-layout" style="width: 100%">
-          <div class="left-side" data-options="region:'west',split:true, collapsible:false" title="Tách lô từ Master Bill" style="width: 30%">
-            <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
-            <table id="dg" style="width: 100%" pageList="[20,50,100,150,200]">
-              <thead>
-                <tr>
-                  <th data-options="field:'masterBillNo', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Master Bill</th>
-                  <th data-options="field:'houseBillNo', halign:'center', fixed:true" sortable="true" width="100">House Bill</th>
-                  <th data-options="field:'carrierCode', align:'right', halign:'center', fixed:true" sortable="true" width="70">Hãng tàu</th>
-                  <th data-options="field:'contNumber',align:'right',halign:'center'" sortable="true" width="150">SL Cont</th>
-                  <th data-options="field:'createTime', align:'right', halign:'center', formatter: formatDate, fixed:true" sortable="true" width="150">Ngày tạo</th>
-                </tr>
-              </thead>
-            </table>
-          </div>
-          <div data-options="region:'center'" style="width: 100%">
-            <div class="panel-header" style="width: 100%; background-color: #f3f7fa">
-              <div class="panel-title" style="color: #333">Thông tin lô</div>
+        <div class="flex__right w-80 justify-content-start align-items-center d-flex">
+          <div class="mr-20">
+            <div class="d-inline">
+              <input class="easyui-textbox" id="masterBill" data-options="prompt: 'Master Bill' " />
             </div>
-            <div class="right-side__toolbar">
-              <div class="datagrid-toolbar">
-                <table cellspacing="0" cellpadding="0">
-                  <tbody>
-                    <tr>
-                      <td>
-                        <button id="btnAddContToHouseBill" class="btn btn-sm btn-default" onclick="openFormAddCont()"><i class="fa fa-plus"></i> Thêm Cont vào House Bill</button>
-                      </td>
-                      <td>
-                        <button id="deleteBtn" class="btn btn-sm btn-default"><i class="fa fa-trash text-danger"></i> Xóa Cont</button>
-                      </td>
-                      <td>
-                        <button class="btn btn-sm btn-default" onclick="printHouseBill()"><i class="fa fa-print"></i> In House Bill</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            <div class="d-inline">
+              <input class="easyui-textbox" id="houseBill" data-options="prompt: 'House Bill' " />
             </div>
-            <table id="dg2" style="width: 100%" pageList="[20,50,100,150,200]">
-              <thead>
-                <tr>
-                  <th data-options="field:'id', fixed:true" width="1"></th>
-                  <th data-options="field:'ck', checkbox:true" width="50"></th>
-                  <th data-options="field:'containerNumber', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Container No</th>
-                  <th data-options="field:'sztp', align:'left', halign:'center', fixed:true" sortable="true" width="150">SZTP</th>
-                  <th data-options="field:'carrierCode', halign:'center', fixed:true" sortable="true" width="100">Hãng tàu</th>
-                  <th data-options="field:'consignee2', halign:'center', fixed:true" sortable="true" width="180">Tên khách hàng</th>
-                  <th data-options="field:'expiredDem', halign:'center', formatter: formatExpiredDem, fixed:true" sortable="true" width="180">Hạn lệnh</th>
-                  <th data-options="field:'vessel', align:'left', halign:'center', fixed:true" sortable="true" width="150">Tàu</th>
-                  <th data-options="field:'voyNo', align:'left', halign:'center', fixed:true" sortable="true" width="150">Chuyến</th>
-                  <th data-options="field:'createTime', halign:'center', formatter: formatDate, fixed:true" sortable="true" width="180">Ngày tách bill</th>
-                  <th data-options="field:'status', align:'center', halign:'center', fixed:true, formatter: formatStatus" sortable="true" , width="150">Trạng thái cont</th>
-                </tr>
-              </thead>
-            </table>
+            <div class="d-inline">
+              <button class="btn btn-success" style="margin-bottom: 5px" onclick="search()">Tìm kiếm</button>
+            </div>
+            <div class="d-inline">
+              <button class="btn btn-success btn-outline" style="margin-bottom: 5px" onclick="clearInput()">Làm
+                mới</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <th:block th:include="include :: footer" />
-    <script>
-      $(".main-body").height($(document).height() - 10);
-      $(".easyui-layout").height($(".main-body").height() - 50);
-    </script>
-    <th:block th:include="include :: easyui-js" />
-    <script th:src="@{/js/logistic/shipmentSeparating/shipmentSeparating.js}"></script>
-  </body>
+    <div class="main-body__table-wrapper">
+      <div class="easyui-layout" id="main-layout" style="width: 100%">
+        <div class="left-side" data-options="region:'west',split:true, collapsible:false" title="Tách lô từ Master Bill"
+          style="width: 30%">
+          <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
+          <table id="dg" style="width: 100%" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+                <th data-options="field:'masterBillNo', halign:'center', resizable:true, fixed:true" sortable="true"
+                  width="150">Master Bill</th>
+                <th data-options="field:'houseBillNo', halign:'center', fixed:true" sortable="true" width="100">House
+                  Bill</th>
+                <th data-options="field:'carrierCode', align:'right', halign:'center', fixed:true" sortable="true"
+                  width="70">Hãng tàu</th>
+                <th data-options="field:'contNumber',align:'right',halign:'center'" sortable="true" width="150">SL Cont
+                </th>
+                <th data-options="field:'createTime', align:'right', halign:'center', formatter: formatDate, fixed:true"
+                  sortable="true" width="150">Ngày tạo</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <div data-options="region:'center'" style="width: 100%">
+          <div class="panel-header" style="width: 100%; background-color: #f3f7fa">
+            <div class="panel-title" style="color: #333">Thông tin lô</div>
+          </div>
+          <div class="right-side__toolbar">
+            <div class="datagrid-toolbar">
+              <table cellspacing="0" cellpadding="0">
+                <tbody>
+                  <tr>
+                    <td>
+                      <button id="btnAddContToHouseBill" class="btn btn-sm btn-default" onclick="openFormAddCont()"><i
+                          class="fa fa-plus"></i> Thêm Cont vào House Bill</button>
+                    </td>
+                    <td>
+                      <button id="deleteBtn" class="btn btn-sm btn-default" onclick="deleteContainer()"><i
+                          class="fa fa-trash text-danger"></i> Xóa
+                        Container</button>
+                    </td>
+                    <td>
+                      <button id="btnReleaseHouseBill" class="btn btn-sm btn-default" onclick="releaseHouseBill()"><i
+                          class="fa fa-flag"></i> Phát Hành House Bill</button>
+                    </td>
+                    <td>
+                      <button id="printHouseBill" class="btn btn-sm btn-default" onclick="printHouseBill()"><i
+                          class="fa fa-print"></i> In
+                        House Bill</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <table id="dg2" style="width: 100%" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+                <th data-options="field:'id', fixed:true" width="1"></th>
+                <th data-options="field:'ck', checkbox:true" width="50"></th>
+                <th data-options="field:'containerNumber', halign:'center', resizable:true, fixed:true" sortable="true"
+                  width="150">Container No</th>
+                <th data-options="field:'sztp', align:'left', halign:'center', fixed:true" sortable="true" width="150">
+                  SZTP</th>
+                <th data-options="field:'carrierCode', halign:'center', fixed:true" sortable="true" width="100">Hãng tàu
+                </th>
+                <th data-options="field:'consignee2', halign:'center', fixed:true" sortable="true" width="180">Tên khách
+                  hàng</th>
+                <th data-options="field:'expiredDem', halign:'center', formatter: formatExpiredDem, fixed:true"
+                  sortable="true" width="180">Hạn lệnh</th>
+                <th data-options="field:'vessel', align:'left', halign:'center', fixed:true" sortable="true"
+                  width="150">Tàu</th>
+                <th data-options="field:'voyNo', align:'left', halign:'center', fixed:true" sortable="true" width="150">
+                  Chuyến</th>
+                <th data-options="field:'createTime', halign:'center', formatter: formatDate, fixed:true"
+                  sortable="true" width="180">Ngày tách bill</th>
+                <th data-options="field:'status', align:'center', halign:'center', fixed:true, formatter: formatStatus"
+                  sortable="true" , width="150">Trạng thái cont</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <th:block th:include="include :: footer" />
+  <script>
+    $(".main-body").height($(document).height() - 10);
+    $(".easyui-layout").height($(".main-body").height() - 50);
+  </script>
+  <th:block th:include="include :: easyui-js" />
+  <script th:src="@{/js/logistic/shipmentSeparating/shipmentSeparating.js}"></script>
+</body>
+
 </html>

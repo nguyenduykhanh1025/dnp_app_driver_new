@@ -95,7 +95,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
         </trim>
-        where id = #{id}
+        <where>
+            id = #{id}
+            <if test="status != null  and status != ''"> and status != #{status}</if>
+        </where> 
     </update>
 
     <delete id="deletePaymentHistoryById" parameterType="Long">

@@ -83,9 +83,14 @@ public class EdoHouseBill extends BaseEntity
     /** Carrier code */
     @Excel(name = "Carrier code")
     private String carrierCode;
-    /** null */
+    
+    /** Consignee 2 tax code */
     @Excel(name = "Tax Code")
     private String consignee2TaxCode;
+    
+    /** Release Flag */
+    @Excel(name = "Release Flag")
+    private Boolean releaseFlg;
     
     private Edo edo;
 
@@ -258,7 +263,15 @@ public class EdoHouseBill extends BaseEntity
         this.edo = edo;
     }
 
-    @Override
+    public Boolean getReleaseFlg() {
+		return releaseFlg;
+	}
+
+	public void setReleaseFlg(Boolean releaseFlg) {
+		this.releaseFlg = releaseFlg;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
@@ -278,6 +291,7 @@ public class EdoHouseBill extends BaseEntity
             .append("vessel", getVessel())
             .append("voyNo", getVoyNo())
             .append("taxCode", getConsignee2TaxCode())
+            .append("releaseFlg", getReleaseFlg())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

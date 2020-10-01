@@ -215,4 +215,48 @@ public class EdoHouseBillServiceImpl implements IEdoHouseBillService
     public List<EdoHouseBill> selectHouseBillForShipment(String blNo) {
     	return edoHouseBillMapper.selectHouseBillForShipment(blNo);
     }
+    
+    /**
+     * Update edo house bill by condition
+     * 
+     * @param edoHouseBill
+     * @return int
+     */
+    @Override
+    public int updateEdoHouseBillByCondition(EdoHouseBill edoHouseBill) {
+    	return edoHouseBillMapper.updateEdoHouseBillByCondition(edoHouseBill);
+    }
+    
+    /**
+     * Select edo house bill by ids
+     * 
+     * @param ids
+     * @param logisticGroupId
+     * @return
+     */
+    @Override
+    public List<EdoHouseBill> selectEdoHouseBillByIds(String ids, Long logisticGroupId) {
+    	return edoHouseBillMapper.selectEdoHouseBillByIds(Convert.toStrArray(ids), logisticGroupId);
+    }
+    
+    /**
+     * Select edo house bill by house bill nos 2
+     * 
+     * @param edoHouseBill
+     * @return List<EdoHouseBill>
+     */
+    @Override
+    public List<EdoHouseBill> selectEdoHouseBillByHouseBillNo2s(EdoHouseBill edoHouseBill) {
+    	return edoHouseBillMapper.selectEdoHouseBillByHouseBillNo2s(edoHouseBill);
+    }
+    
+    /**
+     * Update old house bill to new house bill
+     * 
+     * @param edoHouseBill
+     * @return int
+     */
+    public int updateOldHouseBillToNewHouseBill(EdoHouseBill edoHouseBill) {
+    	return edoHouseBillMapper.updateOldHouseBillToNewHouseBill(edoHouseBill);
+    }
 }
