@@ -241,6 +241,7 @@ public class SupportSendEmptyController extends OmBaseController{
 					i.setRegisterNo(null);
 					i.setProcessStatus("N");
 					i.setStatus(1);
+					i.setPaymentStatus("N");
 					i.setUserVerifyStatus("N");
 					shipmentDetailService.resetShipmentDetailProcessStatus(i);
 				}
@@ -251,16 +252,17 @@ public class SupportSendEmptyController extends OmBaseController{
 			if(content != null && content != "") {
 				ShipmentComment shipmentComment = new ShipmentComment();
 		    	Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
+		    	SysUser user = getUser();
 		    	shipmentComment.setShipmentId(shipment.getId());
 		    	shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
-		    	shipmentComment.setUserId(getUserId());
-		    	shipmentComment.setUserType("S");// S: DNP Staff
-		    	shipmentComment.setUserName(getUser().getUserName());
-		    	shipmentComment.setUserAlias(getUser().getUserName());//TODO get tạm username
+		    	shipmentComment.setUserId(user.getUserId());
+		    	shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);// S: DNP Staff
+		    	shipmentComment.setUserName(user.getUserName());
+		    	shipmentComment.setUserAlias(user.getDept().getDeptName());
 		    	shipmentComment.setCommentTime(new Date());
 		    	shipmentComment.setContent(content);
 		    	shipmentComment.setCreateTime(new Date());
-		    	shipmentComment.setCreateBy(getUser().getUserName());
+		    	shipmentComment.setCreateBy(user.getUserName());
 		    	shipmentComment.setTopic(Constants.SEND_CONT_EMPTY_SUPPORT);
 				shipmentComment.setServiceType(shipment.getServiceType());
 		    	shipmentCommentService.insertShipmentComment(shipmentComment);

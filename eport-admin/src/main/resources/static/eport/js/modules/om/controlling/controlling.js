@@ -1253,9 +1253,11 @@ function getDataSelectedFromTable() {
       }
       if (object["expiredDem"]) {
         expiredDem = new Date(object["expiredDem"].substring(0, 4) + "/" + object["expiredDem"].substring(5, 7) + "/" + object["expiredDem"].substring(8, 10)).getTime();
+        expiredDem.setHours(23, 59, 59);
       }
       if (object["emptyExpiredDem"]) {
         emptyExpiredDem = new Date(object["emptyExpiredDem"].substring(0, 4) + "/" + object["emptyExpiredDem"].substring(5, 7) + "/" + object["emptyExpiredDem"].substring(8, 10)).getTime();
+        emptyExpiredDem.setHours(23, 59, 59);
       }
       let shipmentDetail = {
         id: object["id"],

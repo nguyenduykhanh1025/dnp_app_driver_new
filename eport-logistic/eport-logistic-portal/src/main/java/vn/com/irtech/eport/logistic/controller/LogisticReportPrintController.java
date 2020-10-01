@@ -33,6 +33,7 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoHouseBill;
 import vn.com.irtech.eport.carrier.service.IEdoHouseBillService;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -132,12 +133,16 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentDetails.get(0).getShipmentId());
 		shipmentDetail.setPaymentStatus("Y");
+		Shipment shipmentRef = shipmentService.selectShipmentById(shipmentDetail.getShipmentId());
 		List<Long> commands = shipmentDetailService.getProcessOrderIdListByShipment(shipmentDetail);
 		if(commands.size()>0) {
 			for(Long cmd : commands) {
 				List<ShipmentDetail> list = new ArrayList<ShipmentDetail>();
 				for(ShipmentDetail detail : shipmentDetails) {
 					if(detail.getProcessOrderId().equals(cmd)) {
+						if (shipmentRef.getServiceType() == EportConstants.SERVICE_PICKUP_EMPTY) {
+							detail.setCargoType("Empty");
+						}
 						list.add(detail);
 					}
 				}
