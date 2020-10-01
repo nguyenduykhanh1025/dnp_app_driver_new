@@ -105,6 +105,7 @@ public class DocumentGatheringController extends AdminBaseController  {
 		shipment.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
 		Map<String, Object> params = new HashMap<>();
 		params.put("processStatus", "Y");
+		params.put("doStatus", "N");
 		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
@@ -127,6 +128,11 @@ public class DocumentGatheringController extends AdminBaseController  {
 	@Transactional
 	public AjaxResult submitConfirmation(String doStatus, String content, String shipmentDetailIds, Long logisticGroupId) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, logisticGroupId);
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			if (shipmentDetail.getPaymentStatus().equals("N")) {
+				return error("Không thể xác nhận chứng từ gốc cho container chưa thanh toán. Vui lòng kiểm tra lại.");
+			}
+		}
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			shipmentDetail.setDoStatus(doStatus);
 			shipmentDetail.setUpdateBy(getUser().getUserName());

@@ -484,7 +484,7 @@ public class GeneralControllingController extends AdminBaseController  {
 					i.setProcessOrderId(null);
 					i.setRegisterNo(null);
 					i.setProcessStatus("N");
-					if (shipment.getServiceType() == EportConstants.SERVICE_PICKUP_FULL) {
+					if (shipment.getServiceType() == EportConstants.SERVICE_PICKUP_FULL || shipment.getServiceType() == EportConstants.SERVICE_PICKUP_EMPTY) {
 						i.setStatus(2);
 					} else {
 						i.setStatus(1);

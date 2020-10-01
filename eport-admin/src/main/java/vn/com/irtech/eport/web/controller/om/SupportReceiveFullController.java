@@ -242,6 +242,7 @@ public class SupportReceiveFullController extends OmBaseController{
 					i.setRegisterNo(null);
 					i.setProcessStatus("N");
 					i.setStatus(2);
+					i.setPaymentStatus("N");
 					i.setUserVerifyStatus("N");
 					shipmentDetailService.resetShipmentDetailProcessStatus(i);
 				}
@@ -252,12 +253,13 @@ public class SupportReceiveFullController extends OmBaseController{
 			if(content != null && content != "") {
 				ShipmentComment shipmentComment = new ShipmentComment();
 		    	Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
+		    	SysUser user = getUser();
 		    	shipmentComment.setShipmentId(shipment.getId());
 		    	shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
-		    	shipmentComment.setUserId(getUserId());
+		    	shipmentComment.setUserId(user.getUserId());
 		    	shipmentComment.setUserType("S");// S: DNP Staff
-		    	shipmentComment.setUserName(getUser().getUserName());
-		    	shipmentComment.setUserAlias(getUser().getUserName());//TODO get tạm username
+		    	shipmentComment.setUserName(user.getUserName());
+		    	shipmentComment.setUserAlias(user.getDept().getDeptName());//TODO get tạm username
 		    	shipmentComment.setCommentTime(new Date());
 		    	shipmentComment.setContent(content);
 		    	shipmentComment.setCreateTime(new Date());

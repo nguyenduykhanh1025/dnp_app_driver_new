@@ -5,7 +5,7 @@ var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipment
 var shipment = new Object();
 shipment.params = new Object();
 
-$( document ).ready(function() {
+$(document).ready(function () {
   $(".main-body").layout();
 
   $(".collapse").click(function () {
@@ -45,8 +45,8 @@ $( document ).ready(function() {
 
   $('#right-layout').layout('collapse', 'south');
   setTimeout(() => {
-      hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
-      hot.render();
+    hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
+    hot.render();
   }, 200);
 
   $("#logisticGroups").combobox({
@@ -66,7 +66,7 @@ $( document ).ready(function() {
     }
   });
 
-  $("#blNo").textbox('textbox').bind('keydown', function(e) {
+  $("#blNo").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
       shipment.blNo = $("#blNo").textbox('getText').toUpperCase();
@@ -74,7 +74,7 @@ $( document ).ready(function() {
     }
   });
 
-  $("#containerNo").textbox('textbox').bind('keydown', function(e) {
+  $("#containerNo").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
       shipment.params.containerNo = $("#containerNo").textbox('getText').toUpperCase();
@@ -140,8 +140,8 @@ function loadTable() {
     clientPaging: false,
     pagination: true,
     rownumbers: true,
-    onClickRow: function () {
-      getSelected();
+    onBeforeSelect: function (index, row) {
+      getSelected(index, row);
     },
     pageSize: 50,
     nowrap: true,
@@ -192,8 +192,7 @@ function formatDate(value) {
 }
 
 // Trigger when click a row in easy ui data grid on the left screen
-function getSelected() {
-  let row = $("#dg").datagrid("getSelected");
+function getSelected(index, row) {
   if (row) {
     shipmentSelected = row;
     rowAmount = shipmentSelected.containerAmount;
@@ -208,9 +207,9 @@ function getSelected() {
 function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
   let content = '';
   if (checkList[row] == 1) {
-      content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')" checked></div>';
+    content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')" checked></div>';
   } else {
-      content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')"></div>';
+    content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')"></div>';
   }
   $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
   return td;
@@ -237,13 +236,13 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
       case 'E':
         process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
         break;
-    case 'Y':
-      process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+      case 'Y':
+        process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
         break;
-    case 'N':
-      if(value > 1) {
-        process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
-      }
+      case 'N':
+        if (value > 1) {
+          process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+        }
         break;
     }
     // Payment status
@@ -252,13 +251,13 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
       case 'E':
         payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Lỗi Thanh Toán" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
         break;
-    case 'Y':
-      payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+      case 'Y':
+        payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
         break;
-    case 'N':
-      if(value > 2) {
-        payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-      }
+      case 'N':
+        if (value > 2) {
+          payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+        }
         break;
     }
     // Do status
@@ -269,19 +268,19 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     // released status
     let released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
     switch (sourceData[row].finishStatus) {
-    case 'Y':
-      released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+      case 'Y':
+        released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
         break;
-    case 'N':
-      if(sourceData[row].paymentStatus == 'Y') {
-        released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-      }
+      case 'N':
+        if (sourceData[row].paymentStatus == 'Y') {
+          released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+        }
         break;
     }
     // Return the content
     let content = '<div>';
     // Domestic cont: VN --> not show
-    if(sourceData[row].loadingPort.substring(0,2) != 'VN') {
+    if (sourceData[row].loadingPort.substring(0, 2) != 'VN') {
       content += customs;
     }
     content += process + payment + doStatus + released + '</div>';
@@ -464,7 +463,7 @@ function configHandson() {
           return "Ghi Chú";
       }
     },
-    colWidths: [ 50, 120, 100, 60, 100, 100, 100, 200, 150, 100, 100, 100, 100, 100, 130, 100],
+    colWidths: [50, 120, 100, 60, 100, 100, 100, 200, 150, 100, 100, 100, 100, 100, 130, 100],
     filter: "true",
     columns: [
       {
@@ -647,7 +646,7 @@ function updateLayout() {
     if (hot.getDataAtCell(i, 1) != null) {
       if (checkList[i] != 1) {
         allChecked = false;
-      } 
+      }
     }
   }
   $('.checker').prop('checked', allChecked);
@@ -668,14 +667,21 @@ function getDataSelectedFromTable() {
     }
     shipmentDetailIds = "";
     $.each(cleanedGridData, function (index, object) {
+      if ('N' == object["paymentStatus"]) {
+        errorFlg = true;
+        $.modal.alertWarning("Không thể xác nhận chứng từ gốc cho container chưa thanh toán. Vui lòng kiểm tra lại.");
+        return false;
+      }
       shipmentDetailIds += object["id"] + ",";
     });
-  
-    if (shipmentDetailIds.length == 0) {
-      $.modal.alertWarning("Bạn chưa chọn container nào.")
-      errorFlg = true;
-    } else {
-      shipmentDetailIds = shipmentDetailIds.substring(0, shipmentDetailIds.length-1);
+
+    if (!errorFlg) {
+      if (shipmentDetailIds.length == 0) {
+        $.modal.alertWarning("Bạn chưa chọn container nào.")
+        errorFlg = true;
+      } else {
+        shipmentDetailIds = shipmentDetailIds.substring(0, shipmentDetailIds.length - 1);
+      }
     }
   } else {
     $.modal.alertWarning("Bạn chưa chọn lô.");
@@ -716,10 +722,10 @@ function confirmDocument() {
       content: PREFIX + "/confirmation",
       btn: ["Xác Nhận", "Hủy"],
       shadeClose: false,
-      yes: function(index, layero) {
+      yes: function (index, layero) {
         confirm(index, layero);
       },
-      cancel: function(index) {
+      cancel: function (index) {
         return true;
       }
     });
@@ -743,7 +749,7 @@ function confirm(index, layero) {
       $.modal.closeLoading();
       if (res.code == 0) {
         $.modal.alertSuccess(res.msg);
-        loadShipmentDetails(shipmentSelected.id);
+        loadTable();
       } else {
         $.modal.alertError(res.msg);
       }
@@ -756,7 +762,7 @@ function confirm(index, layero) {
 }
 
 function logisticInfo(id, logistics) {
-  $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function() {
+  $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function () {
     $.modal.close();
   });
 }
