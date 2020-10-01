@@ -170,4 +170,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select group_code, group_name from carrier_group
 		where do_type = 1
 	</select>
+
+	<select id="getCarrierCode" parameterType="String" resultType="String">
+		select distinct group_code from carrier_group
+	</select>
 </mapper>

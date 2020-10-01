@@ -20,7 +20,7 @@
           <div class="form-group">
             <label class="col-sm-5 col-xs-5 col-md-5 label-style">Ngày miễn lưu vỏ : <br> (Det Free Time) :</label>
             <div class="col-sm-7 col-xs-7 col-md-7">
-              <input type="number" name="detFreeTime" id="detFreeTime" class="form-control" minlength="0" />
+              <input name="detFreeTime" id="detFreeTime" class="form-control" minlength="0" />
             </div>
           </div>
           <div class="form-group">
@@ -58,5 +58,5 @@
     var consignee = /*[[${edo.consignee}]]*/ ;
     var hasConsigneeUpdatePermission = /*[[${hasConsigneeUpdatePermission}]]*/ ;
   </script>
-   <script th:src="@{/eport/js/modules/edo/multiUpdate.js}"></script>
+   <script th:src="@{/eport/js/modules/edo/multiUpdate.js?v=0930}"></script>
 </html>

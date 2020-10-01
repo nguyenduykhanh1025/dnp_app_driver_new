@@ -3,7 +3,7 @@ const PREFIX = ctx + "edo";
 $(function () {
   if(hasConsigneeUpdatePermission == true)
   {
-    $( "#consignee" ).prop( "disabled", false );
+    $( "#consignee" ).hide();
   }
   $("#expiredDem").val(formatDate(expiredDem));
   $("#detFreeTime").val(detFreeTime);
@@ -20,10 +20,15 @@ function confirm() {
   {
     detFreeTime = 0;
   }
-  if($("#detFreeTime").val() < 0)
-  {
-    $.modal.alertError("Ngày miễn lưu vỏ phải là số nguyên dương !")
-    return;
+//  if($("#detFreeTime").val() < 0)
+//  {
+//    $.modal.alertError("Ngày miễn lưu vỏ phải là số nguyên dương !")
+//    return;
+//  }
+
+  if(!checkValidDET($("#detFreeTime").val())) {
+	  $.modal.alertError("Ngày miễn lưu vỏ phải là số hoặc ngày tháng năm (dd/mm/yyyy) !")
+	  return;
   }
   if($("#consignee").val() == null || $("#consignee").val() == '')
   {
@@ -71,6 +76,17 @@ function confirm() {
       btn: ["Đồng Ý", "Hủy Bỏ"]
     }
   )
+}
+
+function checkValidDET(value) {
+  if(isNaN(value)) {
+	  var separators = ['\\/'];
+	  var bits = value.split(new RegExp(separators.join('|'), 'g'));
+	  var d = new Date(bits[2], bits[1] - 1, bits[0]);
+	  return d.getFullYear() == bits[2] && d.getMonth() + 1 == bits[1];
+  } else {
+	  return true;
+  }
 }
 
 function formatDateForSubmit(value) {

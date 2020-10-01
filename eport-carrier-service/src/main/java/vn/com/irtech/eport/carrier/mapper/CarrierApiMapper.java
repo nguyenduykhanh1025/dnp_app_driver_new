@@ -58,4 +58,19 @@ public interface CarrierApiMapper
      * @return result
      */
     public int deleteCarrierApiByIds(String[] ids);
+
+    /**
+     * Check if one OPR exist in API
+     * @param oprCode
+     * @return
+     */
+	public int checkOprCodeExist(String oprCode);
+
+	/**
+	 * Select one OPR Code in API
+	 * 
+	 * @param oprCode
+	 * @return
+	 */
+	public CarrierApi selectCarrierApiByOprCode(String oprCode);
 }

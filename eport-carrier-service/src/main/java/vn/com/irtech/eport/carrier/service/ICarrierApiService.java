@@ -59,4 +59,20 @@ public interface ICarrierApiService
      * @return result
      */
     public int deleteCarrierApiById(Long id);
+
+    /**
+     * Check if Opr code exist in API
+     * 
+     * @param oprCode
+     * @return
+     */
+	public boolean checkOprCodeExist(String oprCode);
+	
+	/**
+	 * select CarrierApi from OPR Code to get Api Key
+	 * 
+	 * @param oprCode
+	 * @return
+	 */
+	public CarrierApi selectCarrierApiByOprCode(String oprCode);
 }

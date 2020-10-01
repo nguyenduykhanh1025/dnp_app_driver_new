@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import vn.com.irtech.eport.common.utils.DateUtils;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -218,6 +220,10 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
         edoAuditLog.setEdoId(edoItem.getId());
         edoAuditLog.setCreateTime(timeNow);
         String maxSegNo = selectEdoAuditLogByEdoId(edoItem.getId());
+        // FIXME check lai logic tang
+        if(StringUtils.isBlank(maxSegNo)) {
+        	maxSegNo = "0";
+        }
         if(edoItem.getExpiredDem() != null )
         {
             Date setTimeUpdatExpicedDem = edoItem.getExpiredDem();

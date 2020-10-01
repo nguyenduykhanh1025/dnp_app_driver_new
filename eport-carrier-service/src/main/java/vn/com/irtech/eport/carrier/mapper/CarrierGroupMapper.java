@@ -102,4 +102,6 @@ public interface CarrierGroupMapper
      * @return List<String>
      */
     public List<CarrierGroup> selectCarrierGroupName();
+
+    public List<String> getCarrierCode();
 }

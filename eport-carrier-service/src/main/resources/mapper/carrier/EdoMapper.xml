@@ -95,7 +95,7 @@
       
       <if test="houseBillId != null">and house_bill_id = #{houseBillId}</if>
     </where>
-    ORDER BY create_time DESC
+    ORDER BY e.create_time DESC
   </select>
 
    <select id="selectEdoListForReport" parameterType="Edo" resultMap="EdoResult">

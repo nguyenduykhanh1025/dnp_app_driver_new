@@ -5,5 +5,5 @@ import java.util.List;
 import vn.com.irtech.eport.carrier.dto.EdiDataReq;
 
 public interface IEdiService {
-	public void executeListEdi(List<EdiDataReq> ediDataReqs, String partnerCode, String transactionId);
+	public void executeListEdi(List<EdiDataReq> ediDataReqs, String partnerCode, Long carrierGroupId, String transactionId);
 }

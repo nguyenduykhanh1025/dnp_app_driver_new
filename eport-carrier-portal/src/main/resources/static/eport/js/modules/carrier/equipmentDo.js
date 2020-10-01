@@ -120,7 +120,7 @@ function loadTable(edo) {
     method: "POST",
     singleSelect: true,
     clientPaging: true,
-    height: $(document).height() - 60,
+    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     pagination: true,
     pageSize: 20,
     onClickRow: function () {
@@ -216,7 +216,7 @@ function loadTableByContainer(billOfLading) {
     method: "POST",
     singleSelect: false,
     clientPaging: true,
-    height: $(document).height() - 60,
+    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     pagination: true,
     pageSize: 20,
     nowrap: false,
