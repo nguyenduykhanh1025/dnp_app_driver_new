@@ -233,4 +233,14 @@ public interface EportConstants {
 	// Payment history status
 	/** Payment history success status */
 	public static final String PAYMENT_HISTORY_SUCCESS = "1";
+	
+	// Hold type catos
+	/** Terminal hold catos */
+	public static final String HOLD_TYPE_TERMINAL = "T";
+	/** Custom hold catos */
+	public static final String HOLD_TYPE_CUSTOM = "C";
+	
+	// Hold code catos
+	/** Terminal hold code DO */
+	public static final String HOLD_CODE_DO = "DO";
 }

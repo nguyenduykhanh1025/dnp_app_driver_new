@@ -7,6 +7,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ContainerHoldInfo;
 import vn.com.irtech.eport.logistic.form.BookingInfo;
 import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 
@@ -232,7 +233,7 @@ public interface ICatosApiService {
 	 * @param containers
 	 * @return List<String> 
 	 */
-	public List<String> getListContainerNotHoldTerminal(String containers);
+	public List<String> getContainerListHoldRelease(ContainerHoldInfo containerHoldInfo);
 	
 	/**
 	 * Check if consignee is exist in catos
