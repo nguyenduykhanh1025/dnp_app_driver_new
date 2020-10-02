@@ -330,13 +330,16 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				shipmentSendCont.setBlNo(shipmentDt.getBlNo());
 				shipmentSendCont.setServiceType(Constants.SEND_CONT_EMPTY);
 				List<Shipment> shipments = shipmentService.selectShipmentList(shipmentSendCont);
-				if (shipments == null || shipments.size() == 0) {
+				// create if not exist // if exist then skip
+				if (CollectionUtils.isNotEmpty(shipments)) {
+					// create send empty shipment
 					shipmentSendCont.setContainerAmount(Long.valueOf(shipmentDt.getTier()));
 					shipmentSendCont.setLogisticAccountId(user.getId());
 					shipmentSendCont.setOpeCode(shipment.getOpeCode());
 					shipmentSendCont.setLogisticGroupId(user.getGroupId());
 					shipmentSendCont.setCreateTime(new Date());
 					shipmentSendCont.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
+					// insert to db
 					shipmentService.insertShipment(shipmentSendCont);
 					isCreated = false;
 				}
@@ -346,6 +349,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				shipmentDetail.setProcessStatus(null);
 				shipmentDetail.setCustomStatus(null);
 				shipmentDetail.setVgmChk(null);
+				// New record
 				if (shipmentDetail.getId() == null) {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
 					shipmentDetail.setCreateBy(user.getFullName());
@@ -357,9 +361,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentDetail.setDoStatus("N");
 					shipmentDetail.setPreorderPickup("N");
 					shipmentDetail.setFinishStatus("N");
-					// set consignee Taxcode
-					shipmentDetail.setTaxCode(taxCode);
-					shipmentDetail.setConsigneeByTaxCode(shipmentDetail.getConsignee());
+					// set null to taxcode and consignee
+					shipmentDetail.setTaxCode(null);
+					shipmentDetail.setConsigneeByTaxCode(null);
 					if ("VN".equalsIgnoreCase(shipmentDetail.getLoadingPort().substring(0, 2))) {
 						shipmentDetail.setCustomStatus("R");
 						shipmentDetail.setStatus(2);
@@ -389,6 +393,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					if ("N".equals(shipmentDetailReference.getUserVerifyStatus())) {
 						updateShipment = false;
 						shipmentDetail.setUpdateBy(user.getFullName());
+						// TODO
 						shipmentDetail.setTaxCode(taxCode);
 						shipmentDetail.setConsigneeByTaxCode(shipmentDetail.getConsignee());
 						shipmentDetail.setUpdateTime(new Date());
@@ -680,12 +685,18 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		// check DO or eDO (0 is DO no need to validate 
 		// Get tax code of consignee own this shipment
 		String taxCode = shipmentDetailService.selectConsigneeTaxCodeByShipmentId(shipmentId);
+		// taxcode from HQ null -> chua thong quan
 		if (taxCode == null) {
 			return error();
 		}
-		
+		// if logistic is consignee -> pass
+		String tkrTaxcode = getGroup().getMst();
+		if(taxCode.equalsIgnoreCase(tkrTaxcode)) {
+			// Pass
+			return success();
+		}
 		// Check if logistic can make order for this shipment
-		if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst(), EportConstants.DELEGATE_PERMISSION_PROCESS) > 0) {
+		if (logisticGroupService.checkDelegatePermission(taxCode, tkrTaxcode, EportConstants.DELEGATE_PERMISSION_PROCESS) > 0) {
 			return success();
 		}
 		return error();
