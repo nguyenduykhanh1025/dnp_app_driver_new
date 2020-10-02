@@ -298,7 +298,7 @@ public class MqttService implements MqttCallback {
 			processOrder.setContNumber(containerList.size());
 			processOrder.setModee(EportConstants.MODE_TERMINAL_HOLD);
 			Map<String, Object> processData = new HashMap<>();
-			processData.put("containers", containerList);
+			processData.put("containers", org.apache.commons.lang3.StringUtils.join(containerList, ","));
 			processOrder.setProcessData(new Gson().toJson(processData));
 			processOrder.setHoldFlg(false);
 			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);
