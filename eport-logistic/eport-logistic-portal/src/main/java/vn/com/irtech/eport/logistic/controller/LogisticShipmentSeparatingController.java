@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.aspectj.weaver.loadtime.Aj;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +36,6 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.core.text.Convert;
-import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 
@@ -130,7 +129,8 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 		}
 
 		// Get list edo
-		List<Edo> edos = edoService.selectEdoByIds(StringUtils.join(",", req.getEdoIds()));
+		String edoIds = StringUtils.join(req.getEdoIds(), ",");
+		List<Edo> edos = edoService.selectEdoByIds(edoIds);
 
 		// Insert data to edo house bill
 		edoHouseBillService.insertListEdoHouseBill(edos, req.getHouseBill(), req.getConsignee2(),
@@ -158,7 +158,8 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 		req.setConsignee2(partner.getGroupName());
 
 		// Get list edo
-		List<Edo> edos = edoService.selectEdoByIds(StringUtils.join(req.getEdoIds(), ","));
+		String edoIds = StringUtils.join(req.getEdoIds(), ",");
+		List<Edo> edos = edoService.selectEdoByIds(edoIds);
 
 		// Insert data to edo house bill
 		edoHouseBillService.insertListEdoHouseBill(edos, req.getHouseBill(), req.getConsignee2(),
