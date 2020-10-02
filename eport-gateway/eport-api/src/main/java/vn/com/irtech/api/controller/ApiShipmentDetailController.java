@@ -295,4 +295,14 @@ public class ApiShipmentDetailController {
 	public List<String> getListContainerNotCheckTerminalHold(String containers) {
 		return shipmentDetailDao.getContainerListNoneTerminalHold(Convert.toStrArray(containers));
 	}
+
+	@GetMapping("/consignee/{consignee}/exist")
+	public Integer checkConsigneeExist(@PathVariable("consignee") String consignee) {
+		return shipmentDetailDao.getNumberOfConsignee(consignee);
+	}
+	
+	@GetMapping("/pod/{pod}/exist")
+	public Integer checkPodExist(@PathVariable("pod") String pod) {
+		return shipmentDetailDao.getNumberOfPod(pod);
+	}
 }

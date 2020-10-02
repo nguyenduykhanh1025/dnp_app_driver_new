@@ -1543,7 +1543,24 @@ function deleteShipmentDetail() {
 function verify() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 700, 500);
+        $.ajax({
+            url: prefix + "/shipment-detail/validation",
+            method: "POST",
+            data: {
+                shipmentDetailIds: shipmentDetailIds
+            },
+            success: function (res) {
+                if (res.code != 0) {
+                    $.modal.alertWarning(res.msg);
+                } else {
+                    $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 700, 500);
+                }
+            },
+            error: function (err) {
+                $.modal.alertWarning("Lỗi hệ thống, quý khách vui lòng thử lại sau.");
+            }
+        });
+
     }
 }
 

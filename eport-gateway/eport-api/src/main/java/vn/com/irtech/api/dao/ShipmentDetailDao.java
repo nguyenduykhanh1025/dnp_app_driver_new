@@ -195,4 +195,20 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return List<String>
 	 */
 	public List<String> getContainerListNoneTerminalHold(String[] containers);
+	
+	/**
+	 * Get number of consignee 
+	 * 
+	 * @param consignee
+	 * @return Integer number of consignee
+	 */
+	public Integer getNumberOfConsignee(String consignee);
+	
+	/**
+	 * Get number of pod
+	 * 
+	 * @param pod
+	 * @return Integer number of pod
+	 */
+	public Integer getNumberOfPod(String pod);
 }
