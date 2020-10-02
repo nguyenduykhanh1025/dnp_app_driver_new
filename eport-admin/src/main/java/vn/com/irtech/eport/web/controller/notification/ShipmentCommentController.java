@@ -3,7 +3,11 @@
  */
 package vn.com.irtech.eport.web.controller.notification;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +47,15 @@ public class ShipmentCommentController extends BaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_LOGISTIC);
 		shipmentComment.setSeenFlg(false);
 		AjaxResult ajaxResult = AjaxResult.success();
+		Date toDate = new Date();
+    	Calendar c = Calendar.getInstance();
+    	c.setTime(toDate);
+    	c.add(Calendar.DATE, -1);
+    	Date fromDate = c.getTime();
+    	Map<String, Object> params = new HashMap<>();
+    	params.put("fromDate", fromDate);
+    	params.put("toDate", toDate);
+    	shipmentComment.setParams(params);
 		ajaxResult.put("shipmentCommentAmount", shipmentCommentService.selectCountCommentListUnSeen(shipmentComment));
 		return ajaxResult;
 	}
@@ -53,6 +66,15 @@ public class ShipmentCommentController extends BaseController {
 		startPage();
 		ShipmentComment shipmentComment = new ShipmentComment();
 		shipmentComment.setUserType(EportConstants.COMMENTOR_LOGISTIC);
+		Date toDate = new Date();
+    	Calendar c = Calendar.getInstance();
+    	c.setTime(toDate);
+    	c.add(Calendar.DATE, -1);
+    	Date fromDate = c.getTime();
+    	Map<String, Object> params = new HashMap<>();
+    	params.put("fromDate", fromDate);
+    	params.put("toDate", toDate);
+    	shipmentComment.setParams(params);
 		List<ShipmentComment> shipmentComments = shipmentCommentService.selectShipmentCommentListForNotification(shipmentComment);
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentComments", shipmentComments);
@@ -66,6 +88,15 @@ public class ShipmentCommentController extends BaseController {
 	public AjaxResult getFullListShipmentComment() {
 		ShipmentComment shipmentComment = new ShipmentComment();
 		shipmentComment.setUserType(EportConstants.COMMENTOR_LOGISTIC);
+		Date toDate = new Date();
+    	Calendar c = Calendar.getInstance();
+    	c.setTime(toDate);
+    	c.add(Calendar.DATE, -1);
+    	Date fromDate = c.getTime();
+    	Map<String, Object> params = new HashMap<>();
+    	params.put("fromDate", fromDate);
+    	params.put("toDate", toDate);
+    	shipmentComment.setParams(params);
 		List<ShipmentComment> shipmentComments = shipmentCommentService.selectShipmentCommentListForNotification(shipmentComment);
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentComments", shipmentComments);

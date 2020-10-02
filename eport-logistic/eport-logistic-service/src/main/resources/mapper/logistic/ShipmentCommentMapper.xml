@@ -192,6 +192,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="resolvedFlg != null"> and resolved_flg = #{resolvedFlg}</if>
             <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
             <if test="updateBy != null  and updateBy != ''"> and update_by = #{updateBy}</if>
+            <if test="params.fromDate != null"> and create_time &gt;= #{params.fromDate}</if>
+            <if test="params.toDate != null"> and create_time &lt;= #{params.toDate}</if>
         </where>
     </select>
 
@@ -212,6 +214,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="resolvedFlg != null"> and resolved_flg = #{resolvedFlg}</if>
             <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
             <if test="updateBy != null  and updateBy != ''"> and update_by = #{updateBy}</if>
+            <if test="params.fromDate != null"> and create_time &gt;= #{params.fromDate}</if>
+            <if test="params.toDate != null"> and create_time &lt;= #{params.toDate}</if>
         </where>
         order by create_time desc
     </select>

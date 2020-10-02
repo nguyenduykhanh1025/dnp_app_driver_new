@@ -283,6 +283,7 @@ public class MqttService implements MqttCallback {
 		ContainerHoldInfo containerHoldInfo = new ContainerHoldInfo();
 		containerHoldInfo.setContainers(Convert.toStrArray(containers));
 		containerHoldInfo.setHoldChk("Y");
+		containerHoldInfo.setHoldCode(EportConstants.HOLD_CODE_DO);
 		containerHoldInfo.setHoldType(EportConstants.HOLD_TYPE_TERMINAL);
 		containerHoldInfo.setUserVoy(shipmentDetail.getVslNm() + shipmentDetail.getVoyNo());
 		List<String> containerList = catosApiService.getContainerListHoldRelease(containerHoldInfo);
@@ -297,7 +298,7 @@ public class MqttService implements MqttCallback {
 			processOrder.setContNumber(containerList.size());
 			processOrder.setModee(EportConstants.MODE_TERMINAL_HOLD);
 			Map<String, Object> processData = new HashMap<>();
-			processData.put("containers", containers);
+			processData.put("containers", containerList);
 			processOrder.setProcessData(new Gson().toJson(processData));
 			processOrder.setHoldFlg(false);
 			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);

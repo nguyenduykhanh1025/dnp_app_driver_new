@@ -200,6 +200,7 @@ public class ShipmentComment extends BaseEntity
             .append("createBy", getCreateBy())
             .append("updateTime", getUpdateTime())
             .append("updateBy", getUpdateBy())
+            .append("params", getParams())
             .toString();
     }
 }
