@@ -675,4 +675,19 @@
         </foreach>
 		AND THOLD_CHK != 'Y'
 	</select>
+
+	<select id="getNumberOfConsignee" parameterType="String" resultType="int">
+		SELECT COUNT(ENG_SNM)
+		FROM DNP_UAT.TB_PTNR 
+		WHERE PTNR_TYPE = 'CNS'
+		    AND UNUSED_CHK = 'N'
+			AND ENG_SNM = #{consignee}
+	</select>
+
+	<select id="getNumberOfPod" parameterType="String" resultType="int">
+		SELECT 
+   			COUNT(POD)
+		FROM DNP_UAT.TB_VSL_POD
+		WHERE POD = #{pod}
+	</select>
 </mapper>
