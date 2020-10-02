@@ -88,7 +88,7 @@
          M.PTNR_CODE AS ptnrCode,
          M.CARGO_TYPE AS cargoType,
          (SELECT VSL_NM
-            FROM DNP_UAT.TB_VSL
+            FROM DNP_PROD.TB_VSL
            WHERE VSL_CD = M.VSL_CD)
              AS VESSEL_NAME,
          M.VSL_CD
@@ -294,7 +294,7 @@
                  M.CONSIGNEE_NM,
                  M.CNTR_RMK1,
                  M.DOOR_DIR
-            FROM DNP_UAT.TB_INVENTORY M, DNP_UAT.TB_OVERSIZE O
+            FROM DNP_PROD.TB_INVENTORY M, DNP_PROD.TB_OVERSIZE O
            WHERE M.CNTR_ID = O.CNTR_ID(+)
           UNION ALL
           SELECT 'TB_MASTER'
@@ -457,9 +457,9 @@
                  M.CONSIGNEE_NM,
                  M.CNTR_RMK1,
                  M.DOOR_DIR
-            FROM DNP_UAT.TB_MASTER M, DNP_UAT.TB_OVERSIZE O
+            FROM DNP_PROD.TB_MASTER M, DNP_PROD.TB_OVERSIZE O
            WHERE M.CNTR_ID = O.CNTR_ID(+)) M,
-         DNP_UAT.TB_BERTHPLAN B,
+         DNP_PROD.TB_BERTHPLAN B,
          (    SELECT CNTR_UID,
                      SUBSTR (MAX (SYS_CONNECT_BY_PATH (HOLD_CODE, ',')), 2)
                          THOLD_CODES
@@ -473,7 +473,7 @@
                              ROW_NUMBER ()
                                  OVER (PARTITION BY CNTR_UID ORDER BY HOLD_CODE)
                                  R_NUM
-                        FROM DNP_UAT.TB_HOLD_STATE
+                        FROM DNP_PROD.TB_HOLD_STATE
                        WHERE HOLD_TYPE = 'T')
           START WITH R_NUM = 1
           CONNECT BY PRIOR R_NUM = R_NUM - 1 AND PRIOR CNTR_UID = CNTR_UID
@@ -495,7 +495,7 @@
          M.FE,
          M.PTNR_CODE AS ptnrCode,
          M.CARGO_TYPE AS cargoType,
-         (SELECT VSL_NM FROM DNP_UAT.TB_VSL WHERE VSL_CD = M.VSL_CD) AS VESSEL_NAME,
+         (SELECT VSL_NM FROM DNP_PROD.TB_VSL WHERE VSL_CD = M.VSL_CD) AS VESSEL_NAME,
          M.VSL_CD AS VESSEL_CODE,
          M.BOOKING_NO,
          M.BL_NO AS blNo,
@@ -699,9 +699,9 @@
                  M.CONSIGNEE_NM,
                  M.CNTR_RMK1,
                  M.DOOR_DIR
-            FROM DNP_UAT.TB_INVENTORY M, DNP_UAT.TB_OVERSIZE O
+            FROM DNP_PROD.TB_INVENTORY M, DNP_PROD.TB_OVERSIZE O
            WHERE M.CNTR_ID = O.CNTR_ID(+)) M,
-         DNP_UAT.TB_BERTHPLAN B,
+         DNP_PROD.TB_BERTHPLAN B,
          (    SELECT CNTR_UID,
                      SUBSTR (MAX (SYS_CONNECT_BY_PATH (HOLD_CODE, ',')), 2)
                          THOLD_CODES
@@ -715,7 +715,7 @@
                              ROW_NUMBER ()
                                  OVER (PARTITION BY CNTR_UID ORDER BY HOLD_CODE)
                                  R_NUM
-                        FROM DNP_UAT.TB_HOLD_STATE
+                        FROM DNP_PROD.TB_HOLD_STATE
                        WHERE HOLD_TYPE = 'T')
           START WITH R_NUM = 1
           CONNECT BY PRIOR R_NUM = R_NUM - 1 AND PRIOR CNTR_UID = CNTR_UID
@@ -736,7 +736,7 @@
          M.FE,
         M.PTNR_CODE AS ptnrCode,
          M.CARGO_TYPE AS cargoType,
-         (SELECT VSL_NM FROM DNP_UAT.TB_VSL WHERE VSL_CD = M.VSL_CD) AS VESSEL_NAME,
+         (SELECT VSL_NM FROM DNP_PROD.TB_VSL WHERE VSL_CD = M.VSL_CD) AS VESSEL_NAME,
          M.VSL_CD AS VESSEL_CODE,
          M.BOOKING_NO,
          M.BL_NO AS blNo,
@@ -940,9 +940,9 @@
                  M.CONSIGNEE_NM,
                  M.CNTR_RMK1,
                  M.DOOR_DIR
-            FROM DNP_UAT.TB_INVENTORY M, DNP_UAT.TB_OVERSIZE O
+            FROM DNP_PROD.TB_INVENTORY M, DNP_PROD.TB_OVERSIZE O
            WHERE M.CNTR_ID = O.CNTR_ID(+)) M,
-         DNP_UAT.TB_BERTHPLAN B,
+         DNP_PROD.TB_BERTHPLAN B,
          (    SELECT CNTR_UID,
                      SUBSTR (MAX (SYS_CONNECT_BY_PATH (HOLD_CODE, ',')), 2)
                          THOLD_CODES
@@ -956,7 +956,7 @@
                              ROW_NUMBER ()
                                  OVER (PARTITION BY CNTR_UID ORDER BY HOLD_CODE)
                                  R_NUM
-                        FROM DNP_UAT.TB_HOLD_STATE
+                        FROM DNP_PROD.TB_HOLD_STATE
                        WHERE HOLD_TYPE = 'T')
           START WITH R_NUM = 1
           CONNECT BY PRIOR R_NUM = R_NUM - 1 AND PRIOR CNTR_UID = CNTR_UID
@@ -1127,7 +1127,7 @@
                  M.CONSIGNEE_NM,
                  M.CNTR_RMK1,
                  M.DOOR_DIR
-            FROM DNP_UAT.TB_INVENTORY M, DNP_UAT.TB_OVERSIZE O
+            FROM DNP_PROD.TB_INVENTORY M, DNP_PROD.TB_OVERSIZE O
            WHERE M.CNTR_ID = O.CNTR_ID(+)
           UNION ALL
           SELECT 'TB_MASTER'
@@ -1290,9 +1290,9 @@
                  M.CONSIGNEE_NM,
                  M.CNTR_RMK1,
                  M.DOOR_DIR
-            FROM DNP_UAT.TB_MASTER M, DNP_UAT.TB_OVERSIZE O
+            FROM DNP_PROD.TB_MASTER M, DNP_PROD.TB_OVERSIZE O
            WHERE M.CNTR_ID = O.CNTR_ID(+)) M,
-         DNP_UAT.TB_BERTHPLAN B,
+         DNP_PROD.TB_BERTHPLAN B,
          (    SELECT CNTR_UID,
                      SUBSTR (MAX (SYS_CONNECT_BY_PATH (HOLD_CODE, ',')), 2)
                          THOLD_CODES
@@ -1306,7 +1306,7 @@
                              ROW_NUMBER ()
                                  OVER (PARTITION BY CNTR_UID ORDER BY HOLD_CODE)
                                  R_NUM
-                        FROM DNP_UAT.TB_HOLD_STATE
+                        FROM DNP_PROD.TB_HOLD_STATE
                        WHERE HOLD_TYPE = 'T')
           START WITH R_NUM = 1
           CONNECT BY PRIOR R_NUM = R_NUM - 1 AND PRIOR CNTR_UID = CNTR_UID
@@ -1475,9 +1475,9 @@
                  M.CONSIGNEE_NM,
                  M.CNTR_RMK1,
                  M.DOOR_DIR
-            FROM DNP_UAT.TB_INVENTORY M, DNP_UAT.TB_OVERSIZE O
+            FROM DNP_PROD.TB_INVENTORY M, DNP_PROD.TB_OVERSIZE O
            WHERE M.CNTR_ID = O.CNTR_ID(+)) M,
-         DNP_UAT.TB_BERTHPLAN B,
+         DNP_PROD.TB_BERTHPLAN B,
          (    SELECT CNTR_UID,
                      SUBSTR (MAX (SYS_CONNECT_BY_PATH (HOLD_CODE, ',')), 2)
                          THOLD_CODES
@@ -1491,7 +1491,7 @@
                              ROW_NUMBER ()
                                  OVER (PARTITION BY CNTR_UID ORDER BY HOLD_CODE)
                                  R_NUM
-                        FROM DNP_UAT.TB_HOLD_STATE
+                        FROM DNP_PROD.TB_HOLD_STATE
                        WHERE HOLD_TYPE = 'T')
           START WITH R_NUM = 1
           CONNECT BY PRIOR R_NUM = R_NUM - 1 AND PRIOR CNTR_UID = CNTR_UID
@@ -1660,9 +1660,9 @@
                  M.CONSIGNEE_NM,
                  M.CNTR_RMK1,
                  M.DOOR_DIR
-            FROM DNP_UAT.TB_INVENTORY M, DNP_UAT.TB_OVERSIZE O
+            FROM DNP_PROD.TB_INVENTORY M, DNP_PROD.TB_OVERSIZE O
            WHERE M.CNTR_ID = O.CNTR_ID(+)) M,
-         DNP_UAT.TB_BERTHPLAN B,
+         DNP_PROD.TB_BERTHPLAN B,
          (    SELECT CNTR_UID,
                      SUBSTR (MAX (SYS_CONNECT_BY_PATH (HOLD_CODE, ',')), 2)
                          THOLD_CODES
@@ -1676,7 +1676,7 @@
                              ROW_NUMBER ()
                                  OVER (PARTITION BY CNTR_UID ORDER BY HOLD_CODE)
                                  R_NUM
-                        FROM DNP_UAT.TB_HOLD_STATE
+                        FROM DNP_PROD.TB_HOLD_STATE
                        WHERE HOLD_TYPE = 'T')
           START WITH R_NUM = 1
           CONNECT BY PRIOR R_NUM = R_NUM - 1 AND PRIOR CNTR_UID = CNTR_UID
