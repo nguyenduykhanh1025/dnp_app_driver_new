@@ -1560,7 +1560,6 @@ function verify() {
                 $.modal.alertWarning("Lỗi hệ thống, quý khách vui lòng thử lại sau.");
             }
         });
-
     }
 }
 

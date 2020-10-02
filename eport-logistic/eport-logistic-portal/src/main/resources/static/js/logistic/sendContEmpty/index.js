@@ -19,15 +19,15 @@ var fromDate, toDate, currentEta, currentVesselVoyage = '';
 var myDropzone;
 //dictionary sizeList
 $.ajax({
-	  type: "GET",
-	  url: ctx + "logistic/size/container/list",
-	  success(data) {
-		  if(data.code == 0){
-		      data.data.forEach(element => {
-		    	  sizeList.push(element['dictLabel'])
-		      })
-		  }
-	  }
+    type: "GET",
+    url: ctx + "logistic/size/container/list",
+    success(data) {
+        if (data.code == 0) {
+            data.data.forEach(element => {
+                sizeList.push(element['dictLabel'])
+            })
+        }
+    }
 })
 var consigneeList, opeCodeList, vslNmList, currentProcessId, currentSubscription;
 
@@ -172,7 +172,7 @@ $(document).ready(function () {
                 this.removeFile(file);
             });
         },
-        success: function(file, response){
+        success: function (file, response) {
             if (response.code == 0) {
                 $.modal.msgSuccess("Đính kèm tệp thành công.");
                 let content = '<p><a href="' + response.fileLink + '" target="_blank">' + file.upload.filename + '</a></p>';
@@ -299,7 +299,7 @@ function loadTable(msg) {
         clientPaging: false,
         toolbar: toolbar,
         pagination: true,
-        rownumbers:true,
+        rownumbers: true,
         onBeforeSelect: function (index, row) {
             getSelected(index, row);
         },
@@ -315,11 +315,11 @@ function loadTable(msg) {
                 url: opts.url,
                 contentType: "application/json",
                 data: JSON.stringify({
-                  pageNum: param.page,
-                  pageSize: param.rows,
-                  orderByColumn: param.sort,
-                  isAsc: param.order,
-                  data: shipmentSearch
+                    pageNum: param.page,
+                    pageSize: param.rows,
+                    orderByColumn: param.sort,
+                    isAsc: param.order,
+                    data: shipmentSearch
                 }),
                 success: function (data) {
                     success(data);
@@ -450,7 +450,7 @@ function getSelected(index, row) {
                     success: function (res) {
                         if (res.code == 0) {
                             checkEmptyExpiredDem = false;
-                           
+
                         } else {
                             checkEmptyExpiredDem = true;
                         }
@@ -506,7 +506,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
                 break;
             case 'N':
-                if(value > 1) {
+                if (value > 1) {
                     payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
                 }
                 break;
@@ -518,7 +518,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
                 break;
             case 'N':
-                if(sourceData[row].paymentStatus == 'Y') {
+                if (sourceData[row].paymentStatus == 'Y') {
                     released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
                 }
                 break;
@@ -619,7 +619,7 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
-function emptyDepotLocationRenderer(instance, td, row, col, prop, value, cellProperties)  {
+function emptyDepotLocationRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'emptyDepotLocation' + row).addClass("htMiddle");
     if (!value) {
         value = '';
@@ -718,7 +718,7 @@ function configHandson() {
                     case 4:
                         return '<span class="required">Chủ Hàng</span>';
                     case 5:
-                        return checkEmptyExpiredDem?'<span class="required">Ngày Miễn <br>Lưu Bãi</span>':'Ngày Miễn <br>Lưu Bãi';
+                        return checkEmptyExpiredDem ? '<span class="required">Ngày Miễn <br>Lưu Bãi</span>' : 'Ngày Miễn <br>Lưu Bãi';
                     case 6:
                         return '<span class="required">Bãi Hạ Vỏ</span>';
                     case 7:
@@ -796,25 +796,25 @@ function configHandson() {
                     case 37:
                         if (selected[3] == 0) {
                             e.stopImmediatePropagation();
-                        } 
+                        }
                         break;
                     // Arrow Up
                     case 38:
                         if (selected[2] == 0) {
                             e.stopImmediatePropagation();
-                        } 
+                        }
                         break;
                     // Arrow Right
                     case 39:
                         if (selected[3] == 10) {
                             e.stopImmediatePropagation();
-                        } 
+                        }
                         break
                     // Arrow Down
                     case 40:
-                        if (selected[2] == rowAmount-1) {
+                        if (selected[2] == rowAmount - 1) {
                             e.stopImmediatePropagation();
-                        } 
+                        }
                         break
                     default:
                         break;
@@ -858,7 +858,7 @@ function configHandson() {
                     case 6:
                         return 'Ngày tàu đến';
                     case 7:
-                        return checkEmptyExpiredDem?'<span class="required">Ngày Miễn <br>Lưu Bãi/span>':'Ngày Miễn <br>Lưu Bãi';
+                        return checkEmptyExpiredDem ? '<span class="required">Ngày Miễn <br>Lưu Bãi/span>' : 'Ngày Miễn <br>Lưu Bãi';
                     case 8:
                         return '<span class="required">Bãi Hạ Vỏ</span>';
                     case 9:
@@ -947,25 +947,25 @@ function configHandson() {
                     case 37:
                         if (selected[3] == 0) {
                             e.stopImmediatePropagation();
-                        } 
+                        }
                         break;
                     // Arrow Up
                     case 38:
                         if (selected[2] == 0) {
                             e.stopImmediatePropagation();
-                        } 
+                        }
                         break;
                     // Arrow Right
                     case 39:
                         if (selected[3] == 12) {
                             e.stopImmediatePropagation();
-                        } 
+                        }
                         break
                     // Arrow Down
                     case 40:
-                        if (selected[2] == rowAmount-1) {
+                        if (selected[2] == rowAmount - 1) {
                             e.stopImmediatePropagation();
-                        } 
+                        }
                         break
                     default:
                         break;
@@ -1032,7 +1032,7 @@ function onChange(changes, source) {
                             cleanCell(change[0], 3, sizeList);
                         }
                     },
-                    error: function(err) {
+                    error: function (err) {
                         sztpListDisable[change[0]] = 0;
                         cleanCell(change[0], 3, sizeList);
                     }
@@ -1045,8 +1045,8 @@ function onChange(changes, source) {
                 if (currentVesselVoyage != vesselAndVoy) {
                     currentVesselVoyage = vesselAndVoy;
                     let shipmentDetail = new Object();
-                    for (let i= 0; i < berthplanList.length;i++){
-                        if(vesselAndVoy == berthplanList[i].vslAndVoy){
+                    for (let i = 0; i < berthplanList.length; i++) {
+                        if (vesselAndVoy == berthplanList[i].vslAndVoy) {
                             currentEta = berthplanList[i].eta;
                             break;
                         }
@@ -1079,18 +1079,18 @@ function checkAll() {
     if (!allChecked) {
         allChecked = true
         checkList = Array(rowAmount).fill(0);
-        for (let i=0; i<checkList.length; i++) {
+        for (let i = 0; i < checkList.length; i++) {
             if (hot.getDataAtCell(i, 1) == null) {
                 break;
             }
             checkList[i] = 1;
-            $('#check'+i).prop('checked', true);
+            $('#check' + i).prop('checked', true);
         }
     } else {
         allChecked = false;
         checkList = Array(rowAmount).fill(0);
-        for (let i=0; i<checkList.length; i++) {
-            $('#check'+i).prop('checked', false);
+        for (let i = 0; i < checkList.length; i++) {
+            $('#check' + i).prop('checked', false);
         }
     }
     let tempCheck = allChecked;
@@ -1102,10 +1102,10 @@ function checkAll() {
 function check(id) {
     if (sourceData[id].id != null) {
         if (checkList[id] == 0) {
-            $('#check'+id).prop('checked', true);
+            $('#check' + id).prop('checked', true);
             checkList[id] = 1;
         } else {
-            $('#check'+id).prop('checked', false);
+            $('#check' + id).prop('checked', false);
             checkList[id] = 0;
         }
         hot.render();
@@ -1115,11 +1115,11 @@ function check(id) {
 function updateLayout() {
     let disposable = true, status = 1, diff = false, check = false, verify = false;
     allChecked = true;
-    for (let i=0; i<checkList.length; i++) {
+    for (let i = 0; i < checkList.length; i++) {
         let cellStatus = hot.getDataAtCell(i, 1);
         if (cellStatus != null) {
             if (checkList[i] == 1) {
-                if(cellStatus == 1 && 'Y' == sourceData[i].userVerifyStatus) {
+                if (cellStatus == 1 && 'Y' == sourceData[i].userVerifyStatus) {
                     verify = true;
                 }
                 check = true;
@@ -1175,12 +1175,12 @@ function updateLayout() {
 
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) {
-	$.modal.loading("Đang xử lý ...");
+    $.modal.loading("Đang xử lý ...");
     $.ajax({
         url: prefix + "/shipment/" + id + "/shipment-detail",
         method: "GET",
         success: function (data) {
-        	$.modal.closeLoading();
+            $.modal.closeLoading();
             if (data.code == 0) {
                 sourceData = data.shipmentDetails;
                 if (rowAmount < sourceData.length) {
@@ -1204,8 +1204,8 @@ function reloadShipmentDetail() {
     checkList = Array(rowAmount).fill(0);
     allChecked = false;
     $('.checker').prop('checked', false);
-    for (let i=0; i<checkList.length; i++) {
-        $('#check'+i).prop('checked', false);
+    for (let i = 0; i < checkList.length; i++) {
+        $('#check' + i).prop('checked', false);
     }
     $("#deleteBtn").prop("disabled", true);
     $("#verifyBtn").prop("disabled", true);
@@ -1221,7 +1221,7 @@ function getDataSelectedFromTable(isValidate) {
     let myTableData = hot.getSourceData();
     let errorFlg = false;
     let cleanedGridData = [];
-    for (let i=0; i<checkList.length; i++) {
+    for (let i = 0; i < checkList.length; i++) {
         if (checkList[i] == 1 && Object.keys(myTableData[i]).length > 0) {
             cleanedGridData.push(myTableData[i]);
         }
@@ -1250,7 +1250,7 @@ function getDataSelectedFromTable(isValidate) {
     });
 
     if (processOrderIds != '') {
-        processOrderIds.substring(0, processOrderIds.length-1);
+        processOrderIds.substring(0, processOrderIds.length - 1);
     }
 
     // Get result in "selectedList" letiable
@@ -1272,7 +1272,7 @@ function getDataFromTable(isValidate) {
     let myTableData = hot.getSourceData();
     let errorFlg = false;
     let cleanedGridData = [];
-    for (let i=0; i<checkList.length; i++) {
+    for (let i = 0; i < checkList.length; i++) {
         if (Object.keys(myTableData[i]).length > 0) {
             if (myTableData[i].containerNo || myTableData[i].emptyExpiredDem ||
                 myTableData[i].sztp || myTableData[i].remark) {
@@ -1290,7 +1290,7 @@ function getDataFromTable(isValidate) {
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
         if (isValidate) {
-            if(!object["containerNo"]) {
+            if (!object["containerNo"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số container!");
                 errorFlg = true;
                 return false;
@@ -1334,9 +1334,9 @@ function getDataFromTable(isValidate) {
         let sizeType = object["sztp"].split(": ");
         if (shipmentSelected.sendContEmptyType == '1') {
             shipmentDetail.eta = object["eta"];
-            if(berthplanList){
-                for (let i= 0; i < berthplanList.length;i++){
-                    if(object["vslNm"] == berthplanList[i].vslAndVoy){
+            if (berthplanList) {
+                for (let i = 0; i < berthplanList.length; i++) {
+                    if (object["vslNm"] == berthplanList[i].vslAndVoy) {
                         shipmentDetail.vslNm = berthplanList[i].vslNm;
                         shipmentDetail.voyNo = berthplanList[i].voyNo;
                         shipmentDetail.year = berthplanList[i].year;
@@ -1357,7 +1357,7 @@ function getDataFromTable(isValidate) {
         shipmentDetails.push(shipmentDetail);
     });
 
-    conts.substring(0, conts.length-1);
+    conts.substring(0, conts.length - 1);
 
     if (isValidate) {
         contList.sort();
@@ -1396,7 +1396,7 @@ function saveShipmentDetail() {
                 shipmentDetails[0].processStatus = conts;
                 $.modal.loading("Đang xử lý...");
                 $.ajax({
-                	url: prefix + "/" + shipmentSelected.id + "/shipment-detail",
+                    url: prefix + "/" + shipmentSelected.id + "/shipment-detail",
                     method: "post",
                     contentType: "application/json",
                     accept: 'text/plain',
@@ -1409,7 +1409,7 @@ function saveShipmentDetail() {
                             reloadShipmentDetail();
                         } else {
                             if (result.conts != null) {
-                                $.modal.alertError("Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>"+result.conts);
+                                $.modal.alertError("Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>" + result.conts);
                             } else {
                                 $.modal.alertError(result.msg);
                             }
@@ -1458,7 +1458,23 @@ function deleteShipmentDetail() {
 function verify() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 700, 500);
+        $.ajax({
+            url: prefix + "/shipment-detail/validation",
+            method: "POST",
+            data: {
+                shipmentDetailIds: shipmentDetailIds
+            },
+            success: function (res) {
+                if (res.code != 0) {
+                    $.modal.alertWarning(res.msg);
+                } else {
+                    $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 700, 500);
+                }
+            },
+            error: function (err) {
+                $.modal.alertWarning("Lỗi hệ thống, quý khách vui lòng thử lại sau.");
+            }
+        });
     }
 }
 
@@ -1537,7 +1553,7 @@ function finishForm(result) {
 }
 
 function finishVerifyForm(result) {
-    if (result.code == 0 || result.code == 301){
+    if (result.code == 0 || result.code == 301) {
         //$.modal.loading(result.msg);
         currentProcessId = result.processId;
         // CONNECT WEB SOCKET
@@ -1551,7 +1567,7 @@ function finishVerifyForm(result) {
                 $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
             }, 1000);
         }, 200000);
-       
+
     } else {
         reloadShipmentDetail();
         $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
@@ -1560,10 +1576,10 @@ function finishVerifyForm(result) {
 
 function napasPaymentForm() {
     // $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
-    window.open(ctx + "logistic/payment/napas/" + processOrderIds, "_blank"); 
+    window.open(ctx + "logistic/payment/napas/" + processOrderIds, "_blank");
 }
 
-function connectToWebsocketServer(){
+function connectToWebsocketServer() {
     // Connect to WebSocket Server.
     $.websocket.connect({}, onConnected, onError);
 }
@@ -1585,7 +1601,7 @@ function onError(error) {
 
 function onMessageReceived(payload) {
     clearTimeout(timeout);
-    setProgressPercent(currentPercent=100);
+    setProgressPercent(currentPercent = 100);
     setTimeout(() => {
         hideProgress();
 
@@ -1593,7 +1609,7 @@ function onMessageReceived(payload) {
 
         reloadShipmentDetail();
 
-        if (message.code == 0){
+        if (message.code == 0) {
             $.modal.alertSuccess(message.msg);
         } else {
             $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
@@ -1603,7 +1619,7 @@ function onMessageReceived(payload) {
         //$.modal.closeLoading();
 
         // Unsubscribe destination
-        if (currentSubscription){
+        if (currentSubscription) {
             currentSubscription.unsubscribe();
         }
 
@@ -1614,7 +1630,7 @@ function onMessageReceived(payload) {
 
 function onDisconnected() {
     console.log('Disconnected socket.');
-}     
+}
 
 function showProgress(title) {
     $('.progress-wrapper').show();
@@ -1622,8 +1638,8 @@ function showProgress(title) {
     $('#titleProgress').text(title);
     $('.percent-text').text("0%");
     currentPercent = 0;
-    interval = setInterval(function() {
-        if (currentPercent <=99) {
+    interval = setInterval(function () {
+        if (currentPercent <= 99) {
             setProgressPercent(++currentPercent);
         }
         if (currentPercent >= 99) {
@@ -1646,44 +1662,44 @@ function hideProgress() {
     setProgressPercent(0);
 }
 
-function exportReceipt(){
-	if(!shipmentSelected){
-		$.modal.alertError("Bạn chưa chọn Lô!");
-		return
-	}
-    $.modal.openTab("In Biên Nhận", ctx +"logistic/print/receipt/shipment/"+shipmentSelected.id);
+function exportReceipt() {
+    if (!shipmentSelected) {
+        $.modal.alertError("Bạn chưa chọn Lô!");
+        return
+    }
+    $.modal.openTab("In Biên Nhận", ctx + "logistic/print/receipt/shipment/" + shipmentSelected.id);
 }
 
-function removeShipment(){
-	if (!shipmentSelected) {
-		$.modal.alertError("Bạn chưa chọn Lô!");
-		return
-	}else {
-		//1- chua khai bao cont, 2- khai bao nhung chua lam cac buoc tiep theo
-		if(shipmentSelected.status == '1' || shipmentSelected.status == '2'){
-			$.modal.confirmShipment("Xác nhận thực hiện xóa Lô " + shipmentSelected.id + "  ?", function() {
-				$.modal.loading("Đang xử lý...");
-			    $.ajax({
-			        url: ctx + 'logistic/shipment/remove',
-			        type: 'POST',
-			        data: {
-			            id: shipmentSelected.id,
-			        }
-			    }).done(function(rs) {
-			    	$.modal.closeLoading();
-			        if(rs.code  == 0){
-			        	$.modal.msgSuccess(rs.msg);
-			        	loadTable();
-			        }
-			        else{
-			        	$.modal.msgError(rs.msg)
-			        }
-			    });
-			});
-		} else {
-			$.modal.msgError("Không thể xóa Lô " + shipmentSelected.id);
-		}
-	}
+function removeShipment() {
+    if (!shipmentSelected) {
+        $.modal.alertError("Bạn chưa chọn Lô!");
+        return
+    } else {
+        //1- chua khai bao cont, 2- khai bao nhung chua lam cac buoc tiep theo
+        if (shipmentSelected.status == '1' || shipmentSelected.status == '2') {
+            $.modal.confirmShipment("Xác nhận thực hiện xóa Lô " + shipmentSelected.id + "  ?", function () {
+                $.modal.loading("Đang xử lý...");
+                $.ajax({
+                    url: ctx + 'logistic/shipment/remove',
+                    type: 'POST',
+                    data: {
+                        id: shipmentSelected.id,
+                    }
+                }).done(function (rs) {
+                    $.modal.closeLoading();
+                    if (rs.code == 0) {
+                        $.modal.msgSuccess(rs.msg);
+                        loadTable();
+                    }
+                    else {
+                        $.modal.msgError(rs.msg)
+                    }
+                });
+            });
+        } else {
+            $.modal.msgError("Không thể xóa Lô " + shipmentSelected.id);
+        }
+    }
 }
 
 function dateToString(date) {
@@ -1802,7 +1818,7 @@ function addComment() {
                     loadListComment(result.shipmentCommentId);
                     $.modal.msgSuccess("Gửi thành công.");
                     $('#topic').textbox('setText', '');
-                    $('.summernote').summernote('code','');
+                    $('.summernote').summernote('code', '');
                 } else {
                     $.modal.msgError("Gửi thất bại.");
                 }

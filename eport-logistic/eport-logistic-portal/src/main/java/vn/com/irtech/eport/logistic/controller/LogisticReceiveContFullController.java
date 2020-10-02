@@ -505,6 +505,11 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				shipmentService.updateShipment(shipment);
 			}
 			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContFull(shipmentDetails, shipment, taxCode, creditFlag);
+			AjaxResult validateResult = validateShipmentDetailList(shipmentDetails);
+			Integer code = (Integer)validateResult.get("code");
+			if (code != 0) {
+				return validateResult;
+			}
 			if (serviceRobotReqs != null) {
 				List<Long> processIds = new ArrayList<>();
 				boolean robotBusy = false;
@@ -746,6 +751,47 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
+	}
+	
+	@PostMapping("/shipment-detail/validation")
+	@ResponseBody
+	public AjaxResult validateShipmentDetail(String shipmentDetailIds) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());	
+		AjaxResult validateResult = validateShipmentDetailList(shipmentDetails);
+		return validateResult;
+	}
+	
+	public AjaxResult validateShipmentDetailList(List<ShipmentDetail> shipmentDetails) {
+		if (CollectionUtils.isEmpty(shipmentDetails)) {
+			return error("Không tìm thấy thông tin chi tiết lô đã chọn.");
+		}
+		
+		// validate
+		ShipmentDetail shipmentDetailReference = shipmentDetails.get(0);
+		for (int i=0; i<shipmentDetails.size(); i++) {
+			if (StringUtils.isEmpty(shipmentDetails.get(i).getContainerNo())) {
+				return error("Hàng " + (i + 1) + ": Quý khách chưa nhập số container!");
+			}
+			if (shipmentDetailReference.getExpiredDem() == null) {
+                return error("Hàng " + (i + 1) + ": Quý khách chưa nhập hạn lệnh!");
+            } 
+			if (StringUtils.isEmpty(shipmentDetails.get(i).getConsignee())) {
+                return error("Hàng " + (i + 1) + ": Quý khách chưa chọn chủ hàng!");
+            } 
+			if (StringUtils.isEmpty(shipmentDetails.get(i).getEmptyDepot())) {
+                return error("Hàng " + (i + 1) + ": Quý khách chưa chọn nơi hạ vỏ!");
+            } 
+			
+			if (!shipmentDetailReference.getConsignee().equals(shipmentDetails.get(i).getConsignee())) {
+                return error("Tên chủ hàng không được khác nhau!");
+            } 
+		}
+		
+		// validate consignee exist in catos
+		if (catosApiService.checkConsigneeExistInCatos(shipmentDetailReference.getConsignee()) == 0) {
+			return error("Tên chủ hàng quý khách nhập không đúng, vui lòng chọn tên chủ hàng từ trong danh sách của hệ thống gợi ý.");
+		}
+		return success();
 	}
 }
 
