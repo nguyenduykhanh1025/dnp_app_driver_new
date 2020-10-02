@@ -233,4 +233,20 @@ public interface ICatosApiService {
 	 * @return List<String> 
 	 */
 	public List<String> getListContainerNotHoldTerminal(String containers);
+	
+	/**
+	 * Check if consignee is exist in catos
+	 * 
+	 * @param consignee
+	 * @return number of consignee record in catos
+	 */
+	public Integer checkConsigneeExistInCatos(String consignee);
+	
+	/**
+	 * Check if pod (discharge port) exist in catos
+	 * 
+	 * @param pod
+	 * @return number of pod record in catos
+	 */
+	public Integer checkPodExistIncatos(String pod);
 }

@@ -538,4 +538,69 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
 	}
+	
+	@PostMapping("/shipment-detail/validation")
+	@ResponseBody
+	public AjaxResult validateShipmentDetail(String shipmentDetailIds) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
+		
+		if (CollectionUtils.isEmpty(shipmentDetails)) {
+			return error("Không tìm thấy thông tin chi tiết lô đã chọn.");
+		}
+		
+		// validate
+		ShipmentDetail shipmentDetailReference = shipmentDetails.get(0);
+		for (int i=0; i<shipmentDetails.size(); i++) {
+			if (StringUtils.isEmpty(shipmentDetails.get(i).getContainerNo())) {
+				return error("Hàng " + (i + 1) + ": Quý khách chưa nhập số container!");
+			}
+			if (StringUtils.isEmpty(shipmentDetails.get(i).getConsignee())) {
+                return error("Hàng " + (i + 1) + ": Quý khách chưa chọn chủ hàng!");
+            } 
+			if (StringUtils.isEmpty(shipmentDetails.get(i).getVslNm())) {
+                return error("Hàng " + (i + 1) + ": Quý khách chưa chọn tàu!");
+            } 
+			if (StringUtils.isEmpty(shipmentDetails.get(i).getSztp())) {
+                return error("Hàng " + (i + 1) + ": Quý khách chưa chọn kích thước!");
+            } 
+			if (shipmentDetails.get(i).getWgt() == null) {
+                return error("Hàng " + (i + 1) + ": Quý khách chưa nhập trọng lượng!");
+            } 
+			if (shipmentDetails.get(i).getWgt() > 99999) {
+                return error("Hàng " + (i + 1) + ": Trọng lượng không được quá 5 chữ số!");
+            } 
+			if (StringUtils.isEmpty(shipmentDetails.get(i).getDischargePort())) {
+				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn cảng dỡ hàng!");
+              
+            } 
+			if (!shipmentDetailReference.getConsignee().equals(shipmentDetails.get(i).getConsignee())) {
+                return error("Tên chủ hàng không được khác nhau!");
+                
+            } 
+			if (!shipmentDetailReference.getVslNm().equals(shipmentDetails.get(i).getVslNm())) {
+                return error("Tàu và Chuyến không được khác nhau!");
+                
+            } 
+			if (!shipmentDetailReference.getVoyNo().equals(shipmentDetails.get(i).getVoyNo())) {
+                return error("Tàu và Chuyến không được khác nhau!");
+                
+            } 
+			if (!shipmentDetailReference.getDischargePort().equals(shipmentDetails.get(i).getDischargePort())) {
+                return error("Cảng dỡ hàng không được khác nhau!");
+                
+            } 
+		}
+		
+		// validate consignee exist in catos
+		if (catosApiService.checkConsigneeExistInCatos(shipmentDetailReference.getConsignee()) == 0) {
+			return error("Tên chủ hàng quý khách nhập không đúng, vui lòng chọn tên chủ hàng từ trong danh sách của hệ thống gợi ý.");
+		}
+		
+		// validate pod exist in catos
+		if (catosApiService.checkPodExistIncatos(shipmentDetailReference.getDischargePort()) == 0) {
+			return error("Cảng dỡ hàng quý khách nhập không đúng, vui lòng chọn cảng từ trong dánh sách của hệ thống gợi ý.");
+		}
+		
+		return success();
+	}
 }

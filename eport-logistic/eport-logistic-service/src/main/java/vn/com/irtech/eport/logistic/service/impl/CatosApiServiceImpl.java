@@ -851,4 +851,45 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+
+	/**
+	 * Check if consignee is exist in catos
+	 * 
+	 * @param consignee
+	 * @return number of consignee record in catos
+	 */
+	@Override
+	public Integer checkConsigneeExistInCatos(String consignee) {
+		try {
+			String url = Global.getApiUrl() + "/consignee/" + consignee + "/exist";
+			logger.debug("Call CATOS API check consignee exist", url);
+			RestTemplate restTemplate = new RestTemplate();
+			Integer count = restTemplate.getForObject(url, Integer.class);
+			return  count;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api check consignee exist: ", e);
+			return 0;
+		}
+	}
+	
+	/**
+	 * Check if pod (discharge port) exist in catos
+	 * 
+	 * @param pod
+	 * @return number of pod record in catos
+	 */
+	@Override
+	public Integer checkPodExistIncatos(String pod) {
+		try {
+			String url = Global.getApiUrl() + "/pod/" + pod + "/exist";
+			logger.debug("Call CATOS API check pod exist", url);
+			RestTemplate restTemplate = new RestTemplate();
+			Integer count = restTemplate.getForObject(url, Integer.class);
+			return  count;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api check pod exist: ", e);
+			return 0;
+		}
+	}
+	
 }

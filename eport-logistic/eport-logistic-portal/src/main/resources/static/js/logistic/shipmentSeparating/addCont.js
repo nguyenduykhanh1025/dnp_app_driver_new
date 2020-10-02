@@ -74,7 +74,6 @@ function submitHandler(index, layer, dg, edoHouseBill) {
   }
 
   let edoIds = rows.map((e) => e.id);
-  console.log(edoHouseBill);
 
   let reqData = {
     houseBill: edoHouseBill.houseBillNo,
@@ -94,6 +93,7 @@ function submitHandler(index, layer, dg, edoHouseBill) {
     success: function (result) {
       if (result.code == web_status.SUCCESS) {
         $.modal.alert("Thành công!");
+        parent.reload();
         layer.close(index);
       } else if (result.code == web_status.WARNING) {
         $.modal.alertWarning(result.msg);

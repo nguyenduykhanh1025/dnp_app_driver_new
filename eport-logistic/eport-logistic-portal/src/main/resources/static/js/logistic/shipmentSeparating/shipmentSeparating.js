@@ -328,3 +328,7 @@ function clearInput() {
   $("#houseBill").textbox('setText', '');
   loadTable();
 }
+
+function reload() {
+  loadHouseBillDetail(houseBillSelected.houseBillNo);
+}
