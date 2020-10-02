@@ -100,6 +100,7 @@ function checkTaxCodeExists() {
           return true;
         } else {
           $.modal.alertWarning("Mã số thuế không tồn tại.");
+          $("input[name='companyName']").val('');
           return false;
         }
       },
@@ -186,7 +187,7 @@ async function submitHandler(index, layer, dg) {
         data: JSON.stringify(reqData),
         async: false,
         error: function (request) {
-          $.modal.alertError("System error");
+          $.modal.alertError("Có lỗi xảy ra khi thực hiện, vui long thử lại sau.");
         },
         success: function (result) {
           if (result.code == web_status.SUCCESS) {

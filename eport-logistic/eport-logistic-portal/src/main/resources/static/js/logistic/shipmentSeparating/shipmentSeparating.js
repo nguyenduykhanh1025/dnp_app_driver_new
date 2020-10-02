@@ -3,13 +3,13 @@ var houseBillSelected;
 var houseBillSearch = new Object();
 var toolbar = [
   {
-    text: '<button type="submit" class="btn btn-w-m btn-rounder btn-success"><i class="fa fa-plus"></i> Tách lô từ Master Bill</button>',
+    text: '<button type="submit" class="btn btn-w-m btn-rounder btn-success"><i class="fa fa-plus"></i> Tách Bill</button>',
     handler: function () {
       openFormSeparate();
     },
   },
   {
-    text: '<button type="submit" class="btn btn-w-m btn-rounder btn-danger"><i class="fa fa-trash"></i> Xóa lô</button>',
+    text: '<button type="submit" class="btn btn-w-m btn-rounder btn-danger"><i class="fa fa-trash"></i> Xóa</button>',
     handler: function () {
       //alert("sua");
     },
