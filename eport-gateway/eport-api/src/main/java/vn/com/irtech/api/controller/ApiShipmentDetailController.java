@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.com.irtech.api.common.utils.Convert;
 import vn.com.irtech.api.common.utils.StringUtils;
 import vn.com.irtech.api.dao.ShipmentDetailDao;
+import vn.com.irtech.api.dto.ContainerHoldInfo;
 import vn.com.irtech.api.dto.PartnerInfoDto;
 import vn.com.irtech.api.entity.ShipmentDetailEntity;
 import vn.com.irtech.api.entity.ShipmentEntity;
@@ -291,9 +292,9 @@ public class ApiShipmentDetailController {
 		return shipmentDetailDao.getTruckerByRegNo(taxCode);
 	}
 	
-	@PostMapping("/none-terminal/containers")
-	public List<String> getListContainerNotCheckTerminalHold(String containers) {
-		return shipmentDetailDao.getContainerListNoneTerminalHold(Convert.toStrArray(containers));
+	@PostMapping("/hold-check/containers")
+	public List<String> getListContainerHoldRelease(@RequestBody ContainerHoldInfo containerHoldInfo) {
+		return shipmentDetailDao.getContainerListHoldRelease(containerHoldInfo);
 	}
 
 	@GetMapping("/consignee/{consignee}/exist")

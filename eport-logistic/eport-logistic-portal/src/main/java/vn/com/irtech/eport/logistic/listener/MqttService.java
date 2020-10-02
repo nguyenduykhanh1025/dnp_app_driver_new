@@ -270,6 +270,10 @@ public class MqttService implements MqttCallback {
 	}
 	
 	public void publicOrderToDemandRobot(ProcessOrder payLoad, EServiceRobot serviceRobot, String uuid) throws MqttException {
+		SysRobot sysRobot = new SysRobot();
+		sysRobot.setUuId(uuid);
+		sysRobot.setStatus(EportConstants.ROBOT_STATUS_BUSY);
+		robotService.updateRobotByUuId(sysRobot);
 		String msg = new Gson().toJson(payLoad);
 		String topic = REQUEST_TOPIC.replace("+", uuid);
 		publish(topic, new MqttMessage(msg.getBytes()));

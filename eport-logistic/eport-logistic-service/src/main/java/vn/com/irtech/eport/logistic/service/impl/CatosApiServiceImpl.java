@@ -20,6 +20,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ContainerHoldInfo;
 import vn.com.irtech.eport.logistic.form.BookingInfo;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.system.dto.PartnerInfoDto;
@@ -835,19 +836,17 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	 * @return List<String> 
 	 */
 	@Override
-	public List<String> getListContainerNotHoldTerminal(String containers) {
+	public List<String> getContainerListHoldRelease(ContainerHoldInfo containerHoldInfo) {
 		try {
-			String url = Global.getApiUrl() + "/none-terminal/containers";
+			String url = Global.getApiUrl() + "/hold-check/containers";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			Map<String, Object> map = new HashMap<>();
-			map.put("containers", containers);
-			HttpEntity httpEntity = new HttpEntity<Map<String, Object>>(map);
+			HttpEntity httpEntity = new HttpEntity<ContainerHoldInfo>(containerHoldInfo);
 			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<String>>() {});
 			List<String> containerList = response.getBody();
 			return containerList;
 		}catch (Exception e) {
-			logger.error("Error while call CATOS Api get list container not check terminal hold", e);
+			logger.error("Error while call CATOS Api get list container to hold or release", e);
 			return null;
 		}
 	}

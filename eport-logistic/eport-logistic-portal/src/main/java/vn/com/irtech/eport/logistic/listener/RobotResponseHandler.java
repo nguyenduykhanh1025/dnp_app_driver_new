@@ -24,6 +24,7 @@ import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
@@ -31,6 +32,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ContainerHoldInfo;
 import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
@@ -790,10 +792,15 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		}
 		containers = containers.substring(0, containers.length()-1);
 		// Get list container need to check terminal hold
-		List<String> containerList = catosApiService.getListContainerNotHoldTerminal(containers);
+		ContainerHoldInfo containerHoldInfo = new ContainerHoldInfo();
+		containerHoldInfo.setContainers(Convert.toStrArray(containers));
+		containerHoldInfo.setHoldChk("N");
+		containerHoldInfo.setHoldType(EportConstants.HOLD_TYPE_TERMINAL);
+		containerHoldInfo.setUserVoy(pickupFullOrder.getVessel() + pickupFullOrder.getVoyage());
+		List<String> containerList = catosApiService.getContainerListHoldRelease(containerHoldInfo);
 		
 		// Send list container not check terminal hold to robot
-		if (containers.length() > 0) {
+		if (CollectionUtils.isNotEmpty(containerList)) {
 			logger.debug("Create process order to send terminal hold.");
 			ProcessOrder processOrder = new ProcessOrder();
 			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);

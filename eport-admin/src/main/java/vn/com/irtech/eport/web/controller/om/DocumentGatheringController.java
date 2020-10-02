@@ -35,6 +35,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.web.controller.AdminBaseController;
+import vn.com.irtech.eport.web.mqtt.MqttService;
 
 @Controller
 @RequestMapping("/om/document")
@@ -58,6 +59,9 @@ public class DocumentGatheringController extends AdminBaseController  {
 	
 	@Autowired
 	private IShipmentCommentService shipmentCommentService;
+	
+	@Autowired
+	private MqttService mqttService;
 	
 	@GetMapping()
 	public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
@@ -133,11 +137,18 @@ public class DocumentGatheringController extends AdminBaseController  {
 				return error("Không thể xác nhận chứng từ gốc cho container chưa thanh toán. Vui lòng kiểm tra lại.");
 			}
 		}
+		String containers = "";
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			containers += shipmentDetail.getContainerNo() + ",";
 			shipmentDetail.setDoStatus(doStatus);
 			shipmentDetail.setUpdateBy(getUser().getUserName());
 			shipmentDetailService.updateShipmentDetail(shipmentDetail);
 		}
+		
+		// Send release container request to robot
+		containers = containers.substring(0, containers.length()-1);
+		mqttService.sendReleaseTerminalHoldForRobot(containers, shipmentDetails.get(0));
+		
 		if (StringUtils.isNotEmpty(content)) {
 			ShipmentDetail shipmentDetail = shipmentDetails.get(0);
 			ShipmentComment shipmentComment = new ShipmentComment();

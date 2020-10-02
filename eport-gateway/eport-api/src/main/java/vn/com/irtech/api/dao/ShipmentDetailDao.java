@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import vn.com.irtech.api.dto.ContainerHoldInfo;
 import vn.com.irtech.api.dto.PartnerInfoDto;
 import vn.com.irtech.api.entity.ShipmentDetailEntity;
 import vn.com.irtech.api.entity.ShipmentEntity;
@@ -194,7 +195,7 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @param containers
 	 * @return List<String>
 	 */
-	public List<String> getContainerListNoneTerminalHold(String[] containers);
+	public List<String> getContainerListHoldRelease(ContainerHoldInfo containerHoldInfo);
 	
 	/**
 	 * Get number of consignee 
