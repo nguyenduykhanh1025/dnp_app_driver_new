@@ -369,6 +369,11 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
 		}
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
+		AjaxResult validateResult = validateShipmentDetailList(shipmentDetails);
+		Integer code = (Integer)validateResult.get("code");
+		if (code != 0) {
+			return validateResult;
+		}
 		// Check if shipment details is valid.
 		if (CollectionUtils.isNotEmpty(shipmentDetails) && shipmentDetails.get(0) != null) {
 			AjaxResult ajaxResult = null;
@@ -527,5 +532,58 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
+	}
+	
+	@PostMapping("/shipment-detail/validation")
+	@ResponseBody
+	public AjaxResult validateShipmentDetail(String shipmentDetailIds) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());	
+		AjaxResult validateResult = validateShipmentDetailList(shipmentDetails);
+		return validateResult;
+	}
+	
+	public AjaxResult validateShipmentDetailList(List<ShipmentDetail> shipmentDetails) {
+		if (CollectionUtils.isEmpty(shipmentDetails)) {
+			return error("Không tìm thấy thông tin chi tiết lô đã chọn.");
+		}
+		
+		// validate
+		ShipmentDetail shipmentDetailReference = shipmentDetails.get(0);
+		Shipment shipment = shipmentService.selectShipmentById(shipmentDetailReference.getShipmentId());
+		for (int i=0; i<shipmentDetails.size(); i++) {
+			if (StringUtils.isEmpty(shipmentDetails.get(i).getContainerNo())) {
+				return error("Hàng " + (i + 1) + ": Quý khách chưa nhập số container!");
+			}
+			if (StringUtils.isEmpty(shipmentDetails.get(i).getConsignee())) {
+                return error("Hàng " + (i + 1) + ": Quý khách chưa chọn chủ hàng!");
+            } 
+			if (StringUtils.isEmpty(shipmentDetails.get(i).getSztp())) {
+                return error("Hàng " + (i + 1) + ": Quý khách chưa chọn kích thước!");
+            } 
+			if (!shipmentDetailReference.getConsignee().equals(shipmentDetails.get(i).getConsignee())) {
+                return error("Tên chủ hàng không được khác nhau!");
+            } 
+			if (shipment.getSendContEmptyType().equals(EportConstants.DROP_EMPTY_TO_VESSEL)) {
+				if (StringUtils.isEmpty(shipmentDetails.get(i).getVslNm())) {
+	                return error("Hàng " + (i + 1) + ": Quý khách chưa chọn tàu!");
+	            }
+				if (StringUtils.isEmpty(shipmentDetails.get(i).getVoyNo())) {
+	                return error("Hàng " + (i + 1) + ": Quý khách chưa chọn chuyến!");
+	            }
+				if (!shipmentDetailReference.getVslNm().equals(shipmentDetails.get(i).getVslNm())) {
+	                return error("Tàu và Chuyến không được khác nhau!");
+	            } 
+				if (!shipmentDetailReference.getVoyNo().equals(shipmentDetails.get(i).getVoyNo())) {
+	                return error("Tàu và Chuyến không được khác nhau!");
+	            } 
+			}
+		}
+		
+		// validate consignee exist in catos
+		if (catosApiService.checkConsigneeExistInCatos(shipmentDetailReference.getConsignee()) == 0) {
+			return error("Tên chủ hàng quý khách nhập không đúng, vui lòng chọn tên chủ hàng từ trong danh sách của hệ thống gợi ý.");
+		}
+		
+		return success();
 	}
 }

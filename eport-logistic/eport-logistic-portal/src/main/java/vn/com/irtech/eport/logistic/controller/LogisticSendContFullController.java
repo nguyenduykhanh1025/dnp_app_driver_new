@@ -384,6 +384,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			return error("Mã OTP không chính xác hoặc đã hết hạn, xin vui lòng kiểm tra lại.");
 		}
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
+		AjaxResult validateResult = validateShipmentDetailList(shipmentDetails);
+		Integer code = (Integer)validateResult.get("code");
+		if (code != 0) {
+			return validateResult;
+		}
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			AjaxResult ajaxResult = null;
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
@@ -542,8 +547,12 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@PostMapping("/shipment-detail/validation")
 	@ResponseBody
 	public AjaxResult validateShipmentDetail(String shipmentDetailIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
-		
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());	
+		AjaxResult validateResult = validateShipmentDetailList(shipmentDetails);
+		return validateResult;
+	}
+	
+	public AjaxResult validateShipmentDetailList(List<ShipmentDetail> shipmentDetails) {
 		if (CollectionUtils.isEmpty(shipmentDetails)) {
 			return error("Không tìm thấy thông tin chi tiết lô đã chọn.");
 		}
@@ -600,7 +609,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (catosApiService.checkPodExistIncatos(shipmentDetailReference.getDischargePort()) == 0) {
 			return error("Cảng dỡ hàng quý khách nhập không đúng, vui lòng chọn cảng từ trong dánh sách của hệ thống gợi ý.");
 		}
-		
 		return success();
 	}
 }
