@@ -361,15 +361,15 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentDetail.setDoStatus("N");
 					shipmentDetail.setPreorderPickup("N");
 					shipmentDetail.setFinishStatus("N");
-					// set null to taxcode and consignee
-					shipmentDetail.setTaxCode(null);
-					shipmentDetail.setConsigneeByTaxCode(null);
 					if ("VN".equalsIgnoreCase(shipmentDetail.getLoadingPort().substring(0, 2))) {
 						shipmentDetail.setCustomStatus("R");
 						shipmentDetail.setStatus(2);
 					} else {
 						shipmentDetail.setCustomStatus("N");
 						shipmentDetail.setStatus(1);
+						// set null to taxcode and consignee
+						shipmentDetail.setTaxCode(null);
+						shipmentDetail.setConsigneeByTaxCode(null);
 					}
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
@@ -389,6 +389,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					}
 					
 				} else {
+					// set null to taxcode and consignee
+					shipmentDetail.setTaxCode(null);
+					shipmentDetail.setConsigneeByTaxCode(null);
 					ShipmentDetail shipmentDetailReference = shipmentDetailService.selectShipmentDetailById(shipmentDetail.getId());
 					if ("N".equals(shipmentDetailReference.getUserVerifyStatus())) {
 						updateShipment = false;

@@ -831,7 +831,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			
 			logger.debug("Find robot terminal hold available.");
 			SysRobot sysRobot = new SysRobot();
-			sysRobot.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);
+			sysRobot.setIsChangeTerminalCustomHold(true);
 			sysRobot.setStatus(EportConstants.ROBOT_STATUS_AVAILABLE);
 			sysRobot.setDisabled(false);
 			SysRobot robot = robotService.findFirstRobot(sysRobot);
