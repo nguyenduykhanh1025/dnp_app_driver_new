@@ -74,7 +74,7 @@
         <if test="params.orderByColumn == 'ptnrCode'  and params.isAsc == 'desc'"> ORDER BY M.PTNR_CODE DESC </if>
     </sql> 
     <select id="selectContainerInfoListInOut" parameterType="ContainerInfoEntity" resultType="vn.com.irtech.api.entity.ContainerInfoEntity">
-            SELECT CASE
+         SELECT CASE
              WHEN M.IX_CD = 'X' THEN 'Export'
              WHEN M.IX_CD = 'I' THEN 'Import'
              WHEN M.IX_CD = 'V' THEN 'Storage'
@@ -95,7 +95,7 @@
              AS VESSEL_CODE,
          M.BOOKING_NO,
          M.BL_NO AS blNo,
-        M.POL AS pol,
+         M.POL AS pol,
          M.POD AS pod,
          M.SEAL_NO1 AS sealNo1,
          M.SEAL_NO3 AS sealNo3,
@@ -130,7 +130,6 @@
 			WHEN M.CNTR_STATE = 'E' THEN 'Empty Gate Out'
             ELSE M.CNTR_STATE
          END AS cntrState,
-		 
          M.BLOCK || '-' || M.BAY || '-' || M.ROWW || '-' || M.TIER || '' || M.AREA AS YARD_POSITION,
          M.STACK_DAYS_D24
              AS days,
