@@ -820,6 +820,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			processOrder.setLogisticGroupId(pickupFullOrder.getLogisticGroupId());
 			processOrder.setContNumber(containerHolds.size());
 			processOrder.setModee(EportConstants.MODE_TERMINAL_HOLD);
+			processOrder.setBlNo(pickupFullOrder.getBlNo());
 			Map<String, Object> processData = new HashMap<>();
 			processData.put("containers", org.apache.commons.lang3.StringUtils.join(containerHolds, ","));
 			processOrder.setProcessData(new Gson().toJson(processData));

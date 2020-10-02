@@ -296,6 +296,7 @@ public class MqttService implements MqttCallback {
 			processOrder.setShipmentId(shipmentDetail.getShipmentId());
 			processOrder.setLogisticGroupId(shipmentDetail.getLogisticGroupId());
 			processOrder.setContNumber(containerList.size());
+			processOrder.setBlNo(shipmentDetail.getBlNo());
 			processOrder.setModee(EportConstants.MODE_TERMINAL_HOLD);
 			Map<String, Object> processData = new HashMap<>();
 			processData.put("containers", org.apache.commons.lang3.StringUtils.join(containerList, ","));
@@ -317,7 +318,7 @@ public class MqttService implements MqttCallback {
 				robot.setStatus(EportConstants.ROBOT_STATUS_BUSY);
 				robotService.updateRobotByUuId(robot);
 				String msg = new Gson().toJson(processOrder);
-				String topic = ROBOT_REQUEST_TOPIC.replace("+", sysRobot.getUuId());
+				String topic = ROBOT_REQUEST_TOPIC.replace("+", robot.getUuId());
 				try {
 					publish(topic, new MqttMessage(msg.getBytes()));
 				} catch (MqttException e) {
