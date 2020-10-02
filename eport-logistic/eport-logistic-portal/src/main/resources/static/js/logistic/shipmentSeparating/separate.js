@@ -171,7 +171,7 @@ async function submitHandler(index, layer, dg) {
   if ($.validate.form()) {
     let res = await checkTaxCodeExistsRes();
     if (res.code == 0) {
-      $("input[name='taxCode']").val(res.companyName);
+      $("input[name='companyName']").val(res.companyName);
       let reqData = {
         houseBill: $("input[name='houseBill']").val(),
         orderNumber: $("input[name='orderNumberRegister']").val(),
