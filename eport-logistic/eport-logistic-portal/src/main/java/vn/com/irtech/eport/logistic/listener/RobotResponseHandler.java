@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.listener;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -787,29 +788,40 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	private void sendProcessOrderHoldTerminal(ProcessOrder pickupFullOrder, List<ShipmentDetail> shipmentDetails) {
 		// Get list container for shipmentDetails
 		String containers = "";
+		List<String> containerHolds = new ArrayList<>();
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			containers += shipmentDetail.getContainerNo() + ",";
+			containerHolds.add(shipmentDetail.getContainerNo());
 		}
 		containers = containers.substring(0, containers.length()-1);
-		// Get list container need to check terminal hold
+		// Get list container terminal hold already
 		ContainerHoldInfo containerHoldInfo = new ContainerHoldInfo();
 		containerHoldInfo.setContainers(Convert.toStrArray(containers));
-		containerHoldInfo.setHoldChk("N");
+		containerHoldInfo.setHoldChk("Y");
 		containerHoldInfo.setHoldType(EportConstants.HOLD_TYPE_TERMINAL);
 		containerHoldInfo.setUserVoy(pickupFullOrder.getVessel() + pickupFullOrder.getVoyage());
 		List<String> containerList = catosApiService.getContainerListHoldRelease(containerHoldInfo);
 		
-		// Send list container not check terminal hold to robot
+		// 
 		if (CollectionUtils.isNotEmpty(containerList)) {
+			for (String containerStr : containerList) {
+				if (containerHolds.contains(containerStr)) {
+					containerHolds.remove(containerStr);
+				}
+			}
+		}
+		
+		// Send list container not check terminal hold to robot
+		if (CollectionUtils.isNotEmpty(containerHolds)) {
 			logger.debug("Create process order to send terminal hold.");
 			ProcessOrder processOrder = new ProcessOrder();
 			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);
 			processOrder.setShipmentId(pickupFullOrder.getShipmentId());
 			processOrder.setLogisticGroupId(pickupFullOrder.getLogisticGroupId());
-			processOrder.setContNumber(containerList.size());
+			processOrder.setContNumber(containerHolds.size());
 			processOrder.setModee(EportConstants.MODE_TERMINAL_HOLD);
 			Map<String, Object> processData = new HashMap<>();
-			processData.put("containers", containers);
+			processData.put("containers", containerHolds);
 			processOrder.setProcessData(new Gson().toJson(processData));
 			processOrder.setHoldFlg(true);
 			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);
