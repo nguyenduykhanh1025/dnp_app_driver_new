@@ -46,7 +46,7 @@ spring:
     time-zone: GMT+7
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
-    active: test
+    active: uat                        # Environment
   servlet:
     multipart:
       max-file-size:  10MB
@@ -90,10 +90,10 @@ shiro:
     domain: 
     path: /
     httpOnly: true
-    maxAge: 30
+    maxAge: 720
     cipherKey: zSyK5Kp6PZAAjlT+eeNMlg==
   session:
-    expireTime: 30
+    expireTime: 720
     dbSyncPeriod: 1
     validationInterval: 10
     maxSession: -1
@@ -107,7 +107,7 @@ xss:
 mqtt:
   username: admin
   password: public 
-  host-url: tcp://113.176.195.221:1883            # The address and port of your own server need to be changed 
+  host-url: tcp://113.176.195.221:1883 
 
 websocket:
    endpoint: /eport_admin
