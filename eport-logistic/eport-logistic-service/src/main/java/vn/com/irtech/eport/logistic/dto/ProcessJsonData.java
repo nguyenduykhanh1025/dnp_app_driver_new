@@ -14,6 +14,8 @@ public class ProcessJsonData implements Serializable {
 	private String vslName;
 	
 	private String voyCarrier;
+	
+	private String containers;
 
 	public List<Long> getShipmentDetailIds() {
 		return shipmentDetailIds;
@@ -45,6 +47,14 @@ public class ProcessJsonData implements Serializable {
 
 	public void setVoyCarrier(String voyCarrier) {
 		this.voyCarrier = voyCarrier;
+	}
+
+	public String getContainers() {
+		return containers;
+	}
+
+	public void setContainers(String containers) {
+		this.containers = containers;
 	} 
 	
 	
