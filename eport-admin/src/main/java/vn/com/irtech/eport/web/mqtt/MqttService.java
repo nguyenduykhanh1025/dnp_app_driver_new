@@ -30,6 +30,7 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ContainerHoldInfo;
+import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
@@ -305,7 +306,13 @@ public class MqttService implements MqttCallback {
 			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);
 			processOrder.setRunnable(true);
 			processOrderService.insertProcessOrder(processOrder);
-
+			
+			// parse data from process data
+			ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+			Map<String, Object> params = new HashMap<>();
+			params.put("containers", processJsonData.getContainers());
+			processOrder.setParams(params);
+			
 			logger.debug("Find robot terminal hold available.");
 			SysRobot sysRobot = new SysRobot();
 			sysRobot.setIsChangeTerminalCustomHold(true);
