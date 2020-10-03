@@ -304,7 +304,7 @@ public class MqttService implements MqttCallback {
 			processOrder.setHoldFlg(false);
 			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);
 			processOrder.setRunnable(true);
-			//processOrderService.insertProcessOrder(processOrder);
+			processOrderService.insertProcessOrder(processOrder);
 
 			logger.debug("Find robot terminal hold available.");
 			SysRobot sysRobot = new SysRobot();
