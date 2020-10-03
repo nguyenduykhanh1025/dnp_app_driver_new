@@ -11,7 +11,7 @@ eport:
 server:
   port: 7072
   servlet:
-    context-path: /
+    context-path: /carrier
   tomcat:
     uri-encoding: UTF-8
     max-threads: 100
@@ -41,7 +41,7 @@ spring:
     time-zone: GMT+7
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
-    active: test
+    active: uat
   servlet:
     multipart:
       max-file-size:  10MB
@@ -88,7 +88,7 @@ shiro:
     maxAge: 30
     cipherKey: zSyK5Kp6PZAAjlT+eeNMlg==
   session:
-    expireTime: 30
+    expireTime: 60
     dbSyncPeriod: 1
     validationInterval: 10
     maxSession: -1
