@@ -467,13 +467,13 @@ public class GeneralControllingController extends AdminBaseController  {
     @PostMapping("/order/reset")
     @Transactional
     @ResponseBody
-    public AjaxResult resetProcessStatus(String shipmentDetailIds, Long ShipmentId, String content) {
+    public AjaxResult resetProcessStatus(String shipmentDetailIds, Long shipmentId, String content) {
 		// GET LIST SHIPMENT DETAIL BY shipmentDetailIds (id seperated by comma)
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
 		//update shipment detail 2 truong processOrderId, registerNo processStatus, status
 		String processOrderIds = "";
 		Long currentProcessId = 0L;
-		Shipment shipment = shipmentService.selectShipmentById(ShipmentId);
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 		try {
 			if(shipmentDetails.size() > 0) {
 				for(ShipmentDetail i: shipmentDetails) {
