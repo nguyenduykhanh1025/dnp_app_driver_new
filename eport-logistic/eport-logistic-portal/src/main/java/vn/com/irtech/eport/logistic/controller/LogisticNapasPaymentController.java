@@ -264,7 +264,7 @@ public class LogisticNapasPaymentController extends LogisticBaseController {
 				processOrderService.insertProcessOrder(exportReceiptOrder);
 				logger.debug("Find robot export receipt available.");
 				SysRobot sysRobot = new SysRobot();
-				sysRobot.setServiceType(EportConstants.SERVICE_EXPORT_RECEIPT);
+				sysRobot.setIsExportReceipt(true);
 				sysRobot.setStatus(EportConstants.ROBOT_STATUS_AVAILABLE);
 				sysRobot.setDisabled(false);
 				SysRobot robot = robotService.findFirstRobot(sysRobot);
