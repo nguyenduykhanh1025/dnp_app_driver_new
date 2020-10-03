@@ -1252,12 +1252,14 @@ function getDataSelectedFromTable() {
         sztp = object["sztp"].split(": ")[0];
       }
       if (object["expiredDem"]) {
-        expiredDem = new Date(object["expiredDem"].substring(0, 4) + "/" + object["expiredDem"].substring(5, 7) + "/" + object["expiredDem"].substring(8, 10)).getTime();
-        expiredDem.setHours(23, 59, 59);
+        let expiredDate = new Date(object["expiredDem"].substring(0, 4) + "/" + object["expiredDem"].substring(5, 7) + "/" + object["expiredDem"].substring(8, 10));
+        expiredDate.setHours(23, 59, 59);
+        expiredDem = expiredDate.getTime();
       }
       if (object["emptyExpiredDem"]) {
-        emptyExpiredDem = new Date(object["emptyExpiredDem"].substring(0, 4) + "/" + object["emptyExpiredDem"].substring(5, 7) + "/" + object["emptyExpiredDem"].substring(8, 10)).getTime();
-        emptyExpiredDem.setHours(23, 59, 59);
+        let emptyExpiredDate = new Date(object["emptyExpiredDem"].substring(0, 4) + "/" + object["emptyExpiredDem"].substring(5, 7) + "/" + object["emptyExpiredDem"].substring(8, 10));
+        emptyExpiredDate.setHours(23, 59, 59);
+        emptyExpiredDem = emptyExpiredDate.getTime();
       }
       let shipmentDetail = {
         id: object["id"],
