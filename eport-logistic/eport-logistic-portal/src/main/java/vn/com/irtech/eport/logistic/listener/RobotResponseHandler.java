@@ -737,6 +737,11 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	 */
 	public void sendTerminalCustomHoldToRobot(ProcessOrder processOrder, String uuid) {
 		try {
+			// parse data from process data
+			ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+			Map<String, Object> params = new HashMap<>();
+			params.put("containers", processJsonData.getContainers());
+			processOrder.setParams(params);
 			mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.TERMINAL_CUSTOM_HOLD, uuid);
 		} catch (MqttException e) {
 			logger.error("Error when send terminal hold to robot: " + e);
@@ -829,6 +834,12 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			processOrder.setRemark("Chua nhan DO goc");
 			processOrder.setRunnable(true);
 			processOrderService.insertProcessOrder(processOrder);
+			
+			// parse data from process data
+			ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+			Map<String, Object> params = new HashMap<>();
+			params.put("containers", processJsonData.getContainers());
+			processOrder.setParams(params);
 			
 			logger.debug("Find robot terminal hold available.");
 			SysRobot sysRobot = new SysRobot();
