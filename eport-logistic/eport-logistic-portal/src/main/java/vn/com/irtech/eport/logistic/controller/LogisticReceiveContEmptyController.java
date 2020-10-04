@@ -273,7 +273,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
         shipment.setCreateBy(user.getFullName());
         shipment.setServiceType(Constants.RECEIVE_CONT_EMPTY);
         shipment.setStatus("1");
-        shipment.setContSupplyStatus(0);
+        shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
         if (shipmentService.insertShipment(shipment) == 1) {
         	ShipmentImage shipmentImage = new ShipmentImage();
         	shipmentImage.setShipmentId(shipment.getId());

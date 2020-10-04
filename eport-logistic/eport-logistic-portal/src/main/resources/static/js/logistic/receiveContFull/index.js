@@ -446,6 +446,11 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
         }
         break;
     }
+    // Do status
+    let doStatus = '<i id="do" class="fa fa-file-text easyui-tooltip" title="Chưa Gửi DO gốc" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+    if (sourceData[row].doStatus == 'Y') {
+      doStatus = '<i id="do" class="fa fa-file-text easyui-tooltip" title="Đã Gửi DO gốc" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+    }
     // released status
     let released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
     switch (sourceData[row].finishStatus) {
@@ -464,7 +469,11 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     if (sourceData[row].loadingPort.substring(0, 2) != 'VN') {
       content += customs;
     }
-    content += process + payment + released + '</div>';
+    content += process + payment;
+    if (shipmentSelected.edoFlg == "0") {
+      content += doStatus;
+    }
+    content += released + '</div>';
     $(td).html(content);
   }
   return td;
@@ -791,7 +800,7 @@ function configHandson() {
           return "Ghi Chú";
       }
     },
-    colWidths: [40, 100, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200],
+    colWidths: [40, 120, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200],
     filter: "true",
     columns: [
       {
