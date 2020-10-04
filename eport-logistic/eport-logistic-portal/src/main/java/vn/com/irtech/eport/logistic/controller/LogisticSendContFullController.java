@@ -43,6 +43,7 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
+import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -101,11 +102,15 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@Autowired
 	private ServerConfig serverConfig;
 	
+	@Autowired
+	private DictService dictService;
+	
     @GetMapping()
 	public String sendContFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
     	if (sId != null) {
 			mmap.put("sId", sId);
 		}
+    	mmap.put("oprListBookingCheck", dictService.getListTag("opr_list_booking_check"));
 		return PREFIX + "/index";
 	}
 
@@ -116,6 +121,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		
 		mmap.put("taxCode", getGroup().getMst());
 		mmap.put("oprCodeList", oprCodeList);
+		mmap.put("oprListBookingCheck", dictService.getListTag("opr_list_booking_check"));
 		return PREFIX + "/add";
 	}
 
@@ -133,7 +139,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		shipmentImage.setShipmentId(id);
 		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
 		mmap.put("shipmentFiles", shipmentImages);
-		
+		mmap.put("oprListBookingCheck", dictService.getListTag("opr_list_booking_check"));
 		mmap.put("oprCodeList", oprCodeList);
         return PREFIX + "/edit";
 	}
@@ -213,7 +219,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		
 		boolean attachBooking = false;
 		// List opr need to attach booking (domestic container)
-		List<String> oprList = new ArrayList<>(Arrays.asList("HAL", "GLS", "VFC", "VSL"));
+		List<String> oprList = dictService.getListTag("opr_list_booking_check");
 		if (oprList.contains(shipment.getOpeCode())) {
 			attachBooking = true;
 		}
@@ -283,7 +289,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			
 			boolean attachBooking = false;
 			// List opr need to attach booking (domestic container)
-			List<String> oprList = new ArrayList<>(Arrays.asList("HAL", "GLS", "VFC", "VSL"));
+			List<String> oprList = dictService.getListTag("opr_list_booking_check");
 			if (oprList.contains(shipment.getOpeCode())) {
 				attachBooking = true;
 			}
@@ -330,7 +336,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 		boolean attachBooking = false;
 		// List opr need to attach booking (domestic container)
-		List<String> oprList = new ArrayList<>(Arrays.asList("HAL", "GLS", "VFC", "VSL"));
+		List<String> oprList = dictService.getListTag("opr_list_booking_check");
 		if (oprList.contains(shipment.getOpeCode())) {
 			attachBooking = true;
 		}

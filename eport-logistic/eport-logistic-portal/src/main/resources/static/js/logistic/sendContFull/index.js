@@ -392,7 +392,7 @@ function getSelected(index, row) {
                     temperatureDisable = Array(rowAmount).fill(1);
                     sztpListDisable = Array(rowAmount).fill(0);
                     allChecked = false;
-                    if (row.opeCode == 'HAL' || row.opeCode == 'GLS' || row.opeCode == 'VFC' || row.opeCode == 'VSL') {
+                    if (oprListBookingCheck != null && oprListBookingCheck.includes(row.opeCode)) {
                         toggleAttachIcon(shipmentSelected.id);
                     }
                     loadShipmentDetail(row.id);
@@ -439,7 +439,7 @@ function getSelected(index, row) {
                 sztpListDisable = Array(rowAmount).fill(0);
                 allChecked = false;
                 loadShipmentDetail(row.id);
-                if (row.opeCode == 'HAL' || row.opeCode == 'GLS' || row.opeCode == 'VFC' || row.opeCode == 'VSL') {
+                if (oprListBookingCheck != null && oprListBookingCheck.includes(row.opeCode)) {
                     toggleAttachIcon(shipmentSelected.id);
                 }
                 loadShipmentDetail(row.id);

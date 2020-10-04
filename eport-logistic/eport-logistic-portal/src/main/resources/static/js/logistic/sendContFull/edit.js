@@ -101,8 +101,7 @@ $(document).ready(function () {
 
     // Check opr code need to attach booking
     $('#opeCode').change(function () {
-        let opr = $('#opeCode option:selected').val();
-        if (opr == 'HAL' || opr == 'GLS' || opr == 'VFC' || opr == 'VSL') {
+        if (oprListBookingCheck.includes($('#opeCode option:selected').val())) {
             $('#dropzone').show();
             bookingAttach = true;
         } else {
@@ -110,6 +109,10 @@ $(document).ready(function () {
             bookingAttach = false;
         }
     });
+
+    if (!oprListBookingCheck.includes(shipment.opeCode)) {
+        $('#dropzone').hide();
+    }
 
     let maxFile = 5;
     if (shipmentFiles != null) {
