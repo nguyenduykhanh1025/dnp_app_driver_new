@@ -165,6 +165,14 @@ public interface EportConstants {
 	public static final String TOPIC_COMMENT_OM_DOCUMENT = "Xác nhận giấy tờ thủ tục";
 	/** Topic comment om support booking for carrier payment controlling */
 	public static final String TOPIC_COMMENT_OM_BOOKING = "Xác nhận Booking";
+	/** Topic comment req cancel order pickup empty */
+	public static final String TOPIC_COMMENT_CANCEL_PICKUP_EMPTY = "Yêu cầu hủy lệnh nhận container rỗng";
+	/** Topic comment req cancel order pickup full */
+	public static final String TOPIC_COMMENT_CANCEL_PICKUP_FULL = "Yêu cầu hủy lệnh nhận container hàng";
+	/** Topic comment req cancel order drop empty */
+	public static final String TOPIC_COMMENT_CANCEL_DROP_EMPTY = "Yêu cầu hủy lệnh giao container rỗng";
+	/** Topic comment req cancel order drop full */
+	public static final String TOPIC_COMMENT_CANCEL_DROP_FULL= "Yêu cầu hủy lệnh giao container hàng";
 	
 	//User type on notification app window
 	/** User type om in app notification */
@@ -199,6 +207,8 @@ public interface EportConstants {
 	public static final String URL_OM_CUSTOM_SEND_SUPPORT = "/om/support/custom-send-full/view";
 	/** url to cont supplier */
 	public static final String URL_CONT_SUPPLIER = "/container/supplier";
+	/** url to cancel order req support */
+	public static final String URL_CANCEL_ORDER_SUPPORT = "/om/support/order-cancel";
 	/** url to gate support */
 	public static final String URL_GATE = "/gate/support";
 	

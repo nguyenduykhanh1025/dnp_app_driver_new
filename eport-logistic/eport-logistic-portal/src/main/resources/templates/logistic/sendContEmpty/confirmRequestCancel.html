@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:include="include :: header('Xac Nhan Yeu Cau Huy Lenh Giao Cont Rong')" />
+    <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+</head>
+
+<body style="overflow-y: hidden;">
+    <div class="form-group mt10" style="margin-left: 10px;">
+        <p>Yêu cầu hủy lệnh giao container rỗng.</p>
+    </div>
+    <div class="form-group" style="padding: 0 10px 0 10px;">
+        <textarea rows="3" type="textarea" class="form-control" id="message"></textarea>
+    </div>
+</body>
+<th:block th:include="include :: footer" />
+
+</html>
