@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.framework.web.service;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.com.irtech.eport.system.domain.SysDictData;
@@ -43,4 +46,21 @@ public class DictService
     {
         return dictDataService.selectDictLabel(dictType, dictValue);
     }
+    
+    /**
+     * Select list dictionary tag by dictionary type
+     * 
+     * @param dictType
+     * @return List<String>
+     */
+    public List<String> getListTag(String dictType) {
+    	List<SysDictData> dictDatas = dictTypeService.selectDictDataByType(dictType);
+    	List<String> dictTagList = new ArrayList<>();
+    	if (CollectionUtils.isNotEmpty(dictDatas)) {
+    		for (SysDictData sysDictData : dictDatas) {
+    			dictTagList.add(sysDictData.getDictValue());
+    		}
+    	}
+    	return dictTagList;
+     }
 }

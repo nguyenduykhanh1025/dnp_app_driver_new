@@ -624,24 +624,41 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		// INIT PROCESS HISTORY
 		Long processOrderId = Long.parseLong(receiptId);
 		String hresult = null;
+		// Get process order
 		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
+		
+		// Check process order is custom hold or terminal hold
+		if (EportConstants.MODE_TERMINAL_HOLD.equalsIgnoreCase(processOrder.getModee())) {
+			// Check terminal hold order is hold or unhold: true => hold
+			if (processOrder.getHoldFlg()) {
+				// Check custom is hold
+			} else {
+				// Check custom hold is unhold
+			}
+		} else if (EportConstants.MODE_CUSTOM_HOLD.equalsIgnoreCase(processOrder.getModee())) {
+			// Case : custom hold
+			
+		}
+		ContainerHoldInfo containerHoldInfo = new ContainerHoldInfo();
+		
+		
 		if ("success".equalsIgnoreCase(result)) {
-			processOrder.setStatus(2); // FINISH		
-			processOrder.setResult("S"); // RESULT SUCESS	
+			processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_FINISHED); // FINISH		
+			processOrder.setResult(EportConstants.PROCESS_ORDER_RESULT_SUCCESS); // RESULT SUCESS	
 			processOrderService.updateProcessOrder(processOrder);
 			hresult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
 		} else {
 
 			// INIT PROCESS ORDER TO UPDATE
-			processOrder.setResult("F"); // RESULT FAILED
-			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			processOrder.setResult(EportConstants.PROCESS_ORDER_RESULT_FAILED); // RESULT FAILED
+			processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_FINISHED); 
 			processOrder.setRunnable(false);
 			processOrderService.updateProcessOrder(processOrder);
 
 			// SET RESULT FOR HISTORY FAILED
 			hresult = EportConstants.PROCESS_HISTORY_RESULT_FAILED;
 		}
-		updateHistory(processOrderId, uuId, EportConstants.SERVICE_EXTEND_DATE, hresult);
+		updateHistory(processOrderId, uuId, EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD, hresult);
 	}
 	
 	/**
@@ -853,6 +870,5 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				logger.error("Error when send pickup empty to robot: " + e);
 			}
 		}
-		
 	}
 }
