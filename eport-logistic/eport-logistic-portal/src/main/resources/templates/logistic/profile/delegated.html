@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Testing')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/logistic/test/style.css}" rel="stylesheet" />
+  </head>
+  <body class="grey-background">
+    <div class="main-body">
+      <div class="main-body__search-wrapper mb-2">
+        <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+        <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+        <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+          <div class="flex__left w-20 text-uppercase">
+            <h3 class="mt-10">Danh sách ủy quyền</h3>
+          </div>
+          
+          <div class="flex__right w-80 justify-content-around align-items-center d-flex">
+            <div id="ff" method="post" style="display: flex;">
+              <div class="form-inline">
+                <input class="easyui-textbox" id="searchAll" name="searchAll" placeholder="searchAll" data-options="prompt: 'Tìm kiếm' " />
+              </div>
+              <div class="form-inline">
+                <select class="easyui-combobox" id="delegateType" name="delegateType" prompt="Delegate Type:"
+                  ><option value="M">Làm Lệnh</option
+                  ><option value="P">Thanh Toán</option></select
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="main-body__table-wrapper">
+        <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+          <thead>
+            <tr>
+              <th data-options="field:'delegateTaxCode',halign:'center',resizable:true"  width="20%">
+                MST Ủy Quyền
+              </th>
+              <th data-options="field:'delegateCompany',align:'center',halign:'center'" width="25%">
+                Tên Công Ty Được Ủy Quyền
+              </th>
+              <th data-options="field:'createTime',align:'center',formatter: formatDate" width="20%">
+                Ngày tạo
+              </th>
+              <th data-options="field:'delegateType',align:'center',formatter: formatStatus"  width="15%">
+                Loại Ủy Quyền
+              </th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+    
+    <th:block th:include="include :: footer" />
+    <script>
+      $(".main-body").height($(document).innerHeight() - 10);
+    </script>
+    <th:block th:include="include :: easyui-js" />
+    <script th:src="@{/js/logistic/account/delegated.js}"></script>
+  </body>
+</html>
