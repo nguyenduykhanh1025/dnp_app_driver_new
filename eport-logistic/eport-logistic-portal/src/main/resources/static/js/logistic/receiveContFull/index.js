@@ -1484,8 +1484,8 @@ function save(isSendEmpty) {
 
 // DELETE SHIPMENT DETAIL
 function deleteShipmentDetail() {
-  if (getDataSelectedFromTable(true, false)) {
-    if (shipmentDetails.length > 0) {
+  if (getDataSelectedFromTable(true, false) && shipmentDetails.length > 0) {
+      $.modal.confirmShipment("Xác nhận xóa khai báo container ?", function () {
       $.modal.loading("Đang xử lý...");
       $.ajax({
         url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
@@ -1504,7 +1504,7 @@ function deleteShipmentDetail() {
           $.modal.closeLoading();
         },
       });
-    }
+    });
   }
 }
 
