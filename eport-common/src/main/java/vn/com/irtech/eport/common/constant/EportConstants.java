@@ -163,6 +163,8 @@ public interface EportConstants {
 	public static final String TOPIC_COMMENT_CONT_SUPPLIER_DELETE = "Hủy yêu cầu cấp container rỗng";
 	/** Topic comment om support document */
 	public static final String TOPIC_COMMENT_OM_DOCUMENT = "Xác nhận giấy tờ thủ tục";
+	/** Topic comment om support booking for carrier payment controlling */
+	public static final String TOPIC_COMMENT_OM_BOOKING = "Xác nhận Booking";
 	
 	//User type on notification app window
 	/** User type om in app notification */

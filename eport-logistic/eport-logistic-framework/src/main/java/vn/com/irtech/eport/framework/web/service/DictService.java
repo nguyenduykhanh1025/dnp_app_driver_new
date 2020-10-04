@@ -58,7 +58,7 @@ public class DictService
     	List<String> dictTagList = new ArrayList<>();
     	if (CollectionUtils.isNotEmpty(dictDatas)) {
     		for (SysDictData sysDictData : dictDatas) {
-    			dictTagList.add(sysDictData.getDictLabel());
+    			dictTagList.add(sysDictData.getDictValue());
     		}
     	}
     	return dictTagList;
