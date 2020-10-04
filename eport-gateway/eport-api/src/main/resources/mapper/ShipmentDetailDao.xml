@@ -1,26 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="vn.com.irtech.api.dao.ShipmentDetailDao">
-    <select id="selectShipmentDetailsByBLNo" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
-        SELECT            
-                M.CNTR_NO AS containerNo,
-                M.SZTP2 AS sztp,
-                M.FE AS fe,
-                M.PTNR_CODE ||': ' || (SELECT ENG_SNM FROM DNP_PROD.TB_PTNR WHERE PTNR_CODE = M.PTNR_CODE AND PTNR_TYPE = 'SHP') AS opeCode,
-                (SELECT VSL_NM FROM DNP_PROD.TB_VSL WHERE VSL_CD = M.VSL_CD) AS vslName,
-                M.VSL_CD ||': '|| (SELECT VSL_NM FROM DNP_PROD.TB_VSL V WHERE V.VSL_CD = M.VSL_CD) AS vslNm,
-                M.CALL_YEAR AS year,
-                (SELECT B.IN_VOY FROM DNP_PROD.TB_BERTHPLAN B WHERE B.VSL_CD = M.VSL_CD AND B.CALL_YEAR = M.CALL_YEAR AND B.CALL_SEQ = M.CALL_SEQ) AS voyCarrier,
-                M.BOOKING_NO AS bookingNo,
-                M.BL_NO AS blNo,
-                M.SEAL_NO1 AS sealNo,
-                M.WGT AS wgt,
-                M.CONSIGNEE AS consignee,
-                M.VGM AS vgm,
-                M.CALL_SEQ AS voyNo,
-                M.chold_chk AS customStatus,
-                M.POD AS dischargePort,
-                M.POL AS loadingPort,
+
+    <sql id="selectContainerDetailVo">
+        SELECT
+                M.CNTR_NO, M.SZTP, M.FE, M.IX_CD, M.PTNR_CODE, 
+                (SELECT ENG_SNM FROM DNP_PROD.TB_PTNR WHERE PTNR_CODE = M.PTNR_CODE AND PTNR_TYPE = 'SHP') AS PTNR_NAME,
+                <!-- Vessel Info -->
+                M.VSL_CD, M.CALL_YEAR, M.CALL_SEQ, M.USER_VOY,
+                (SELECT VSL_NM FROM DNP_PROD.TB_VSL WHERE VSL_CD = M.VSL_CD) AS VSL_NM,
+                (SELECT B.IN_VOY FROM DNP_PROD.TB_BERTHPLAN B WHERE B.VSL_CD = M.VSL_CD AND B.CALL_YEAR = M.CALL_YEAR AND B.CALL_SEQ = M.CALL_SEQ) AS IN_VOY,
+                M.BOOKING_NO, M.BL_NO, M.CARGO_TYPE, M.SEAL_NO1, M.SEAL_NO3, M.WGT, M.CONSIGNEE, M.VGM, M.CHOLD_CHK, M.THOLD_CHK, M.POD, M.POL,
                 CASE
                     WHEN M.TRANS_TYPE = 'T' THEN 'Truck'
                     WHEN M.TRANS_TYPE = 'V' THEN 'Vessel'
@@ -28,7 +18,7 @@
                     WHEN M.TRANS_TYPE = 'P' THEN 'Bundle'
                     WHEN M.TRANS_TYPE = 'M' THEN 'Mode change'
                     ELSE M.TRANS_TYPE
-                END AS transportType,           
+                END AS TRANS_TYPE,
                 
                 CASE
                     WHEN M.CNTR_STATE = 'R' THEN 'Before Reconcile'
@@ -42,11 +32,18 @@
                     WHEN M.CNTR_STATE = 'D' THEN 'Delivered'
                     WHEN M.CNTR_STATE = 'E' THEN 'Empty Gate Out'
                     ELSE M.CNTR_STATE
-                END AS containerStatus,
-				REMARK AS containerRemark,
-				BLOCK || '-' || BAY || '-' || ROWW || '-' || TIER AS location
+                END AS CNTR_STATE,
+                M.REMARK,
+                M.BLOCK || '-' || M.BAY || '-' || M.ROWW || '-' || M.TIER AS LOCATION,
+                M.AREA
+    </sql>
+
+    <select id="selectShipmentDetailsByBLNo" parameterType="String" resultType="vn.com.irtech.api.dto.ContainerInfoDto">
+        <include refid="selectContainerDetailVo"/>
             FROM DNP_PROD.TB_INVENTORY M
-        WHERE M.BL_NO = #{blNo}
+        <where>
+            AND M.BL_NO = #{blNo}
+        </where>
         ORDER BY M.CNTR_NO ASC
     </select>
     
@@ -107,7 +104,7 @@
 				AND IX_CD = 'I'
 			</if>
 		</where>
-		UNION
+		UNION ALL
 		SELECT            
                 M.CNTR_NO AS containerNo,
                 M.SZTP2 AS sztp,
@@ -250,6 +247,33 @@
            	#{containerNo}
        	</foreach>
 	</select>
+	
+    <select id="checkPickupByContainerNos" parameterType="String" resultType="String">
+        SELECT 
+            CNTR_NO || '/' || IX_CD || '/' || USER_VOY || '/' || PTNR_CODE || '/' || JOB_ODR_NO2 as CNTR_NO
+        FROM (
+          SELECT CNTR_NO, IX_CD, USER_VOY, PTNR_CODE, JOB_ODR_NO2
+            FROM DNP_PROD.TB_INVENTORY
+          WHERE
+            JOB_ODR_NO2 IS NOT NULL
+            AND CNTR_NO IN 
+            <foreach item="containerNo" collection="containerNos" open="(" separator="," close=")">
+              #{containerNo}
+            </foreach>
+            <if test="userVoy != null and userVoy != ''"> AND USER_VOY = #{userVoy}</if>
+          UNION ALL
+          SELECT CNTR_NO, IX_CD, USER_VOY, PTNR_CODE, JOB_ODR_NO2
+            FROM DNP_PROD.TB_RESERVE
+          WHERE
+            JOB_ODR_NO2 IS NOT NULL
+            AND CNTR_NO IN 
+            <foreach item="containerNo" collection="containerNos" open="(" separator="," close=")">
+              #{containerNo}
+            </foreach>
+            <if test="userVoy != null and userVoy != ''"> AND USER_VOY = #{userVoy}</if>
+        )
+    </select>
+
     <select id="getCountContByBlNo" parameterType="String" resultType="Integer">
 		SELECT COUNT(*)
 		FROM DNP_PROD.TB_INVENTORY

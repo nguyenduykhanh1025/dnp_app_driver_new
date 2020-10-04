@@ -1,8 +1,7 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.common.config.Global;
+import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
@@ -23,6 +23,7 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ContainerHoldInfo;
 import vn.com.irtech.eport.logistic.form.BookingInfo;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 @Service
 public class CatosApiServiceImpl implements ICatosApiService {
@@ -67,6 +68,44 @@ public class CatosApiServiceImpl implements ICatosApiService {
 		return listCont;
 	}
 
+	@Override
+	public List<ContainerInfoDto> getContainerPickup(String containerNos, String userVoy) {
+		String url = Global.getApiUrl() + "/shipmentDetail/getContainerPickup";
+		logger.debug("Call CATOS API :{}", url);
+		// create request object
+		JSONObject containerReq = new JSONObject();
+		containerReq.put("containerNos", containerNos);
+		containerReq.put("userVoy", userVoy);
+		
+		RestTemplate restTemplate = new RestTemplate();
+		HttpEntity<JSONObject> httpEntity = new HttpEntity<JSONObject>(containerReq);
+		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<String>>(){});
+		
+		List<String> listCont = response.getBody();
+		if(listCont == null) {
+			return new ArrayList<ContainerInfoDto>();
+		}
+		// split string by /
+		List<ContainerInfoDto> containerInfoList = new ArrayList<>();
+		ContainerInfoDto dto = null;
+		String[] contArr = null;
+		for(String cont: listCont) {
+			// CNTR_NO / IX_CD / USER_VOY / PTNR_CODE / JOB_ODR_NO2
+			contArr = cont.split("/");
+			if(contArr.length > 0) {
+				dto = new ContainerInfoDto();
+				dto.setCntrNo(contArr[0]);
+				dto.setIxCd(contArr[1]);
+				dto.setUserVoy(contArr[2]);
+				dto.setPtnrCode(contArr[3]);
+				dto.setJobOdrNo2(contArr[4]);
+				containerInfoList.add(dto);
+			}
+		}
+				
+		return containerInfoList;
+	}
+	
 	@Override
 	public List<String> getPODList(ShipmentDetail shipmentDetail) {
 		String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
@@ -158,16 +197,19 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	}
 
 	@Override
-	public List<ShipmentDetail> selectShipmentDetailsByBLNo(String blNo) {
+	public List<ContainerInfoDto> selectShipmentDetailsByBLNo(String blNo) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/list";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			Shipment shipment = new Shipment();
-			shipment.setBlNo(blNo);
-			HttpEntity<Shipment> httpEntity = new HttpEntity<Shipment>(shipment);
-			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
-			List<ShipmentDetail> shipmentDetails = response.getBody();
+			
+			JSONObject reqEntity = new JSONObject();
+			reqEntity.put("blNo", blNo);
+			HttpEntity<JSONObject> httpEntity = new HttpEntity<JSONObject>(reqEntity);
+			
+			ResponseEntity<List<ContainerInfoDto>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ContainerInfoDto>>() {});
+			
+			List<ContainerInfoDto> shipmentDetails = response.getBody();
 			return shipmentDetails;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -582,7 +624,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	 * @return List<ShipmentDetail>
 	 */
 	@Override
-	public List<ShipmentDetail> selectShipmentDetailByJobOrder(String jobOrder) {
+	public List<ContainerInfoDto> selectShipmentDetailByJobOrder(String jobOrder) {
 		try {
 			String url = Global.getApiUrl() + "/jobOrder/" + jobOrder + "/blNo";
 			logger.debug("Call CATOS API :{}", url);

@@ -16,6 +16,8 @@ import vn.com.irtech.api.common.utils.Convert;
 import vn.com.irtech.api.common.utils.StringUtils;
 import vn.com.irtech.api.dao.ShipmentDetailDao;
 import vn.com.irtech.api.dto.ContainerHoldInfo;
+import vn.com.irtech.api.dto.ContainerInfoDto;
+import vn.com.irtech.api.dto.ContainerReqDto;
 import vn.com.irtech.api.dto.PartnerInfoDto;
 import vn.com.irtech.api.entity.ShipmentDetailEntity;
 import vn.com.irtech.api.entity.ShipmentEntity;
@@ -29,9 +31,8 @@ public class ApiShipmentDetailController {
 	private ShipmentDetailDao shipmentDetailDao;
 	
 	@PostMapping("/shipmentDetail/list")
-	public List<ShipmentDetailEntity> listShipmentDetail(@RequestBody ShipmentEntity shipmentEntity) {
-		List<ShipmentDetailEntity> list = shipmentDetailDao.selectShipmentDetailsByBLNo(shipmentEntity.getBlNo());
-		return list;
+	public List<ContainerInfoDto> listShipmentDetail(@RequestBody ShipmentEntity shipmentEntity) {
+		return shipmentDetailDao.selectShipmentDetailsByBLNo(shipmentEntity.getBlNo());
 	}
 	
 	@PostMapping("/shipmentDetail/containerInfor")
@@ -89,18 +90,23 @@ public class ApiShipmentDetailController {
 	public List<String> checkContReserved(@PathVariable String containerNos){
 		return shipmentDetailDao.checkContReservedByContainerNos(Convert.toStrArray(containerNos));
 	}
+
+	@PostMapping("/shipmentDetail/getContainerPickup")
+	public List<String> checkContPickup(@RequestBody ContainerReqDto containerReq){
+		return shipmentDetailDao.checkPickupByContainerNos(Convert.toStrArray(containerReq.getContainerNos()), containerReq.getUserVoy());
+	}
 	
 	@GetMapping("/shipmentDetail/getCountContByBlNo/{blNo}")
 	public Integer getCountContByBlNo(@PathVariable String blNo) {
 		return shipmentDetailDao.getCountContByBlNo(blNo);
 	}
 	
-	@PostMapping("shipmentDetail/getOpeCodeCatosByBlNo")
+	@PostMapping("/shipmentDetail/getOpeCodeCatosByBlNo")
 	public ShipmentEntity getOpeCodeCatosByBlNo(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
 		return shipmentDetailDao.getOpeCodeCatosByBlNo(shipmentDetailEntity.getBlNo());
 	}
 	
-	@GetMapping("shipmentDetail/check/custom/{containerNo}/{voyNo}")
+	@GetMapping("/shipmentDetail/check/custom/{containerNo}/{voyNo}")
 	public Boolean checkCustomStatus(@PathVariable String containerNo, @PathVariable String voyNo) {
 		Boolean rs = shipmentDetailDao.checkCustomStatus(containerNo, voyNo);
 		if(rs != null) {

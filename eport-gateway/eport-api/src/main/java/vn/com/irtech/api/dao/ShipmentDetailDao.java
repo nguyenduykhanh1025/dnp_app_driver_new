@@ -9,13 +9,15 @@ import org.apache.ibatis.annotations.Param;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import vn.com.irtech.api.dto.ContainerHoldInfo;
+import vn.com.irtech.api.dto.ContainerInfoDto;
 import vn.com.irtech.api.dto.PartnerInfoDto;
 import vn.com.irtech.api.entity.ShipmentDetailEntity;
 import vn.com.irtech.api.entity.ShipmentEntity;
 import vn.com.irtech.api.form.BookingInfo;
 @Mapper
 public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
-    public List<ShipmentDetailEntity> selectShipmentDetailsByBLNo(String blNo);
+
+    public List<ContainerInfoDto> selectShipmentDetailsByBLNo(String blNo);
     
     public ShipmentDetailEntity selectShipmentDetailByContNo(ShipmentDetailEntity shipmentDetailEntity);
     
@@ -41,7 +43,16 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public PartnerInfoDto getGroupNameByTaxCode(String taxCode);
 	
 	public List<String> checkContReservedByContainerNos(String[] containerNos);
-	
+
+	/**
+	 * Check container pickup information. If userVoy is not null then filter by USER_VOY also
+	 *  
+	 * @param containerNos Container number array
+	 * @param userVoy 
+	 * @return  CNTR_NO / IX_CD / USER_VOY / PTNR_CODE / JOB_ODR_NO2
+	 */
+	public List<String> checkPickupByContainerNos(@Param("containerNos") String[] containerNos, @Param("userVoy") String userVoy);
+
 	public Integer getCountContByBlNo(String blNo);
 	
 	public ShipmentEntity getOpeCodeCatosByBlNo(String blNo);
