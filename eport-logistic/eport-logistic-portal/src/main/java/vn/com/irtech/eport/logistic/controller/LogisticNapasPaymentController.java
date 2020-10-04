@@ -274,7 +274,7 @@ public class LogisticNapasPaymentController extends LogisticBaseController {
 				}
 				
 				try {
-					mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.EXPORT_RECEIPT, robot.getUuId());
+					mqttService.publicOrderToDemandRobot(exportReceiptOrder, EServiceRobot.EXPORT_RECEIPT, robot.getUuId());
 				} catch (MqttException e) {
 					logger.error("Error when send export receipt request to robot: " + e);
 				}

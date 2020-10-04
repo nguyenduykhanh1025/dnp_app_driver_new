@@ -229,6 +229,8 @@ public interface EportConstants {
 	// Mode check hold
 	/** terminal hold mode */
 	public static final String MODE_TERMINAL_HOLD = "Terminal Hold";
+	/** custom hold mode */
+	public static final String MODE_CUSTOM_HOLD = "Custom Hold";
 	
 	// Payment history status
 	/** Payment history success status */
