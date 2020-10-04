@@ -1513,7 +1513,7 @@ function saveShipmentDetail() {
 
 // DELETE SHIPMENT DETAIL
 function deleteShipmentDetail() {
-    if (getDataSelectedFromTable(true)) {
+    if (getDataSelectedFromTable(true) && shipmentDetails.length > 0) {
         $.modal.confirmShipment("Xác nhận xóa khai báo container ?", function () {
             $.modal.loading("Đang xử lý...");
             $.ajax({
