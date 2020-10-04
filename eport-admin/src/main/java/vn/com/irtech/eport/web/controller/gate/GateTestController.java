@@ -284,60 +284,60 @@ public class GateTestController extends BaseController {
 				}
 			}
 			
-			if (!shipmentFound) {
-				shipment2.setLogisticAccountId(1L);
-				shipment2.setEdoFlg("0");
-				logger.debug("Get container list by B/L No ");
-				List<ShipmentDetail> shipmentDetails = catosApiService.selectShipmentDetailsByBLNo(gateInTestDataReq.getBlNo());
-				shipment2.setContainerAmount(Long.valueOf(shipmentDetails.size()));
-				shipmentService.insertShipment(shipment2);
-				logger.debug("List container: " + new Gson().toJson(shipmentDetails));
-				for (ShipmentDetail shipmentDetail1 : shipmentDetails) {
-					shipmentDetail1.setContainerStatus("");
-					shipmentDetail1.setOpeCode(shipmentDetail1.getOpeCode().substring(0, 3));
-					ShipmentDetail shipmentDetail2 = new ShipmentDetail();
-					BeanUtils.copyBeanProp(shipmentDetail2, shipmentDetail1);
-					shipmentDetail2.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
-					shipmentDetail2.setFe("F");
-					if (StringUtils.isEmpty(shipmentDetail2.getVslNm())) {
-						shipmentDetail2.setVslNm("test");
-					}
-					
-					if (StringUtils.isEmpty(shipmentDetail2.getVoyNo())) {
-						shipmentDetail2.setVoyNo("test");
-					}
-					
-					if (StringUtils.isEmpty(shipmentDetail2.getOpeCode())) {
-						shipmentDetail2.setOpeCode("test");
-					}
-					
-					if (StringUtils.isEmpty(shipmentDetail2.getSztp())) {
-						shipmentDetail2.setSztp("22G0");
-					}
-					shipmentDetail2.setPaymentStatus("Y");
-					shipmentDetail2.setProcessStatus("Y");
-					shipmentDetail2.setUserVerifyStatus("Y");
-					shipmentDetail2.setStatus(4);
-					shipmentDetail2.setCustomStatus("Y");
-					shipmentDetail2.setDoReceivedTime(new Date());
-					shipmentDetail2.setPreorderPickup("Y");
-					shipmentDetail2.setPrePickupPaymentStatus("Y");
-					shipmentDetail2.setDoStatus("Y");
-					shipmentDetail2.setBlNo(gateInTestDataReq.getBlNo());
-					shipmentDetail2.setShipmentId(shipment2.getId());
-					shipmentDetailService.insertShipmentDetail(shipmentDetail2);
-					if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive1())) {
-						if (shipmentDetail2.getContainerNo().equals(gateInTestDataReq.getContainerReceive1())) {
-							contId1 = shipmentDetail2.getId();
-						}
-					}
-					if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive2())) {
-						if (shipmentDetail2.getContainerNo().equals(gateInTestDataReq.getContainerReceive2())) {
-							contId2 = shipmentDetail2.getId();
-						}
-					}
-				}
-			}
+//			if (!shipmentFound) {
+//				shipment2.setLogisticAccountId(1L);
+//				shipment2.setEdoFlg("0");
+//				logger.debug("Get container list by B/L No ");
+//				List<ContainerInfoDto> shipmentDetails = catosApiService.selectShipmentDetailsByBLNo(gateInTestDataReq.getBlNo());
+//				shipment2.setContainerAmount(Long.valueOf(shipmentDetails.size()));
+//				shipmentService.insertShipment(shipment2);
+//				logger.debug("List container: " + new Gson().toJson(shipmentDetails));
+//				for (ContainerInfoDto shipmentDetail1 : shipmentDetails) {
+//					shipmentDetail1.setContainerStatus("");
+//					shipmentDetail1.setOpeCode(shipmentDetail1.getOpeCode().substring(0, 3));
+//					ShipmentDetail shipmentDetail2 = new ShipmentDetail();
+//					BeanUtils.copyBeanProp(shipmentDetail2, shipmentDetail1);
+//					shipmentDetail2.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
+//					shipmentDetail2.setFe("F");
+//					if (StringUtils.isEmpty(shipmentDetail2.getVslNm())) {
+//						shipmentDetail2.setVslNm("test");
+//					}
+//					
+//					if (StringUtils.isEmpty(shipmentDetail2.getVoyNo())) {
+//						shipmentDetail2.setVoyNo("test");
+//					}
+//					
+//					if (StringUtils.isEmpty(shipmentDetail2.getOpeCode())) {
+//						shipmentDetail2.setOpeCode("test");
+//					}
+//					
+//					if (StringUtils.isEmpty(shipmentDetail2.getSztp())) {
+//						shipmentDetail2.setSztp("22G0");
+//					}
+//					shipmentDetail2.setPaymentStatus("Y");
+//					shipmentDetail2.setProcessStatus("Y");
+//					shipmentDetail2.setUserVerifyStatus("Y");
+//					shipmentDetail2.setStatus(4);
+//					shipmentDetail2.setCustomStatus("Y");
+//					shipmentDetail2.setDoReceivedTime(new Date());
+//					shipmentDetail2.setPreorderPickup("Y");
+//					shipmentDetail2.setPrePickupPaymentStatus("Y");
+//					shipmentDetail2.setDoStatus("Y");
+//					shipmentDetail2.setBlNo(gateInTestDataReq.getBlNo());
+//					shipmentDetail2.setShipmentId(shipment2.getId());
+//					shipmentDetailService.insertShipmentDetail(shipmentDetail2);
+//					if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive1())) {
+//						if (shipmentDetail2.getContainerNo().equals(gateInTestDataReq.getContainerReceive1())) {
+//							contId1 = shipmentDetail2.getId();
+//						}
+//					}
+//					if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive2())) {
+//						if (shipmentDetail2.getContainerNo().equals(gateInTestDataReq.getContainerReceive2())) {
+//							contId2 = shipmentDetail2.getId();
+//						}
+//					}
+//				}
+//			}
 			
 			
 			if ("1".equals(gateInTestDataReq.getContainerFlg())) {

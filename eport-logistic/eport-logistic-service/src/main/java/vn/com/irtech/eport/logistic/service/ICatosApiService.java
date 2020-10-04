@@ -9,6 +9,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ContainerHoldInfo;
 import vn.com.irtech.eport.logistic.form.BookingInfo;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 
 public interface ICatosApiService {
@@ -20,6 +21,15 @@ public interface ICatosApiService {
 	public ProcessOrder getYearBeforeAfter(String vessel, String voyage);
 	
 	public List<String> checkContainerReserved(String containerNos);
+
+	/**
+	 * Check container pickup information. If userVoy is not null then filter by USER_VOY also
+	 *  
+	 * @param containerNos Container number array
+	 * @param userVoy 
+	 * @return  CNTR_NO / IX_CD / USER_VOY / PTNR_CODE / JOB_ODR_NO2
+	 */
+	public List<ContainerInfoDto> getContainerPickup(String containerNos, String userVoy);
 	
 	public List<String> getPODList(ShipmentDetail shipmentDetail);
 	
@@ -37,7 +47,7 @@ public interface ICatosApiService {
 	
 	public List<ShipmentDetail> getCoordinateOfContainers(String blNo);
 	
-	public List<ShipmentDetail> selectShipmentDetailsByBLNo(String blNo);
+	public List<ContainerInfoDto> selectShipmentDetailsByBLNo(String blNo);
 	
 	public ShipmentDetail selectShipmentDetailByContNo(ShipmentDetail shipmentDetail);
 	
@@ -141,7 +151,7 @@ public interface ICatosApiService {
 	 * @param jobOrder
 	 * @return List<ShipmentDetail>
 	 */
-	public List<ShipmentDetail> selectShipmentDetailByJobOrder(String jobOrder);
+	public List<ContainerInfoDto> selectShipmentDetailByJobOrder(String jobOrder);
 	
 	/**
 	 * Get bl no by order job no
