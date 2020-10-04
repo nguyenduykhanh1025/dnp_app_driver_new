@@ -24,6 +24,7 @@ import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.annotation.RepeatSubmit;
+import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -86,11 +87,15 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@Autowired
     private IShipmentCommentService shipmentCommentService;
 	
+	@Autowired
+	private ServerConfig serverConfig;
+	
     @GetMapping()
 	public String sendContEmpty(@RequestParam(required = false) Long sId, ModelMap mmap) { 
     	if (sId != null) {
 			mmap.put("sId", sId);
 		}
+    	mmap.put("domain", serverConfig.getUrl());
 		return PREFIX + "/index";
 	}
 

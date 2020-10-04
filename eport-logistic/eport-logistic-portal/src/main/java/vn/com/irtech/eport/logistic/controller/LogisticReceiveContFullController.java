@@ -30,6 +30,7 @@ import vn.com.irtech.eport.carrier.service.IEdoHouseBillService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.annotation.RepeatSubmit;
+import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.constant.SystemConstants;
@@ -110,6 +111,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@Autowired
 	private DictService dictService;
 	
+	@Autowired
+	private ServerConfig serverConfig;
+	
 	@GetMapping()
 	public String receiveContFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
 		if (sId != null) {
@@ -122,6 +126,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		emptyDepots.add("Cảng Khác");
 		mmap.put("emptyDepots", emptyDepots);
+		mmap.put("domain", serverConfig.getUrl());
 		return PREFIX + "/index";
 	}
 

@@ -127,6 +127,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
     	if (sId != null) {
 			mmap.put("sId", sId);
 		}
+    	mmap.put("domain", serverConfig.getUrl());
         return PREFIX + "/index";
     }
 

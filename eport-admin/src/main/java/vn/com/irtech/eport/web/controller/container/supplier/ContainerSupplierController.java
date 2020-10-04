@@ -70,7 +70,7 @@ public class ContainerSupplierController extends BaseController {
 		if (sId != null) {
 			mmap.put("sId", sId);
 		}
-		
+		mmap.put("domain", serverConfig.getUrl());
 		return PREFIX + "/index";
     }
 	
