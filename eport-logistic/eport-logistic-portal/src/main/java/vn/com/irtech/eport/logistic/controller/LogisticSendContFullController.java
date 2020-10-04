@@ -43,6 +43,7 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
+import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
@@ -104,6 +105,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	
 	@Autowired
 	private DictService dictService;
+	
+	@Autowired
+	private ConfigService configService;
 	
     @GetMapping()
 	public String sendContFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
@@ -200,6 +204,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		mmap.put("sztp", sztp);
 		mmap.put("shipmentDetailId", shipmentDetailId);
 		return PREFIX + "/detail";
+	}
+	
+	@GetMapping("/req/cancel/confirmation")
+	public String getCancelConfirmationForm() {
+		return PREFIX + "/confirmRequestCancel";
 	}
 
 	@Log(title = "Tạo Lô Hạ Hàng", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
@@ -732,5 +741,55 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			return ajaxResult;
 		}
 		return error();
+	}
+	
+	@PostMapping("/order-cancel/shipment-detail")
+	@ResponseBody
+	public AjaxResult reqCancelOrderContainer(String shipmentDetailIds, String contReqRemark) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			
+			// Validate before send req cancel order
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				if (!"Y".equalsIgnoreCase(shipmentDetail.getProcessStatus())) {
+					return error("Container quý khách chọn chưa được làm lệnh.");
+				}
+			}
+			
+			// Update status req cancel order
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				shipmentDetail.setProcessStatus(EportConstants.PROCESS_STATUS_SHIPMENT_DETAIL_DELETE);
+				shipmentDetail.setUpdateBy(getUser().getUserName());
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+			
+			ShipmentDetail shipmentDetail = shipmentDetails.get(0);
+			// Write comment for topic supply container 
+			if (StringUtils.isNotEmpty(contReqRemark)) {
+				ShipmentComment shipmentComment = new ShipmentComment();
+				shipmentComment.setLogisticGroupId(getUser().getGroupId());
+				shipmentComment.setShipmentId(shipmentDetail.getShipmentId());
+				shipmentComment.setUserId(getUserId());
+				shipmentComment.setUserType(EportConstants.COMMENTOR_LOGISTIC);
+				shipmentComment.setUserAlias(getGroup().getGroupName());
+				shipmentComment.setCommentTime(new Date());
+				shipmentComment.setContent(contReqRemark);
+				shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CANCEL_DROP_FULL);
+				shipmentComment.setServiceType(shipmentDetail.getServiceType());
+				shipmentCommentService.insertShipmentComment(shipmentComment);
+			}
+			
+			// Set up data to send app notificaton 
+			String title = "ePort: Yêu cầu huỷ lệnh giao container hàng.";
+			String msg = "Có yêu cầu huỷ lệnh giao container hàng cho Booking: " + shipmentDetail.getBookingNo() + ", Hãng tàu: " + shipmentDetail.getOpeCode() + ", Trucker: " + getGroup().getGroupName() + ", Chủ hàng: " + shipmentDetails.get(0).getConsignee();
+			try {
+				mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg, configService.getKey("domain.admin.name") + EportConstants.URL_CANCEL_ORDER_SUPPORT, EportConstants.NOTIFICATION_PRIORITY_LOW);
+			} catch (MqttException e) {
+				logger.error("Error when push request cancel order drop full: " + e);
+			}
+			return success("Đã yêu cầu hủy lệnh, quý khách vui lòng đợi bộ phận thủ tục xử lý.");
+		}
+		
+		return error("Yêu cầu hủy lệnh thất bại, quý khách vui lòng liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
 	}
 }

@@ -1906,3 +1906,74 @@ function addComment() {
         });
     }
 }
+
+function requestCancelOrder() {
+    getDataSelectedFromTable(true);
+    if (shipmentDetails.length > 0) {
+        // Check if list cont exists cont has been process
+        let containers = '';
+        shipmentDetails.forEach(function (element) {
+            if (element.processStatus != 'Y') {
+                containers += element.containerNo + ',';
+            }
+        });
+        if (containers.length > 0) {
+            containers = containers.substring(0, containers.length - 1);
+            $.modal.alertWarning("Các contaienr quý khách chọn chưa được thực hiện làm lệnh, quý khách không thể yêu cầu hủy lệnh cho những container này.");
+        } else {
+            openFormRemarkBeforeReqCancelOrder();
+        }
+    }
+}
+
+function openFormRemarkBeforeReqCancelOrder() {
+    // Form confirm req supply cont
+    layer.open({
+        type: 2,
+        area: [500 + 'px', 230 + 'px'],
+        fix: true,
+        maxmin: true,
+        shade: 0.3,
+        title: 'Xác Nhận',
+        content: prefix + "/req/cancel/confirmation",
+        btn: ["Xác Nhận", "Hủy"],
+        shadeClose: false,
+        yes: function (index, layero) {
+            let childLayer = layero.find("iframe")[0].contentWindow.document;
+            $.modal.loading("Đang xử lý ...");
+            $.ajax({
+                url: prefix + "/order-cancel/shipment-detail",
+                method: "POST",
+                data: {
+                    shipmentDetailIds: shipmentDetailIds,
+                    contReqRemark: $(childLayer).find("#message").val()
+                },
+                success: function (result) {
+                    if (result.code == 0) {
+                        $.modal.alertSuccess(result.msg);
+                        reloadShipmentDetail();
+                    } else {
+                        $.modal.alertError(result.msg);
+                    }
+                    $.modal.closeLoading();
+                    layer.close(index);
+                },
+                error: function (result) {
+                    $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
+                    $.modal.closeLoading();
+                },
+            });
+        },
+        cancel: function (index) {
+            return true;
+        }
+    });
+}
+
+function requestCancelSupplyContainer() {
+
+}
+
+function requestExchangeContainer() {
+
+}
