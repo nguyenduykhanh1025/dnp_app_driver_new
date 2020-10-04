@@ -1,22 +1,29 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.page.PageAble;
+import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
+import vn.com.irtech.eport.logistic.domain.LogisticDelegated;
 import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
+import vn.com.irtech.eport.logistic.service.ILogisticDelegatedService;
 
 @Controller
 @RequestMapping("/logistic/profile")
@@ -24,6 +31,9 @@ public class LogisticProfileController extends LogisticBaseController{
 	private String prefix = "logistic/profile";
     @Autowired
     private ILogisticAccountService logisticAccountService;
+    
+    @Autowired
+    private ILogisticDelegatedService logisticDelegatedService;
     
     @Autowired
     private SysPasswordService passwordService;
@@ -92,6 +102,27 @@ public class LogisticProfileController extends LogisticBaseController{
         {
             return error("Failed to change password, old password is wrong");
         }
+    }
+
+    @GetMapping("/delegated")
+    public String delegated(ModelMap mmap)
+    {
+        return prefix + "/delegated";
+    }
+
+    @PostMapping("/delegated/list")
+    @ResponseBody
+    public TableDataInfo delegatedList(@RequestBody PageAble<LogisticDelegated> param)
+    {
+        startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+        LogisticDelegated logisticDelegated = param.getData();
+        if (logisticDelegated == null) {
+            logisticDelegated = new LogisticDelegated();
+        }
+        logisticDelegated.setLogisticGroupId(getGroup().getId());
+        logisticDelegated.setDelFlg(0);
+        List<LogisticDelegated> list = logisticDelegatedService.selectLogisticDelegatedList(logisticDelegated);
+        return getDataTable(list);
     }
 
   

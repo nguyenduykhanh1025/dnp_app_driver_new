@@ -68,7 +68,7 @@ function loadTable(processOrder) {
       $.ajax({
         type: opts.method,
         url: opts.url,
-        contentType: "application/json",
+        contentType: "text/plain",
         accept: "text/plain",
         dataType: "text",
         data: JSON.stringify({
