@@ -402,7 +402,7 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
-  if (sourceData[row] && sourceData[row].dischargePort && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].customStatus && sourceData[row].finishStatus) {
+  if (sourceData[row] && sourceData[row].id && sourceData[row].dischargePort && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].finishStatus) {
     // Customs Status
     let customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
     switch (sourceData[row].customStatus) {
@@ -1517,6 +1517,8 @@ function checkCustomStatus() {
 }
 
 function verify() {
+  $.modal.loading("Đang xử lý...");
+  getDataSelectedFromTable(true, true);
   $.ajax({
     url: prefix + "/shipment/" + shipmentSelected.id + "/delegate/permission",
     method: "GET",
@@ -1529,26 +1531,33 @@ function verify() {
             shipmentDetailIds: shipmentDetailIds
           },
           success: function (res) {
+        	$.modal.closeLoading();
             if (res.code != 0) {
               $.modal.alertWarning(res.msg);
             } else {
-              $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 700, 500);
+              getDataSelectedFromTable(true, true);
+              if (shipmentDetails.length > 0) {
+                $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 700, 500);
+              }
             }
           },
           error: function (err) {
-            $.modal.alertWarning("Lỗi hệ thống, quý khách vui lòng thử lại sau.");
+          	$.modal.closeLoading();
+            $.modal.alertWarning("Có lỗi xảy ra trong quá trình thực hiện, xin vui lòng thử lại sau.");
           }
         });
-        getDataSelectedFromTable(true, true);
-        if (shipmentDetails.length > 0) {
-          $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 700, 500);
-        }
       } else {
-        $.modal.alertWarning("Quý khách chưa có ủy quyền từ chủ hàng để thực hiện lô hàng này <br>Hãy liên hệ với Cảng để thêm ủy quyền.");
+      	$.modal.closeLoading();
+      	if(res.msg != '') {
+      		$.modal.alertError(res.msg);
+      	} else {
+            $.modal.alertError("Bạn chưa có ủy quyền từ chủ hàng để thực hiện lô hàng này. Hãy liên hệ với Cảng để thêm ủy quyền.");
+      	}
       }
     },
     error: function (err) {
-      $.modal.alertError("Có lỗi xảy ra, vui lòng thử lại sau.");
+      $.modal.closeLoading();
+      $.modal.alertError("Có lỗi xảy ra, xin vui lòng thử lại sau.");
     }
   });
 }
