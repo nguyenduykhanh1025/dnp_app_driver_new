@@ -163,6 +163,8 @@ public interface EportConstants {
 	public static final String TOPIC_COMMENT_CONT_SUPPLIER_DELETE = "Hủy yêu cầu cấp container rỗng";
 	/** Topic comment om support document */
 	public static final String TOPIC_COMMENT_OM_DOCUMENT = "Xác nhận giấy tờ thủ tục";
+	/** Topic comment om support booking for carrier payment controlling */
+	public static final String TOPIC_COMMENT_OM_BOOKING = "Xác nhận Booking";
 	
 	//User type on notification app window
 	/** User type om in app notification */
@@ -229,6 +231,8 @@ public interface EportConstants {
 	// Mode check hold
 	/** terminal hold mode */
 	public static final String MODE_TERMINAL_HOLD = "Terminal Hold";
+	/** custom hold mode */
+	public static final String MODE_CUSTOM_HOLD = "Custom Hold";
 	
 	// Payment history status
 	/** Payment history success status */

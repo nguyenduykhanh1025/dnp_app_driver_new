@@ -1485,7 +1485,7 @@ function save(isSendEmpty) {
 // DELETE SHIPMENT DETAIL
 function deleteShipmentDetail() {
   if (getDataSelectedFromTable(true, false) && shipmentDetails.length > 0) {
-      $.modal.confirmShipment("Xác nhận xóa khai báo container ?", function () {
+    $.modal.confirmShipment("Xác nhận xóa khai báo container ?", function () {
       $.modal.loading("Đang xử lý...");
       $.ajax({
         url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
@@ -1531,7 +1531,7 @@ function verify() {
             shipmentDetailIds: shipmentDetailIds
           },
           success: function (res) {
-        	$.modal.closeLoading();
+            $.modal.closeLoading();
             if (res.code != 0) {
               $.modal.alertWarning(res.msg);
             } else {
@@ -1542,17 +1542,17 @@ function verify() {
             }
           },
           error: function (err) {
-          	$.modal.closeLoading();
+            $.modal.closeLoading();
             $.modal.alertWarning("Có lỗi xảy ra trong quá trình thực hiện, xin vui lòng thử lại sau.");
           }
         });
       } else {
-      	$.modal.closeLoading();
-      	if(res.msg != '') {
-      		$.modal.alertError(res.msg);
-      	} else {
-            $.modal.alertError("Bạn chưa có ủy quyền từ chủ hàng để thực hiện lô hàng này. Hãy liên hệ với Cảng để thêm ủy quyền.");
-      	}
+        $.modal.closeLoading();
+        if (res.msg != '') {
+          $.modal.alertError(res.msg);
+        } else {
+          $.modal.alertError("Bạn chưa có ủy quyền từ chủ hàng để thực hiện lô hàng này. Hãy liên hệ với Cảng để thêm ủy quyền.");
+        }
       }
     },
     error: function (err) {
@@ -1739,7 +1739,11 @@ function onMessageReceived(payload) {
 
         reloadShipmentDetail();
 
-        $.modal.alertSuccess(message.msg);
+        let message = message.msg;
+        if (shipmentSelected.edoFlg == "o") {
+          message = 'Làm lệnh thành công. <br>Vui lòng mang giấy tờ DO gốc đến nộp tại văn phòng Cảng để có thể nhận container.';
+        }
+        $.modal.alertSuccess(message);
 
         // Close loading
         //$.modal.closeLoading();

@@ -1404,26 +1404,26 @@ function saveShipmentDetail() {
 // DELETE SHIPMENT DETAIL
 function deleteShipmentDetail() {
     if (getDataSelectedFromTable(true) && shipmentDetails.length > 0) {
-    	$.modal.confirmShipment("Xác nhận xóa khai báo container ?", function () {
-        $.modal.loading("Đang xử lý...");
-        $.ajax({
-            url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
-            method: "delete",
-            success: function (result) {
-                if (result.code == 0) {
-                    $.modal.alertSuccess(result.msg);
-                    reloadShipmentDetail();
-                } else {
-                    $.modal.alertError(result.msg);
-                }
-                $.modal.closeLoading();
-            },
-            error: function (result) {
-                $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-                $.modal.closeLoading();
-            },
+        $.modal.confirmShipment("Xác nhận xóa khai báo container ?", function () {
+            $.modal.loading("Đang xử lý...");
+            $.ajax({
+                url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
+                method: "delete",
+                success: function (result) {
+                    if (result.code == 0) {
+                        $.modal.alertSuccess(result.msg);
+                        reloadShipmentDetail();
+                    } else {
+                        $.modal.alertError(result.msg);
+                    }
+                    $.modal.closeLoading();
+                },
+                error: function (result) {
+                    $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+                    $.modal.closeLoading();
+                },
+            });
         });
-      });
     }
 }
 
