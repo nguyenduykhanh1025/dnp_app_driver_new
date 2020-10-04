@@ -25,7 +25,7 @@ function getBookingNoUnique() {
         url: prefix + "/unique/booking-no",
         method: "post",
         contentType: "application/json",
-        data: JSON.stringify({"bookingNo": $("#bookingNo").val()}),
+        data: JSON.stringify({ "bookingNo": $("#bookingNo").val() }),
     });
 }
 
@@ -35,7 +35,7 @@ function checkBookingNoUnique() {
             url: prefix + "/unique/booking-no",
             method: "post",
             contentType: "application/json",
-            data: JSON.stringify({"bookingNo": $("#bookingNo").val()}),
+            data: JSON.stringify({ "bookingNo": $("#bookingNo").val() }),
         }).done(function (result) {
             if (result.code == 0) {
                 $("#bookingNo").removeClass("error-input");
@@ -50,9 +50,10 @@ function checkBookingNoUnique() {
 function save(url) {
     let shipment = new Object();
     shipment.bookingNo = $('#bookingNo').val();
-    shipment.specificContFlg = $("input[name='specificContFlg']:checked"). val();
+    shipment.specificContFlg = $("input[name='specificContFlg']:checked").val();
     shipment.opeCode = $('#opeCode').val();
     shipment.containerAmount = $('#containerAmount').val();
+    shipment.remark = $('#remark').val();
     shipment.params = new Object();
     shipment.params.ids = shipmentFileIds.join();
     $.ajax({
@@ -95,7 +96,7 @@ $(document).ready(function () {
                 this.removeFile(file);
             });
         },
-        success: function(file, response){
+        success: function (file, response) {
             if (response.code == 0) {
                 $.modal.msgSuccess("Đính kèm tệp thành công.");
                 shipmentFileIds.push(response.shipmentFileId);

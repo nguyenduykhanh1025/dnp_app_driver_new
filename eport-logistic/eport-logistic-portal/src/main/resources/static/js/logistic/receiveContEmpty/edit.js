@@ -8,13 +8,12 @@ if (shipment != null) {
     $("#shipmentCode").val(shipment.id);
     $("#opeCode").val(shipment.opeCode);
     $("#bookingNo").val(shipment.bookingNo);
-    $("input[name='specificContFlg'][value='"+shipment.specificContFlg+"']").prop('checked', true);
+    $("input[name='specificContFlg'][value='" + shipment.specificContFlg + "']").prop('checked', true);
     $("#containerAmount").val(shipment.containerAmount);
     $("#remark").val(shipment.remark);
     if (shipment.status > 1) {
         $("#bookingNo").prop('disabled', true);
         $("input[name='specificContFlg']").prop('disabled', true);
-        $("#attachButton").prop("disabled", true);
     }
     if (shipment.status > 2) {
         $("#opeCode").prop('disabled', true);
@@ -45,7 +44,7 @@ function getBookingNoUnique() {
         url: prefix + "/unique/booking-no",
         method: "post",
         contentType: "application/json",
-        data: JSON.stringify({"bookingNo": $("#bookingNo").val()}),
+        data: JSON.stringify({ "bookingNo": $("#bookingNo").val() }),
     });
 }
 
@@ -55,7 +54,7 @@ function checkBookingNoUnique() {
             url: prefix + "/unique/booking-no",
             method: "post",
             contentType: "application/json",
-            data: JSON.stringify({"bookingNo": $("#bookingNo").val()}),
+            data: JSON.stringify({ "bookingNo": $("#bookingNo").val() }),
         }).done(function (result) {
             if (result.code == 0) {
                 $("#bookingNo").removeClass("error-input");
@@ -71,9 +70,10 @@ function edit(url) {
     let shipmentUpdate = new Object();
     shipmentUpdate.id = shipment.id;
     shipmentUpdate.bookingNo = $('#bookingNo').val();
-    shipmentUpdate.specificContFlg = $("input[name='specificContFlg']:checked"). val();
+    shipmentUpdate.specificContFlg = $("input[name='specificContFlg']:checked").val();
     shipmentUpdate.opeCode = $('#opeCode').val();
     shipmentUpdate.containerAmount = $('#containerAmount').val();
+    shipmentUpdate.remark = $('#remark').val();
     shipmentUpdate.params = new Object();
     shipmentUpdate.params.ids = shipmentFileIds.join();
     $.ajax({
@@ -85,7 +85,7 @@ function edit(url) {
             $.modal.loading("Đang xử lý, vui lòng chờ...");
             $.modal.disable();
         },
-        success: function(result) {
+        success: function (result) {
             $.modal.closeLoading();
             if (result.code == 0) {
                 parent.loadTable(result.msg);
@@ -95,20 +95,24 @@ function edit(url) {
             }
             $.modal.enable();
         }
-    })
+    });
 }
 
 $(document).ready(function () {
+
+    if (shipment.opeCode != 'HAL' && shipment.opeCode == 'GLS' && shipment.opeCode == 'VFC' && shipment.opeCode == 'VSL') {
+        $('#dropzone').hide();
+    }
 
     let maxFile = 5;
     if (shipmentFiles != null) {
         maxFile -= shipmentFiles.length;
         let htmlInit = '';
-        shipmentFiles.forEach(function(element, index) {
+        shipmentFiles.forEach(function (element, index) {
             shipmentFileIds.push(element.id);
             htmlInit = `<div class="preview-block">
                     <img src="` + ctx + `img/document.png" alt="Tài liệu" />
-                    <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + element.id + `)" >
+                    <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + element.id + `)" disabled>
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>`;
@@ -134,7 +138,7 @@ $(document).ready(function () {
                 this.removeFile(file);
             });
         },
-        success: function(file, response){
+        success: function (file, response) {
             if (response.code == 0) {
                 $.modal.msgSuccess("Đính kèm tệp thành công.");
                 shipmentFileIds.push(response.shipmentFileId);
