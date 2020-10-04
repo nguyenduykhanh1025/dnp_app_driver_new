@@ -1,46 +1,16 @@
-const PREFIX = ctx + "om/controlling";
+const PREFIX = ctx + "om/support/cancel";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var dogrid = document.getElementById("container-grid"), hot;
-var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipmentDetailIds, processOrderIds;
+var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipmentDetailIds;
 var shipmentDetails;
 var fromDate, toDate;
 var shipment = new Object();
 shipment.params = new Object();
-var dischargePortList = [], currentVesselVoyage = '', consigneeList, consigneeTaxCodeList, vslNmList, sizeList = [], berthplanList, currentConsigneeList, opeCodeList, emptyDepotList;
-var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
 $(document).ready(function () {
 
   if (sId != null) {
     shipment.id = sId;
   }
-
-  $.ajax({
-    type: "GET",
-    url: PREFIX + "/data-source",
-    success(data) {
-      if (data.code == 0) {
-
-        // List sztp
-        data.sizeList.forEach(element => {
-          sizeList.push(element['dictLabel']);
-        });
-
-        // List consignee
-        consigneeList = data.consigneeList;
-        consigneeTaxCodeList = data.listConsigneeWithTaxCode;
-
-        // List vslnm
-        berthplanList = data.berthplanList;
-        vslNmList = data.vesselAndVoyages;
-
-        // opr list
-        opeCodeList = data.oprList;
-
-        // empty depot list
-        emptyDepotList = data.emptyDepotList;
-      }
-    }
-  });
 
   $(".main-body").layout();
 
@@ -193,6 +163,7 @@ $(document).ready(function () {
       loadTable();
     }
   });
+
 });
 
 function dateformatter(date) {
@@ -323,7 +294,6 @@ function getSelected(index, row) {
     checkList = Array(rowAmount).fill(0);
     allChecked = false;
   }
-  dischargePortList = [];
   loadShipmentDetails(shipmentSelected.id);
   loadListComment();
   let serviceType = shipmentSelected.serviceType;
@@ -341,6 +311,7 @@ function getSelected(index, row) {
         }
         if (data.code == 0) {
           if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
+
             data.shipmentFiles.forEach(function (element, index) {
               html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
             });
@@ -357,21 +328,19 @@ function getSelected(index, row) {
         $('#shipment-info').html(html);
       }
     });
-  }
-  if (serviceType == 4) {
-    $('#exportPackingListBtn').show();
   } else {
-    $('#exportPackingListBtn').hide();
+    if (serviceType == 1 || serviceType == 2) {
+      html += `<span>Mã lô: ` + shipmentSelected.id + ` - B/L No: ` + shipmentSelected.blNo + `</span>`;
+    } else {
+      html += `<span>Mã lô: ` + shipmentSelected.id + ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`
+    }
+    $('#shipment-info').html(html);
   }
   if (sId != null) {
     $('#right-layout').layout('expand', 'south');
     shipment.id = null;
     sId = null;
   }
-}
-
-function toggleAttachIcon(shipmentId) {
-
 }
 
 // FORMAT HANDSONTABLE COLUMN
@@ -384,11 +353,6 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
   return td;
-}
-
-function historyRenderer(instance, td, row, col, prop, value, cellProperties) {
-  let historyIcon = customs = '<a id="custom" class="fa fa-history easyui-tooltip" title="Lịch Sử" aria-hidden="true" style="color: #3498db;"></a>';
-  $(td).addClass("htCenter").addClass("htMiddle").html(historyIcon);
 }
 
 function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -680,59 +644,52 @@ function configHandsonBilling() {
           txt += ">";
           return txt;
         case 1:
-          return ""
-        case 2:
           return "Trạng Thái";
-        case 3:
+        case 2:
           return "B/L No"
-        case 4:
+        case 3:
           return "OPR";
-        case 5:
+        case 4:
           return "Số Container";
-        case 6:
+        case 5:
           return "Sztp";
-        case 7:
+        case 6:
           return "Hạn Lệnh";
-        case 8:
+        case 7:
           return "Hạn Trả Vỏ";
-        case 9:
+        case 8:
           return "Nơi Hạ Vỏ";
-        case 10:
+        case 9:
           return "Miễn Lưu";
-        case 11:
+        case 10:
           return "Chủ Hàng";
-        case 12:
+        case 11:
           return "Tàu - Chuyến";
-        case 13:
+        case 12:
           return "Trọng Lượng";
-        case 14:
+        case 13:
           return "Loại Hàng";
-        case 15:
+        case 14:
           return "Cảng Dỡ"
-        case 16:
+        case 15:
           return "Cảng Xếp Hàng";
-        case 17:
+        case 16:
           return "P.T.T.T";
-        case 18:
+        case 17:
           return "Payer";
-        case 19:
+        case 18:
           return "Số Tham Chiếu";
-        case 20:
+        case 19:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 105, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 130, 100],
+    colWidths: [23, 105, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 130, 100],
     filter: "true",
     columns: [
       {
         data: "active",
         type: "checkbox",
         renderer: checkBoxRenderer
-      },
-      {
-        data: "history",
-        readOnly: true,
-        renderer: historyRenderer
       },
       {
         data: "status",
@@ -745,8 +702,6 @@ function configHandsonBilling() {
       },
       {
         data: "opeCode",
-        type: "autocomplete",
-        source: opeCodeList,
         renderer: opeCodeRenderer
       },
       {
@@ -755,8 +710,6 @@ function configHandsonBilling() {
       },
       {
         data: "sztp",
-        type: "autocomplete",
-        source: sizeList,
         renderer: sztpRenderer
       },
       {
@@ -775,8 +728,6 @@ function configHandsonBilling() {
       },
       {
         data: "emptyDepot",
-        type: "autocomplete",
-        source: emptyDepotList,
         renderer: emptyDepotRenderer
       },
       {
@@ -785,14 +736,10 @@ function configHandsonBilling() {
       },
       {
         data: "consignee",
-        type: "autocomplete",
-        source: currentConsigneeList,
         renderer: consigneeRenderer
       },
       {
         data: "vslNm",
-        type: "autocomplete",
-        source: vslNmList,
         renderer: vslNmRenderer
       },
       {
@@ -801,20 +748,14 @@ function configHandsonBilling() {
       },
       {
         data: "cargoType",
-        type: "autocomplete",
-        source: cargoTypeList,
         renderer: cargoTypeRenderer
       },
       {
         data: "dischargePort",
-        type: "autocomplete",
-        source: dischargePortList,
         renderer: dischargePortRenderer
       },
       {
         data: "loadingPort",
-        type: "autocomplete",
-        source: dischargePortList,
         renderer: loadingPortRenderer
       },
       {
@@ -851,7 +792,7 @@ function configHandsonBilling() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 20) {
+          if (selected[3] == 19) {
             e.stopImmediatePropagation();
           }
           break
@@ -864,8 +805,7 @@ function configHandsonBilling() {
         default:
           break;
       }
-    },
-    afterChange: onChange
+    }
   };
 }
 
@@ -893,59 +833,52 @@ function configHandsonBooking() {
           txt += ">";
           return txt;
         case 1:
-          return ""
-        case 2:
           return "Trạng Thái";
-        case 3:
+        case 2:
           return "Booking No"
-        case 4:
+        case 3:
           return "OPR";
-        case 5:
+        case 4:
           return "Số Container";
-        case 6:
+        case 5:
           return "Sztp";
-        case 7:
+        case 6:
           return "Hạn Lệnh";
-        case 8:
+        case 7:
           return "Hạn Trả Vỏ";
-        case 9:
+        case 8:
           return "Nơi Hạ Vỏ";
-        case 10:
+        case 9:
           return "Miễn Lưu";
-        case 11:
+        case 10:
           return "Chủ Hàng";
-        case 12:
+        case 11:
           return "Tàu - Chuyến";
-        case 13:
+        case 12:
           return "Trọng Lượng";
-        case 14:
+        case 13:
           return "Loại Hàng";
-        case 15:
+        case 14:
           return "Cảng Dỡ"
-        case 16:
+        case 15:
           return "Cảng Xếp Hàng";
-        case 17:
+        case 16:
           return "P.T.T.T";
-        case 18:
+        case 17:
           return "Payer";
-        case 19:
+        case 18:
           return "Số Tham Chiếu";
-        case 20:
+        case 19:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 105, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 130, 100],
+    colWidths: [23, 105, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 130, 100],
     filter: "true",
     columns: [
       {
         data: "active",
         type: "checkbox",
         renderer: checkBoxRenderer
-      },
-      {
-        data: "history",
-        readOnly: true,
-        renderer: historyRenderer
       },
       {
         data: "status",
@@ -958,8 +891,6 @@ function configHandsonBooking() {
       },
       {
         data: "opeCode",
-        type: "autocomplete",
-        source: opeCodeList,
         renderer: opeCodeRenderer
       },
       {
@@ -968,8 +899,6 @@ function configHandsonBooking() {
       },
       {
         data: "sztp",
-        type: "autocomplete",
-        source: sizeList,
         renderer: sztpRenderer
       },
       {
@@ -988,8 +917,6 @@ function configHandsonBooking() {
       },
       {
         data: "emptyDepot",
-        type: "autocomplete",
-        source: emptyDepotList,
         renderer: emptyDepotRenderer
       },
       {
@@ -998,14 +925,10 @@ function configHandsonBooking() {
       },
       {
         data: "consignee",
-        type: "autocomplete",
-        source: currentConsigneeList,
         renderer: consigneeRenderer
       },
       {
         data: "vslNm",
-        type: "autocomplete",
-        source: vslNmList,
         renderer: vslNmRenderer
       },
       {
@@ -1014,20 +937,14 @@ function configHandsonBooking() {
       },
       {
         data: "cargoType",
-        type: "autocomplete",
-        source: cargoTypeList,
         renderer: cargoTypeRenderer
       },
       {
         data: "dischargePort",
-        type: "autocomplete",
-        source: dischargePortList,
         renderer: dischargePortRenderer
       },
       {
         data: "loadingPort",
-        type: "autocomplete",
-        source: dischargePortList,
         renderer: loadingPortRenderer
       },
       {
@@ -1064,7 +981,7 @@ function configHandsonBooking() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 20) {
+          if (selected[3] == 19) {
             e.stopImmediatePropagation();
           }
           break
@@ -1077,62 +994,12 @@ function configHandsonBooking() {
         default:
           break;
       }
-    },
-    afterChange: onChange
+    }
   };
 }
 
 configHandsonBilling();
 hot = new Handsontable(dogrid, config);
-
-function onChange(changes, source) {
-  if (!changes) {
-    return;
-  }
-  changes.forEach(function (change) {
-
-    // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
-    if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-      let vesselAndVoy = hot.getDataAtCell(change[0], 12);
-      //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
-      if (vesselAndVoy) {
-        if (currentVesselVoyage != vesselAndVoy) {
-          currentVesselVoyage = vesselAndVoy;
-          let shipmentDetail = new Object();
-          for (let i = 0; i < berthplanList.length; i++) {
-            if (vesselAndVoy == berthplanList[i].vslAndVoy) {
-              shipmentDetail.vslNm = berthplanList[i].vslNm;
-              shipmentDetail.voyNo = berthplanList[i].voyNo;
-              shipmentDetail.year = berthplanList[i].year;
-              $.modal.loading("Đang xử lý ...");
-              $.ajax({
-                url: PREFIX + "/vessel/pods",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(shipmentDetail),
-                success: function (data) {
-                  $.modal.closeLoading();
-                  if (data.code == 0) {
-                    hot.updateSettings({
-                      cells: function (row, col, prop) {
-                        if (col == 15 || col == 16) {
-                          let cellProperties = {};
-                          dischargePortList = data.dischargePorts;
-                          cellProperties.source = dischargePortList;
-                          return cellProperties;
-                        }
-                      }
-                    });
-                  }
-                }
-              });
-            }
-          }
-        }
-      }
-    }
-  });
-}
 
 function loadShipmentDetails(id) {
   if (id) {
@@ -1154,13 +1021,9 @@ function loadShipmentDetails(id) {
             element.vslNm = element.vslNm + ' - ' + element.voyNo;
           });
           hot.destroy();
-          currentConsigneeList = consigneeList;
           let serviceType = shipmentSelected.serviceType;
           if (serviceType == 1 || serviceType == 2) {
             configHandsonBilling();
-            if (serviceType == 1) {
-              currentConsigneeList = consigneeTaxCodeList;
-            }
           } else {
             configHandsonBooking();
           }
@@ -1237,78 +1100,9 @@ function getDataSelectedFromTable() {
       }
     }
     shipmentDetailIds = "";
-    shipmentDetails = [];
-    processOrderIds = '';
-    let temProcessOrderIds = [];
     $.each(cleanedGridData, function (index, object) {
-      let cargoType = '', dischargePort = '', loadingPort = '', sztp = '';
-      let expiredDem, emptyExpiredDem;
-      if (object["cargoType"]) {
-        cargoType = object["cargoType"].substring(0, 2);
-      }
-      if (object["dischargePort"]) {
-        dischargePort = object["dischargePort"].split(": ")[0];
-      }
-      if (object["loadingPort"]) {
-        loadingPort = object["loadingPort"].split(": ")[0];
-      }
-      if (object["sztp"]) {
-        sztp = object["sztp"].split(": ")[0];
-      }
-      if (object["expiredDem"]) {
-        let expiredDate = new Date(object["expiredDem"].substring(0, 4) + "/" + object["expiredDem"].substring(5, 7) + "/" + object["expiredDem"].substring(8, 10));
-        expiredDate.setHours(23, 59, 59);
-        expiredDem = expiredDate.getTime();
-      }
-      if (object["emptyExpiredDem"]) {
-        let emptyExpiredDate = new Date(object["emptyExpiredDem"].substring(0, 4) + "/" + object["emptyExpiredDem"].substring(5, 7) + "/" + object["emptyExpiredDem"].substring(8, 10));
-        emptyExpiredDate.setHours(23, 59, 59);
-        emptyExpiredDem = emptyExpiredDate.getTime();
-      }
-      let shipmentDetail = {
-        id: object["id"],
-        blNo: object["blNo"],
-        bookingNo: object["bookingNo"],
-        containerNo: object["containerNo"],
-        opeCode: object["opeCode"],
-        sztp: sztp,
-        expiredDem: expiredDem,
-        emptyExpiredDem: emptyExpiredDem,
-        emptyDepot: object["emptyDepot"],
-        detFreeTime: object["detFreeTime"],
-        consignee: object["consignee"],
-        wgt: object["wgt"],
-        cargoType: cargoType,
-        loadingPort: loadingPort,
-        dischargePort: dischargePort,
-        payType: object["payType"],
-        payer: object["payer"],
-        orderNo: object["orderNo"]
-      };
-      if (berthplanList) {
-        for (let i = 0; i < berthplanList.length; i++) {
-          if (object["vslNm"] == berthplanList[i].vslAndVoy) {
-            shipmentDetail.vslNm = berthplanList[i].vslNm;
-            shipmentDetail.voyNo = berthplanList[i].voyNo;
-            shipmentDetail.year = berthplanList[i].year;
-            shipmentDetail.vslName = berthplanList[i].vslAndVoy.split(" - ")[1];
-            shipmentDetail.voyCarrier = berthplanList[i].voyCarrier;
-            shipmentDetail.etd = berthplanList[i].etd;
-            shipmentDetail.eta = berthplanList[i].eta;
-          }
-        }
-      }
-      shipmentDetails.push(shipmentDetail);
       shipmentDetailIds += object["id"] + ",";
-      if (object["processOrderId"] != null && !temProcessOrderIds.includes(object["processOrderId"])) {
-        temProcessOrderIds.push(object["processOrderId"]);
-        processOrderIds += object["processOrderId"] + ',';
-      }
     });
-
-    if (processOrderIds != '') {
-      processOrderIds = processOrderIds.substring(0, processOrderIds.length - 1);
-    }
 
     if (shipmentDetailIds.length == 0) {
       $.modal.alertWarning("Bạn chưa chọn container nào.")
@@ -1466,32 +1260,7 @@ function reloadShipmentDetail() {
   loadShipmentDetails(shipmentSelected.id);
 }
 
-function updateShipmentDetail() {
-  if (getDataSelectedFromTable()) {
-    $.modal.loading("Đang xử lý...");
-    $.ajax({
-      url: PREFIX + "/shipment-detail",
-      method: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(shipmentDetails),
-      success: function (result) {
-        if (result.code == 0) {
-          $.modal.alertSuccess(result.msg);
-          reloadShipmentDetail();
-        } else {
-          $.modal.alertError(result.msg);
-        }
-        $.modal.closeLoading();
-      },
-      error: function (result) {
-        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
-        $.modal.closeLoading();
-      },
-    });
-  }
-}
-
-function cancelShupmentDetail() {
+function cancelShipmentDetail() {
   if (getDataSelectedFromTable()) {
     layer.confirm("Xác nhận hủy khai báo lệnh đã làm. Vui lòng kiểm tra dữ liệu trên Catos đã được cập nhật/hủy và bấm Xác Nhận để tiếp tục.", {
       icon: 3,
@@ -1508,14 +1277,14 @@ function cancelShupmentDetail() {
         success: function (result) {
           if (result.code == 0) {
             $.modal.alertSuccess(result.msg);
-            loadTable();
+            reloadShipmentDetail();
           } else {
             $.modal.alertError(result.msg);
           }
           $.modal.closeLoading();
         },
         error: function (result) {
-          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+          $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, xin vui lòng thử lại.");
           $.modal.closeLoading();
         },
       });
@@ -1524,112 +1293,3 @@ function cancelShupmentDetail() {
     });
   }
 }
-
-function executedSuccess() {
-  if (getDataSelectedFromTable()) {
-    layer.open({
-      type: 2,
-      area: [430 + 'px', 270 + 'px'],
-      fix: true,
-      maxmin: true,
-      shade: 0.3,
-      title: 'Xác Nhận',
-      content: PREFIX + "/verify-executed-command-success",
-      btn: ["Xác Nhận", "Hủy"],
-      shadeClose: false,
-      yes: function (index, layero) {
-        confirmExecutaedSuccess(index, layero);
-      },
-      cancel: function (index) {
-        return true;
-      }
-    });
-  }
-}
-
-function confirmExecutaedSuccess(index, layero) {
-  let childLayer = layero.find("iframe")[0].contentWindow.document;
-  $.modal.loading("Đang xử lý ...");
-  $.ajax({
-    url: PREFIX + "/sync-catos",
-    method: "POST",
-    data: {
-      content: $(childLayer).find("#remarkToLogistic").val(),
-      processOrderIds: processOrderIds,
-      shipmentId: shipmentSelected.id
-    },
-    success: function (res) {
-      layer.close(index);
-      $.modal.closeLoading();
-      if (res.code == 0) {
-        $.modal.alertSuccess(res.msg);
-        loadShipmentDetails(shipmentSelected.id);
-      } else {
-        $.modal.alertError(res.msg);
-      }
-    },
-    error: function (data) {
-      layer.close(index);
-      $.modal.closeLoading();
-    }
-  });
-}
-
-function resetProcessStatus() {
-  if (getDataSelectedFromTable()) {
-    layer.open({
-      type: 2,
-      area: [430 + 'px', 270 + 'px'],
-      fix: true,
-      maxmin: true,
-      shade: 0.3,
-      title: 'Xác Nhận',
-      content: PREFIX + "/reset-process-status",
-      btn: ["Xác Nhận", "Hủy"],
-      shadeClose: false,
-      yes: function (index, layero) {
-        confirmResetProcess(index, layero);
-      },
-      cancel: function (index) {
-        return true;
-      }
-    });
-  }
-}
-
-function confirmResetProcess(index, layero) {
-  let childLayer = layero.find("iframe")[0].contentWindow.document;
-  $.modal.loading("Đang xử lý ...");
-  $.ajax({
-    url: PREFIX + "/order/reset",
-    method: "POST",
-    data: {
-      content: $(childLayer).find("#remarkToLogistic").val(),
-      shipmentDetailIds: shipmentDetailIds,
-      shipmentId: shipmentSelected.id
-    },
-    success: function (res) {
-      layer.close(index);
-      $.modal.closeLoading();
-      if (res.code == 0) {
-        $.modal.alertSuccess(res.msg);
-        loadShipmentDetails(shipmentSelected.id);
-      } else {
-        $.modal.alertError(res.msg);
-      }
-    },
-    error: function (data) {
-      layer.close(index);
-      $.modal.closeLoading();
-    }
-  });
-}
-
-function exportPackingList() {
-  if (!shipmentSelected) {
-    $.modal.alertError("Bạn chưa chọn Lô!");
-    return
-  }
-  $.modal.openTab("In Packing List", PREFIX + "/shipment/" + shipmentSelected.id + "/packing-list");
-}
-
