@@ -105,7 +105,7 @@ $(document).ready(function () {
     valueField: 'alias',
     textField: 'text',
     data: [{
-      "alias": 'null',
+      "alias": '',
       "text": "Trạng thái",
       "selected": true
     }, {
@@ -116,7 +116,7 @@ $(document).ready(function () {
       "text": "Đã thu"
     }],
     onSelect: function (doStatus) {
-      if (doStatus.alias != 'null') {
+      if (doStatus.alias != '') {
         shipment.params.doStatus = doStatus.alias;
       } else {
         shipment.params.doStatus = null;
@@ -701,7 +701,7 @@ function search() {
 
 function clearInput() {
   $('#vesselAndVoyages').combobox('select', 'Chọn tàu chuyến');
-  $('#doStatus').combobox('select', 'null');
+  $('#doStatus').combobox('select', '');
   $('#logisticGroups').combobox('select', '0');
   $("#containerNo").textbox('setText', '');
   $("#blNo").textbox('setText', '');
