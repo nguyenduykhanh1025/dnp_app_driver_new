@@ -69,4 +69,8 @@ public interface ILogisticDelegatedService
     public int updateDelFlgByGroupIds(String ids);
 
     public LogisticDelegated selectLogisticDelegatedByTaxDelegated(String taxDelegated);
+
+    public List<LogisticDelegated> selectLogisticDelegatedListForCheck(LogisticDelegated logisticDelegated);
+
+    
 }
