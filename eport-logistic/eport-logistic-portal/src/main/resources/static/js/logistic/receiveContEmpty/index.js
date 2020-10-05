@@ -3,7 +3,7 @@ var prefix = ctx + "logistic/receive-cont-empty";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, orderNumber = 0, currentVslNm;
-var contList = [], orders = [], processOrderIds;
+var contList = [], orders = [], processOrderIds, sztpListDisable = [];
 var conts = '';
 var allChecked = false;
 var checkList = [];
@@ -388,6 +388,7 @@ function getSelected(index, row) {
                     $('#right-layout').layout('panel', 'center').panel('setTitle', title);
                     rowAmount = row.containerAmount;
                     checkList = Array(rowAmount).fill(0);
+                    sztpListDisable = Array(rowAmount).fill(0);
                     allChecked = false;
                     loadShipmentDetail(row.id);
                     toggleAttachIcon(shipmentSelected.id);
@@ -430,6 +431,7 @@ function getSelected(index, row) {
                 $('#right-layout').layout('panel', 'center').panel('setTitle', title);
                 rowAmount = row.containerAmount;
                 checkList = Array(rowAmount).fill(0);
+                sztpListDisable = Array(rowAmount).fill(0);
                 allChecked = false;
                 loadShipmentDetail(row.id);
                 toggleAttachIcon(shipmentSelected.id);
@@ -674,6 +676,10 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
+    }
+    if (sztpListDisable[row] == 1) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
     }
     if (!value) {
         value = '';
@@ -989,6 +995,53 @@ function onChange(changes, source) {
                     }
                 }
                 hot.setDataAtCell(change[0], 10, currentEta);
+            }
+        } else if (change[1] == "containerNo") {
+            if (!change[3]) {
+                sztpListDisable[change[0]] = 0;
+                cleanCell(change[0], 3, sizeList);
+            } else {
+                $.ajax({
+                    url: prefix + "/containerNo/" + change[3] + "/sztp",
+                    method: "GET",
+                    success: function (data) {
+                        if (data.code == 0) {
+                            if (data.sztp && data.sztp[0] != '{') {
+                                sizeList.forEach(element => {
+                                    if (data.sztp == element.substring(0, 4)) {
+                                        data.sztp = element;
+                                        return false;
+                                    }
+                                });
+                                sztpListDisable[change[0]] = 1;
+                                hot.setDataAtCell(change[0], 3, data.sztp);
+                            } else {
+                                sztpListDisable[change[0]] = 0;
+                                cleanCell(change[0], 3, sizeList);
+                            }
+                        } else {
+                            sztpListDisable[change[0]] = 0;
+                            cleanCell(change[0], 3, sizeList);
+                        }
+                    },
+                    error: function (err) {
+                        sztpListDisable[change[0]] = 0;
+                        cleanCell(change[0], 3, sizeList);
+                    }
+                });
+            }
+        }
+    });
+}
+
+function cleanCell(roww, coll, src) {
+    hot.setDataAtCell(roww, coll, '');
+    hot.updateSettings({
+        cells: function (row, col, prop) {
+            if (row == roww && col == coll) {
+                let cellProperties = {};
+                cellProperties.source = src;
+                return cellProperties;
             }
         }
     });

@@ -116,8 +116,9 @@ $(document).ready(function () {
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>`;
+            $('.preview-container').append(htmlInit);
         });
-        $('.preview-container').append(htmlInit);
+
     }
 
     let previewTemplate = '<span data-dz-name></span>';
