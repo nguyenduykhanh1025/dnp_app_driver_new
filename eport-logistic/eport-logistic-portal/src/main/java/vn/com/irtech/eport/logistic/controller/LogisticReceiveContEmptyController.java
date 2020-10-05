@@ -443,6 +443,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 						}
 					}
 					shipmentDetail.setOpeCode(shipment.getOpeCode());
+					shipmentDetail.setBookingNo(shipment.getBookingNo());
 					shipmentDetail.setSztp(inputDetail.getSztp());
 					shipmentDetail.setSztpDefine(inputDetail.getSztpDefine());
 					shipmentDetail.setExpiredDem(inputDetail.getExpiredDem());
