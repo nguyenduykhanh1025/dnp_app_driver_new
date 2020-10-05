@@ -53,7 +53,7 @@
     </appender>
     
     <logger name="vn.com.irtech.api" level="debug" />
-    <logger name="org.springframework" level="debug" />
+    <logger name="org.springframework" level="warn" />
 
     <root level="debug">
         <appender-ref ref="console" />
