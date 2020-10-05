@@ -410,11 +410,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 						shipmentDetailReference.setYear(inputDetail.getYear());
 						shipmentDetailReference.setVslName(inputDetail.getVslName());
 						shipmentDetailReference.setVoyCarrier(inputDetail.getVoyCarrier());
+						shipmentDetailReference.setEta(inputDetail.getEta());
+						shipmentDetailReference.setEtd(inputDetail.getEtd());
 						shipmentDetailReference.setDischargePort(inputDetail.getDischargePort());
-						shipmentDetailReference.setUpdateBy(user.getFullName());
-						if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
-							return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
-						}
 					}
 					shipmentDetailReference.setRemark(inputDetail.getRemark());
 					shipmentDetailReference.setUpdateBy(user.getFullName());

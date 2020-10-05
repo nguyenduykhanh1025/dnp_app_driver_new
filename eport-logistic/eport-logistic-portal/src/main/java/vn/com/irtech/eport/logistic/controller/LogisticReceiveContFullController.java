@@ -321,7 +321,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@Transactional
 	@ResponseBody
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
-		if (shipmentDetails != null && shipmentDetails.size() > 0){
+		if (CollectionUtils.isNotEmpty(shipmentDetails)){
 			String dnPortName = configService.selectConfigByKey("danang.port.name");
 			LogisticAccount user = getUser();
 			ShipmentDetail firstDetail = shipmentDetails.get(0);
