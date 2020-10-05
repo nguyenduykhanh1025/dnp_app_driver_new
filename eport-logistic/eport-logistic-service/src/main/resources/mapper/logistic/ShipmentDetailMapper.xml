@@ -670,7 +670,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <delete id="deleteShipmentDetailByIds" parameterType="String">
         delete from shipment_detail 
         where shipment_id = #{shipmentId}
-        AND id in 
+            AND logistic_group_id = #{logisticGroupId}
+            AND id in 
         <foreach item="id" collection="shipmentDetailIds" open="(" separator="," close=")">
             #{id}
         </foreach>

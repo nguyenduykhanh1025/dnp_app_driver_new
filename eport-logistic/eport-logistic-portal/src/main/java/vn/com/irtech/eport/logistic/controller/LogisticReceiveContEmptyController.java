@@ -258,15 +258,28 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@PostMapping("/shipment")
     @ResponseBody
     public AjaxResult addShipment(@RequestBody Shipment shipment) {
+		//validate shipment input
+		if (StringUtils.isAllBlank(shipment.getBookingNo()) || StringUtils.isAllBlank(shipment.getOpeCode())
+				|| shipment.getSpecificContFlg() == null || shipment.getContainerAmount() == null
+				|| shipment.getContainerAmount() == 0) {
+			return error("Hãy nhập các trường bắt buộc.");
+		}
         LogisticAccount user = getUser();
-        shipment.setLogisticAccountId(user.getId());
-        shipment.setLogisticGroupId(user.getGroupId());
-        shipment.setCreateTime(new Date());
-        shipment.setCreateBy(user.getFullName());
-        shipment.setServiceType(Constants.RECEIVE_CONT_EMPTY);
-        shipment.setStatus("1");
-        shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
-        if (shipmentService.insertShipment(shipment) == 1) {
+        Shipment newShipment = new Shipment(); 
+        newShipment.setLogisticAccountId(user.getId());
+        newShipment.setLogisticGroupId(user.getGroupId());
+        newShipment.setCreateBy(user.getFullName());
+        newShipment.setServiceType(Constants.RECEIVE_CONT_EMPTY);
+        newShipment.setStatus("1");
+        newShipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
+        // Update booking
+        newShipment.setBookingNo(shipment.getBookingNo().trim().toUpperCase());
+        newShipment.setOpeCode(shipment.getOpeCode());
+        newShipment.setContainerAmount(shipment.getContainerAmount());
+        newShipment.setSpecificContFlg(shipment.getSpecificContFlg());
+        newShipment.setRemark(shipment.getRemark());
+        // insert to DB
+        if (shipmentService.insertShipment(newShipment) == 1) {
         	ShipmentImage shipmentImage = new ShipmentImage();
         	shipmentImage.setShipmentId(shipment.getId());
         	Map<String, Object> map = new HashMap<>();
@@ -281,45 +294,65 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
     // EDIT SHIPMENT WITH SHIPMENT ID
 	@Log(title = "Chỉnh Sửa Lô", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment/{shipmentId}")
+	@Transactional
     @ResponseBody
     public AjaxResult editShipment(@RequestBody Shipment shipment) {
+		//validate shipment input
+		if (StringUtils.isAllBlank(shipment.getBookingNo()) || StringUtils.isAllBlank(shipment.getOpeCode())
+				|| shipment.getSpecificContFlg() == null || shipment.getContainerAmount() == null
+				|| shipment.getContainerAmount() == 0) {
+			return error("Hãy nhập các trường bắt buộc.");
+		}
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
-		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
-			// Check container amount update need to greater or equal  curren amount
-			// Or at least greater or equal the number of container has been declared
-			if(shipment.getContainerAmount() < referenceShipment.getContainerAmount()) {
-				ShipmentDetail shipmentSearch = new ShipmentDetail();
-				shipmentSearch.setShipmentId(shipment.getId());
-				long contNumber = shipmentDetailService.countShipmentDetailList(shipmentSearch);
-				if(contNumber > shipment.getContainerAmount()) {
-					return error("Không thể chỉnh sửa số lượng container nhỏ hơn danh sách khai báo.");
+		if (!verifyPermission(referenceShipment.getLogisticGroupId())) {
+			return error("Không tim thấy lô");
+		}
+		// Check container amount update need to greater or equal  curren amount
+		// Or at least greater or equal the number of container has been declared
+		if(shipment.getContainerAmount() < referenceShipment.getContainerAmount()) {
+			ShipmentDetail shipmentSearch = new ShipmentDetail();
+			shipmentSearch.setShipmentId(shipment.getId());
+			long contNumber = shipmentDetailService.countShipmentDetailList(shipmentSearch);
+			if(contNumber > shipment.getContainerAmount()) {
+				return error("Không thể chỉnh sửa số lượng container nhỏ hơn danh sách khai báo.");
+			}
+		}
+		
+		referenceShipment.setId(shipment.getId());
+		referenceShipment.setRemark(shipment.getRemark());
+		referenceShipment.setContainerAmount(shipment.getContainerAmount());
+		referenceShipment.setUpdateBy(getUser().getUserName());
+		// flag to update details if change bookingNo or OPR
+		boolean updateDetailFlg = !shipment.getOpeCode().trim().equalsIgnoreCase(referenceShipment.getOpeCode())
+				|| !shipment.getBookingNo().trim().equalsIgnoreCase(referenceShipment.getBookingNo());
+		if (EportConstants.SHIPMENT_STATUS_INIT.equals(referenceShipment.getStatus())) {
+			referenceShipment.setBookingNo(shipment.getBookingNo().trim().toUpperCase());
+			referenceShipment.setSpecificContFlg(shipment.getSpecificContFlg());
+			referenceShipment.setOpeCode(shipment.getOpeCode());
+		} else if (EportConstants.SHIPMENT_STATUS_SAVE.equals(referenceShipment.getStatus())) {
+			referenceShipment.setOpeCode(shipment.getOpeCode());
+		}
+		
+		if (shipmentService.updateShipment(referenceShipment) == 1) {
+			// update shipment details incase update bookingNo/opeCode
+			if (updateDetailFlg) {
+				ShipmentDetail searchDetail = new ShipmentDetail();
+				searchDetail.setShipmentId(referenceShipment.getId());
+				searchDetail.setLogisticGroupId(getUser().getGroupId());
+				List<ShipmentDetail> details = shipmentDetailService.selectShipmentDetailList(searchDetail);
+				for(ShipmentDetail detail : details) {
+					detail.setBookingNo(shipment.getBookingNo().trim().toUpperCase());
+					detail.setOpeCode(shipment.getOpeCode().trim().toUpperCase());
+					shipmentDetailService.updateShipmentDetail(detail);
 				}
 			}
-			
-			referenceShipment.setId(shipment.getId());
-			referenceShipment.setRemark(shipment.getRemark());
-			referenceShipment.setContainerAmount(shipment.getContainerAmount());
-			referenceShipment.setUpdateBy(getUser().getUserName());
-			
-			if (EportConstants.SHIPMENT_STATUS_INIT.equals(referenceShipment.getStatus())) {
-				if (StringUtils.isNotEmpty(shipment.getBookingNo())) {
-					referenceShipment.setBookingNo(shipment.getBookingNo().toUpperCase());
-				}
-				referenceShipment.setSpecificContFlg(shipment.getSpecificContFlg());
-				referenceShipment.setOpeCode(shipment.getOpeCode());
-			} else if (EportConstants.SHIPMENT_STATUS_SAVE.equals(referenceShipment.getStatus())) {
-				referenceShipment.setOpeCode(shipment.getOpeCode());
-			}
-			
-			if (shipmentService.updateShipment(referenceShipment) == 1) {
-				ShipmentImage shipmentImage = new ShipmentImage();
-	        	shipmentImage.setShipmentId(shipment.getId());
-	        	Map<String, Object> map = new HashMap<>();
-	        	map.put("ids", Convert.toStrArray(shipment.getParams().get("ids").toString()));
-	        	shipmentImage.setParams(map);
-	            shipmentImageService.updateShipmentImageByIds(shipmentImage);
-				return success("Chỉnh sửa lô thành công");
-			}
+			ShipmentImage shipmentImage = new ShipmentImage();
+        	shipmentImage.setShipmentId(shipment.getId());
+        	Map<String, Object> map = new HashMap<>();
+        	map.put("ids", Convert.toStrArray(shipment.getParams().get("ids").toString()));
+        	shipmentImage.setParams(map);
+            shipmentImageService.updateShipmentImageByIds(shipmentImage);
+			return success("Chỉnh sửa lô thành công");
 		}
 		return error("Chỉnh sửa lô thất bại");
 	}
@@ -482,7 +515,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult deleteShipmentDetail(@PathVariable Long shipmentId, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		if (shipmentDetailIds != null) {
-			shipmentDetailService.deleteShipmentDetailByIds(shipmentId, shipmentDetailIds);
+			shipmentDetailService.deleteShipmentDetailByIds(shipmentId, shipmentDetailIds, getUser().getGroupId());
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
 			if (shipmentDetailService.countShipmentDetailList(shipmentDetail) == 0) {

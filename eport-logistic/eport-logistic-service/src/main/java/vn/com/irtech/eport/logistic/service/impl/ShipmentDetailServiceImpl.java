@@ -169,8 +169,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
      * @return result
      */
     @Override
-    public int deleteShipmentDetailByIds(Long shipmentId, String shipmentDetailIds) {
-        return shipmentDetailMapper.deleteShipmentDetailByIds(shipmentId, Convert.toStrArray(shipmentDetailIds));
+    public int deleteShipmentDetailByIds(Long shipmentId, String shipmentDetailIds, Long logisticGroupId) {
+        return shipmentDetailMapper.deleteShipmentDetailByIds(shipmentId, Convert.toStrArray(shipmentDetailIds), logisticGroupId);
     }
 
     /**
