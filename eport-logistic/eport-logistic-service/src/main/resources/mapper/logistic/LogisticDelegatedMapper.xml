@@ -28,15 +28,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectLogisticDelegatedVo"/>
         <where>  
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="delegateType != null  and delegateType != ''"> and delegate_type = #{delegateType}</if>
+            <if test="validFrom != null "> and valid_from = #{validFrom}</if>
+            <if test="validUntil != null "> and valid_until = #{validUntil}</if>
+            <if test="validFlg != null "> and valid_flg = #{validFlg}</if>
+            <if test="delFlg != null "> and del_flg = #{delFlg}</if>
+            <if test="delegateTaxCode != null  and delegateTaxCode != ''">and (upper(delegate_tax_code) like concat(concat('%', #{delegateTaxCode}),'%')</if>
+            <if test="delegateCompany != null  and delegateCompany != ''">or upper(delegate_company) like concat(concat('%', #{delegateCompany}), '%'))</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+     <select id="selectLogisticDelegatedListForCheck" parameterType="LogisticDelegated" resultMap="LogisticDelegatedResult">
+        <include refid="selectLogisticDelegatedVo"/>
+        <where>  
             <if test="delegateTaxCode != null  and delegateTaxCode != ''"> and delegate_tax_code = #{delegateTaxCode}</if>
             <if test="delegateCompany != null  and delegateCompany != ''"> and delegate_company = #{delegateCompany}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="delegateType != null  and delegateType != ''"> and delegate_type = #{delegateType}</if>
             <if test="validFrom != null "> and valid_from = #{validFrom}</if>
             <if test="validUntil != null "> and valid_until = #{validUntil}</if>
             <if test="validFlg != null "> and valid_flg = #{validFlg}</if>
             <if test="delFlg != null "> and del_flg = #{delFlg}</if>
         </where>
-        order by create_time desc
+        ORDER BY create_time DESC
     </select>
     
     <select id="selectLogisticDelegatedById" parameterType="Long" resultMap="LogisticDelegatedResult">

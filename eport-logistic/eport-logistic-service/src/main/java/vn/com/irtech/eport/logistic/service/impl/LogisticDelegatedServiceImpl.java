@@ -113,4 +113,10 @@ public class LogisticDelegatedServiceImpl implements ILogisticDelegatedService
     {
         return logisticDelegatedMapper.selectLogisticDelegatedByTaxDelegated(taxDelegated);
     }
+
+    @Override
+    public List<LogisticDelegated> selectLogisticDelegatedListForCheck(LogisticDelegated logisticDelegated)
+    {
+        return logisticDelegatedMapper.selectLogisticDelegatedListForCheck(logisticDelegated);
+    }
 }

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <th:block th:include="include :: header('DNP ePORT: Danh Sach Uy Quyen')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/eport/css/common/style.css?v=1406}" rel="stylesheet" />
+  </head>
+  <body class="grey-background">
+    <div class="main-body">
+      <div class="main-body__search-wrapper mb-2">
+        <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+        <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+        <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+          <div class="flex__left w-20 text-uppercase">
+            <h3 class="mt-10">Danh sách ủy quyền</h3>
+          </div>
+          <div class="flex__right w-80 justify-content-around align-items-center d-flex">
+            <div id="ff" style="display: flex;">
+              <div class="form-inline">
+                <input class="easyui-textbox" id="searchAll" name="searchAll" data-options="prompt: 'Tìm kiếm' " />
+              </div>
+              <div class="form-inline" style="margin-left:10px">
+                <button class="btn btn-success btn-customs" onclick="loadTable()" id="searchBtn">Tìm kiếm</button>
+              </div>
+              <div class="form-inline" style="margin-left:5px">
+                <button class="btn btn-success btn-outline btn-customs" onclick="refresh()" id="resethBtn">Làm mới</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="main-body__table-wrapper">
+        <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+          <thead>
+            <tr>
+              <th data-options="field:'delegateTaxCode',halign:'center',resizable:true"  width="120">
+                Mã Số Thuế
+              </th>
+              <th data-options="field:'delegateCompany',halign:'center'" width="25%">
+                Tên Công Ty Ủy Quyền
+              </th>
+              <th data-options="field:'delegateType',align:'center',formatter: formatStatus"  width="15%">
+                Loại Ủy Quyền
+              </th>
+              <th data-options="field:'validFrom',align:'center'" width="20%">
+                Từ Ngày
+              </th>
+              <th data-options="field:'validUntil',align:'center'" width="20%">
+                Đến Ngày
+              </th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+    
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script th:src="@{/js/logistic/account/delegated.js}"></script>
+    <script>
+      $(".main-body").height($(document).innerHeight() - 10);
+    </script>
+  </body>
+</html>

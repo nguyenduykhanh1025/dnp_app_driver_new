@@ -97,7 +97,7 @@ public class LogisticDelegatedController extends BaseController
         delegatedLogisticCheck.setLogisticGroupId(delegatedLogistic.getLogisticGroupId());
         delegatedLogisticCheck.setDelegateType(delegatedLogistic.getDelegateType());
         delegatedLogisticCheck.setDelFlg(0);
-        if(logisticDelegatedService.selectLogisticDelegatedList(delegatedLogisticCheck).size() > 0)
+        if(logisticDelegatedService.selectLogisticDelegatedListForCheck(delegatedLogisticCheck).size() > 0)
         {
             return AjaxResult.error("Đơn vị ủy quyền này đã tồn tại <br> vui lòng kiểm tra dữ liệu");
         }
