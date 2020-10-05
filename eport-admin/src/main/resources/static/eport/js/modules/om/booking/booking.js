@@ -778,7 +778,7 @@ function loadListComment(shipmentCommentId) {
             // Topic comment
             html += '<div><span><strong>Yêu cầu:</strong> ' + element.topic + '</span></div>';
             // Content comment
-            html += '<div><span>' + element.content + '</span></div>';
+            html += '<div><span>' + element.content.replaceAll("#{domain}", domain) + '</span></div>';
             html += '</div>';
             html += '<hr>';
           });

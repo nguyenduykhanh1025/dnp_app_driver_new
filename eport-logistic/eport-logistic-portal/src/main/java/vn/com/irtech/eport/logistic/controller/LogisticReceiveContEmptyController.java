@@ -2,17 +2,12 @@ package vn.com.irtech.eport.logistic.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -32,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import oracle.net.aso.a;
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
@@ -49,7 +43,6 @@ import vn.com.irtech.eport.common.exception.file.InvalidExtensionException;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
-import vn.com.irtech.eport.common.utils.file.FileUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -65,9 +58,7 @@ import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
-import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
-import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -107,12 +98,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
     private ICarrierGroupService carrierService;
     
     @Autowired
-    private IDriverAccountService driverAccountService;
-    
-    @Autowired
-    private IPickupAssignService pickupAssignService;
-    
-    @Autowired
     private IProcessBillService processBillService;
     
     @Autowired
@@ -127,6 +112,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
     	if (sId != null) {
 			mmap.put("sId", sId);
 		}
+    	mmap.put("domain", serverConfig.getUrl());
         return PREFIX + "/index";
     }
 
@@ -362,39 +348,101 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@Transactional
 	@ResponseBody
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
-		if (shipmentDetails != null) {
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			LogisticAccount user = getUser();
-			Shipment shipment = new Shipment();
-			shipment.setId(shipmentDetails.get(0).getShipmentId());
-			boolean updateShipment = true;
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				if (shipmentDetail.getId() != null) {
+			ShipmentDetail firstDetail = shipmentDetails.get(0);
+			Long shipmentId = firstDetail.getShipmentId();
+			if (shipmentId == null) {
+				return error("Không tìm thấy lô cần thêm chi tiết.");
+			}
+			Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+			if (shipment == null || !verifyPermission(shipment.getLogisticGroupId())) {
+				return error("Không tìm thấy lô, vui lòng kiểm tra lại thông tin.");
+			}
+			boolean updateShipment = true; // if true => need to update status shipment from init to save
+			for (ShipmentDetail inputDetail : shipmentDetails) {
+				if (inputDetail.getId() != null) {
 					updateShipment = false;
-					shipmentDetail.setUpdateBy(user.getFullName());
-					shipmentDetail.setUpdateTime(new Date());
-					if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
-						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
+					// Case: update
+					// Get record from catos
+					ShipmentDetail shipmentDetailReference = shipmentDetailService.selectShipmentDetailById(inputDetail.getId());
+					// Check permission
+					if (!shipmentDetailReference.getLogisticGroupId().equals(user.getGroupId())) {
+						return error("Không tìm thấy thông tin, vui lòng kiểm tra lại");
+					} 
+					
+					// Check status can update before user verify opt to make order
+					if ("N".equalsIgnoreCase(shipmentDetailReference.getUserVerifyStatus())) {
+						if (EportConstants.CONTAINER_SUPPLY_STATUS_HOLD.equals(shipmentDetailReference.getContSupplyStatus())) {
+							shipmentDetailReference.setSztp(inputDetail.getSztp());
+							shipmentDetailReference.setSztpDefine(inputDetail.getSztpDefine());
+							shipmentDetailReference.setPlanningDate(inputDetail.getPlanningDate());
+							shipmentDetailReference.setCargoType(inputDetail.getCargoType());
+							shipmentDetailReference.setQualityRequirement(inputDetail.getQualityRequirement());
+							// shipment carrier supply can update container no
+							if (shipment.getSpecificContFlg() == 1) {
+								shipmentDetailReference.setContainerNo(inputDetail.getContainerNo());
+							}
+						}
+						shipmentDetailReference.setExpiredDem(inputDetail.getExpiredDem());
+						shipmentDetailReference.setConsignee(inputDetail.getConsignee());
+						shipmentDetailReference.setVslNm(inputDetail.getVslNm());
+						shipmentDetailReference.setVoyNo(inputDetail.getVoyNo());
+						shipmentDetailReference.setYear(inputDetail.getYear());
+						shipmentDetailReference.setVslName(inputDetail.getVslName());
+						shipmentDetailReference.setVoyCarrier(inputDetail.getVoyCarrier());
+						shipmentDetailReference.setDischargePort(inputDetail.getDischargePort());
+						shipmentDetailReference.setUpdateBy(user.getFullName());
+						if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
+							return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
+						}
+					}
+					shipmentDetailReference.setRemark(inputDetail.getRemark());
+					shipmentDetailReference.setUpdateBy(user.getFullName());
+					if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
+						return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
 					}
 				} else {
+					// New shipment detail
+					ShipmentDetail shipmentDetail = new ShipmentDetail();
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
+					shipmentDetail.setShipmentId(shipmentId);
 					shipmentDetail.setCreateBy(user.getFullName());
-					shipmentDetail.setCreateTime(new Date());
-					shipmentDetail.setStatus(1);
+					shipmentDetail.setStatus(1); // Status init
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setUserVerifyStatus("N");
 					shipmentDetail.setContSupplyStatus("N");
 					shipmentDetail.setFe("E");
 					shipmentDetail.setFinishStatus("N");
+					// shipment carrier supply can save container no
+					if (shipment.getSpecificContFlg() == 1) {
+						shipmentDetail.setContainerNo(inputDetail.getContainerNo());
+					}
+					shipmentDetail.setSztp(inputDetail.getSztp());
+					shipmentDetail.setSztpDefine(inputDetail.getSztpDefine());
+					shipmentDetail.setExpiredDem(inputDetail.getExpiredDem());
+					shipmentDetail.setConsignee(inputDetail.getConsignee());
+					shipmentDetail.setPlanningDate(inputDetail.getPlanningDate());
+					shipmentDetail.setCargoType(inputDetail.getCargoType());
+					shipmentDetail.setQualityRequirement(inputDetail.getQualityRequirement());
+					shipmentDetail.setVslNm(inputDetail.getVslNm());
+					shipmentDetail.setVoyNo(inputDetail.getVoyNo());
+					shipmentDetail.setYear(inputDetail.getYear());
+					shipmentDetail.setVslName(inputDetail.getVslName());
+					shipmentDetail.setVoyCarrier(inputDetail.getVoyCarrier());
+					shipmentDetail.setEta(inputDetail.getEta());
+					shipmentDetail.setEtd(inputDetail.getEtd());
+					shipmentDetail.setDischargePort(inputDetail.getDischargePort());
+					shipmentDetail.setRemark(inputDetail.getRemark());
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
 				}
 			}
 			if (updateShipment) {
-				shipment.setUpdateTime(new Date());
 				shipment.setUpdateBy(getUser().getFullName());
-				shipment.setStatus("2");
+				shipment.setStatus(EportConstants.SHIPMENT_STATUS_SAVE);
 				shipmentService.updateShipment(shipment);
 			}
 			return success("Lưu khai báo thành công");
@@ -819,5 +867,14 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		}
 		
 		return error("Yêu cầu hủy lệnh thất bại, quý khách vui lòng liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
+	}
+	
+	@GetMapping("/containerNo/{containerNo}/sztp")
+	@ResponseBody
+	public AjaxResult getSztpByContainerNo(@PathVariable("containerNo") String containerNo) {
+		String sztp = catosApiService.getSztpByContainerNo(containerNo);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("sztp", sztp);
+		return ajaxResult;
 	}
 }

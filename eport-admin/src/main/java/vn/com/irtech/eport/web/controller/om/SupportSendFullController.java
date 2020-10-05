@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -73,6 +74,9 @@ public class SupportSendFullController extends OmBaseController{
     private IEdoService edoService;
     
     @Autowired
+    private ServerConfig serverConfig;
+    
+    @Autowired
     private IShipmentCommentService shipmentCommentService;
     
     @GetMapping("/view")
@@ -81,7 +85,7 @@ public class SupportSendFullController extends OmBaseController{
     	if (sId != null) {
 			mmap.put("sId", sId);
 		}
-    	
+    	mmap.put("domain", serverConfig.getUrl());
 		// ProcessOrder processOrder = new ProcessOrder();
 	    // List<String> logisticsGroups = processOrderService.selectProcessOrderOnlyLogisticName(processOrder);
 		// mmap.put("logisticsGroups", logisticsGroups);

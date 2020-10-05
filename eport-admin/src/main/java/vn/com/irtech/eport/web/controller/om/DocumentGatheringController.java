@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
@@ -63,13 +64,16 @@ public class DocumentGatheringController extends AdminBaseController  {
 	@Autowired
 	private MqttService mqttService;
 	
+	@Autowired
+	private ServerConfig serverConfig;
+	
 	@GetMapping()
 	public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
 		
 		if (sId != null) {
 			mmap.put("sId", sId);
 		}
-		
+		mmap.put("domain", serverConfig.getUrl());
 		// Get list logistic group
 		LogisticGroup logisticGroup = new LogisticGroup();
 	    logisticGroup.setGroupName("Chọn đơn vị Logistics");

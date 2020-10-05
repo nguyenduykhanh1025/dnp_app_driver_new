@@ -67,20 +67,19 @@ $(document).ready(function () {
         try {
             $.modal.openTab(`Đính kèm - Cont [${shipmentId}]`, url.replace("{shipmentId}", shipmentId));
         }
-        catch (e)
-        {
+        catch (e) {
             window.open(url.replace("{shipmentId}", shipmentId));
         }
     });
 
-    $("#containerNo").textbox('textbox').bind('keydown', function(e) {
+    $("#containerNo").textbox('textbox').bind('keydown', function (e) {
         // enter key
         if (e.keyCode == 13) {
             search();
         }
     });
 
-    $("#blNo").textbox('textbox').bind('keydown', function(e) {
+    $("#blNo").textbox('textbox').bind('keydown', function (e) {
         // enter key
         if (e.keyCode == 13) {
             search();
@@ -127,7 +126,7 @@ function loadTable() {
         collapsible: true,
         clientPaging: false,
         pagination: true,
-        rownumbers:true,
+        rownumbers: true,
         onClickRow: function () {
             getSelected();
         },
@@ -169,7 +168,7 @@ function formatLogistic(value, row, index) {
 }
 // FORMAT REMARK FOR SHIPMENT LIST
 function formatRemark(value) {
-    return '<div class="easyui-tooltip" title="'+ ((value!=null&&value!="")?value:"không có ghi chú") +'" style="width: 80; text-align: center;"><span>'+ (value!=null?value:"") +'</span></div>';
+    return '<div class="easyui-tooltip" title="' + ((value != null && value != "") ? value : "không có ghi chú") + '" style="width: 80; text-align: center;"><span>' + (value != null ? value : "") + '</span></div>';
 }
 
 // FORMAT DATE FOR SHIPMENT LIST
@@ -199,8 +198,8 @@ function clearInput() {
     shipment = new Object();
     shipment.params = new Object();
     loadTable();
-  }
-  
+}
+
 
 // HANDLE WHEN SELECT A SHIPMENT
 function getSelected() {
@@ -233,11 +232,11 @@ function toggleAttachIcon(shipmentId) {
             if (data.code == 0) {
                 if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
                     let html = '';
-                    data.shipmentFiles.forEach(function(element, index) {
+                    data.shipmentFiles.forEach(function (element, index) {
                         html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
                     });
                     $('#attachIcon').html(html);
-                } 
+                }
             }
         }
     });
@@ -306,7 +305,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
                 break;
             case 'N':
-                if(value > 2) {
+                if (value > 2) {
                     payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
                 }
                 break;
@@ -318,7 +317,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
                 break;
             case 'N':
-                if(sourceData[row].paymentStatus == 'Y') {
+                if (sourceData[row].paymentStatus == 'Y') {
                     released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
                 }
                 break;
@@ -402,7 +401,7 @@ function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
 function planningDateRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value != null && value != '') {
         if (value.substring(2, 3) != "/") {
-            value = value.substring(8, 10)+"/"+value.substring(5, 7)+"/"+value.substring(0,4);
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
         }
     }
     if (!value) {
@@ -524,7 +523,7 @@ function configHandson() {
                     return "Ghi Chú (K/H)";
             }
         },
-        colWidths: [ 21, 91, 100, 150, 43, 100, 150, 66, 82, 95, 100, 100, 60, 58, 66, 150],
+        colWidths: [21, 91, 100, 150, 43, 100, 150, 66, 82, 95, 100, 100, 60, 58, 66, 150],
         filter: "true",
         columns: [
             {
@@ -629,11 +628,11 @@ function configHandson() {
                         hot.setDataAtCell(change[0], 5, ''); // location
                         hot.setDataAtCell(change[0], 6, ''); // container remark
                     }
-                } 
+                }
             });
             $.modal.closeLoading();
             if (containerOrderList.length > 0) {
-                $.modal.alertWarning("Container " + containerOrderList.substring(0, containerOrderList.length-1) + " đã được làm lệnh trên eport, vui lòng yêu cầu hủy lệnh cho container này trước khi cấp cho booking khác.");
+                $.modal.alertWarning("Container " + containerOrderList.substring(0, containerOrderList.length - 1) + " đã được làm lệnh trên eport, vui lòng yêu cầu hủy lệnh cho container này trước khi cấp cho booking khác.");
             }
         },
         beforeKeyDown: function (e) {
@@ -679,15 +678,15 @@ function checkAll() {
     if (!allChecked) {
         allChecked = true
         checkList = Array(rowAmount).fill(0);
-        for (let i=0; i<checkList.length; i++) {
+        for (let i = 0; i < checkList.length; i++) {
             checkList[i] = 1;
-            $('#check'+i).prop('checked', true);
+            $('#check' + i).prop('checked', true);
         }
     } else {
         allChecked = false;
         checkList = Array(rowAmount).fill(0);
-        for (let i=0; i<checkList.length; i++) {
-            $('#check'+i).prop('checked', false);
+        for (let i = 0; i < checkList.length; i++) {
+            $('#check' + i).prop('checked', false);
         }
     }
     let tempCheck = allChecked;
@@ -698,10 +697,10 @@ function checkAll() {
 function check(id) {
     if (sourceData[id].id != null) {
         if (checkList[id] == 0) {
-            $('#check'+id).prop('checked', true);
+            $('#check' + id).prop('checked', true);
             checkList[id] = 1;
         } else {
-            $('#check'+id).prop('checked', false);
+            $('#check' + id).prop('checked', false);
             checkList[id] = 0;
         }
         hot.render();
@@ -710,7 +709,7 @@ function check(id) {
 }
 function updateLayout() {
     allChecked = true;
-    for (let i=0; i<checkList.length; i++) {
+    for (let i = 0; i < checkList.length; i++) {
         let cellStatus = hot.getDataAtCell(i, 1);
         if (cellStatus != null) {
             if (checkList[i] != 1) {
@@ -768,7 +767,7 @@ function getDataSelectedFromTable() {
         $.modal.alertWarning("Bạn chưa chọn container.");
         errorFlg = true;
     } else {
-        shipmentDetailIds = shipmentDetailIds.substring(0, shipmentDetailIds.length-1);
+        shipmentDetailIds = shipmentDetailIds.substring(0, shipmentDetailIds.length - 1);
     }
 
     if (errorFlg) {
@@ -839,12 +838,12 @@ function saveInput() {
             }
         });
         if (contAmount > 0) {
-            containers = containers.substring(0, containers.length-1);
-            $.modal.confirm("Xác nhận cấp " + contAmount + " container: " + containers + "?", function() {
+            containers = containers.substring(0, containers.length - 1);
+            $.modal.confirm("Xác nhận cấp " + contAmount + " container: " + containers + "?", function () {
                 saveData()
             });
         } else {
-            $.modal.confirm("Xác nhận lưu thông tin, chưa chỉ định <br>container nào cho logistic?", function() {
+            $.modal.confirm("Xác nhận lưu thông tin, chưa chỉ định <br>container nào cho logistic?", function () {
                 saveData()
             });
         }
@@ -852,7 +851,7 @@ function saveInput() {
 }
 
 function logisticInfo(id, logistics) {
-    $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function() {
+    $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function () {
         $.modal.close();
     });
 }
@@ -921,7 +920,7 @@ function loadListComment(shipmentCommentId) {
                         // Topic comment
                         html += '<div><span><strong>Yêu cầu:</strong> ' + element.topic + '</span></div>';
                         // Content comment
-                        html += '<div><span>' + element.content + '</span></div>';
+                        html += '<div><span>' + element.content.replaceAll("#{domain}", domain) + '</span></div>';
                         html += '</div>';
                         html += '<hr>';
                     });
@@ -1088,8 +1087,8 @@ function reloadShipmentDetail() {
     checkList = Array(rowAmount).fill(0);
     allChecked = false;
     $('.checker').prop('checked', false);
-    for (let i=0; i<checkList.length; i++) {
-        $('#check'+i).prop('checked', false);
+    for (let i = 0; i < checkList.length; i++) {
+        $('#check' + i).prop('checked', false);
     }
     // loadTable();
     loadShipmentDetail(shipmentSelected.id);
@@ -1097,4 +1096,3 @@ function reloadShipmentDetail() {
 
 
 
-    

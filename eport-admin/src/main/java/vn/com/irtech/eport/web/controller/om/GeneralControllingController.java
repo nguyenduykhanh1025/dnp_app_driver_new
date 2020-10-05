@@ -120,7 +120,7 @@ public class GeneralControllingController extends AdminBaseController  {
 		if (sId != null) {
 			mmap.put("sId", sId);
 		}
-		
+		mmap.put("domain", serverConfig.getUrl());
 		// Get list logistic group
 		LogisticGroup logisticGroup = new LogisticGroup();
 	    logisticGroup.setGroupName("Chọn đơn vị Logistics");

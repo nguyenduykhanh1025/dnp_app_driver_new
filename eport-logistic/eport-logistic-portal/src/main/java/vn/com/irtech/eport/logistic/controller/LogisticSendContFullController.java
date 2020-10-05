@@ -3,7 +3,6 @@ package vn.com.irtech.eport.logistic.controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -114,6 +113,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
     	if (sId != null) {
 			mmap.put("sId", sId);
 		}
+    	mmap.put("domain", serverConfig.getUrl());
     	mmap.put("oprListBookingCheck", dictService.getListTag("opr_list_booking_check"));
 		return PREFIX + "/index";
 	}

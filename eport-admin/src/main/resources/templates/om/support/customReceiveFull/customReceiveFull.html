@@ -55,12 +55,16 @@
           <table id="dg" style="width: 100%;">
             <thead>
               <tr>
-                <th data-options="field:'waitingTime',align:'center', formatter: formatUpdateTime" width="70">Số phút</th>
+                <th data-options="field:'waitingTime',align:'center', formatter: formatUpdateTime" width="70">Số phút
+                </th>
                 <th data-options="field:'id',align:'center'" width="50">Mã Lô</th>
-                <th data-options="field:'logisticName', halign: 'center', resizable: true, formatter: formatLogistic" width="120" sortable="true">Logistics</th>
+                <th data-options="field:'logisticName', halign: 'center', resizable: true, formatter: formatLogistic"
+                  width="120" sortable="true">Logistics</th>
                 <th data-options="field:'blNo', halign: 'center', resizable:true" width="110">BL No</th>
-                <th data-options="field:'containerAmount', resizable:true, align:'center', fixed:true" sortable="true" width="40">SL</th>
-                <th data-options="field:'opeCode', resizable:true, align:'left', fixed:true" sortable="true" width="50">OPR</th>
+                <th data-options="field:'containerAmount', resizable:true, align:'center', fixed:true" sortable="true"
+                  width="40">SL</th>
+                <th data-options="field:'opeCode', resizable:true, align:'left', fixed:true" sortable="true" width="50">
+                  OPR</th>
                 <th data-options="field:'customScanTime',align:'left'" width="150">Thời gian<br> quét tờ khai</th>
               </tr>
             </thead>
@@ -79,7 +83,7 @@
                   <div class="form-group row">
                     <label class="col-md-1 col-sm-2 col-xs-3">Tiêu đề <span style="color: red;">*</span></label>
                     <div class="col-md-11 col-sm-10 col-xs-9">
-                      <input class="easyui-textbox" id="topic" style="width: 100%;"/>
+                      <input class="easyui-textbox" id="topic" style="width: 100%;" />
                     </div>
                   </div>
                   <div class="form-group row">
@@ -91,9 +95,9 @@
                   <div>
                     <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
                       <span class="l-btn-left"><span class="l-btn-text">
-                      <button id="sendComment" onclick="addComment()" class="btn btn-sm btn-primary">
-                      <i class="fa fa-send text-primary"></i> Gửi</button></span></span>
-                    </a>  
+                          <button id="sendComment" onclick="addComment()" class="btn btn-sm btn-primary">
+                            <i class="fa fa-send text-primary"></i> Gửi</button></span></span>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -102,15 +106,16 @@
               <div class="right-side__toolbar">
                 <div class="datagrid-toolbar">
                   <table cellspacing="0" cellpadding="0">
-                      <tr>
-                        <td>
-                          <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
-                            <span class="l-btn-left"><span class="l-btn-text">
-                            <button id="checkCustomStatusByProcessOrderId" onclick="notifyResult()" class="btn btn-sm btn-success">
-                            <i class="fa fa-check text-primary"></i> Reset Kết Quả</button></span></span>
-                          </a>
-                        </td>
-                      </tr>
+                    <tr>
+                      <td>
+                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                          <span class="l-btn-left"><span class="l-btn-text">
+                              <button id="checkCustomStatusByProcessOrderId" onclick="notifyResult()"
+                                class="btn btn-sm btn-success">
+                                <i class="fa fa-check text-primary"></i> Reset Kết Quả</button></span></span>
+                        </a>
+                      </td>
+                    </tr>
                   </table>
                 </div>
               </div>
@@ -131,6 +136,7 @@
     var logisticGroups = /*[[${logisticGroups}]]*/;
     var vesselAndVoyages = /*[[${vesselAndVoyages}]]*/;
     var sId = /*[[${sId}]]*/;
+    var domain = /*[[${domain}]]*/;
   </script>
   <!-- <script th:src="@{/eport/js/modules/om/support/customReceiveFull/layout.js}"></script> -->
   <script th:src="@{/eport/js/modules/om/support/customReceiveFull/customReceiveFull.js}"></script>

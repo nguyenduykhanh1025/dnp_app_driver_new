@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -74,13 +75,16 @@ public class SupportReceiveEmptyController extends OmBaseController{
     @Autowired
     private IShipmentCommentService shipmentCommentService;
     
+    @Autowired
+    private ServerConfig serverConfig;
+    
     @GetMapping("/view")
     public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap)
     {
     	if (sId != null) {
 			mmap.put("sId", sId);
 		}
-		
+    	mmap.put("domain", serverConfig.getUrl());
     	
 		// ProcessOrder processOrder = new ProcessOrder();
 	    // List<String> logisticsGroups = processOrderService.selectProcessOrderOnlyLogisticName(processOrder);

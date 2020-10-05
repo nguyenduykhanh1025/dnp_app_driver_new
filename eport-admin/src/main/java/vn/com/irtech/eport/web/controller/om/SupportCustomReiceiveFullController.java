@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -56,13 +57,16 @@ public class SupportCustomReiceiveFullController  extends OmBaseController{
     @Autowired
     private ICatosApiService catosApiService;
     
+    @Autowired
+    private ServerConfig serverConfig;
+    
     @GetMapping("/view")
     public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap)
     {
     	if (sId != null) {
 			mmap.put("sId", sId);
 		}
-    	
+    	mmap.put("domain", serverConfig.getUrl());
     	// Get list logistic group
 		LogisticGroup logisticGroup = new LogisticGroup();
 	    logisticGroup.setGroupName("Tất cả khách hàng");

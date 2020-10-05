@@ -30,6 +30,7 @@ import vn.com.irtech.eport.carrier.service.IEdoHouseBillService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.annotation.RepeatSubmit;
+import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.constant.SystemConstants;
@@ -38,7 +39,6 @@ import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
-import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -110,6 +110,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@Autowired
 	private DictService dictService;
 	
+	@Autowired
+	private ServerConfig serverConfig;
+	
 	@GetMapping()
 	public String receiveContFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
 		if (sId != null) {
@@ -122,6 +125,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		emptyDepots.add("Cảng Khác");
 		mmap.put("emptyDepots", emptyDepots);
+		mmap.put("domain", serverConfig.getUrl());
 		return PREFIX + "/index";
 	}
 
@@ -489,6 +493,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 							shipmentDetailReference.setDetFreeTime(inputDetail.getDetFreeTime());
 						}
 						shipmentDetailReference.setUpdateTime(new Date());
+						
 						if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
 							return error("Lưu khai báo thất bại từ container: " + inputDetail.getContainerNo());
 						}
