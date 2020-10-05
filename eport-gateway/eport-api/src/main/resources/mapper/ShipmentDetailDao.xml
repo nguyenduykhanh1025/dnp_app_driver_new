@@ -44,7 +44,6 @@
         <where>
             AND M.BL_NO = #{blNo}
         </where>
-        ORDER BY M.CNTR_NO ASC
         UNION ALL
         <include refid="selectContainerDetailVo"/>
             FROM DNP_PROD.TB_RESERVE M
@@ -52,7 +51,6 @@
             AND M.CNTR_STATE = 'R'
             AND M.BL_NO = #{blNo}
         </where>
-        ORDER BY M.CNTR_NO ASC
     </select>
     
     <select id="selectShipmentDetailByContNo"  resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
