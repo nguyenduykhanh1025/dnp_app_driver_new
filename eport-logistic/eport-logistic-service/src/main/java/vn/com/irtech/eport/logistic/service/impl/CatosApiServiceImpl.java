@@ -1,7 +1,9 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -933,4 +935,27 @@ public class CatosApiServiceImpl implements ICatosApiService {
 		}
 	}
 	
+	/**
+	 * Get container info by cont no list separated by comma
+	 * 
+	 * @param containerNo
+	 * @return List<ContaienrInfoDto>
+	 */
+	@Override
+	public List<ContainerInfoDto> getContainerInfoDtoByContNos(String containerNos) {
+		try {
+			String url = Global.getApiUrl() + "/container/info";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			Map<String, Object> map = new HashMap<>();
+			map.put("containerNos", containerNos);
+			HttpEntity httpEntity = new HttpEntity<Map<String, Object>>(map);
+			ResponseEntity<List<ContainerInfoDto>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ContainerInfoDto>>() {});
+			List<ContainerInfoDto> containerInfoDtos = response.getBody();
+			return containerInfoDtos;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api get container info: ", e);
+			return null;
+		}
+	}
 }

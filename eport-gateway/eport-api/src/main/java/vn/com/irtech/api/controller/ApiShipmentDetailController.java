@@ -3,6 +3,7 @@ package vn.com.irtech.api.controller;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -311,5 +312,10 @@ public class ApiShipmentDetailController {
 	@GetMapping("/pod/{pod}/exist")
 	public Integer checkPodExist(@PathVariable("pod") String pod) {
 		return shipmentDetailDao.getNumberOfPod(pod);
+	}
+	
+	@PostMapping("/container/info")
+	public List<ContainerInfoDto> getContainerInfoByContainerNos(@RequestBody Map<String, Object> mapData) {
+		return shipmentDetailDao.selectShipmentDetailByContainerNos(Convert.toStrArray(mapData.get("containerNos").toString()));
 	}
 }

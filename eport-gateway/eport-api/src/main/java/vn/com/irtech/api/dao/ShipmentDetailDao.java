@@ -223,4 +223,12 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return Integer number of pod
 	 */
 	public Integer getNumberOfPod(String pod);
+	
+	/**
+	 * Get container info stacking on depot by list container no String[]
+	 * 
+	 * @param containerNos
+	 * @return List<ContainerInfoDto>
+	 */
+	public List<ContainerInfoDto> selectShipmentDetailByContainerNos(String[] containerNos);
 }
