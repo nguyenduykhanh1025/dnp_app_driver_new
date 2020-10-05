@@ -35,7 +35,9 @@
                 END AS CNTR_STATE,
                 M.REMARK,
                 M.BLOCK || '-' || M.BAY || '-' || M.ROWW || '-' || M.TIER AS LOCATION,
-                M.AREA
+                M.AREA,
+				M.JOB_ODR_NO,
+				M.JOB_ODR_NO2
     </sql>
 
     <select id="selectShipmentDetailsByBLNo" parameterType="String" resultType="vn.com.irtech.api.dto.ContainerInfoDto">

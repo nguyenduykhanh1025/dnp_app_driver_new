@@ -98,30 +98,30 @@ $(document).ready(function () {
   });
   $('#opr').combobox('select', 'Chọn OPR');
 
-  // $("#doStatus").combobox({
-  //   valueField: 'alias',
-  //   textField: 'text',
-  //   data: [{
-  //     "alias": 'null',
-  //     "text": "Trạng thái",
-  //     "selected": true
-  //   }, {
-  //     "alias": 'N',
-  //     "text": "Chưa thu"
-  //   }, {
-  //     "alias": 'Y',
-  //     "text": "Đã thu"
-  //   }],
-  //   onSelect: function (doStatus) {
-  //     if (doStatus.alias != 'null') {
-  //       shipment.params.doStatus = doStatus.alias;
-  //     } else {
-  //       shipment.params.doStatus = null;
-  //     }
-  //     loadTable();
-  //   }
-  // });
-  // $('#doStatus').combobox('select', 'null');
+  $("#doStatus").combobox({
+    panelHeight: 'auto',
+    valueField: 'alias',
+    textField: 'text',
+    data: [{
+      "alias": '',
+      "text": "Trạng thái",
+      "selected": true
+    }, {
+      "alias": 'N',
+      "text": "Chưa thu"
+    }, {
+      "alias": 'Y',
+      "text": "Đã thu"
+    }],
+    onSelect: function (doStatus) {
+      if (doStatus.alias != '') {
+        shipment.params.doStatus = doStatus.alias;
+      } else {
+        shipment.params.doStatus = null;
+      }
+      loadTable();
+    }
+  });
 
   // loadTable();
 });
@@ -690,6 +690,7 @@ function search() {
 function clearInput() {
   $('#opr').combobox('select', 'Chọn OPR');
   $('#logisticGroups').combobox('select', '0');
+  $('#doStatus').combobox('select', '');
   $("#containerNo").textbox('setText', '');
   $("#bookingNo").textbox('setText', '');
   shipment = new Object();
