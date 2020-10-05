@@ -33,14 +33,12 @@ import vn.com.irtech.eport.common.annotation.RepeatSubmit;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
-import vn.com.irtech.eport.common.constant.SystemConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.DictService;
-import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
@@ -98,9 +96,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@Autowired
 	private ICarrierGroupService carrierGroupService;
 
-	@Autowired
-	private WebSocketService webSocketService;
-	
 	@Autowired
 	private IEdoHouseBillService edoHouseBillService;
 	
@@ -558,25 +553,25 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 			// flag mapping custom No
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-				boolean customsNoMappingFlg = "1".equals(configService.selectConfigByKey(SystemConstants.ACCIS_CUSTOM_MAPPING_FLG_KEY));
+//				boolean customsNoMappingFlg = "1".equals(configService.selectConfigByKey(SystemConstants.ACCIS_CUSTOM_MAPPING_FLG_KEY));
 				for (ShipmentDetail shipmentDetail : shipmentDetails) {
 					// Save declareNoList to shipment detail
 					shipmentDetail.setCustomsNo(declareNoList);
 					shipmentDetail.setCustomScanTime(new Date());
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					// Neu bat buoc check to khai thi phai goi lai acciss
-					if (!customsNoMappingFlg && catosApiService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
-						if (shipmentDetail.getStatus() == 1) {
-							shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
-						}
-						shipmentDetail.setCustomStatus("R");
-						shipmentDetailService.updateShipmentDetail(shipmentDetail);
-						AjaxResult ajaxResult = AjaxResult.success();
-						ajaxResult.put("shipmentDetail", shipmentDetail);
-						webSocketService.sendMessage("/" + shipmentDetail.getContainerNo() + "/response", ajaxResult);
-					} else {
-						customQueueService.offerShipmentDetail(shipmentDetail);
-					}
+//					if (!customsNoMappingFlg && catosApiService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
+//						if (shipmentDetail.getStatus() == 1) {
+//							shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+//						}
+//						shipmentDetail.setCustomStatus("R");
+//						shipmentDetailService.updateShipmentDetail(shipmentDetail);
+//						AjaxResult ajaxResult = AjaxResult.success();
+//						ajaxResult.put("shipmentDetail", shipmentDetail);
+//						webSocketService.sendMessage("/" + shipmentDetail.getContainerNo() + "/response", ajaxResult);
+//					} else {
+					customQueueService.offerShipmentDetail(shipmentDetail);
+//					}
 				}
 				return success();
 			}
@@ -819,7 +814,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		if (logisticGroupService.checkDelegatePermission(taxCode, myTaxcode, EportConstants.DELEGATE_PERMISSION_PROCESS) > 0) {
 			return success();
 		}
-		return error();
+		return error("Bạn chưa có ủy quyền từ chủ hàng để thực hiện lô hàng này. Hãy liên hệ với Cảng để thêm ủy quyền.");
 	}
 	
 	@GetMapping("/shipment/{shipmentId}/custom/notification")
@@ -892,7 +887,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return validateResult;
 	}
 	
-	public AjaxResult validateShipmentDetailList(List<ShipmentDetail> shipmentDetails) {
+	private AjaxResult validateShipmentDetailList(List<ShipmentDetail> shipmentDetails) {
 		if (CollectionUtils.isEmpty(shipmentDetails)) {
 			return error("Không tìm thấy thông tin chi tiết lô đã chọn.");
 		}
@@ -926,6 +921,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		// validate consignee exist in catos
 		if (catosApiService.checkConsigneeExistInCatos(shipmentDetailReference.getConsignee()) == 0) {
 			return error("Tên chủ hàng quý khách nhập không đúng, vui lòng chọn tên chủ hàng từ trong danh sách của hệ thống gợi ý.");
+		}
+		// kiem tra uy quyen
+		if(logisticGroupService.checkDelegatePermission(shipmentDetailReference.getTaxCode(), getGroup().getMst(), EportConstants.DELEGATE_PERMISSION_PROCESS) == 0) {
+			return error("Bạn chưa có ủy quyền từ chủ hàng để thực hiện lô hàng này. Hãy liên hệ với Cảng để thêm ủy quyền.");
 		}
 		// kiem tra container da duoc lam lenh trong catos
 		List<ContainerInfoDto> pickupResult = catosApiService.getContainerPickup(containerNos, userVoy);
