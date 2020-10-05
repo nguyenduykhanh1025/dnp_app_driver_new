@@ -59,7 +59,7 @@ public interface IShipmentDetailService
      * @param ids Entity Ids
      * @return result
      */
-    public int deleteShipmentDetailByIds(Long shipmentId, String shipmentDetailIds);
+    public int deleteShipmentDetailByIds(Long shipmentId, String shipmentDetailIds, Long logisticGroupId);
 
     /**
      * Delete Shipment Details
