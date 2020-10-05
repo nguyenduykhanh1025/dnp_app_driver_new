@@ -430,6 +430,9 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
           process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
         }
         break;
+      case 'D':
+        process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
+        break;
     }
     // Payment status
     let payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
@@ -445,6 +448,11 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
           payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
         }
         break;
+    }
+    // Do status
+    let doStatus = '<i id="do" class="fa fa-file-text easyui-tooltip" title="Chưa Gửi DO gốc" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+    if (sourceData[row].doStatus == 'Y') {
+      doStatus = '<i id="do" class="fa fa-file-text easyui-tooltip" title="Đã Gửi DO gốc" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
     }
     // released status
     let released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
@@ -464,7 +472,11 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     if (sourceData[row].loadingPort.substring(0, 2) != 'VN') {
       content += customs;
     }
-    content += process + payment + released + '</div>';
+    content += process + payment;
+    if (shipmentSelected.edoFlg == "0") {
+      content += doStatus;
+    }
+    content += released + '</div>';
     $(td).html(content);
   }
   return td;
@@ -791,7 +803,7 @@ function configHandson() {
           return "Ghi Chú";
       }
     },
-    colWidths: [40, 100, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200],
+    colWidths: [40, 120, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200],
     filter: "true",
     columns: [
       {
@@ -1963,4 +1975,67 @@ function addComment() {
       }
     });
   }
+}
+
+function requestCancelOrder() {
+  getDataSelectedFromTable(true);
+  if (shipmentDetails.length > 0) {
+    // Check if list cont exists cont has been process
+    let containers = '';
+    shipmentDetails.forEach(function (element) {
+      if (element.processStatus != 'Y') {
+        containers += element.containerNo + ',';
+      }
+    });
+    if (containers.length > 0) {
+      containers = containers.substring(0, containers.length - 1);
+      $.modal.alertWarning("Các contaienr quý khách chọn chưa được thực hiện làm lệnh, quý khách không thể yêu cầu hủy lệnh cho những container này.");
+    } else {
+      openFormRemarkBeforeReqCancelOrder();
+    }
+  }
+}
+
+function openFormRemarkBeforeReqCancelOrder() {
+  // Form confirm req supply cont
+  layer.open({
+    type: 2,
+    area: [500 + 'px', 230 + 'px'],
+    fix: true,
+    maxmin: true,
+    shade: 0.3,
+    title: 'Xác Nhận',
+    content: prefix + "/req/cancel/confirmation",
+    btn: ["Xác Nhận", "Hủy"],
+    shadeClose: false,
+    yes: function (index, layero) {
+      let childLayer = layero.find("iframe")[0].contentWindow.document;
+      $.modal.loading("Đang xử lý ...");
+      $.ajax({
+        url: prefix + "/order-cancel/shipment-detail",
+        method: "POST",
+        data: {
+          shipmentDetailIds: shipmentDetailIds,
+          contReqRemark: $(childLayer).find("#message").val()
+        },
+        success: function (result) {
+          if (result.code == 0) {
+            $.modal.alertSuccess(result.msg);
+            reloadShipmentDetail();
+          } else {
+            $.modal.alertError(result.msg);
+          }
+          $.modal.closeLoading();
+          layer.close(index);
+        },
+        error: function (result) {
+          $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
+          $.modal.closeLoading();
+        },
+      });
+    },
+    cancel: function (index) {
+      return true;
+    }
+  });
 }

@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-  <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="renderer" content="webkit" />
-<title>DaNangPort:ePort - Admin Portal</title>
-<!-- Avoid IE using compatibility mode -->
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<link th:href="@{favicon.ico}" rel="stylesheet" />
-<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
-<link th:href="@{/css/jquery.contextMenu.min.css}" rel="stylesheet" />
-<link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" />
-<link th:href="@{/css/animate.css}" rel="stylesheet" />
-<link th:href="@{/css/style.css}" rel="stylesheet" />
-<link th:href="@{/css/skins.css}" rel="stylesheet" />
-<link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
-<link th:href="@{/css/index.css}" rel="stylesheet" />
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="renderer" content="webkit" />
+  <title>DaNangPort:ePort - Admin Portal</title>
+  <!-- Avoid IE using compatibility mode -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link th:href="@{favicon.ico}" rel="stylesheet" />
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+  <link th:href="@{/css/jquery.contextMenu.min.css}" rel="stylesheet" />
+  <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" />
+  <link th:href="@{/css/animate.css}" rel="stylesheet" />
+  <link th:href="@{/css/style.css}" rel="stylesheet" />
+  <link th:href="@{/css/skins.css}" rel="stylesheet" />
+  <link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
+  <link th:href="@{/css/index.css}" rel="stylesheet" />
 </head>
 
 <body class="fixed-sidebar full-height-layout gray-bg ">
@@ -33,16 +34,16 @@
                 <div class="view-all">
                   <h3>Thông Báo</h3>
                   <a onclick="viewAll()" id="loadAll">Xem tất cả</a>
-                  </div>
-                  <div class="notifications">
-                    <div class="loading">
-                      <div class="loader"></div>
-                      <div>Đang xử lý</div>
-                    </div>
-                    <div class="empty-div">Không có thông báo</div>
-                  </div>
-                  <div class="see-more"><a onclick="loadMore()" id="loadMore">Xem thêm...</a></div>
                 </div>
+                <div class="notifications">
+                  <div class="loading">
+                    <div class="loader"></div>
+                    <div>Đang xử lý</div>
+                  </div>
+                  <div class="empty-div">Không có thông báo</div>
+                </div>
+                <div class="see-more"><a onclick="loadMore()" id="loadMore">Xem thêm...</a></div>
+              </div>
             </li>
             <li class="dropdown user-menu">
               <a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
@@ -309,7 +310,7 @@
 
       $(document).ready(function () {
         $('#2047').append(' <span id="total" class="round-notify-count">' + (
-          report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER
+          report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER + report.CANCELORDERREQ
         ) + '</span>');
         if (report.RECEIVEFULLORDER > 0) {
           $('#2205').append(' <span id="receiveFullOrder" class="round-notify-count">' + report.RECEIVEFULLORDER + '</span>');
@@ -341,7 +342,11 @@
         } else {
           $('#2425').append(' <span id="receiveCustom"></span>');
         }
-
+        if (report.CANCELORDERREQ > 0) {
+          $('#2605').append(' <span id="cancelOrderReq" class="round-notify-count">' + report.CANCELORDERREQ + '</span>');
+        } else {
+          $('#2605').append(' <span id="cancelOrderReq"></span>');
+        }
         $('#2047').click(updateReportNumberOm);
       });
 
@@ -620,6 +625,13 @@
               } else {
                 $('#receiveCustom').html('');
                 $('#receiveCustom').removeClass('round-notify-count');
+              }
+              if (report.CANCELORDERREQ > 0) {
+                $('#cancelOrderReq').html(report.CANCELORDERREQ);
+                $('#cancelOrderReq').addClass('round-notify-count');
+              } else {
+                $('#cancelOrderReq').html('');
+                $('#cancelOrderReq').removeClass('round-notify-count');
               }
             }
           }

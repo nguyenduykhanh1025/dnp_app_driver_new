@@ -1,54 +1,19 @@
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var delegated = new Object();
-var toolbar = [
-  {
-    text: '<a href="#" class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Thêm</a>',
-    handler: function () {
-      alert("them");
-    },
-  },
-  {
-    text: '<a href="#" class="btn btn-sm btn-default"><i class="fa fa-trash text-danger"></i> Xóa</a>',
-    handler: function () {
-      alert("sua");
-    },
-  },
-  {
-    text: '<a href="#" class="btn btn-sm btn-default"><i class="fa fa-refresh text-success"></i> Làm mới</a>',
-    handler: function () {
-      alert("xoa");
-    },
-  },
-];
-
-
-$(".main-body").layout();
-
-loadTable();
-$(".collapse").click(function () {
-  $(".main-body__search-wrapper").height(15);
-  $(".main-body__search-wrapper--container").hide();
-  $(this).hide();
-  $(".uncollapse").show();
-})
-
-$(".uncollapse").click(function() {
-  $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
-  $(".main-body__search-wrapper--container").show();
-  $(this).hide();
-  $(".collapse").show();
-})
 $(function(){
+  loadTable();
+  dgResize();
   $("#searchAll").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
-      delegated.delegateTaxCode = $("#searchAll").textbox('getText').toUpperCase();
-      delegated.delegateCompany = $("#searchAll").textbox('getText').toUpperCase();
       loadTable();
     }
   });
 })
+
 function loadTable(msg) {
+    delegated.delegateTaxCode = $("#searchAll").textbox('getText').toUpperCase();
+    delegated.delegateCompany = $("#searchAll").textbox('getText').toUpperCase();
   if (msg) {
     $.modal.msgSuccess(msg);
   }
@@ -58,6 +23,7 @@ function loadTable(msg) {
     clientPaging: true,
     pagination: true,
     pageSize: 20,
+    singleSelect: true,
     onClickRow: function () {
       getSelected();
     },
@@ -93,6 +59,11 @@ function loadTable(msg) {
   });
 }
 
+function refresh() {
+	$('#searchAll').textbox('setText', '');
+    shipmentDetail = new Object();
+    loadTable();
+}
 function formatDate(value) {
   var date = new Date(value);
   var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
@@ -103,20 +74,9 @@ function formatDate(value) {
 
 function formatStatus(value) {
   if (value == 'P') {
-    return "<span class='label label-success'>Thanh Toán</span>";
+    return "Thanh Toán";
   }
-  return "<span class='label label-default'>Làm lệnh</span>";
-}
-function formatExternalRent(value) {
-  if (value != 0) {
-    return "<span class='label label-success'>Có</span>";
-  }
-  return "<span class='label label-default'>Không</span>";
-}
-function formatAction(value, row, index) {
-  var actions = [];
-  actions.push('<a class="btn btn-default btn-xs " onclick="assignTruck(\'' + row.id + '\')"><i class="fa fa-eyedropper"></i>Chỉ định xe</a>');
-  return actions.join("");
+  return "Làm lệnh";
 }
 
 $("#delegateType").combobox({

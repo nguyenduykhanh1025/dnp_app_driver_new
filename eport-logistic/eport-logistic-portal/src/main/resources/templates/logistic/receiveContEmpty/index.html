@@ -18,7 +18,7 @@
   <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
   <div class="main-body">
     <div class="main-body__search-wrapper mb-2">
-      
+
       <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
         <div class="flex__left w-20">
           <h3 class="mt-10">Nhận Container Rỗng Từ Cảng</h3>
@@ -35,12 +35,13 @@
               <input class="easyui-textbox" id="consignee" data-options="prompt:'Chủ hàng'" />
             </div>
             <div class="d-inline">
-              <select id="shipmentStatus" class="easyui-combobox" panelHeight="auto" editable="false" style="width: 130px">
-                  <option value="" selected>Tất Cả</option>
-                  <option value=1>Đang Giao Dịch</option>
-                  <option value=4>Hoàn Thành</option>
+              <select id="shipmentStatus" class="easyui-combobox" panelHeight="auto" editable="false"
+                style="width: 130px">
+                <option value="" selected>Tất Cả</option>
+                <option value=1>Đang Giao Dịch</option>
+                <option value=4>Hoàn Thành</option>
               </select>
-          </div>
+            </div>
             <div class="d-inline">
               <input id="fromDate" class="easyui-datebox" style="width: 100px;"
                 data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
@@ -53,10 +54,11 @@
               <button class="btn btn-success" onclick="search()" style="margin-bottom: 5px;">Tìm kiếm</button>
             </div>
             <div class="d-inline">
-              <button class="btn btn-success btn-outline" onclick="clearInput()" style="margin-bottom: 5px;">Làm mới</button>
+              <button class="btn btn-success btn-outline" onclick="clearInput()" style="margin-bottom: 5px;">Làm
+                mới</button>
             </div>
           </div>
-      </div>
+        </div>
       </div>
     </div>
     <div class="main-body__table-wrapper">
@@ -67,12 +69,19 @@
             <thead>
               <tr>
                 <th data-options="field:'id', fixed:true" width="1"></th>
-                <th data-options="field:'bookingNo', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Booking No</th>
-                <th data-options="field:'containerAmount', align:'center', halign:'center', fixed:true" width="40">SL</th>
-                <th data-options="field:'opeCode', align:'center', halign:'center', fixed:true" width="50" sortable="true">OPR</th>
-                <th data-options="field:'consignee', align:'left', halign:'center', fixed:true" width="150" sortable="true">Tên chủ hàng</th>
-                <th data-options="field:'createTime', align:'center', halign:'center', formatter: formatDate, fixed:true" sortable="true" width="110">Ngày Tạo</th>
-                <th data-options="field:'remark', align:'left', halign:'center', formatter: formatRemark" sortable="true" width="150">Ghi Chú</th>
+                <th data-options="field:'bookingNo', halign:'center', resizable:true, fixed:true" sortable="true"
+                  width="150">Booking No</th>
+                <th data-options="field:'containerAmount', align:'center', halign:'center', fixed:true" width="40">SL
+                </th>
+                <th data-options="field:'opeCode', align:'center', halign:'center', fixed:true" width="50"
+                  sortable="true">OPR</th>
+                <th data-options="field:'consignee', align:'left', halign:'center', fixed:true" width="150"
+                  sortable="true">Tên chủ hàng</th>
+                <th
+                  data-options="field:'createTime', align:'center', halign:'center', formatter: formatDate, fixed:true"
+                  sortable="true" width="110">Ngày Tạo</th>
+                <th data-options="field:'remark', align:'left', halign:'center', formatter: formatRemark"
+                  sortable="true" width="150">Ghi Chú</th>
               </tr>
             </thead>
           </table>
@@ -90,7 +99,7 @@
                   <div class="form-group row">
                     <label class="col-md-1 col-sm-2 col-xs-3">Tiêu đề <span style="color: red;">*</span></label>
                     <div class="col-md-11 col-sm-10 col-xs-9">
-                      <input class="easyui-textbox" id="topic" style="width: 100%;"/>
+                      <input class="easyui-textbox" id="topic" style="width: 100%;" />
                     </div>
                   </div>
                   <div class="form-group row">
@@ -110,19 +119,19 @@
                     </div>
                     <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
                       <span class="l-btn-left"><span class="l-btn-text">
-                      <button id="sendComment" onclick="addComment()" class="btn btn-sm btn-primary">
-                      <i class="fa fa-send text-primary"></i> Gửi</button></span></span>
-                    </a>  
+                          <button id="sendComment" onclick="addComment()" class="btn btn-sm btn-primary">
+                            <i class="fa fa-send text-primary"></i> Gửi</button></span></span>
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
             <div data-options="region:'center'" id="right-side__main-table">
               <div class="panel-header" style="width: 100%; background-color: #f3f7fa; display: flex;">
-                <div class="panel-title" style="color: #333;">Thông tin lô  </div>
+                <div class="panel-title" style="color: #333;">Thông tin lô </div>
                 <div style="margin-left: 10px;">
-                    <a id="attachIcon" class="hidden" href="javascript:void(0)"
-                     th:attr="data-url=@{/logistic/receive-cont-empty/shipments/{shipmentId}/shipment-images}">
+                  <a id="attachIcon" class="hidden" href="javascript:void(0)"
+                    th:attr="data-url=@{/logistic/receive-cont-empty/shipments/{shipmentId}/shipment-images}">
                     <i class="fa fa-paperclip" style="font-size:2rem;" title="Xem hình ảnh booking đính kèm"></i>
                   </a>
                 </div>
@@ -142,39 +151,58 @@
                     <tbody>
                       <tr>
                         <td>
-                          <button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()" class="btn btn-sm btn-primary"><i
-                            class="fa fa-save text-primary"></i> Lưu khai báo
+                          <button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()"
+                            class="btn btn-sm btn-primary"><i class="fa fa-save text-primary"></i> Lưu khai báo
                           </button>
                         </td>
                         <td>
-                          <button id="contSupplyBtn" onclick="requestContSupply()" disabled class="btn btn-sm btn-primary"><i
-                            class="fa fa-plus text-primary"></i> Yêu cầu cấp rỗng
+                          <button id="contSupplyBtn" onclick="requestContSupply()" disabled
+                            class="btn btn-sm btn-primary"><i class="fa fa-plus text-primary"></i> Yêu cầu cấp rỗng
                           </button>
                         </td>
                         <td>
                           <button id="verifyBtn" onclick="verify()" disabled class="btn btn-sm btn-primary"><i
-                            class="fa fa-check text-primary"></i> Xác nhận
+                              class="fa fa-check text-primary"></i> Xác nhận
                           </button>
                         </td>
                         <td>
                           <button id="payBtn" onclick="pay()" disabled class="btn btn-sm btn-primary"><i
-                            class="fa fa-credit-card text-primary"></i> Thanh toán
+                              class="fa fa-credit-card text-primary"></i> Thanh toán
                           </button>
                         </td>
                         <td>
-                          <button id="deleteBtn" onclick="deleteShipmentDetail()" disabled class="btn btn-sm btn-danger"><i
-                            class="fa fa-times text-primary"></i> Xóa
+                          <button id="deleteBtn" onclick="deleteShipmentDetail()" disabled
+                            class="btn btn-sm btn-danger"><i class="fa fa-times text-primary"></i> Xóa
                           </button>
+                        </td>
+                        <td>
+                          <div class="dropdown">
+                            <a class="btn btn-sm btn-primary dropdown-toggle" role="button" id="dropdownRequest"
+                              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Yêu cầu
+                              <i class="fa fa-chevron-down text-primary"></i>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                              <a class="dropdown-item btn btn-sm btn-danger" onclick="requestCancelOrder()">
+                                <i class="fa fa-window-close text-primary"></i> Hủy lệnh
+                              </a>
+                              <a class="dropdown-item btn btn-sm btn-warning" onclick="requestCancelSupplyContainer()">
+                                <i class="fa fa-close text-primary"></i> Hủy yêu cầu cấp container
+                              </a>
+                              <a class="dropdown-item btn btn-sm btn-info" onclick="requestExchangeContainer()">
+                                <i class="fa fa-exchange text-primary"></i> Đổi container
+                              </a>
+                            </div>
+                          </div>
                         </td>
                         <td width="100%"></td>
                         <td>
-                          <button id="exportReceiptBtn" onclick="exportReceipt()" disabled class="btn btn-sm btn-default"><i
-                            class="fa fa-print text-primary"></i> In biên nhận
+                          <button id="exportReceiptBtn" onclick="exportReceipt()" disabled
+                            class="btn btn-sm btn-default"><i class="fa fa-print text-primary"></i> In biên nhận
                           </button>
                         </td>
                         <td>
                           <button id="exportBill" onclick="exportBill()" disabled class="btn btn-sm btn-default"><i
-                            class="fa fa-external-link text-primary"></i> Xuất hóa đơn
+                              class="fa fa-external-link text-primary"></i> Xuất hóa đơn
                           </button>
                         </td>
                       </tr>
@@ -187,7 +215,8 @@
                 <p id="titleProgress"></p>
                 <div class="progress">
                   <span class="percent-text"></span>
-                  <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                  <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
                   </div>
                 </div>
               </div>

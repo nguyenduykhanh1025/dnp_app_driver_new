@@ -485,7 +485,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			(SELECT COUNT(*) FROM process_order where result = 'F' and service_type = 3) AS receiveEmptyOrder,
 			(SELECT COUNT(*) FROM process_order where result = 'F' and service_type = 4) AS sendFullOrder,
             (SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh left join shipment s on sh.shipment_id = s.id where sh.custom_status = 'Y' and s.service_type = 1) AS receiveCustom,
-            (SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh left join shipment s on sh.shipment_id = s.id where sh.custom_status = 'Y' and s.service_type = 4) AS sendCustom
+            (SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh left join shipment s on sh.shipment_id = s.id where sh.custom_status = 'Y' and s.service_type = 4) AS sendCustom,
+            (SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh left join shipment s on sh.shipment_id = s.id where sh.process_status = 'D') AS cancelOrderReq
         from process_order
         FETCH NEXT 1 ROWS ONLY
 	</select>
