@@ -429,7 +429,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		// delete shipment details
 		if (shipmentDetailIds != null) {
 			// just delete shipmentIds for shipment has been verified before
-			shipmentDetailService.deleteShipmentDetailByIds(shipmentId, shipmentDetailIds);
+			shipmentDetailService.deleteShipmentDetailByIds(shipmentId, shipmentDetailIds, getUser().getGroupId());
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
 			// Reset status shipment to INIT if deleted all shipment details

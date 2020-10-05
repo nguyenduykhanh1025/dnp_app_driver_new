@@ -163,7 +163,8 @@ public class SupportCancelOrderController extends AdminBaseController  {
 		
 		logger.debug("Delete all shipment detail om want to delete");
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
-		shipmentDetailService.deleteShipmentDetailByIds(shipmentId, shipmentDetailIds);
+		Long logisticGroupId = shipmentDetails != null && shipmentDetails.size() > 0 ? shipmentDetails.get(0).getLogisticGroupId() : null;
+		shipmentDetailService.deleteShipmentDetailByIds(shipmentId, shipmentDetailIds, logisticGroupId);
 		
 		// check to delete process order when empty
 		logger.debug("Check and delete all process order mapping with shipment detail has been deleted");

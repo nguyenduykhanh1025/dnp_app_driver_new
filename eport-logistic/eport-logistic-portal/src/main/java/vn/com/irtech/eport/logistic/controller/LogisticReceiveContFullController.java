@@ -218,7 +218,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		LogisticAccount user = getUser();
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
-		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
 		shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
 		shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);

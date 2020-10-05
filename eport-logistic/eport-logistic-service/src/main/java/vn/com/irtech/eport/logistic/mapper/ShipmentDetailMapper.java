@@ -62,7 +62,7 @@ public interface ShipmentDetailMapper
      * @param ids IDs
      * @return result
      */
-    public int deleteShipmentDetailByIds(@Param("shipmentId")Long shipmentId, @Param("shipmentDetailIds")String[] shipmentDetailIds);
+    public int deleteShipmentDetailByIds(@Param("shipmentId") Long shipmentId, @Param("shipmentDetailIds") String[] shipmentDetailIds, @Param("logisticGroupId") Long logisticGroupId);
 
     public List<ShipmentDetail> selectShipmentDetailByIds(@Param("shipmentDetailIds") String[] ids, @Param("logisticGroupId") Long logisticGroupId);
 
