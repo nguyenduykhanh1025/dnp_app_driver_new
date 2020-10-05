@@ -847,21 +847,41 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		}
 		
 		// Validate container has job order no
-//		containerNos = containerNos.substring(0, containerNos.length()-1);
-//		Map<String, ContainerInfoDto> ctnrMap = getContainerInfoFromCatos(containerNos);
-//		String containerHasOrderdEmpty = "";
-//		String containerHasOrderdFull = "";
-//		ContainerInfoDto ctnrInfo = null;
-//		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-//			// Get ctnr info by contaienr no in catos
-//			// return error if null
-//			ctnrInfo = ctnrMap.get(shipmentDetail.getContainerNo());
-//			if (ctnrInfo == null) {
-//				return error("Không tìm thấy thông tin container " + shipmentDetail.getContainerNo() + " trong hệ thống của cảng.");
-//			}
-//			/// Container has job order no 2 => has order
-//		}
-//		
+		containerNos = containerNos.substring(0, containerNos.length()-1);
+		Map<String, ContainerInfoDto> ctnrMap = getContainerInfoFromCatos(containerNos);
+		String containerHasOrderdEmpty = "";
+		String containerHasOrderdFull = "";
+		ContainerInfoDto ctnrInfo = null;
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			// Get ctnr info by contaienr no in catos
+			// return error if null
+			ctnrInfo = ctnrMap.get(shipmentDetail.getContainerNo());
+			if (ctnrInfo == null) {
+				return error("Không tìm thấy thông tin container " + shipmentDetail.getContainerNo() + " trong hệ thống của cảng.");
+			}
+			// Container has job order no 2 => has order
+			if (StringUtils.isNotEmpty(ctnrInfo.getJobOdrNo2())) {
+				if ("F".equalsIgnoreCase(ctnrInfo.getFe())) {
+					// Pickup full
+					containerHasOrderdFull += shipmentDetail.getContainerNo() + ",";
+				} else {
+					// Pickup empty
+					containerHasOrderdEmpty += shipmentDetail.getContainerNo() + ",";
+				}
+			}
+		}
+		
+		String errorMsg = "";
+		if (StringUtils.isNotEmpty(containerHasOrderdEmpty)) {
+			errorMsg += "Các container " + containerHasOrderdEmpty.substring(0, containerHasOrderdEmpty.length()-1) + " đã có lệnh bốc rỗng.<br>";
+		}
+		if (StringUtils.isNotEmpty(containerHasOrderdFull)) {
+			errorMsg += "Các container " + containerHasOrderdFull.substring(0, containerHasOrderdFull.length()-1) + " đã có lệnh bốc hàng.";
+		}
+		
+		if (StringUtils.isNotEmpty(errorMsg)) {
+			return error(errorMsg);
+		}
 		
 		return success();
 	}

@@ -204,29 +204,27 @@ function getSelected(index, row) {
     } else {
       title += 'Trống';
     }
-    $('#shipmentInfo').html(title);
+    $.ajax({
+      type: "GET",
+      url: PREFIX + "/shipments/" + row.id + "/shipment-images",
+      contentType: "application/json",
+      success: function (data) {
+        if (data.code == 0) {
+          if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
+            data.shipmentFiles.forEach(function (element, index) {
+              title += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
+            });
+          }
+        }
+        $('#shipmentInfo').html(title);
+      },
+      error: function (errr) {
+        $('#shipmentInfo').html(title);
+      }
+    });
   }
   loadShipmentDetails(shipmentSelected.id);
   loadListComment();
-}
-
-function toggleAttachIcon(shipmentId) {
-  $.ajax({
-    type: "GET",
-    url: PREFIX + "/shipments/" + shipmentId + "/shipment-images",
-    contentType: "application/json",
-    success: function (data) {
-      if (data.code == 0) {
-        if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
-          let html = '';
-          data.shipmentFiles.forEach(function (element, index) {
-            html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
-          });
-          $('#shipemntInfo').append(html);
-        }
-      }
-    }
-  });
 }
 
 // FORMAT HANDSONTABLE COLUMN
