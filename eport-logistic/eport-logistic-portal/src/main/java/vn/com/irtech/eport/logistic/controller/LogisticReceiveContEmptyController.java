@@ -64,6 +64,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Controller
 @RequestMapping("/logistic/receive-cont-empty")
@@ -359,6 +360,20 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			if (shipment == null || !verifyPermission(shipment.getLogisticGroupId())) {
 				return error("Không tìm thấy lô, vui lòng kiểm tra lại thông tin.");
 			}
+			
+			// container no list string separated by comma 
+			String containerNos = "";
+			for (ShipmentDetail inputDetail : shipmentDetails) {
+				containerNos += inputDetail.getContainerNo() + ",";
+			}
+			if (StringUtils.isNotEmpty(containerNos)) {
+				containerNos = containerNos.substring(0, containerNos.length()-1);
+			}
+			
+			// Get map container container ContainerInfoDto mapping with containerNo
+			Map<String, ContainerInfoDto> containerMap = getContainerInfoFromCatos(containerNos);
+			ContainerInfoDto ctnrInfo = null;
+			
 			boolean updateShipment = true; // if true => need to update status shipment from init to save
 			for (ShipmentDetail inputDetail : shipmentDetails) {
 				if (inputDetail.getId() != null) {
@@ -382,6 +397,10 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 							// shipment carrier supply can update container no
 							if (shipment.getSpecificContFlg() == 1) {
 								shipmentDetailReference.setContainerNo(inputDetail.getContainerNo());
+								ctnrInfo = containerMap.get(inputDetail.getContainerNo());
+								if (ctnrInfo != null) {
+									shipmentDetailReference.setLocation(ctnrInfo.getLocation() != null?ctnrInfo.getLocation():ctnrInfo.getArea());
+								}
 							}
 						}
 						shipmentDetailReference.setExpiredDem(inputDetail.getExpiredDem());
@@ -418,7 +437,13 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 					// shipment carrier supply can save container no
 					if (shipment.getSpecificContFlg() == 1) {
 						shipmentDetail.setContainerNo(inputDetail.getContainerNo());
+						ctnrInfo = containerMap.get(inputDetail.getContainerNo());
+						if (ctnrInfo != null) {
+							shipmentDetail.setLocation(ctnrInfo.getLocation() != null?ctnrInfo.getLocation():ctnrInfo.getArea());
+						}
 					}
+					shipmentDetail.setOpeCode(shipment.getOpeCode());
+					shipmentDetail.setBookingNo(shipment.getBookingNo());
 					shipmentDetail.setSztp(inputDetail.getSztp());
 					shipmentDetail.setSztpDefine(inputDetail.getSztpDefine());
 					shipmentDetail.setExpiredDem(inputDetail.getExpiredDem());
@@ -761,6 +786,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			return error("Không tìm thấy thông tin chi tiết lô đã chọn.");
 		}
 		
+		// Container no string separated by comma
+		String containerNos = "";
+		
 		// validate
 		ShipmentDetail shipmentDetailReference = shipmentDetails.get(0);
 		for (int i=0; i<shipmentDetails.size(); i++) {
@@ -804,6 +832,8 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			if (!shipmentDetailReference.getDischargePort().equals(shipmentDetails.get(i).getDischargePort())) {
                 return error("Cảng dỡ hàng không được khác nhau!");
             } 
+			
+			containerNos += shipmentDetails.get(i).getContainerNo() + ",";
 		}
 		
 		// validate consignee exist in catos
@@ -815,6 +845,24 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		if (catosApiService.checkPodExistIncatos(shipmentDetailReference.getDischargePort()) == 0) {
 			return error("Cảng dỡ hàng quý khách nhập không đúng, vui lòng chọn cảng từ trong dánh sách của hệ thống gợi ý.");
 		}
+		
+		// Validate container has job order no
+//		containerNos = containerNos.substring(0, containerNos.length()-1);
+//		Map<String, ContainerInfoDto> ctnrMap = getContainerInfoFromCatos(containerNos);
+//		String containerHasOrderdEmpty = "";
+//		String containerHasOrderdFull = "";
+//		ContainerInfoDto ctnrInfo = null;
+//		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+//			// Get ctnr info by contaienr no in catos
+//			// return error if null
+//			ctnrInfo = ctnrMap.get(shipmentDetail.getContainerNo());
+//			if (ctnrInfo == null) {
+//				return error("Không tìm thấy thông tin container " + shipmentDetail.getContainerNo() + " trong hệ thống của cảng.");
+//			}
+//			/// Container has job order no 2 => has order
+//		}
+//		
+		
 		return success();
 	}
 	
@@ -876,5 +924,22 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("sztp", sztp);
 		return ajaxResult;
+	}
+	
+	/**
+	 * Get container info from catos 
+	 * 
+	 * @param containerNos
+	 * @return Map string object with key is container no and value is containerInfo 
+	 */
+	private Map<String, ContainerInfoDto> getContainerInfoFromCatos(String containerNos) {
+		List<ContainerInfoDto> containerInfoDtos = catosApiService.getContainerInfoDtoByContNos(containerNos);
+		Map<String, ContainerInfoDto> containerInfoMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(containerInfoDtos)) {
+			for (ContainerInfoDto containerInfoDto : containerInfoDtos) {
+				containerInfoMap.put(containerInfoDto.getCntrNo(), containerInfoDto);
+			}
+		}
+		return containerInfoMap;
 	}
 }

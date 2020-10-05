@@ -260,4 +260,12 @@ public interface ICatosApiService {
 	 * @return number of pod record in catos
 	 */
 	public Integer checkPodExistIncatos(String pod);
+	
+	/**
+	 * Get container info by cont no list separated by comma
+	 * 
+	 * @param containerNo
+	 * @return List<ContaienrInfoDto>
+	 */
+	public List<ContainerInfoDto> getContainerInfoDtoByContNos(String containerNos);
 }
