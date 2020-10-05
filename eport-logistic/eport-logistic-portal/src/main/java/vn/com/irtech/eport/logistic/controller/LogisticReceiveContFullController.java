@@ -493,6 +493,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 							shipmentDetailReference.setDetFreeTime(inputDetail.getDetFreeTime());
 						}
 						shipmentDetailReference.setUpdateTime(new Date());
+						
 						if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
 							return error("Lưu khai báo thất bại từ container: " + inputDetail.getContainerNo());
 						}
