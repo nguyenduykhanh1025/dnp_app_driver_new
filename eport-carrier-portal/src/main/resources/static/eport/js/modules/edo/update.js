@@ -29,26 +29,22 @@ function closeForm() {
 }
 
 function confirm() {
-  if (formatDate(expiredDem) == $("#expiredDem").val() && $("#detFreeTime").val() == detFreeTime && $("#emptyContainerDepot").val() == emptyContainerDepot && $("#consignee").val() == consignee) {
-    $.modal.alertError("Không có thông tin nào được thay đổi, vui lòng kiểm tra lại !")
-    return;
-  }
   if (validateDateUpdate($("#expiredDem").val()) == 1 && formatDate(expiredDem) != $("#expiredDem").val()) {
     $.modal.alertError("Hạn lệnh chỉ có thể thay đổi về quá khứ nhiều nhất là 1 ngày !")
     return;
   }
-
   if($("#detFreeTime").val() == null || $("#detFreeTime").val() == '')
   {
     detFreeTime = 0;
   }
+
   if(!checkValidDET($("#detFreeTime").val())) {
 	  $.modal.alertError("Ngày miễn lưu vỏ phải là số hoặc ngày tháng năm (dd/mm/yyyy) !")
 	  return;
   }
   if($("#consignee").val() == null || $("#consignee").val() == '')
   {
-    $.modal.alertError("Tên khách hàng là bắt buộc !");
+    $.modal.alertError("Tên khách hàng không được để trống !")
     return;
   }
   $.modal.confirm(
@@ -61,7 +57,7 @@ function confirm() {
         data: {
           id: id,
           expiredDem: formatDateForSubmit($("#expiredDem").val()),
-          detFreeTime: $("#detFreeTime").val() == detFreeTime ? detFreeTime : $("#detFreeTime").val(),
+          detFreeTime: $("#detFreeTime").val() == detFreeTime ? "" : $("#detFreeTime").val(),
           emptyContainerDepot: $("#emptyContainerDepot").val() == emptyContainerDepot ? "" : $("#emptyContainerDepot").val(),
           consignee: $("#consignee").val() == consignee ? "" : $("#consignee").val()
         },
