@@ -357,6 +357,13 @@ function getSelected(index, row) {
         $('#shipment-info').html(html);
       }
     });
+  } else {
+    if (serviceType == 1 || serviceType == 2) {
+      html += `<span>Mã lô: ` + shipmentSelected.id + ` - B/L No: ` + shipmentSelected.blNo + `</span>`;
+    } else {
+      html += `<span>Mã lô: ` + shipmentSelected.id + ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`
+    }
+    $('#shipment-info').html(html);
   }
   if (serviceType == 4) {
     $('#exportPackingListBtn').show();
