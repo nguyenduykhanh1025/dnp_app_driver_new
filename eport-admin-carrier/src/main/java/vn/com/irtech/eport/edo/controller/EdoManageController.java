@@ -59,7 +59,7 @@ public class EdoManageController extends BaseController {
     if (edo == null) {
       edo = new Edo();
     }
-    List<Edo> dataList = edoService.selectEdoList(edo);
+    List<Edo> dataList = edoService.selectEdoListForReport(edo);
     return getDataTable(dataList);
   }
 
