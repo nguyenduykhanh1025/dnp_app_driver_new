@@ -9,7 +9,7 @@ body {
   overflow: hidden; }
   .intro__header {
     padding: 0 90px;
-    height: 80px;
+    height: 70px;
     background: transparent; }
     .intro__header.scroller {
       -webkit-box-shadow: 0 1px 3px 0px rgba(0, 0, 0, 0.2);
@@ -37,11 +37,21 @@ body {
         border-bottom: 2px solid #E9B356; }
       .intro__header .navbar .nav-item:hover .nav-link {
         color: #E9B356; }
+      .intro__header .navbar .nav-item:hover > .dropdown-menu {
+        display: block; }
       .intro__header .navbar .nav-item .nav-link {
         color: #ffffff;
         font-weight: 600;
         font-size: 18px;
         line-height: 25px; }
+        .intro__header .navbar .nav-item .nav-link:hover {
+          cursor: pointer; }
+      .intro__header .navbar .nav-item .dropdown-menu {
+        background: #ffffff;
+        margin: 0; }
+        .intro__header .navbar .nav-item .dropdown-menu .dropdown-item:hover {
+          color: #ffffff;
+          background: #E9B356; }
   .intro__content {
     position: relative;
     background-image: url("../images/domap2@2x.png");
@@ -86,6 +96,7 @@ body {
           text-align: center; }
           .intro__content .page-redirect .wrapper .link-redirect:hover {
             cursor: pointer;
+            text-decoration: none;
             -webkit-box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.3);
                     box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.3); }
           .intro__content .page-redirect .wrapper .link-redirect.carrier {
