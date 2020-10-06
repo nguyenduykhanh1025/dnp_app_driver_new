@@ -237,8 +237,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		List<String> oprList = dictService.getListTag("opr_list_booking_check");
 		if (oprList.contains(shipment.getOpeCode())) {
 			attachBooking = true;
+			if (StringUtils.isEmpty(shipment.getParams().get("ids").toString())) {
+				return error("Bạn chưa đính kèm tệp booking.");
+			}
 		}
-
+		
 		if (shipmentService.insertShipment(shipment) == 1) {
 			if (attachBooking) {
 				ShipmentImage shipmentImage = new ShipmentImage();
