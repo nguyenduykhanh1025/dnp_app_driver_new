@@ -17,7 +17,6 @@ import vn.com.irtech.api.common.utils.Convert;
 import vn.com.irtech.api.common.utils.StringUtils;
 import vn.com.irtech.api.dao.ContainerInfoDao;
 import vn.com.irtech.api.dao.ShipmentDetailDao;
-import vn.com.irtech.api.dto.ContainerHistoryDto;
 import vn.com.irtech.api.dto.ContainerHoldInfo;
 import vn.com.irtech.api.dto.ContainerInfoDto;
 import vn.com.irtech.api.dto.ContainerReqDto;
@@ -32,9 +31,6 @@ public class ApiShipmentDetailController {
 
 	@Autowired
 	private ShipmentDetailDao shipmentDetailDao;
-
-	@Autowired
-	private ContainerInfoDao containerInfoDao;
 
 	@PostMapping("/shipmentDetail/list")
 	public List<ContainerInfoDto> listShipmentDetail(@RequestBody ShipmentEntity shipmentEntity) {
@@ -324,8 +320,4 @@ public class ApiShipmentDetailController {
 		return shipmentDetailDao.selectShipmentDetailByContainerNos(Convert.toStrArray(mapData.get("containerNos").toString()));
 	}
 
-	@PostMapping("/container/history")
-	public List<ContainerHistoryDto> getContainerHistory(@RequestBody ContainerHistoryDto history) {
-		return containerInfoDao.getContainerHistory(history);
-	}
 }

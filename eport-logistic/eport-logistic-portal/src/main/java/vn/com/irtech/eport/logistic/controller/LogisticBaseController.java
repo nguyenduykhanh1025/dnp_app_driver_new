@@ -22,7 +22,7 @@ public abstract class LogisticBaseController extends BaseController {
 	public static final String PHONE_PATTERN = "^[0-9]{10,11}$";
 
 	@Autowired
-	ILogisticGroupService logisticGroupService;
+	protected ILogisticGroupService logisticGroupService;
 
 	public LogisticAccount getUser() {
 		return ShiroUtils.getSysUser();
