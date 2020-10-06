@@ -7,3 +7,9 @@ $(window).scroll(function() {
     $('.menu').removeClass('scroller');
   }
 });
+
+$(document).ready(function() {
+  $(".youtube-link").grtyoutube({
+    autoPlay:true
+  });
+})
