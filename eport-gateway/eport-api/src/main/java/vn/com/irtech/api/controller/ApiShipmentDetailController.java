@@ -30,7 +30,7 @@ public class ApiShipmentDetailController {
 
 	@Autowired
 	private ShipmentDetailDao shipmentDetailDao;
-	
+
 	@PostMapping("/shipmentDetail/list")
 	public List<ContainerInfoDto> listShipmentDetail(@RequestBody ShipmentEntity shipmentEntity) {
 		return shipmentDetailDao.selectShipmentDetailsByBLNo(shipmentEntity.getBlNo());
@@ -318,4 +318,5 @@ public class ApiShipmentDetailController {
 	public List<ContainerInfoDto> getContainerInfoByContainerNos(@RequestBody Map<String, Object> mapData) {
 		return shipmentDetailDao.selectShipmentDetailByContainerNos(Convert.toStrArray(mapData.get("containerNos").toString()));
 	}
+
 }

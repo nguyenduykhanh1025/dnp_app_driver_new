@@ -64,7 +64,7 @@
 				#{containerNo}
 			</foreach>
         </where>
-        UNION
+        UNION ALL
         <include refid="selectContainerDetailVo"/>
             FROM DNP_PROD.TB_RESERVE M
         <where>
@@ -76,6 +76,21 @@
         </where>
     </select>
     
+    <select id="selectShipmentDetailByJobOdrNo" parameterType="String" resultType="vn.com.irtech.api.dto.ContainerInfoDto">
+        <include refid="selectContainerDetailVo"/>
+            FROM DNP_PROD.TB_INVENTORY M
+        <where>
+            AND (M.JOB_ODR_NO = #{jobOdrNo} OR M.JOB_ODR_NO2 = #{jobOdrNo} )
+        </where>
+        UNION ALL
+        <include refid="selectContainerDetailVo"/>
+            FROM DNP_PROD.TB_RESERVE M
+        <where>
+            AND M.CNTR_STATE = 'R'
+            AND (M.JOB_ODR_NO = #{jobOdrNo} OR M.JOB_ODR_NO2 = #{jobOdrNo} )
+        </where>
+    </select>
+
     <select id="selectShipmentDetailByContNo"  resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
         SELECT            
                 M.CNTR_NO AS containerNo,

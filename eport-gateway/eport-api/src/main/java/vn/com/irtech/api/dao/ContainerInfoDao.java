@@ -10,7 +10,7 @@ import vn.com.irtech.api.entity.ContainerInfoEntity;
 
 @Mapper
 public interface ContainerInfoDao extends BaseMapper<ContainerInfoEntity> {
-	
+
 	List<ContainerInfoEntity> selectContainerInfoListInOut(ContainerInfoEntity containerInfo);
 
 	int countContainerInfoInOut(ContainerInfoEntity containerInfo);
@@ -24,4 +24,3 @@ public interface ContainerInfoDao extends BaseMapper<ContainerInfoEntity> {
 	int countContainerInfoEmpty(ContainerInfoEntity containerInfo);
 
 }
-

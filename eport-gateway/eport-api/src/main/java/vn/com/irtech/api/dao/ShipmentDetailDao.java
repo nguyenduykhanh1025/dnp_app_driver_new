@@ -52,7 +52,7 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return  CNTR_NO / IX_CD / USER_VOY / PTNR_CODE / JOB_ODR_NO2
 	 */
 	public List<String> checkPickupByContainerNos(@Param("containerNos") String[] containerNos, @Param("userVoy") String userVoy);
-
+	
 	public Integer getCountContByBlNo(String blNo);
 	
 	public ShipmentEntity getOpeCodeCatosByBlNo(String blNo);
@@ -231,4 +231,15 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return List<ContainerInfoDto>
 	 */
 	public List<ContainerInfoDto> selectShipmentDetailByContainerNos(String[] containerNos);
+	
+	/**
+	 * Get list of container info by JOB_ODR_NO from catos.<br>
+	 * Using when check if JOB_ODR_NO is successful create in catos.
+	 * 
+	 * @param jobOdrNo
+	 * @return List of Container in jobOdrNo
+	 */
+	public List<ContainerInfoDto> selectShipmentDetailByJobOdrNo(String jobOdrNo);
+
+
 }

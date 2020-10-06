@@ -1683,5 +1683,5 @@
             GROUP BY CNTR_UID) H
             <include refid="whereClauseCount"/>
     </select>
-   
+
 </mapper>
