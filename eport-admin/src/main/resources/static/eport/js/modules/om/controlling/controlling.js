@@ -394,7 +394,7 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 
 function historyRenderer(instance, td, row, col, prop, value, cellProperties) {
-  let historyIcon = customs = '<a id="custom" class="fa fa-history easyui-tooltip" title="Lịch Sử" aria-hidden="true" style="color: #3498db;"></a>';
+  let historyIcon = '<a id="custom" onclick="openHistoryForm(' + row + ')" class="fa fa-history easyui-tooltip" title="Lịch Sử" aria-hidden="true" style="color: #3498db;"></a>';
   $(td).addClass("htCenter").addClass("htMiddle").html(historyIcon);
 }
 
@@ -1638,5 +1638,27 @@ function exportPackingList() {
     return
   }
   $.modal.openTab("In Packing List", PREFIX + "/shipment/" + shipmentSelected.id + "/packing-list");
+}
+
+function openHistoryForm(row) {
+  let containerInfo = sourceData[row];
+  let vslCd = '';
+  if (containerInfo.vslNm) {
+    vslCd = containerInfo.vslNm.split(" ")[0];
+  }
+  layer.open({
+    type: 2,
+    area: [1002 + 'px', 500 + 'px'],
+    fix: true,
+    maxmin: true,
+    shade: 0.3,
+    title: 'Lịch Sử Container Catos',
+    content: PREFIX + "/container/history/" + containerInfo.voyNo + "/" + vslCd + "/" + containerInfo.containerNo,
+    btn: ["Đóng"],
+    shadeClose: false,
+    yes: function (index, layero) {
+      layer.close(index);
+    }
+  });
 }
 

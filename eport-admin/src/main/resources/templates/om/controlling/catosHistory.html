@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<th:block th:include="include :: header('Catos History')" />
+	<th:block th:include="include :: easyui-css" />
+	<link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
+
+</head>
+
+<body>
+	<div style="padding: 5px;">
+		<table id="dg" style="width: 100%;" data-options="fitColumns:true">
+			<thead>
+				<tr>
+					<th
+						data-options="field:'updateTime', resizable:true, halign: 'center', align:'left', formatter: formatDate">
+						Change Date</th>
+					<th data-options="field:'historySeq', resizable:true, halign: 'center', align:'center'">
+						Seq.</th>
+					<th
+						data-options="field:'vslCd', resizable:true, halign: 'center', align:'left', formatter: formatVesselInfo">
+						Vessel Information</th>
+					<th data-options="field:'dataField', resizable:true, halign: 'center', align:'left'">
+						Data Field</th>
+					<th data-options="field:'oldValue', resizable:true, halign: 'center', align:'center'">
+						Old Value</th>
+					<th data-options="field:'newValue', resizable:true, halign: 'center', align:'center'">
+						New Value</th>
+					<th data-options="field:'staffCd', resizable:true, halign: 'center', align:'center'">
+						Staff Name</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: easyui-js" />
+	<script type="text/javascript" th:inline="javascript">
+		var callSeq = /*[[${callSeq}]]*/;
+		var vslCd = /*[[${vslCd}]]*/;
+		var cntrNo = /*[[${cntrNo}]]*/;
+	</script>
+	<script th:src="@{/eport/js/modules/om/controlling/catosHistory.js}"></script>
+</body>
+
+</html>
