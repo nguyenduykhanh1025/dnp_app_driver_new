@@ -12,4 +12,6 @@ $(document).ready(function() {
   $(".youtube-link").grtyoutube({
     autoPlay:true
   });
+
+  $('.intro__content--main-text').height($(window).height() - $('.intro__header').height());
 })
