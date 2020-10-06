@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="vn.com.irtech.api.dao.ContainerHistoryDao">
+	<select id="getContainerHistoryByContainerNo" parameterType="vn.com.irtech.api.entity.ContainerHistoryEntity" resultType="vn.com.irtech.api.entity.ContainerHistoryEntity">
+		SELECT * 
+		FROM DNP_PROD.TB_CNTR_HIST
+		<where>
+			<if test="cntrNo != null and cntrNo != ''"> and CNTR_NO = #{cntrNo}</if>
+			<if test="vslCd != null and vslCd != ''"> and VSL_CD = #{vslCd}</if>
+			<if test="callYear != null  and callYear != ''"> and CALL_YEAR = #{callYear}</if>
+			<if test="callSeq != null  and callSeq != ''"> and CALL_SEQ = #{callSeq}</if>
+		</where>
+		 ORDER BY HISTORY_SEQ DESC
+    </select>
+</mapper>

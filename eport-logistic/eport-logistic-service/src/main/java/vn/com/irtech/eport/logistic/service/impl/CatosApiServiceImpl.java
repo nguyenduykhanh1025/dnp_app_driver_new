@@ -22,6 +22,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ContainerHistoryDto;
 import vn.com.irtech.eport.logistic.dto.ContainerHoldInfo;
 import vn.com.irtech.eport.logistic.form.BookingInfo;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
@@ -956,6 +957,28 @@ public class CatosApiServiceImpl implements ICatosApiService {
 		} catch (Exception e) {
 			logger.error("Error while call CATOS Api get container info: ", e);
 			return null;
+		}
+	}
+	
+	/**
+	 * Get container history info
+	 * 
+	 * @param containerHistory
+	 * @return List<ContainerHistoryDto>
+	 */
+	@Override
+	public List<ContainerHistoryDto> getContainerHistory(ContainerHistoryDto containerHistory) {
+		try {
+			String url = Global.getApiUrl() + "/container/history";
+			logger.debug("Call CATOS API get container history :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity httpEntity = new HttpEntity<ContainerHistoryDto>(containerHistory);
+			ResponseEntity<List<ContainerHistoryDto>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ContainerHistoryDto>>() {});
+			List<ContainerHistoryDto> containerHistories = response.getBody();
+			return containerHistories;
+		}catch (Exception e) {
+			logger.error("Error while call CATOS Api get container history", e);
+			return new ArrayList<>();
 		}
 	}
 }
