@@ -92,6 +92,7 @@ body {
         .intro__content .page-redirect .wrapper .link-redirect {
           width: 45%;
           min-width: 300px;
+          max-width: 550px;
           padding: 41px 65px;
           text-align: center; }
           .intro__content .page-redirect .wrapper .link-redirect:hover {
@@ -210,13 +211,21 @@ body {
     padding: 0 90px; }
     .content .annotations .annotation-details {
       margin-top: 70px; }
+      .content .annotations .annotation-details > .row {
+        overflow-x: auto;
+        -ms-flex-wrap: nowrap;
+            flex-wrap: nowrap; }
+        .content .annotations .annotation-details > .row > .col-3 {
+          display: inline-block; }
       .content .annotations .annotation-details .annotation {
-        width: 30%;
         overflow: hidden; }
+        .content .annotations .annotation-details .annotation:hover {
+          cursor: pointer; }
         .content .annotations .annotation-details .annotation .annotation-image {
           position: relative; }
           .content .annotations .annotation-details .annotation .annotation-image img {
             width: 100%;
+            height: 200px;
             -o-object-fit: cover;
                object-fit: cover; }
           .content .annotations .annotation-details .annotation .annotation-image .annotation-day {
@@ -242,7 +251,7 @@ body {
         .content .annotations .annotation-details .annotation .annotation-title {
           overflow: hidden;
           display: -webkit-box;
-          -webkit-line-clamp: 2;
+          -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
           font-weight: bold;
           font-size: 20px;

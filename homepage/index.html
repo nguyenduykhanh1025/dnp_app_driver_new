@@ -26,14 +26,14 @@
             <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav">
                 <li class="nav-item active">
-                  <span class="nav-link" href="#">Giới thiệu</span>
+                  <span class="nav-link">Giới thiệu</span>
                 </li>
                 <li class="nav-item">
-                  <span class="nav-link" href="#">Hướng dẫn</span>
+                  <span class="nav-link" onclick="goToID('mail');">Hướng dẫn</span>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                   <span class="nav-link" onclick="goToID('annotations');">Thông báo</span>
-                </li>
+                </li> -->
               </ul>
             </div>
           </nav>
@@ -155,64 +155,91 @@
           <span>Yêu cầu tư vấn</span>
           <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget dictum tortor. </span>
         </div>
-        <div class="request__mail">
+        <div class="request__mail" >
           <input type="text" class="request-input" placeholder="danangport@example.com"> 
-          <button class="btn btn-request">Gửi yêu cầu</button>
+          <button class="btn btn-request" id="mail">Gửi yêu cầu</button>
         </div>
       </div>
       <div class="annotations" id="annotations">
         <div class="title">
           <span class="primary-title text-dark">Hướng dẫn</span>
         </div>
-        <div class="annotation-details row">
-          <div class="col-3 annotation">
-            <div class="annotation-image">
-              <img src="images/annotation1.jpg">
-              <div class="annotation-day">
-                <span class="date">07-10</span>
-                <span class="year">2020</span>
+        <div class="annotation-details container-fluid">
+          <div class="row">
+            <a class="col-3 annotation youtube-link" youtubeid="lTiHmGzv7UU" href="" title="Hướng dẫn nhận container có hàng từ Cảng – Giao container rỗng cho Cảng">
+              <div class="annotation-image">
+                <img src="images/annotation1.jpg" alt="annotation1">
+                <div class="annotation-day">
+                  <span class="date">07-10</span>
+                  <span class="year">2020</span>
+                </div>
               </div>
-            </div>
-            <div class="annotation-title">
-              Hướng dẫn nhận container có hàng từ Cảng – giao container rỗng cho Cảng
-            </div>
-          </div>
-          <div class="col-3 annotation">
-            <div class="annotation-image">
-              <img src="images/annotation2.jpg">
-              <div class="annotation-day">
-                <span class="date">07-10</span>
-                <span class="year">2020</span>
+              <div class="annotation-title">
+                Hướng dẫn nhận container có hàng từ Cảng – Giao container rỗng cho Cảng
               </div>
-            </div>
-            <div class="annotation-title">
-              Hướng dẫn nhận container rỗng từ Cảng (cấp rỗng)
-            </div>
-          </div>
-          <div class="col-3 annotation">
-            <div class="annotation-image">
-              <img src="images/annotation3.jpg">
-              <div class="annotation-day">
-                <span class="date">07-10</span>
-                <span class="year">2020</span>
+            </a>
+            <a class="col-3 annotation youtube-link" youtubeid="HRqlzgOt-ok" href="" title="Hướng dẫn nhận container rỗng từ Cảng">
+              <div class="annotation-image">
+                <img src="images/annotation2.jpg" alt="annotation2">
+                <div class="annotation-day">
+                  <span class="date">07-10</span>
+                  <span class="year">2020</span>
+                </div>
               </div>
-            </div>
-            <div class="annotation-title">
-              Hướng dẫn Giao container có hàng cho Cảng
-            </div>
-          </div>
-          <div class="col-3 annotation">
-            <div class="annotation-image">
-              <img src="images/annotation3.jpg">
-              <div class="annotation-day">
-                <span class="date">07-10</span>
-                <span class="year">2020</span>
+              <div class="annotation-title">
+                Hướng dẫn nhận container rỗng từ Cảng (cấp rỗng)
               </div>
-            </div>
-            <div class="annotation-title">
-               Hướng dẫn điều xe sau khi khai báo ePORT
-            </div>
+            </a>
+            <a class="col-3 annotation youtube-link" youtubeid="orpN93DhbaY" href="" title="Hướng dẫn Giao container có hàng cho Cảng">
+              <div class="annotation-image">
+                <img src="images/annotation3.jpg" alt="annotation3">
+                <div class="annotation-day">
+                  <span class="date">07-10</span>
+                  <span class="year">2020</span>
+                </div>
+              </div>
+              <div class="annotation-title">
+                Hướng dẫn Giao container có hàng cho Cảng
+              </div>
+            </a>
+            <a class="col-3 annotation youtube-link" youtubeid="l2M-VAU2w5Q" href="" title="Hướng dẫn điều xe sau khi khai báo ePORT">
+              <div class="annotation-image">
+                <img src="images/annotation4.jpg" alt="annotation4">
+                <div class="annotation-day">
+                  <span class="date">07-10</span>
+                  <span class="year">2020</span>
+                </div>
+              </div>
+              <div class="annotation-title">
+                 Hướng dẫn điều xe sau khi khai báo ePORT
+              </div>
+            </a>
+            <a class="col-3 annotation" target="_blank" href="https://danangport.com/wp-content/uploads/2020/10/HDSD-cho-Hang-tau-V1.pdf" title="Hướng dẫn sử dụng dành cho phân hệ - Hãng tàu">
+              <div class="annotation-image">
+                <img src="images/document.png" alt="document" style="object-fit: contain;">
+                <div class="annotation-day">
+                  <span class="date">07-10</span>
+                  <span class="year">2020</span>
+                </div>
+              </div>
+              <div class="annotation-title">
+                 Hướng dẫn sử dụng dành cho phân hệ - Hãng tàu
+              </div>
+            </a>
+            <a class="col-3 annotation" target="_blank" href="https://danangport.com/wp-content/uploads/2020/10/HDSD-Logistic-V3.pdf" title="Hướng dẫn sử dụng dành cho phân hệ – Công ty Logistics/ Vận tải">
+              <div class="annotation-image">
+                <img src="images/document.png" alt="document" style="object-fit: contain;">
+                <div class="annotation-day">
+                  <span class="date">07-10</span>
+                  <span class="year">2020</span>
+                </div>
+              </div>
+              <div class="annotation-title">
+                Hướng dẫn sử dụng dành cho phân hệ – Công ty Logistics/ Vận tải
+              </div>
+            </a>
           </div>
+          
         </div>
       </div>
     </div>
