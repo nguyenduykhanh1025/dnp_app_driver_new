@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,6 +64,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysUser;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 import vn.com.irtech.eport.web.controller.AdminBaseController;
 
@@ -395,14 +397,16 @@ public class GeneralControllingController extends AdminBaseController {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 			// get orderNo from catos
 			String orderNo = null, invoiceNo = null;
-			if (shipmentDetails.size() > 0) {
-				if (processOrder.getServiceType().equals(Constants.RECEIVE_CONT_FULL)
-						|| processOrder.getServiceType().equals(Constants.RECEIVE_CONT_EMPTY))
-					orderNo = catosApiService.getOrderNoInInventoryByShipmentDetail(shipmentDetails.get(0));
-				if (processOrder.getServiceType().equals(Constants.SEND_CONT_FULL)
-						|| processOrder.getServiceType().equals(Constants.SEND_CONT_EMPTY))
-					orderNo = catosApiService.getOrderNoInReserveByShipmentDetail(shipmentDetails.get(0));
-			}
+			if(CollectionUtils.isNotEmpty(shipmentDetails)) {
+				List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoDtoByContNos(shipmentDetails.get(0).getContainerNo());
+				if (CollectionUtils.isNotEmpty(cntrInfos)) {
+					if (EportConstants.SERVICE_PICKUP_FULL == processOrder.getServiceType() || EportConstants.SERVICE_PICKUP_EMPTY == processOrder.getServiceType()) {
+						orderNo = cntrInfos.get(0).getJobOdrNo2();
+					} else if (EportConstants.SERVICE_DROP_FULL == processOrder.getServiceType() || EportConstants.SERVICE_DROP_EMPTY == processOrder.getServiceType()) {
+						orderNo = cntrInfos.get(0).getJobOdrNo();
+					}
+				}
+	    	}
 			if (orderNo == null || orderNo.equals("")) {
 				return error();
 			}

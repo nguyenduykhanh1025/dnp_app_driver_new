@@ -120,7 +120,7 @@ body {
               line-height: 30px; }
 
 .content {
-  margin: 120px 0; }
+  margin: 50px 0; }
   .content .targets {
     padding: 0 90px; }
     .content .targets .details {
@@ -254,7 +254,7 @@ body {
   background-color: #2A5293;
   background-image: url("../images/domap2@2x.png");
   background-size: contain;
-  padding: 80px 90px; }
+  padding: 40px 90px; }
   .footer__header {
     width: 40%; }
     .footer__header span {

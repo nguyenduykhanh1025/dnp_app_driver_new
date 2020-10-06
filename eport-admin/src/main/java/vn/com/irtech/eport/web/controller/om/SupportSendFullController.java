@@ -3,6 +3,7 @@ package vn.com.irtech.eport.web.controller.om;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysUser;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Controller
 @RequestMapping("/om/support/send-full")
@@ -155,13 +157,11 @@ public class SupportSendFullController extends OmBaseController{
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
     	//get orderNo from catos
 		String orderNo = null, invoiceNo = null;
-    	if(shipmentDetails.size() >0) {
-			if (processOrder.getServiceType().equals(Constants.RECEIVE_CONT_FULL) ||
-    				processOrder.getServiceType().equals(Constants.RECEIVE_CONT_EMPTY))
-				orderNo = catosService.getOrderNoInInventoryByShipmentDetail(shipmentDetails.get(0));
-			if(processOrder.getServiceType().equals(Constants.SEND_CONT_FULL) ||
-    				processOrder.getServiceType().equals(Constants.SEND_CONT_EMPTY))
-				orderNo = catosService.getOrderNoInReserveByShipmentDetail(shipmentDetails.get(0));
+		if(CollectionUtils.isNotEmpty(shipmentDetails)) {
+			List<ContainerInfoDto> cntrInfos = catosService.getContainerInfoDtoByContNos(shipmentDetails.get(0).getContainerNo());
+			if (CollectionUtils.isNotEmpty(cntrInfos)) {
+				orderNo = cntrInfos.get(0).getJobOdrNo();
+			}
     	}
     	if(orderNo == null || orderNo.equals("")) {
     		return error();
