@@ -36,10 +36,11 @@ public class CustomsCheckResultDto implements Serializable {
 	/**
 	 * Check if customs is released
 	 * 
-	 * @return true: customsStatus ="TQ", false: otherwise
+	 * @return true: customsStatus ="TQ", MHBQ, GPH, CCK, false: otherwise
 	 */
 	public boolean isReleased() {
-		return customsStatus != null && "TQ".equalsIgnoreCase(customsStatus);
+		return customsStatus != null && ("TQ".equalsIgnoreCase(customsStatus) || "MHBQ".equalsIgnoreCase(customsStatus)
+				|| "GPH".equalsIgnoreCase(customsStatus) || "CCK".equalsIgnoreCase(customsStatus));
 	}
 
 	public String getUserVoy() {
