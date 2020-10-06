@@ -3,11 +3,6 @@
  */
 package vn.com.irtech.eport.logistic.service.impl;
 
-import java.io.StringReader;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +13,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.HtmlUtils;
 
 import vn.com.irtech.eport.common.constant.SystemConstants;
 import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.common.json.JSONObject.JSONArray;
 import vn.com.irtech.eport.logistic.dto.CustomsCheckResultDto;
 import vn.com.irtech.eport.logistic.service.ICustomCheckService;
-import vn.com.irtech.eport.system.dto.CustomDeclareResult;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
 /**
