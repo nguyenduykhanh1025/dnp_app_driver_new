@@ -278,12 +278,18 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
         newShipment.setContainerAmount(shipment.getContainerAmount());
         newShipment.setSpecificContFlg(shipment.getSpecificContFlg());
         newShipment.setRemark(shipment.getRemark());
+        
+        String imageIds = shipment.getParams().get("ids").toString();
+        if (StringUtils.isEmpty(imageIds)) {
+        	return error("Bạn chưa đính kèm tệp booking.");
+        }
+        
         // insert to DB
         if (shipmentService.insertShipment(newShipment) == 1) {
         	ShipmentImage shipmentImage = new ShipmentImage();
-        	shipmentImage.setShipmentId(shipment.getId());
+        	shipmentImage.setShipmentId(newShipment.getId());
         	Map<String, Object> map = new HashMap<>();
-        	map.put("ids", Convert.toStrArray(shipment.getParams().get("ids").toString()));
+        	map.put("ids", Convert.toStrArray(imageIds));
         	shipmentImage.setParams(map);
             shipmentImageService.updateShipmentImageByIds(shipmentImage);
             return success("Thêm lô thành công");
