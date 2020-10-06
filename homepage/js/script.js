@@ -1,17 +1,22 @@
-$(window).scroll(function() {
+$(window).scroll(function () {
   var height = $(window).scrollTop();
 
-  if (height  > 90) {
-    $('.menu').addClass('scroller');
+  if (height > 90) {
+    $(".menu").addClass("scroller");
   } else {
-    $('.menu').removeClass('scroller');
+    $(".menu").removeClass("scroller");
   }
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
   $(".youtube-link").grtyoutube({
-    autoPlay:true
+    autoPlay: true,
   });
 
-  $('.intro__content--main-text').height($(window).height() - $('.intro__header').height());
-})
+  $(".intro__content--main-text").height($(window).height() - $(".intro__header").height());
+});
+
+function goToID(ID) {
+  var elmnt = document.getElementById(ID);
+elmnt.scrollIntoView();
+}
