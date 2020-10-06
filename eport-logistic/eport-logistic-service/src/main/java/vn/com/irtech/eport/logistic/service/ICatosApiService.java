@@ -7,6 +7,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ContainerHistoryDto;
 import vn.com.irtech.eport.logistic.dto.ContainerHoldInfo;
 import vn.com.irtech.eport.logistic.form.BookingInfo;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
@@ -268,4 +269,12 @@ public interface ICatosApiService {
 	 * @return List<ContaienrInfoDto>
 	 */
 	public List<ContainerInfoDto> getContainerInfoDtoByContNos(String containerNos);
+	
+	/**
+	 * Get container history info
+	 * 
+	 * @param containerHistory
+	 * @return List<ContainerHistoryDto>
+	 */
+	public List<ContainerHistoryDto> getContainerHistory(ContainerHistoryDto containerHistory);
 }
