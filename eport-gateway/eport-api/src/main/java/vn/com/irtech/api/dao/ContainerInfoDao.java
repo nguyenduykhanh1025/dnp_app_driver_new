@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-import vn.com.irtech.api.dto.ContainerHistoryDto;
 import vn.com.irtech.api.entity.ContainerInfoEntity;
 
 @Mapper
@@ -23,13 +22,5 @@ public interface ContainerInfoDao extends BaseMapper<ContainerInfoEntity> {
 	List<ContainerInfoEntity> selectContainerInfoListEmpty(ContainerInfoEntity containerInfo);
 
 	int countContainerInfoEmpty(ContainerInfoEntity containerInfo);
-
-	/**
-	 * Get container history for container.
-	 * 
-	 * @param history
-	 * @return
-	 */
-	List<ContainerHistoryDto> getContainerHistory(ContainerHistoryDto history);
 
 }
