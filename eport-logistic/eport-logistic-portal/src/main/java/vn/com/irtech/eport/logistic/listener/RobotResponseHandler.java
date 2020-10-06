@@ -182,9 +182,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 				this.updateHistory(processOrderId, uuId, serviceType, "");
 			}
 		}
-
 		robotService.updateRobotStatusByUuId(uuId, status);
-
 	}
 
 	/**
