@@ -2,9 +2,7 @@ const PREFIX = ctx + "history/container";
 
 $(document).ready(function () {
     let req = {
-        callSeq: callSeq,
-        vslCd: vslCd,
-        cntrNo: cntrNo
+        shipmentDetailId: shipmentDetailId
     }
     loadTable(req);
 });
@@ -13,7 +11,7 @@ $(document).ready(function () {
 
 function loadTable(req) {
     $("#dg").datagrid({
-        url: PREFIX + '/catos',
+        url: PREFIX + '/eport',
         method: 'POST',
         singleSelect: true,
         collapsible: true,
@@ -48,7 +46,7 @@ function loadTable(req) {
 
 function formatVesselInfo(value, row) {
     if (row) {
-        return row.vslCd + " / " + row.callYear + " / " + row.callSeq;
+        return row.vslCd + " - " + row.voyNo;
     }
     return '';
 }

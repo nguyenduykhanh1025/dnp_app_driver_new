@@ -365,6 +365,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             from shipment s left join shipment_detail sh on s.id = sh.shipment_id
             <where>  
                 s.id is not null
+                and sh.cont_supply_status != 'N'
                 <if test="id != null "> and s.id = #{id}</if>
                 <if test="logisticAccountId != null "> and s.logistic_account_id = #{logisticAccountId}</if>
                 <if test="logisticGroupId != null "> and s.logistic_group_id = #{logisticGroupId}</if>

@@ -394,7 +394,12 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 
 function historyRenderer(instance, td, row, col, prop, value, cellProperties) {
-  let historyIcon = '<a id="custom" onclick="openHistoryForm(' + row + ')" class="fa fa-history easyui-tooltip" title="Lịch Sử" aria-hidden="true" style="color: #3498db;"></a>';
+  let historyIcon = '<a id="custom" onclick="openHistoryFormCatos(' + row + ')" class="fa fa-window-restore easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
+  $(td).addClass("htCenter").addClass("htMiddle").html(historyIcon);
+}
+
+function historyEportRenderer(instance, td, row, col, prop, value, cellProperties) {
+  let historyIcon = '<a id="custom" onclick="openHistoryFormEport(' + row + ')" class="fa fa-history easyui-tooltip" title="Lịch Sử Eport" aria-hidden="true" style="color: #3498db;"></a>';
   $(td).addClass("htCenter").addClass("htMiddle").html(historyIcon);
 }
 
@@ -687,48 +692,50 @@ function configHandsonBilling() {
           txt += ">";
           return txt;
         case 1:
-          return ""
+          return '<a class="fa fa-window-restore easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
         case 2:
-          return "Trạng Thái";
+          return '<a class="fa fa-history easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
         case 3:
-          return "B/L No"
+          return "Trạng Thái";
         case 4:
-          return "OPR";
+          return "B/L No"
         case 5:
-          return "Số Container";
+          return "OPR";
         case 6:
-          return "Sztp";
+          return "Số Container";
         case 7:
-          return "Hạn Lệnh";
+          return "Sztp";
         case 8:
-          return "Hạn Trả Vỏ";
+          return "Hạn Lệnh";
         case 9:
-          return "Nơi Hạ Vỏ";
+          return "Hạn Trả Vỏ";
         case 10:
-          return "Miễn Lưu";
+          return "Nơi Hạ Vỏ";
         case 11:
-          return "Chủ Hàng";
+          return "Miễn Lưu";
         case 12:
-          return "Tàu - Chuyến";
+          return "Chủ Hàng";
         case 13:
-          return "Trọng Lượng";
+          return "Tàu - Chuyến";
         case 14:
-          return "Loại Hàng";
+          return "Trọng Lượng";
         case 15:
-          return "Cảng Dỡ"
+          return "Loại Hàng";
         case 16:
-          return "Cảng Xếp Hàng";
+          return "Cảng Dỡ"
         case 17:
-          return "P.T.T.T";
+          return "Cảng Xếp Hàng";
         case 18:
-          return "Payer";
+          return "P.T.T.T";
         case 19:
-          return "Số Tham Chiếu";
+          return "Payer";
         case 20:
+          return "Số Tham Chiếu";
+        case 21:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 105, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 130, 100],
+    colWidths: [23, 21, 21, 105, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 130, 100],
     filter: "true",
     columns: [
       {
@@ -737,9 +744,14 @@ function configHandsonBilling() {
         renderer: checkBoxRenderer
       },
       {
-        data: "history",
+        data: "historyCatos",
         readOnly: true,
         renderer: historyRenderer
+      },
+      {
+        data: "historyEport",
+        readOnly: true,
+        renderer: historyEportRenderer
       },
       {
         data: "status",
@@ -858,7 +870,7 @@ function configHandsonBilling() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 20) {
+          if (selected[3] == 21) {
             e.stopImmediatePropagation();
           }
           break
@@ -900,48 +912,50 @@ function configHandsonBooking() {
           txt += ">";
           return txt;
         case 1:
-          return ""
+          return '<a class="fa fa-window-restore easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
         case 2:
-          return "Trạng Thái";
+          return '<a class="fa fa-history easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
         case 3:
-          return "Booking No"
+          return "Trạng Thái";
         case 4:
-          return "OPR";
+          return "Booking No"
         case 5:
-          return "Số Container";
+          return "OPR";
         case 6:
-          return "Sztp";
+          return "Số Container";
         case 7:
-          return "Hạn Lệnh";
+          return "Sztp";
         case 8:
-          return "Hạn Trả Vỏ";
+          return "Hạn Lệnh";
         case 9:
-          return "Nơi Hạ Vỏ";
+          return "Hạn Trả Vỏ";
         case 10:
-          return "Miễn Lưu";
+          return "Nơi Hạ Vỏ";
         case 11:
-          return "Chủ Hàng";
+          return "Miễn Lưu";
         case 12:
-          return "Tàu - Chuyến";
+          return "Chủ Hàng";
         case 13:
-          return "Trọng Lượng";
+          return "Tàu - Chuyến";
         case 14:
-          return "Loại Hàng";
+          return "Trọng Lượng";
         case 15:
-          return "Cảng Dỡ"
+          return "Loại Hàng";
         case 16:
-          return "Cảng Xếp Hàng";
+          return "Cảng Dỡ"
         case 17:
-          return "P.T.T.T";
+          return "Cảng Xếp Hàng";
         case 18:
-          return "Payer";
+          return "P.T.T.T";
         case 19:
-          return "Số Tham Chiếu";
+          return "Payer";
         case 20:
+          return "Số Tham Chiếu";
+        case 21:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 105, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 130, 100],
+    colWidths: [23, 21, 21, 105, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 130, 100],
     filter: "true",
     columns: [
       {
@@ -950,9 +964,14 @@ function configHandsonBooking() {
         renderer: checkBoxRenderer
       },
       {
-        data: "history",
+        data: "historyCatos",
         readOnly: true,
         renderer: historyRenderer
+      },
+      {
+        data: "historyEport",
+        readOnly: true,
+        renderer: historyEportRenderer
       },
       {
         data: "status",
@@ -1071,7 +1090,7 @@ function configHandsonBooking() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 20) {
+          if (selected[3] == 21) {
             e.stopImmediatePropagation();
           }
           break
@@ -1100,7 +1119,7 @@ function onChange(changes, source) {
 
     // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
     if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-      let vesselAndVoy = hot.getDataAtCell(change[0], 12);
+      let vesselAndVoy = hot.getDataAtCell(change[0], 13);
       //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
       if (vesselAndVoy) {
         if (currentVesselVoyage != vesselAndVoy) {
@@ -1122,7 +1141,7 @@ function onChange(changes, source) {
                   if (data.code == 0) {
                     hot.updateSettings({
                       cells: function (row, col, prop) {
-                        if (col == 15 || col == 16) {
+                        if (col == 16 || col == 17) {
                           let cellProperties = {};
                           dischargePortList = data.dischargePorts;
                           cellProperties.source = dischargePortList;
@@ -1640,25 +1659,53 @@ function exportPackingList() {
   $.modal.openTab("In Packing List", PREFIX + "/shipment/" + shipmentSelected.id + "/packing-list");
 }
 
-function openHistoryForm(row) {
+function openHistoryFormCatos(row) {
   let containerInfo = sourceData[row];
   let vslCd = '';
   if (containerInfo.vslNm) {
     vslCd = containerInfo.vslNm.split(" ")[0];
   }
-  layer.open({
-    type: 2,
-    area: [1002 + 'px', 500 + 'px'],
-    fix: true,
-    maxmin: true,
-    shade: 0.3,
-    title: 'Lịch Sử Container Catos',
-    content: PREFIX + "/container/history/" + containerInfo.voyNo + "/" + vslCd + "/" + containerInfo.containerNo,
-    btn: ["Đóng"],
-    shadeClose: false,
-    yes: function (index, layero) {
-      layer.close(index);
-    }
-  });
+  let voyNo = containerInfo.voyNo;
+  let containerNo = containerInfo.containerNo;
+  if (containerInfo == null || !containerNo || !vslCd || !voyNo) {
+    $.modal.alertWarning("Container chưa được khai báo.");
+  } else {
+    layer.open({
+      type: 2,
+      area: [1002 + 'px', 500 + 'px'],
+      fix: true,
+      maxmin: true,
+      shade: 0.3,
+      title: 'Lịch Sử Container ' + containerNo + ' Catos',
+      content: PREFIX + "/container/history/" + voyNo + "/" + vslCd + "/" + containerNo,
+      btn: ["Đóng"],
+      shadeClose: false,
+      yes: function (index, layero) {
+        layer.close(index);
+      }
+    });
+  }
+}
+
+function openHistoryFormEport(row) {
+  let containerInfo = sourceData[row];
+  if (containerInfo == null || !containerInfo.id) {
+    $.modal.alertWarning("Container chưa được khai báo.");
+  } else {
+    layer.open({
+      type: 2,
+      area: [967 + 'px', 500 + 'px'],
+      fix: true,
+      maxmin: true,
+      shade: 0.3,
+      title: 'Lịch Sử Container ' + (containerInfo.containerNo != null ? containerInfo.containerNo : '') + ' Eport',
+      content: PREFIX + "/container/history/" + containerInfo.id,
+      btn: ["Đóng"],
+      shadeClose: false,
+      yes: function (index, layero) {
+        layer.close(index);
+      }
+    });
+  }
 }
 
