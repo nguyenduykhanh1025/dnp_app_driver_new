@@ -231,16 +231,38 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 					return error("Không thể chỉnh sửa số lượng container nhỏ hơn danh sách khai báo.");
 				}
 			}
+			LogisticAccount user = getUser();
 			referenceShipment.setRemark(shipment.getRemark());
 			referenceShipment.setContainerAmount(shipment.getContainerAmount());
-			referenceShipment.setUpdateBy(getUser().getUserName());
+			referenceShipment.setUpdateBy(user.getUserName());
 			referenceShipment.setId(shipmentId);
 
 			if (EportConstants.SHIPMENT_STATUS_INIT.equals(referenceShipment.getStatus())) {
 				referenceShipment.setSendContEmptyType(shipment.getSendContEmptyType());
 				referenceShipment.setOpeCode(shipment.getOpeCode());
+				referenceShipment.setBlNo(shipment.getBlNo());
+			} else if (EportConstants.SHIPMENT_STATUS_SAVE.equals(referenceShipment.getStatus())) {
+				if (!referenceShipment.getOpeCode().equals(shipment.getOpeCode())
+						|| !referenceShipment.getBlNo().equalsIgnoreCase(shipment.getBlNo())) {
+					// Get shipment detail to update ope code
+					ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+					shipmentDetailParam.setShipmentId(shipmentId);
+					shipmentDetailParam.setLogisticGroupId(user.getGroupId());
+					List<ShipmentDetail> shipmentDetails = shipmentDetailService
+							.selectShipmentDetailList(shipmentDetailParam);
+					String shipmentDtIds = "";
+					// Get String ids shipment detail separated by comma to update
+					for (ShipmentDetail shipmentDetail : shipmentDetails) {
+						shipmentDtIds += shipmentDetail.getId() + ",";
+					}
+					ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
+					shipmentDetailUpdate.setOpeCode(shipment.getOpeCode());
+					shipmentDetailUpdate.setBlNo(shipment.getBlNo());
+					shipmentDetailService.updateShipmentDetailByIds(shipmentDtIds, shipmentDetailUpdate);
+				}
+				referenceShipment.setOpeCode(shipment.getOpeCode());
+				referenceShipment.setBlNo(shipment.getBlNo());
 			}
-
 			if (shipmentService.updateShipment(referenceShipment) == 1) {
 				return success("Chỉnh sửa lô thành công");
 			}

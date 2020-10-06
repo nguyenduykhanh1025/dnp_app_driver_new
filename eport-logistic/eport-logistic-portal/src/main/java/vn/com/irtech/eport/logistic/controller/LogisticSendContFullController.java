@@ -289,6 +289,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					return error("Không thể chỉnh sửa số lượng container nhỏ hơn danh sách khai báo.");
 				}
 			}
+			
 			shipment.setContainerAmount(input.getContainerAmount());
 			shipment.setRemark(input.getRemark());
 			shipment.setUpdateBy(user.getFullName());
@@ -299,14 +300,26 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipment.setBookingNo(input.getBookingNo().toUpperCase());
 				}
 			} else if (shipment.getStatus().equals(EportConstants.SHIPMENT_STATUS_SAVE)) {
+				if (!shipment.getOpeCode().equals(input.getOpeCode())
+						|| !shipment.getBookingNo().equalsIgnoreCase(input.getBookingNo())) {
+					// Get shipment detail to update ope code
+					ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+					shipmentDetailParam.setShipmentId(shipmentId);
+					shipmentDetailParam.setLogisticGroupId(user.getGroupId());
+					List<ShipmentDetail> shipmentDetails = shipmentDetailService
+							.selectShipmentDetailList(shipmentDetailParam);
+					String shipmentDtIds = "";
+					// Get String ids shipment detail separated by comma to update
+					for (ShipmentDetail shipmentDetail : shipmentDetails) {
+						shipmentDtIds += shipmentDetail.getId() + ",";
+					}
+					ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
+					shipmentDetailUpdate.setOpeCode(input.getOpeCode());
+					shipmentDetailUpdate.setBlNo(input.getBookingNo().toUpperCase());
+					shipmentDetailService.updateShipmentDetailByIds(shipmentDtIds, shipmentDetailUpdate);
+				}
 				shipment.setOpeCode(input.getOpeCode());
-			}
-
-			boolean attachBooking = false;
-			// List opr need to attach booking (domestic container)
-			List<String> oprList = dictService.getListTag("opr_list_booking_check");
-			if (oprList.contains(shipment.getOpeCode())) {
-				attachBooking = true;
+				shipment.setBookingNo(input.getBookingNo());
 			}
 
 			if (shipmentService.updateShipment(shipment) == 1) {

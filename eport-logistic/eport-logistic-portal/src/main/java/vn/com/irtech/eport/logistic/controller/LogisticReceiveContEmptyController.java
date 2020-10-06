@@ -331,6 +331,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			referenceShipment.setOpeCode(shipment.getOpeCode());
 		} else if (EportConstants.SHIPMENT_STATUS_SAVE.equals(referenceShipment.getStatus())) {
 			referenceShipment.setOpeCode(shipment.getOpeCode());
+			referenceShipment.setBookingNo(shipment.getBookingNo());
 		}
 		
 		if (shipmentService.updateShipment(referenceShipment) == 1) {
