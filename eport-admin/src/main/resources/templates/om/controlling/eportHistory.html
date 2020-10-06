@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<th:block th:include="include :: header('Catos History')" />
+	<th:block th:include="include :: header('Eport History')" />
 	<th:block th:include="include :: easyui-css" />
 	<link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
 
@@ -12,10 +12,8 @@
 	<table id="dg" style="width: 100%; height: 100%;">
 		<thead>
 			<tr>
-				<th data-options="field:'updateTime', resizable:true, halign: 'center', align:'left', fixed:true, formatter: formatDate"
+				<th data-options="field:'createTime', resizable:true, halign: 'center', align:'left', fixed:true, formatter: formatDate"
 					width="125">Change Date</th>
-				<th data-options="field:'historySeq', resizable:true, halign: 'center', align:'center', fixed:true"
-					width="35">Seq.</th>
 				<th data-options="field:'vslCd', resizable:true, halign: 'center', align:'left', fixed:true, formatter: formatVesselInfo"
 					width="200">Vessel Information</th>
 				<th data-options="field:'dataField', resizable:true, halign: 'center', align:'left', fixed:true"
@@ -24,7 +22,7 @@
 					width="150">Old Value</th>
 				<th data-options="field:'newValue', resizable:true, halign: 'center', align:'left', fixed:true"
 					width="150">New Value</th>
-				<th data-options="field:'staffCd', resizable:true, halign: 'center', align:'center', fixed:true"
+				<th data-options="field:'userName', resizable:true, halign: 'center', align:'center', fixed:true"
 					width="150">Staff Name</th>
 			</tr>
 		</thead>
@@ -32,11 +30,9 @@
 	<th:block th:include="include :: footer" />
 	<th:block th:include="include :: easyui-js" />
 	<script type="text/javascript" th:inline="javascript">
-		var callSeq = /*[[${callSeq}]]*/;
-		var vslCd = /*[[${vslCd}]]*/;
-		var cntrNo = /*[[${cntrNo}]]*/;
+		var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
 	</script>
-	<script th:src="@{/eport/js/modules/om/controlling/catosHistory.js}"></script>
+	<script th:src="@{/eport/js/modules/om/controlling/eportHistory.js}"></script>
 </body>
 
 </html>

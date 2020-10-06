@@ -151,6 +151,12 @@ public class GeneralControllingController extends AdminBaseController {
 		mmap.put("cntrNo", cntrNo);
 		return PREFIX + "/catosHistory";
 	}
+	
+	@GetMapping("/container/history/{shipmentDetailId}")
+	public String getHistoryEportForm(ModelMap mmap, @PathVariable("shipmentDetailId") Long shipmentDetailId) {
+		mmap.put("shipmentDetailId", shipmentDetailId);
+		return PREFIX + "/eportHistory";
+	}
 
 	@PostMapping("/shipments")
 	@ResponseBody
