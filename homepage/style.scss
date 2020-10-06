@@ -1,25 +1,37 @@
 @import "variable";
 body {
   background: $white;
-  font-family: "Open Sans";
+  font-family: "Montserrat-S", "Helvetica Neue", Arial, "Hiragino Sans", sans-serif;
   font-style: normal;
 }
 
 .intro {
   background: $primary;
+  padding-bottom: 50px;
+  overflow: hidden;
   &__header {
     padding: 0 90px;
+    background: transparent;
+    &.scroller {
+      box-shadow: 0 1px 3px 0px rgba(0,0,0,.2);
+      background-color: #015198;
+      position: fixed;
+      z-index: 99;
+      top: 0;
+      left: 0;
+      transition: all 0.4s ease;
+    }
     .logo {
       margin: 31px 0;
       span {
-        font-weight: 800;
+        font-weight: bolder;
         font-size: 27px;
         line-height: 37px;
         color: $white;
       }
     }
     .navbar {
-      background: $primary;
+      background: transparent;
       .navbar-brand {
         color: $white;
       }
@@ -47,7 +59,7 @@ body {
         h1 {
           color: $white;
           width: 1021px;
-          font-weight: 800;
+          font-weight: bolder;
           font-size: 55px;
           line-height: 75px;
           text-align: center;
@@ -58,47 +70,56 @@ body {
       }
     }
   }
-}
-
-.content {
-  margin-bottom: 120px;
   .page-redirect {
-    width: min-content;
-    margin: 70px auto;
+    width: 80%;
+    margin: 0 auto;
     .wrapper {
+      display: flex;
+      justify-content: space-around;
       .link-redirect {
         &:hover {
           cursor: pointer;
           box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.3);
         }
         &.carrier {
-          background: $primary;
-          margin-right: 35px;
+          background: $white;
+          span {
+            color: $primary;
+          }
         }
         &.logistic {
           background: $secondary;
         }
-        width: 353px;
-        padding: 20px;
+        width: 45%;
+        min-width: 300px;
+        padding: 41px 65px;
         text-align: center;
         img {
-          margin-bottom: 20px;
+          margin-right: 20px;
         }
-        span {
-          display: block;
-          color: $white;
-          font-weight: 600;
-          font-size: 16px;
-          line-height: 22px;
-          &:last-child {
-            font-weight: bold;
-            font-size: 22px;
-            line-height: 30px;
+        div {
+          span {
+            display: block;
+            color: $white;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 22px;
+            text-align: left;
+            &:last-child {
+              font-weight: bold;
+              font-size: 22px;
+              line-height: 30px;
+            }
           }
         }
+        
       }
     }
   }
+}
+
+.content {
+  margin: 120px 0;
   .targets {
     padding: 0 90px;
     .details {
@@ -150,7 +171,7 @@ body {
       span {
         display: block;
         &:first-child {
-          font-weight: 800;
+          font-weight: bolder;
           font-size: 50px;
           line-height: 68px;
         }
@@ -237,7 +258,7 @@ body {
               display: block;
               color: $white;
               &.date {
-                font-weight: 800;
+                font-weight: bolder;
                 font-size: 20px;
                 line-height: 27px;
                 border-bottom: 1px solid $white;
@@ -277,7 +298,7 @@ body {
       display: block;
     }
     &-title {
-      font-weight: 800;
+      font-weight: bolder;
       font-size: 40px;
       line-height: 54px;
       color: $white;
@@ -306,7 +327,7 @@ body {
       }
     }
     &-title {
-      font-weight: 800;
+      font-weight: bolder;
       font-size: 40px;
       line-height: 54px;
       color: $white;
@@ -317,7 +338,7 @@ body {
 .title {
   text-align: center;
   .primary-title {
-    font-weight: 800;
+    font-weight: bolder;
     font-size: 40px;
     line-height: 54px;
     color: $primary;
