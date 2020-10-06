@@ -122,9 +122,11 @@ public class BookingGatheringController extends AdminBaseController  {
 			shipment = new Shipment();
 		}
 		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
-		Map<String, Object> params = new HashMap<>();
+		Map<String, Object> params = shipment.getParams();
+		if (params == null) {
+			params = new HashMap<>();
+		}
 		params.put("processStatus", "Y");
-		params.put("doStatus", "N");
 		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));

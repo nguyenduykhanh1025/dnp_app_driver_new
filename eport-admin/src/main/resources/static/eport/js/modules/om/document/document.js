@@ -102,15 +102,16 @@ $(document).ready(function () {
   // $('#vesselAndVoyages').combobox('select', 'Chọn tàu chuyến');
 
   $("#doStatus").combobox({
+    panelHeight: 'auto',
     valueField: 'alias',
     textField: 'text',
     data: [{
       "alias": '',
-      "text": "Trạng thái",
-      "selected": true
+      "text": "Trạng thái"
     }, {
       "alias": 'N',
-      "text": "Chưa thu"
+      "text": "Chưa thu",
+      "selected": true
     }, {
       "alias": 'Y',
       "text": "Đã thu"
@@ -124,7 +125,6 @@ $(document).ready(function () {
       loadTable();
     }
   });
-  // $('#doStatus').combobox('select', 'null');
 
   // loadTable();
 });

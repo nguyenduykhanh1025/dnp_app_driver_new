@@ -861,7 +861,7 @@ function configHandson() {
                     case 6:
                         return 'Ngày tàu đến';
                     case 7:
-                        return checkEmptyExpiredDem ? '<span class="required">Ngày Miễn <br>Lưu Bãi/span>' : 'Ngày Miễn <br>Lưu Bãi';
+                        return checkEmptyExpiredDem ? '<span class="required">Ngày Miễn <br>Lưu Bãi</span>' : 'Ngày Miễn <br>Lưu Bãi';
                     case 8:
                         return '<span class="required">Bãi Hạ Vỏ</span>';
                     case 9:
