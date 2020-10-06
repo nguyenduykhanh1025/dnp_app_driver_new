@@ -257,15 +257,15 @@ body {
       color: #8f9db8; }
   .footer__contact {
     width: 40%; }
-    .footer__contact span {
+    .footer__contact a {
       display: block; }
-      .footer__contact span img {
+      .footer__contact a img {
         width: 30px;
         height: 24px;
         -o-object-fit: scale-down;
            object-fit: scale-down;
         margin-right: 10px; }
-      .footer__contact span.contact-info {
+      .footer__contact a.contact-info {
         font-size: 18px;
         line-height: 25px;
         color: #8f9db8; }

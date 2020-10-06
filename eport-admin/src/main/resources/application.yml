@@ -46,7 +46,7 @@ spring:
     time-zone: GMT+7
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
-    active: uat                        # Environment
+    active: test                        # Environment
   servlet:
     multipart:
       max-file-size:  10MB
