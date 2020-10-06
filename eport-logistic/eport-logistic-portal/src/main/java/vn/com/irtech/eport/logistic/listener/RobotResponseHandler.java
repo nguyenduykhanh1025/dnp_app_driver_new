@@ -629,11 +629,25 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		
 		// Check process order is custom hold or terminal hold
 		if (EportConstants.MODE_TERMINAL_HOLD.equalsIgnoreCase(processOrder.getModee())) {
-			// Check terminal hold order is hold or unhold: true => hold
-			if (processOrder.getHoldFlg()) {
-				// Check custom is hold
-			} else {
-				// Check custom hold is unhold
+			if ("error".equalsIgnoreCase(result)) {
+				ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+				String title = "";
+				String msg = "";
+				if (processOrder.getHoldFlg()) {
+					// Case hold terminal
+					title = "Lỗi robot " + uuId + " khóa terminal hold!";
+					msg = "Lỗi không khóa được terminal hold DO container " + processJsonData.getContainers() + ".";
+				} else {
+					// Case unhold terminal
+					title = "Lỗi robot " + uuId + " mở terminal hold!";
+					msg = "Lỗi không mở khóa được terminal hold DO container " + processJsonData.getContainers() + ".";
+				}
+				// Send notification for om
+				try {
+					mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg, configService.getKey("domain.admin.name"), EportConstants.NOTIFICATION_PRIORITY_LOW);
+				} catch (Exception e) {
+					logger.warn(e.getMessage());
+				}
 			}
 		} else if (EportConstants.MODE_CUSTOM_HOLD.equalsIgnoreCase(processOrder.getModee())) {
 			// Case : custom hold
