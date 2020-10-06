@@ -151,6 +151,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 					case EportConstants.SERVICE_SHIFTING:
 						this.updateShiftingOrder(result, receiptId, invoiceNo, uuId, orderNo, serviceType, msg,
 								errorImagePath);
+						break;
 					case EportConstants.SERVICE_CHANGE_VESSEL:
 						this.updateChangeVesselOrder(result, receiptId, uuId);
 						break;
