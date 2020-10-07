@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -88,12 +89,12 @@ public class SysIndexController extends BaseController
     {
     	SysUser user = ShiroUtils.getSysUser();
         Map<String, String> report = doService.getReportForAdmin();
-        if (report == null) {
+        if (report == null || report.isEmpty()) {
             report = new HashMap<>();
-            report.put("totalBl", "0");
-            report.put("totalCont", "0");
-            report.put("completedBl", "0");
-            report.put("waitingBl", "0");
+            report.put("TOTALBL", "0");
+            report.put("TOTALCONT", "0");
+            report.put("COMPLETEDBL", "0");
+            report.put("WAITINGBL", "0");
         }
 	    mmap.put("report", report);
 	    mmap.put("user", user);
