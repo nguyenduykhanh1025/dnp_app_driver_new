@@ -700,7 +700,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             } else {
                 shipmentDetail.setPayType("Cash");
             }
-            shipmentDetail.setOpeCode(shipment.getOpeCode());
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             
             // Set remark has saved on process order for robot can mapping data easier
@@ -716,6 +715,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessStatus(status);
             shipmentDetail.setOrderNo(processOrder.getOrderNo());
+            shipmentDetail.setUpdateBy(processOrder.getUpdateBy());
             if ("Y".equalsIgnoreCase(status)) {
                 if ("Credit".equalsIgnoreCase(processOrder.getPayType())) {
                     shipmentDetail.setStatus(shipmentDetail.getStatus() + 1);

@@ -480,13 +480,12 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 				shipment.setUpdateBy(getUser().getFullName());
 				shipmentService.updateShipment(shipment);
 			}
-			// Đổi opeCode operateCode -> groupCode
-			CarrierGroup carrierGroup = carrierService.getCarrierGroupByOpeCode(shipment.getOpeCode());
-			if (carrierGroup != null) {
-				if (!shipment.getOpeCode().toUpperCase().equals(carrierGroup.getGroupCode())) {
-					for (ShipmentDetail sdetail : shipmentDetails) {
-						sdetail.setOpeCode(carrierGroup.getGroupCode());
-					}
+			//Đổi opeCode operateCode -> groupCode. VD Hang tau CMA: CMA,CNC,APL.. -> CMA
+			String oprParent = dictService.getLabel("carrier_parent_child_list", shipmentDetails.get(0).getOpeCode());
+			if (StringUtils.isNotEmpty(oprParent)) {
+				for(ShipmentDetail shpDtl : shipmentDetails) {
+					shpDtl.setOpeCode(oprParent);
+					shpDtl.setUpdateBy(getUser().getUserName());
 				}
 			}
 			ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails, shipment, taxCode,
@@ -803,7 +802,9 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		Map<String, ContainerInfoDto> containerInfoMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(containerInfoDtos)) {
 			for (ContainerInfoDto containerInfoDto : containerInfoDtos) {
-				containerInfoMap.put(containerInfoDto.getCntrNo(), containerInfoDto);
+				if ("E".equals(containerInfoDto.getFe())) {
+					containerInfoMap.put(containerInfoDto.getCntrNo(), containerInfoDto);
+				}
 			}
 		}
 		return containerInfoMap;

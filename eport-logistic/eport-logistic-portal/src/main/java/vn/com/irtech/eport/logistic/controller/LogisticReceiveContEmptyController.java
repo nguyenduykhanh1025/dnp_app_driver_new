@@ -45,6 +45,7 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
+import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -103,6 +104,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
     
     @Autowired
     private ConfigService configService;
+    
+    @Autowired
+    private DictService dictService;
     
     @Autowired
     private IShipmentCommentService shipmentCommentService;
@@ -574,11 +578,11 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 				shipmentService.updateShipment(shipment);
 			}
 			//Đổi opeCode operateCode -> groupCode. VD Hang tau CMA: CMA,CNC,APL.. -> CMA
-			CarrierGroup carrierGroup = carrierService.getCarrierGroupByOpeCode(shipmentDetails.get(0).getOpeCode().toUpperCase());
-			// Chi convert thanh OPE cua hang tau CHA khi ton tai (neu khong ton tai -> skip)
-			if(carrierGroup != null) {
+			String oprParent = dictService.getLabel("carrier_parent_child_list", shipmentDetails.get(0).getOpeCode());
+			if (StringUtils.isNotEmpty(oprParent)) {
 				for(ShipmentDetail shpDtl : shipmentDetails) {
-					shpDtl.setOpeCode(carrierGroup.getGroupCode());
+					shpDtl.setOpeCode(oprParent);
+					shpDtl.setUpdateBy(getUser().getUserName());
 				}
 			}
 			
@@ -995,7 +999,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		Map<String, ContainerInfoDto> containerInfoMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(containerInfoDtos)) {
 			for (ContainerInfoDto containerInfoDto : containerInfoDtos) {
-				containerInfoMap.put(containerInfoDto.getCntrNo(), containerInfoDto);
+				if ("E".equals(containerInfoDto.getFe())) {
+					containerInfoMap.put(containerInfoDto.getCntrNo(), containerInfoDto);
+				}
 			}
 		}
 		return containerInfoMap;

@@ -809,7 +809,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		Map<String, ContainerInfoDto> containerInfoMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(containerInfoDtos)) {
 			for (ContainerInfoDto containerInfoDto : containerInfoDtos) {
-				containerInfoMap.put(containerInfoDto.getCntrNo(), containerInfoDto);
+				if ("F".equals(containerInfoDto.getFe())) {
+					containerInfoMap.put(containerInfoDto.getCntrNo(), containerInfoDto);
+				}
 			}
 		}
 		return containerInfoMap;

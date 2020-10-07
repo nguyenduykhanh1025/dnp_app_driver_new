@@ -147,7 +147,7 @@ public class DocumentGatheringController extends AdminBaseController  {
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			containers += shipmentDetail.getContainerNo() + ",";
 			shipmentDetail.setDoStatus(doStatus);
-			shipmentDetail.setUpdateBy(getUser().getUserName());
+			shipmentDetail.setUpdateBy(getUser().getLoginName());
 			shipmentDetailService.updateShipmentDetail(shipmentDetail);
 		}
 		

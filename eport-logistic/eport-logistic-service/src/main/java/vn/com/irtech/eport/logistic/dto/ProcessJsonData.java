@@ -16,6 +16,8 @@ public class ProcessJsonData implements Serializable {
 	private String voyCarrier;
 	
 	private String containers;
+	
+	private Integer retryCount;
 
 	public List<Long> getShipmentDetailIds() {
 		return shipmentDetailIds;
@@ -55,7 +57,14 @@ public class ProcessJsonData implements Serializable {
 
 	public void setContainers(String containers) {
 		this.containers = containers;
+	}
+
+	public Integer getRetryCount() {
+		return retryCount;
+	}
+
+	public void setRetryCount(Integer retryCount) {
+		this.retryCount = retryCount;
 	} 
-	
 	
 }
