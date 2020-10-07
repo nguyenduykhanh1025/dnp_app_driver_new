@@ -306,25 +306,31 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 				return error("Không tìm thấy lô, vui lòng kiểm tra lại thông tin.");
 			}
 
-			// Kiem tra B/L No co ton tai o cont Boc Full khong
-			Shipment search = new Shipment();
-			search.setBlNo(shipment.getBlNo());
-			search.setLogisticGroupId(shipment.getLogisticGroupId());
-			search.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
-			List<Shipment> receiveFullList = shipmentService.selectShipmentList(search);
 			boolean checkDoStatus = false;
-			if (CollectionUtils.isNotEmpty(receiveFullList) || StringUtils.isEmpty(shipment.getBlNo())) {
-				// lay 1 shipment (thong thuong chi co 1)
-				Shipment receiveFShipment = receiveFullList.get(0);
-				// Đổi opeCode operateCode -> groupCode
-				if (shipment.getOpeCode() == null || !shipment.getOpeCode().equals(receiveFShipment.getOpeCode())) {
-					return error(
-							"Mã OPR cho lô nhận container hàng và lô giao container rỗng đang khác nhau. Vui lòng kiểm tra lại.");
+			// Kiem tra B/L No co ton tai o cont Boc Full khong
+			if (StringUtils.isNotEmpty(shipment.getBlNo())) {
+				Shipment search = new Shipment();
+				search.setBlNo(shipment.getBlNo());
+				search.setLogisticGroupId(shipment.getLogisticGroupId());
+				search.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
+				List<Shipment> receiveFullList = shipmentService.selectShipmentList(search);
+				if (CollectionUtils.isNotEmpty(receiveFullList)) {
+					// lay 1 shipment (thong thuong chi co 1)
+					Shipment receiveFShipment = receiveFullList.get(0);
+					// Đổi opeCode operateCode -> groupCode
+					if (shipment.getOpeCode() == null || !shipment.getOpeCode().equals(receiveFShipment.getOpeCode())) {
+						return error(
+								"Mã OPR cho lô nhận container hàng và lô giao container rỗng đang khác nhau. Vui lòng kiểm tra lại.");
+					}
+				} else {
+					// bat co de OM kiem tra lai chung tu goc
+					checkDoStatus = true;
 				}
 			} else {
 				// bat co de OM kiem tra lai chung tu goc
 				checkDoStatus = true;
 			}
+			
 
 			boolean updateShipment = true; // if true => need to update status shipment from init to save
 			for (ShipmentDetail inputDetail : shipmentDetails) {
