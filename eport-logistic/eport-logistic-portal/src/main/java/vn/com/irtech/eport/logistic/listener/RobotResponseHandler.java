@@ -749,30 +749,34 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			if ("error".equalsIgnoreCase(result)) {
 				ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(),
 						ProcessJsonData.class);
-				String title = "";
-				String msg = "";
-				if (processOrder.getHoldFlg()) {
-					// Case hold terminal
-					title = "Lỗi robot " + uuId + " khóa terminal hold!";
-					msg = "Lỗi không khóa được terminal hold DO container " + processJsonData.getContainers() + ".";
+				// Retry hold and unhold terminal within 4 times
+				if (processJsonData.getRetryCount() != null && processJsonData.getRetryCount() < EportConstants.ROBOT_RETRY_TIMES_LIMIT) {
+					retrySendOrderToRobotTerminalHold(processOrder, processJsonData);
 				} else {
-					// Case unhold terminal
-					title = "Lỗi robot " + uuId + " mở terminal hold!";
-					msg = "Lỗi không mở khóa được terminal hold DO container " + processJsonData.getContainers() + ".";
-				}
-				// Send notification for om
-				try {
-					mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg,
-							configService.getKey("domain.admin.name"), EportConstants.NOTIFICATION_PRIORITY_LOW);
-				} catch (Exception e) {
-					logger.warn(e.getMessage());
+					String title = "";
+					String msg = "";
+					if (processOrder.getHoldFlg()) {
+						// Case hold terminal
+						title = "Lỗi robot " + uuId + " khóa terminal hold!";
+						msg = "Lỗi không khóa được terminal hold DO container " + processJsonData.getContainers() + ".";
+					} else {
+						// Case unhold terminal
+						title = "Lỗi robot " + uuId + " mở terminal hold!";
+						msg = "Lỗi không mở khóa được terminal hold DO container " + processJsonData.getContainers() + ".";
+					}
+					// Send notification for om
+					try {
+						mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg,
+								configService.getKey("domain.admin.name"), EportConstants.NOTIFICATION_PRIORITY_LOW);
+					} catch (Exception e) {
+						logger.warn(e.getMessage());
+					}
 				}
 			}
 		} else if (EportConstants.MODE_CUSTOM_HOLD.equalsIgnoreCase(processOrder.getModee())) {
 			// Case : custom hold
 
 		}
-		ContainerHoldInfo containerHoldInfo = new ContainerHoldInfo();
 
 		if ("success".equalsIgnoreCase(result)) {
 			processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_FINISHED); // FINISH
@@ -939,6 +943,12 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		}
 	}
 
+	/**
+	 * Send hold terminal request to robot when pickup full order success
+	 * 
+	 * @param pickupFullOrder
+	 * @param shipmentDetails
+	 */
 	private void sendProcessOrderHoldTerminal(ProcessOrder pickupFullOrder, List<ShipmentDetail> shipmentDetails) {
 		// Get list container for shipmentDetails
 		String containers = "";
@@ -975,8 +985,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			processOrder.setContNumber(containerHolds.size());
 			processOrder.setModee(EportConstants.MODE_TERMINAL_HOLD);
 			processOrder.setBlNo(pickupFullOrder.getBlNo());
-			Map<String, Object> processData = new HashMap<>();
-			processData.put("containers", org.apache.commons.lang3.StringUtils.join(containerHolds, ","));
+			ProcessJsonData processData = new ProcessJsonData();
+			processData.setRetryCount(0);
+			processData.setContainers(org.apache.commons.lang3.StringUtils.join(containerHolds, ","));
 			processOrder.setProcessData(new Gson().toJson(processData));
 			processOrder.setHoldFlg(true);
 			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);
@@ -1004,6 +1015,13 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		}
 	}
 
+	/**
+	 * Get job order no of container no to check order has been make in catos
+	 * 
+	 * @param serviceType
+	 * @param containerNo
+	 * @return String job order no
+	 */
 	public String getJobOrderNo(Integer serviceType, String containerNo) {
 		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoDtoByContNos(containerNo);
 		if (CollectionUtils.isEmpty(cntrInfos)) {
@@ -1045,5 +1063,29 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			break;
 		}
 		return null;
+	}
+	
+	private void retrySendOrderToRobotTerminalHold(ProcessOrder processOrder, ProcessJsonData processJsonData) {
+		// Insert new request order
+		processOrder.setId(null);
+		// Increase times retry by 1
+		processJsonData.setRetryCount(processJsonData.getRetryCount()+1);
+		processOrder.setProcessData(new Gson().toJson(processJsonData));
+		processOrderService.insertProcessOrder(processOrder);
+		Map<String, Object> params = new HashMap<>();
+		params.put("containers", processJsonData.getContainers());
+		processOrder.setParams(params);
+
+		logger.debug("Find robot terminal hold available.");
+		SysRobot sysRobot = new SysRobot();
+		sysRobot.setIsChangeTerminalCustomHold(true);
+		sysRobot.setStatus(EportConstants.ROBOT_STATUS_AVAILABLE);
+		sysRobot.setDisabled(false);
+		SysRobot robot = robotService.findFirstRobot(sysRobot);
+		try {
+			mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.TERMINAL_CUSTOM_HOLD, robot.getUuId());
+		} catch (MqttException e) {
+			logger.error("Error when send pickup empty to robot: " + e);
+		}
 	}
 }
