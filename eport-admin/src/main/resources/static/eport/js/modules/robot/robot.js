@@ -20,6 +20,8 @@ function loadListRobot() {
     updateUrl: PREFIX + "/edit/{id}",
     removeUrl: PREFIX + "/remove",
     modalName: "Robot",
+    height: $(document).height() - 105,
+    pageSize: 25,
     columns: [
       {
         checkbox: true,
@@ -54,107 +56,11 @@ function loadListRobot() {
         }
       },
       {
-        field: "isReceiveContFullOrder",
-        title: "Nhận container có hàng",
-        align: "center",
+        field: "robotService",
+        title: "Chức năng",
+        align: "left",
         formatter: function (value, row, index) {
-          return isReceiveContFullOrderFormater(value, row, index);
-        },
-      },
-      {
-        field: "isReceiveContEmptyOrder",
-        title: "Nhận container rỗng",
-        align: "center",
-        formatter: function (value, row, index) {
-          return isReceiveContEmptyOrderFormater(value, row, index);
-        },
-      },
-      {
-        field: "isSendContFullOrder",
-        title: "Giao container có hàng",
-        align: "center",
-        formatter: function (value, row, index) {
-          return isSendContFullOrderFormater(value, row, index);
-        },
-      },
-      {
-        field: "isSendContEmptyOrder",
-        title: "Giao container rỗng",
-        align: "center",
-        formatter: function (value, row, index) {
-          return isSendContEmptyOrderFormater(value, row, index);
-        },
-      },
-      {
-        field: "isShiftingContOrder",
-        title: "Dịch chuyển container",
-        align: "center",
-        formatter: function (value, row, index) {
-          return isShiftingContOrderFormater(value, row, index);
-        },
-      },
-      {
-        field: "isChangeVesselOrder",
-        title: "Đổi tàu/chuyến",
-        align: "center",
-        formatter: function (value, row, index) {
-          return isChangeVesselOrderFormater(value, row, index);
-        },
-      },
-      {
-        field: "isExtensionDateOrder",
-        title: "Gia hạn lệnh",
-        align: "center",
-        formatter: function (value, row, index) {
-          return isExtensionDateOrderFormater(value, row, index);
-        },
-      },
-      {
-        field: "isCreateBookingOrder",
-        title: "Tạo Booking",
-        align: "center",
-        formatter: function (value, row, index) {
-          return isCreateBookingOrderFormater(value, row, index);
-        },
-      },
-      {
-        field: "isGateInOrder",
-        title: "Gate in",
-        align: "center",
-        formatter: function (value, row, index) {
-          return isGateInFormater(value, row, index);
-        },
-      },
-      {
-        field: "isChangeTerminalCustomHold",
-        title: "Terminal/Custom Hold",
-        align: "center",
-        formatter: function (value, row, index) {
-          return isChangeTerminalCustomHoldFormater(value, row, index);
-        },
-      },
-      {
-        field: "isCancelSendContFullOrder",
-        title: "Hủy hạ hàng",
-        align: "center",
-        formatter: function (value, row, index) {
-          return isCancelSendContFullOrderFormater(value, row, index);
-        },
-      },
-      {
-        field: "isCancelReceiveContEmptyOrder",
-        title: "Hủy bốc rỗng",
-        align: "center",
-        formatter: function (value, row, index) {
-          return isCancelReceiveContEmptyOrderFormater(value, row, index);
-        },
-      },
-      {
-        field: "isExportReceipt",
-        title: "Xuất hóa đơn",
-        align: "center",
-        formatter: function (value, row, index) {
-          return isExportReceiptFormater(value, row, index);
+          return robotServiceFormater(value, row, index);
         },
       },
       {
@@ -196,125 +102,53 @@ function disabledFormatter(value, row, index) {
   if (row.disabled == 0) {
     return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="disable(\'' + row.id + '\',\'' + row.uuId + '\')"></i> ';
   } else {
-    return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="enable(\'' + row.id + '\',\'' + row.uuId + '\')"></i> ';
+    return '<i class=\"fa fa-toggle-on text-info fa-2x\" style="color: #ed5565;" onclick="enable(\'' + row.id + '\',\'' + row.uuId + '\')"></i> ';
   }
 }
 
 /* formatter for ReceiveContFullOrder column */
-function isReceiveContFullOrderFormater(value, row, index) {
-  if (row.isReceiveContFullOrder == true) {
-    return '<span class="badge badge-primary">Yes</span>';
-  } else {
-    return '<span class="badge badge-danger">No</span>';
+function robotServiceFormater(value, row, index) {
+  let content = '';
+  if (row.isReceiveContFullOrder) {
+    content += '<span class="badge badge-primary">Nhận container có hàng</span><span> </span>';
   }
-}
-
-/* formatter for ReceiveContEmptyOrder column */
-function isReceiveContEmptyOrderFormater(value, row, index) {
-  if (row.isReceiveContEmptyOrder == true) {
-    return '<span class="badge badge-primary">Yes</span>';
-  } else {
-    return '<span class="badge badge-danger">No</span>';
+  if (row.isReceiveContEmptyOrder) {
+    content += '<span class="badge badge-primary">Nhận container rỗng</span><span> </span>';
   }
-}
-
-/* formatter for SendContFullOrder column */
-function isSendContFullOrderFormater(value, row, index) {
-  if (row.isSendContFullOrder == true) {
-    return '<span class="badge badge-primary">Yes</span>';
-  } else {
-    return '<span class="badge badge-danger">No</span>';
+  if (row.isSendContFullOrder) {
+    content += '<span class="badge badge-primary">Giao container có hàng</span><span> </span>';
   }
-}
-
-/* formatter for SendContEmptyOrder column */
-function isSendContEmptyOrderFormater(value, row, index) {
-  if (row.isSendContEmptyOrder == true) {
-    return '<span class="badge badge-primary">Yes</span>';
-  } else {
-    return '<span class="badge badge-danger">No</span>';
+  if (row.isSendContEmptyOrder) {
+    content += '<span class="badge badge-primary">Giao container rỗng</span><span> </span>';
   }
-}
-
-/* formatter for shiftingContOrder column */
-function isShiftingContOrderFormater(value, row, index) {
-  if (row.isShiftingContOrder == true) {
-    return '<span class="badge badge-primary">Yes</span>';
-  } else {
-    return '<span class="badge badge-danger">No</span>';
+  if (row.isShiftingContOrder) {
+    content += '<span class="badge badge-primary">Dịch chuyển container</span><span> </span>';
   }
-}
-
-/* formatter for shiftingContOrder column */
-function isChangeVesselOrderFormater(value, row, index) {
-  if (row.isChangeVesselOrder == true) {
-    return '<span class="badge badge-primary">Yes</span>';
-  } else {
-    return '<span class="badge badge-danger">No</span>';
+  if (row.isChangeVesselOrder) {
+    content += '<span class="badge badge-primary">Đổi tàu/chuyến</span><span> </span>';
   }
-}
-
-/* formatter for isExtensionDateOrder column */
-function isExtensionDateOrderFormater(value, row, index) {
-  if (row.isExtensionDateOrder == true) {
-    return '<span class="badge badge-primary">Yes</span>';
-  } else {
-    return '<span class="badge badge-danger">No</span>';
+  if (row.isExtensionDateOrder) {
+    content += '<span class="badge badge-primary">Gia hạn lệnh</span><span> </span>';
   }
-}
-
-/* formatter for shiftingContOrder column */
-function isCreateBookingOrderFormater(value, row, index) {
-  if (row.isCreateBookingOrder == true) {
-    return '<span class="badge badge-primary">Yes</span>';
-  } else {
-    return '<span class="badge badge-danger">No</span>';
+  if (row.isCreateBookingOrder) {
+    content += '<span class="badge badge-primary">Tạo booking</span><span> </span>';
   }
-}
-
-/* formatter for Gate In column */
-function isGateInFormater(value, row, index) {
-  if (row.isGateInOrder == true) {
-    return '<span class="badge badge-primary">Yes</span>';
-  } else {
-    return '<span class="badge badge-danger">No</span>';
+  if (row.isGateInOrder) {
+    content += '<span class="badge badge-primary">Gate in</span><span> </span>';
   }
-}
-
-/* formatter for change terminal custom hold column */
-function isChangeTerminalCustomHoldFormater(value, row, index) {
-  if (row.isChangeTerminalCustomHold == true) {
-    return '<span class="badge badge-primary">Yes</span>';
-  } else {
-    return '<span class="badge badge-danger">No</span>';
+  if (row.isChangeTerminalCustomHold) {
+    content += '<span class="badge badge-primary">Terminal/Custom Hold</span><span> </span>';
   }
-}
-
-/* formatter for send cont full order column */
-function isCancelSendContFullOrderFormater(value, row, index) {
-  if (row.isCancelSendContFullOrder == true) {
-    return '<span class="badge badge-primary">Yes</span>';
-  } else {
-    return '<span class="badge badge-danger">No</span>';
+  if (row.isCancelSendContFullOrder) {
+    content += '<span class="badge badge-primary">Hủy lệnh hạ hàng</span><span> </span>';
   }
-}
-
-/* formatter for Cancel receive cont empty order column */
-function isCancelReceiveContEmptyOrderFormater(value, row, index) {
-  if (row.isCancelReceiveContEmptyOrder == true) {
-    return '<span class="badge badge-primary">Yes</span>';
-  } else {
-    return '<span class="badge badge-danger">No</span>';
+  if (row.isCancelReceiveContEmptyOrder) {
+    content += '<span class="badge badge-primary">Hủy Lệnh bốc rỗng</span><span> </span>';
   }
-}
-
-/* formatter for export receipt column */
-function isExportReceiptFormater(value, row, index) {
-  if (row.isExportReceipt == true) {
-    return '<span class="badge badge-primary">Yes</span>';
-  } else {
-    return '<span class="badge badge-danger">No</span>';
+  if (row.isExportReceipt) {
+    content += '<span class="badge badge-primary">Xuất hóa đơn</span><span> </span>';
   }
+  return content;
 }
 
 /* disable robot */
