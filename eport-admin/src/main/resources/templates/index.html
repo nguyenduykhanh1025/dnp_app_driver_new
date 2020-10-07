@@ -348,6 +348,11 @@
           $('#2605').append(' <span id="cancelOrderReq"></span>');
         }
         $('#2047').click(updateReportNumberOm);
+
+        // Set inteval to update number of notify
+        var interval = setInterval(() => {
+          updateReportNumberOm();
+        }, 30000);
       });
 
       if ($.common.isNotEmpty(skin)) {

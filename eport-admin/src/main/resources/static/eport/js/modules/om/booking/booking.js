@@ -107,11 +107,11 @@ $(document).ready(function () {
       "text": "Trạng thái"
     }, {
       "alias": 'N',
-      "text": "Chưa thu",
+      "text": "Chưa kiểm tra",
       "selected": true
     }, {
       "alias": 'Y',
-      "text": "Đã thu"
+      "text": "Đã kiểm tra"
     }],
     onSelect: function (doStatus) {
       if (doStatus.alias != '') {
