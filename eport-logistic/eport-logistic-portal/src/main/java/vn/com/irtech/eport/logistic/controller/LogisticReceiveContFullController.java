@@ -951,7 +951,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		//Get opecode, sealNo, wgt, pol,pod
 		if(shipmentDetailsCatos != null) {
 			for(ContainerInfoDto detail : shipmentDetailsCatos) {
-				detailMap.put(detail.getCntrNo(), detail);
+				if ("F".equals(detail.getFe())) {
+					detailMap.put(detail.getCntrNo(), detail);
+				}
 			}
 		}
 		return detailMap;

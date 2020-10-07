@@ -160,7 +160,11 @@ public class SupportSendFullController extends OmBaseController{
 		if(CollectionUtils.isNotEmpty(shipmentDetails)) {
 			List<ContainerInfoDto> cntrInfos = catosService.getContainerInfoDtoByContNos(shipmentDetails.get(0).getContainerNo());
 			if (CollectionUtils.isNotEmpty(cntrInfos)) {
-				orderNo = cntrInfos.get(0).getJobOdrNo();
+				for (ContainerInfoDto cntrInfo : cntrInfos) {
+					if ("F".equals(cntrInfo.getFe())) {
+						orderNo = cntrInfo.getJobOdrNo();
+					}
+				}
 			}
     	}
     	if(orderNo == null || orderNo.equals("")) {
@@ -251,6 +255,7 @@ public class SupportSendFullController extends OmBaseController{
 					i.setStatus(1);
 					i.setPaymentStatus("N");
 					i.setUserVerifyStatus("N");
+					i.setUpdateBy(getUser().getLoginName());
 					shipmentDetailService.resetShipmentDetailProcessStatus(i);
 				}
 			}

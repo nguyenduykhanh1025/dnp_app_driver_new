@@ -148,31 +148,31 @@ public class RobotResponseHandler implements IMqttMessageListener {
 							errorImagePath);
 				}
 				switch (serviceType) {
-					case EportConstants.SERVICE_SHIFTING:
-						this.updateShiftingOrder(result, receiptId, invoiceNo, uuId, orderNo, serviceType, msg,
-								errorImagePath);
-						break;
-					case EportConstants.SERVICE_CHANGE_VESSEL:
-						this.updateChangeVesselOrder(result, receiptId, uuId);
-						break;
-					case EportConstants.SERVICE_CREATE_BOOKING:
-						this.updateCreateBookingOrder(result, receiptId, uuId, msg);
-						break;
-					case EportConstants.SERVICE_EXTEND_DATE:
-						this.updateExtensionDateOrder(result, receiptId, uuId);
-						break;
-					case EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD:
-						this.updateTerminalCustomHold(result, receiptId, uuId);
-						break;
-					case EportConstants.SERVICE_CANCEL_DROP_FULL:
-						break;
-					case EportConstants.SERVICE_CANCEL_PICKUP_EMPTY:
-						break;
-					case EportConstants.SERVICE_EXPORT_RECEIPT:
-						this.updateExportReceipt(result, receiptId, uuId);
-						break;
-					default:
-						break;
+				case EportConstants.SERVICE_SHIFTING:
+					this.updateShiftingOrder(result, receiptId, invoiceNo, uuId, orderNo, serviceType, msg,
+							errorImagePath);
+					break;
+				case EportConstants.SERVICE_CHANGE_VESSEL:
+					this.updateChangeVesselOrder(result, receiptId, uuId);
+					break;
+				case EportConstants.SERVICE_CREATE_BOOKING:
+					this.updateCreateBookingOrder(result, receiptId, uuId, msg);
+					break;
+				case EportConstants.SERVICE_EXTEND_DATE:
+					this.updateExtensionDateOrder(result, receiptId, uuId);
+					break;
+				case EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD:
+					this.updateTerminalCustomHold(result, receiptId, uuId);
+					break;
+				case EportConstants.SERVICE_CANCEL_DROP_FULL:
+					break;
+				case EportConstants.SERVICE_CANCEL_PICKUP_EMPTY:
+					break;
+				case EportConstants.SERVICE_EXPORT_RECEIPT:
+					this.updateExportReceipt(result, receiptId, uuId);
+					break;
+				default:
+					break;
 				}
 				this.sendMessageWebsocket(result, receiptId);
 				status = this.assignNewProcessOrder(sysRobot);
@@ -256,6 +256,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			processOrder.setInvoiceNo(invoiceNo);
 			processOrder.setStatus(2); // FINISH
 			processOrder.setResult("S"); // RESULT SUCESS
+			processOrder.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 			processOrderService.updateProcessOrder(processOrder);
 
 			// SAVE BILL TO PROCESS BILL BY INVOICE NO
@@ -304,6 +305,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setProcessStatus("E");
+				shipmentDetail.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
 			// SET RESULT FOR HISTORY FAILED
@@ -379,6 +381,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 					ShipmentDetail prePickupShipmentDetail = new ShipmentDetail();
 					prePickupShipmentDetail.setId(shipmentDetailId);
 					prePickupShipmentDetail.setPrePickupPaymentStatus("Y");
+					prePickupShipmentDetail.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 					shipmentDetailService.updateShipmentDetail(prePickupShipmentDetail);
 				}
 			}
@@ -402,6 +405,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setProcessStatus("E");
+				shipmentDetail.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
 			// SET RESULT FOR HISTORY FAILED
@@ -664,6 +668,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 			for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
 				shipmentDetail2.setProcessStatus("E");
+				shipmentDetail2.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail2);
 			}
 
@@ -704,6 +709,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 				ShipmentDetail shipmentDetail = new ShipmentDetail();
 				shipmentDetail.setId(shipmentDetailId);
 				shipmentDetail.setExpiredDem(processOrder.getPickupDate());
+				shipmentDetail.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
 			processOrder.setStatus(2); // FINISH
@@ -1006,13 +1012,38 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		}
 
 		// Check service type
-		if (serviceType == EportConstants.SERVICE_PICKUP_EMPTY || serviceType == EportConstants.SERVICE_PICKUP_FULL) {
-			return cntrInfos.get(0).getJobOdrNo2();
-		} else if (serviceType == EportConstants.SERVICE_DROP_EMPTY
-				|| serviceType == EportConstants.SERVICE_DROP_FULL) {
-			return cntrInfos.get(0).getJobOdrNo();
+		switch (serviceType) {
+		case EportConstants.SERVICE_PICKUP_EMPTY:
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				if ("E".equals(cntrInfo.getFe())) {
+					return cntrInfo.getJobOdrNo2();
+				}
+			}
+			break;
+		case EportConstants.SERVICE_PICKUP_FULL:
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				if ("F".equals(cntrInfo.getFe())) {
+					return cntrInfo.getJobOdrNo2();
+				}
+			}
+			break;
+		case EportConstants.SERVICE_DROP_EMPTY:
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				if ("E".equals(cntrInfo.getFe())) {
+					return cntrInfo.getJobOdrNo();
+				}
+			}
+			break;
+		case EportConstants.SERVICE_DROP_FULL:
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				if ("F".equals(cntrInfo.getFe())) {
+					return cntrInfo.getJobOdrNo();
+				}
+			}
+			break;
+		default:
+			break;
 		}
-
 		return null;
 	}
 }

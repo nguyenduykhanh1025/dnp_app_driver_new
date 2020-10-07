@@ -257,4 +257,8 @@ public interface EportConstants {
 	// Hold code catos
 	/** Terminal hold code DO */
 	public static final String HOLD_CODE_DO = "DO";
+	
+	// Default user name
+	/** User name default system */
+	public static final String USER_NAME_SYSTEM = "SYSTEM";
 }
