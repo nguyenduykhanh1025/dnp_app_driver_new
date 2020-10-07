@@ -14,16 +14,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="userName"    column="user_name"    />
         <result property="userType"    column="user_type"    />
         <result property="createTime"    column="create_time"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="updateBy"    column="update_by"    />
         <result property="voyNo"    column="voy_no"    />
         <result property="shipmentId"    column="shipment_id"    />
         <result property="histType"    column="hist_type"    />
     </resultMap>
 
     <sql id="selectShipmentDetailHistVo">
-        select id, shipment_detail_id, vsl_cd, data_field, old_value, new_value, user_name, user_type, create_time, create_by, update_time, update_by, voy_no, shipment_id, hist_type from shipment_detail_hist
+        select id, shipment_detail_id, vsl_cd, data_field, old_value, new_value, user_name, user_type, create_time, voy_no, shipment_id, hist_type from shipment_detail_hist
     </sql>
 
     <select id="selectShipmentDetailHistList" parameterType="ShipmentDetailHist" resultMap="ShipmentDetailHistResult">
@@ -62,7 +59,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="newValue != null">new_value,</if>
             <if test="userName != null">user_name,</if>
             <if test="userType != null">user_type,</if>
-            <if test="createBy != null">create_by,</if>
             <if test="voyNo != null">voy_no,</if>
             <if test="shipmentId != null">shipment_id,</if>
             <if test="histType != null">hist_type,</if>
@@ -77,7 +73,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="newValue != null">#{newValue},</if>
             <if test="userName != null">#{userName},</if>
             <if test="userType != null">#{userType},</if>
-            <if test="createBy != null">#{createBy},</if>
             <if test="voyNo != null">#{voyNo},</if>
             <if test="shipmentId != null">#{shipmentId},</if>
             <if test="histType != null">#{histType},</if>
@@ -95,12 +90,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="newValue != null">new_value = #{newValue},</if>
             <if test="userName != null">user_name = #{userName},</if>
             <if test="userType != null">user_type = #{userType},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="voyNo != null">voy_no = #{voyNo},</if>
             <if test="shipmentId != null">shipment_id = #{shipmentId},</if>
             <if test="histType != null">hist_type = #{histType},</if>
-            create_time = sysdate
         </trim>
         where id = #{id}
     </update>
