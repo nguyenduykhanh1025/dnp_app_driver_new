@@ -400,10 +400,37 @@ public class GeneralControllingController extends AdminBaseController {
 			if(CollectionUtils.isNotEmpty(shipmentDetails)) {
 				List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoDtoByContNos(shipmentDetails.get(0).getContainerNo());
 				if (CollectionUtils.isNotEmpty(cntrInfos)) {
-					if (EportConstants.SERVICE_PICKUP_FULL == processOrder.getServiceType() || EportConstants.SERVICE_PICKUP_EMPTY == processOrder.getServiceType()) {
-						orderNo = cntrInfos.get(0).getJobOdrNo2();
-					} else if (EportConstants.SERVICE_DROP_FULL == processOrder.getServiceType() || EportConstants.SERVICE_DROP_EMPTY == processOrder.getServiceType()) {
-						orderNo = cntrInfos.get(0).getJobOdrNo();
+					switch (processOrder.getServiceType()) {
+						case EportConstants.SERVICE_PICKUP_FULL:
+							for (ContainerInfoDto cntrInfo : cntrInfos) {
+								if ("F".equals(cntrInfo.getFe())) {
+									orderNo = cntrInfo.getJobOdrNo2();
+								}
+							}
+							break;
+						case EportConstants.SERVICE_PICKUP_EMPTY:
+							for (ContainerInfoDto cntrInfo : cntrInfos) {
+								if ("E".equals(cntrInfo.getFe())) {
+									orderNo = cntrInfo.getJobOdrNo2();
+								}
+							}		
+							break;
+						case EportConstants.SERVICE_DROP_FULL:
+							for (ContainerInfoDto cntrInfo : cntrInfos) {
+								if ("F".equals(cntrInfo.getFe())) {
+									orderNo = cntrInfo.getJobOdrNo();
+								}
+							}
+							break;
+						case EportConstants.SERVICE_DROP_EMPTY:
+							for (ContainerInfoDto cntrInfo : cntrInfos) {
+								if ("E".equals(cntrInfo.getFe())) {
+									orderNo = cntrInfo.getJobOdrNo();
+								}
+							}
+							break;
+						default:
+							break;
 					}
 				}
 	    	}
@@ -518,6 +545,7 @@ public class GeneralControllingController extends AdminBaseController {
 					}
 					i.setPaymentStatus("N");
 					i.setUserVerifyStatus("N");
+					i.setUpdateBy(getUser().getLoginName());
 					shipmentDetailService.resetShipmentDetailProcessStatus(i);
 				}
 			}

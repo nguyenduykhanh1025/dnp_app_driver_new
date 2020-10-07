@@ -148,31 +148,31 @@ public class RobotResponseHandler implements IMqttMessageListener {
 							errorImagePath);
 				}
 				switch (serviceType) {
-					case EportConstants.SERVICE_SHIFTING:
-						this.updateShiftingOrder(result, receiptId, invoiceNo, uuId, orderNo, serviceType, msg,
-								errorImagePath);
-						break;
-					case EportConstants.SERVICE_CHANGE_VESSEL:
-						this.updateChangeVesselOrder(result, receiptId, uuId);
-						break;
-					case EportConstants.SERVICE_CREATE_BOOKING:
-						this.updateCreateBookingOrder(result, receiptId, uuId, msg);
-						break;
-					case EportConstants.SERVICE_EXTEND_DATE:
-						this.updateExtensionDateOrder(result, receiptId, uuId);
-						break;
-					case EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD:
-						this.updateTerminalCustomHold(result, receiptId, uuId);
-						break;
-					case EportConstants.SERVICE_CANCEL_DROP_FULL:
-						break;
-					case EportConstants.SERVICE_CANCEL_PICKUP_EMPTY:
-						break;
-					case EportConstants.SERVICE_EXPORT_RECEIPT:
-						this.updateExportReceipt(result, receiptId, uuId);
-						break;
-					default:
-						break;
+				case EportConstants.SERVICE_SHIFTING:
+					this.updateShiftingOrder(result, receiptId, invoiceNo, uuId, orderNo, serviceType, msg,
+							errorImagePath);
+					break;
+				case EportConstants.SERVICE_CHANGE_VESSEL:
+					this.updateChangeVesselOrder(result, receiptId, uuId);
+					break;
+				case EportConstants.SERVICE_CREATE_BOOKING:
+					this.updateCreateBookingOrder(result, receiptId, uuId, msg);
+					break;
+				case EportConstants.SERVICE_EXTEND_DATE:
+					this.updateExtensionDateOrder(result, receiptId, uuId);
+					break;
+				case EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD:
+					this.updateTerminalCustomHold(result, receiptId, uuId);
+					break;
+				case EportConstants.SERVICE_CANCEL_DROP_FULL:
+					break;
+				case EportConstants.SERVICE_CANCEL_PICKUP_EMPTY:
+					break;
+				case EportConstants.SERVICE_EXPORT_RECEIPT:
+					this.updateExportReceipt(result, receiptId, uuId);
+					break;
+				default:
+					break;
 				}
 				this.sendMessageWebsocket(result, receiptId);
 				status = this.assignNewProcessOrder(sysRobot);
@@ -256,6 +256,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			processOrder.setInvoiceNo(invoiceNo);
 			processOrder.setStatus(2); // FINISH
 			processOrder.setResult("S"); // RESULT SUCESS
+			processOrder.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 			processOrderService.updateProcessOrder(processOrder);
 
 			// SAVE BILL TO PROCESS BILL BY INVOICE NO
@@ -304,6 +305,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setProcessStatus("E");
+				shipmentDetail.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
 			// SET RESULT FOR HISTORY FAILED
@@ -379,6 +381,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 					ShipmentDetail prePickupShipmentDetail = new ShipmentDetail();
 					prePickupShipmentDetail.setId(shipmentDetailId);
 					prePickupShipmentDetail.setPrePickupPaymentStatus("Y");
+					prePickupShipmentDetail.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 					shipmentDetailService.updateShipmentDetail(prePickupShipmentDetail);
 				}
 			}
@@ -402,6 +405,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setProcessStatus("E");
+				shipmentDetail.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
 			// SET RESULT FOR HISTORY FAILED
@@ -664,6 +668,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 			for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
 				shipmentDetail2.setProcessStatus("E");
+				shipmentDetail2.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail2);
 			}
 
@@ -704,6 +709,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 				ShipmentDetail shipmentDetail = new ShipmentDetail();
 				shipmentDetail.setId(shipmentDetailId);
 				shipmentDetail.setExpiredDem(processOrder.getPickupDate());
+				shipmentDetail.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
 			processOrder.setStatus(2); // FINISH
@@ -743,30 +749,34 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			if ("error".equalsIgnoreCase(result)) {
 				ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(),
 						ProcessJsonData.class);
-				String title = "";
-				String msg = "";
-				if (processOrder.getHoldFlg()) {
-					// Case hold terminal
-					title = "Lỗi robot " + uuId + " khóa terminal hold!";
-					msg = "Lỗi không khóa được terminal hold DO container " + processJsonData.getContainers() + ".";
+				// Retry hold and unhold terminal within 4 times
+				if (processJsonData.getRetryCount() != null && processJsonData.getRetryCount() < EportConstants.ROBOT_RETRY_TIMES_LIMIT) {
+					retrySendOrderToRobotTerminalHold(processOrder, processJsonData);
 				} else {
-					// Case unhold terminal
-					title = "Lỗi robot " + uuId + " mở terminal hold!";
-					msg = "Lỗi không mở khóa được terminal hold DO container " + processJsonData.getContainers() + ".";
-				}
-				// Send notification for om
-				try {
-					mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg,
-							configService.getKey("domain.admin.name"), EportConstants.NOTIFICATION_PRIORITY_LOW);
-				} catch (Exception e) {
-					logger.warn(e.getMessage());
+					String title = "";
+					String msg = "";
+					if (processOrder.getHoldFlg()) {
+						// Case hold terminal
+						title = "Lỗi robot " + uuId + " khóa terminal hold!";
+						msg = "Lỗi không khóa được terminal hold DO container " + processJsonData.getContainers() + ".";
+					} else {
+						// Case unhold terminal
+						title = "Lỗi robot " + uuId + " mở terminal hold!";
+						msg = "Lỗi không mở khóa được terminal hold DO container " + processJsonData.getContainers() + ".";
+					}
+					// Send notification for om
+					try {
+						mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg,
+								configService.getKey("domain.admin.name"), EportConstants.NOTIFICATION_PRIORITY_LOW);
+					} catch (Exception e) {
+						logger.warn(e.getMessage());
+					}
 				}
 			}
 		} else if (EportConstants.MODE_CUSTOM_HOLD.equalsIgnoreCase(processOrder.getModee())) {
 			// Case : custom hold
 
 		}
-		ContainerHoldInfo containerHoldInfo = new ContainerHoldInfo();
 
 		if ("success".equalsIgnoreCase(result)) {
 			processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_FINISHED); // FINISH
@@ -933,6 +943,12 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		}
 	}
 
+	/**
+	 * Send hold terminal request to robot when pickup full order success
+	 * 
+	 * @param pickupFullOrder
+	 * @param shipmentDetails
+	 */
 	private void sendProcessOrderHoldTerminal(ProcessOrder pickupFullOrder, List<ShipmentDetail> shipmentDetails) {
 		// Get list container for shipmentDetails
 		String containers = "";
@@ -969,8 +985,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			processOrder.setContNumber(containerHolds.size());
 			processOrder.setModee(EportConstants.MODE_TERMINAL_HOLD);
 			processOrder.setBlNo(pickupFullOrder.getBlNo());
-			Map<String, Object> processData = new HashMap<>();
-			processData.put("containers", org.apache.commons.lang3.StringUtils.join(containerHolds, ","));
+			ProcessJsonData processData = new ProcessJsonData();
+			processData.setRetryCount(0);
+			processData.setContainers(org.apache.commons.lang3.StringUtils.join(containerHolds, ","));
 			processOrder.setProcessData(new Gson().toJson(processData));
 			processOrder.setHoldFlg(true);
 			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);
@@ -998,6 +1015,13 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		}
 	}
 
+	/**
+	 * Get job order no of container no to check order has been make in catos
+	 * 
+	 * @param serviceType
+	 * @param containerNo
+	 * @return String job order no
+	 */
 	public String getJobOrderNo(Integer serviceType, String containerNo) {
 		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoDtoByContNos(containerNo);
 		if (CollectionUtils.isEmpty(cntrInfos)) {
@@ -1006,13 +1030,62 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		}
 
 		// Check service type
-		if (serviceType == EportConstants.SERVICE_PICKUP_EMPTY || serviceType == EportConstants.SERVICE_PICKUP_FULL) {
-			return cntrInfos.get(0).getJobOdrNo2();
-		} else if (serviceType == EportConstants.SERVICE_DROP_EMPTY
-				|| serviceType == EportConstants.SERVICE_DROP_FULL) {
-			return cntrInfos.get(0).getJobOdrNo();
+		switch (serviceType) {
+		case EportConstants.SERVICE_PICKUP_EMPTY:
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				if ("E".equals(cntrInfo.getFe())) {
+					return cntrInfo.getJobOdrNo2();
+				}
+			}
+			break;
+		case EportConstants.SERVICE_PICKUP_FULL:
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				if ("F".equals(cntrInfo.getFe())) {
+					return cntrInfo.getJobOdrNo2();
+				}
+			}
+			break;
+		case EportConstants.SERVICE_DROP_EMPTY:
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				if ("E".equals(cntrInfo.getFe())) {
+					return cntrInfo.getJobOdrNo();
+				}
+			}
+			break;
+		case EportConstants.SERVICE_DROP_FULL:
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				if ("F".equals(cntrInfo.getFe())) {
+					return cntrInfo.getJobOdrNo();
+				}
+			}
+			break;
+		default:
+			break;
 		}
-
 		return null;
+	}
+	
+	private void retrySendOrderToRobotTerminalHold(ProcessOrder processOrder, ProcessJsonData processJsonData) {
+		// Insert new request order
+		processOrder.setId(null);
+		// Increase times retry by 1
+		processJsonData.setRetryCount(processJsonData.getRetryCount()+1);
+		processOrder.setProcessData(new Gson().toJson(processJsonData));
+		processOrderService.insertProcessOrder(processOrder);
+		Map<String, Object> params = new HashMap<>();
+		params.put("containers", processJsonData.getContainers());
+		processOrder.setParams(params);
+
+		logger.debug("Find robot terminal hold available.");
+		SysRobot sysRobot = new SysRobot();
+		sysRobot.setIsChangeTerminalCustomHold(true);
+		sysRobot.setStatus(EportConstants.ROBOT_STATUS_AVAILABLE);
+		sysRobot.setDisabled(false);
+		SysRobot robot = robotService.findFirstRobot(sysRobot);
+		try {
+			mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.TERMINAL_CUSTOM_HOLD, robot.getUuId());
+		} catch (MqttException e) {
+			logger.error("Error when send pickup empty to robot: " + e);
+		}
 	}
 }
