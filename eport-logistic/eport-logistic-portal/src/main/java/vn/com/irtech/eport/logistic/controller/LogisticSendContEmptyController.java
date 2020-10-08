@@ -700,21 +700,24 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		Map<String, ContainerInfoDto> ctnrMap = getContainerInfoFromCatos(containerNos);
 		String containerHasOrderdEmpty = "";
 		String containerHasOrderdFull = "";
-		ContainerInfoDto ctnrInfo = null;
+		ContainerInfoDto ctnrInfoF = null;
+		ContainerInfoDto ctnrInfoE = null;
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			// Get ctnr info by contaienr no in catos
-			// return error if null
-			ctnrInfo = ctnrMap.get(shipmentDetail.getContainerNo());
-			if (ctnrInfo != null) {
+			// Get ctnr info by container no in catos
+			// Get container info (F or E) by container no + FE(F or E)
+			ctnrInfoF = ctnrMap.get(shipmentDetail.getContainerNo()+"F");
+			if (ctnrInfoF != null) {
 				// Container has job order no 2 => has order
-				if (StringUtils.isNotEmpty(ctnrInfo.getJobOdrNo())) {
-					if ("F".equalsIgnoreCase(ctnrInfo.getFe())) {
-						// Pickup full
-						containerHasOrderdFull += shipmentDetail.getContainerNo() + ",";
-					} else {
-						// Pickup empty
-						containerHasOrderdEmpty += shipmentDetail.getContainerNo() + ",";
-					}
+				if (StringUtils.isNotEmpty(ctnrInfoF.getJobOdrNo())) {
+					containerHasOrderdFull += shipmentDetail.getContainerNo() + ",";
+				}
+			}
+			// Get container info (F or E) by container no + FE(F or E)
+			ctnrInfoE = ctnrMap.get(shipmentDetail.getContainerNo()+"E");
+			if (ctnrInfoE != null) {
+				// Container has job order no 2 => has order
+				if (StringUtils.isNotEmpty(ctnrInfoE.getJobOdrNo())) {
+					containerHasOrderdFull += shipmentDetail.getContainerNo() + ",";
 				}
 			}
 		}
@@ -803,7 +806,9 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		if (CollectionUtils.isNotEmpty(containerInfoDtos)) {
 			for (ContainerInfoDto containerInfoDto : containerInfoDtos) {
 				if ("E".equals(containerInfoDto.getFe())) {
-					containerInfoMap.put(containerInfoDto.getCntrNo(), containerInfoDto);
+					containerInfoMap.put(containerInfoDto.getCntrNo()+"E", containerInfoDto);
+				} else {
+					containerInfoMap.put(containerInfoDto.getCntrNo()+"F", containerInfoDto);
 				}
 			}
 		}

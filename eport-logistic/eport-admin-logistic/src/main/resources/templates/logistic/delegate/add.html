@@ -92,7 +92,7 @@
             success: function (res) {
               if (res.code == 0) {
                 $.modal.closeLoading();
-                setTimeout(function(){ $.modal.alertSuccess("Thêm Ủy Quyền Thành Công"); }, 1000);
+                setTimeout(function () { $.modal.alertSuccess("Thêm Ủy Quyền Thành Công"); }, 1000);
                 parent.loadTableByLogisticGroup(logisticId);
                 $.modal.close();
               } else {
@@ -179,7 +179,7 @@
     function loadGroupNameForDelegated() {
       if ($('input[name=delegateTaxcode]').val() != null && $('input[name=delegateTaxcode]').val() != '') {
         $.ajax({
-          url: prefix + "/consignee/" + $('input[name=delegateTaxcode]').val(),
+          url: prefix + "/company/" + $('input[name=delegateTaxcode]').val(),
           method: "get"
         }).done(function (result) {
           if (result.code == 0) {
