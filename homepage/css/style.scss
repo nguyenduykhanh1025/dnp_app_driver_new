@@ -85,14 +85,14 @@ body {
         h1 {
           color: $white;
           font-weight: bolder;
-          font-size: 30px;
+          font-size: 26px;
           line-height: 1.2;
           text-align: center;
           @include Responsive(MD) {
-            font-size: 35px
+            font-size: 30px;
           }
           @include Responsive(XL) {
-            font-size: 40px;
+            font-size: 35px;
           }
         }
       }
