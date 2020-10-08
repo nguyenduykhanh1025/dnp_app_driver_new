@@ -588,7 +588,7 @@
           success: function (data) {
             if (data.code == 0) {
               let report = data.report;
-              $('#total').html(report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER);
+              $('#total').html(report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER + report.CANCELORDERREQ);
               if (report.RECEIVEFULLORDER > 0) {
                 $('#receiveFullOrder').html(report.RECEIVEFULLORDER);
                 $('#receiveFullOrder').addClass('round-notify-count');
