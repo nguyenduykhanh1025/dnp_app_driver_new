@@ -18,14 +18,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
-import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
-import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.mail.service.MailService;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
@@ -38,10 +36,10 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
  * @date 2020-04-04
  */
 @Controller
-@RequestMapping("/carrier/account")
-public class CarrierAccountController extends BaseController
+@RequestMapping("/depo/account")
+public class DepoAccountController extends BaseController
 {
-    private String prefix = "carrier/account";
+    private String prefix = "depo/account";
 
     @Autowired
     private ICarrierAccountService carrierAccountService;
@@ -51,11 +49,7 @@ public class CarrierAccountController extends BaseController
 
     @Autowired
     private MailService mailService;
-    
-    @Autowired
-    private ICarrierGroupService carrierGroupService;
 
-    @RequiresPermissions("carrier:account:view")
     @GetMapping()
     public String account()
     {
@@ -63,38 +57,21 @@ public class CarrierAccountController extends BaseController
     }
 
     /**
-     * Get Carrier Account List
+     * Get Depo Account List
      */
-    @RequiresPermissions("carrier:account:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(CarrierAccount carrierAccount)
     {
         startPage();
-        CarrierGroup carrierGroup = carrierAccount.getCarrierGroup();
-        carrierGroup.setGroupName(carrierGroup.getGroupName().toLowerCase());
-        carrierAccount.setCarrierGroup(carrierGroup);
         carrierAccount.setEmail(carrierAccount.getEmail().toLowerCase());
-        List<CarrierAccount> list = carrierAccountService.selectCarrierAccountList(carrierAccount);
+        carrierAccount.setDepoFlg(true);
+        List<CarrierAccount> list = carrierAccountService.selectDepotAccountList(carrierAccount);
         return getDataTable(list);
     }
 
     /**
-     * Export Carrier Account List
-     */
-    @RequiresPermissions("carrier:account:export")
-    @Log(title = "Carrier Account", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    @ResponseBody
-    public AjaxResult export(CarrierAccount carrierAccount)
-    {
-        List<CarrierAccount> list = carrierAccountService.selectCarrierAccountList(carrierAccount);
-        ExcelUtil<CarrierAccount> util = new ExcelUtil<CarrierAccount>(CarrierAccount.class);
-        return util.exportExcel(list, "account");
-    }
-
-    /**
-     * Add Carrier Account
+     * Add Depo Account
      */
     @GetMapping("/add")
     public String add()
@@ -103,10 +80,9 @@ public class CarrierAccountController extends BaseController
     }
 
     /**
-     * Add or Update Carrier Account
+     * Add or Update Depo Account
      */
-    @RequiresPermissions("carrier:account:add")
-    @Log(title = "Carrier Account", businessType = BusinessType.INSERT)
+    @Log(title = "Depo Account", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(CarrierAccount carrierAccount, String isSendEmail)
@@ -120,15 +96,6 @@ public class CarrierAccountController extends BaseController
         if (carrierAccount.getPassword().length() < 6) {
             return error("Mật khẩu không được ít hơn 6 ký tự!");
         }
-        
-        // Get carrier Group to get permission and inherit for carrier account
-        CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupById(carrierAccount.getGroupId());
-        if (carrierGroup != null) {
-    		carrierAccount.setDoFlg("1".equals(carrierGroup.getDoFlag()));
-    		carrierAccount.setEdoFlg("1".equals(carrierGroup.getEdoFlag()));
-    		carrierAccount.setBookingFlg("1".equals(carrierGroup.getBookingFlag()));
-    	}
-    	
         Map<String, Object> variables = new HashMap<>();
 		variables.put("username", carrierAccount.getFullName());
         variables.put("password", carrierAccount.getPassword());
@@ -137,6 +104,7 @@ public class CarrierAccountController extends BaseController
         carrierAccount.setPassword(passwordService.encryptPassword(carrierAccount.getEmail()
         , carrierAccount.getPassword(), carrierAccount.getSalt()));
         carrierAccount.setCreateBy(ShiroUtils.getSysUser().getUserName());
+        carrierAccount.setDepoFlg(true);
         if (carrierAccountService.insertCarrierAccount(carrierAccount) == 1) {
             if (isSendEmail != null) {
                 new Thread() {
@@ -155,7 +123,7 @@ public class CarrierAccountController extends BaseController
     }
 
     /**
-     * Update Carrier Account
+     * Update Depo Account
      */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long id, ModelMap mmap)
@@ -166,10 +134,9 @@ public class CarrierAccountController extends BaseController
     }
 
     /**
-     * Update Save Carrier Account
+     * Update Save Depo Account
      */
-    @RequiresPermissions("carrier:account:edit")
-    @Log(title = "Carrier Account", businessType = BusinessType.UPDATE)
+    @Log(title = "Depo Account", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(CarrierAccount carrierAccount)
@@ -191,9 +158,9 @@ public class CarrierAccountController extends BaseController
     }
 
     /**
-     * Carrier account status modification
+     * Depo account status modification
      */
-    @Log(title = "Carrier Account", businessType = BusinessType.UPDATE)
+    @Log(title = "Depo Account", businessType = BusinessType.UPDATE)
     @RequiresPermissions("carrier:account:edit")
     @PostMapping("/changeStatus")
     @ResponseBody

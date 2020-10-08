@@ -706,84 +706,84 @@ var table = {
         });
       },
       openVerifyExecutedSuccess: function (title, url, width, height, callback) {
-          if ($.common.isMobile()) {
-            width = "auto";
-            height = "auto";
-          }
-          if ($.common.isEmpty(title)) {
-            title = false;
-          }
-          if ($.common.isEmpty(url)) {
-            url = "/404.html";
-          }
-          if ($.common.isEmpty(width)) {
-            width = 800;
-          }
-          if ($.common.isEmpty(height)) {
-            height = $(window).height() - 50;
-          }
-          if ($.common.isEmpty(callback)) {
-            callback = function (index, layero) {
-              var iframeWin = layero.find("iframe")[0];
-              iframeWin.contentWindow.submitHandler(index, layero);
-            };
-          }
-          layer.open({
-            type: 2,
-            area: [width + "px", height + "px"],
-            fix: false,
-            maxmin: true,
-            shade: 0.3,
-            title: title,
-            content: url,
-            btn: ["Xác Nhận", "Đóng"],
-            shadeClose: false,
-            yes: callback,
-            cancel: function (index) {
-              return true;
-            },
-          });
-        },
+        if ($.common.isMobile()) {
+          width = "auto";
+          height = "auto";
+        }
+        if ($.common.isEmpty(title)) {
+          title = false;
+        }
+        if ($.common.isEmpty(url)) {
+          url = "/404.html";
+        }
+        if ($.common.isEmpty(width)) {
+          width = 800;
+        }
+        if ($.common.isEmpty(height)) {
+          height = $(window).height() - 50;
+        }
+        if ($.common.isEmpty(callback)) {
+          callback = function (index, layero) {
+            var iframeWin = layero.find("iframe")[0];
+            iframeWin.contentWindow.submitHandler(index, layero);
+          };
+        }
+        layer.open({
+          type: 2,
+          area: [width + "px", height + "px"],
+          fix: false,
+          maxmin: true,
+          shade: 0.3,
+          title: title,
+          content: url,
+          btn: ["Xác Nhận", "Đóng"],
+          shadeClose: false,
+          yes: callback,
+          cancel: function (index) {
+            return true;
+          },
+        });
+      },
       openCustomForm: function (title, url, width, height, callback) {
-				//如果是移动端，就使用自适应大小弹窗
-				if ($.common.isMobile()) {
-					width = 'auto';
-					height = 'auto';
-				}
-				if ($.common.isEmpty(title)) {
-					title = false;
-				}
-				if ($.common.isEmpty(url)) {
-					url = "/404.html";
-				}
-				if ($.common.isEmpty(width)) {
-					width = 800;
-				}
-				if ($.common.isEmpty(height)) {
-					height = ($(window).height() - 50);
-				}
-				if ($.common.isEmpty(callback)) {
-					callback = function(index, layero) {
-						var iframeWin = layero.find('iframe')[0];
-						iframeWin.contentWindow.submitHandler(index, layero);
-					}
-				}
-				layer.open({
-					type: 2,
-					area: [width + 'px', height + 'px'],
-					fix: false,
-					//不固定
-					maxmin: true,
-					shade: 0.3,
-					title: title,
-					content: url,
-					shadeClose: false,
-					yes: callback,
-					cancel: function(index) {
-						return true;
-					}
-				});
-		  },
+        //如果是移动端，就使用自适应大小弹窗
+        if ($.common.isMobile()) {
+          width = 'auto';
+          height = 'auto';
+        }
+        if ($.common.isEmpty(title)) {
+          title = false;
+        }
+        if ($.common.isEmpty(url)) {
+          url = "/404.html";
+        }
+        if ($.common.isEmpty(width)) {
+          width = 800;
+        }
+        if ($.common.isEmpty(height)) {
+          height = ($(window).height() - 50);
+        }
+        if ($.common.isEmpty(callback)) {
+          callback = function (index, layero) {
+            var iframeWin = layero.find('iframe')[0];
+            iframeWin.contentWindow.submitHandler(index, layero);
+          }
+        }
+        layer.open({
+          type: 2,
+          area: [width + 'px', height + 'px'],
+          fix: false,
+          //不固定
+          maxmin: true,
+          shade: 0.3,
+          title: title,
+          content: url,
+          shadeClose: false,
+          yes: callback,
+          cancel: function (index) {
+            return true;
+          }
+        });
+      },
       openLogisticInfo: function (title, url, width, height, callback) {
         if ($.common.isMobile()) {
           width = "auto";
@@ -824,44 +824,44 @@ var table = {
         });
       },
       openShipmentDetailsInfo: function (title, url, width, height, callback) {
-          if ($.common.isMobile()) {
-            width = "auto";
-            height = "auto";
-          }
-          if ($.common.isEmpty(title)) {
-            title = false;
-          }
-          if ($.common.isEmpty(url)) {
-            url = "/404.html";
-          }
-          if ($.common.isEmpty(width)) {
-            width = 800;
-          }
-          if ($.common.isEmpty(height)) {
-            height = $(window).height() - 50;
-          }
-          // if ($.common.isEmpty(callback)) {
-          //   callback = function (index, layero) {
-          //     var iframeWin = layero.find("iframe")[0];
-          //     iframeWin.contentWindow.submitHandler(index, layero);
-          //   };
-          // }
-          layer.open({
-            type: 2,
-            area: [width + "px", height + "px"],
-            fix: false,
-            maxmin: true,
-            shade: 0.3,
-            title: title,
-            content: url,
-            btn: ["Đóng"],
-            shadeClose: false,
-            // yes: callback
-            cancel: function (index) {
-              return true;
-            },
-          });
-        },
+        if ($.common.isMobile()) {
+          width = "auto";
+          height = "auto";
+        }
+        if ($.common.isEmpty(title)) {
+          title = false;
+        }
+        if ($.common.isEmpty(url)) {
+          url = "/404.html";
+        }
+        if ($.common.isEmpty(width)) {
+          width = 800;
+        }
+        if ($.common.isEmpty(height)) {
+          height = $(window).height() - 50;
+        }
+        // if ($.common.isEmpty(callback)) {
+        //   callback = function (index, layero) {
+        //     var iframeWin = layero.find("iframe")[0];
+        //     iframeWin.contentWindow.submitHandler(index, layero);
+        //   };
+        // }
+        layer.open({
+          type: 2,
+          area: [width + "px", height + "px"],
+          fix: false,
+          maxmin: true,
+          shade: 0.3,
+          title: title,
+          content: url,
+          btn: ["Đóng"],
+          shadeClose: false,
+          // yes: callback
+          cancel: function (index) {
+            return true;
+          },
+        });
+      },
       openWithOneButton: function (title, url, width, height /*, callback, text*/) {
         if ($.common.isMobile()) {
           width = "auto";
@@ -1218,6 +1218,10 @@ var table = {
         table.set();
         $.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 500, 450);
       },
+      addDepoAccount: function (id) {
+        table.set();
+        $.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 550, 500);
+      },
       addLogisticAccount: function (id) {
         table.set();
         $.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 800, 440);
@@ -1285,6 +1289,20 @@ var table = {
           $.modal.open("Chỉnh Sửa " + table.options.modalName, url, 500, 450);
         } else {
           $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id), 500, 400);
+        }
+      },
+      editDepoAccount: function (id) {
+        table.set();
+        if ($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+          var row = $("#" + table.options.id).bootstrapTreeTable("getSelections")[0];
+          if ($.common.isEmpty(row)) {
+            $.modal.alertWarning("Hãy chọn dong để xử lý");
+            return;
+          }
+          var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
+          $.modal.open("Chỉnh Sửa " + table.options.modalName, url, 500, 450);
+        } else {
+          $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id), 550, 450);
         }
       },
       editLogisticAccount: function (id) {
@@ -1772,10 +1790,10 @@ var table = {
       },
     },
   });
-  $(function() {
-    $('.more-menu, .show-more-menu').hover(function() {
+  $(function () {
+    $('.more-menu, .show-more-menu').hover(function () {
       $('.show-more-menu').css('transform', 'rotate(90deg)');
-    }, function() {
+    }, function () {
       $('.show-more-menu').css('transform', 'rotate(0deg)');
     });
   });

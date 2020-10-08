@@ -61,6 +61,21 @@ public class CarrierAccount extends BaseEntity
 
     /** Login Date */
     private Date loginDate;
+    
+    /** Depo Flag */
+    private Boolean depoFlg;
+    
+    /** eDO Flag */
+    private Boolean edoFlg;
+    
+    /** DO Flag */
+    private Boolean doFlg;
+    
+    /** Booking Flag */
+    private Boolean bookingFlg;
+    
+    /** Depot Name */
+    private String depotName;
 
     public void setId(Long id) 
     {
@@ -162,7 +177,47 @@ public class CarrierAccount extends BaseEntity
         return loginDate;
     }
 
-    public CarrierGroup getCarrierGroup() {
+    public Boolean getDepoFlg() {
+		return depoFlg;
+	}
+
+	public void setDepoFlg(Boolean depoFlg) {
+		this.depoFlg = depoFlg;
+	}
+
+	public Boolean getEdoFlg() {
+		return edoFlg;
+	}
+
+	public void setEdoFlg(Boolean edoFlg) {
+		this.edoFlg = edoFlg;
+	}
+
+	public Boolean getDoFlg() {
+		return doFlg;
+	}
+
+	public void setDoFlg(Boolean doFlg) {
+		this.doFlg = doFlg;
+	}
+
+	public Boolean getBookingFlg() {
+		return bookingFlg;
+	}
+
+	public void setBookingFlg(Boolean bookingFlg) {
+		this.bookingFlg = bookingFlg;
+	}
+
+	public String getDepotName() {
+		return depotName;
+	}
+
+	public void setDepotName(String depotName) {
+		this.depotName = depotName;
+	}
+
+	public CarrierGroup getCarrierGroup() {
         return carrierGroup;
     }
 
@@ -184,6 +239,11 @@ public class CarrierAccount extends BaseEntity
             .append("delFlag", getDelFlag())
             .append("loginIp", getLoginIp())
             .append("loginDate", getLoginDate())
+            .append("depoFlg", getDepoFlg())
+            .append("edoFlg", getEdoFlg())
+            .append("doFlg", getDoFlg())
+            .append("bookingFlg", getBookingFlg())
+            .append("depotName", getDepotName())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

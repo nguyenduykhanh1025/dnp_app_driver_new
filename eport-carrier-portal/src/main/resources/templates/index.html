@@ -35,35 +35,40 @@
                   </div>
                 </div>
               </a>
-            <li class="edoTab">
-              <a title="Quản Lý DO" th:href="@{/edo/index}" class="menuItem"><i
-                  class="fa fa-ship"></i>&nbsp; Quản Lý eDO</a>
+            <li class="depoTab">
+              <a title="Quản Lý Depo" th:href="@{/depo}" class="menuItem"><i class="fa fa-ship"></i>&nbsp; Quản Lý
+                Depo</a>
             </li>
             <li class="edoTab">
-              <a title="Quản Lý DO" th:href="@{/edo/releaseEdo}" class="menuItem"><i
-                  class="fa fa-send"></i>&nbsp; Phát Hành eDO</a>
+              <a title="Quản Lý DO" th:href="@{/edo/index}" class="menuItem"><i class="fa fa-ship"></i>&nbsp; Quản Lý
+                eDO</a>
+            </li>
+            <li class="edoTab">
+              <a title="Quản Lý DO" th:href="@{/edo/releaseEdo}" class="menuItem"><i class="fa fa-send"></i>&nbsp; Phát
+                Hành eDO</a>
             </li>
             <li class="doTab">
-              <a title="Phát hành DO" th:href="@{/carrier/do/index}" class="menuItem"><i
-                  class="fa fa-ship"></i>&nbsp; Quản lý DO</a>
+              <a title="Phát hành DO" th:href="@{/carrier/do/index}" class="menuItem"><i class="fa fa-ship"></i>&nbsp;
+                Quản lý DO</a>
             </li>
-          </li>
-          <li class="edoTab">
-           <a title="Báo cáo" th:href="@{/edo/report}" class="menuItem"><i
-               class="fa fa-line-chart"></i>&nbsp; Báo cáo eDO </a>
-          </li>
-          <li class="doTab">
-            <a title="Phát hành DO" th:href="@{/carrier/do/report}" class="menuItem"><i
-                class="fa fa-ship"></i>&nbsp; Báo cáo DO</a>
-          </li>
-          <li class="booking">
-            <a title="Phát hành DO" th:href="@{/carrier/booking}" class="menuItem"><i
-                class="fa fa-ship"></i>&nbsp; Booking Container</a>
-          </li>
+            </li>
+            <li class="edoTab">
+              <a title="Báo cáo" th:href="@{/edo/report}" class="menuItem"><i class="fa fa-line-chart"></i>&nbsp; Báo
+                cáo eDO </a>
+            </li>
+            <li class="doTab">
+              <a title="Phát hành DO" th:href="@{/carrier/do/report}" class="menuItem"><i class="fa fa-ship"></i>&nbsp;
+                Báo cáo DO</a>
+            </li>
+            <li class="booking">
+              <a title="Phát hành DO" th:href="@{/carrier/booking}" class="menuItem"><i class="fa fa-ship"></i>&nbsp;
+                Booking Container</a>
+            </li>
             <li class="dropdown user-menu">
               <a title="Tra cứu Container" class="menuItem"><i class="fa fa-search"></i>&nbsp; Tra cứu Container</a>
               <ul class="dropdown-menu">
-                <li><a title="Container GET-IN/OUT" class="menuItem " th:href="@{/carrier/cont}">Container Movement</a></li>
+                <li><a title="Container GET-IN/OUT" class="menuItem " th:href="@{/carrier/cont}">Container Movement</a>
+                </li>
                 <li><a class="menuItem" th:href="@{/carrier/cont/contFull}">Storage Full</a></li>
                 <li><a class="menuItem " th:href="@{/carrier/cont/contEmpty}">Storage Empty</a></li>
               </ul>
@@ -159,65 +164,70 @@
       var mode = "history";
       var historyPath = storage.get("historyPath");
       // Hide or show do tab
-      $( document ).ready(function() {   
-        if ([[${doPermission}]]) {
+      $(document).ready(function () {
+        if ([[${ doPermission }]]) {
           $(".doTab").show();
         } else {
           $(".doTab").hide();
-        }  
-        if ([[${edoPermission}]]) {
+        }
+        if ([[${ edoPermission }]]) {
           $(".edoTab").show();
         } else {
           $(".edoTab").hide();
-        }  
-        if ([[${bookingPermission}]]) {
+        }
+        if ([[${ bookingPermission }]]) {
           $(".booking").show();
         } else {
           $(".booking").hide();
-        }  
+        }
+        if ([[${ depoPermission }]]) {
+        	$(".depoTab").show();
+        } else {
+        	$(".depoTab").hide();
+        }
       });
 
-      if($.common.isNotEmpty(skin)){
-      	$("body").addClass(skin.split('|')[0]);
-      	$("body").addClass(skin.split('|')[1]);
+      if ($.common.isNotEmpty(skin)) {
+        $("body").addClass(skin.split('|')[0]);
+        $("body").addClass(skin.split('|')[1]);
       } else {
-      	$("body").addClass([[${sideTheme}]]);
-      	$("body").addClass([[${skinName}]]);
+        $("body").addClass([[${ sideTheme }]]);
+        $("body").addClass([[${ skinName }]]);
       }
 
       function resetPwd() {
-          var url = ctx + 'carrier/profile/resetPwd';
-          $.modal.open("Thay đổi mật khẩu", url, '770', '380');
+        var url = ctx + 'carrier/profile/resetPwd';
+        $.modal.open("Thay đổi mật khẩu", url, '770', '380');
       }
 
       function switchSkin() {
-          layer.open({
-      		type : 2,
-      		shadeClose : true,
-      		title : "Change Theme",
-      		area : ["530px", "386px"],
-      		content : [ctx + "switchSkin", 'no']
-      	})
+        layer.open({
+          type: 2,
+          shadeClose: true,
+          title: "Change Theme",
+          area: ["530px", "386px"],
+          content: [ctx + "switchSkin", 'no']
+        })
       }
 
       function applyPath(url) {
-      	$('a[href$="' + decodeURI(url) + '"]').click();
-          $('a[href$="' + url + '"]').parent("li").addClass("selected").parents("li :not(.user-panel)").addClass("active").end().parents("ul").addClass("in");
+        $('a[href$="' + decodeURI(url) + '"]').click();
+        $('a[href$="' + url + '"]').parent("li").addClass("selected").parents("li :not(.user-panel)").addClass("active").end().parents("ul").addClass("in");
       }
 
-      $(function() {
-      	if($.common.equals("history", mode) && window.performance.navigation.type == 1) {
-      		var url = storage.get('publicPath');
-      	    if ($.common.isNotEmpty(url)) {
-      	    	applyPath(url);
-      	    }
-      	} else {
-      		var hash = location.hash;
-      	    if ($.common.isNotEmpty(hash)) {
-      	        var url = hash.substring(1, hash.length);
-      	        applyPath(url);
-      	    }
-      	}
+      $(function () {
+        if ($.common.equals("history", mode) && window.performance.navigation.type == 1) {
+          var url = storage.get('publicPath');
+          if ($.common.isNotEmpty(url)) {
+            applyPath(url);
+          }
+        } else {
+          var hash = location.hash;
+          if ($.common.isNotEmpty(hash)) {
+            var url = hash.substring(1, hash.length);
+            applyPath(url);
+          }
+        }
       });
     </script>
   </body>

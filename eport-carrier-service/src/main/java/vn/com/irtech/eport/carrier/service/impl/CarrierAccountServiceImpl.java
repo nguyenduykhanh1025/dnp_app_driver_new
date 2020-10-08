@@ -118,5 +118,24 @@ public class CarrierAccountServiceImpl implements ICarrierAccountService
         return carrierAccountMapper.checkEmailUnique(email) > 0;
     }
 
-   
+    /**
+     * Select depot account list
+     * 
+     * @param carrierAccount
+     * @return List<CarrierAccount>
+     */
+    public List<CarrierAccount> selectDepotAccountList(CarrierAccount carrierAccount) {
+    	return carrierAccountMapper.selectDepotAccountList(carrierAccount);
+    }
+    
+    /**
+     * Update Carrier account by condition
+     * 
+     * @param carrierAccount
+     * @return int
+     */
+    @Override
+    public int updateCarrierAccountByCondition(CarrierAccount carrierAccount) {
+    	return carrierAccountMapper.updateCarrierAccountByCondition(carrierAccount);
+    }
 }

@@ -429,6 +429,7 @@ public class Edo extends BaseEntity {
 				.append("taxCode", getTaxCode())
 				.append("Consignee By TaxCode", getConsigneeByTaxCode())
 				.append("createTime", getCreateTime()).append("updateBy", getUpdateBy())
+				.append("params", getParams())
 				.append("updateTime", getUpdateTime()).append("fromDate", getFromDate()).append("toDate", getToDate())
 				.toString();
 	}

@@ -75,5 +75,19 @@ public interface CarrierAccountMapper
 	 */
     public int checkEmailUnique(String email);
     
+    /**
+     * Select depot account list
+     * 
+     * @param carrierAccount
+     * @return List<CarrierAccount>
+     */
+    public List<CarrierAccount> selectDepotAccountList(CarrierAccount carrierAccount);
     
+    /**
+     * Update Carrier account by condition
+     * 
+     * @param carrierAccount
+     * @return int
+     */
+    public int updateCarrierAccountByCondition(CarrierAccount carrierAccount);
 }
