@@ -16,19 +16,19 @@
     <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
     <div class="main-body__search-wrapper mb-2">
       <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
-        <div class="flex__left w-20">
+        <div class="flex__left w-10">
           <h3 class="mt-10">Quản Lý Edo</h3>
         </div>
-        <div class="flex__right w-80">
+        <div class="flex__right w-90">
           <div class="justify-content-around align-items-center" id="ff">
             <div class="d-inline">
-                <input id="opr" class="easyui-combobox" data-options="prompt:'Mã vận hành'">
+                <input id="opr" class="easyui-combobox" data-options="prompt:'OPR'" style="width:80px" >
               </div>
             <div class="d-inline">
               <input id="vessel" class="easyui-combobox" data-options="prompt:'Vessel'">
             </div>
             <div class="d-inline">
-              <input id="voyNo" class="easyui-combobox"  data-options="prompt:'Voy No'">
+              <input id="voyNo" class="easyui-combobox"  data-options="prompt:'Voy No'" style="width:90px">
             </div>
             <div class="d-inline">
               <input class="easyui-textbox" id="searchBillNo" data-options="prompt:'B/L No'" />
@@ -60,21 +60,23 @@
           <table id="dg" style="width: 100%;">
             <thead>
                 <tr>
-                  <th data-options="field:'billOfLading',align:'left'" width="130">
+                  <th data-options="field:'billOfLading',align:'left'" width="120">
                     Bill Of Lading
+                  </th>
+                  <th data-options="field:'businessUnit',align:'center'" width="50">
+                    OPR
                   </th>
                   <th data-options="field:'vessel',align:'left'" width="110">
                     Vessel
                   </th>
-                  <th data-options="field:'voyNo',align:'left'" width="80">
+                  <th data-options="field:'voyNo',align:'left'" width="60">
                     Voy No
                   </th>
-                  <th data-options="field:'numberContainer',align:'center'" width="90">
-                    Number <br/>
-                    Container
+                  <th data-options="field:'numberContainer',align:'center'" width="60">
+                    Amount
                   </th>
-                  <th data-options="field:'createTime',align:'left'" width="130">
-                    Receive Time
+                  <th data-options="field:'fileCreateTime',align:'center'" width="130">
+                    Create Time
                   </th>
                 </tr>
               </thead>  
@@ -89,9 +91,8 @@
                     <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
                       <span class="l-btn-left"
                         ><span class="l-btn-text">
-                          <button id="saveShipmentDetailBtn" onclick="generatePDF()" class="btn btn-sm btn-success"><i class="fa fa-print text-primary"></i> In EDO</button></span
-                        ></span
-                      >
+                          <button id="saveShipmentDetailBtn" onclick="generatePDF()" class="btn btn-sm btn-default"><i class="fa fa-print text-primary"></i> In eDO</button></span
+                        ></span>
                     </a>
                   </td>
                 </tr>
@@ -112,27 +113,23 @@
                 <th data-options="field:'sztp',align:'left'" width="50">
                   Sztp
                 </th>
-                <th data-options="field:'carrierCode',align:'center'" width="90">
-                  Opr <br/>
-                  Code
+                <th data-options="field:'businessUnit',align:'center'" width="90">
+                  OPR
                 </th>
                 <th data-options="field:'orderNumber',align:'left'" width="120">
-                  Order <br> Number
+                  Order Number
                 </th>
                 <th data-options="field:'consignee',align:'left'" width="250">
                   Consignee
                 </th>
                 <th data-options="field:'expiredDem',align:'left',formatter:formatToYDMHMS" width="110">
-                  Expired <br/>
-                  Dem
+                  Expired Dem
                 </th>
                 <th data-options="field:'detFreeTime',align:'center'" width="80">
-                  Det Free <br/>
-                  Time
+                  Det Free Time
                 </th>
                 <th data-options="field:'emptyContainerDepot',align:'left'" width="150">
-                  Empty Container <br/>
-                  Depot
+                  Empty Depot
                 </th>
                 <th data-options="field:'vessel',align:'left'" width="110">
                   Vessel
@@ -149,13 +146,13 @@
                 <th data-options="field:'status',align:'left',formatter:formatStatus" width="91">
                   Status
                 </th>
-                <th data-options="field:'fileCreateTime',align:'center',formatter:formatToYDMHMS" width="110">
+                <th data-options="field:'fileCreateTime',align:'center',formatter:formatToYDMHMS" width="130">
                   Create Time
                 </th>
-                <th data-options="field:'createTime',align:'left',formatter:formatToYDMHMS" width="115">
+                <th data-options="field:'createTime',align:'left',formatter:formatToYDMHMS" width="135">
                   Receive Time
                 </th>
-                <th data-options="field:'action',align:'center',formatter: formatAction" fixed:true width="170">
+                <th data-options="align:'center',formatter: formatAction" fixed:true width="110">
                   Action
                 </th>
               </tr>
@@ -173,7 +170,7 @@
     $(".main-body").height($(document).height() - 10);
     $(".easyui-layout").height($('.main-body').height());
   </script>
-   <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
-   <script th:src="@{/eport/js/modules/edo/manage/layout.js}"></script>
-   <script th:src="@{/eport/js/modules/edo/manage/edo.js?v=1}"></script>
+  <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
+  <script th:src="@{/eport/js/modules/edo/manage/layout.js}"></script>
+  <script th:src="@{/eport/js/modules/edo/manage/edo.js?v=1008}"></script>
 </body>
