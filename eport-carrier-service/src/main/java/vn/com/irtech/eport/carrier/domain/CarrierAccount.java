@@ -73,6 +73,9 @@ public class CarrierAccount extends BaseEntity
     
     /** Booking Flag */
     private Boolean bookingFlg;
+    
+    /** Depot Name */
+    private String depotName;
 
     public void setId(Long id) 
     {
@@ -206,6 +209,14 @@ public class CarrierAccount extends BaseEntity
 		this.bookingFlg = bookingFlg;
 	}
 
+	public String getDepotName() {
+		return depotName;
+	}
+
+	public void setDepotName(String depotName) {
+		this.depotName = depotName;
+	}
+
 	public CarrierGroup getCarrierGroup() {
         return carrierGroup;
     }
@@ -232,6 +243,7 @@ public class CarrierAccount extends BaseEntity
             .append("edoFlg", getEdoFlg())
             .append("doFlg", getDoFlg())
             .append("bookingFlg", getBookingFlg())
+            .append("depotName", getDepotName())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

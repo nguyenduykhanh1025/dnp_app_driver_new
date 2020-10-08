@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 
+import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
+import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
@@ -26,6 +28,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.SignatureUtils;
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 
@@ -45,6 +48,9 @@ public class CarrierGroupController extends BaseController
 
     @Autowired
     private ICarrierGroupService carrierGroupService;
+    
+    @Autowired
+    private ICarrierAccountService CarrierAccountService;
 
     @RequiresPermissions("carrier:group:view")
     @GetMapping()
@@ -146,6 +152,19 @@ public class CarrierGroupController extends BaseController
         //     return error("Invalid Email!");
         // }
     	carrierGroup.setUpdateBy(ShiroUtils.getSysUser().getUserName());
+    	// Update permission carrier account
+    	CarrierAccount carrierAccount = new CarrierAccount();
+    	if (StringUtils.isNotEmpty(carrierGroup.getDoFlag())) {
+    		carrierAccount.setDoFlg("1".equals(carrierGroup.getDoFlag()));
+    	}
+    	if (StringUtils.isNotEmpty(carrierGroup.getEdoFlag())) {
+    		carrierAccount.setEdoFlg("1".equals(carrierGroup.getEdoFlag()));
+    	}
+    	if (StringUtils.isNotEmpty(carrierGroup.getBookingFlag())) {
+    		carrierAccount.setBookingFlg("1".equals(carrierGroup.getBookingFlag()));
+    	}
+    	carrierAccount.setGroupId(carrierGroup.getId());
+    	CarrierAccountService.updateCarrierAccountByCondition(carrierAccount);
         return toAjax(carrierGroupService.updateCarrierGroup(carrierGroup));
     }
 
@@ -241,38 +260,27 @@ public class CarrierGroupController extends BaseController
     @RequestMapping("/searchAllOperateCodeByKeyword")
     @ResponseBody
     public List<JSONObject> searchOperateCodeByKeyword(String keyword, @RequestParam(value="operateArray[]") Optional<String[]> operates) {
-        if (groupId != 0) {
-        	List<CarrierGroup> carrierGroups = carrierGroupService.selectCarrierGroupList(new CarrierGroup());
-        	String oprsStr = "";
-        	for (CarrierGroup carrierGroup: carrierGroups) {
-        		oprsStr += carrierGroup.getOperateCode() + ",";
-        	}
-        	oprsStr = oprsStr.substring(0, oprsStr.length()-1);
-            String operateCodes[] = oprsStr.split(",");
-            List<JSONObject> result = new ArrayList<>();
-            operateArray = null; 
-            operates.ifPresent(value -> operateArray = value);
-            boolean check = true;
-            if (operateArray != null) {
-                for (String i : operateCodes) {
-                    check = true;
-                    for (String j : operateArray) {
-                        if (i.equals(j)) {
-                            check = false;
-                            break;
-                        }
-                    }
-                    if (check) {
-                        if (i.contains(keyword)) {
-                            JSONObject json = new JSONObject();
-                            json.put("id", i);
-                            json.put("text", i);
-                            result.add(json);
-                        }
+    	List<CarrierGroup> carrierGroups = carrierGroupService.selectCarrierGroupList(new CarrierGroup());
+    	String oprsStr = "";
+    	for (CarrierGroup carrierGroup: carrierGroups) {
+    		oprsStr += carrierGroup.getOperateCode() + ",";
+    	}
+    	oprsStr = oprsStr.substring(0, oprsStr.length()-1);
+        String operateCodes[] = oprsStr.split(",");
+        List<JSONObject> result = new ArrayList<>();
+        operateArray = null; 
+        operates.ifPresent(value -> operateArray = value);
+        boolean check = true;
+        if (operateArray != null) {
+            for (String i : operateCodes) {
+                check = true;
+                for (String j : operateArray) {
+                    if (i.equals(j)) {
+                        check = false;
+                        break;
                     }
                 }
-            } else {
-                for (String i : operateCodes) {
+                if (check) {
                     if (i.contains(keyword)) {
                         JSONObject json = new JSONObject();
                         json.put("id", i);
@@ -281,8 +289,16 @@ public class CarrierGroupController extends BaseController
                     }
                 }
             }
-            return result;
+        } else {
+            for (String i : operateCodes) {
+                if (i.contains(keyword)) {
+                    JSONObject json = new JSONObject();
+                    json.put("id", i);
+                    json.put("text", i);
+                    result.add(json);
+                }
+            }
         }
-        return null;
+        return result;
     }
 }

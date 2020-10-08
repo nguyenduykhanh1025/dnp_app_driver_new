@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.mail.service.MailService;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
@@ -49,6 +51,9 @@ public class CarrierAccountController extends BaseController
 
     @Autowired
     private MailService mailService;
+    
+    @Autowired
+    private ICarrierGroupService carrierGroupService;
 
     @RequiresPermissions("carrier:account:view")
     @GetMapping()
@@ -115,6 +120,15 @@ public class CarrierAccountController extends BaseController
         if (carrierAccount.getPassword().length() < 6) {
             return error("Mật khẩu không được ít hơn 6 ký tự!");
         }
+        
+        // Get carrier Group to get permission and inherit for carrier account
+        CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupById(carrierAccount.getGroupId());
+        if (carrierGroup != null) {
+    		carrierAccount.setDoFlg("1".equals(carrierGroup.getDoFlag()));
+    		carrierAccount.setEdoFlg("1".equals(carrierGroup.getEdoFlag()));
+    		carrierAccount.setBookingFlg("1".equals(carrierGroup.getBookingFlag()));
+    	}
+    	
         Map<String, Object> variables = new HashMap<>();
 		variables.put("username", carrierAccount.getFullName());
         variables.put("password", carrierAccount.getPassword());

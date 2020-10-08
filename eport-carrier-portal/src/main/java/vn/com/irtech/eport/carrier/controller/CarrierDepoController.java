@@ -1,7 +1,9 @@
 package vn.com.irtech.eport.carrier.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.core.text.Convert;
 
 @Controller
 @RequestMapping("/depo")
@@ -47,8 +50,8 @@ public class CarrierDepoController extends CarrierBaseController {
 		if (edoParam == null) {
 			edoParam = new Edo();
 		}
-		Map<String, Objecct> params = new HashMap<>();
-		params.put("oprs", Convert.toStrArray(getuser().getOperateCode()));
+		Map<String, Object> params = edoParam.getParams();
+		params.put("oprs", Convert.toStrArray(getUser().getCarrierCode()));
 		edoParam.setParams(params);
 		List<Edo> edos = edoService.selectEdoListByBillNo(edoParam);
 		if (CollectionUtils.isEmpty(edos)) {
@@ -60,7 +63,7 @@ public class CarrierDepoController extends CarrierBaseController {
 	@PostMapping("/blNo/containers")
 	@ResponseBody
 	public TableDataInfo getContainerListByBlNo(@RequestBody PageAble<Edo> param) {
-		if (!hasDoPermission()) {
+		if (!hasDepoPermission()) {
 			return null;
 		}
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
@@ -68,8 +71,8 @@ public class CarrierDepoController extends CarrierBaseController {
 		if (edoParam == null) {
 			edoParam = new Edo();
 		}
-		Map<String, Objecct> params = new HashMap<>();
-		params.put("oprs", Convert.toStrArray(getuser().getOperateCode()));
+		Map<String, Object> params = edoParam.getParams();
+		params.put("oprs", Convert.toStrArray(getUser().getCarrierCode()));
 		edoParam.setParams(params);
 		List<Edo> edos = edoService.selectEdoListForReport(edoParam);
 		if (CollectionUtils.isEmpty(edos)) {

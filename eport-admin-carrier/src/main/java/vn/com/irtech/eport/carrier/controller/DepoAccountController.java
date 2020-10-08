@@ -64,12 +64,9 @@ public class DepoAccountController extends BaseController
     public TableDataInfo list(CarrierAccount carrierAccount)
     {
         startPage();
-        CarrierGroup carrierGroup = carrierAccount.getCarrierGroup();
-        carrierGroup.setGroupName(carrierGroup.getGroupName().toLowerCase());
-        carrierAccount.setCarrierGroup(carrierGroup);
         carrierAccount.setEmail(carrierAccount.getEmail().toLowerCase());
         carrierAccount.setDepoFlg(true);
-        List<CarrierAccount> list = carrierAccountService.selectCarrierAccountList(carrierAccount);
+        List<CarrierAccount> list = carrierAccountService.selectDepotAccountList(carrierAccount);
         return getDataTable(list);
     }
 

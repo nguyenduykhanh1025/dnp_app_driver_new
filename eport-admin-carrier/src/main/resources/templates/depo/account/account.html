@@ -59,6 +59,7 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 modalName: "tài khoản Depo",
+                height: $(document).height() - 105,
                 columns: [{
                     checkbox: true
                 },
@@ -95,8 +96,8 @@
                     align: 'center',
                     formatter: function (value, row, index) {
                         var actions = [];
-                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editDepoAccount(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
+                        actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.operate.editDepoAccount(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
                         actions.push("<a class='btn btn-default btn-xs' href='javascript:void(0)' onclick='resetPwd(" + row.id + ")'><i class='fa fa-key'></i>Đặt lại mật khẩu</a> ");
                         return actions.join('');
                     }

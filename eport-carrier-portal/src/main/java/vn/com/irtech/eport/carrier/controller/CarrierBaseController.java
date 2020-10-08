@@ -39,18 +39,15 @@ public abstract class CarrierBaseController extends BaseController {
 	}
 
 	public boolean hasDoPermission() {
-		CarrierGroup userGroup = getUserGroup();
-		return (userGroup != null && "1".equals(userGroup.getDoFlag()));
+		return getUser().getDoFlg();
 	}
 
 	public boolean hasEdoPermission() {
-		CarrierGroup userGroup = getUserGroup();
-		return (userGroup != null && "1".equals(userGroup.getEdoFlag()));
+		return getUser().getEdoFlg();
 	}
 
 	public boolean hasBookingPermission() {
-		CarrierGroup userGroup = getUserGroup();
-		return (userGroup != null && "1".equals(userGroup.getBookingFlag()));
+		return getUser().getBookingFlg();
 	}
 
 	public boolean hasConsigneeUpdatePermission() {

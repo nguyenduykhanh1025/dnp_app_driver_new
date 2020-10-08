@@ -20,6 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="edoFlg"    column="edo_flg"    />
         <result property="doFlg"    column="do_flg"    />
         <result property="bookingFlg"    column="booking_flg"    />
+        <result property="depotName"    column="depot_name"    />
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -35,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCarrierAccountVo">
-        select id, group_id, carrier_code, email, password, salt, full_name, status, del_flag, login_ip, login_date, depo_flg, edo_flg, do_flg, booking_flg, remark, create_by, create_time, update_by, update_time from carrier_account
+        select id, group_id, carrier_code, email, password, salt, full_name, status, del_flag, login_ip, login_date, depo_flg, edo_flg, do_flg, booking_flg, depot_name, remark, create_by, create_time, update_by, update_time from carrier_account
     </sql>
 
     <select id="selectCarrierAccountList" parameterType="CarrierAccount" resultMap="CarrierAccountResult">
@@ -46,6 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="carrierGroup.groupName != null  and carrierGroup.groupName != ''"><bind name="groupNamePattern" value="'%' + carrierGroup.groupName + '%'"/> and lower(g.group_name) like #{groupNamePattern}</if>
             <if test="email != null  and email != ''"><bind name="emailPattern" value="'%' + email + '%'"/> and lower(c.email) like #{emailPattern}</if>
             <if test="status != null  and status != ''"> and c.status = #{status}</if>
+            <if test="depoFlg != null"> and c.depo_flg = #{depoFlg}</if>
         </where>
     </select>
     
@@ -80,6 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="edoFlg != null">edo_flg,</if>
             <if test="doFlg != null">do_flg,</if>
             <if test="bookingFlg != null">booking_flg,</if>
+            <if test="depotName != null and depotName != ''">depot_name,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -96,10 +99,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null  and delFlag != ''">#{delFlag},</if>
             <if test="loginIp != null  and loginIp != ''">#{loginIp},</if>
             <if test="loginDate != null">#{loginDate},</if>
-            <if test="depoFlg != null">#{depo_flg},</if>
-            <if test="edoFlg != null">#{edo_flg},</if>
-            <if test="doFlg != null">#{do_flg},</if>
-            <if test="bookingFlg != null">#{booking_flg},</if>
+            <if test="depoFlg != null">#{depoFlg},</if>
+            <if test="edoFlg != null">#{edoFlg},</if>
+            <if test="doFlg != null">#{doFlg},</if>
+            <if test="bookingFlg != null">#{bookingFlg},</if>
+            <if test="depotName != null and depotName != ''">#{depotName},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -119,10 +123,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null  and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="loginIp != null  and loginIp != ''">login_ip = #{loginIp},</if>
             <if test="loginDate != null">login_date = #{loginDate},</if>
-            <if test="depoFlg != null">depoFlg = #{depo_flg},</if>
-            <if test="edoFlg != null">edoFlg = #{edo_flg},</if>
-            <if test="doFlg != null">doFlg = #{do_flg},</if>
-            <if test="bookingFlg != null">bookingFlg = #{booking_flg},</if>
+            <if test="depoFlg != null">depo_flg = #{depoFlg},</if>
+            <if test="edoFlg != null">edo_flg = #{edoFlg},</if>
+            <if test="doFlg != null">do_flg = #{doFlg},</if>
+            <if test="bookingFlg != null">booking_flg = #{bookingFlg},</if>
+            <if test="depotName != null and depotName != ''">depot_name = #{depotName},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
@@ -145,4 +150,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select count(1) from carrier_account where lower(email)=#{email}
 	</select>
      
+     <select id="selectDepotAccountList" parameterType="CarrierAccount" resultMap="CarrierAccountResult">
+     	select *
+     	from carrier_account
+     	<where>
+     		<if test="depoFlg != null">and depo_flg = #{depoFlg}</if>
+     		<if test="email != null  and email != ''"><bind name="emailPattern" value="'%' + email + '%'"/> and lower(c.email) like #{emailPattern}</if>
+            <if test="status != null  and status != ''"> and c.status = #{status}</if>
+     	</where>
+     </select>
+
+     <update id="updateCarrierAccountByCondition" parameterType="CarrierAccount">
+        update carrier_account
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupId != null ">group_id = #{groupId},</if>
+            <if test="carrierCode != null  and carrierCode != ''">carrier_code = #{carrierCode},</if>
+            <if test="email != null  and email != ''">email = #{email},</if>
+            <if test="password != null  and password != ''">password = #{password},</if>
+            <if test="salt != null  and salt != ''">salt = #{salt},</if>
+            <if test="fullName != null  and fullName != ''">full_name = #{fullName},</if>
+            <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="delFlag != null  and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="loginIp != null  and loginIp != ''">login_ip = #{loginIp},</if>
+            <if test="loginDate != null">login_date = #{loginDate},</if>
+            <if test="depoFlg != null">depo_flg = #{depoFlg},</if>
+            <if test="edoFlg != null">edo_flg = #{edoFlg},</if>
+            <if test="doFlg != null">do_flg = #{doFlg},</if>
+            <if test="bookingFlg != null">booking_flg = #{bookingFlg},</if>
+            <if test="depotName != null and depotName != ''">depot_name = #{depotName},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate
+        </trim>
+        <where>
+     		<if test="groupId != null">and group_id = #{groupId}</if>
+     	</where>
+    </update>
 </mapper>

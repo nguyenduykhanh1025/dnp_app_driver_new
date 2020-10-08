@@ -12,9 +12,9 @@
         <form class="form-horizontal m" id="form-account-edit" th:object="${carrierAccount}">
             <input name="id" th:field="*{id}" type="hidden">
             <div class="form-group">
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Tên Depo</label>
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Tên Depot</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
-                    <select class="fullName" id="fullName" style="width: 300px;" disabled></select>
+                    <input name="depotName" th:field="*{depotName}" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">

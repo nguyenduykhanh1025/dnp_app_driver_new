@@ -39,22 +39,11 @@ public class CarrierIndexController extends CarrierBaseController {
 		mmap.put("appName", Global.getName());
 		mmap.put("appVersion", Global.getVersion());
 		mmap.put("copyrightYear", Global.getCopyrightYear());
-		if (hasDoPermission()) {
-			mmap.put("doPermission", true);
-		} else {
-			mmap.put("doPermission", false);
-		}
-		if (hasEdoPermission()) {
-			mmap.put("edoPermission", true);
-		} else {
-			mmap.put("edoPermission", false);
-		}
-		if (hasBookingPermission()) {
-			mmap.put("bookingPermission", true);
-		} else {
-			mmap.put("bookingPermission", false);
-		}
-		mmap.put("depoPermission", hasDoPermission());
+		// permission to hide/show menu
+		mmap.put("doPermission", hasDoPermission());
+		mmap.put("edoPermission", hasEdoPermission());
+		mmap.put("bookingPermission", hasBookingPermission());
+		mmap.put("depoPermission", hasDepoPermission());
 		return "index";
 	}
 

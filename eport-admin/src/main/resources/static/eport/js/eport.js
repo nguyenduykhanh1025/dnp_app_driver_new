@@ -1220,7 +1220,7 @@ var table = {
       },
       addDepoAccount: function (id) {
         table.set();
-        $.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 500, 450);
+        $.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 550, 500);
       },
       addLogisticAccount: function (id) {
         table.set();
@@ -1302,7 +1302,7 @@ var table = {
           var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
           $.modal.open("Chỉnh Sửa " + table.options.modalName, url, 500, 450);
         } else {
-          $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id), 500, 400);
+          $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id), 550, 450);
         }
       },
       editLogisticAccount: function (id) {
