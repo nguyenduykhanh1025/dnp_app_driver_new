@@ -85,8 +85,7 @@ public class DepoAccountController extends BaseController
     /**
      * Add or Update Depo Account
      */
-    @RequiresPermissions("carrier:account:add")
-    @Log(title = "Carrier Account", businessType = BusinessType.INSERT)
+    @Log(title = "Depo Account", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(CarrierAccount carrierAccount, String isSendEmail)
@@ -164,7 +163,7 @@ public class DepoAccountController extends BaseController
     /**
      * Depo account status modification
      */
-    @Log(title = "Carrier Account", businessType = BusinessType.UPDATE)
+    @Log(title = "Depo Account", businessType = BusinessType.UPDATE)
     @RequiresPermissions("carrier:account:edit")
     @PostMapping("/changeStatus")
     @ResponseBody

@@ -1,90 +1,55 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" >
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <th:block th:include="include :: header('Edit Carrier Account')" />
+    <th:block th:include="include :: header('Edit Depo Account')" />
     <th:block th:include="include :: datetimepicker-css" />
     <th:block th:include="include :: select2-css" />
 </head>
+
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-account-edit" th:object="${carrierAccount}">
             <input name="id" th:field="*{id}" type="hidden">
-            <div class="form-group">    
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Hãng tàu</label>
+            <div class="form-group">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Tên Depo</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
-                    <input type="hidden" name="groupId" th:field="*{groupId}" id="groupId">
-                    <select class="groupName" id="groupName" style="width: 300px;" disabled></select>
+                    <select class="fullName" id="fullName" style="width: 300px;" disabled></select>
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Mã vận hành</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
                     <input type="hidden" name="carrierCode" th:field="*{carrierCode}" id="carrierCode">
                     <select class="carrierCodes" id="carrierCodes" style="width: 300px;"></select>
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Tên đăng nhập(Email)</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
                     <input name="email" th:field="*{email}" class="form-control" type="text" disabled>
                 </div>
             </div>
-            <!-- <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Password：</label>
-                <div class="col-sm-8">
-                    <input name="password" th:field="*{password}" class="form-control" type="text" required>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Salt：</label>
-                <div class="col-sm-8">
-                    <input name="salt" th:field="*{salt}" class="form-control" type="text" required>
-                </div>
-            </div> -->
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Họ và tên</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
                     <input name="fullName" th:field="*{fullName}" class="form-control" type="text" required>
                 </div>
             </div>
-            <!-- <div class="form-group">    
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Trạng thái：</label>
-                <div class="col-sm-9 col-xs-8 col-md-10">
-                    <input type="radio" name="status" th:field="*{status}" value="0">
-                    <label th:for="status">Hoạt động</label>
-                    <input type="radio" name="status" th:field="*{status}" value="1">
-                    <label th:for="status">Không hoạt động</label>
-                </div>
-            </div> -->
             <div class="form-group">
                 <input type="hidden" name="status" th:field="*{status}" id="status">
                 <label class="col-sm-3 col-xs-4 col-md-2 control-label">Trạng thái</label>
                 <div id="toggle" class="col-sm-9 col-xs-8 col-md-10"></div>
             </div>
-            <!-- <div class="form-group">    
-                <label class="col-sm-3 control-label">Login IP：</label>
-                <div class="col-sm-8">
-                    <input name="loginIp" th:field="*{loginIp}" readonly class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Login Date：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input name="loginDate" th:value="${#dates.format(carrierAccount.loginDate, 'dd-MM-yyyy HH:mm:ss')}" class="form-control" placeholder="dd-MM-yyyy" readonly type="text">
-                    </div>
-                </div>
-            </div> -->
         </form>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: select2-js" />
     <script type="text/javascript">
-        var prefix = ctx + "carrier/account";
+        var prefix = ctx + "depo/account";
         var operateArray = [];
-        var check = false;
+
         $("#form-account-edit").validate({
             focusCleanup: true
         });
@@ -101,37 +66,18 @@
         //     language: 'en'
         // });
         $(document).ready(function () {
-            $('.groupName').select2({
-                ajax: {
-                    url: ctx + 'carrier/group/searchGroupNameByKeyword',
-                    method: 'get',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            keyword : params.term==null?"":params.term,
-                            groupId : $("#groupId").val()==null?"0":$("#groupId").val()
-                        }
-                    },
-                    processResults: function (data, params) {
-                        return {
-                            results: data
-                        }
-                    }
-                },
-                placeholder: 'Nhập mã hãng tàu',
-                minimumInputLength: 0,
-            });
+
             // Init carrier code select 2
             $('.carrierCodes').select2({
                 ajax: {
-                    url: ctx + 'carrier/group/searchOperateCodeByKeyword',
+                    url: ctx + 'carrier/group/searchAllOperateCodeByKeyword',
                     method: 'get',
                     delay: 250,
                     data: function (params) {
                         return {
-                            keyword : params.term==null?"":params.term,
-                            groupId : $(".groupName").val()==null?"0":$(".groupName").val(),
-                            operateArray : operateArray
+                            keyword: params.term == null ? "" : params.term,
+                            groupId: $(".groupName").val() == null ? "0" : $(".groupName").val(),
+                            operateArray: operateArray
                         }
                     },
                     processResults: function (data, params) {
@@ -152,43 +98,23 @@
             } else {
                 document.getElementById("toggle").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="clickToggle()"></i>';
             }
-            $.ajax({
-                url: ctx + 'carrier/group/getGroupNameById',
-                method: 'POST',
-                data: {
-                    id : $("#groupId").val()
-                }
-            }).done(function(result){
-                var $option = $("<option selected></option>").val($("#groupId").val()).text(result);
-                $('.groupName').append($option).trigger('change');
-            });
             // Init carrier code select 2
             var operates = $('#carrierCode').val().split(",");
-            for (var i=0; i<operates.length; i++) {
+            for (var i = 0; i < operates.length; i++) {
                 var $option = $("<option selected></option>").val(operates[i]).text(operates[i]);
                 $('.carrierCodes').append($option).trigger('change');
-            }            
+            }
         }, 200);
 
-        // when select option group code
-        $('.groupName').change(function() {
-            $("#groupId").val($(".groupName").val());
-            if (check) {
-                $('.carrierCodes').val(null).trigger('change');
-                check = false;
-            }
-            check = true;
-        });
-
         // when select option carrier code
-        $('.carrierCodes').change(function() {
+        $('.carrierCodes').change(function () {
             operateArray = $(".carrierCodes").val();
             var str = "";
             if (operateArray != null) {
-                for (var i=0; i<operateArray.length; i++) {
+                for (var i = 0; i < operateArray.length; i++) {
                     str += operateArray[i] + ",";
                 }
-                str = str.substring(0, str.length-1);
+                str = str.substring(0, str.length - 1);
                 $('#carrierCode').val(str);
             }
         });
@@ -204,4 +130,5 @@
         }
     </script>
 </body>
+
 </html>

@@ -234,4 +234,55 @@ public class CarrierGroupController extends BaseController
         }
         return null;
     }
+    
+    /**
+     * Search all operate code 
+     */
+    @RequestMapping("/searchAllOperateCodeByKeyword")
+    @ResponseBody
+    public List<JSONObject> searchOperateCodeByKeyword(String keyword, @RequestParam(value="operateArray[]") Optional<String[]> operates) {
+        if (groupId != 0) {
+        	List<CarrierGroup> carrierGroups = carrierGroupService.selectCarrierGroupList(new CarrierGroup());
+        	String oprsStr = "";
+        	for (CarrierGroup carrierGroup: carrierGroups) {
+        		oprsStr += carrierGroup.getOperateCode() + ",";
+        	}
+        	oprsStr = oprsStr.substring(0, oprsStr.length()-1);
+            String operateCodes[] = oprsStr.split(",");
+            List<JSONObject> result = new ArrayList<>();
+            operateArray = null; 
+            operates.ifPresent(value -> operateArray = value);
+            boolean check = true;
+            if (operateArray != null) {
+                for (String i : operateCodes) {
+                    check = true;
+                    for (String j : operateArray) {
+                        if (i.equals(j)) {
+                            check = false;
+                            break;
+                        }
+                    }
+                    if (check) {
+                        if (i.contains(keyword)) {
+                            JSONObject json = new JSONObject();
+                            json.put("id", i);
+                            json.put("text", i);
+                            result.add(json);
+                        }
+                    }
+                }
+            } else {
+                for (String i : operateCodes) {
+                    if (i.contains(keyword)) {
+                        JSONObject json = new JSONObject();
+                        json.put("id", i);
+                        json.put("text", i);
+                        result.add(json);
+                    }
+                }
+            }
+            return result;
+        }
+        return null;
+    }
 }

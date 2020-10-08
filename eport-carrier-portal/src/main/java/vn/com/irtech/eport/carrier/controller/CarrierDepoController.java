@@ -47,7 +47,9 @@ public class CarrierDepoController extends CarrierBaseController {
 		if (edoParam == null) {
 			edoParam = new Edo();
 		}
-		edoParam.setCarrierId(getUser().getGroupId());
+		Map<String, Objecct> params = new HashMap<>();
+		params.put("oprs", Convert.toStrArray(getuser().getOperateCode()));
+		edoParam.setParams(params);
 		List<Edo> edos = edoService.selectEdoListByBillNo(edoParam);
 		if (CollectionUtils.isEmpty(edos)) {
 			edos = new ArrayList<>();
@@ -66,7 +68,9 @@ public class CarrierDepoController extends CarrierBaseController {
 		if (edoParam == null) {
 			edoParam = new Edo();
 		}
-		edoParam.setCarrierId(getUser().getGroupId());
+		Map<String, Objecct> params = new HashMap<>();
+		params.put("oprs", Convert.toStrArray(getuser().getOperateCode()));
+		edoParam.setParams(params);
 		List<Edo> edos = edoService.selectEdoListForReport(edoParam);
 		if (CollectionUtils.isEmpty(edos)) {
 			edos = new ArrayList<>();

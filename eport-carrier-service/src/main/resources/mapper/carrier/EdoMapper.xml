@@ -136,6 +136,12 @@
         #{containerNumber}), '%'))
       </if>
       <if test="houseBillId != null">and house_bill_id = #{houseBillId}</if>
+      <if test="params.oprs != null">
+        and carrier_code in
+        <foreach item="opr" collection="params.oprs" open="(" separator="," close=")">
+          #{opr}
+        </foreach>
+      </if>
     </where>
     ORDER BY create_time DESC
   </select>
