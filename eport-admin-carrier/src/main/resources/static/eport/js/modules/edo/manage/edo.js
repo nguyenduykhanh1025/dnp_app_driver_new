@@ -5,18 +5,8 @@ var billOfLadingFresh;
 var fromDate, toDate;
 
 $(document).ready(function () {
-
   loadTable();
   loadTableByContainer();
-  $('#searchAll').keyup(function (event) {
-    if (event.keyCode == 13) {
-      edo.containerNumber = $('#searchAll').val().toUpperCase();
-      edo.consignee = $('#searchAll').val().toUpperCase();
-      loadTableByContainer(bill);
-    }
-
-  });
-
   $("#searchBillNo").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
@@ -165,8 +155,7 @@ function loadTableByContainer() {
     loader: function (param, success, error) {
       var opts = $(this).datagrid("options");
       if (!opts.url) return false;
-      if(edo.billOfLading == null)
-      {
+      if(edo.billOfLading == null) {
         edo.billOfLading = billOfLadingFresh;
       }
       $.ajax({
@@ -227,7 +216,7 @@ function formatAction(value, row, index) {
 }
 
 function viewHistoryCont(id) {
-  $.modal.openWithOneButton('Lịch sử thay đổi thông tin', PREFIX + "/history/" + id, 1000, 400);
+  $.modal.openWithOneButton('Lịch sử cập nhật', PREFIX + "/history/" + id, 1000, 400);
 }
 
 function getSelectedRow() {
@@ -244,30 +233,6 @@ function stringToDate(dateStr) {
   let dateParts = dateStr.split("/");
   return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
 }
-
-$.event.special.inputchange = {
-  setup: function () {
-    var self = this,
-      val;
-    $.data(
-      this,
-      "timer",
-      window.setInterval(function () {
-        val = self.value;
-        if ($.data(self, "cache") != val) {
-          $.data(self, "cache", val);
-          $(self).trigger("inputchange");
-        }
-      }, 20)
-    );
-  },
-  teardown: function () {
-    window.clearInterval($.data(this, "timer"));
-  },
-  add: function () {
-    $.data(this, "cache", this.value);
-  },
-};
 
 function searchInfoEdo() {
   edo.fromDate = stringToDate($("#fromDate").val()).getTime();
@@ -316,10 +281,6 @@ laydate.render({
   format: 'dd/MM/yyyy'
 });
 
-
-
-
-
 function generatePDF() {
   if (!edo.billOfLading) {
     $.modal.alertError("Bạn chưa chọn Lô!");
@@ -327,8 +288,6 @@ function generatePDF() {
   }
   $.modal.openTab("In phiếu", ctx + "edo/print/bill/" + edo.billOfLading);
 }
-
-
 
 function dateformatter(date) {
   var y = date.getFullYear();
