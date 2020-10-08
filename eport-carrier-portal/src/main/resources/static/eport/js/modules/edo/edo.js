@@ -62,7 +62,7 @@ $(function () {
       if (toDate != null && date.getTime() > toDate.getTime()) {
         $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
       } else {
-        fromDate.setHours(23, 59, 59);
+        fromDate.setHours(0, 0, 0);
         edo.fromDate = fromDate.getTime();
         edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
         edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
