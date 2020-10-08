@@ -3,8 +3,7 @@ $(function() {
     loadTable();
 });
 
-function closeForm()
-{
+function closeForm() {
    $.modal.close();
 }
 
@@ -13,7 +12,6 @@ function loadTable() {
         url: PREFIX + "/auditLog/" + edoId,
         method: "GET",
         singleSelect: true,
-        clientPaging: true,
         height: $(document).height() - 65,
         pagination: true,
         pageSize: 20,

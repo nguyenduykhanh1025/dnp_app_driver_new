@@ -22,7 +22,7 @@
         <div class="flex__right w-90">
           <div class="justify-content-around align-items-center" id="ff">
             <div class="d-inline">
-                <input id="opr" class="easyui-combobox" data-options="prompt:'OPR'" style="width:80px" >
+                <input id="opr" class="easyui-combobox" data-options="prompt:'Carrier'" style="width:100px" >
               </div>
             <div class="d-inline">
               <input id="vessel" class="easyui-combobox" data-options="prompt:'Vessel'">
@@ -63,8 +63,8 @@
                   <th data-options="field:'billOfLading',align:'left'" width="120">
                     Bill Of Lading
                   </th>
-                  <th data-options="field:'businessUnit',align:'center'" width="50">
-                    OPR
+                  <th data-options="field:'carrierCode',align:'center'" width="50">
+                    Carrier
                   </th>
                   <th data-options="field:'vessel',align:'left'" width="110">
                     Vessel
@@ -75,7 +75,7 @@
                   <th data-options="field:'numberContainer',align:'center'" width="60">
                     Amount
                   </th>
-                  <th data-options="field:'fileCreateTime',align:'center'" width="130">
+                  <th data-options="field:'createTime',align:'center'" width="130">
                     Create Time
                   </th>
                 </tr>
@@ -148,10 +148,10 @@
                 <th data-options="field:'fileCreateTime',align:'center',formatter:formatToYDMHMS" width="130">
                   Create Time
                 </th>
-                <th data-options="field:'createTime',align:'left',formatter:formatToYDMHMS" width="135">
+                <th data-options="field:'createTime',align:'left',formatter:formatToYDMHMS" width="130">
                   Receive Time
                 </th>
-                <th data-options="align:'center',formatter: formatAction" fixed:true width="110">
+                <th data-options="field:'action',align:'center',formatter: formatAction" fixed:true width="110">
                   Action
                 </th>
               </tr>
