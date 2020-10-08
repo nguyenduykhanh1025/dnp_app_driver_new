@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="include :: header('Add Carrier Account')" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <th:block th:include="include :: select2-css" />
+</head>
+
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-account-add">
+            <div class="form-group">
+                <label class="col-sm-3 col-xs-4 col-md-2  control-label is-required">Hãng tàu</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
+                    <input type="hidden" name="groupId" id="groupId">
+                    <select style="width: 100px !important;" class="groupName" id="groupName" required></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Mã vận hành</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
+                    <input type="hidden" name="carrierCode" id="carrierCode">
+                    <select class="carrierCodes" id="carrierCodes" required></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Tên đăng nhập(Email)</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
+                    <input name="email" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Mật khẩu</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
+                    <input name="password" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Họ và tên</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
+                    <input name="fullName" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="status" id="status">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Trạng thái：</label>
+                <div id="toggle" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle()"></i>
+                </div>
+            </div>
+            <div clas="form-group" style="padding-left: 150px;">
+                <input type="checkbox" class="form-check-input" id="isSendEmail" name="isSendEmail" checked>
+                <label class="control-label">Gửi email thông báo mở tài khoản</label>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <th:block th:include="include :: select2-js" />
+    <script type="text/javascript">
+        var prefix = ctx + "carrier/account"
+        var operateArray = [];
+        var check = false;
+
+        $("#status").val(0);
+
+        $("#form-account-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-account-add').serialize());
+            }
+        }
+
+        $("input[name='loginDate']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        // Init from begining
+        $(document).ready(function () {
+            // init group code select 2
+            $('.groupName').select2({
+                ajax: {
+                    url: ctx + 'carrier/group/searchGroupNameByKeyword',
+                    method: 'get',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            keyword: params.term == null ? "" : params.term,
+                            groupId: $("#groupId").val() == null ? "0" : $("#groupId").val()
+                        }
+                    },
+                    processResults: function (data, params) {
+                        return {
+                            results: data
+                        }
+                    }
+                },
+                placeholder: 'Nhập mã hãng tàu',
+                minimumInputLength: 0,
+            });
+            // Init carrier code select 2
+            $('.carrierCodes').select2({
+                ajax: {
+                    url: ctx + 'carrier/group/searchOperateCodeByKeyword',
+                    method: 'get',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            keyword: params.term == null ? "" : params.term,
+                            groupId: $(".groupName").val() == null ? "0" : $(".groupName").val(),
+                            operateArray: operateArray
+                        }
+                    },
+                    processResults: function (data, params) {
+                        return {
+                            results: data
+                        }
+                    }
+                },
+                placeholder: 'Chọn Mã vận hành',
+                minimumInputLength: 0,
+                multiple: true,
+            });
+        });
+
+        // when select option group code
+        $('.groupName').change(function () {
+            $("#groupId").val($(".groupName").val());
+            if (check) {
+                $('.carrierCodes').val(null).trigger('change');
+                check = false;
+            }
+            check = true;
+        });
+
+        // when select option carrier code
+        $('.carrierCodes').change(function () {
+            operateArray = $(".carrierCodes").val();
+            var str = "";
+            if (operateArray != null) {
+                for (var i = 0; i < operateArray.length; i++) {
+                    str += operateArray[i] + ",";
+                }
+                str = str.substring(0, str.length - 1);
+                $('#carrierCode').val(str);
+            }
+        });
+
+        function clickToggle() {
+            if ($("#status").val() == 0) {
+                document.getElementById("toggle").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickToggle()"></span>';
+                $("#status").val(1);
+            } else {
+                document.getElementById("toggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle()"></span>';
+                $("#status").val(0);
+            }
+        }
+    </script>
+</body>
+
+</html>

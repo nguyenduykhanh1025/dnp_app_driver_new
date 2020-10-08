@@ -16,6 +16,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="delFlag"    column="del_flag"    />
         <result property="loginIp"    column="login_ip"    />
         <result property="loginDate"    column="login_date"    />
+        <result property="depoFlg"    column="depo_flg"    />
+        <result property="edoFlg"    column="edo_flg"    />
+        <result property="doFlg"    column="do_flg"    />
+        <result property="bookingFlg"    column="booking_flg"    />
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -31,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCarrierAccountVo">
-        select id, group_id, carrier_code, email, password, salt, full_name, status, del_flag, login_ip, login_date, remark, create_by, create_time, update_by, update_time from carrier_account
+        select id, group_id, carrier_code, email, password, salt, full_name, status, del_flag, login_ip, login_date, depo_flg, edo_flg, do_flg, booking_flg, remark, create_by, create_time, update_by, update_time from carrier_account
     </sql>
 
     <select id="selectCarrierAccountList" parameterType="CarrierAccount" resultMap="CarrierAccountResult">
@@ -72,6 +76,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null  and delFlag != ''">del_flag,</if>
             <if test="loginIp != null  and loginIp != ''">login_ip,</if>
             <if test="loginDate != null">login_date,</if>
+            <if test="depoFlg != null">depo_flg,</if>
+            <if test="edoFlg != null">edo_flg,</if>
+            <if test="doFlg != null">do_flg,</if>
+            <if test="bookingFlg != null">booking_flg,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -88,6 +96,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null  and delFlag != ''">#{delFlag},</if>
             <if test="loginIp != null  and loginIp != ''">#{loginIp},</if>
             <if test="loginDate != null">#{loginDate},</if>
+            <if test="depoFlg != null">#{depo_flg},</if>
+            <if test="edoFlg != null">#{edo_flg},</if>
+            <if test="doFlg != null">#{do_flg},</if>
+            <if test="bookingFlg != null">#{booking_flg},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -107,6 +119,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null  and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="loginIp != null  and loginIp != ''">login_ip = #{loginIp},</if>
             <if test="loginDate != null">login_date = #{loginDate},</if>
+            <if test="depoFlg != null">depoFlg = #{depo_flg},</if>
+            <if test="edoFlg != null">edoFlg = #{edo_flg},</if>
+            <if test="doFlg != null">doFlg = #{do_flg},</if>
+            <if test="bookingFlg != null">bookingFlg = #{booking_flg},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
@@ -128,8 +144,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="checkEmailUnique" parameterType="String" resultType="int">
 		select count(1) from carrier_account where lower(email)=#{email}
 	</select>
-
      
-
-
 </mapper>

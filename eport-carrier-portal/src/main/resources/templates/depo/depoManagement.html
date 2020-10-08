@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <th:block th:include="include :: header('DNP ePort: Depo Management')" />
+  <th:block th:include="include :: easyui-css" />
+  <link th:href="@{/eport/common/style.css}" rel="stylesheet" />
+</head>
+
+<body class="grey-background">
+  <div class="main-body">
+    <div class="main-body__search-wrapper mb-2">
+      <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+      <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+      <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+        <div class="flex__left w-20">
+          <h3 class="mt-10">Quản Lý Depo</h3>
+        </div>
+        <div class="flex__right w-80">
+          <div class="justify-content-around align-items-center" id="ff">
+            <div class="d-inline">
+              <input class="easyui-textbox" id="blNo" data-options="prompt:'B/L No'" />
+            </div>
+            <div class="d-inline">
+              <input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
+            </div>
+            <div class="d-inline">
+              <input id="fromDate" class="easyui-datebox" style="width: 100px;"
+                data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
+            </div>
+            <div class="d-inline">
+              <input id="toDate" class="easyui-datebox" style="width: 100px;"
+                data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
+            </div>
+            <div class="d-inline">
+              <button class="btn btn-success" onclick="searchDo()">Tìm kiếm</button>
+            </div>
+            <div class="d-inline">
+              <button class="btn btn-success btn-outline" onclick="clearInput()">Làm mới</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-body__table-wrapper">
+      <div class="easyui-layout" id="main-layout" style="width:100%">
+        <div class="left-side" data-options="region:'west',split:true, collapsible:false" title="Danh sách lô"
+          style="width:25%;">
+          <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
+          <table id="dg" style="width: 100%;">
+            <thead>
+              <tr>
+                <th data-options="field:'billOfLading', align:'left'" width="110">
+                  BL No
+                </th>
+                <th data-options="field:'numberContainer', align:'left'" width="50">
+                  SL
+                </th>
+                <th data-options="field:'createTime', align:'left', formatter:formatDateTime" width="110">
+                  SL
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <div data-options="region:'center'" style="width:100%;" title="Danh sách container">
+          <table id="container-grid" style="width: 100%;" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+                <th data-options="field:'containerNumber', align:'left'" width="120">
+                  Container No
+                </th>
+                <th data-options="field:'sztp', align:'left'" width="50">
+                  Sztp
+                </th>
+                <th data-options="field:'carrierCode', align:'center'" width="90">
+                  Opr Code
+                </th>
+                <th data-options="field:'expiredDem', align:'left', formatter:formatDateTime" width="120">
+                  Dem
+                </th>
+                <th data-options="field:'detFreeTime', align:'center'" width="80">
+                  Det
+                </th>
+                <th data-options="field:'emptyContainerDepot', align:'left'" width="150">
+                  Depot
+                </th>
+                <th data-options="field:'updateTime',align:'left', formatter:formatDateTime" width="120">
+                  Ngày Cập Nhật
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
+  <script type="text/javascript" th:inline="javascript">
+    $(".main-body").height($(document).height() - 10);
+    $(".easyui-layout").height($('.main-body').height() - 50);
+  </script>
+  <script th:src="@{/eport/js/modules/depo/depoManagement.js}"></script>
+</body>

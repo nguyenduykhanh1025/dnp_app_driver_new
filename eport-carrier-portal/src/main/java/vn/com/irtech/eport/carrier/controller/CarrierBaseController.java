@@ -57,4 +57,8 @@ public abstract class CarrierBaseController extends BaseController {
 		CarrierGroup userGroup = getUserGroup();
 		return (userGroup != null && "1".equals(userGroup.getConsigneeFlag()));
 	}
+	
+	public boolean hasDepoPermission() {
+		return getUser().getDepoFlg();
+	}
 }

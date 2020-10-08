@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('List Carrier Account')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li style="margin-top: 0;">
+                                <!-- <label>Shipping Line Code：</label> -->
+                                <input type="text" id="carrierGroup.groupName" name="carrierGroup.groupName" placeholder="Hãng tàu" style="width: 140px;"/>
+                            </li>
+                            <li style="margin-top: 0;">
+                                <!-- <label>Email：</label> -->
+                                <input type="text" id="email" name="email" placeholder="Email" style="width: 180px;"/>
+                            </li>
+                            <li style="margin-top: 0;">
+                                <!-- <label>Status：</label> -->
+                                <select name="status" onchange="$('#searchBtn').click()">
+                                    <option value="">Trạng thái</option>
+                                    <option value="0">Hoạt động</option>
+                                    <option value="1">Không hoạt động</option>
+                                </select>
+                            </li>
+                            <li style="margin-top: 0;">
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()" id="searchBtn"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i></a>
+                            </li>
+                        </ul>
+                    </div>                  
+                </form>
+                <a class="btn btn-success" onclick="$.operate.addCarrierAccount()" shiro:hasPermission="carrier:account:add">
+                    <i class="fa fa-plus"></i> Thêm
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.editCarrierAccount()" shiro:hasPermission="carrier:account:edit">
+                    <i class="fa fa-edit"></i> Sửa
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="carrier:account:remove">
+                    <i class="fa fa-remove"></i> Xóa
+                </a>
+                <!-- <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="carrier:account:export">
+                    <i class="fa fa-download"></i> Export
+                </a> -->
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('carrier:account:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('carrier:account:remove')}]];
+        var prefix = ctx + "carrier/account";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "tài khoản hãng tàu",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'id', 
+                    title: 'ID',
+                    visible: false
+                },
+                {
+                    field: 'carrierGroup.groupName', 
+                    title: 'Tên hãng tàu',//'Shipping Line Code',
+                    //width: '150px'
+                },
+                {
+                    field: 'email', 
+                    title: 'Email'
+                },
+                {
+                    field: 'fullName', 
+                    title: 'Họ và tên'
+                },
+                {
+                    title: 'Trạng thái',//'status',
+		        	align: 'center',
+		        	formatter: function (value, row, index) {
+		        		return statusTools(row);
+		        	}
+                },
+                {
+                    field: 'loginIp', 
+                    title: 'IP đăng nhập'//'Login IP'
+                },
+                {
+                    field: 'loginDate', 
+                    title: 'Thời gian đăng nhập'//'Login Date'
+                },
+                {
+                    title: 'Hành động',//'Action',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editCarrierAccount(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
+                        actions.push("<a class='btn btn-default btn-xs' href='javascript:void(0)' onclick='resetPwd(" + row.id + ")'><i class='fa fa-key'></i>Đặt lại mật khẩu</a> ");
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+
+        /* Carrier-Reset Password */
+		function resetPwd(id) {
+		    var url = prefix + '/resetPwd/' + id;
+		    $.modal.open("Đặt lại mật khẩu", url, '500', '350');
+		}
+
+        /*Carrier account status display */
+		function statusTools(row) {
+		    if (row.status == 1) {
+    			return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\')"></i> ';
+    		} else {
+    			return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.id + '\')"></i> ';
+    		}
+		}
+		
+		/* Carrier account-Disable */
+		function disable(userId) {
+			$.modal.confirm("Bạn có chắc bạn muốn chặn hoạt động của<br>tài khoản này?", function() {
+				$.operate.post(prefix + "/changeStatus", { "id": userId, "status": 1 });
+		    })
+		}
+
+		/* Carrier account enabled*/
+		function enable(userId) {
+			$.modal.confirm("Bạn có chắc bạn muốn kích hoạt<br>tài khoản này?", function() {
+				$.operate.post(prefix + "/changeStatus", { "id": userId, "status": 0 });
+		    })
+		}
+
+        document.getElementById("carrierGroup.groupName").addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                $("#searchBtn").click();
+            }
+        });
+
+        document.getElementById("email").addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                $("#searchBtn").click();
+            }
+        });
+    </script>
+</body>
+</html>
