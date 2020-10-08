@@ -1,7 +1,8 @@
 const PREFIX = ctx + "edo/manage";
 var bill;
 var edo = new Object();
-
+var billOfLadingFresh;
+var fromDate, toDate;
 
 $(document).ready(function () {
 
@@ -38,7 +39,7 @@ $(document).ready(function () {
       if (toDate != null && date.getTime() > toDate.getTime()) {
         $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
       } else {
-        fromDate.setHours(23, 59, 59);
+        fromDate.setHours(0, 0, 0);
         edo.fromDate = fromDate.getTime();
         edo.billOfLading = $("#searchBillNo").textbox('getText').toUpperCase();
         edo.containerNumber = $("#searchContNo").textbox('getText').toUpperCase();
@@ -83,7 +84,7 @@ $("#opr").combobox({
         $("#toDate").datebox('setValue', '');
         $("#searchBillNo").textbox('setText', '');
         $("#searchContNo").textbox('setText', '');
-
+        edo.billOfLading = null;
         edo.vessel = vessel.vessel
         edo.voyNo = null;
         loadTable(edo);
@@ -93,6 +94,7 @@ $("#opr").combobox({
           textField: 'voyNo',
           url: url,
           onSelect: function (voyNo) {
+            edo.billOfLading = null;
             edo.voyNo = voyNo.voyNo
             loadTable(edo);
           }
@@ -110,7 +112,7 @@ function loadTable(edo) {
     url: PREFIX + "/billNo",
     method: "POST",
     singleSelect: true,
-    height: currentHeight,
+    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     clientPaging: true,
     collapsible: true,
     pagination: true,
@@ -148,13 +150,12 @@ function loadTable(edo) {
   });
 }
 
-function loadTableByContainer(billOfLading) {
-  edo.billOfLading = billOfLading;
+function loadTableByContainer() {
   $("#container-grid").datagrid({
     url: PREFIX + "/edo",
     method: "POST",
     singleSelect: true,
-    height: currentHeight - 25,
+    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     clientPaging: true,
     pagination: true,
     pageSize: 20,
@@ -163,10 +164,11 @@ function loadTableByContainer(billOfLading) {
     rownumbers: true,
     loader: function (param, success, error) {
       var opts = $(this).datagrid("options");
-      if (billOfLading == null) {
-        return false;
-      }
       if (!opts.url) return false;
+      if(edo.billOfLading == null)
+      {
+        edo.billOfLading = billOfLadingFresh;
+      }
       $.ajax({
         type: opts.method,
         url: opts.url,
@@ -181,8 +183,11 @@ function loadTableByContainer(billOfLading) {
           data: edo
         }),
         success: function (data) {
+          if(data == null || data == '' || data == undefined)
+          {
+            success(data);
+          }
           success(JSON.parse(data));
-          edo.billOfLading = null;
         },
         error: function () {
           error.apply(this, arguments);
@@ -196,8 +201,6 @@ function searchDo() {
   edo.billOfLading = $('#searchBillNo').val().toUpperCase();
   edo.containerNumber = $('#searchContNo').val().toUpperCase();
   edo.fromDate = stringToDate($("#fromDate").val()).getTime();
-  edo.vessel = $('.c-search-box-vessel').text().trim();
-  edo.voyNo = $(".c-search-box-voy-no").text().trim();
   let toDate = stringToDate($("#toDate").val());
   if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
     $.modal.alertError("Quý khách không thể chọn đến ngày thấp hơn từ ngày.");
@@ -230,8 +233,10 @@ function viewHistoryCont(id) {
 function getSelectedRow() {
   var row = $("#dg").datagrid("getSelected");
   if (row) {
-    bill = row.billOfLading;
-    loadTableByContainer(bill);
+    edo = new Object();
+    edo.billOfLading = row.billOfLading;
+    billOfLadingFresh = row.billOfLading;
+    loadTableByContainer();
   }
 }
 
@@ -273,13 +278,13 @@ function searchInfoEdo() {
   } else {
     toDate.setHours(23, 59, 59);
     edo.toDate = toDate.getTime();
-    loadTableByContainer(bill);
+    loadTableByContainer();
   };
   edo.containerNumber = $('#searchAll').val().toUpperCase();
   edo.consignee = $('#searchAll').val().toUpperCase();
   edo.vessel = $('#searchAll').val().toUpperCase();
   edo.voyNo = $('#searchAll').val().toUpperCase();
-  loadTableByContainer(bill);
+  loadTableByContainer();
 }
 
 
@@ -316,11 +321,11 @@ laydate.render({
 
 
 function generatePDF() {
-  if (!bill) {
+  if (!edo.billOfLading) {
     $.modal.alertError("Bạn chưa chọn Lô!");
     return
   }
-  $.modal.openTab("In phiếu", ctx + "edo/print/bill/" + bill);
+  $.modal.openTab("In phiếu", ctx + "edo/print/bill/" + edo.billOfLading);
 }
 
 
