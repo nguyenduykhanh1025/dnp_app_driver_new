@@ -677,6 +677,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
+    <delete id="deleteShipmentDetailByCondition" parameterType="ShipmentDetail">
+        delete from shipment_detail 
+        <where>
+            and logistic_group_id = #{logisticGroupId}
+            and shipment_id = #{shipmentId}
+        </where>
+    </delete>
+
     <select id="selectShipmentDetailByIds" resultMap="ShipmentDetailResult">
         <include refid="selectShipmentDetailVo"/>
         where id in 

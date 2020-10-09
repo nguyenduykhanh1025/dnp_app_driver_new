@@ -142,9 +142,15 @@ public class LogisticCommonController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult remove(Long id) {
 		Shipment shipment = shipmentService.selectShipmentById(id);
-		if (shipment != null && shipment.getLogisticGroupId().equals(getUser().getGroupId())) {
+		LogisticAccount user = getUser();
+		if (shipment != null && shipment.getLogisticGroupId().equals(user.getGroupId())) {
 			if(shipment.getStatus() != null && Integer.parseInt(shipment.getStatus()) < Integer
 						.parseInt(EportConstants.SHIPMENT_STATUS_PROCESSING)) {
+				// Delete shipment detail by shipment id
+				ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+				shipmentDetailParam.setShipmentId(id);
+				shipmentDetailParam.setLogisticGroupId(user.getGroupId());
+				shipmentDetailService.deleteShipmentDetailByCondition(shipmentDetailParam);
 				return toAjax(shipmentService.deleteShipmentById(id));
 			} else {
 				return error("Không thể xóa lô đang làm lệnh");
