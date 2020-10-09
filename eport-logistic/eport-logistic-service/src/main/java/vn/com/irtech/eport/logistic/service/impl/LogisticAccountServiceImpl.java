@@ -133,4 +133,9 @@ public class LogisticAccountServiceImpl implements ILogisticAccountService
 	public int updateDelFlagLogisticAccountByGroupIds(String groupIds) {
 		return logisticAccountMapper.updateDelFlagLogisticAccountByGroupIds(Convert.toStrArray(groupIds));
 	}
+
+	@Override
+	public int resetUserPwd(LogisticAccount user) {
+		return logisticAccountMapper.updateLogisticAccount(user);
+	}
 }
