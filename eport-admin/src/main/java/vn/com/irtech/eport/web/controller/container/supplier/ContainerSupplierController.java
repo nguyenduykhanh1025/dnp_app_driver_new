@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.Gson;
+
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
@@ -25,10 +27,12 @@ import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
+import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -249,6 +253,67 @@ public class ContainerSupplierController extends BaseController {
 		
 		return success();
 	}
+	
+//	@PostMapping("/order/cancel")
+//	@ResponseBody
+//	public AjaxResult cancelOrderReq(String content, String shipmentDetailIds, Long shipmentId,  Long logisticGroupId) {		
+//		// Check container process status Y 
+//		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+//		if (CollectionUtils.isEmpty(shipmentDetails)) {
+//			return error("Không tìm thấy dữ liệu container trong hệ thống.");
+//		}
+//		
+//		String containerNotOrder = "";
+//		for (ShipmentDetail shDetail : shipmentDetails) {
+//			if (!"Y".equals(shDetail.getProcessStatus())) {
+//				containerNotOrder += shDetail.getContainerNo() + ",";
+//			}
+//		}
+//		if (containerNotOrder.length() > 0) {
+//			return error("Các container " + containerNotOrder.substring(0, containerNotOrder.length()-1) + " chưa được làm lệnh trên eport.");
+//		}
+//		
+//		ShipmentDetail shipmentDetail = new ShipmentDetail();
+//		shipmentDetail.setProcessStatus(EportConstants.PROCESS_STATUS_SHIPMENT_DETAIL_DELETE);
+//		shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_HOLD);
+//		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
+//		
+//		// Create process order cancel pickup empty
+//		// Send req cancel order to robot
+//		ProcessOrder processOrder = new ProcessOrder();
+//		ProcessJsonData processJsonData = new ProcessJsonData();
+//		processJsonData.setShDetailIds(shipmentDetailIds);
+//		processOrder.setProcessData(new Gson().toJson(processJsonData));
+//		
+//		SysUser user = ShiroUtils.getSysUser();
+//		ShipmentComment shipmentComment = new ShipmentComment();
+//		shipmentComment.setShipmentId(shipmentId);
+//		shipmentComment.setLogisticGroupId(logisticGroupId);
+//		shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CONT_SUPPLIER_DELETE);
+//		shipmentComment.setContent(content);
+//		shipmentComment.setCreateBy(user.getUserName());
+//		shipmentComment.setUserId(user.getUserId());
+//		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+//		shipmentComment.setUserAlias(user.getDept().getDeptName());
+//		shipmentComment.setUserName(user.getUserName());
+//		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
+//		shipmentComment.setCommentTime(new Date());
+//		shipmentComment.setResolvedFlg(true);
+//		shipmentCommentService.insertShipmentComment(shipmentComment);
+//		
+//		// Check update shipment if all container doesn't need container for supply
+//		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+//		shipmentDetailParam.setShipmentId(shipmentId);
+//		shipmentDetailParam.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_REQ);
+//		if (CollectionUtils.isEmpty(shipmentDetailService.selectShipmentDetailList(shipmentDetailParam))) {
+//			Shipment shipment = new Shipment();
+//			shipment.setId(shipmentId);
+//			shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
+//			shipmentService.updateShipment(shipment);
+//		}
+//		
+//		return success();
+//	}
 	
 	@PostMapping("/delete")
 	@ResponseBody

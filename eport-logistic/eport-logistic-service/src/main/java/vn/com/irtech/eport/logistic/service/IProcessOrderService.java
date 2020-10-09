@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 
 /**
  * Process orderService Interface
@@ -134,4 +135,12 @@ public interface IProcessOrderService
      * @return List<ProcessOrder>
      */
     public List<ProcessOrder> selectProcessOrderListByIds(String processOrderIds);
+    
+    /**
+     * Make process order cancel order pickup empty by shipment details with same order job
+     * 
+     * @param shipmentDetails
+     * @return ProcessOrder
+     */
+    public ProcessOrder makeOrderCancelOrderPickupEmpty(List<ShipmentDetail> shipmentDetails);
 }

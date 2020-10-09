@@ -1441,6 +1441,10 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn cảng dỡ hàng!");
                 errorFlg = true;
                 return false;
+            } else if (!object["cargoType"]) {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn loại hàng!");
+                errorFlg = true;
+                return false;
             } else if (consignee != object["consignee"]) {
                 $.modal.alertError("Tên chủ hàng không được khác nhau!");
                 errorFlg = true;

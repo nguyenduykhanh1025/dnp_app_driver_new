@@ -7,8 +7,10 @@ public class ProcessJsonData implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	/** Array Long shipment detail id container need to shifting */
 	private List<Long> shipmentDetailIds;
 	
+	/** Array Long shipment detail id container need to pick on demand */
 	private List<Long> prePickupContIds;
 	
 	private String vslName;
@@ -17,6 +19,7 @@ public class ProcessJsonData implements Serializable {
 	
 	private String containers;
 	
+	/** Number of times process retry send to robot after error */
 	private Integer retryCount;
 
 	public List<Long> getShipmentDetailIds() {
@@ -65,6 +68,5 @@ public class ProcessJsonData implements Serializable {
 
 	public void setRetryCount(Integer retryCount) {
 		this.retryCount = retryCount;
-	} 
-	
+	}
 }

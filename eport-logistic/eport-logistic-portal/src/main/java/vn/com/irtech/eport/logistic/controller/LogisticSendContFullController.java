@@ -717,6 +717,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getSztp())) {
 				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn kích thước!");
 			}
+			if (StringUtils.isEmpty(shipmentDetails.get(i).getCargoType())) {
+				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn loại hàng!");
+			}
 			if (shipmentDetails.get(i).getWgt() == null) {
 				return error("Hàng " + (i + 1) + ": Quý khách chưa nhập trọng lượng!");
 			}
