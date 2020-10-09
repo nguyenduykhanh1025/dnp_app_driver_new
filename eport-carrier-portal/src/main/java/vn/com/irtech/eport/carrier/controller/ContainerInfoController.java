@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,7 @@ import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
  */
 @Controller
 @RequestMapping("/carrier/cont")
+@RequiresPermissions("carrier:inquery")
 public class ContainerInfoController extends CarrierBaseController {
 
 	private static final String EXPORT_SHEET_NAME = "Container";

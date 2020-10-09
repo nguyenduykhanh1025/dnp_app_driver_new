@@ -1,11 +1,11 @@
 package vn.com.irtech.eport.carrier.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +23,7 @@ import vn.com.irtech.eport.common.core.text.Convert;
 
 @Controller
 @RequestMapping("/depo")
+@RequiresPermissions("carrier:depo")
 @Transactional(rollbackFor = Exception.class)
 public class CarrierDepoController extends CarrierBaseController {
 	

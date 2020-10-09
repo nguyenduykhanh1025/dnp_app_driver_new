@@ -1,5 +1,10 @@
 package vn.com.irtech.eport.framework.shiro.realm;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -26,6 +31,7 @@ import vn.com.irtech.eport.common.exception.user.UserNotExistsException;
 import vn.com.irtech.eport.common.exception.user.UserPasswordNotMatchException;
 import vn.com.irtech.eport.common.exception.user.UserPasswordRetryLimitExceedException;
 import vn.com.irtech.eport.framework.shiro.service.SysLoginService;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
 
 /**
  * @author admin
@@ -43,7 +49,32 @@ public class UserRealm extends AuthorizingRealm
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection arg0)
     {
-        return new SimpleAuthorizationInfo();
+        CarrierAccount user = ShiroUtils.getSysUser();
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        // Arrays.asList(perm.getRoleKey().trim().split(","))
+        Set<String> perms = new HashSet<>();
+//        if(StringUtils.isNotBlank(user.getPerms())) {
+//        	perms.addAll(Arrays.asList(user.getPerms().trim().split(",")));
+//        }
+        // TODO dynamic setting from DB
+        // set permission by flag
+        if(user.getEdoFlg()) {
+    		perms.add("carrier:edo");
+    	}
+        if(user.getDoFlg()) {
+        	perms.add("carrier:do");
+        }
+        if(user.getBookingFlg()) {
+        	perms.add("carrier:booking");
+        }
+        if(user.getDepoFlg()) {
+        	perms.add("carrier:depo");
+        }
+        if(user.getEdoFlg() || user.getDoFlg()) {
+        	perms.add("carrier:inquery");
+        }
+        info.setStringPermissions(perms);
+        return info;
     }
 
     @Override
