@@ -80,7 +80,7 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 		if (edoHouseBill == null) {
 			edoHouseBill = new EdoHouseBill();
 		}
-		
+
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Map<String, Object> map = new HashMap<>();
 		map.put("expiredDem", simpleDateFormat.format(edoHouseBill.getEdo().getExpiredDem()));
@@ -139,7 +139,7 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 
 		return success();
 	}
-	
+
 	@PostMapping("/separate/add")
 	@ResponseBody
 	@Transactional
@@ -185,11 +185,11 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 	@PostMapping("/houseBill/detail")
 	@ResponseBody
 	public AjaxResult detailHouseBill(String houseBillNo) {
-		
-		if (StringUtils.isEmpty(houseBillNo) ) {
+
+		if (StringUtils.isEmpty(houseBillNo)) {
 			return error("Quý khách chưa chọn house bill no.");
 		}
-		
+
 		EdoHouseBill edoHouseBill = new EdoHouseBill();
 		edoHouseBill.setHouseBillNo(houseBillNo);
 
@@ -226,15 +226,15 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 		}
 		return error();
 	}
-	
+
 	@PostMapping("/houseBill/release")
 	@ResponseBody
 	public AjaxResult releaseHouseBill(String houseBillNo) {
-		
-		if (StringUtils.isEmpty(houseBillNo) ) {
+
+		if (StringUtils.isEmpty(houseBillNo)) {
 			return error("Quý khách chưa chọn house bill no.");
 		}
-		
+
 		EdoHouseBill edoHouseBill = new EdoHouseBill();
 		edoHouseBill.setHouseBillNo(houseBillNo);
 		edoHouseBill.setReleaseFlg(true);
@@ -244,19 +244,20 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 		}
 		return error();
 	}
-	
+
 	@DeleteMapping("/houseBill/container")
 	@ResponseBody
 	public AjaxResult deleteContainer(String houseBillIds) {
 		if (StringUtils.isEmpty(houseBillIds)) {
 			return error("Quý khách chưa chọn container muốn xóa.");
 		}
-		
-		List<EdoHouseBill> edoHouseBills = edoHouseBillService.selectEdoHouseBillByIds(houseBillIds, getUser().getGroupId());
+
+		List<EdoHouseBill> edoHouseBills = edoHouseBillService.selectEdoHouseBillByIds(houseBillIds,
+				getUser().getGroupId());
 		if (CollectionUtils.isEmpty(edoHouseBills)) {
 			return error("Không tìm thấy container cần xóa trong hệ thống.");
 		}
-		
+
 		String ids = "";
 		String houseBillNos = "";
 		for (EdoHouseBill edoHouseBill : edoHouseBills) {
@@ -266,26 +267,26 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 			ids += edoHouseBill.getId() + ",";
 			houseBillNos += edoHouseBill.getHouseBillNo() + ",";
 		}
-		ids = ids.substring(0, ids.length()-1);
-		houseBillNos = houseBillNos.substring(0, houseBillNos.length()-1);
-		
+		ids = ids.substring(0, ids.length() - 1);
+		houseBillNos = houseBillNos.substring(0, houseBillNos.length() - 1);
+
 		edoHouseBillService.deleteEdoHouseBillByIds(ids);
-		
-		// Get edo house bill previous 
+
+		// Get edo house bill previous
 		Map<String, Object> paramHouseBill = new HashMap<>();
 		paramHouseBill.put("houseBillNos", Convert.toStrArray(houseBillNos));
 		EdoHouseBill edoHouseBillParam = new EdoHouseBill();
 		edoHouseBillParam.setLogisticGroupId(getUser().getGroupId());
 		edoHouseBillParam.setParams(paramHouseBill);
 		List<EdoHouseBill> edoHouseBillsOld = edoHouseBillService.selectEdoHouseBillByHouseBillNo2s(edoHouseBillParam);
-		
+
 		// Check if previous bill is house bill
 		if (CollectionUtils.isNotEmpty(edoHouseBillsOld)) {
 			// Set house bill no 2 to blank
 			for (EdoHouseBill edoHouseBill : edoHouseBillsOld) {
 				edoHouseBill.setHouseBillNo2(null);
 				edoHouseBillService.updateOldHouseBillToNewHouseBill(edoHouseBill);
-				
+
 				// Update Edo
 				Edo edo = new Edo();
 				edo.setId(edoHouseBill.getEdoId());
@@ -296,11 +297,12 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 			// Set house bill id of id to null
 			Map<String, Object> paramEdo = new HashMap<>();
 			paramEdo.put("houseBillIds", Convert.toStrArray(ids));
+			paramEdo.put("houseBillIdNull", true);
 			Edo edoParam = new Edo();
 			edoParam.setParams(paramEdo);
 			edoService.updateEdoByCondition(edoParam);
 		}
-		
+
 		return success();
 	}
 }

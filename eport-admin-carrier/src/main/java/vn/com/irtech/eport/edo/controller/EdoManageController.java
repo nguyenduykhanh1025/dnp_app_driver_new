@@ -1,8 +1,9 @@
 package vn.com.irtech.eport.edo.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,111 +20,137 @@ import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
+import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-
+import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.utils.StringUtils;
 
 @Controller
 @RequestMapping("/edo/manage")
 public class EdoManageController extends BaseController {
 
-  final String PREFIX = "edo/manage";
-  @Autowired
-  private IEdoService edoService;
+	final String PREFIX = "edo/manage";
+	@Autowired
+	private IEdoService edoService;
 
-  @Autowired
+	@Autowired
 	private IEdoAuditLogService edoAuditLogService;
 
-  @GetMapping("/index")
-  public String index() {
-    return PREFIX + "/edo";
-  }
+	@GetMapping("/index")
+	public String index() {
+		return PREFIX + "/edo";
+	}
 
-  @PostMapping("/billNo")
-  @ResponseBody
-  public TableDataInfo billNo(@RequestBody PageAble<Edo> param) {
-    startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
-    Edo edo = param.getData();
-    if (edo == null) {
-      edo = new Edo();
-    }
-    List<Edo> dataList = edoService.selectEdoListByBillNo(edo);
-    return getDataTable(dataList);
-  }
+	@PostMapping("/billNo")
+	@ResponseBody
+	public TableDataInfo billNo(@RequestBody PageAble<Edo> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		Edo edo = param.getData();
+		if (edo == null) {
+			edo = new Edo();
+		}
+		List<Edo> dataList = edoService.selectEdoListByBillNo(edo);
+		return getDataTable(dataList);
+	}
 
-  @PostMapping("/edo")
-  @ResponseBody
-  public TableDataInfo edo(@RequestBody PageAble<Edo> param) {
-    startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
-    Edo edo = param.getData();
-    if (edo == null) {
-      edo = new Edo();
-    }
-    if(edo.getBillOfLading() == null)
-		{
+	@PostMapping("/edo")
+	@ResponseBody
+	public TableDataInfo edo(@RequestBody PageAble<Edo> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		Edo edo = param.getData();
+		if (edo == null) {
+			edo = new Edo();
+		}
+		if (edo.getBillOfLading() == null) {
 			return null;
 		}
-    List<Edo> dataList = edoService.selectEdoListForReport(edo);
-    return getDataTable(dataList);
-  }
+		List<Edo> dataList = edoService.selectEdoListForReport(edo);
+		return getDataTable(dataList);
+	}
 
-  @GetMapping("/history/{id}")
-	public String getHistory(@PathVariable("id") Long id,ModelMap map) {
+	@GetMapping("/history/{id}")
+	public String getHistory(@PathVariable("id") Long id, ModelMap map) {
 		map.put("edoId", id);
 		return PREFIX + "/history";
-  }
-  
-  
-  @GetMapping("/auditLog/{edoId}")
+	}
+
+	@GetMapping("/auditLog/{edoId}")
 	@ResponseBody
-	public TableDataInfo edoAuditLog(@PathVariable("edoId") Long edoId, EdoAuditLog edoAuditLog)
-	{
+	public TableDataInfo edoAuditLog(@PathVariable("edoId") Long edoId, EdoAuditLog edoAuditLog) {
 		edoAuditLog.setEdoId(edoId);
 		List<EdoAuditLog> edoAuditLogsList = edoAuditLogService.selectEdoAuditLogList(edoAuditLog);
 		return getDataTable(edoAuditLogsList);
-  }
-  
-  @GetMapping("/viewFileEdi")
-	public String viewFileEdi()
-	{
+	}
+
+	@GetMapping("/viewFileEdi")
+	public String viewFileEdi() {
 		return PREFIX + "/viewFileEdi";
 	}
 
-  @PostMapping("/readEdiOnly")
+	@PostMapping("/readEdiOnly")
 	@ResponseBody
-	public Object readEdi(String fileContent)
-	{
-    List<Edo> edo = new ArrayList<>();
-    fileContent = fileContent.replace("\n", "");
-    fileContent = fileContent.replace("\r", "");
+	public Object readEdi(String fileContent) {
+		List<Edo> edo = new ArrayList<>();
+		fileContent = fileContent.replace("\n", "");
+		fileContent = fileContent.replace("\r", "");
 		String[] text = fileContent.split("'");
 		edo = edoService.readEdi(text);
 		return edo;
-  }
+	}
 
-  @PostMapping("/getOprCode")
-  @ResponseBody
-  public List<Edo> lisOprCode()
-  {
-      Edo edo = new Edo();
-      return edoService.selectOprCode(edo);
-  }
-
-
-  @PostMapping("/getVoyNo/{carrierCode}/{vessel}")
+	@PostMapping("/getOprCode")
 	@ResponseBody
-	public List<Edo> listVoyNos(@PathVariable("carrierCode") String carrierCode,@PathVariable("vessel") String vessel) {
-    Edo edo = new Edo();
-    edo.setVessel(vessel);
-    edo.setCarrierCode(carrierCode);
+	public List<Edo> lisOprCode() {
+		Edo edo = new Edo();
+		return edoService.selectOprCode(edo);
+	}
+
+	@PostMapping("/getVoyNo/{carrierCode}/{vessel}")
+	@ResponseBody
+	public List<Edo> listVoyNos(@PathVariable("carrierCode") String carrierCode,
+			@PathVariable("vessel") String vessel) {
+		Edo edo = new Edo();
+		edo.setVessel(vessel);
+		edo.setCarrierCode(carrierCode);
 		return edoService.selectVoyNos(edo);
 	}
 
 	@PostMapping("/getVessel/{carrierCode}")
 	@ResponseBody
 	public List<Edo> listVessels(@PathVariable("carrierCode") String carrierCode) {
-    Edo edo = new Edo();
-    edo.setCarrierCode(carrierCode);
+		Edo edo = new Edo();
+		edo.setCarrierCode(carrierCode);
 		return edoService.selectVessels(edo);
+	}
+
+	@PostMapping("/order/lock")
+	@ResponseBody
+	public AjaxResult lockEdo(String edoIds) {
+		if (StringUtils.isEmpty(edoIds)) {
+			return error("Bạn chưa chọn container.");
+		}
+		Edo edo = new Edo();
+		edo.setReleaseStatus("Y");
+		Map<String, Object> params = new HashMap<>();
+		params.put("edoIds", Convert.toStrArray(edoIds));
+		edo.setParams(params);
+		edoService.updateEdoByCondition(edo);
+		return success("Xác nhận khoá làm lệnh thành công.");
+	}
+
+	@PostMapping("/order/unlock")
+	@ResponseBody
+	public AjaxResult unlockEdo(String edoIds) {
+		if (StringUtils.isEmpty(edoIds)) {
+			return error("Bạn chưa chọn container.");
+		}
+		Edo edo = new Edo();
+		edo.setReleaseStatus("N");
+		Map<String, Object> params = new HashMap<>();
+		params.put("edoIds", Convert.toStrArray(edoIds));
+		edo.setParams(params);
+		edoService.updateEdoByCondition(edo);
+		return success("Xác nhận mở khoá thành công.");
 	}
 }

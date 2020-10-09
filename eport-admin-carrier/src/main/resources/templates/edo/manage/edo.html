@@ -22,13 +22,13 @@
         <div class="flex__right w-90">
           <div class="justify-content-around align-items-center" id="ff">
             <div class="d-inline">
-                <input id="opr" class="easyui-combobox" data-options="prompt:'Carrier'" style="width:100px" >
-              </div>
+              <input id="opr" class="easyui-combobox" data-options="prompt:'Carrier'" style="width:100px">
+            </div>
             <div class="d-inline">
               <input id="vessel" class="easyui-combobox" data-options="prompt:'Vessel'">
             </div>
             <div class="d-inline">
-              <input id="voyNo" class="easyui-combobox"  data-options="prompt:'Voy No'" style="width:90px">
+              <input id="voyNo" class="easyui-combobox" data-options="prompt:'Voy No'" style="width:90px">
             </div>
             <div class="d-inline">
               <input class="easyui-textbox" id="searchBillNo" data-options="prompt:'B/L No'" />
@@ -37,10 +37,12 @@
               <input class="easyui-textbox" id="searchContNo" data-options="prompt:'Container No'" />
             </div>
             <div class="d-inline">
-              <input id="fromDate" class="easyui-datebox" style="width: 100px;" data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
+              <input id="fromDate" class="easyui-datebox" style="width: 100px;"
+                data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
             </div>
             <div class="d-inline">
-                <input id="toDate" class="easyui-datebox" style="width: 100px;" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
+              <input id="toDate" class="easyui-datebox" style="width: 100px;"
+                data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
             </div>
             <div class="d-inline">
               <button class="btn btn-success btn-customs" onclick="searchDo()">Tìm kiếm</button>
@@ -59,27 +61,27 @@
           <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
           <table id="dg" style="width: 100%;">
             <thead>
-                <tr>
-                  <th data-options="field:'billOfLading',align:'left'" width="120">
-                    Bill Of Lading
-                  </th>
-                  <th data-options="field:'carrierCode',align:'center'" width="50">
-                    Carrier
-                  </th>
-                  <th data-options="field:'vessel',align:'left'" width="110">
-                    Vessel
-                  </th>
-                  <th data-options="field:'voyNo',align:'left'" width="60">
-                    Voy No
-                  </th>
-                  <th data-options="field:'numberContainer',align:'center'" width="60">
-                    Amount
-                  </th>
-                  <th data-options="field:'createTime',align:'center'" width="130">
-                    Create Time
-                  </th>
-                </tr>
-              </thead>  
+              <tr>
+                <th data-options="field:'billOfLading',align:'left'" width="120">
+                  Bill Of Lading
+                </th>
+                <th data-options="field:'carrierCode',align:'center'" width="50">
+                  Carrier
+                </th>
+                <th data-options="field:'vessel',align:'left'" width="110">
+                  Vessel
+                </th>
+                <th data-options="field:'voyNo',align:'left'" width="60">
+                  Voy No
+                </th>
+                <th data-options="field:'numberContainer',align:'center'" width="60">
+                  Amount
+                </th>
+                <th data-options="field:'createTime',align:'center'" width="130">
+                  Create Time
+                </th>
+              </tr>
+            </thead>
           </table>
         </div>
         <div class="right-side" data-options="region:'center'" style="width:100%;">
@@ -89,10 +91,23 @@
                 <tr>
                   <td>
                     <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
-                      <span class="l-btn-left"
-                        ><span class="l-btn-text">
-                          <button id="saveShipmentDetailBtn" onclick="generatePDF()" class="btn btn-sm btn-default"><i class="fa fa-print text-primary"></i> In eDO</button></span
-                        ></span>
+                      <span class="l-btn-left"><span class="l-btn-text">
+                          <button id="saveShipmentDetailBtn" onclick="generatePDF()" class="btn btn-sm btn-default"><i
+                              class="fa fa-print text-primary"></i> In eDO</button></span></span>
+                    </a>
+                  </td>
+                  <td>
+                    <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                      <span class="l-btn-left"><span class="l-btn-text">
+                          <button id="lockEdoBtn" onclick="lockEdo()" class="btn btn-sm btn-warning"><i
+                              class="fa fa-lock text-primary"></i> Khoá Làm Lệnh</button></span></span>
+                    </a>
+                  </td>
+                  <td>
+                    <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                      <span class="l-btn-left"><span class="l-btn-text">
+                          <button id="unlockEdoBtn" onclick="unlockEdo()" class="btn btn-sm btn-primary"><i
+                              class="fa fa-unlock text-primary"></i> Mở Khoá</button></span></span>
                     </a>
                   </td>
                 </tr>
@@ -102,6 +117,7 @@
           <table id="container-grid" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead data-options="frozen:true">
               <tr>
+                <th field="ck" checkbox="true"></th>
                 <th data-options="field:'containerNumber',align:'left'" width="120">
                   Container No
                 </th>
