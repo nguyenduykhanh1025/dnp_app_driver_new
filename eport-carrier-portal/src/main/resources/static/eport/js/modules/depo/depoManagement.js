@@ -7,9 +7,7 @@ var edoSelected;
 
 
 $(function () {
-
   $(".main-body").layout();
-
   $(".collapse").click(function () {
     $(".main-body__search-wrapper").height(15);
     $(".main-body__search-wrapper--container").hide();
@@ -51,7 +49,7 @@ $(function () {
       if (toDate != null && date.getTime() > toDate.getTime()) {
         $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
       } else {
-        fromDate.setHours(23, 59, 59);
+        fromDate.setHours(0, 0, 0);
         edo.params.fromDate = dateToString(fromDate);
         loadTable();
       }
@@ -70,6 +68,7 @@ $(function () {
         edo.params.toDate = dateToString(toDate);
         loadTable();
       }
+      return date;
     }
   });
 
@@ -104,7 +103,7 @@ function loadTable() {
     url: PREFIX + "/blNo",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
+    height: $(document).height() - $(".main-body__search-wrapper").height() - 45,
     clientPaging: true,
     pagination: true,
     pageSize: 20,
@@ -193,9 +192,9 @@ function loadTableByContainer() {
     $("#container-grid").datagrid({
       url: PREFIX + "/blNo/containers",
       method: "POST",
-      singleSelect: false,
+      singleSelect: true,
       clientPaging: false,
-      height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
+      height: $(document).height() - $(".main-body__search-wrapper").height() - 45,
       pagination: true,
       pageSize: 20,
       nowrap: false,
@@ -226,9 +225,9 @@ function loadTableByContainer() {
     });
   } else {
     $("#container-grid").datagrid({
-      singleSelect: false,
+      singleSelect: true,
       clientPaging: false,
-      height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
+      height: $(document).height() - $(".main-body__search-wrapper").height() - 45,
       pagination: true,
       pageSize: 20,
       nowrap: false,
@@ -240,13 +239,5 @@ function loadTableByContainer() {
     });
   }
 }
-
-
-
-
-
-
-
-
 
 

@@ -2,6 +2,7 @@ package vn.com.irtech.eport.carrier.controller;
 
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ import vn.com.irtech.eport.logistic.service.ICatosApiService;
  * @date 2020-09-04
  */
 @Controller
+@RequiresPermissions("carrier:booking")
 @RequestMapping("/carrier/booking")
 public class BookingController extends CarrierBaseController
 {

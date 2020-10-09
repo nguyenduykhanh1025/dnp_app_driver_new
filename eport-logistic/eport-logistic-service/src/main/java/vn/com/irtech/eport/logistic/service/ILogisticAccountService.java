@@ -70,4 +70,12 @@ public interface ILogisticAccountService
 	public String checkUserNameUnique(String userName);
 	public int updateDelFlagLogisticAccountByIds(String ids);
 	public int updateDelFlagLogisticAccountByGroupIds(String groupIds);
+	
+	/**
+	 * Update password
+	 * 
+	 * @param user
+	 * @return updated record number
+	 */
+	public int resetUserPwd(LogisticAccount user);
 }
