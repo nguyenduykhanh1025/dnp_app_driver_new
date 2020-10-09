@@ -451,7 +451,7 @@ function saveDO() {
             }
             },
             error: function (result) {
-              $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+              $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau.");
             },
           });
     },

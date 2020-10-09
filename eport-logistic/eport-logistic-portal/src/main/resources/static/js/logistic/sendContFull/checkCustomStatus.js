@@ -60,7 +60,7 @@ function checkCustomStatus() {
                             error: function (result) {
                                 $("#checkBtn").html("Kết thúc");
                                 $.modal.closeLoading();
-                                $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
+                                $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng thử lại sau.");
                             }
                         });
                     }, 2000);

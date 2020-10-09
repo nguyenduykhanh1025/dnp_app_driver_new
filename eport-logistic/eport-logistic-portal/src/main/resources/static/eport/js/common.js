@@ -341,7 +341,6 @@ function domresize()
 function dgResize() {
 	if($('#dg').length) {
         $('#dg').datagrid('resize', {
-//            width: $(window).width() - 6,
             height: $(window).height() -55
         });
 	}
