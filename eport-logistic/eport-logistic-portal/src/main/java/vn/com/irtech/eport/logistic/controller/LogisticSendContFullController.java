@@ -928,4 +928,15 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 		return error("Yêu cầu hủy lệnh thất bại, quý khách vui lòng liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
 	}
+	
+	@GetMapping("/shipment/{shipmentId}/custom/notification")
+	@ResponseBody
+	public AjaxResult sendNotificationCustomError(@PathVariable("shipmentId") String shipmentId) {
+		try {
+			mqttService.sendNotification(NotificationCode.NOTIFICATION_OM_CUSTOM, "Lỗi hải quan lô " + shipmentId, configService.getKey("domain.admin.name") + "/om/support/custom/" + shipmentId);
+		} catch (MqttException e) {
+			logger.error("Gửi thông báo lỗi hải quan cho om: " + e);
+		}
+		return success();
+	}
 }
