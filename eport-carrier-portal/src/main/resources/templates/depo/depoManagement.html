@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -52,14 +51,17 @@
           <table id="dg" style="width: 100%;">
             <thead>
               <tr>
-                <th data-options="field:'billOfLading', align:'left'" width="110">
-                  BL No
+                <th data-options="field:'billOfLading', align:'left'" width="120">
+                  B/L No
                 </th>
-                <th data-options="field:'numberContainer', align:'left'" width="50">
+                <th data-options="field:'carrierCode', align:'center'" width="50">
+                 Carrier
+                </th>
+                <th data-options="field:'numberContainer', align:'right'" width="50">
                   SL
                 </th>
-                <th data-options="field:'createTime', align:'left', formatter:formatDateTime" width="110">
-                  SL
+                <th data-options="field:'createTime', align:'center', formatter:formatDateTime" width="110">
+                  Create Time
                 </th>
               </tr>
             </thead>
@@ -76,19 +78,19 @@
                   Sztp
                 </th>
                 <th data-options="field:'carrierCode', align:'center'" width="90">
-                  Opr Code
+                  OPR
                 </th>
                 <th data-options="field:'expiredDem', align:'left', formatter:formatDateTime" width="120">
-                  Dem
+                  DEM
                 </th>
                 <th data-options="field:'detFreeTime', align:'center'" width="80">
-                  Det
+                  DET
                 </th>
                 <th data-options="field:'emptyContainerDepot', align:'left'" width="150">
                   Depot
                 </th>
-                <th data-options="field:'updateTime',align:'left', formatter:formatDateTime" width="120">
-                  Ngày Cập Nhật
+                <th data-options="field:'createTime',align:'left', formatter:formatDateTime" width="120">
+                  Ngày Tạo
                 </th>
               </tr>
             </thead>

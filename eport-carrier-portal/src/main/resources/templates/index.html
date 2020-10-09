@@ -35,36 +35,35 @@
                   </div>
                 </div>
               </a>
-            <li class="depoTab">
+            <li class="edoTab" shiro:hasPermission="carrier:edo">
+              <a title="Quản Lý eDO" th:href="@{/edo/index}" class="menuItem"><i class="fa fa-ship"></i>&nbsp; 
+              Quản Lý eDO</a>
+            </li>
+            <li class="edoTab" shiro:hasPermission="carrier:edo">
+              <a title="Phát Hành eDO" th:href="@{/edo/releaseEdo}" class="menuItem"><i class="fa fa-send"></i>&nbsp; 
+              Phát Hành eDO</a>
+            </li>
+            <li class="edoTab" shiro:hasPermission="carrier:edo">
+              <a title="Báo cáo" th:href="@{/edo/report}" class="menuItem"><i class="fa fa-line-chart"></i>&nbsp; 
+              Báo Cáo eDO </a>
+            </li>
+            <li class="doTab" shiro:hasPermission="carrier:do">
+              <a title="Quản Lý DO" th:href="@{/carrier/do/index}" class="menuItem"><i class="fa fa-ship"></i>&nbsp;
+                Quản Lý DO</a>
+            </li>
+            <li class="doTab" shiro:hasPermission="carrier:do">
+              <a title="Báo Cáo DO" th:href="@{/carrier/do/report}" class="menuItem"><i class="fa fa-ship"></i>&nbsp;
+                Báo Cáo DO</a>
+            </li>
+            <li class="depoTab" shiro:hasPermission="carrier:depo">
               <a title="Quản Lý Depo" th:href="@{/depo}" class="menuItem"><i class="fa fa-ship"></i>&nbsp; Quản Lý
                 Depo</a>
             </li>
-            <li class="edoTab">
-              <a title="Quản Lý DO" th:href="@{/edo/index}" class="menuItem"><i class="fa fa-ship"></i>&nbsp; Quản Lý
-                eDO</a>
-            </li>
-            <li class="edoTab">
-              <a title="Quản Lý DO" th:href="@{/edo/releaseEdo}" class="menuItem"><i class="fa fa-send"></i>&nbsp; Phát
-                Hành eDO</a>
-            </li>
-            <li class="doTab">
-              <a title="Phát hành DO" th:href="@{/carrier/do/index}" class="menuItem"><i class="fa fa-ship"></i>&nbsp;
-                Quản lý DO</a>
-            </li>
-            </li>
-            <li class="edoTab">
-              <a title="Báo cáo" th:href="@{/edo/report}" class="menuItem"><i class="fa fa-line-chart"></i>&nbsp; Báo
-                cáo eDO </a>
-            </li>
-            <li class="doTab">
-              <a title="Phát hành DO" th:href="@{/carrier/do/report}" class="menuItem"><i class="fa fa-ship"></i>&nbsp;
-                Báo cáo DO</a>
-            </li>
-            <li class="booking">
+<!-- /*            <li class="booking" shiro:hasPermission="carrier:booking">
               <a title="Phát hành DO" th:href="@{/carrier/booking}" class="menuItem"><i class="fa fa-ship"></i>&nbsp;
                 Booking Container</a>
-            </li>
-            <li class="dropdown user-menu">
+            </li>*/ -->
+            <li class="dropdown user-menu container-movement" shiro:hasPermission="carrier:inquery">
               <a title="Tra cứu Container" class="menuItem"><i class="fa fa-search"></i>&nbsp; Tra cứu Container</a>
               <ul class="dropdown-menu">
                 <li><a title="Container GET-IN/OUT" class="menuItem " th:href="@{/carrier/cont}">Container Movement</a>
@@ -163,29 +162,6 @@
       var skin = storage.get("skin");
       var mode = "history";
       var historyPath = storage.get("historyPath");
-      // Hide or show do tab
-      $(document).ready(function () {
-        if ([[${ doPermission }]]) {
-          $(".doTab").show();
-        } else {
-          $(".doTab").hide();
-        }
-        if ([[${ edoPermission }]]) {
-          $(".edoTab").show();
-        } else {
-          $(".edoTab").hide();
-        }
-        if ([[${ bookingPermission }]]) {
-          $(".booking").show();
-        } else {
-          $(".booking").hide();
-        }
-        if ([[${ depoPermission }]]) {
-        	$(".depoTab").show();
-        } else {
-        	$(".depoTab").hide();
-        }
-      });
 
       if ($.common.isNotEmpty(skin)) {
         $("body").addClass(skin.split('|')[0]);

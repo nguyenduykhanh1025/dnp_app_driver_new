@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +21,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.carrier.domain.BookingDetail;
 import vn.com.irtech.eport.carrier.service.IBookingDetailService;
 import vn.com.irtech.eport.common.annotation.Log;
-
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
-import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
-import vn.com.irtech.eport.logistic.service.IShipmentService;
 
 
 /**
@@ -40,6 +38,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
  * @date 2020-09-04
  */
 @Controller
+@RequiresPermissions("carrier:booking")
 @RequestMapping("/carrier/booking/detail")
 public class BookingDetailController extends CarrierBaseController
 {

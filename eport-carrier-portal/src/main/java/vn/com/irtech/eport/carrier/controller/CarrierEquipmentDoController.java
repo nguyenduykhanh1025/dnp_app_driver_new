@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +49,7 @@ import vn.com.irtech.eport.system.service.ISysDictDataService;
  */
 @Controller
 @RequestMapping("/carrier/do")
+@RequiresPermissions("carrier:do")
 @Transactional
 public class CarrierEquipmentDoController extends CarrierBaseController {
 
