@@ -90,17 +90,17 @@ public class LogisticProfileController extends LogisticBaseController{
         if (StringUtils.isNotEmpty(newPassword) && passwordService.matches(user, oldPassword))
         {
             user.setSalt(ShiroUtils.randomSalt());
-            user.setPassword(passwordService.encryptPassword(user.getEmail(), newPassword, user.getSalt()));
-//            if (logisticAccountService.resetUserPwd(user) > 0)
-//            {
-//                ShiroUtils.setSysUser(logisticAccountService.selectLogisticAccountById(user.getId()));
-//                return success();
-//            }
+            user.setPassword(passwordService.encryptPassword(user.getUserName(), newPassword, user.getSalt()));
+            if (logisticAccountService.resetUserPwd(user) > 0)
+            {
+                ShiroUtils.setSysUser(logisticAccountService.selectLogisticAccountById(user.getId()));
+                return success();
+            }
             return error();
         }
         else
         {
-            return error("Failed to change password, old password is wrong");
+            return error("Mật khẩu cũ không đúng.");
         }
     }
 

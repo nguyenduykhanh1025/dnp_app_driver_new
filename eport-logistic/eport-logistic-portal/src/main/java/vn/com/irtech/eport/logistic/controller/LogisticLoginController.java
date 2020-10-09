@@ -7,24 +7,14 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
-import vn.com.irtech.eport.common.enums.BusinessType;
-import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.ServletUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
-import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
-import vn.com.irtech.eport.framework.util.ShiroUtils;
-import vn.com.irtech.eport.logistic.domain.LogisticAccount;
-import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
 
 /**
  * Logistic login
@@ -33,14 +23,6 @@ import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
  */
 @Controller
 public class LogisticLoginController extends LogisticBaseController {
-
-	private String prefix = "logistic";
-	
-	@Autowired
-	private ILogisticAccountService logisticService;
-	
-	@Autowired
-	private SysPasswordService passwordService;
 
 	@GetMapping("/login")
 	public String login(HttpServletRequest request, HttpServletResponse response) {
@@ -74,26 +56,6 @@ public class LogisticLoginController extends LogisticBaseController {
 		return "error/unauth";
 	}
 
-	@GetMapping("/resetPwd/{userId}")
-	public String resetPwd(@PathVariable("userId") Long userId, ModelMap mmap) {
-		mmap.put("user", logisticService.selectLogisticAccountById(userId));
-		return prefix + "/profile/resetPwd";
-	}
-
-	@Log(title = "Reset Mật Khẩu", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/resetPwd")
-	@ResponseBody
-	public AjaxResult resetPwdSave(LogisticAccount user) {
-		user.setSalt(ShiroUtils.randomSalt());
-		user.setPassword(passwordService.encryptPassword(user.getUserName(), user.getPassword(), user.getSalt()));
-//		if (logisticService.resetUserPwd(user) > 0) {
-//			if (ShiroUtils.getUserId() == user.getId()) {
-//				ShiroUtils.setSysUser(logisticService.selectLogisticAccountById(user.getId()));
-//			}
-//			return success();
-//		}
-		return error();
-	}
 	@GetMapping("/tutorial")
     public String tutorial() {
       return "tutorial";
