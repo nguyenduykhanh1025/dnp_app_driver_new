@@ -1171,6 +1171,40 @@ function loadShipmentDetail(id) {
                 hot.loadData(sourceData);
                 hot.render();
                 onChangeFlg = false;
+                if (sourceData.length > 0) {
+                    currentVesselVoyage = sourceData[0].vslNm;
+                    let shipmentDetail = new Object();
+                    for (let i = 0; i < berthplanList.length; i++) {
+                        if (currentVesselVoyage == berthplanList[i].vslAndVoy) {
+                            currentEta = berthplanList[i].eta;
+                            shipmentDetail.vslNm = berthplanList[i].vslNm;
+                            shipmentDetail.voyNo = berthplanList[i].voyNo;
+                            shipmentDetail.year = berthplanList[i].year;
+                            $.modal.loading("Đang xử lý ...");
+                            $.ajax({
+                                url: ctx + "/logistic/pods",
+                                method: "POST",
+                                contentType: "application/json",
+                                data: JSON.stringify(shipmentDetail),
+                                success: function (data) {
+                                    $.modal.closeLoading();
+                                    if (data.code == 0) {
+                                        hot.updateSettings({
+                                            cells: function (row, col, prop) {
+                                                if (col == 11) {
+                                                    let cellProperties = {};
+                                                    dischargePortList = data.dischargePorts;
+                                                    cellProperties.source = dischargePortList;
+                                                    return cellProperties;
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
             }
         },
         error: function (data) {
