@@ -1329,4 +1329,15 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public void resetCustomStatus(Long shipmentId) {
 		shipmentDetailMapper.resetCustomStatus(shipmentId);
 	}
+	
+	/**
+	 * Delete shipment detail by condition
+	 * 
+	 * @param shipmentDetail
+	 * @return int
+	 */
+	@Override
+	public int deleteShipmentDetailByCondition(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.deleteShipmentDetailByCondition(shipmentDetail);
+	}
 }

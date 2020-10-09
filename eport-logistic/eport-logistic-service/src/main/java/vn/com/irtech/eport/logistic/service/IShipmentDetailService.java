@@ -305,4 +305,11 @@ public interface IShipmentDetailService
      */
 	public void resetCustomStatus(Long shipmentId);
     
+	/**
+	 * Delete shipment detail by condition
+	 * 
+	 * @param shipmentDetail
+	 * @return int
+	 */
+	public int deleteShipmentDetailByCondition(ShipmentDetail shipmentDetail);
 }

@@ -456,7 +456,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						shipmentDetail.setVslNm("EMTY");
 						shipmentDetail.setVoyNo("0000");
 						shipmentDetail.setLocation(null);
-						// TODO OPR khong revert lai theo cha->con?
 						shipmentDetail.setOpeCode(shipmentDetail.getOpeCode());
 						shipmentDetail.setEmptyDepotLocation(getEmptyDepotLocation(shipmentDetail.getSztp(), shipmentDetail.getOpeCode()));
 						shipmentDetail.setStatus(1);

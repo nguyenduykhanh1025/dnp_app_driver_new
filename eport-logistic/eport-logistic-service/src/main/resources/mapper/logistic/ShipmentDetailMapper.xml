@@ -677,6 +677,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
+    <delete id="deleteShipmentDetailByCondition" parameterType="ShipmentDetail">
+        delete from shipment_detail 
+        <where>
+            and logistic_group_id = #{logisticGroupId}
+            and shipment_id = #{shipmentId}
+        </where>
+    </delete>
+
     <select id="selectShipmentDetailByIds" resultMap="ShipmentDetailResult">
         <include refid="selectShipmentDetailVo"/>
         where id in 
@@ -877,7 +885,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="getShipmentDetailForPrint" parameterType="ShipmentDetail" resultType="ShipmentDetail">
 		select id, shipment_id as shipmentId, logistic_group_id as logisticGroupId,
-		        register_no as registerNo, container_no as containerNo, container_status as containerStatus, sztp, sztp_define as sztpDefine,
+		        register_no as registerNo, container_no as containerNo, container_status as containerStatus, sztp, sztp_define as sztpDefine, container_remark as containerRemark,
 		        temperature, fe, booking_no as bookingNo, bl_no as blNo, seal_no as sealNo, consignee, expired_dem as expiredDem, empty_expired_dem as emptyExpiredDem,
 		        wgt,location,
 		        (vsl_name || ' - ' || voy_carrier) as vslName,
