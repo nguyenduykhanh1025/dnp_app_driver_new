@@ -85,7 +85,7 @@ function receiverDo() {
         blNo: blNo,
       },
       success: function (data) {
-        $.modal.msgReload("Lưu thành công! Vui lòng chờ trong khi refresh dữ liệu...", 5000, modal_status.SUCCESS);
+        $.modal.msgReload("Lưu thành công! Đang tải lại dữ liệu...", 5000, modal_status.SUCCESS);
         $.modal.closeLoading();
       },
       error: function (data) {

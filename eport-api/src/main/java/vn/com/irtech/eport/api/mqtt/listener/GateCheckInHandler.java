@@ -95,7 +95,7 @@ public class GateCheckInHandler implements IMqttMessageListener {
 		}
 		
 		if ("reject".equals(result)) {
-			String msg = "Thông tin xe/container không trùng khớp với thực tế. Vui lòng kiểm tra và thực hiện Check In lại hoặc gặp bàn cân để xử lý.";
+			String msg = "Thông tin xe/container không trùng khớp với thực tế. <br/>Vui lòng kiểm tra và thực hiện Check In lại hoặc gặp bàn cân để xử lý.";
 			if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSessionId())) {
 				mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateNotificationCheckInReq.getSessionId(), msg);
 			}

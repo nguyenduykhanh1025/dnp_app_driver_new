@@ -341,11 +341,11 @@ function confirm() {
         $(".toggle-section").hide();
         $("#confirmBtn").hide();
       } else {
-        $.modal.alertWarning("Không tìm thấy dữ liệu trong catos để đồng bộ, bạn vui lòng kiểm trả lại lệnh đã làm.");
+        $.modal.alertWarning("Không tìm thấy dữ liệu trong catos để đồng bộ.<br/>Vui lòng kiểm trả lại lệnh đã làm.");
       }
     },
     error: function () {
-      $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
+      $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng thử lại sau.");
       $.modal.closeLoading();
     },
   });
@@ -371,7 +371,7 @@ function confirm() {
   //       }
   //     },
   //     error: function () {
-  //       $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+  //       $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau.");
   //       $.modal.closeLoading();
   //     },
   //   });

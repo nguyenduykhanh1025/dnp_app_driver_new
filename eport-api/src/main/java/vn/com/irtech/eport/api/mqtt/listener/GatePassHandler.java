@@ -436,7 +436,7 @@ public class GatePassHandler implements IMqttMessageListener {
 			
 			driverRes.setStatus(BusinessConsts.FINISH);
 			driverRes.setResult(BusinessConsts.FAIL);
-			driverRes.setMsg(MessageHelper.getMessage("Có lỗi xảy ra trong quá trình gate in, vui lòng thử lại hoặc vào bàn cân để được hỗ trợ."));
+			driverRes.setMsg(MessageHelper.getMessage("Có lỗi xảy ra trong quá trình gate in. <br/>Vui lòng thử lại hoặc vào bàn cân để được hỗ trợ."));
 			try {
 				if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
 					responseDriver(driverRes, gateInFormData.getSessionId());

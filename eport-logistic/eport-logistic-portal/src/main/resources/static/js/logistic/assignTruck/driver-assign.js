@@ -541,7 +541,7 @@ function save(shipmentId){
                 $.modal.closeLoading();
             },
             error: function (result) {
-                $.modal.alertError("Có lỗi trong quá trình lưu dữ liệu, vui lòng liên hệ admin.");
+                $.modal.alertError("Có lỗi trong quá trình lưu dữ liệu, vui lòng thử lại sau.");
                 $.modal.closeLoading();
             },
         })
@@ -587,7 +587,7 @@ function saveCont(shipmentId){
             },
             error: function () {
             	$.modal.closeLoading();
-                $.modal.alertError("Có lỗi trong quá trình lưu dữ liệu, vui lòng liên hệ admin.");
+                $.modal.alertError("Có lỗi trong quá trình lưu dữ liệu, vui lòng thử lại sau.");
             },
         })
     }
@@ -707,7 +707,7 @@ function checkForChanges(){
         },
         error: function () {
         	$.modal.closeLoading();
-            $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng liên hệ admin.");
+            $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng thử lại sau.");
         },
     });
 }
@@ -728,7 +728,7 @@ function checkForChanges(){
 	        },
 	        error: function () {
 	        	$.modal.closeLoading();
-	            $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng liên hệ admin.");
+	            $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng thử lại sau.");
 	        },
 	    });
 	}
@@ -865,7 +865,7 @@ function onChange(changes, source) {
                 },
                 error: function () {
                 	$.modal.closeLoading();
-                    $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng liên hệ admin.");
+                    $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng thử lại sau.");
                 },
             });
         } else if (change[1] == "phoneNumber" && change[3] != null && change[3] != '') {
@@ -885,7 +885,7 @@ function onChange(changes, source) {
                 },
                 error: function () {
                 	$.modal.closeLoading();
-                    $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng liên hệ admin.");
+                    $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng thử lại sau.");
                 },
             });
         }
@@ -918,7 +918,7 @@ function onChangeContainer(changes, source) {
                 },
                 error: function () {
                 	$.modal.closeLoading();
-                    $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng liên hệ admin.");
+                    $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng thử lại sau.");
                 },
             });
         } else if (change[1] == "phoneNumber" && change[3] != null && change[3] != '') {
@@ -938,7 +938,7 @@ function onChangeContainer(changes, source) {
                 },
                 error: function () {
                 	$.modal.closeLoading();
-                    $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng liên hệ admin.");
+                    $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng thử lại sau.");
                 },
             });
         }

@@ -229,7 +229,7 @@ function openDriverSupport(id) {
 //       $.modal.closeLoading();
 //     },
 //     error: function (result) {
-//       $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
+//       $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng thử lại sau.");
 //       $.modal.closeLoading();
 //     },
 //   });

@@ -333,7 +333,7 @@ function updateDO() {
         },
         error: function (result) {
           $.modal.alertError(
-            "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin."
+            "Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau."
           )
         },
       })

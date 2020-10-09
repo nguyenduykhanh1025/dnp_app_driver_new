@@ -1262,7 +1262,7 @@ function reloadShipmentDetail() {
 
 function cancelShipmentDetail() {
   if (getDataSelectedFromTable()) {
-    layer.confirm("Xác nhận hủy khai báo lệnh đã làm. Vui lòng kiểm tra dữ liệu trên Catos đã được cập nhật/hủy và bấm Xác Nhận để tiếp tục.", {
+    layer.confirm("Xác nhận hủy khai báo lệnh đã làm. <br/>Vui lòng kiểm tra dữ liệu trên Catos đã được cập nhật/hủy và bấm Xác Nhận để tiếp tục.", {
       icon: 3,
       title: "Xác Nhận",
       btn: ['Xác Nhận', 'Hủy Bỏ']

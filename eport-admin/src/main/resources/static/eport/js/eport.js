@@ -1451,7 +1451,7 @@ var table = {
       },
       saveSuccess: function (result) {
         if (result.code == web_status.SUCCESS) {
-          $.modal.msgReload("Lưu thành công! Vui lòng chờ trong khi refresh dữ liệu...", modal_status.SUCCESS);
+          $.modal.msgReload("Lưu thành công! Đang tải lại dữ liệu...", modal_status.SUCCESS);
         } else if (result.code == web_status.WARNING) {
           $.modal.alertWarning(result.msg);
         } else {
@@ -1471,7 +1471,7 @@ var table = {
             parent.$.modal.msgSuccess(result.msg);
             parent.$.treeTable.refresh();
           } else {
-            $.modal.msgReload("Lưu thành công! Vui lòng chờ trong khi refresh dữ liêu...", modal_status.SUCCESS);
+            $.modal.msgReload("Lưu thành công! Đang tải lại dữ liêu...", modal_status.SUCCESS);
           }
         } else if (result.code == web_status.WARNING) {
           $.modal.alertWarning(result.msg);

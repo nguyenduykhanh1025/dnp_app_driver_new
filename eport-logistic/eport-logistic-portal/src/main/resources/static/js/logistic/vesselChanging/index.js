@@ -541,7 +541,7 @@ function onMessageReceived(payload) {
         if (res.code == 0) {
           $.modal.alertWarning(res.msg);
         } else {
-          $.modal.alertError("Có lỗi xảy ra, vui lòng liên hệ admin.");
+          $.modal.alertError("Có lỗi xảy ra, vui lòng thử lại sau.");
         }
       });
     }
