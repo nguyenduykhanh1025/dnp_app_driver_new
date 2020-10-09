@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.mapper.ProcessOrderMapper;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 
@@ -194,5 +197,25 @@ public class ProcessOrderServiceImpl implements IProcessOrderService {
 	@Override
     public List<ProcessOrder> selectProcessOrderListByIds(String processOrderIds) {
 		return processOrderMapper.selectProcessOrderListByIds(Convert.toStrArray(processOrderIds));
+	}
+	
+	 /**
+     * Make process order cancel order pickup empty by shipment details with same order job
+     * 
+     * @param shipmentDetails
+     * @return ProcessOrder
+     */
+	@Override
+    public ProcessOrder makeOrderCancelOrderPickupEmpty(List<ShipmentDetail> shipmentDetails) {
+		List<Long> shipmentDetailIds = new ArrayList<>();
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			shipmentDetailIds.add(shipmentDetail.getId());
+		}
+		ShipmentDetail shipmentDetailReference = shipmentDetails.get(0);
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setServiceType(EportConstants.SERVICE_CANCEL_PICKUP_EMPTY);
+		processOrder.setShipmentId(shipmentDetailReference.getShipmentId());
+		processOrder.setOrderNo(shipmentDetailReference.getOrderNo());
+		return processOrder;
 	}
 }
