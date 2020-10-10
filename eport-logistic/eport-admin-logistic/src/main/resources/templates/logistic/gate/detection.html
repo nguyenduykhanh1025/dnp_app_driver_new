@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('List Gate Detection')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>Gate Number：</label>
+                                <input type="text" name="gateNo"/>
+                            </li>
+                            <li>
+                                <label>Truck No：</label>
+                                <input type="text" name="truckNo"/>
+                            </li>
+                            <li>
+                                <label>Chassis No：</label>
+                                <input type="text" name="chassisNo"/>
+                            </li>
+                            <li>
+                                <label>Container 1：</label>
+                                <input type="text" name="containerNo1"/>
+                            </li>
+                            <li>
+                                <label>Container 2：</label>
+                                <input type="text" name="containerNo2"/>
+                            </li>
+                            <li>
+                                <label>Check Truck No：</label>
+                                <input type="text" name="chkTruckNo"/>
+                            </li>
+                            <li>
+                                <label>Check Chassis No：</label>
+                                <input type="text" name="chkChassisNo"/>
+                            </li>
+                            <li>
+                                <label>Check Container 1：</label>
+                                <input type="text" name="chkContainerNo1"/>
+                            </li>
+                            <li>
+                                <label>Check Container 2：</label>
+                                <input type="text" name="chkContainerNo2"/>
+                            </li>
+                            <li>
+                                <label>Total Weight：</label>
+                                <input type="text" name="totalWgt"/>
+                            </li>
+                            <li>
+                                <label>Deduct：</label>
+                                <input type="text" name="deduct"/>
+                            </li>
+                            <li>
+                                <label>Weight：</label>
+                                <input type="text" name="wgt"/>
+                            </li>
+                            <li>
+                                <label>Process Flag: Y/N：</label>
+                                <input type="text" name="processFlg"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="gate:detection:add">
+                    <i class="fa fa-plus"></i> Add
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="gate:detection:edit">
+                    <i class="fa fa-edit"></i> Edit
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="gate:detection:remove">
+                    <i class="fa fa-remove"></i> Delete
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="gate:detection:export">
+                    <i class="fa fa-download"></i> Export
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('gate:detection:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('gate:detection:remove')}]];
+        var prefix = ctx + "gate/detection";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "Gate Detection",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'id',
+                    title: 'ID',
+                    visible: false
+                },
+                {
+                    field: 'gateNo',
+                    title: 'Gate Number'
+                },
+                {
+                    field: 'truckNo',
+                    title: 'Truck No'
+                },
+                {
+                    field: 'chassisNo',
+                    title: 'Chassis No'
+                },
+                {
+                    field: 'containerNo1',
+                    title: 'Container 1'
+                },
+                {
+                    field: 'containerNo2',
+                    title: 'Container 2'
+                },
+                {
+                    field: 'chkTruckNo',
+                    title: 'Check Truck No'
+                },
+                {
+                    field: 'chkChassisNo',
+                    title: 'Check Chassis No'
+                },
+                {
+                    field: 'chkContainerNo1',
+                    title: 'Check Container 1'
+                },
+                {
+                    field: 'chkContainerNo2',
+                    title: 'Check Container 2'
+                },
+                {
+                    field: 'totalWgt',
+                    title: 'Total Weight'
+                },
+                {
+                    field: 'deduct',
+                    title: 'Deduct'
+                },
+                {
+                    field: 'wgt',
+                    title: 'Weight'
+                },
+                {
+                    field: 'processFlg',
+                    title: 'Process Flag: Y/N'
+                },
+                {
+                    title: 'Action',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>Edit</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Delete</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>
