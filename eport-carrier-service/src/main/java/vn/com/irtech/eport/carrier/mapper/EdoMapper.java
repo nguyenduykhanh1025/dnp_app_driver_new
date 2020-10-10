@@ -14,140 +14,141 @@ import vn.com.irtech.eport.carrier.dto.EdoWithoutHouseBillReq;
  * @author irtech
  * @date 2020-06-26
  */
-public interface EdoMapper 
-{
-    /**
-     * Get Exchange Delivery Order
-     * 
-     * @param id Exchange Delivery OrderID
-     * @return Exchange Delivery Order
-     */
-    public Edo selectEdoById(Long id);
-    
-    /**
-     * Get first Exchange Delivery Order
-     * @param orderNumber
-     * @return
-     */
-    public Edo selectFirstEdo(Edo edo);
+public interface EdoMapper {
+	/**
+	 * Get Exchange Delivery Order
+	 * 
+	 * @param id Exchange Delivery OrderID
+	 * @return Exchange Delivery Order
+	 */
+	public Edo selectEdoById(Long id);
 
-    /**
-     * Get Exchange Delivery Order List
-     * 
-     * @param edo Exchange Delivery Order
-     * @return Exchange Delivery Order List
-     */
-    public List<Edo> selectEdoList(Edo edo);
+	/**
+	 * Get first Exchange Delivery Order
+	 * 
+	 * @param orderNumber
+	 * @return
+	 */
+	public Edo selectFirstEdo(Edo edo);
 
-    /**
-     * Add Exchange Delivery Order
-     * 
-     * @param edo Exchange Delivery Order
-     * @return Result
-     */
-    public int insertEdo(Edo edo);
+	/**
+	 * Get Exchange Delivery Order List
+	 * 
+	 * @param edo Exchange Delivery Order
+	 * @return Exchange Delivery Order List
+	 */
+	public List<Edo> selectEdoList(Edo edo);
 
-    /**
-     * Update Exchange Delivery Order
-     * 
-     * @param edo Exchange Delivery Order
-     * @return Result
-     */
-    public int updateEdo(Edo edo);
+	/**
+	 * Add Exchange Delivery Order
+	 * 
+	 * @param edo Exchange Delivery Order
+	 * @return Result
+	 */
+	public int insertEdo(Edo edo);
 
-    /**
-     * Delete Exchange Delivery Order
-     * 
-     * @param id Exchange Delivery OrderID
-     * @return result
-     */
-    public int deleteEdoById(Long id);
+	/**
+	 * Update Exchange Delivery Order
+	 * 
+	 * @param edo Exchange Delivery Order
+	 * @return Result
+	 */
+	public int updateEdo(Edo edo);
 
-    /**
-     * Batch Delete Exchange Delivery Order
-     * 
-     * @param ids IDs
-     * @return result
-     */
-    public int deleteEdoByIds(String[] ids);
+	/**
+	 * Delete Exchange Delivery Order
+	 * 
+	 * @param id Exchange Delivery OrderID
+	 * @return result
+	 */
+	public int deleteEdoById(Long id);
 
-    public Edo checkContainerAvailable(@Param("container") String cont,@Param("billNo") String billNo);
-    
-    public String getOpeCodeByBlNo(String blNo);
-    
-    public Long getCountContainerAmountByBlNo(String blNo);
-    
-    public List<Edo> selectEdoListByBlNo(String blNo);
+	/**
+	 * Batch Delete Exchange Delivery Order
+	 * 
+	 * @param ids IDs
+	 * @return result
+	 */
+	public int deleteEdoByIds(String[] ids);
 
-    public List<Edo> selectEdoListByBillNo(Edo edo);
+	public Edo checkContainerAvailable(@Param("container") String cont, @Param("billNo") String billNo);
 
-    public List<String> selectVesselNo(Edo edo);
+	public String getOpeCodeByBlNo(String blNo);
 
-    public List<Edo> selectOprCode(Edo edo);
+	public Long getCountContainerAmountByBlNo(String blNo);
 
-    public List<Edo> selectVoyNos(Edo edo);
+	public List<Edo> selectEdoListByBlNo(String blNo);
 
-    public List<Edo> selectVessels(Edo edo);
+	public List<Edo> selectEdoListByBillNo(Edo edo);
 
-    /**
-     * Update edo by bill of lading and container no
-     * 
-     * @param edo
-     * @return
-     */
-    public int updateEdoByBlCont(Edo edo);
+	public List<String> selectVesselNo(Edo edo);
 
-    /**
-     * Get list Edo without house bill id
-     * @param edo
-     * @return
-     */
-    public List<Edo> selectListEdoWithoutHouseBillId(EdoWithoutHouseBillReq edo);
-    
-    /**
-     * Get container amount with order number
-     * 
-     * @param blNo
-     * @param orderNumber
-     * @return String
-     */
-    public int getContainerAmountWithOrderNumber(@Param("blNo") String blNo, @Param("orderNumber") String orderNumber);
-    
-    /**
-     * Get bill of lading by house bill id
-     * 
-     * @param houseBillId
-     * @return String
-     */
-    public String getBlNoByHouseBillId(Long houseBillId);
+	public List<Edo> selectOprCode(Edo edo);
 
-    public List<Edo> selectEdoListForReport(Edo edo);
-    
-    /**
+	public List<Edo> selectVoyNos(Edo edo);
+
+	public List<Edo> selectVessels(Edo edo);
+
+	/**
+	 * Update edo by bill of lading and container no
+	 * 
+	 * @param edo
+	 * @return
+	 */
+	public int updateEdoByBlCont(Edo edo);
+
+	/**
+	 * Get list Edo without house bill id
+	 * 
+	 * @param edo
+	 * @return
+	 */
+	public List<Edo> selectListEdoWithoutHouseBillId(EdoWithoutHouseBillReq edo);
+
+	/**
+	 * Get container amount with order number
+	 * 
+	 * @param blNo
+	 * @param orderNumber
+	 * @return String
+	 */
+	public int getContainerAmountWithOrderNumber(@Param("blNo") String blNo, @Param("orderNumber") String orderNumber);
+
+	/**
+	 * Get bill of lading by house bill id
+	 * 
+	 * @param houseBillId
+	 * @return String
+	 */
+	public String getBlNoByHouseBillId(Long houseBillId);
+
+	public List<Edo> selectEdoListForReport(Edo edo);
+
+	/**
 	 * Select list edo with house bill req
 	 * 
 	 * @param edo
 	 * @return List<Edo>
 	 */
-    public List<Edo> selectListEdoWithHouseBill(EdoWithoutHouseBillReq edo); 
-    
-    public Map<String, String> getReportByCarrierGroup(String[] codes);
+	public List<Edo> selectListEdoWithHouseBill(EdoWithoutHouseBillReq edo);
 
-    public Edo getBillOfLadingInfo(Edo edo);
-    
-    /**
-     * Select list edo by ids
-     * 
-     * @param ids
-     * @return List<Edo>
-     */
-    public List<Edo> selectEdoByIds(String[] ids);
-    
-    /**
-     * Update edo by condition
-     * 
-     * @param edo
-     * @return int
-     */
-    public int updateEdoByCondition(Edo edo);
+	public Map<String, String> getReportByCarrierGroup(String[] codes);
+
+	public Edo getBillOfLadingInfo(Edo edo);
+
+	/**
+	 * Select list edo by ids
+	 * 
+	 * @param ids
+	 * @return List<Edo>
+	 */
+	public List<Edo> selectEdoByIds(String[] ids);
+
+	/**
+	 * Update edo by condition
+	 * 
+	 * @param edo
+	 * @return int
+	 */
+	public int updateEdoByCondition(Edo edo);
 }

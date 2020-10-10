@@ -144,7 +144,7 @@ function loadTableByContainer() {
   $("#container-grid").datagrid({
     url: PREFIX + "/edo",
     method: "POST",
-    singleSelect: true,
+    multipleSelect: true,
     height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
     clientPaging: true,
     pagination: true,
@@ -155,7 +155,7 @@ function loadTableByContainer() {
     loader: function (param, success, error) {
       var opts = $(this).datagrid("options");
       if (!opts.url) return false;
-      if(edo.billOfLading == null) {
+      if (edo.billOfLading == null) {
         edo.billOfLading = billOfLadingFresh;
       }
       $.ajax({
@@ -172,8 +172,7 @@ function loadTableByContainer() {
           data: edo
         }),
         success: function (data) {
-          if(data == null || data == '' || data == undefined)
-          {
+          if (data == null || data == '' || data == undefined) {
             success(data);
           }
           success(JSON.parse(data));
@@ -261,14 +260,18 @@ function formatToYDMHMS(date) {
   return temp.split("-").reverse().join("/") + date.substring(10, 19);
 }
 
-function formatStatus(value) {
-  switch (value) {
-    case '1':
-      return "<span class='label label-success'>Chưa làm lệnh</span>";
-    case '2':
-      return "<span class='label label-success'>Đã làm lệnh</span>";
-    case '3':
-      return "<span class='label label-success'>Gate-in</span>";
+function formatStatus(value, row) {
+  if (row && row.releaseStatus == 'Y') {
+    return "<span class='label label-success'>Đã làm lệnh</span>";
+  } else {
+    switch (value) {
+      case '1':
+        return "<span class='label label-success'>Chưa làm lệnh</span>";
+      case '2':
+        return "<span class='label label-success'>Đã làm lệnh</span>";
+      case '3':
+        return "<span class='label label-success'>Gate-in</span>";
+    }
   }
 }
 
@@ -316,4 +319,90 @@ function clearInput() {
   $("#vessel").combobox('setText', '');
   $("#voyNo").combobox('setText', '');
   loadTable(edo);
+}
+
+function lockEdo() {
+  // Get selected rows in datagrid right
+  let rows = $('#container-grid').datagrid('getSelections');
+  // Check if any row is selected
+  if (!rows.length) {
+    $.modal.alertWarning("Bạn chưa chọn container.");
+  } else {
+    layer.confirm("Xác nhận đã làm lệnh cho các container đã <br>chọn. Thực hiện khóa thay đổi dữ liệu trên <br>ePort.", {
+      icon: 3,
+      title: "Xác Nhận",
+      btn: ['Đồng Ý', 'Hủy Bỏ']
+    }, function () {
+      let edoIds = '';
+      rows.forEach(function (row, index) {
+        edoIds += row.id + ",";
+      });
+      $.ajax({
+        url: PREFIX + "/order/lock",
+        method: "POST",
+        data: {
+          edoIds: edoIds.substring(0, edoIds.length - 1),
+        },
+        success: function (res) {
+          layer.close(layer.index);
+          if (res.code == 0) {
+            $.modal.alertSuccess(res.msg);
+          } else {
+            $.modal.alertError(res.msg);
+          }
+          loadTableByContainer();
+        },
+        error: function (err) {
+          console.log(err);
+          $.modal.alertError("Lỗi hệ thống, vui lòng liên hệ admin.");
+          layer.close(layer.index);
+        }
+      });
+    }, function () {
+      // Close form and do nothing
+    });
+  }
+}
+
+function unlockEdo() {
+  // Get selected rows in datagrid right
+  let rows = $('#container-grid').datagrid('getSelections');
+  // Check if any row is selected
+  if (!rows.length) {
+    $.modal.alertWarning("Bạn chưa chọn container.");
+  } else {
+    layer.confirm("Xác nhận đã hủy lệnh cho các container đã <br>chọn.", {
+      icon: 3,
+      title: "Xác Nhận",
+      btn: ['Đồng Ý', 'Hủy Bỏ']
+    }, function () {
+      let edoIds = '';
+      rows.forEach(function (row, index) {
+        edoIds += row.id + ",";
+      });
+      $.ajax({
+        url: PREFIX + "/order/unlock",
+        method: "POST",
+        data: {
+          edoIds: edoIds.substring(0, edoIds.length - 1),
+        },
+        success: function (res) {
+          layer.close(layer.index);
+          if (res.code == 0) {
+            $.modal.alertSuccess(res.msg);
+          } else {
+            $.modal.alertError(res.msg);
+          }
+          loadTableByContainer();
+        },
+        error: function (err) {
+          console.log(err);
+          $.modal.alertError("Lỗi hệ thống, vui lòng liên hệ admin.");
+          layer.close(layer.index);
+        }
+      });
+    }, function () {
+      // Close form and do nothing
+    });
+  }
 }
