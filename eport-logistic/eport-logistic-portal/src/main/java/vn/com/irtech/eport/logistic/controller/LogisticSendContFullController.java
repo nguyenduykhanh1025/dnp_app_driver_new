@@ -241,7 +241,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 				return error("Bạn chưa đính kèm tệp booking.");
 			}
 		}
-		
+
 		if (shipmentService.insertShipment(shipment) == 1) {
 			if (attachBooking) {
 				ShipmentImage shipmentImage = new ShipmentImage();
@@ -292,7 +292,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					return error("Không thể chỉnh sửa số lượng container nhỏ hơn danh sách khai báo.");
 				}
 			}
-			
+
 			shipment.setContainerAmount(input.getContainerAmount());
 			shipment.setRemark(input.getRemark());
 			shipment.setUpdateBy(user.getFullName());
@@ -698,7 +698,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (CollectionUtils.isEmpty(shipmentDetails)) {
 			return error("Không tìm thấy thông tin chi tiết lô đã chọn.");
 		}
-		
+
 		// Container no string separated by comma
 		String containerNos = "";
 
@@ -770,7 +770,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			// Get ctnr info by container no in catos
 			// Get container info (F or E) by container no + FE(F or E)
-			ctnrInfoF = ctnrMap.get(shipmentDetail.getContainerNo()+"F");
+			ctnrInfoF = ctnrMap.get(shipmentDetail.getContainerNo() + "F");
 			if (ctnrInfoF != null) {
 				// Container has job order no 2 => has order
 				if (StringUtils.isNotEmpty(ctnrInfoF.getJobOdrNo())) {
@@ -778,7 +778,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 				}
 			}
 			// Get container info (F or E) by container no + FE(F or E)
-			ctnrInfoE = ctnrMap.get(shipmentDetail.getContainerNo()+"E");
+			ctnrInfoE = ctnrMap.get(shipmentDetail.getContainerNo() + "E");
 			if (ctnrInfoE != null) {
 				// Container has job order no 2 => has order
 				if (StringUtils.isNotEmpty(ctnrInfoE.getJobOdrNo())) {
@@ -815,11 +815,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		Map<String, ContainerInfoDto> containerInfoMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(containerInfoDtos)) {
 			for (ContainerInfoDto containerInfoDto : containerInfoDtos) {
-				if ("E".equals(containerInfoDto.getFe())) {
-					containerInfoMap.put(containerInfoDto.getCntrNo()+"E", containerInfoDto);
-				} else {
-					containerInfoMap.put(containerInfoDto.getCntrNo()+"F", containerInfoDto);
-				}
+				containerInfoMap.put(containerInfoDto.getCntrNo() + containerInfoDto.getFe(), containerInfoDto);
 			}
 		}
 		return containerInfoMap;
@@ -931,12 +927,13 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 		return error("Yêu cầu hủy lệnh thất bại, quý khách vui lòng liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
 	}
-	
+
 	@GetMapping("/shipment/{shipmentId}/custom/notification")
 	@ResponseBody
 	public AjaxResult sendNotificationCustomError(@PathVariable("shipmentId") String shipmentId) {
 		try {
-			mqttService.sendNotification(NotificationCode.NOTIFICATION_OM_CUSTOM, "Lỗi hải quan lô " + shipmentId, configService.getKey("domain.admin.name") + "/om/support/custom/" + shipmentId);
+			mqttService.sendNotification(NotificationCode.NOTIFICATION_OM_CUSTOM, "Lỗi hải quan lô " + shipmentId,
+					configService.getKey("domain.admin.name") + "/om/support/custom/" + shipmentId);
 		} catch (MqttException e) {
 			logger.error("Gửi thông báo lỗi hải quan cho om: " + e);
 		}

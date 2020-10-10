@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.Gson;
-
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
@@ -27,12 +25,10 @@ import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
-import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
-import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -45,30 +41,30 @@ import vn.com.irtech.eport.web.mqtt.MqttService.NotificationCode;
 @Controller
 @RequestMapping("/container/supplier")
 public class ContainerSupplierController extends BaseController {
-	
+
 	private final static String PREFIX = "container/supplier";
-	
+
 	@Autowired
 	private IShipmentService shipmentService;
-	
+
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
-	
+
 	@Autowired
 	private IShipmentImageService shipmentImageService;
 
 	@Autowired
-    private ServerConfig serverConfig;
-	
+	private ServerConfig serverConfig;
+
 	@Autowired
 	private IShipmentCommentService shipmentCommentService;
-	
+
 	@Autowired
 	private MqttService mqttService;
-	
+
 	@Autowired
 	private ICatosApiService catosApiService;
-	
+
 	@GetMapping()
 	public String getContSupplier(@RequestParam(required = false) Long sId, ModelMap mmap) {
 		if (sId != null) {
@@ -76,13 +72,13 @@ public class ContainerSupplierController extends BaseController {
 		}
 		mmap.put("domain", serverConfig.getUrl());
 		return PREFIX + "/index";
-    }
-	
+	}
+
 	@GetMapping("/confirmation")
 	public String getConfirmationForm() {
 		return PREFIX + "/confirmation";
 	}
-	
+
 	@PostMapping("/shipments")
 	@ResponseBody
 	public TableDataInfo listShipment(@RequestBody PageAble<Shipment> param) {
@@ -114,18 +110,23 @@ public class ContainerSupplierController extends BaseController {
 	@PostMapping("/shipment/{shipmentId}/shipment-detail")
 	@Transactional
 	@ResponseBody
-	public AjaxResult saveShipmentDetail(@PathVariable Long shipmentId, @RequestBody List<ShipmentDetail> shipmentDetails) {
+	public AjaxResult saveShipmentDetail(@PathVariable Long shipmentId,
+			@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
 			boolean allUpdate = true;
+			SysUser user = ShiroUtils.getSysUser();
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				if (StringUtils.isEmpty(shipmentDetail.getContainerNo()) || 
-						EportConstants.CONTAINER_SUPPLY_STATUS_REQ.equalsIgnoreCase(shipmentDetail.getContSupplyStatus())) {
+				if (StringUtils.isEmpty(shipmentDetail.getContainerNo()) || EportConstants.CONTAINER_SUPPLY_STATUS_REQ
+						.equalsIgnoreCase(shipmentDetail.getContSupplyStatus())) {
 					allUpdate = false;
-				} else if (!EportConstants.CONTAINER_SUPPLY_STATUS_HOLD.equalsIgnoreCase(shipmentDetail.getContSupplyStatus())) {
+				} else if (!EportConstants.CONTAINER_SUPPLY_STATUS_HOLD
+						.equalsIgnoreCase(shipmentDetail.getContSupplyStatus())) {
 					shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_FINISH);
 					// Set container is qualified to verify otp to make order with status = 2
 					shipmentDetail.setStatus(2);
+					shipmentDetail.setContSupplierName(user.getLoginName());
 				}
+				shipmentDetail.setUpdateBy(user.getLoginName());
 				if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
 					return error("Cấp container thất bại từ container: " + shipmentDetail.getContainerNo());
 				}
@@ -135,19 +136,19 @@ public class ContainerSupplierController extends BaseController {
 				shipment.setId(shipmentId);
 				shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
 				shipment.setUpdateTime(new Date());
-				shipment.setUpdateBy(ShiroUtils.getSysUser().getUserName());
+				shipment.setUpdateBy(user.getLoginName());
 				shipmentService.updateShipment(shipment);
 			}
 			return success("Cấp container thành công");
 		}
 		return error("Cấp container thất bại");
 	}
-	
+
 	@GetMapping("/report")
 	public String getReport() {
 		return PREFIX + "/report";
 	}
-	
+
 	@PostMapping("/supplierReport")
 	@ResponseBody
 	public TableDataInfo supplierReport(@RequestBody PageAble<ShipmentDetail> param) {
@@ -160,7 +161,7 @@ public class ContainerSupplierController extends BaseController {
 		List<ShipmentDetail> dataList = shipmentDetailService.selectShipmentDetailListReport(shipmentDetail);
 		return getDataTable(dataList);
 	}
-	
+
 	@GetMapping("/shipments/{shipmentId}/shipment-images")
 	@ResponseBody
 	public AjaxResult getShipmentImages(@PathVariable("shipmentId") Long shipmentId) {
@@ -185,7 +186,7 @@ public class ContainerSupplierController extends BaseController {
 		ajaxResult.put("numberOfShipmentImage", numberOfShipmentImage);
 		return ajaxResult;
 	}
-	
+
 	@PostMapping("/shipment/comment")
 	@ResponseBody
 	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
@@ -199,24 +200,24 @@ public class ContainerSupplierController extends BaseController {
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
-		
+
 		// Add id to make background grey (different from other comment)
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
 	}
-	
+
 	@PostMapping("/reject")
 	@ResponseBody
 	public AjaxResult rejectSupply(String content, String shipmentDetailIds, Long shipmentId, Long logisticGroupId) {
 		if (StringUtils.isEmpty(shipmentDetailIds) || shipmentId == null || logisticGroupId == null) {
 			return error("Invalid input!");
 		}
-		
+
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_HOLD);
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
-		
+
 		SysUser user = ShiroUtils.getSysUser();
 		ShipmentComment shipmentComment = new ShipmentComment();
 		shipmentComment.setShipmentId(shipmentId);
@@ -232,14 +233,15 @@ public class ContainerSupplierController extends BaseController {
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
-		
+
 		// Send notification to om
 		try {
-			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, shipmentComment.getTopic(), shipmentComment.getContent(), "", EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
+			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, shipmentComment.getTopic(),
+					shipmentComment.getContent(), "", EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
 		} catch (MqttException e) {
 			logger.error("Fail to send message om notification app: " + e);
 		}
-		
+
 		// Check update shipment if all container doesn't need container for supply
 		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
 		shipmentDetailParam.setShipmentId(shipmentId);
@@ -250,10 +252,10 @@ public class ContainerSupplierController extends BaseController {
 			shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
 			shipmentService.updateShipment(shipment);
 		}
-		
+
 		return success();
 	}
-	
+
 //	@PostMapping("/order/cancel")
 //	@ResponseBody
 //	public AjaxResult cancelOrderReq(String content, String shipmentDetailIds, Long shipmentId,  Long logisticGroupId) {		
@@ -314,15 +316,15 @@ public class ContainerSupplierController extends BaseController {
 //		
 //		return success();
 //	}
-	
+
 	@PostMapping("/delete")
 	@ResponseBody
-	public AjaxResult deleteSupply(String content, String shipmentDetailIds, Long shipmentId,  Long logisticGroupId) {
+	public AjaxResult deleteSupply(String content, String shipmentDetailIds, Long shipmentId, Long logisticGroupId) {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setProcessStatus(EportConstants.PROCESS_STATUS_SHIPMENT_DETAIL_DELETE);
 		shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_HOLD);
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
-		
+
 		SysUser user = ShiroUtils.getSysUser();
 		ShipmentComment shipmentComment = new ShipmentComment();
 		shipmentComment.setShipmentId(shipmentId);
@@ -338,14 +340,15 @@ public class ContainerSupplierController extends BaseController {
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
-		
+
 		// Send notification to om
 		try {
-			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, shipmentComment.getTopic(), shipmentComment.getContent(), "", EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
+			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, shipmentComment.getTopic(),
+					shipmentComment.getContent(), "", EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
 		} catch (MqttException e) {
 			logger.error("Fail to send message om notification app: " + e);
 		}
-		
+
 		// Check update shipment if all container doesn't need container for supply
 		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
 		shipmentDetailParam.setShipmentId(shipmentId);
@@ -356,10 +359,10 @@ public class ContainerSupplierController extends BaseController {
 			shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
 			shipmentService.updateShipment(shipment);
 		}
-		
+
 		return success();
 	}
-	
+
 	@PostMapping("/shipment-detail/cont/info")
 	@ResponseBody
 	public AjaxResult getContInfo(@RequestBody ShipmentDetail shipmentDetail) {
@@ -368,8 +371,8 @@ public class ContainerSupplierController extends BaseController {
 			ShipmentDetail shipmentDetailResult = catosApiService.selectShipmentDetailByContNo(shipmentDetail);
 			AjaxResult ajaxResult = AjaxResult.success();
 			ajaxResult.put("shipmentDetailResult", shipmentDetailResult);
-			
-			// Check container da lam lenh 
+
+			// Check container da lam lenh
 			if (shipmentDetail.getId() != null) {
 				ShipmentDetail shipmentDetailParam = new ShipmentDetail();
 				shipmentDetailParam.setContainerNo(shipmentDetail.getContainerNo());
@@ -378,7 +381,7 @@ public class ContainerSupplierController extends BaseController {
 					ajaxResult.put("isOrder", true);
 				}
 			}
-			
+
 			return ajaxResult;
 		} else {
 			return AjaxResult.warn("Không tìm thấy thông tin container");
