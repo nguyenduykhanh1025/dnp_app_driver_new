@@ -350,6 +350,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 						shipmentDetailReference.setSztpDefine(inputDetail.getSztpDefine());
 						shipmentDetailReference.setConsignee(inputDetail.getConsignee());
 						shipmentDetailReference.setDetFreeTime(inputDetail.getDetFreeTime());
+						shipmentDetailReference.setEmptyExpiredDem(inputDetail.getEmptyExpiredDem());
 						shipmentDetailReference.setEmptyDepotLocation(
 								getEmptyDepotLocationName(shipment.getOpeCode(), inputDetail.getSztp()));
 						if (EportConstants.DROP_EMPTY_TO_VESSEL.equals(shipment.getSendContEmptyType())) {
@@ -374,6 +375,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 					shipmentDetail.setSztpDefine(inputDetail.getSztpDefine());
 					shipmentDetail.setConsignee(inputDetail.getConsignee());
 					shipmentDetail.setDetFreeTime(inputDetail.getDetFreeTime());
+					shipmentDetail.setEmptyExpiredDem(inputDetail.getEmptyExpiredDem());
 					shipmentDetail.setBlNo(shipment.getBlNo());
 					shipmentDetail.setOpeCode(shipment.getOpeCode());
 					shipmentDetail.setEmptyDepotLocation(

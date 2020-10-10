@@ -563,6 +563,23 @@ function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) 
 function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'detFreeTime' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+        }
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function emptyExpiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'emptyExpiredDem' + row).addClass("htMiddle").addClass("htCenter");
+    if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
@@ -721,20 +738,22 @@ function configHandson() {
                     case 4:
                         return '<span class="required">Chủ Hàng</span>';
                     case 5:
-                        return checkEmptyExpiredDem ? '<span class="required">Ngày Miễn <br>Lưu Bãi</span>' : 'Ngày Miễn <br>Lưu Bãi';
+                        return checkEmptyExpiredDem ? '<span class="required">Số Ngày <br>Miễn Lưu</span>' : 'Số Ngày <br>Miễn Lưu';
                     case 6:
-                        return '<span class="required">Bãi Hạ Vỏ</span>';
+                        return checkEmptyExpiredDem ? '<span class="required">Ngày <br>Miễn Lưu</span>' : 'Ngày <br>Miễn Lưu';
                     case 7:
-                        return 'PTTT';
+                        return '<span class="required">Bãi Hạ Vỏ</span>';
                     case 8:
-                        return 'Mã Số Thuế';
+                        return 'PTTT';
                     case 9:
-                        return 'Người Thanh Toán';
+                        return 'Mã Số Thuế';
                     case 10:
+                        return 'Người Thanh Toán';
+                    case 11:
                         return "Ghi Chú";
                 }
             },
-            colWidths: [40, 100, 100, 150, 150, 100, 100, 100, 130, 130, 200],
+            colWidths: [40, 100, 100, 150, 150, 100, 100, 100, 100, 130, 130, 200],
             filter: "true",
             columns: [
                 {
@@ -770,6 +789,13 @@ function configHandson() {
                 {
                     data: "detFreeTime",
                     renderer: detFreeTimeRenderer
+                },
+                {
+                    data: "emptyExpiredDem",
+                    type: "date",
+                    dateFormat: "YYYY-MM-DD",
+                    defaultDate: new Date(),
+                    renderer: emptyExpiredDemRenderer
                 },
                 {
                     data: "emptyDepotLocation",
@@ -809,7 +835,7 @@ function configHandson() {
                         break;
                     // Arrow Right
                     case 39:
-                        if (selected[3] == 10) {
+                        if (selected[3] == 11) {
                             e.stopImmediatePropagation();
                         }
                         break
@@ -863,18 +889,20 @@ function configHandson() {
                     case 7:
                         return checkEmptyExpiredDem ? '<span class="required">Ngày Miễn <br>Lưu Bãi</span>' : 'Ngày Miễn <br>Lưu Bãi';
                     case 8:
-                        return '<span class="required">Bãi Hạ Vỏ</span>';
+                        return checkEmptyExpiredDem ? '<span class="required">Ngày <br>Miễn Lưu</span>' : 'Ngày <br>Miễn Lưu';
                     case 9:
-                        return 'PTTT';
+                        return '<span class="required">Bãi Hạ Vỏ</span>';
                     case 10:
-                        return 'Mã Số Thuế';
+                        return 'PTTT';
                     case 11:
-                        return 'Người Thanh Toán';
+                        return 'Mã Số Thuế';
                     case 12:
+                        return 'Người Thanh Toán';
+                    case 13:
                         return "Ghi Chú";
                 }
             },
-            colWidths: [40, 100, 100, 150, 150, 150, 100, 100, 100, 100, 130, 130, 200],
+            colWidths: [40, 100, 100, 150, 150, 150, 100, 100, 100, 100, 100, 130, 130, 200],
             filter: "true",
             columns: [
                 {
@@ -923,6 +951,13 @@ function configHandson() {
                     renderer: detFreeTimeRenderer
                 },
                 {
+                    data: "emptyExpiredDem",
+                    type: "date",
+                    dateFormat: "YYYY-MM-DD",
+                    defaultDate: new Date(),
+                    renderer: emptyExpiredDemRenderer
+                },
+                {
                     data: "emptyDepotLocation",
                     renderer: emptyDepotLocationRenderer
                 },
@@ -960,7 +995,7 @@ function configHandson() {
                         break;
                     // Arrow Right
                     case 39:
-                        if (selected[3] == 12) {
+                        if (selected[3] == 13) {
                             e.stopImmediatePropagation();
                         }
                         break
@@ -987,11 +1022,11 @@ function onChange(changes, source) {
     onChangeFlg = true;
     changes.forEach(function (change) {
         if (change[1] == "sztp") {
-            let indexColEmptyDepotLocation = 6;
+            let indexColEmptyDepotLocation = 7;
             if (shipmentSelected.sendContEmptyType == '0') {
-                indexColEmptyDepotLocation = 6;
+                indexColEmptyDepotLocation = 7;
             } else {
-                indexColEmptyDepotLocation = 8;
+                indexColEmptyDepotLocation = 9;
             }
             if (!change[3]) {
                 hot.setDataAtCell(change[0], indexColEmptyDepotLocation, '');
@@ -1047,7 +1082,6 @@ function onChange(changes, source) {
             if (vesselAndVoy) {
                 if (currentVesselVoyage != vesselAndVoy) {
                     currentVesselVoyage = vesselAndVoy;
-                    let shipmentDetail = new Object();
                     for (let i = 0; i < berthplanList.length; i++) {
                         if (vesselAndVoy == berthplanList[i].vslAndVoy) {
                             currentEta = berthplanList[i].eta;
@@ -1309,8 +1343,12 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn tàu chuyến!");
                 errorFlg = true;
                 return false;
-            } else if (!object["detFreeTime"] && checkEmptyExpiredDem) {
+            } else if (!object["detFreeTime"] && checkEmptyExpiredDem && !object["emptyExpiredDem"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số ngày miễn lưu bãi!");
+                errorFlg = true;
+                return false;
+            } else if (!object["emptyExpiredDem"] && checkEmptyExpiredDem && !object["detFreeTime"]) {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập ngày miễn lưu bãi!");
                 errorFlg = true;
                 return false;
             } else if (!object["sztp"]) {
@@ -1330,6 +1368,11 @@ function getDataFromTable(isValidate) {
         vslNm = object["vslNm"];
         shipmentDetail.detFreeTime = object["detFreeTime"]
         shipmentDetail.containerNo = object["containerNo"];
+        if (object["emptyExpiredDem"]) {
+            let emptyExpiredDem = new Date(object["emptyExpiredDem"].substring(0, 4) + "/" + object["emptyExpiredDem"].substring(5, 7) + "/" + object["emptyExpiredDem"].substring(8, 10));
+            emptyExpiredDem.setHours(23, 59, 59);
+            shipmentDetail.emptyExpiredDem = emptyExpiredDem.getTime();
+        }
         contList.push(object["containerNo"]);
         if (object["status"] == 1 || object["status"] == null) {
             conts += object["containerNo"] + ',';
