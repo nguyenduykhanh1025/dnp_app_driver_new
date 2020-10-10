@@ -550,7 +550,8 @@
   <update id="updateEdoByCondition" parameterType="Edo">
     update edo
     <trim prefix="SET" suffixOverrides=",">
-      <if test="houseBillId == null">house_bill_id = null,</if>
+      <if test="params.houseBillIdNull != null">house_bill_id = null,</if>
+      <if test="releaseStatus != null and releaseStatus != ''">release_status = #{releaseStatus},</if>
       update_time = sysdate
     </trim>
     <where>
@@ -560,6 +561,13 @@
           #{hBillId}
         </foreach>
       </if>
+      <if test="params.edoIds">
+        and id in
+        <foreach item="id" collection="params.edoIds" open="(" separator="," close=")">
+          #{id}
+        </foreach>
+      </if>
     </where>
   </update>
+
 </mapper>
