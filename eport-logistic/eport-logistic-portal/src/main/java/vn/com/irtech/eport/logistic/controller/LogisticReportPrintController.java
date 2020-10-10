@@ -49,9 +49,9 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 @Controller
 @RequestMapping("/logistic/print")
 public class LogisticReportPrintController extends LogisticBaseController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(LogisticReportPrintController.class);
-	
+
 	private String prefix = "logistic/print";
 
 	@Autowired
@@ -59,7 +59,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
-	
+
 	@Autowired
 	private IEdoHouseBillService edoHouseBillService;
 
@@ -71,6 +71,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		mmap.put("shipmentId", id);
 		return prefix + "/processOrder";
 	}
+
 	/**
 	 * Print Receipt for 4 type register
 	 */
@@ -79,6 +80,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		mmap.put("shipmentId", shipmentId);
 		return prefix + "/receipt";
 	}
+
 	/**
 	 * Print House Bill
 	 */
@@ -87,7 +89,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		mmap.put("houseBillNo", houseBillNo);
 		return prefix + "/houseBill";
 	}
-	
+
 	/**
 	 * Print Packing List
 	 */
@@ -96,12 +98,13 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		mmap.put("shipmentId", id);
 		return prefix + "/packingList";
 	}
+
 	@GetMapping("/processOrder/{shipmentId}")
 	public void jasperReport(@PathVariable("shipmentId") Long shipmentId, HttpServletResponse response) {
 		// First check permission for this shipmentId
 		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
-		if(shipment == null || shipment.getLogisticGroupId() == null || !shipment.getLogisticGroupId().equals(getUser().getGroupId()))
-		{
+		if (shipment == null || shipment.getLogisticGroupId() == null
+				|| !shipment.getLogisticGroupId().equals(getUser().getGroupId())) {
 			logger.error("Error when print Order for shipment: " + shipmentId);
 			return;
 		}
@@ -125,69 +128,73 @@ public class LogisticReportPrintController extends LogisticBaseController {
 //		final JasperReport report = (JasperReport) JRLoader
 //				.loadObject(this.getClass().getResourceAsStream("/report/equipment_interchange_order.jasper"));
 
-		JasperReport report = JasperCompileManager.compileReport(this.getClass().getResourceAsStream("/report/jrxml/equipment_interchange_order.jrxml"));
+		JasperReport report = JasperCompileManager
+				.compileReport(this.getClass().getResourceAsStream("/report/jrxml/equipment_interchange_order.jrxml"));
 
 		// Fetching the shipmentDetails from the data source.
 		List<ExporterInputItem> jpList = new ArrayList<>();
-		//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(shipmentDetails);
+		// final JRBeanCollectionDataSource params = new
+		// JRBeanCollectionDataSource(shipmentDetails);
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentDetails.get(0).getShipmentId());
 		shipmentDetail.setPaymentStatus("Y");
 		Shipment shipmentRef = shipmentService.selectShipmentById(shipmentDetail.getShipmentId());
 		List<Long> commands = shipmentDetailService.getProcessOrderIdListByShipment(shipmentDetail);
-		if(commands.size()>0) {
-			for(Long cmd : commands) {
+		if (commands.size() > 0) {
+			for (Long cmd : commands) {
 				List<ShipmentDetail> list = new ArrayList<ShipmentDetail>();
-				for(ShipmentDetail detail : shipmentDetails) {
-					if(detail.getProcessOrderId().equals(cmd)) {
+				for (ShipmentDetail detail : shipmentDetails) {
+					if (detail.getProcessOrderId().equals(cmd)) {
 						if (shipmentRef.getServiceType() == EportConstants.SERVICE_PICKUP_EMPTY) {
 							detail.setCargoType("Empty");
 						}
 						list.add(detail);
 					}
 				}
-				if(list.size()>0) {
+				if (list.size() > 0) {
 					ShipmentDetail detail = list.get(0);
-					//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(list);
-			        final Map<String, Object> parameters = new HashMap<>();
-			        parameters.put("user", getGroup().getGroupName());
-			        parameters.put("qrCode", detail.getOrderNo());
-			        parameters.put("orderNo", detail.getOrderNo());
-			        parameters.put("billingBooking", (detail.getBlNo() != null? detail.getBlNo():"") +"/"
-			        		+ (detail.getBookingNo() != null ? detail.getBookingNo() : "") + "/" +
-			        		(detail.getOrderNo() != null ? detail.getOrderNo() : ""));
-			        parameters.put("consignee", detail.getConsignee());
-			        parameters.put("vslName", detail.getVslName());
-			        parameters.put("voyCarrier", detail.getVoyCarrier());
-			        parameters.put("opeCode", detail.getOpeCode());
-			        parameters.put("invoiceNo", detail.getInvoiceNo());
-			        parameters.put("list", list);
-			        LogisticGroup logisticGroup = logisticGroupService.selectLogisticGroupById(getUser().getGroupId());
-			        parameters.put("groupName", logisticGroup.getGroupName());
-			        Shipment shipment = shipmentService.selectShipmentById(detail.getShipmentId());
-			        parameters.put("remark", (detail.getContainerRemark() != null) ? detail.getContainerRemark() : "");
-			        parameters.put("emptyDepot", detail.getEmptyDepot());
-			        parameters.put("expiredDem", detail.getExpiredDem());
-			        parameters.put("etd", detail.getEtd());
-			        parameters.put("eta", detail.getEta());
+					// final JRBeanCollectionDataSource params = new
+					// JRBeanCollectionDataSource(list);
+					final Map<String, Object> parameters = new HashMap<>();
+					parameters.put("user", getGroup().getGroupName());
+					parameters.put("qrCode", detail.getOrderNo());
+					parameters.put("orderNo", detail.getOrderNo());
+					parameters.put("billingBooking",
+							(detail.getBlNo() != null ? detail.getBlNo() : "") + "/"
+									+ (detail.getBookingNo() != null ? detail.getBookingNo() : "") + "/"
+									+ (detail.getOrderNo() != null ? detail.getOrderNo() : ""));
+					parameters.put("payerName", detail.getPayerName());
+					parameters.put("vslName", detail.getVslName());
+					parameters.put("voyCarrier", detail.getVoyCarrier());
+					parameters.put("opeCode", detail.getOpeCode());
+					parameters.put("invoiceNo", detail.getInvoiceNo());
+					parameters.put("list", list);
+					LogisticGroup logisticGroup = logisticGroupService.selectLogisticGroupById(getUser().getGroupId());
+					parameters.put("groupName", logisticGroup.getGroupName());
+					Shipment shipment = shipmentService.selectShipmentById(detail.getShipmentId());
+					parameters.put("remark", (detail.getContainerRemark() != null) ? detail.getContainerRemark() : "");
+					parameters.put("emptyDepot", detail.getEmptyDepot());
+					parameters.put("expiredDem", detail.getExpiredDem());
+					parameters.put("etd", detail.getEtd());
+					parameters.put("eta", detail.getEta());
 //					try {
 //						File file = new File("target/classes/static/img/logo_gray.jpeg");
 //						parameters.put("pathBackground", file.getPath());
 //					} catch (Exception e) {
 //						logger.error("Path background report error",e.getMessage());
 //					}
-			        if(shipment.getServiceType().intValue() == 1) {
-				        parameters.put("serviceType", "Truck Pickup");
-			        }
-			        if(shipment.getServiceType().intValue() == 2) {
-				        parameters.put("serviceType", "Truck Drop Off");
-			        }
-			        if(shipment.getServiceType().intValue() == 3) {
-				        parameters.put("serviceType", "Truck Empty Pickup");
-			        }
-			        if(shipment.getServiceType().intValue() == 4) {
-				        parameters.put("serviceType", "Truck Drop Full");
-			        }
+					if (shipment.getServiceType().intValue() == 1) {
+						parameters.put("serviceType", "Truck Pickup");
+					}
+					if (shipment.getServiceType().intValue() == 2) {
+						parameters.put("serviceType", "Truck Drop Off");
+					}
+					if (shipment.getServiceType().intValue() == 3) {
+						parameters.put("serviceType", "Truck Empty Pickup");
+					}
+					if (shipment.getServiceType().intValue() == 4) {
+						parameters.put("serviceType", "Truck Drop Full");
+					}
 					final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
 					jpList.add(new SimpleExporterInputItem(print));
 				}
@@ -201,21 +208,21 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		// information.
 //		final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
 		// Export DPF to output stream
-		JRPdfExporter exporter = new JRPdfExporter(); 
-		//exporter.setParameter(JRPdfExporterParameter.JASPER_PRINT_LIST, jpList);
+		JRPdfExporter exporter = new JRPdfExporter();
+		// exporter.setParameter(JRPdfExporterParameter.JASPER_PRINT_LIST, jpList);
 		exporter.setExporterInput(new SimpleExporterInput(jpList));
-		//exporter.setParameter(JRPdfExporterParameter.OUTPUT_STREAM, out); 
+		// exporter.setParameter(JRPdfExporterParameter.OUTPUT_STREAM, out);
 		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(out));
 		exporter.exportReport();
-		//JasperExportManager.exportReportToPdfStream(print, out);
+		// JasperExportManager.exportReportToPdfStream(print, out);
 	}
-	
+
 	@GetMapping("create-receipt/shipment/{shipmentId}")
 	public void receipt(@PathVariable("shipmentId") Long shipmentId, HttpServletResponse response) {
 		// First check permission for this shipmentId
 		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
-		if(shipment == null || shipment.getLogisticGroupId() == null || !shipment.getLogisticGroupId().equals(getUser().getGroupId()))
-		{
+		if (shipment == null || shipment.getLogisticGroupId() == null
+				|| !shipment.getLogisticGroupId().equals(getUser().getGroupId())) {
 			logger.error("Error when print Receipt for shipment: " + shipmentId);
 			return;
 		}
@@ -232,17 +239,18 @@ public class LogisticReportPrintController extends LogisticBaseController {
 			e.printStackTrace();
 		}
 	}
-	private void createReceipt(final List<ShipmentDetail> shipmentDetails, OutputStream out) throws JRException{
+
+	private void createReceipt(final List<ShipmentDetail> shipmentDetails, OutputStream out) throws JRException {
 		// Fetching the report file from the resources folder.
 		final JasperReport report = (JasperReport) JRLoader
 				.loadObject(this.getClass().getResourceAsStream("/report/receipt.jasper"));
 		Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-		if(shipmentDetails.size() > 0 && shipment != null) {
+		if (shipmentDetails.size() > 0 && shipment != null) {
 			final Map<String, Object> parameters = new HashMap<>();
 			parameters.put("shipmentId", shipment.getId());
-			parameters.put("customer", ""); // FIXME	Payer
-			parameters.put("mst", "");	// FIXME		Taxcode
-			parameters.put("address", "");  // FIXME	Payer Address
+			parameters.put("customer", ""); // FIXME Payer
+			parameters.put("mst", ""); // FIXME Taxcode
+			parameters.put("address", ""); // FIXME Payer Address
 			parameters.put("list", shipmentDetails);
 //			try {
 //				File file = new File("target/classes/static/img/logo_gray.jpeg");
@@ -250,31 +258,31 @@ public class LogisticReportPrintController extends LogisticBaseController {
 //			} catch (Exception e) {
 //				logger.error("Path background report error",e.getMessage());
 //			}
-	        if(shipment.getServiceType().intValue() == 1) {
-		        parameters.put("serviceType", "Nhận container có hàng từ Cảng");
-	        }
-	        if(shipment.getServiceType().intValue() == 2) {
-		        parameters.put("serviceType", "Hạ container rỗng vào Cảng");
-	        }
-	        if(shipment.getServiceType().intValue() == 3) {
-		        parameters.put("serviceType", "Nhận container rỗng từ Cảng");
-	        }
-	        if(shipment.getServiceType().intValue() == 4) {
-		        parameters.put("serviceType", "Hạ container có hàng vào Cảng");
-	        }
-	        final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
-	        JasperExportManager.exportReportToPdfStream(print, out);
+			if (shipment.getServiceType().intValue() == 1) {
+				parameters.put("serviceType", "Nhận container có hàng từ Cảng");
+			}
+			if (shipment.getServiceType().intValue() == 2) {
+				parameters.put("serviceType", "Hạ container rỗng vào Cảng");
+			}
+			if (shipment.getServiceType().intValue() == 3) {
+				parameters.put("serviceType", "Nhận container rỗng từ Cảng");
+			}
+			if (shipment.getServiceType().intValue() == 4) {
+				parameters.put("serviceType", "Hạ container có hàng vào Cảng");
+			}
+			final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
+			JasperExportManager.exportReportToPdfStream(print, out);
 		}
 	}
-	
+
 	@GetMapping("create-house-bill/{houseBillNo}")
-	public void jasperReportHouseBill( @PathVariable("houseBillNo") String houseBillNo, HttpServletResponse response) {
+	public void jasperReportHouseBill(@PathVariable("houseBillNo") String houseBillNo, HttpServletResponse response) {
 		EdoHouseBill edoHouseBill = new EdoHouseBill();
 		edoHouseBill.setHouseBillNo(houseBillNo);
 		edoHouseBill.setLogisticGroupId(getUser().getGroupId());
-		//edoHouseBill.setLogisticAccountId(getUser().getId());
+		// edoHouseBill.setLogisticAccountId(getUser().getId());
 		List<EdoHouseBill> houseBillList = edoHouseBillService.selectEdoHouseBillList(edoHouseBill);
-		if(houseBillList.isEmpty()) {
+		if (houseBillList.isEmpty()) {
 			logger.error("Error when print HouseBill: " + houseBillNo);
 			return;
 		}
@@ -286,15 +294,15 @@ public class LogisticReportPrintController extends LogisticBaseController {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void createHouseBillReport(final List<EdoHouseBill> houseBillList, OutputStream out) throws JRException {
 		// Fetching the report file from the resources folder.
 		final JasperReport report = (JasperReport) JRLoader
 				.loadObject(this.getClass().getResourceAsStream("/report/house_bill.jasper"));
 
 		// Fetching the shipmentDetails from the data source.
-		//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(shipmentDetails);
-
+		// final JRBeanCollectionDataSource params = new
+		// JRBeanCollectionDataSource(shipmentDetails);
 
 		// Adding the additional parameters to the pdf.
 		final Map<String, Object> parameters = new HashMap<>();
@@ -314,7 +322,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 //			logger.error("Path background report error",e.getMessage());
 //		}
 		List<Edo> edoList = new ArrayList<Edo>();
-		for(EdoHouseBill i : houseBillList) {
+		for (EdoHouseBill i : houseBillList) {
 			edoList.add(i.getEdo());
 		}
 		parameters.put("list", edoList);
@@ -323,13 +331,13 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		// Export DPF to output stream
 		JasperExportManager.exportReportToPdfStream(print, out);
 	}
-	
+
 	@GetMapping("create-packing-list/{shipmentId}")
-	public void packingListReport( @PathVariable("shipmentId") Long shipmentId, HttpServletResponse response) {
+	public void packingListReport(@PathVariable("shipmentId") Long shipmentId, HttpServletResponse response) {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		if(shipmentDetails.isEmpty()) {
+		if (shipmentDetails.isEmpty()) {
 			logger.error("Error when print packing list: " + shipmentId);
 			return;
 		}
@@ -341,21 +349,24 @@ public class LogisticReportPrintController extends LogisticBaseController {
 			e.printStackTrace();
 		}
 	}
-	private void createPackingListReport(final List<ShipmentDetail> shipmentDetailList, OutputStream out) throws JRException {
+
+	private void createPackingListReport(final List<ShipmentDetail> shipmentDetailList, OutputStream out)
+			throws JRException {
 		// Fetching the report file from the resources folder.
 		final JasperReport report = (JasperReport) JRLoader
 				.loadObject(this.getClass().getResourceAsStream("/report/packinglist.jasper"));
 
 		// Fetching the shipmentDetails from the data source.
-		//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(shipmentDetails);
-
+		// final JRBeanCollectionDataSource params = new
+		// JRBeanCollectionDataSource(shipmentDetails);
 
 		// Adding the additional parameters to the pdf.
 		final Map<String, Object> parameters = new HashMap<>();
 		parameters.put("bookingNo", shipmentDetailList.get(0).getBookingNo());
 		parameters.put("consignee", shipmentDetailList.get(0).getConsignee());
 		parameters.put("etd", shipmentDetailList.get(0).getEtd());
-		parameters.put("feederName", shipmentDetailList.get(0).getVslName() + " - " + shipmentDetailList.get(0).getVoyCarrier());
+		parameters.put("feederName",
+				shipmentDetailList.get(0).getVslName() + " - " + shipmentDetailList.get(0).getVoyCarrier());
 		parameters.put("voy", shipmentDetailList.get(0).getVoyCarrier());
 		parameters.put("pol", "VNDAD");
 		parameters.put("pod", shipmentDetailList.get(0).getDischargePort());

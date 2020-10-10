@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.annotation.RepeatSubmit;
@@ -330,7 +329,6 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 				// bat co de OM kiem tra lai chung tu goc
 				checkDoStatus = true;
 			}
-			
 
 			boolean updateShipment = true; // if true => need to update status shipment from init to save
 			for (ShipmentDetail inputDetail : shipmentDetails) {
@@ -482,10 +480,10 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 				shipment.setUpdateBy(getUser().getFullName());
 				shipmentService.updateShipment(shipment);
 			}
-			//Đổi opeCode operateCode -> groupCode. VD Hang tau CMA: CMA,CNC,APL.. -> CMA
+			// Đổi opeCode operateCode -> groupCode. VD Hang tau CMA: CMA,CNC,APL.. -> CMA
 			String oprParent = dictService.getLabel("carrier_parent_child_list", shipmentDetails.get(0).getOpeCode());
 			if (StringUtils.isNotEmpty(oprParent)) {
-				for(ShipmentDetail shpDtl : shipmentDetails) {
+				for (ShipmentDetail shpDtl : shipmentDetails) {
 					shpDtl.setOpeCode(oprParent);
 					shpDtl.setUpdateBy(getUser().getUserName());
 				}
@@ -707,7 +705,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			// Get ctnr info by container no in catos
 			// Get container info (F or E) by container no + FE(F or E)
-			ctnrInfoF = ctnrMap.get(shipmentDetail.getContainerNo()+"F");
+			ctnrInfoF = ctnrMap.get(shipmentDetail.getContainerNo() + "F");
 			if (ctnrInfoF != null) {
 				// Container has job order no 2 => has order
 				if (StringUtils.isNotEmpty(ctnrInfoF.getJobOdrNo())) {
@@ -715,7 +713,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 				}
 			}
 			// Get container info (F or E) by container no + FE(F or E)
-			ctnrInfoE = ctnrMap.get(shipmentDetail.getContainerNo()+"E");
+			ctnrInfoE = ctnrMap.get(shipmentDetail.getContainerNo() + "E");
 			if (ctnrInfoE != null) {
 				// Container has job order no 2 => has order
 				if (StringUtils.isNotEmpty(ctnrInfoE.getJobOdrNo())) {
@@ -807,11 +805,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		Map<String, ContainerInfoDto> containerInfoMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(containerInfoDtos)) {
 			for (ContainerInfoDto containerInfoDto : containerInfoDtos) {
-				if ("E".equals(containerInfoDto.getFe())) {
-					containerInfoMap.put(containerInfoDto.getCntrNo()+"E", containerInfoDto);
-				} else {
-					containerInfoMap.put(containerInfoDto.getCntrNo()+"F", containerInfoDto);
-				}
+				containerInfoMap.put(containerInfoDto.getCntrNo() + containerInfoDto.getFe(), containerInfoDto);
 			}
 		}
 		return containerInfoMap;
