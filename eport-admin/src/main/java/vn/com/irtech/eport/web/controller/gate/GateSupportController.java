@@ -1,7 +1,6 @@
 package vn.com.irtech.eport.web.controller.gate;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -9,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,28 +18,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 
-import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
-import vn.com.irtech.eport.common.utils.bean.BeanUtils;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
+import vn.com.irtech.eport.logistic.domain.GateDetection;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
-import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
-import vn.com.irtech.eport.logistic.domain.ProcessOrder;
-import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
+import vn.com.irtech.eport.logistic.service.IGateDetectionService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
-import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
-import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
-import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.web.dto.DetectionInfomation;
 import vn.com.irtech.eport.web.dto.GateInDataReq;
 import vn.com.irtech.eport.web.dto.GateInTestDataReq;
@@ -65,22 +57,16 @@ public class GateSupportController extends BaseController {
 	private IDriverAccountService driverAccountService;
 	
 	@Autowired
-	private IShipmentService shipmentService;
-	
-	@Autowired
 	private IShipmentDetailService shipmentDetailService;
 	
 	@Autowired
 	private IPickupHistoryService pickupHistoryService;
 	
 	@Autowired
-	private IPickupAssignService pickupAssignService;
-	
-	@Autowired
 	private ICatosApiService catosApiService;
 	
-	@Autowired 
-	private IProcessOrderService processOrderService;
+	@Autowired
+	private IGateDetectionService gateDetectionService;
 	
 	@GetMapping()
 	public String getView() {
@@ -89,15 +75,24 @@ public class GateSupportController extends BaseController {
 	
 	@PostMapping("/detection")
 	@ResponseBody
-	public AjaxResult submitDectionInfo(@Validated @RequestBody DetectionInfomation detectionInfo) {
+	public AjaxResult submitDectionInfo(@Validated @RequestBody DetectionInfomation detection) {
 		
-		String detectJson = new Gson().toJson(detectionInfo);
+		String detectJson = new Gson().toJson(detection);
 		logger.debug(">>>> Receive detection info:" + detectJson);
 		// Save detection info to cache
-		CacheUtils.put("detectionInfo_" + detectionInfo.getGateId(), detectionInfo);
+		CacheUtils.put("detectionInfo_" + detection.getGateId(), detection);
+		// Save to db
+		GateDetection dt = new GateDetection();
+		dt.setGateNo(detection.getGateId());
+		dt.setTruckNo(detection.getTruckNo());
+		dt.setChassisNo(detection.getChassisNo());
+		dt.setContainerNo1(detection.getContainerNo1());
+		dt.setContainerNo2(detection.getContainerNo2());
+		
+		gateDetectionService.insertGateDetection(dt);
 		
 		// Send to monitor
-		webSocketService.sendMessage("/gate/detection/monitor", detectionInfo);
+		webSocketService.sendMessage("/gate/detection/monitor", detection);
 		return success();
 	}
 	
