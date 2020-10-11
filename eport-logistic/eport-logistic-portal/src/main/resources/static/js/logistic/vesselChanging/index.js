@@ -14,8 +14,8 @@ $(document).ready(function () {
   $("#bookingSearch").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
-        shipmentSearch.bookingNo = $("#bookingSearch").textbox('getText').toUpperCase();
-        loadTable();
+      shipmentSearch.bookingNo = $("#bookingSearch").textbox('getText').toUpperCase();
+      loadTable();
     }
   });
 
@@ -472,7 +472,23 @@ function finishForm(result) {
 
 function changeVessel() {
   if (getDataSelectedFromTable()) {
-    $.modal.openCustomForm("Đổi Tàu/Chuyến", prefix + "/shipment-detail-ids/" + shipmentDetailIds + "/form", 800, 380);
+    $.ajax({
+      url: prefix + "/shipment-detail/validation",
+      method: "POST",
+      data: {
+        shipmentDetailIds: shipmentDetailIds
+      },
+      success: function (res) {
+        if (res.code != 0) {
+          $.modal.alertWarning(res.msg);
+        } else {
+          $.modal.openCustomForm("Đổi Tàu/Chuyến", prefix + "/shipment-detail-ids/" + shipmentDetailIds + "/form", 800, 380);
+        }
+      },
+      error: function (err) {
+        $.modal.alertWarning("Lỗi hệ thống, quý khách vui lòng thử lại sau.");
+      }
+    });
   }
 }
 

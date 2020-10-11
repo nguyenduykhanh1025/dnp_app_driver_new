@@ -3,7 +3,9 @@ package vn.com.irtech.eport.logistic.controller;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -33,13 +36,14 @@ import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Controller
 @RequestMapping("/logistic/vessel-changing")
 public class LogisticChangeVesselController extends LogisticBaseController {
 
 	private final String PREFIX = "logistic/vesselChanging";
-	
+
 	@Autowired
 	private IShipmentService shipmentService;
 
@@ -51,13 +55,13 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 
 	@Autowired
 	private ICatosApiService catosApiService;
-	
+
 	@Autowired
 	private MqttService mqttService;
-	
+
 	@Autowired
 	private IProcessOrderService processOrderService;
-	
+
 	/**
 	 * Get main view for change vessel
 	 * 
@@ -77,7 +81,8 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 	 */
 	@GetMapping("/shipment-detail-ids/{shipmentDetailIds}/form")
 	public String getVesselChangingForm(@PathVariable String shipmentDetailIds, ModelMap mmap) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
+				getUser().getGroupId());
 		String vslNm = "", voyNo = "", bookingNo = "", vslName = "";
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			vslNm = shipmentDetails.get(0).getVslNm();
@@ -91,20 +96,20 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 			}
 		}
 		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlanWithoutOpe();
-		if(CollectionUtils.isNotEmpty(berthplanList)) {
+		if (CollectionUtils.isNotEmpty(berthplanList)) {
 			List<String> vesselAndVoyages = new ArrayList<>();
-			for(ShipmentDetail i : berthplanList) {
+			for (ShipmentDetail i : berthplanList) {
 				vesselAndVoyages.add(i.getVslAndVoy());
 			}
 			mmap.put("berthplanList", berthplanList);
 			vesselAndVoyages.add(0, "Chọn tàu/chuyến mới");
 			mmap.put("vesselAndVoyages", vesselAndVoyages);
-			
+
 		}
 		mmap.put("vessel", vslNm + " - " + vslName + " - " + voyNo);
 		mmap.put("bookingNo", bookingNo);
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
-		return PREFIX + "/changingForm";	
+		return PREFIX + "/changingForm";
 	}
 
 	/**
@@ -116,7 +121,9 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 	 * @return
 	 */
 	@GetMapping("/otp/shipment-detail-ids/{shipmentDetailIds}/vslNm/{vslNm}/{voyNo}/{vslName}/{voyCarrier}")
-	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("vslNm") String vslNm, @PathVariable("voyNo") String voyNo, @PathVariable("vslName") String vslName, @PathVariable("voyCarrier") String voyCarrier, ModelMap mmap) {
+	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds,
+			@PathVariable("vslNm") String vslNm, @PathVariable("voyNo") String voyNo,
+			@PathVariable("vslName") String vslName, @PathVariable("voyCarrier") String voyCarrier, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("vslNm", vslNm);
 		mmap.put("voyNo", voyNo);
@@ -125,7 +132,7 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 		mmap.put("numberPhone", getUser().getMobile());
 		return PREFIX + "/otp";
 	}
-	
+
 	/**
 	 * Get list shipment that had been made order but not finish yet
 	 * 
@@ -149,7 +156,8 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 	}
 
 	/**
-	 * Get list shipment detail with process order Y but finish status N by shipment id
+	 * Get list shipment detail with process order Y but finish status N by shipment
+	 * id
 	 * 
 	 * @param shipmentId
 	 * @return
@@ -162,7 +170,8 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
 		shipmentDetail.setProcessStatus("Y");
 		shipmentDetail.setFinishStatus("N");
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailListForSendFReceiveE(shipmentDetail);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService
+				.getShipmentDetailListForSendFReceiveE(shipmentDetail);
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;
@@ -177,7 +186,8 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 	 */
 	@PostMapping("/otp/{otp}/verification")
 	@ResponseBody
-	public AjaxResult verifyOtp(@PathVariable String otp, String shipmentDetailIds, String vslNm, String voyNo, String vslName, String voyCarrier) {
+	public AjaxResult verifyOtp(@PathVariable String otp, String shipmentDetailIds, String vslNm, String voyNo,
+			String vslName, String voyCarrier) {
 		try {
 			Long.parseLong(otp);
 		} catch (Exception e) {
@@ -198,13 +208,15 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 		}
 
 		// Check shipment detail ids can be change vessel
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
+				getUser().getGroupId());
 		if (CollectionUtils.isEmpty(shipmentDetails)) {
 			return error("Không tìm thấy danh sách container cần đổi tàu, quý khách vui lòng thử lại sau.");
 		}
 
 		// Make order send to robot
-		ServiceSendFullRobotReq serviceRobotReq = shipmentDetailService.makeChangeVesselOrder(shipmentDetails, vslNm, voyNo, vslName, voyCarrier, getUser().getGroupId());
+		ServiceSendFullRobotReq serviceRobotReq = shipmentDetailService.makeChangeVesselOrder(shipmentDetails, vslNm,
+				voyNo, vslName, voyCarrier, getUser().getGroupId());
 		if (serviceRobotReq == null) {
 			return error("Có lỗi xảy ra trong quá trình tạo lệnh để thực thi!");
 		}
@@ -218,17 +230,19 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 		} catch (Exception e) {
 			return error("Có lỗi xảy ra trong quá trình xác thực!");
 		}
-		
-		ajaxResult =  AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
+
+		ajaxResult = AjaxResult
+				.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
 		ajaxResult.put("processId", serviceRobotReq.processOrder.getId());
 		return ajaxResult;
 	}
-	
+
 	@GetMapping("/process-order/{processOrderId}/containers/failed")
 	@ResponseBody
 	public AjaxResult getListContainerFailed(@PathVariable Long processOrderId) {
 		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderId.toString());
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService
+				.selectShipmentDetailByProcessIds(processOrderId.toString());
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			String containers = "";
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
@@ -236,9 +250,66 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 					containers += shipmentDetail.getContainerNo() + ",";
 				}
 			}
-			containers.substring(0, containers.length()-1);
-			return success("Yêu cầu đổi tàu thực hiện đổi tàu của quý khách bị lỗi ở các container " + containers + ". Quý khách vui lòng thử lại hoặc liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
+			containers.substring(0, containers.length() - 1);
+			return success("Yêu cầu đổi tàu thực hiện đổi tàu của quý khách bị lỗi ở các container " + containers
+					+ ". Quý khách vui lòng thử lại hoặc liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
 		}
 		return error("Không tìm thấy dữ liệu.");
+	}
+
+	@PostMapping("/shipment-detail/validation")
+	@ResponseBody
+	public AjaxResult validateShipmentDetail(String shipmentDetailIds) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
+				getUser().getGroupId());
+		AjaxResult validateResult = validateShipmentDetailList(shipmentDetails);
+		return validateResult;
+	}
+
+	public AjaxResult validateShipmentDetailList(List<ShipmentDetail> shipmentDetails) {
+		if (CollectionUtils.isEmpty(shipmentDetails)) {
+			return error("Không tìm thấy thông tin chi tiết lô đã chọn.");
+		}
+		String containerNos = "";
+		for (int i = 0; i < shipmentDetails.size(); i++) {
+			containerNos += shipmentDetails.get(i).getContainerNo() + ",";
+		}
+		containerNos = containerNos.substring(0, containerNos.length() - 1);
+		Map<String, ContainerInfoDto> ctnrMap = getContainerInfoFromCatos(containerNos);
+		String containerHasDelivered = "";
+		ContainerInfoDto ctnrInfo = null;
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			ctnrInfo = ctnrMap.get(shipmentDetail.getContainerNo());
+			// Check container stacking, delivered or not found => can't change vessel
+			if (ctnrInfo == null || !EportConstants.CATOS_CONT_STACKING.equals(ctnrInfo.getCntrState())
+					|| !EportConstants.CATOS_CONT_DELIVERED.equals(ctnrInfo.getCntrState())) {
+				containerHasDelivered += shipmentDetail.getContainerNo() + ",";
+			}
+		}
+
+		if (StringUtils.isNotEmpty(containerHasDelivered)) {
+			return error("Các container " + containerHasDelivered.substring(0, containerHasDelivered.length() - 1)
+					+ " đã được hạ <br>vào bãi cảng, không thể đổi được tàu chuyến.");
+		}
+		return success();
+	}
+
+	/**
+	 * Get container info from catos
+	 * 
+	 * @param containerNos
+	 * @return Map string object with key is container no and value is containerInfo
+	 */
+	private Map<String, ContainerInfoDto> getContainerInfoFromCatos(String containerNos) {
+		List<ContainerInfoDto> containerInfoDtos = catosApiService.getContainerInfoDtoByContNos(containerNos);
+		Map<String, ContainerInfoDto> containerInfoMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(containerInfoDtos)) {
+			for (ContainerInfoDto containerInfoDto : containerInfoDtos) {
+				if ("F".equals(containerInfoDto.getFe())) {
+					containerInfoMap.put(containerInfoDto.getCntrNo(), containerInfoDto);
+				}
+			}
+		}
+		return containerInfoMap;
 	}
 }
