@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import vn.com.irtech.eport.api.consts.MessageConsts;
+import vn.com.irtech.eport.api.form.RegisterForm;
 import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.util.SecurityUtils;
 import vn.com.irtech.eport.api.util.ShiroUtils;
@@ -25,7 +26,6 @@ import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.form.DriverInfo;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
-import vn.com.irtech.eport.system.service.ISysConfigService;
 import vn.com.irtech.eport.system.service.ISysUserTokenService;
 
 @RestController
@@ -42,9 +42,6 @@ public class DriverAccountController extends BaseController {
 	@Autowired
 	private ILogisticTruckService logisticTruckService;
 
-	@Autowired
-	private ISysConfigService sysConfigService;
-	
 	@Autowired
 	private ISysUserTokenService userTokenService;
 
@@ -68,40 +65,44 @@ public class DriverAccountController extends BaseController {
 	@Log(title = "Đăng ký tài xế", businessType = BusinessType.INSERT, operatorType = OperatorType.MOBILE)
 	@PostMapping("/register")
 	@ResponseBody
-	public AjaxResult register(@RequestBody DriverAccount driverAccountTemp) {
+	public AjaxResult register(@RequestBody RegisterForm driverAccountTemp) {
 		// if (driverAccountTemp.getPassword().length() < 6) {
-		// 	throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0011));
-        // }
-        // if(!Pattern.matches(PHONE_PATTERN, driverAccountTemp.getMobileNumber())){
-		// 	throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0013));
+		// throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0011));
 		// }
-		if(driverAccountService.checkPhoneUnique(driverAccountTemp.getMobileNumber()) > 0) {
+		// if(!Pattern.matches(PHONE_PATTERN, driverAccountTemp.getMobileNumber())){
+		// throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0013));
+		// }
+		if (driverAccountService.checkPhoneUnique(driverAccountTemp.getMobileNumber()) > 0) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0012));
-        }
+		}
 		DriverAccount driverAccount = new DriverAccount();
 		driverAccount.setFullName(driverAccountTemp.getFullName());
 		driverAccount.setMobileNumber(driverAccountTemp.getMobileNumber());
 		driverAccount.setSalt(ShiroUtils.randomSalt());
-		driverAccount.setPassword(ShiroUtils.encryptPassword(driverAccount.getMobileNumber(), driverAccount.getPassword(), driverAccount.getSalt()));
+		driverAccount.setPassword(ShiroUtils.encryptPassword(driverAccount.getMobileNumber(),
+				driverAccountTemp.getPassword(), driverAccount.getSalt()));
 		driverAccountService.insertDriverAccount(driverAccount);
 		return success();
-    }
-    
+	}
+
 	@Log(title = "Reset mật khẩu tài xế", businessType = BusinessType.INSERT, operatorType = OperatorType.MOBILE)
 	@PostMapping("/resetpwd")
 	@ResponseBody
 	public AjaxResult resetPassword(String phoneNumber) {
 		// DriverAccount driverAccountParam = new DriverAccount();
 		// driverAccountParam.setMobileNumber(phoneNumber);
-		// List<DriverAccount> driverAccounts = driverAccountService.selectDriverAccountList(driverAccountParam);
+		// List<DriverAccount> driverAccounts =
+		// driverAccountService.selectDriverAccountList(driverAccountParam);
 		// if (driverAccounts.isEmpty()) {
-		// 	throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0014));
+		// throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0014));
 		// } else {
-		// 	DriverAccount driverAccount = driverAccounts.get(0);
-		// 	driverAccount.setSalt(ShiroUtils.randomSalt());
-		// 	driverAccount.setPassword(ShiroUtils.encryptPassword(phoneNumber, sysConfigService.selectConfigByKey("driver.account.reset.password"), driverAccount.getSalt()));
-		// 	driverAccountService.updateDriverAccount(driverAccount);
+		// DriverAccount driverAccount = driverAccounts.get(0);
+		// driverAccount.setSalt(ShiroUtils.randomSalt());
+		// driverAccount.setPassword(ShiroUtils.encryptPassword(phoneNumber,
+		// sysConfigService.selectConfigByKey("driver.account.reset.password"),
+		// driverAccount.getSalt()));
+		// driverAccountService.updateDriverAccount(driverAccount);
 		// }
 		return success();
-    }
+	}
 }
