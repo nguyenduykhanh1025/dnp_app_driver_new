@@ -539,10 +539,18 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
+        if (!checkContainerNo(value)) {
+            cellProperties.comment = { value: 'Số container không đúng tiêu chuẩn ISO, có thể bạn đang nhập sai, vui lòng kiểm tra lại' };
+            value = '<span style="color: red;">' + value + '</span>';
+        } else {
+            cellProperties.comment = null;
+        }
     }
     if (!value) {
         value = '';
+        cellProperties.comment = null;
     }
+
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
@@ -563,9 +571,6 @@ function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) 
 function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'detFreeTime' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
-        if (value.substring(2, 3) != "/") {
-            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-        }
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
@@ -580,6 +585,9 @@ function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties
 function emptyExpiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'emptyExpiredDem' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+        }
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
@@ -719,6 +727,7 @@ function configHandson() {
             trimDropdown: false,
             manualColumnResize: true,
             manualRowResize: true,
+            comments: true,
             renderAllRows: true,
             rowHeaders: true,
             className: "htMiddle",
@@ -866,6 +875,7 @@ function configHandson() {
             manualRowResize: true,
             renderAllRows: true,
             rowHeaders: true,
+            comments: true,
             className: "htMiddle",
             colHeaders: function (col) {
                 switch (col) {
@@ -979,28 +989,32 @@ function configHandson() {
                 },
             ],
             beforeKeyDown: function (e) {
-                let selected = hot.getSelected()[0];
+                let selected;
                 switch (e.keyCode) {
                     // Arrow Left
                     case 37:
+                        selected = hot.getSelected()[0];
                         if (selected[3] == 0) {
                             e.stopImmediatePropagation();
                         }
                         break;
                     // Arrow Up
                     case 38:
+                        selected = hot.getSelected()[0];
                         if (selected[2] == 0) {
                             e.stopImmediatePropagation();
                         }
                         break;
                     // Arrow Right
                     case 39:
+                        selected = hot.getSelected()[0];
                         if (selected[3] == 13) {
                             e.stopImmediatePropagation();
                         }
                         break
                     // Arrow Down
                     case 40:
+                        selected = hot.getSelected()[0];
                         if (selected[2] == rowAmount - 1) {
                             e.stopImmediatePropagation();
                         }
@@ -1047,34 +1061,39 @@ function onChange(changes, source) {
                 sztpListDisable[change[0]] = 0;
                 cleanCell(change[0], 3, sizeList);
             } else {
-                $.ajax({
-                    url: prefix + "/containerNo/" + change[3] + "/sztp",
-                    method: "GET",
-                    success: function (data) {
-                        if (data.code == 0) {
-                            if (data.sztp) {
-                                sizeList.forEach(element => {
-                                    if (data.sztp == element.substring(0, 4)) {
-                                        data.sztp = element;
-                                        return false;
-                                    }
-                                });
-                                sztpListDisable[change[0]] = 1;
-                                hot.setDataAtCell(change[0], 3, data.sztp);
+                if (checkContainerNo(change[3])) {
+                    $.ajax({
+                        url: prefix + "/containerNo/" + change[3] + "/sztp",
+                        method: "GET",
+                        success: function (data) {
+                            if (data.code == 0) {
+                                if (data.sztp) {
+                                    sizeList.forEach(element => {
+                                        if (data.sztp == element.substring(0, 4)) {
+                                            data.sztp = element;
+                                            return false;
+                                        }
+                                    });
+                                    sztpListDisable[change[0]] = 1;
+                                    hot.setDataAtCell(change[0], 3, data.sztp);
+                                } else {
+                                    sztpListDisable[change[0]] = 0;
+                                    cleanCell(change[0], 3, sizeList);
+                                }
                             } else {
                                 sztpListDisable[change[0]] = 0;
                                 cleanCell(change[0], 3, sizeList);
                             }
-                        } else {
+                        },
+                        error: function (err) {
                             sztpListDisable[change[0]] = 0;
                             cleanCell(change[0], 3, sizeList);
                         }
-                    },
-                    error: function (err) {
-                        sztpListDisable[change[0]] = 0;
-                        cleanCell(change[0], 3, sizeList);
-                    }
-                });
+                    });
+                } else {
+                    sztpListDisable[change[0]] = 0;
+                    cleanCell(change[0], 3, sizeList);
+                }
             }
         } else if (change[1] == "vslNm") {
             let vesselAndVoy = hot.getDataAtCell(change[0], 5);
@@ -1106,6 +1125,32 @@ function cleanCell(roww, coll, src) {
             }
         }
     });
+}
+
+// Check container valid
+function checkContainerNo(containerNo) {
+    if (!containerNo || containerNo == "" || containerNo.length != 11) { return false; }
+    containerNo = containerNo.toUpperCase();
+    let re = /^[A-Z]{4}\d{7}/;
+    if (re.test(containerNo)) {
+        let sum = 0;
+        for (i = 0; i < 10; i++) {
+            let n = containerNo.substr(i, 1);
+            if (i < 4) {
+                n = "0123456789A?BCDEFGHIJK?LMNOPQRSTU?VWXYZ".indexOf(containerNo.substr(i, 1));
+            }
+            n *= Math.pow(2, i);
+            sum += n;
+        }
+        if (containerNo.substr(0, 4) == "HLCU") {
+            sum -= 2;
+        }
+        sum %= 11;
+        sum %= 10;
+        return sum == containerNo.substr(10);
+    } else {
+        return false;
+    }
 }
 
 // RENDER HANSONTABLE FIRST TIME
