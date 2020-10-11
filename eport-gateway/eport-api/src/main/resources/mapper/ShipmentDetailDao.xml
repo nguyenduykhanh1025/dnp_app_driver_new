@@ -607,7 +607,8 @@
 		       t.in_voy as voyCarrier,
 			   t.longterm_eta as eta,
 			   t.etd as etd,
-		       t.vsl_cd || ' - ' || (select vsl_nm FROM DNP_PROD.tb_vsl where vsl_cd = t.vsl_cd) ||' - '|| t.in_voy as vslAndVoy
+		       t.vsl_cd || ' - ' || (select vsl_nm FROM DNP_PROD.tb_vsl where vsl_cd = t.vsl_cd) ||' - '|| t.in_voy as vslAndVoy,
+			   t.ptnr_code as opeCode
 		 FROM DNP_PROD.tb_berthplan t
 		 where t.vsl_cd NOT IN ('DBO','EMPTY',
 			                            'STRG',
@@ -784,4 +785,25 @@
         CONNECT BY PRIOR R_NUM = R_NUM - 1 AND PRIOR CNTR_UID = CNTR_UID
         GROUP BY CNTR_UID, CNTR_NO, HOLD_CHK, USER_VOY
     </select>
+
+	<select id="getBerthPlanInfo" parameterType="vn.com.irtech.api.dto.BerthPlanInfo" resultType="vn.com.irtech.api.dto.BerthPlanInfo">
+		SELECT t.vsl_cd,
+		       t.call_seq,
+		       t.call_year,
+		       t.in_voy,
+			   t.longterm_eta,
+			   t.etd,
+			   t.user_voy,
+			   t.ptnr_code
+		FROM DNP_PROD.tb_berthplan t
+		<where>
+			t.vsl_cd NOT IN ('DBO', 'EMPTY', 'STRG', 'TBA', 'DUMY')
+			AND t.longterm_eta IS NOT NULL
+			AND t.atc IS NULL
+			<if test="vslCd != null  and vslCd != ''"> AND vsl_cd = #{vslCd}</if>
+			<if test="callSeq != null  and callSeq != ''"> AND call_seq = #{callSeq}</if>
+		</where>
+		ORDER BY t.vsl_cd ASC
+		FETCH NEXT 1 ROWS ONLY
+	</select>
 </mapper>

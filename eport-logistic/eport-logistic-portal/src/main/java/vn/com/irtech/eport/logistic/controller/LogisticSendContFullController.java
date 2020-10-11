@@ -51,6 +51,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
+import vn.com.irtech.eport.logistic.dto.BerthPlanInfo;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
 import vn.com.irtech.eport.logistic.listener.MqttService;
@@ -704,6 +705,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 		// validate
 		ShipmentDetail shipmentDetailReference = shipmentDetails.get(0);
+		// List sztp can register on eport get from dictionary
+		// All sztp that not in this list is invalid
+		List<String> sztps = dictService.getListTag("sys_size_container_eport");
 		for (int i = 0; i < shipmentDetails.size(); i++) {
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getContainerNo())) {
 				return error("Hàng " + (i + 1) + ": Quý khách chưa nhập số container!");
@@ -745,7 +749,21 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			if (!shipmentDetailReference.getDischargePort().equals(shipmentDetails.get(i).getDischargePort())) {
 				return error("Cảng dỡ hàng không được khác nhau!");
 			}
+			// Validate sztp
+			if (!sztps.contains(shipmentDetails.get(i).getSztp())) {
+				return error(
+						"Kích thước " + shipmentDetails.get(i).getSztp() + " không được phép làm lệnh trên eport.");
+			}
 			containerNos += shipmentDetails.get(i).getContainerNo() + ",";
+		}
+		// Valide vslnm and voy no exist in catos
+		// Get berth plan info
+		BerthPlanInfo berthPlanInfoParam = new BerthPlanInfo();
+		berthPlanInfoParam.setVslCd(shipmentDetailReference.getVslNm());
+		berthPlanInfoParam.setCallSeq(shipmentDetailReference.getVoyNo());
+		BerthPlanInfo berthPlanInfo = catosApiService.getBerthPlanInfo(berthPlanInfoParam);
+		if (berthPlanInfo == null) {
+			return error("Tàu chuyến không tồn tại trong hệ thống, quý khách vui lòng chọn tàu chuyến từ danh sách.");
 		}
 
 		// validate consignee exist in catos
