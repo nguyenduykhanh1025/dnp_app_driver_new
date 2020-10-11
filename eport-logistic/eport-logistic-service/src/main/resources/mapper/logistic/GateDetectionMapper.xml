@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.GateDetectionMapper">
+    
+    <resultMap type="GateDetection" id="GateDetectionResult">
+        <result property="id"    column="id"    />
+        <result property="gateNo"    column="gate_no"    />
+        <result property="truckNo"    column="truck_no"    />
+        <result property="chassisNo"    column="chassis_no"    />
+        <result property="containerNo1"    column="container_no1"    />
+        <result property="containerNo2"    column="container_no2"    />
+        <result property="chkTruckNo"    column="chk_truck_no"    />
+        <result property="chkChassisNo"    column="chk_chassis_no"    />
+        <result property="chkContainerNo1"    column="chk_container_no1"    />
+        <result property="chkContainerNo2"    column="chk_container_no2"    />
+        <result property="totalWgt"    column="total_wgt"    />
+        <result property="deduct"    column="deduct"    />
+        <result property="wgt"    column="wgt"    />
+        <result property="processFlg"    column="process_flg"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectGateDetectionVo">
+        select id, gate_no, truck_no, chassis_no, container_no1, container_no2, chk_truck_no, chk_chassis_no, chk_container_no1, chk_container_no2, total_wgt, deduct, wgt, process_flg, create_by, create_time, update_by, update_time from gate_detection
+    </sql>
+
+    <select id="selectGateDetectionList" parameterType="GateDetection" resultMap="GateDetectionResult">
+        <include refid="selectGateDetectionVo"/>
+        <where>  
+            <if test="gateNo != null  and gateNo != ''"> and gate_no = #{gateNo}</if>
+            <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
+            <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+            <if test="containerNo1 != null  and containerNo1 != ''"> and container_no1 = #{containerNo1}</if>
+            <if test="containerNo2 != null  and containerNo2 != ''"> and container_no2 = #{containerNo2}</if>
+            <if test="chkTruckNo != null  and chkTruckNo != ''"> and chk_truck_no = #{chkTruckNo}</if>
+            <if test="chkChassisNo != null  and chkChassisNo != ''"> and chk_chassis_no = #{chkChassisNo}</if>
+            <if test="chkContainerNo1 != null  and chkContainerNo1 != ''"> and chk_container_no1 = #{chkContainerNo1}</if>
+            <if test="chkContainerNo2 != null  and chkContainerNo2 != ''"> and chk_container_no2 = #{chkContainerNo2}</if>
+            <if test="totalWgt != null "> and total_wgt = #{totalWgt}</if>
+            <if test="deduct != null "> and deduct = #{deduct}</if>
+            <if test="wgt != null "> and wgt = #{wgt}</if>
+            <if test="processFlg != null  and processFlg != ''"> and process_flg = #{processFlg}</if>
+        </where>
+    </select>
+    
+    <select id="selectGateDetectionById" parameterType="Long" resultMap="GateDetectionResult">
+        <include refid="selectGateDetectionVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertGateDetection" parameterType="GateDetection">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT seq_gate_detection.NEXTVAL as id FROM DUAL
+        </selectKey>
+        insert into gate_detection
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="gateNo != null">gate_no,</if>
+            <if test="truckNo != null">truck_no,</if>
+            <if test="chassisNo != null">chassis_no,</if>
+            <if test="containerNo1 != null">container_no1,</if>
+            <if test="containerNo2 != null">container_no2,</if>
+            <if test="chkTruckNo != null">chk_truck_no,</if>
+            <if test="chkChassisNo != null">chk_chassis_no,</if>
+            <if test="chkContainerNo1 != null">chk_container_no1,</if>
+            <if test="chkContainerNo2 != null">chk_container_no2,</if>
+            <if test="totalWgt != null">total_wgt,</if>
+            <if test="deduct != null">deduct,</if>
+            <if test="wgt != null">wgt,</if>
+            <if test="processFlg != null">process_flg,</if>
+            <if test="createBy != null">create_by,</if>
+            create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="gateNo != null">#{gateNo},</if>
+            <if test="truckNo != null">#{truckNo},</if>
+            <if test="chassisNo != null">#{chassisNo},</if>
+            <if test="containerNo1 != null">#{containerNo1},</if>
+            <if test="containerNo2 != null">#{containerNo2},</if>
+            <if test="chkTruckNo != null">#{chkTruckNo},</if>
+            <if test="chkChassisNo != null">#{chkChassisNo},</if>
+            <if test="chkContainerNo1 != null">#{chkContainerNo1},</if>
+            <if test="chkContainerNo2 != null">#{chkContainerNo2},</if>
+            <if test="totalWgt != null">#{totalWgt},</if>
+            <if test="deduct != null">#{deduct},</if>
+            <if test="wgt != null">#{wgt},</if>
+            <if test="processFlg != null">#{processFlg},</if>
+            <if test="createBy != null">#{createBy},</if>
+            sysdate
+         </trim>
+    </insert>
+
+    <update id="updateGateDetection" parameterType="GateDetection">
+        update gate_detection
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="gateNo != null">gate_no = #{gateNo},</if>
+            <if test="truckNo != null">truck_no = #{truckNo},</if>
+            <if test="chassisNo != null">chassis_no = #{chassisNo},</if>
+            <if test="containerNo1 != null">container_no1 = #{containerNo1},</if>
+            <if test="containerNo2 != null">container_no2 = #{containerNo2},</if>
+            <if test="chkTruckNo != null">chk_truck_no = #{chkTruckNo},</if>
+            <if test="chkChassisNo != null">chk_chassis_no = #{chkChassisNo},</if>
+            <if test="chkContainerNo1 != null">chk_container_no1 = #{chkContainerNo1},</if>
+            <if test="chkContainerNo2 != null">chk_container_no2 = #{chkContainerNo2},</if>
+            <if test="totalWgt != null">total_wgt = #{totalWgt},</if>
+            <if test="deduct != null">deduct = #{deduct},</if>
+            <if test="wgt != null">wgt = #{wgt},</if>
+            <if test="processFlg != null">process_flg = #{processFlg},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = sysdate
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGateDetectionById" parameterType="Long">
+        delete from gate_detection where id = #{id}
+    </delete>
+
+    <delete id="deleteGateDetectionByIds" parameterType="String">
+        delete from gate_detection where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
