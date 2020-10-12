@@ -914,28 +914,32 @@ function configHandson() {
         //     if(coords.col == 0) event.stopImmediatePropagation();
         // },
         beforeKeyDown: function (e) {
-            let selected = hot.getSelected()[0];
+            let selected;
             switch (e.keyCode) {
                 // Arrow Left
                 case 37:
+                    selected = hot.getSelected()[0];
                     if (selected[3] == 0) {
                         e.stopImmediatePropagation();
                     }
                     break;
                 // Arrow Up
                 case 38:
+                    selected = hot.getSelected()[0];
                     if (selected[2] == 0) {
                         e.stopImmediatePropagation();
                     }
                     break;
                 // Arrow Right
                 case 39:
+                    selected = hot.getSelected()[0];
                     if (selected[3] == 16) {
                         e.stopImmediatePropagation();
                     }
                     break
                 // Arrow Down
                 case 40:
+                    selected = hot.getSelected()[0];
                     if (selected[2] == rowAmount - 1) {
                         e.stopImmediatePropagation();
                     }

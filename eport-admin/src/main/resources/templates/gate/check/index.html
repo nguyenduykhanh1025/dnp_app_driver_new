@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Gate Checking')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+</head>
+
+<body class="grey-background">
+    <div class="main-body">
+        <div class="main-body__search-wrapper mb-2">
+            <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+            <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+            <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+                <div class="flex__left w-20">
+                    <h3 class="mt-10">Kiểm Tra Xe Gate-In</h3>
+                </div>
+                <div class="flex__right w-80">
+                    <div class="justify-content-around align-items-center" id="ff">
+                        <div class="d-inline">
+                            <input class="easyui-textbox" id="jobOrderNo" data-options="prompt:'Job Order No'" />
+                        </div>
+                        <div class="d-inline">
+                            <button class="btn btn-success" onclick="loadTable()">Tìm kiếm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-body__table-wrapper">
+            <div class="easyui-layout" id="main-layout" style="width:100%">
+                <div class="left-side" data-options="region:'west',split:true, collapsible:false"
+                    title="Danh sách container" style="width:40%;">
+                    <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
+                    <table id="dg-left" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th data-options="field:'containerNo', resizable:true, halign:'center', align:'left', fixed:true"
+                                    width="100">Số Container</th>
+                                <th data-options="field:'location', resizable:true, halign:'center', align:'center', fixed:true"
+                                    width="100">Vị trí</th>
+                                <th data-options="field:'sztp', resizable:true, halign:'center', align:'center', fixed:true"
+                                    width="50">Sztp</th>
+                                <th data-options="field:'vslNm', resizable:true, halign:'center', align:'center', fixed:true, formatter: formatVslVoy"
+                                    width="100">Tàu/Chuyến</th>
+                                <th data-options="field:'blNo', resizable:true, halign:'center', align:'center', fixed:true, formatter: formatBlBooking"
+                                    width="120">BL/Booking No</th>
+                                <th data-options="field:'expiredDem', resizable:true, halign:'center', align:'center', fixed:true, formatter: formatDate"
+                                    width="80">Hạn Lệnh</th>
+                                <th data-options="field:'payerName', resizable:true, halign:'center', align:'left', fixed:true"
+                                    width="120">Trucker</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="right-side" data-options="region:'center'" title="Danh sách điều xe" style="width:100%;">
+                    <div class="easyui-layout" id="right-layout" data-options="fit:true" style="position: relative;">
+                        <table id="dg-right" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th data-options="field:'truckNo', resizable:true, halign:'center', align:'left', fixed:true"
+                                        width="100">Biển Số Xe</th>
+                                    <th data-options="field:'gatePass', resizable:true, halign:'center', align:'left', fixed:true"
+                                        width="100">Gate Pass</th>
+                                    <th data-options="field:'driverName', resizable:true, halign:'center', align:'left', fixed:true"
+                                        width="100">Tên Tài Xế</th>
+                                    <th data-options="field:'phoneNumber', resizable:true, halign:'center', align:'center', fixed:true"
+                                        width="100">Số Điện Thoại</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script type="text/javascript" th:inline="javascript">
+        $(".main-body").height($(document).height() - 10);
+        $(".easyui-layout").height($('.main-body').height() - 50);
+    </script>
+    <script th:src="@{/eport/js/modules/gate/check/gateCheck.js}"></script>
+</body>
+
+</html>
