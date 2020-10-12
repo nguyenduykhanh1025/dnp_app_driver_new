@@ -4,7 +4,7 @@ const PREFIX = ctx + "edo";
 $(function () {
   if(hasConsigneeUpdatePermission == true)
   {
-    $( "#consignee" ).hide();
+    $( "#consignee" ).attr("disabled", false);
   }
   $("#containerNumber").val(containerNumber);
   $("#expiredDem").val(formatDate(expiredDem));
