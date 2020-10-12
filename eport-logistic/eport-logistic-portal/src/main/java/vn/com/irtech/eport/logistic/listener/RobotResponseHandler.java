@@ -282,7 +282,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 			// SET RESULT FOR HISTORY SUCCESS
 			historyResult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
-			if (EportConstants.SERVICE_PICKUP_FULL == processOrder.getServiceType()) {
+			if (EportConstants.SERVICE_PICKUP_FULL == processOrder.getServiceType()
+					|| (EportConstants.SERVICE_DROP_EMPTY == processOrder.getServiceType()
+							&& "N".equals(shipmentDetails.get(0).getDoStatus()))) {
 				this.sendProcessOrderHoldTerminal(processOrder, shipmentDetails);
 			}
 		} else {
@@ -963,7 +965,11 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		containerHoldInfo.setContainers(Convert.toStrArray(containers));
 		containerHoldInfo.setHoldChk("Y");
 		containerHoldInfo.setHoldType(EportConstants.HOLD_TYPE_TERMINAL);
-		containerHoldInfo.setUserVoy(pickupFullOrder.getVessel() + pickupFullOrder.getVoyage());
+		if (EportConstants.SERVICE_DROP_EMPTY == pickupFullOrder.getServiceType()) {
+			containerHoldInfo.setUserVoy("EMTY");
+		} else if(EportConstants.SERVICE_PICKUP_FULL == pickupFullOrder.getServiceType()) {
+			containerHoldInfo.setUserVoy(pickupFullOrder.getVessel() + pickupFullOrder.getVoyage());
+		}
 		List<String> containerList = catosApiService.getContainerListHoldRelease(containerHoldInfo);
 
 		//

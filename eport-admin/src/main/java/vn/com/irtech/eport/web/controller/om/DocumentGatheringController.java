@@ -110,12 +110,13 @@ public class DocumentGatheringController extends AdminBaseController  {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
-		shipment.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
 			params = new HashMap<>();
 		}
 		params.put("processStatus", "Y");
+		params.put("pickUpFullService", true);
+		params.put("dropEmptyService", true);
 		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
@@ -150,13 +151,15 @@ public class DocumentGatheringController extends AdminBaseController  {
 			shipmentDetail.setUpdateBy(getUser().getLoginName());
 			shipmentDetailService.updateShipmentDetail(shipmentDetail);
 		}
+		ShipmentDetail shipmentDetail = shipmentDetails.get(0);
+		Shipment shipment = shipmentService.selectShipmentById(shipmentDetail.getShipmentId());
 		
 		// Send release container request to robot
 		containers = containers.substring(0, containers.length()-1);
-		mqttService.sendReleaseTerminalHoldForRobot(containers, shipmentDetails.get(0));
+		mqttService.sendReleaseTerminalHoldForRobot(containers, shipmentDetail, shipment.getServiceType());
 		
 		if (StringUtils.isNotEmpty(content)) {
-			ShipmentDetail shipmentDetail = shipmentDetails.get(0);
+
 			ShipmentComment shipmentComment = new ShipmentComment();
 			shipmentComment.setLogisticGroupId(shipmentDetail.getLogisticGroupId());
 			shipmentComment.setShipmentId(shipmentDetail.getShipmentId());
@@ -166,7 +169,7 @@ public class DocumentGatheringController extends AdminBaseController  {
 			shipmentComment.setCommentTime(new Date());
 			shipmentComment.setContent(content);
 			shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_OM_DOCUMENT);
-			shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
+			shipmentComment.setServiceType(shipment.getServiceType());
 			shipmentCommentService.insertShipmentComment(shipmentComment);
 		}
  		return success("Thu chứng từ gốc thành công");
@@ -181,7 +184,6 @@ public class DocumentGatheringController extends AdminBaseController  {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);

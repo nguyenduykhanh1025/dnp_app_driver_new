@@ -25,7 +25,6 @@ import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
-import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.Shipment;
@@ -163,8 +162,8 @@ public class BookingGatheringController extends AdminBaseController  {
 		}
 		
 		// Send release container request to robot
-		containers = containers.substring(0, containers.length()-1);
-		mqttService.sendReleaseTerminalHoldForRobot(containers, shipmentDetails.get(0));
+//		containers = containers.substring(0, containers.length()-1);
+//		mqttService.sendReleaseTerminalHoldForRobot(containers, shipmentDetails.get(0));
  		return success("Xác nhận thành công.");
 	}
 	

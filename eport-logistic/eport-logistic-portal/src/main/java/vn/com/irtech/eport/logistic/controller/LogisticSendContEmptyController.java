@@ -141,7 +141,6 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			@PathVariable("taxCode") String taxCode, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getUser().getMobile());
-		mmap.put("shipmentId", "-");
 		mmap.put("creditFlag", creditFlag);
 		mmap.put("taxCode", taxCode);
 		mmap.put("shipmentId", shipmentId);
@@ -302,6 +301,10 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 				return error("Không tìm thấy lô, vui lòng kiểm tra lại thông tin.");
 			}
 
+			if (shipment.getOpeCode() == null) {
+				return error("Không tìm thấy OPR chô lô này.");
+			}
+
 			boolean checkDoStatus = false;
 			// Kiem tra B/L No co ton tai o cont Boc Full khong
 			if (StringUtils.isNotEmpty(shipment.getBlNo())) {
@@ -311,12 +314,18 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 				search.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
 				List<Shipment> receiveFullList = shipmentService.selectShipmentList(search);
 				if (CollectionUtils.isNotEmpty(receiveFullList)) {
+
 					// lay 1 shipment (thong thuong chi co 1)
 					Shipment receiveFShipment = receiveFullList.get(0);
+
 					// Đổi opeCode operateCode -> groupCode
-					if (shipment.getOpeCode() == null || !shipment.getOpeCode().equals(receiveFShipment.getOpeCode())) {
-						return error(
-								"Mã OPR cho lô nhận container hàng và lô giao container rỗng đang khác nhau. Vui lòng kiểm tra lại.");
+					if (!shipment.getOpeCode().equals(receiveFShipment.getOpeCode())) {
+						String parentOpr = dictService.getLabel("carrier_parent_child_list",
+								receiveFShipment.getOpeCode());
+						if (StringUtils.isEmpty(parentOpr) || !shipment.getOpeCode().equals(parentOpr)) {
+							return error(
+									"Mã OPR cho lô nhận container hàng và lô giao container rỗng đang khác nhau. Vui lòng kiểm tra lại.");
+						}
 					}
 				} else {
 					// bat co de OM kiem tra lai chung tu goc
