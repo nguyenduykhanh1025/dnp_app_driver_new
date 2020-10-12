@@ -248,7 +248,8 @@ function loadTableByContainer() {
         success: function (data) {
           if(data == null || data == '' || data == undefined)
           {
-            success(data);
+            error(data);
+            return;
           }
           success(JSON.parse(data));
           edo.billOfLading = null;
