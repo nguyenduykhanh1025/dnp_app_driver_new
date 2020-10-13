@@ -29,20 +29,19 @@ public class CarrierProfileController extends CarrierBaseController{
     private SysPasswordService passwordService;
     
     @GetMapping()
-    public String profile(ModelMap mmap)
-    {
+    public String profile(ModelMap mmap) {
         CarrierAccount user = ShiroUtils.getSysUser();
         mmap.put("user", user);
         return prefix + "/profile";
     }
 
     @GetMapping("/resetPwd")
-    public String resetPwd(ModelMap mmap)
-    {
+    public String resetPwd(ModelMap mmap) {
         CarrierAccount user = ShiroUtils.getSysUser();
         mmap.put("user", carrierAccountService.selectCarrierAccountById(user.getId()));
         return prefix + "/resetPwd";
     }
+
     @Log(title = "Cập Nhật Profile", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
     @PostMapping("/update")
     @ResponseBody
@@ -71,28 +70,23 @@ public class CarrierProfileController extends CarrierBaseController{
         return false;
     }
     
-    @Log(title = "Reset Mật Khẩu", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
+    @Log(title = "Đổi Mật Khẩu", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
     @PostMapping("/resetPwd")
     @ResponseBody
     public AjaxResult resetPwd(String oldPassword, String newPassword)
     {
         CarrierAccount user = ShiroUtils.getSysUser();
-        if (StringUtils.isNotEmpty(newPassword) && passwordService.matches(user, oldPassword))
-        {
+        if (StringUtils.isNotEmpty(newPassword) && passwordService.matches(user, oldPassword)) {
             user.setSalt(ShiroUtils.randomSalt());
             user.setPassword(passwordService.encryptPassword(user.getEmail(), newPassword, user.getSalt()));
-            if (carrierAccountService.resetUserPwd(user) > 0)
-            {
+            if (carrierAccountService.resetUserPwd(user) > 0) {
                 ShiroUtils.setSysUser(carrierAccountService.selectCarrierAccountById(user.getId()));
                 return success();
             }
             return error();
-        }
-        else
-        {
-            return error("Failed to change password, old password is wrong");
+        } else {
+            return error("Không thể đổi mật khẩu, mật khẩu cũ không đúng.");
         }
     }
 
-  
 }

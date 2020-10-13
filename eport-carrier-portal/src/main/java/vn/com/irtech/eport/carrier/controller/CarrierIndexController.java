@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.config.Global;
-import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
@@ -24,8 +23,6 @@ public class CarrierIndexController extends CarrierBaseController {
 
 	@Autowired
 	private ISysConfigService configService;
-	@Autowired
-	private IEquipmentDoService doService;
 
 	@Autowired
 	private IEdoService edoService;

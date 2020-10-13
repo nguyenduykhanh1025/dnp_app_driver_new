@@ -91,9 +91,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		if (edo == null) {
 			edo = new Edo();
 		}
-		Map<String, Object> groupCodes = new HashMap<>();
-		groupCodes.put("groupCode", super.getGroupCodes());
-		edo.setParams(groupCodes);
+		edo.getParams().put("groupCode", super.getGroupCodes());
 		edo.setCarrierCode(null);
 		List<Edo> dataList = edoService.selectEdoListByBillNo(edo);
 		return getDataTable(dataList);
@@ -111,10 +109,8 @@ public class CarrierEdoController extends CarrierBaseController {
 		{
 			return null;
 		}
-		Map<String, Object> groupCodes = new HashMap<>();
-		groupCodes.put("groupCode", super.getGroupCodes());
 		edo.setCarrierCode(null);
-		edo.setParams(groupCodes);
+		edo.getParams().put("groupCode", super.getGroupCodes());
 		edo.setDelFlg(0);
 		edo.setContainerNumber(null);
 		List<Edo> dataList = edoService.selectEdoList(edo);
@@ -142,6 +138,7 @@ public class CarrierEdoController extends CarrierBaseController {
 	public String getUpdate(@PathVariable("id") Long id, ModelMap map) {
 		map.put("id", id);
 		Edo edo = edoService.selectEdoById(id);
+		// TODO set carier
 		map.put("edo", edo);
 		map.put("hasConsigneeUpdatePermission",hasConsigneeUpdatePermission());
 		return PREFIX + "/update";
@@ -165,33 +162,27 @@ public class CarrierEdoController extends CarrierBaseController {
 	public AjaxResult delContainer(String ids) {
 		Edo edo = new Edo();
 		if (ids == null) {
-			ids = edo.getId().toString();
+			return error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
 		}
-		try {
-			String[] idsList = ids.split(",");
-			edo.setCarrierCode(super.getUserGroup().getGroupCode());
-			edo.setCarrierId(super.getUser().getGroupId());
-			for (String id : idsList) {
-				Edo edoCheck = new Edo();
-				edoCheck.setId(Long.parseLong(id));
-				Map<String, Object> groupCodes = new HashMap<>();
-				groupCodes.put("groupCode", super.getGroupCodes());
-				edoCheck.setParams(groupCodes);
-				if (edoService.selectFirstEdo(edoCheck) == null) {
-					return AjaxResult.error(
-							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
-				} else if (edoService.selectEdoById(Long.parseLong(id)).getStatus() != null) {
-					return AjaxResult.error(
-							"Bạn không thể xóa container này <br>Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
-				}
+		String[] idsList = ids.split(",");
+		edo.setCarrierCode(super.getUserGroup().getGroupCode());
+		edo.setCarrierId(super.getUser().getGroupId());
+		for (String id : idsList) {
+			Map<String, Object> groupCodes = new HashMap<>();
+			groupCodes.put("groupCode", super.getGroupCodes());
+			Edo edoCheck = new Edo();
+			edoCheck.setId(Long.parseLong(id));
+			edoCheck.setParams(groupCodes);
+			if (edoService.selectFirstEdo(edoCheck) == null) {
+				return AjaxResult.error("Container không tồn tại, vui lòng kiểm tra lại dữ liệu");
+			} else if (edoService.selectEdoById(Long.parseLong(id)).getStatus() != null) {
+				return AjaxResult.error("Bạn không thể xóa container này <br>Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
 			}
-			for (String id : idsList) {
-				edoService.deleteEdoById(Long.parseLong(id));
-			}
-			return AjaxResult.success("Xóa eDO thành công");
-		} catch (Exception e) {
-			return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
 		}
+		for (String id : idsList) {
+			edoService.deleteEdoById(Long.parseLong(id));
+		}
+		return AjaxResult.success("Xóa eDO thành công");
 	
 	}
 
@@ -200,41 +191,41 @@ public class CarrierEdoController extends CarrierBaseController {
 	@Log(title = "Cập Nhật eDO", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
 	public AjaxResult multiUpdate(String ids, Edo edo) {
 		if (ids == null) {
-			ids = edo.getId().toString();
+			return error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
+		}
+		// Validate permission
+		if(StringUtils.isNotEmpty(edo.getConsignee()) && !hasConsigneeUpdatePermission()) {
+			return AjaxResult.error("Không thể cập nhật Consignee, vui lòng kiếm tra lại dữ liệu.");
 		}
 		try {
 			String[] idsList = ids.split(",");
-			edo.setCarrierCode(super.getUserGroup().getGroupCode());
-			edo.setCarrierId(super.getUser().getGroupId());
+			Edo edoCheck = null;
+			// Check each edo
 			for (String id : idsList) {
-				Edo edoCheck = new Edo();
+				// create check object
+				edoCheck = new Edo();
 				edoCheck.setId(Long.parseLong(id));
-				Map<String, Object> groupCodes = new HashMap<>();
-				groupCodes.put("groupCode", super.getGroupCodes());
-				edoCheck.setParams(groupCodes);
-				if(hasConsigneeUpdatePermission() == false && edo.getConsignee() != "")
-				{
-					return AjaxResult.error(
-							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật Consignee, vui lòng kiếm tra lại dữ liệu");
-				}
+				edoCheck.getParams().put("groupCode", super.getGroupCodes());
 				if (edoService.selectFirstEdo(edoCheck) == null) {
-					return AjaxResult.error(
-							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
+					return AjaxResult.error("Container không tồn tại, vui lòng kiếm tra lại dữ liệu");
 				} else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("5")) {
-					return AjaxResult.error(
-							"Bạn đã chọn container đã GATE-IN ra khỏi <br> cảng, vui lòng kiểm tra lại dữ liệu!");
+					// FIXME Check catos
+					return AjaxResult.error("Không thể cập nhật container đã ra khỏi cảng.");
 				}
 			}
 
 			// Send extension date request if has changed
 			// TODO: Need to test carefully, put a try catch to prevent current
 			// function fail
-			try {
-				sendExtesionDateReqToRobot(ids, edo.getExpiredDem());
-			} catch (Exception e) {
-				logger.error("Failed to make and send req extension expiredem from carrier: " + e);
-			}
-
+			// FIXME Update lai phan nay: GiapHD
+//			try {
+//				sendExtesionDateReqToRobot(ids, edo.getExpiredDem());
+//			} catch (Exception e) {
+//				logger.error("Failed to make and send req extension expiredem from carrier: " + e);
+//			}
+			// Update
+			edo.setCarrierCode(super.getUserGroup().getGroupCode());
+			edo.setCarrierId(super.getUser().getGroupId());
 			for (String id : idsList) {
 				edo.setId(Long.parseLong(id));
 				edoService.updateEdo(edo);
@@ -261,6 +252,8 @@ public class CarrierEdoController extends CarrierBaseController {
 	@ResponseBody
 	public TableDataInfo edoAuditLog(@PathVariable("edoId") Long edoId, EdoAuditLog edoAuditLog) {
 		edoAuditLog.setEdoId(edoId);
+		// filter theo groupCode cua user (khong duoc xem cont cua group khac)
+		edoAuditLog.getParams().put("groupCode", super.getGroupCodes());
 		List<EdoAuditLog> edoAuditLogsList = edoAuditLogService.selectEdoAuditLogList(edoAuditLog);
 		return getDataTable(edoAuditLogsList);
 	}
@@ -271,9 +264,7 @@ public class CarrierEdoController extends CarrierBaseController {
 	public List<Edo> listVoyNos(@PathVariable("vessel") String vessel) {
 		Edo edo = new Edo();
 		edo.setVessel(vessel);
-		Map<String, Object> groupCodes = new HashMap<>();
-		groupCodes.put("groupCode", super.getGroupCodes());
-		edo.setParams(groupCodes);
+		edo.getParams().put("groupCode", super.getGroupCodes());
 		return edoService.selectVoyNos(edo);
 	}
 
@@ -281,9 +272,7 @@ public class CarrierEdoController extends CarrierBaseController {
 	@ResponseBody
 	public List<Edo> listVessels() {
 		Edo edo = new Edo();
-		Map<String, Object> groupCodes = new HashMap<>();
-		groupCodes.put("groupCode", super.getGroupCodes());
-		edo.setParams(groupCodes);
+		edo.getParams().put("groupCode", super.getGroupCodes());
 		List<Edo> edos = edoService.selectVessels(edo);
 		return edos;
 	}
@@ -312,9 +301,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		if (edo == null) {
 			edo = new Edo();
 		}
-		Map<String, Object> groupCodes = new HashMap<>();
-		groupCodes.put("groupCode", super.getGroupCodes());
-		edo.setParams(groupCodes);
+		edo.getParams().put("groupCode", super.getGroupCodes());
 		List<Edo> dataList = edoService.selectEdoListForReport(edo);
 		return getDataTable(dataList);
 	}
@@ -449,17 +436,16 @@ public class CarrierEdoController extends CarrierBaseController {
 				edoAuditLogService.addAuditLogFirst(edo);
 			}
 			// return toAjax(equipmentDoService.insertEquipmentDoList(doList));
-
-
-			return AjaxResult.success("Đã lưu thành công " + edos.size() + " DO lên Web Portal.");
+			return AjaxResult.success("Đã lưu thành công " + edos.size() + " eDO lên Web Portal.");
 		}
-		return AjaxResult.error("Không có dữ liệu để tạo DO, hãy kiểm tra lại");
+		return AjaxResult.error("Không có dữ liệu để tạo eDO, hãy kiểm tra lại");
 	}
 
 	private boolean isContainerNumber(String input) {
 		return VALID_CONTAINER_NO_REGEX.matcher(input).find();
 	}
 
+	// FIXME Check lai logic gia han lenh
 	private void sendExtesionDateReqToRobot(String edoIds, Date expiredDem) {
 		// Get edo list from edoIds String array
 		List<Edo> edos = edoService.selectEdoByIds(edoIds);
