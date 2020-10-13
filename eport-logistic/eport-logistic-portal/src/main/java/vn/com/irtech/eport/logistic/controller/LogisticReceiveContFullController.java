@@ -406,7 +406,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setUserVerifyStatus("N");
 					shipmentDetail.setProcessStatus("N");
-					shipmentDetail.setDoStatus("N");
+					if (EportConstants.DO_TYPE_CARRIER_DO.equals(shipment.getEdoFlg())) {
+						shipmentDetail.setDoStatus("N");
+					}
 					shipmentDetail.setPreorderPickup("N");
 					shipmentDetail.setFinishStatus("N");
 					// search catos infor for specified container and replace infor

@@ -188,6 +188,32 @@ function formatDate(value) {
   return day + "/" + monthText + "/" + date.getFullYear();
 }
 
+function formatBlBooking(value, row) {
+  if (row) {
+    if (row.blNo) {
+      return row.blNo;
+    } else if (row.bookingNo) {
+      return row.bookingNo;
+    }
+  }
+  return '';
+}
+
+function formatServiceType(value) {
+  switch (value) {
+    case 1:
+      return 'Bốc Hàng';
+    case 2:
+      return 'Hạ Rỗng';
+    case 3:
+      return 'Bốc Rỗng';
+    case 4:
+      return 'Hạ Hàng';
+    default:
+      return ''
+  }
+}
+
 // Trigger when click a row in easy ui data grid on the left screen
 function getSelected(index, row) {
   if (row) {

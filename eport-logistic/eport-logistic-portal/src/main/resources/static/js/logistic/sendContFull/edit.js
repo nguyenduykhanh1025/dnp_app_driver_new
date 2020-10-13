@@ -67,11 +67,12 @@ function checkBookingNoUnique() {
         });
     }
 }
-function edit(url, data) {
+function edit(url) {
     let shipmentUpdate = new Object();
     shipmentUpdate.id = shipment.id;
     shipmentUpdate.bookingNo = $('#bookingNo').val();
     shipmentUpdate.opeCode = $('#opeCode').val();
+    shipmentUpdate.sendContEmptyType = $('.sendContEmptyType').val();
     shipmentUpdate.containerAmount = $('#containerAmount').val();
     shipmentUpdate.params = new Object();
     shipmentUpdate.params.ids = shipmentFileIds.join();
@@ -82,7 +83,6 @@ function edit(url, data) {
         data: JSON.stringify(shipmentUpdate),
         beforeSend: function () {
             $.modal.loading("Đang xử lý, vui lòng chờ...");
-            $.modal.disable();
         },
         success: function (result) {
             $.modal.closeLoading();
@@ -122,7 +122,7 @@ $(document).ready(function () {
             shipmentFileIds.push(element.id);
             htmlInit = `<div class="preview-block">
                     <img src="` + ctx + `img/document.png" alt="Tài liệu" />
-                    <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + element.id + `)" disabled>
+                    <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + element.id + `)">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>`;
@@ -169,7 +169,7 @@ $(document).ready(function () {
 
 function removeImage(element, fileIndex) {
     if (shipment.status > 2) {
-        $.modal.alertWarning("Lô đã được cấp container để làm lệnh, không thể xóa tệp đã đính kèm.");
+        $.modal.alertWarning("Lô có container đang hoặc đã làm lệnh, không thể xóa tệp đã đính kèm.");
     } else {
         shipmentFileIds.forEach(function (value, index) {
             if (value == fileIndex) {

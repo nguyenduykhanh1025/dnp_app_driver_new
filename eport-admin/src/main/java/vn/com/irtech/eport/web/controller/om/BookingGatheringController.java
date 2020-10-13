@@ -25,14 +25,12 @@ import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
-import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
-import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -41,7 +39,6 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.web.controller.AdminBaseController;
-import vn.com.irtech.eport.web.mqtt.MqttService;
 
 @Controller
 @RequestMapping("/om/booking")
@@ -58,16 +55,10 @@ public class BookingGatheringController extends AdminBaseController  {
 	private ILogisticGroupService logisticGroupService;
 	
 	@Autowired
-	private ICatosApiService catosApiService;
-	
-	@Autowired
 	private IShipmentDetailService shipmentDetailService;
 	
 	@Autowired
 	private IShipmentCommentService shipmentCommentService;
-	
-	@Autowired
-	private MqttService mqttService;
 	
 	@Autowired
 	private DictService dictService;
@@ -121,12 +112,13 @@ public class BookingGatheringController extends AdminBaseController  {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
-		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
 			params = new HashMap<>();
 		}
 		params.put("processStatus", "Y");
+		Integer[] serviceArray = { EportConstants.SERVICE_DROP_EMPTY, EportConstants.SERVICE_DROP_FULL };
+		params.put("serviceArray", serviceArray);
 		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
@@ -149,22 +141,11 @@ public class BookingGatheringController extends AdminBaseController  {
 	@Transactional
 	public AjaxResult submitConfirmation(String shipmentDetailIds, Long logisticGroupId) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, logisticGroupId);
-//		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-//			if (shipmentDetail.getPaymentStatus().equals("N")) {
-//				return error("Không thể xác nhận booking cho container chưa thanh toán. Vui lòng kiểm tra lại.");
-//			}
-//		}
-		String containers = "";
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			containers += shipmentDetail.getContainerNo() + ",";
 			shipmentDetail.setDoStatus("Y");
 			shipmentDetail.setUpdateBy(getUser().getLoginName());
 			shipmentDetailService.updateShipmentDetail(shipmentDetail);
 		}
-		
-		// Send release container request to robot
-		containers = containers.substring(0, containers.length()-1);
-		mqttService.sendReleaseTerminalHoldForRobot(containers, shipmentDetails.get(0));
  		return success("Xác nhận thành công.");
 	}
 	
@@ -192,7 +173,6 @@ public class BookingGatheringController extends AdminBaseController  {
 	@ResponseBody
 	public AjaxResult getShipmentImages(@PathVariable("shipmentId") Long shipmentId) {
 		AjaxResult ajaxResult = AjaxResult.success();
-		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 		ShipmentImage shipmentImage = new ShipmentImage();
 		shipmentImage.setShipmentId(shipmentId);
 		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);

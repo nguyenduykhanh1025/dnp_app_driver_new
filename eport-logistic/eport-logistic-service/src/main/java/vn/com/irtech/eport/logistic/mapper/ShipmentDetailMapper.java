@@ -183,4 +183,12 @@ public interface ShipmentDetailMapper
 	 * @return int
 	 */
 	public int deleteShipmentDetailByCondition(ShipmentDetail shipmentDetail);
+
+	/**
+	 * Update shipment detail by condition
+	 * 
+	 * @param shipmentDetail
+	 * @return int
+	 */
+	public int updateShipmentDetailByCondition(ShipmentDetail shipmentDetail);
 }

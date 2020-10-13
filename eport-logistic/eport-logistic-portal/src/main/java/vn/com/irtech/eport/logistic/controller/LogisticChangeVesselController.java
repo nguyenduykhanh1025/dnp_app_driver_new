@@ -289,7 +289,7 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 
 		if (StringUtils.isNotEmpty(containerHasDelivered)) {
 			return error("Các container " + containerHasDelivered.substring(0, containerHasDelivered.length() - 1)
-					+ " đã được hạ <br>vào bãi cảng, không thể đổi được tàu chuyến.");
+					+ " đã được hạ <br>vào bãi cảng, không thể đổi được tàu <br>chuyến.");
 		}
 		return success();
 	}

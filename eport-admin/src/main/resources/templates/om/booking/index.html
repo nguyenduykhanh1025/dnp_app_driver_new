@@ -55,10 +55,12 @@
                             <tr>
                                 <th data-options="field:'id', resizable:true, align:'right', fixed:true" sortable="true"
                                     width="60">Mã Lô</th>
-                                <th data-options="field:'bookingNo', resizable:true, align:'left', fixed:true"
-                                    sortable="true" width="150">Booking No</th>
+                                <th data-options="field:'bookingNo', resizable:true, align:'left', fixed:true, formatter: formatBlBooking"
+                                    sortable="true" width="150">BL/Booking No</th>
                                 <th data-options="field:'opeCode', resizable:true, align:'left', fixed:true"
                                     sortable="true" width="50">OPR</th>
+                                <th data-options="field:'serviceType', resizable:true, align:'left', fixed:true, formatter: formatServiceType"
+                                    sortable="true" width="80">Loại Lệnh</th>
                                 <th data-options="field:'containerAmount', resizable:true, align:'center', fixed:true"
                                     sortable="true" width="40">SL</th>
                                 <th data-options="field:'logisticName', resizable:true, align:'left', fixed:true, formatter: formatLogistic"

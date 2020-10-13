@@ -169,7 +169,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			@PathVariable("taxCode") String taxCode, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getUser().getMobile());
-		mmap.put("shipmentId", "-");
 		mmap.put("creditFlag", creditFlag);
 		mmap.put("taxCode", taxCode);
 		mmap.put("shipmentId", shipmentId);
