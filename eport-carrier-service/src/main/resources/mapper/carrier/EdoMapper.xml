@@ -330,12 +330,6 @@
     e1.bill_of_lading = e2.bill_of_lading ORDER BY create_time DESC FETCH NEXT 1 ROWS ONLY ) as create_time, (SELECT
     COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading and del_flg = 0) AS number_container from edo e1
     <where>
-	  <if test="params.oprs != null">
-        and carrier_code in
-        <foreach item="opr" collection="params.oprs" open="(" separator="," close=")">
-          #{opr}
-        </foreach>
-      </if>
       <if test="params.groupCode != null">
         and carrier_code in
         <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">

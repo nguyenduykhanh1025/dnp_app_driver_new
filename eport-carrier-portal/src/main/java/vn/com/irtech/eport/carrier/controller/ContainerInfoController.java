@@ -228,7 +228,7 @@ public class ContainerInfoController extends CarrierBaseController {
 		}
 		catch (Exception e)
 		{
-			return AjaxResult.error("Có lỗi không xác định! <br> vui lòng thử lại sau để được giải quyết");
+			return AjaxResult.error("Có lỗi không xác định! vui lòng thử lại sau");
 		}
 		
 	}

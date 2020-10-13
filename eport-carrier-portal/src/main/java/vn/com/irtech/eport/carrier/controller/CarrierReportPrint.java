@@ -26,7 +26,6 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 
-
 @Controller
 @RequestMapping("edo/print")
 public class CarrierReportPrint extends CarrierBaseController{
