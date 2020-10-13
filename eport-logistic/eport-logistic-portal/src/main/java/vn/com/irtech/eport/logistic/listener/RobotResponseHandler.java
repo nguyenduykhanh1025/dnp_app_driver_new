@@ -282,7 +282,8 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 			// SET RESULT FOR HISTORY SUCCESS
 			historyResult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
-			if (EportConstants.SERVICE_PICKUP_FULL == processOrder.getServiceType()) {
+			if (EportConstants.SERVICE_PICKUP_FULL == processOrder.getServiceType()
+					&& EportConstants.DO_TYPE_CARRIER_DO.equals(shipment.getEdoFlg())) {
 				this.sendProcessOrderHoldTerminal(processOrder, shipmentDetails);
 			}
 		} else {
