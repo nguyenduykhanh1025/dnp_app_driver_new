@@ -835,7 +835,8 @@ function addComment() {
       topic: topic,
       content: content,
       shipmentId: shipmentSelected.id,
-      logisticGroupId: shipmentSelected.logisticGroupId
+      logisticGroupId: shipmentSelected.logisticGroupId,
+	  serviceType: shipmentSelected.serviceType
     };
     $.ajax({
       url: PREFIX + "/shipment/comment",

@@ -282,7 +282,8 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 			// SET RESULT FOR HISTORY SUCCESS
 			historyResult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
-			if (EportConstants.SERVICE_PICKUP_FULL == processOrder.getServiceType()) {
+			if (EportConstants.SERVICE_PICKUP_FULL == processOrder.getServiceType()
+					&& EportConstants.DO_TYPE_CARRIER_DO.equals(shipment.getEdoFlg())) {
 				this.sendProcessOrderHoldTerminal(processOrder, shipmentDetails);
 			}
 		} else {
@@ -703,15 +704,8 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		Long processOrderId = Long.parseLong(receiptId);
 		String hresult = null;
 		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
+		ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
 		if ("success".equalsIgnoreCase(result)) {
-			ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
-			for (Long shipmentDetailId : processJsonData.getShipmentDetailIds()) {
-				ShipmentDetail shipmentDetail = new ShipmentDetail();
-				shipmentDetail.setId(shipmentDetailId);
-				shipmentDetail.setExpiredDem(processOrder.getPickupDate());
-				shipmentDetail.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
-				shipmentDetailService.updateShipmentDetail(shipmentDetail);
-			}
 			processOrder.setStatus(2); // FINISH
 			processOrder.setResult("S"); // RESULT SUCESS
 			processOrderService.updateProcessOrder(processOrder);
@@ -726,6 +720,18 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 			// SET RESULT FOR HISTORY FAILED
 			hresult = EportConstants.PROCESS_HISTORY_RESULT_FAILED;
+
+			// Send error notification to om
+			String title = "Lỗi gia hạn lệnh robot " + uuId + ".";
+			String content = "Lỗi gia hạn lệnh cho job order no " + processOrder.getOrderNo() + " của các container "
+					+ processJsonData.getContainers() + ".";
+			// Send notification for om
+			try {
+				mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, content,
+						configService.getKey("domain.admin.name"), EportConstants.NOTIFICATION_PRIORITY_LOW);
+			} catch (Exception e) {
+				logger.warn(e.getMessage());
+			}
 		}
 		updateHistory(processOrderId, uuId, EportConstants.SERVICE_EXTEND_DATE, hresult);
 	}
@@ -872,8 +878,15 @@ public class RobotResponseHandler implements IMqttMessageListener {
 	 */
 	public void sendExtendDateOrderToRobot(ProcessOrder processOrder, String uuid) {
 		ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
-		String shipmentDetailIds = StringUtils.join(processJsonData.getShipmentDetailIds(), ",");
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+		String[] containers = processJsonData.getContainers().split(",");
+		List<ShipmentDetail> shipmentDetails = new ArrayList<>();
+		if (containers.length > 0) {
+			for (String container : containers) {
+				ShipmentDetail shipmentDetail = new ShipmentDetail();
+				shipmentDetail.setContainerNo(container);
+				shipmentDetails.add(shipmentDetail);
+			}
+		}
 		ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
 		try {
 			mqttService.publicMessageToDemandRobot(req, EServiceRobot.EXTENSION_DATE, uuid);
