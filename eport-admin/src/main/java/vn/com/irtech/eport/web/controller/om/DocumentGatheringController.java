@@ -110,13 +110,12 @@ public class DocumentGatheringController extends AdminBaseController  {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
+		shipment.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
 			params = new HashMap<>();
 		}
 		params.put("processStatus", "Y");
-		params.put("pickUpFullService", true);
-		params.put("dropEmptyService", true);
 		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));

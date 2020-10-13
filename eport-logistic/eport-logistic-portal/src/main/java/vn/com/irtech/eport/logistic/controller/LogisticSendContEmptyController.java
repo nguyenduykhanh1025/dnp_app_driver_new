@@ -1,5 +1,7 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,16 +23,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.annotation.RepeatSubmit;
+import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
+import vn.com.irtech.eport.common.exception.file.InvalidExtensionException;
+import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
+import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -39,6 +48,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.dto.BerthPlanInfo;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
@@ -50,6 +60,7 @@ import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
@@ -89,6 +100,9 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@Autowired
 	private ServerConfig serverConfig;
 
+	@Autowired
+	private IShipmentImageService shipmentImageService;
+
 	@GetMapping()
 	public String sendContEmpty(@RequestParam(required = false) Long sId, ModelMap mmap) {
 		if (sId != null) {
@@ -118,6 +132,10 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		List<String> oprCodeList = catosApiService.getOprCodeList();
 		oprCodeList.add(0, "Chọn OPR");
 
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setShipmentId(id);
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+		mmap.put("shipmentFiles", shipmentImages);
 		mmap.put("oprCodeList", oprCodeList);
 		return PREFIX + "/edit";
 	}
@@ -176,7 +194,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@PostMapping("/shipment")
 	@Transactional
 	@ResponseBody
-	public AjaxResult addShipment(Shipment shipment) {
+	public AjaxResult addShipment(@RequestBody Shipment shipment) {
 		if (StringUtils.isNotEmpty(shipment.getBlNo())) {
 			shipment.setBlNo(shipment.getBlNo());
 		}
@@ -186,7 +204,43 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		shipment.setCreateBy(user.getFullName());
 		shipment.setServiceType(Constants.SEND_CONT_EMPTY);
 		shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
+
+		// Check if shipment must attach document for om check
+		Shipment search = new Shipment();
+		search.setBlNo(shipment.getBlNo());
+		search.setLogisticGroupId(shipment.getLogisticGroupId());
+		search.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
+		List<Shipment> receiveFullList = shipmentService.selectShipmentList(search);
+		boolean checkDocument = false;
+		if (CollectionUtils.isNotEmpty(receiveFullList)) {
+
+			// lay 1 shipment (thong thuong chi co 1)
+			Shipment receiveFShipment = receiveFullList.get(0);
+
+			// Đổi opeCode operateCode -> groupCode
+			if (!shipment.getOpeCode().equals(receiveFShipment.getOpeCode())) {
+				String parentOpr = dictService.getLabel("carrier_parent_child_list", receiveFShipment.getOpeCode());
+				if (StringUtils.isEmpty(parentOpr) || !shipment.getOpeCode().equals(parentOpr)) {
+					return error(
+							"Mã OPR cho lô nhận container hàng và lô <br>giao container rỗng đang khác nhau. Vui lòng <br>kiểm tra lại.");
+				}
+			}
+		} else {
+			checkDocument = true;
+		}
+		String shipmentImageIds = shipment.getParams().get("ids").toString();
+		if (checkDocument && StringUtils.isEmpty(shipmentImageIds)) {
+			return error("Lô quý khách đang khai báo hiện tại yêu cầu cần định kèm tệp.");
+		}
 		if (shipmentService.insertShipment(shipment) == 1) {
+			if (StringUtils.isNotEmpty(shipmentImageIds)) {
+				ShipmentImage shipmentImage = new ShipmentImage();
+				shipmentImage.setShipmentId(shipment.getId());
+				Map<String, Object> map = new HashMap<>();
+				map.put("ids", Convert.toStrArray(shipmentImageIds));
+				shipmentImage.setParams(map);
+				shipmentImageService.updateShipmentImageByIds(shipmentImage);
+			}
 			return success("Thêm lô thành công");
 		}
 		return error("Thêm lô thất bại");
@@ -213,7 +267,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@Log(title = "Sữa Lô Hạ Rỗng", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment/{shipmentId}")
 	@ResponseBody
-	public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
+	public AjaxResult editShipment(@RequestBody Shipment shipment, @PathVariable Long shipmentId) {
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipmentId);
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
 			// Check container amount update need to greater or equal curren amount
@@ -258,7 +312,16 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 				referenceShipment.setOpeCode(shipment.getOpeCode());
 				referenceShipment.setBlNo(shipment.getBlNo());
 			}
+			String shipmentImageIds = shipment.getParams().get("ids").toString();
 			if (shipmentService.updateShipment(referenceShipment) == 1) {
+				if (StringUtils.isNotEmpty(shipmentImageIds)) {
+					ShipmentImage shipmentImage = new ShipmentImage();
+					shipmentImage.setShipmentId(shipment.getId());
+					Map<String, Object> map = new HashMap<>();
+					map.put("ids", Convert.toStrArray(shipment.getParams().get("ids").toString()));
+					shipmentImage.setParams(map);
+					shipmentImageService.updateShipmentImageByIds(shipmentImage);
+				}
 				return success("Chỉnh sửa lô thành công");
 			}
 		}
@@ -836,5 +899,59 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			}
 		}
 		return containerInfoMap;
+	}
+
+	@PostMapping("/file")
+	@ResponseBody
+	public AjaxResult saveFile(MultipartFile file) throws IOException, InvalidExtensionException {
+		String basePath = String.format("%s/%s", Global.getUploadPath() + "/drop_empty_document",
+				getUser().getGroupId());
+		String now = DateUtils.dateTimeNow();
+		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+		String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setPath(filePath);
+		shipmentImage.setCreateTime(DateUtils.getNowDate());
+		shipmentImage.setCreateBy(getUser().getFullName());
+		shipmentImageService.insertShipmentImage(shipmentImage);
+
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentFileId", shipmentImage.getId());
+		return ajaxResult;
+	}
+
+	@DeleteMapping("/file")
+	@ResponseBody
+	public AjaxResult deleteFile(Long id) throws IOException {
+		ShipmentImage shipmentImageParam = new ShipmentImage();
+		shipmentImageParam.setId(id);
+		ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+		String[] fileArr = shipmentImage.getPath().split("/");
+		File file = new File(
+				Global.getUploadPath() + "/drop_empty_document/" + getUser().getGroupId() + "/"
+						+ fileArr[fileArr.length - 1]);
+		if (file.delete()) {
+			shipmentImageService.deleteShipmentImageById(id);
+		}
+		return success();
+	}
+
+	@GetMapping("/shipments/{shipmentId}/shipment-images")
+	@ResponseBody
+	public AjaxResult getShipmentImages(@PathVariable("shipmentId") Long shipmentId) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		if (verifyPermission(shipment.getLogisticGroupId())) {
+			ShipmentImage shipmentImage = new ShipmentImage();
+			shipmentImage.setShipmentId(shipmentId);
+			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+			for (ShipmentImage shipmentImage2 : shipmentImages) {
+				shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+			}
+			ajaxResult.put("shipmentFiles", shipmentImages);
+			return ajaxResult;
+		}
+		return error();
 	}
 }
