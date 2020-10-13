@@ -281,8 +281,8 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			ctnrInfo = ctnrMap.get(shipmentDetail.getContainerNo());
 			// Check container stacking, delivered or not found => can't change vessel
-			if (ctnrInfo == null || !EportConstants.CATOS_CONT_STACKING.equals(ctnrInfo.getCntrState())
-					|| !EportConstants.CATOS_CONT_DELIVERED.equals(ctnrInfo.getCntrState())) {
+			if (ctnrInfo == null || EportConstants.CATOS_CONT_STACKING.equals(ctnrInfo.getCntrState())
+					|| EportConstants.CATOS_CONT_DELIVERED.equals(ctnrInfo.getCntrState())) {
 				containerHasDelivered += shipmentDetail.getContainerNo() + ",";
 			}
 		}
