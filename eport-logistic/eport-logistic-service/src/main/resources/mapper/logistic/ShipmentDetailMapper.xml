@@ -1096,4 +1096,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </foreach>
         </where>
     </update>
+
+    <update id="updateShipmentDetailByCondition" parameterType="ShipmentDetail">
+        update shipment_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
+            update_time = sysdate
+        </trim>
+        <where>
+            <if test="blNo != null and blNo != ''">and bl_no = {blNo}</if>
+            <if test="opeCode != null and opeCode !=''">and ope_code = #{opeCode}</if>
+        </where>
+    </update>
 </mapper>
