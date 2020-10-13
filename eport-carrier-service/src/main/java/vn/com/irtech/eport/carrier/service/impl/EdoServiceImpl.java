@@ -303,14 +303,17 @@ public class EdoServiceImpl implements IEdoService
 			{
 				String[] haulage = s.split("\\+");
 				// TODO check null
-				haulage[4] = haulage[4].substring(0, haulage[4].length());
-				if (!haulage[4].isEmpty()) {
-					try{
-//						int i = Integer.parseInt(haulage[4]);
-//						edi.setDetFreeTime(i);
-						edi.setDetFreeTime(haulage[4]);
-					}catch (Exception e) {
-						e.printStackTrace();
+				if(haulage.length >= 4)
+				{
+					haulage[4] = haulage[4].substring(0, haulage[4].length());
+					if (!haulage[4].isEmpty()) {
+						try{
+	//						int i = Integer.parseInt(haulage[4]);
+	//						edi.setDetFreeTime(i);
+							edi.setDetFreeTime(haulage[4]);
+						}catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
 				continue; 
@@ -320,14 +323,17 @@ public class EdoServiceImpl implements IEdoService
 			if(s.contains("TDT+20"))
 			{
 				String[] infoDTD20 = s.split("\\+");
-				if(infoDTD20.length > 8)
+				if(infoDTD20.length > 8 )
 				{
 					String [] vessel = infoDTD20[8].split("\\:");
 					String [] businessUnit = infoDTD20[5].split("\\:");
 					edi.setBusinessUnit(businessUnit[0]);
 					edi.setVoyNo(infoDTD20[2]);
+					if(vessel.length >= 3)
+					{
+						edi.setVessel(vessel[3]); 
+					}
 					edi.setVesselNo(vessel[0]);
-					edi.setVessel(vessel[3]); 
 				}
 				continue; 
 			}
