@@ -9,8 +9,6 @@ $(document).ready(function () {
     loadTable(req);
 });
 
-
-
 function loadTable(req) {
     $("#dg").datagrid({
         url: PREFIX + '/catos',

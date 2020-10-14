@@ -32,8 +32,12 @@ function loadListRobot() {
         visible: false,
       },
       {
-        field: "uuId",
+        field: "uuid",
         title: "UUID",
+        sortable: true,
+        formatter: function (value, row, index) {
+          return uuidFormatter(value, row, index);
+        }
       },
       {
         field: "ipAddress",
@@ -44,13 +48,16 @@ function loadListRobot() {
         field: "status",
         title: "Trạng thái",
         align: "left",
+        sortable: true,
         formatter: function (value, row, index) {
           return statusFormatter(value, row, index);
         },
       },
       {
+        field: 'disabled',
         title: 'Disabled',
         align: 'center',
+        sortable: true,
         formatter: function (value, row, index) {
           return disabledFormatter(value, row, index);
         }
@@ -74,6 +81,11 @@ function loadListRobot() {
             '\')"><i class="fa fa-edit"  ></i></a> '
           );
           actions.push(
+            '<a class="btn btn-primary btn-xs" href="javascript:void(0)" onclick="openHistory(\'' +
+            row.id +
+            '\')"><i class="fa fa-history"  ></i></a> '
+          );
+          actions.push(
             '<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="$.operate.remove(\'' +
             row.id +
             '\')"><i class="fa fa-remove"></i></a> '
@@ -84,6 +96,10 @@ function loadListRobot() {
     ],
   };
   $.table.init(OPTIONS);
+}
+
+function uuidFormatter(value, row, index) {
+  return row.uuId;
 }
 
 /* formatter for status column */
@@ -163,4 +179,8 @@ function enable(id, uuid) {
   $.modal.confirm("Xác nhận kích hoạt lại robot " + uuid + "？", function () {
     $.operate.post(PREFIX + "/disabled/change", { "id": id, "disabled": 0 });
   })
+}
+
+function openHistory(robotId) {
+  $.modal.alertWarning('Coming soon...');
 }

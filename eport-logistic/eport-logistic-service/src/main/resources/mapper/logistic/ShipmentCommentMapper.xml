@@ -64,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null">logistic_group_id,</if>
             <if test="userId != null">user_id,</if>
             <if test="userType != null">user_type,</if>
-            <if test="userName != null">user_name,</if>
+            <if test="userName != null and userName != ''">user_name,</if>
             <if test="userAlias != null and userAlias != ''">user_alias,</if>
             <if test="commentTime != null">comment_time,</if>
             <if test="topic != null">topic,</if>
@@ -83,7 +83,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null">#{logisticGroupId},</if>
             <if test="userId != null">#{userId},</if>
             <if test="userType != null">#{userType},</if>
-            <if test="userName != null">#{userName},</if>
+            <if test="userName != null and userName != ''">#{userName},</if>
             <if test="userAlias != null and userAlias != ''">#{userAlias},</if>
             <if test="commentTime != null">#{commentTime},</if>
             <if test="topic != null">#{topic},</if>

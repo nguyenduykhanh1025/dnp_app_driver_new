@@ -79,8 +79,11 @@ function formatStatus(value, row) {
   }
 }
 
-function formatResult(value) {
-    return value == "S" ? "<span class='label label-success'>Thành công</span>" : "<span class='label label-danger'>Thất bại</span>";
+function formatResult(value, row) {
+  if (row && row.finishTime == null) {
+    return  "<span class='label label-warning'>Đang làm</span>";
+  }
+  return value == "S" ? "<span class='label label-success'>Thành công</span>" : "<span class='label label-danger'>Thất bại</span>";
 }
 
 function loadTable() {

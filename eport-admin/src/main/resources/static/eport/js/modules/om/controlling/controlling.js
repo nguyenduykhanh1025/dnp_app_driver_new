@@ -698,44 +698,44 @@ function configHandsonBilling() {
         case 3:
           return "Trạng Thái";
         case 4:
-          return "B/L No"
-        case 5:
-          return "OPR";
-        case 6:
-          return "Số Container";
-        case 7:
-          return "Sztp";
-        case 8:
-          return "Hạn Lệnh";
-        case 9:
-          return "Hạn Trả Vỏ";
-        case 10:
-          return "Nơi Hạ Vỏ";
-        case 11:
-          return "Miễn Lưu";
-        case 12:
-          return "Chủ Hàng";
-        case 13:
-          return "Tàu - Chuyến";
-        case 14:
-          return "Trọng Lượng";
-        case 15:
-          return "Loại Hàng";
-        case 16:
-          return "Cảng Dỡ"
-        case 17:
-          return "Cảng Xếp Hàng";
-        case 18:
-          return "P.T.T.T";
-        case 19:
-          return "Payer";
-        case 20:
           return "Số Tham Chiếu";
+        case 5:
+          return "B/L No"
+        case 6:
+          return "OPR";
+        case 7:
+          return "Số Container";
+        case 8:
+          return "Sztp";
+        case 9:
+          return "Hạn Lệnh";
+        case 10:
+          return "Hạn Trả Vỏ";
+        case 11:
+          return "Nơi Hạ Vỏ";
+        case 12:
+          return "Miễn Lưu";
+        case 13:
+          return "Chủ Hàng";
+        case 14:
+          return "Tàu - Chuyến";
+        case 15:
+          return "Trọng Lượng";
+        case 16:
+          return "Loại Hàng";
+        case 17:
+          return "Cảng Dỡ"
+        case 18:
+          return "Cảng Xếp Hàng";
+        case 19:
+          return "P.T.T.T";
+        case 20:
+          return "Payer";
         case 21:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 105, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 130, 100],
+    colWidths: [23, 21, 21, 105, 130, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 100],
     filter: "true",
     columns: [
       {
@@ -757,6 +757,10 @@ function configHandsonBilling() {
         data: "status",
         readOnly: true,
         renderer: statusIconsRenderer
+      },
+      {
+        data: "orderNo",
+        renderer: orderNoRenderer
       },
       {
         data: "blNo",
@@ -845,10 +849,6 @@ function configHandsonBilling() {
         renderer: payerRenderer
       },
       {
-        data: "orderNo",
-        renderer: orderNoRenderer
-      },
-      {
         data: "remark",
         renderer: remarkRenderer
       }
@@ -918,44 +918,44 @@ function configHandsonBooking() {
         case 3:
           return "Trạng Thái";
         case 4:
-          return "Booking No"
-        case 5:
-          return "OPR";
-        case 6:
-          return "Số Container";
-        case 7:
-          return "Sztp";
-        case 8:
-          return "Hạn Lệnh";
-        case 9:
-          return "Hạn Trả Vỏ";
-        case 10:
-          return "Nơi Hạ Vỏ";
-        case 11:
-          return "Miễn Lưu";
-        case 12:
-          return "Chủ Hàng";
-        case 13:
-          return "Tàu - Chuyến";
-        case 14:
-          return "Trọng Lượng";
-        case 15:
-          return "Loại Hàng";
-        case 16:
-          return "Cảng Dỡ"
-        case 17:
-          return "Cảng Xếp Hàng";
-        case 18:
-          return "P.T.T.T";
-        case 19:
-          return "Payer";
-        case 20:
           return "Số Tham Chiếu";
+        case 5:
+          return "Booking No"
+        case 6:
+          return "OPR";
+        case 7:
+          return "Số Container";
+        case 8:
+          return "Sztp";
+        case 9:
+          return "Hạn Lệnh";
+        case 10:
+          return "Hạn Trả Vỏ";
+        case 11:
+          return "Nơi Hạ Vỏ";
+        case 12:
+          return "Miễn Lưu";
+        case 13:
+          return "Chủ Hàng";
+        case 14:
+          return "Tàu - Chuyến";
+        case 15:
+          return "Trọng Lượng";
+        case 16:
+          return "Loại Hàng";
+        case 17:
+          return "Cảng Dỡ"
+        case 18:
+          return "Cảng Xếp Hàng";
+        case 19:
+          return "P.T.T.T";
+        case 20:
+          return "Payer";
         case 21:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 105, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 130, 100],
+    colWidths: [23, 21, 21, 105, 130, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 100],
     filter: "true",
     columns: [
       {
@@ -977,6 +977,10 @@ function configHandsonBooking() {
         data: "status",
         readOnly: true,
         renderer: statusIconsRenderer
+      },
+      {
+        data: "orderNo",
+        renderer: orderNoRenderer
       },
       {
         data: "bookingNo",
@@ -1065,10 +1069,6 @@ function configHandsonBooking() {
         renderer: payerRenderer
       },
       {
-        data: "orderNo",
-        renderer: orderNoRenderer
-      },
-      {
         data: "remark",
         renderer: remarkRenderer
       }
@@ -1119,7 +1119,7 @@ function onChange(changes, source) {
 
     // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
     if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-      let vesselAndVoy = hot.getDataAtCell(change[0], 13);
+      let vesselAndVoy = hot.getDataAtCell(change[0], 14);
       //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
       if (vesselAndVoy) {
         if (currentVesselVoyage != vesselAndVoy) {
@@ -1141,7 +1141,7 @@ function onChange(changes, source) {
                   if (data.code == 0) {
                     hot.updateSettings({
                       cells: function (row, col, prop) {
-                        if (col == 16 || col == 17) {
+                        if (col == 17 || col == 18) {
                           let cellProperties = {};
                           dischargePortList = data.dischargePorts;
                           cellProperties.source = dischargePortList;
@@ -1667,6 +1667,11 @@ function openHistoryFormCatos(row) {
   }
   let voyNo = containerInfo.voyNo;
   let containerNo = containerInfo.containerNo;
+  // service type current shipment is pickup empty
+  if (shipmentSelected.serviceType == 3) {
+    vslCd = 'EMTY';
+    voyNo = '0000';
+  }
   if (containerInfo == null || !containerNo || !vslCd || !voyNo) {
     $.modal.alertWarning("Container chưa được khai báo.");
   } else {

@@ -1,4 +1,5 @@
 const PREFIX = ctx + "om/booking";
+const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipmentDetailIds;
@@ -264,6 +265,15 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
   return td;
 }
+function historyRenderer(instance, td, row, col, prop, value, cellProperties) {
+  let historyIcon = '<a id="custom" onclick="openHistoryFormCatos(' + row + ')" class="fa fa-window-restore easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
+  $(td).addClass("htCenter").addClass("htMiddle").html(historyIcon);
+}
+
+function historyEportRenderer(instance, td, row, col, prop, value, cellProperties) {
+  let historyIcon = '<a id="custom" onclick="openHistoryFormEport(' + row + ')" class="fa fa-history easyui-tooltip" title="Lịch Sử Eport" aria-hidden="true" style="color: #3498db;"></a>';
+  $(td).addClass("htCenter").addClass("htMiddle").html(historyIcon);
+}
 function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
   if (sourceData[row] && sourceData[row].dischargePort && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].customStatus && sourceData[row].finishStatus) {
@@ -461,40 +471,54 @@ function configHandson() {
           txt += ">";
           return txt;
         case 1:
-          return "Trạng Thái";
+          return '<a class="fa fa-window-restore easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
         case 2:
-          return "Số Container";
+          return '<a class="fa fa-history easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
         case 3:
-          return "Sztp";
+          return "Trạng Thái";
         case 4:
-          return "Chủ Hàng";
+          return "Số Container";
         case 5:
-          return "Tàu - Chuyến";
+          return "Sztp";
         case 6:
-          return "Trọng Lượng";
+          return "Chủ Hàng";
         case 7:
-          return "Loại Hàng";
+          return "Tàu - Chuyến";
         case 8:
-          return 'Số Seal';
+          return "Trọng Lượng";
         case 9:
-          return "Cảng Dỡ Hàng";
+          return "Loại Hàng";
         case 10:
-          return "P.T.T.T";
+          return 'Số Seal';
         case 11:
-          return "Payer";
+          return "Cảng Dỡ Hàng";
         case 12:
-          return "Số Tham Chiếu";
+          return "P.T.T.T";
         case 13:
+          return "Payer";
+        case 14:
+          return "Số Tham Chiếu";
+        case 15:
           return "Ghi Chú";
       }
     },
-    colWidths: [50, 120, 100, 60, 200, 100, 100, 80, 80, 100, 100, 100, 130, 100],
+    colWidths: [23, 21, 21, 120, 100, 60, 200, 100, 100, 80, 80, 100, 100, 100, 130, 100],
     filter: "true",
     columns: [
       {
         data: "active",
         type: "checkbox",
         renderer: checkBoxRenderer
+      },
+      {
+        data: "historyCatos",
+        readOnly: true,
+        renderer: historyRenderer
+      },
+      {
+        data: "historyEport",
+        readOnly: true,
+        renderer: historyEportRenderer
       },
       {
         data: "status",
@@ -567,7 +591,7 @@ function configHandson() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 13) {
+          if (selected[3] == 15) {
             e.stopImmediatePropagation();
           }
           break
@@ -857,6 +881,56 @@ function addComment() {
       error: function (error) {
         $.modal.closeLoading();
         $.modal.msgError("Gửi thất bại.");
+      }
+    });
+  }
+}
+
+function openHistoryFormCatos(row) {
+  let containerInfo = sourceData[row];
+  let vslCd = '';
+  if (containerInfo.vslNm) {
+    vslCd = containerInfo.vslNm.split(" ")[0];
+  }
+  let voyNo = containerInfo.voyNo;
+  let containerNo = containerInfo.containerNo;
+  if (containerInfo == null || !containerNo || !vslCd || !voyNo) {
+    $.modal.alertWarning("Container chưa được khai báo.");
+  } else {
+    layer.open({
+      type: 2,
+      area: [1002 + 'px', 500 + 'px'],
+      fix: true,
+      maxmin: true,
+      shade: 0.3,
+      title: 'Lịch Sử Container ' + containerNo + ' Catos',
+      content: HIST_PREFIX + "/container/history/" + voyNo + "/" + vslCd + "/" + containerNo,
+      btn: ["Đóng"],
+      shadeClose: false,
+      yes: function (index, layero) {
+        layer.close(index);
+      }
+    });
+  }
+}
+
+function openHistoryFormEport(row) {
+  let containerInfo = sourceData[row];
+  if (containerInfo == null || !containerInfo.id) {
+    $.modal.alertWarning("Container chưa được khai báo.");
+  } else {
+    layer.open({
+      type: 2,
+      area: [967 + 'px', 500 + 'px'],
+      fix: true,
+      maxmin: true,
+      shade: 0.3,
+      title: 'Lịch Sử Container ' + (containerInfo.containerNo != null ? containerInfo.containerNo : '') + ' Eport',
+      content: HIST_PREFIX + "/container/history/" + containerInfo.id,
+      btn: ["Đóng"],
+      shadeClose: false,
+      yes: function (index, layero) {
+        layer.close(index);
       }
     });
   }
