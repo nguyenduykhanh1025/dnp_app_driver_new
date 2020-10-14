@@ -48,156 +48,159 @@ import vn.com.irtech.eport.web.mqtt.MqttService.NotificationCode;
 @Component("eportTask")
 public class EportTask {
 
-    private static final Logger logger = LoggerFactory.getLogger(EportTask.class);
+	private static final Logger logger = LoggerFactory.getLogger(EportTask.class);
 
-    @Autowired
-    private IEdoHistoryService edoHistoryService;
+	@Autowired
+	private IEdoHistoryService edoHistoryService;
 
-    @Autowired
-    private ICarrierGroupService carrierGroupService;
+	@Autowired
+	private ICarrierGroupService carrierGroupService;
 
-    @Autowired
-    private MailService mailService;
+	@Autowired
+	private MailService mailService;
 
-    @Autowired
-    private ISysRobotService robotService;
+	@Autowired
+	private ISysRobotService robotService;
 
-    @Autowired
-    private IProcessOrderService processOrderService;
+	@Autowired
+	private IProcessOrderService processOrderService;
 
-    @Autowired
-    private WebSocketService webSocketService;
+	@Autowired
+	private WebSocketService webSocketService;
 
-    @Autowired
-    private MqttService mqttService;
+	@Autowired
+	private MqttService mqttService;
 
-    @Autowired
-    private ConfigService configService;
-    
-    @Autowired
-    private FirebaseService firebaseService;
-    
-    @Autowired
-    private ISysNotificationReceiverService sysNotificationReceiverService;
-    
-    @Autowired
-    private ISysUserTokenService sysUserTokenService;
+	@Autowired
+	private ConfigService configService;
 
-    public void sendMailReportEdo(String groupCode) throws MessagingException
-    {
-        System.out.print("Send email  .... " + groupCode);
-        CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupByGroupCode(groupCode);
-        if(carrierGroup == null)
-        {
-            return;
-            //TODO Return error 
-        }
-        //set time scan EDI file not yet
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Instant now = Instant.now();
-        Instant yesterday = now.minus(1, ChronoUnit.DAYS);
-        Date toDate = Date.from(now);
-        Date fromDate = Date.from(yesterday);
-        EdoHistory edoHistory = new EdoHistory();
-        edoHistory.setCarrierCode(groupCode);
-        Map<String, Object> timeDefine = new HashMap<>();
-        timeDefine.put("toDate", formatter.format(toDate).toString());
-        timeDefine.put("fromDate", formatter.format(fromDate).toString());
-        edoHistory.setParams(timeDefine);
-        edoHistory.setSendMailFlag("0");
-        List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
-        if(edoHistories.size() == 0)
-        {
-            return;
-        }
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("edoHistory", edoHistories);
-        variables.put("startDay", formatter.format(toDate));
-        variables.put("endDay", formatter.format(fromDate));
-        mailService.prepareAndSend("Lịch sử truy vấn file EDI",carrierGroup.getMainEmail(), variables, "reportMailCarrier"); 
-        for(EdoHistory edoHistory2 : edoHistories)
-        {
-            edoHistory2.setSendMailFlag("1");
-            edoHistoryService.updateEdoHistory(edoHistory2);
-        }
-        return;
+	@Autowired
+	private FirebaseService firebaseService;
 
-    }
+	@Autowired
+	private ISysNotificationReceiverService sysNotificationReceiverService;
 
-    /**
-     * check robot connection 
-     * expiredTime (minute)
-     * 
-     * @param expiredTime
-     */
-    public void pingRobot(Integer expiredTime) {
-        // Get all robot online (available or busy)
-        List<SysRobot> robots = robotService.selectRobotListOnline(new SysRobot());
-        if (!robots.isEmpty()) {
+	@Autowired
+	private ISysUserTokenService sysUserTokenService;
 
-            Date now = new Date();
-            now = DateUtils.addMinutes(now, expiredTime*(-1));
+	public void sendMailReportEdo(String groupCode) throws MessagingException {
+		System.out.print("Send email  .... " + groupCode);
+		CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupByGroupCode(groupCode);
+		if (carrierGroup == null) {
+			return;
+			// TODO Return error
+		}
+		// set time scan EDI file not yet
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Instant now = Instant.now();
+		Instant yesterday = now.minus(1, ChronoUnit.DAYS);
+		Date toDate = Date.from(now);
+		Date fromDate = Date.from(yesterday);
+		EdoHistory edoHistory = new EdoHistory();
+		edoHistory.setCarrierCode(groupCode);
+		Map<String, Object> timeDefine = new HashMap<>();
+		timeDefine.put("toDate", formatter.format(toDate).toString());
+		timeDefine.put("fromDate", formatter.format(fromDate).toString());
+		edoHistory.setParams(timeDefine);
+		edoHistory.setSendMailFlag("0");
+		List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
+		if (edoHistories.size() == 0) {
+			return;
+		}
+		Map<String, Object> variables = new HashMap<>();
+		variables.put("edoHistory", edoHistories);
+		variables.put("startDay", formatter.format(toDate));
+		variables.put("endDay", formatter.format(fromDate));
+		mailService.prepareAndSend("Lịch sử truy vấn file EDI", carrierGroup.getMainEmail(), variables,
+				"reportMailCarrier");
+		for (EdoHistory edoHistory2 : edoHistories) {
+			edoHistory2.setSendMailFlag("1");
+			edoHistoryService.updateEdoHistory(edoHistory2);
+		}
+		return;
 
-            for (SysRobot robot : robots) {
+	}
 
-                List<ProcessOrder> processOrders = processOrderService.getProcessingProcessOrderByUuid(robot.getUuId());
-                if (processOrders != null && !processOrders.isEmpty()) {
-                    for (ProcessOrder processOrder : processOrders) {
-                        processOrder.setStatus(0);
-                        processOrderService.updateProcessOrder(processOrder);
+	/**
+	 * check robot connection expiredTime (minute)
+	 * 
+	 * @param expiredTime
+	 */
+	public void pingRobot(Integer expiredTime) {
+		// Get all robot online (available or busy)
+		List<SysRobot> robots = robotService.selectRobotListOnline(new SysRobot());
+		if (!robots.isEmpty()) {
 
-                        // Send notification to logistics
-                        AjaxResult ajaxResult= null;
-                        ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
-                        webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
+			Date now = new Date();
+			now = DateUtils.addMinutes(now, expiredTime * (-1));
+			for (SysRobot robot : robots) {
 
-                        // Send notification to OM
-                        try {
-                            mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
-                        } catch (Exception e) {
-                            logger.warn(e.getMessage());
-                        }
-                    }
-                }
+				List<ProcessOrder> processOrders = processOrderService.getProcessingProcessOrderByUuid(robot.getUuId());
+				if (processOrders != null && !processOrders.isEmpty()) {
+					for (ProcessOrder processOrder : processOrders) {
+						processOrder.setStatus(0);
+						processOrderService.updateProcessOrder(processOrder);
 
-                // Response time exceed current time
-                if (robot.getResponseTime().getTime() < now.getTime()) {
-                    robot.setStatus("2");
-                    robotService.updateRobot(robot);
-                    
-                    // Send notification to IT
-                    try {
-                        mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + robot.getUuId(), configService.getKey("domain.admin.name") + "/system/robot/edit/" + robot.getId());
-                    } catch (Exception e) {
-                        logger.warn(e.getMessage());
-                    }
-                } 
-            }
-        }
-    }
-   
-    /**
-     * Send Notification
-     * 
-     */
-    @Transactional
-    public void sendNotification(Integer notificationNumber) {
-    	SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
-    	sysNotificationReceiver.setSentFlg(false);
-    	SysNotification sysNotification = new SysNotification();
-    	sysNotification.setStatus(EportConstants.NOTIFICATION_STATUS_ACTIVE);
-    	sysNotificationReceiver.setSysNotification(sysNotification);
-        List<SysNotificationReceiver> notificationReceivers = sysNotificationReceiverService.getNotificationListNotSentYet(sysNotificationReceiver, notificationNumber);
-        if (CollectionUtils.isNotEmpty(notificationReceivers)) {
-        	for (SysNotificationReceiver sysNotificationReceiver2 : notificationReceivers) {
-        		SysUserToken sysUserToken = new SysUserToken();
-				sysUserToken.setUserId(sysNotificationReceiver2.getUserId());;
+						// Send notification to logistics
+						AjaxResult ajaxResult = null;
+						ajaxResult = AjaxResult.error(
+								"Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
+						webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
+
+						// Send notification to OM
+						try {
+							mqttService.sendNotification(NotificationCode.NOTIFICATION_OM,
+									"Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name")
+											+ "/om/executeCatos/detail/" + processOrder.getId());
+						} catch (Exception e) {
+							logger.warn(e.getMessage());
+						}
+					}
+				}
+
+				// Response time exceed current time
+				if (robot.getResponseTime().getTime() < now.getTime()) {
+					robot.setStatus("2");
+					robotService.updateRobot(robot);
+
+					// Send notification to IT
+					try {
+						mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + robot.getUuId(),
+								configService.getKey("domain.admin.name") + "/system/robot/edit/" + robot.getId());
+					} catch (Exception e) {
+						logger.warn(e.getMessage());
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Send Notification
+	 * 
+	 */
+	@Transactional
+	public void sendNotification(Integer notificationNumber) {
+		SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
+		sysNotificationReceiver.setSentFlg(false);
+		SysNotification sysNotification = new SysNotification();
+		sysNotification.setStatus(EportConstants.NOTIFICATION_STATUS_ACTIVE);
+		sysNotificationReceiver.setSysNotification(sysNotification);
+		List<SysNotificationReceiver> notificationReceivers = sysNotificationReceiverService
+				.getNotificationListNotSentYet(sysNotificationReceiver, notificationNumber);
+		if (CollectionUtils.isNotEmpty(notificationReceivers)) {
+			for (SysNotificationReceiver sysNotificationReceiver2 : notificationReceivers) {
+				SysUserToken sysUserToken = new SysUserToken();
+				sysUserToken.setUserId(sysNotificationReceiver2.getUserId());
+				;
 				sysNotificationReceiver2.setSentFlg(true);
-        		sysNotificationReceiverService.updateSysNotificationReceiver(sysNotificationReceiver2);
-				List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(sysNotificationReceiver2.getUserId());
+				sysNotificationReceiverService.updateSysNotificationReceiver(sysNotificationReceiver2);
+				List<String> sysUserTokens = sysUserTokenService
+						.getListDeviceTokenByUserId(sysNotificationReceiver2.getUserId());
 				if (CollectionUtils.isNotEmpty(sysUserTokens)) {
 					try {
-						BatchResponse response = firebaseService.sendNotification(sysNotificationReceiver2.getTitle(), sysNotificationReceiver2.getContent(), sysUserTokens);
+						BatchResponse response = firebaseService.sendNotification(sysNotificationReceiver2.getTitle(),
+								sysNotificationReceiver2.getContent(), sysUserTokens);
 						if (response.getFailureCount() > 0) {
 							List<SendResponse> responses = response.getResponses();
 							List<String> failedTokens = new ArrayList<>();
@@ -214,8 +217,8 @@ public class EportTask {
 						logger.error("Error send notification: " + e);
 					}
 				}
-        	}
-        }
-        
-    }
+			}
+		}
+
+	}
 }
