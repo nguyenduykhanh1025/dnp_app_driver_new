@@ -41,12 +41,12 @@ import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.web.controller.AdminBaseController;
 
 @Controller
-@RequestMapping("/om/booking")
-public class BookingGatheringController extends AdminBaseController  {
+@RequestMapping("/om/document/pickup-empty")
+public class DocumentPickupEmptyController extends AdminBaseController  {
 	
-	private static final Logger logger = LoggerFactory.getLogger(BookingGatheringController.class); 
+	private static final Logger logger = LoggerFactory.getLogger(DocumentPickupEmptyController.class); 
 
-	private String PREFIX = "om/booking";
+	private String PREFIX = "om/document/pickupEmpty";
 	
 	@Autowired
 	private IShipmentService shipmentService;
@@ -112,13 +112,12 @@ public class BookingGatheringController extends AdminBaseController  {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
+		shipment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
 			params = new HashMap<>();
 		}
 		params.put("processStatus", "Y");
-		Integer[] serviceArray = { EportConstants.SERVICE_DROP_EMPTY, EportConstants.SERVICE_DROP_FULL };
-		params.put("serviceArray", serviceArray);
 		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
@@ -153,13 +152,12 @@ public class BookingGatheringController extends AdminBaseController  {
 	@ResponseBody
 	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
 		SysUser user = getUser();
-		Shipment shipment = shipmentService.selectShipmentById(shipmentComment.getShipmentId());
 		shipmentComment.setCreateBy(user.getUserName());
 		shipmentComment.setUserId(user.getUserId());
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(shipment.getServiceType());
+		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);

@@ -484,6 +484,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 					shipmentDetail.setContSupplyStatus("N");
 					shipmentDetail.setFe("E");
 					shipmentDetail.setFinishStatus("N");
+					shipmentDetail.setDoStatus("N");
 					// shipment carrier supply can save container no
 					if (shipment.getSpecificContFlg() == 1) {
 						shipmentDetail.setContainerNo(inputDetail.getContainerNo());
