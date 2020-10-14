@@ -110,7 +110,7 @@ public class AsyncFactory
                 String browser = userAgent.getBrowser().getName();
                 // Encapsulated object
                 SysLogininfor logininfor = new SysLogininfor();
-                logininfor.setLoginName("Carrier: " + username);
+                logininfor.setLoginName("Logistic: " + username);
                 logininfor.setIpaddr(ip);
                 logininfor.setLoginLocation(address);
                 logininfor.setBrowser(browser);
