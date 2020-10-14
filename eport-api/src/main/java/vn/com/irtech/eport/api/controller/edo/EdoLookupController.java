@@ -1,7 +1,4 @@
-/**
- * 
- */
-package vn.com.irtech.eport.carrier.controller;
+package vn.com.irtech.eport.api.controller.edo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.dto.EdoPublicRes;
 import vn.com.irtech.eport.carrier.service.IEdoService;
+import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.utils.StringUtils;
@@ -33,7 +31,7 @@ import vn.com.irtech.eport.system.dto.ContainerInfoDto;
  */
 @Controller
 @RequestMapping("/edo/lookup")
-public class EdoLookupController extends CarrierBaseController {
+public class EdoLookupController extends BaseController {
 
 	@Autowired
 	private ICatosApiService catosApiService;
@@ -42,7 +40,7 @@ public class EdoLookupController extends CarrierBaseController {
 	private IEdoService edoService;
 
 	@PostMapping()
-	@CrossOrigin(origins = "http://127.0.0.1:5500")
+	@CrossOrigin("*")
 	@ResponseBody
 	public AjaxResult getEdoByBillOrContainer(@RequestBody PageAble<Edo> param) {
 
@@ -70,9 +68,9 @@ public class EdoLookupController extends CarrierBaseController {
 		// return data table empty to client if result query = 0
 		if (CollectionUtils.isEmpty(edos)) {
 			ajaxResult.put("edos", getDataTable(new ArrayList<>()));
+			return ajaxResult;
 		}
 
-		// for each result to pass more info from catos
 		String blNo = edos.get(0).getBillOfLading(); // it's always the same => get first bill for default
 		Map<String, ContainerInfoDto> cntrInfoMap = getContainerInfoMap(blNo);
 
@@ -86,9 +84,11 @@ public class EdoLookupController extends CarrierBaseController {
 			// Check if cntr info not null ==> set gate out date and remark from catos into
 			// edo public res
 			if (cntrInfo != null) {
-				edoPublicRes.setRemark(cntrInfo.getRemark());
+				edoPublicRes.setRemark(cntrInfo.getRemark()); // edo remark
 				edoPublicRes.setGateOutDate(cntrInfo.getOutDate());
+				edoPublicRes.setGateInDate(cntrInfo.getInDate());
 				edoPublicRes.setCntrState(cntrInfo.getCntrState());
+				edoPublicRes.setLocation(cntrInfo.getLocation());
 			}
 			edoListResult.add(edoPublicRes);
 		}
@@ -97,7 +97,7 @@ public class EdoLookupController extends CarrierBaseController {
 	}
 
 	private Map<String, ContainerInfoDto> getContainerInfoMap(String blNo) {
-		List<ContainerInfoDto> cntrInfos = catosApiService.selectShipmentDetailsByBLNo(blNo);
+		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoListByBlNo(blNo);
 		// List<ContainerInfoDto> cntrInfos =
 		// catosApiService.getContainerInfoListByBlNo(blNo);
 		// Map oject store container info data by key container no

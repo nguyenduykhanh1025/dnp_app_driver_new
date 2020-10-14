@@ -19,7 +19,7 @@
       <div class="intro pb-0">
         <div class="intro__header menu container-fluid d-flex justify-content-between align-items-center">
           <div class="logo">
-            <span> <img class="logoCDN" src="../images/CDN.png" height="35" /> DNP ePORT</span>
+            <span> <a href="https://eport.danangport.com" style="color:#fff; text-decoration: none"><img class="logoCDN" src="../images/CDN.png" height="35"/> DNP ePORT</a></span>
           </div>
           <div class="nav">
             <nav class="navbar navbar-expand-sm navbar-light">
@@ -29,10 +29,10 @@
               <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                   <li class="nav-item ">
-                    <a href="/" class="nav-link">Giới thiệu</a>
+                    <a href="https://eport.danangport.com/" class="nav-link">Trang Chủ</a>
                   </li>
                   <li class="nav-item active">
-                    <span class="nav-link" onclick="window.location.href='/pages/tracuuedo.html'">Tra cứu eDO <i class="fa fa-search"></i></span>
+                    <span class="nav-link" onclick="window.location.href='/pages/tracuuedo.html'"><i class="fa fa-search"></i>&nbsp;&nbsp;Tra cứu eDO </span>
                   </li>
                 </ul>
               </div>
@@ -43,7 +43,7 @@
       <div class="content p-1 mt-4">
         <div class="content__search-form">
           <h2 class="text-uppercase mt-0">Tra cứu thông tin lệnh giao hàng điện tử - eDO</h2>
-          <div class="form-inline d-flex my-2 mt-3 px-5">
+          <div class="form-inline d-flex my-2 mt-3 px-5" style="justify-content: center;">
             <div class="form-group">
               <label for="containerNo">Số Container</label>
               <input type="text" name="containerNo" class="form-control mx-sm-3" />
@@ -66,30 +66,20 @@
           <table id="dg" style="width: 100%" pageList="[20,50,100,150,200]">
             <thead>
               <tr>
-                <th data-options="field:'billOfLading', resizable:true, halign:'left', align:'left', fixed:true" width="150">Số Bill</th>
-                <th data-options="field:'containerNumber', resizable:true, halign:'left', align:'left', fixed:true" width="120">Số Container</th>
-                <th data-options="field:'carrierCode', resizable:true, halign:'left', align:'left', fixed:true" width="70">OPR</th>
-                <th data-options="field:'gateOutDate', resizable:true, halign:'left', align:'left', fixed:true, formatter: formatDateTime" width="160">Ngày Gate Out Full</th>
-                <th data-options="field:'expiredDem', resizable:true, halign:'left', align:'left', fixed:true, formatter: formatDate" width="120">Expired Day</th>
-                <th data-options="field:'detFreeTime', resizable:true, halign:'left', align:'left', fixed:true" width="120">Detention Day</th>
+                <th data-options="field:'billOfLading', resizable:true, halign:'left', align:'left', fixed:true" width="120">Số Bill</th>
+                <th data-options="field:'containerNumber', resizable:true, halign:'left', align:'left', fixed:true" width="110">Số Container</th>
+                <th data-options="field:'businessUnit', resizable:true, halign:'left', align:'left', fixed:true" width="50">OPR</th>
+                <th data-options="field:'gateInDate', resizable:true, halign:'center', align:'left', fixed:true, formatter: formatDateTime" width="130">Ngày Vào</th>
+                <th data-options="field:'gateOutDate', resizable:true, halign:'center', align:'left', fixed:true, formatter: formatDateTime" width="130">Ngày Ra</th>
+                <th data-options="field:'expiredDem', resizable:true, halign:'left', align:'left', fixed:true, formatter: formatDate" width="90">Expired Day</th>
+                <th data-options="field:'detFreeTime', resizable:true, halign:'center', align:'center', fixed:true" width="100">Detention Day</th>
                 <th data-options="field:'emptyContainerDepot', resizable:true, halign:'left', align:'left', fixed:true" width="220">Empty Return Place</th>
-                <th data-options="field:'cntrState', resizable:true, halign:'left', align:'left', fixed:true, formatter: formatStatus" width="140">Trạng Thái</th>
-                <th data-options="field:'remark', resizable:true, halign:'left', align:'left', fixed:true" width="270">Remark</th>
+                <th data-options="field:'cntrState', resizable:true, halign:'left', align:'center', fixed:true, formatter: formatStatus" width="90">Trạng Thái</th>
+                <th data-options="field:'location', resizable:true, halign:'left', align:'center', fixed:true" width="90">Vị Trí Bãi</th>
+                <th data-options="field:'remark', resizable:true, halign:'left', align:'left', fixed:true" width="300">Ghi Chú</th>
               </tr>
             </thead>
           </table>
-        </div>
-      </div>
-      <div class="footer d-flex justify-content-between">
-        <div class="">
-          <span class="footer__header-title">Yêu Cầu Hỗ Trợ</span>
-          <div>
-            <span class="footer__header-content mt-5" style="color: #ddd">Đăng ký sử dụng Cảng điện tử – ePORT, xin liên hệ phòng Kinh doanh Cảng Đà Nẵng: <span style="color: #fff">02363 822 163</span></span
-            ><br />
-            <span class="footer__header-content mt-5" style="color: #ddd">Trợ giúp, hướng dẫn sử dụng, xử lý lỗi khi khai báo ePORT, xin liên hệ Trung tâm Dịch vụ Khách hàng – XN Cảng Tiên Sa: <span style="color: #fff">0933.157.159; 02363 848 363.</span></span
-            ><br />
-            <span class="footer__header-content mt-5" style="color: #ddd">Liên hệ kết nối lệnh giao hàng điện tử eDO, xin liên hệ phòng CNTT Cảng Đà Nẵng: <span style="color: #fff">02363 894 582</span></span>
-          </div>
         </div>
       </div>
     </div>

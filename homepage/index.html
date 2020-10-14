@@ -6,18 +6,20 @@
   <link rel="icon" href="https://cdn.shortpixel.ai/client/q_glossy,ret_img,w_32,h_32/https://danangport.com/wp-content/uploads/2018/08/cropped-logo-footer-32x32.png" sizes="32x32" />
   <link rel="icon" href="https://cdn.shortpixel.ai/client/q_glossy,ret_img,w_192,h_192/https://danangport.com/wp-content/uploads/2018/08/cropped-logo-footer-192x192.png" sizes="192x192" />
   <link rel="apple-touch-icon-precomposed" href="https://danangport.com/wp-content/uploads/2018/08/cropped-logo-footer-180x180.png" />
-  <title>DNP ePort - Cảng Điện Tử</title>
+  <title>DNP ePort - Cảng Điện Tử Cảng Đà Nẵng</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="css/grt-youtube-popup.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="main-wrapper">
+  <div class="main-wrapper" id="top">
     <div class="intro">
       <div class="intro__header menu container-fluid d-flex justify-content-between align-items-center">
         <div class="logo">
-          <span> <img class="logoCDN" src="images/CDN.png" height="35">  DNP ePORT</span>
+          <span><a href="https://eport.danangport.com/">
+            <img class="logoCDN" src="images/CDN.png" height="35"></a> DNP ePORT 
+          </span>
         </div>
         <div class="nav">
           <nav class="navbar navbar-expand-sm navbar-light">
@@ -26,14 +28,14 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav">
-                <li class="nav-item active">
-                  <span class="nav-link">Giới thiệu</span>
+                <li class="nav-item">
+                  <span class="nav-link" onclick="goToID('top');">Giới thiệu</span>
                 </li>
                 <li class="nav-item">
-                  <span class="nav-link" onclick="goToID('mail');">Hướng dẫn</span>
+                  <span class="nav-link" onclick="goToID('guideline');">Hướng dẫn</span>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href='pages/tracuuedo.html'>Tra cứu eDO <i class="fa fa-search"></i></a>
+                  <a class="nav-link" href='pages/tracuuedo.html'><i class="fa fa-search"></i> Tra cứu eDO</a>
                 </li>
               </ul>
             </div>
@@ -43,8 +45,8 @@
       <div class="intro__content">
         <div class="intro__content--main-text d-flex flex-column align-items-center justify-content-center">
           <div class="big-text">
-            <h1>ePORT DNP: Cảng Điện Tử - Cảng Đà Nẵng <br>
-              Khai báo dịch vụ trực tuyến - hiệu quả - nhanh chóng - mọi lúc mọi nơi.<br>
+            <h1>ePORT DNP: Cảng Điện Tử - Cảng Đà Nẵng <br><br>
+              Sử dụng dịch vụ trực tuyến - hiệu quả - nhanh chóng - mọi lúc mọi nơi.<br>
               Tiên phong trong chuyển đổi số doanh nghiệp.</h1>
           </div>
           <a href="" class="play-button youtube-link" youtubeid="L_xnE5zQcz0"><img src="images/play.png"></a>
@@ -153,7 +155,7 @@
           
         </div>
       </div>
-      <div class="annotations" id="mail">
+      <div class="annotations" id="guideline">
         <div class="title">
           <span class="primary-title text-dark">Hướng dẫn</span>
         </div>

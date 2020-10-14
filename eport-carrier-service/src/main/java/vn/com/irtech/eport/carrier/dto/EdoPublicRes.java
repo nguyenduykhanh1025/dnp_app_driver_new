@@ -21,10 +21,13 @@ public class EdoPublicRes implements Serializable {
 	private String containerNumber;
 
 	/** OPR */
-	private String carrierCode;
-
+	private String businessUnit;
+	
 	/** Gate-out Date */
 	private Date gateOutDate;
+
+	/** Gate-in Date */
+	private Date gateInDate;
 
 	/** Vessel */
 	private String vessel;
@@ -40,14 +43,24 @@ public class EdoPublicRes implements Serializable {
 
 	/** Empty Return Place */
 	private String emptyContainerDepot;
+	
+	/** Yard position */
+	private String location;
 
 	/** Remark */
 	private String remark;
 
 	/**
-	 * Container State: 'R': 'Before Reconcile' 'B': 'After Reconcile' 'M':
-	 * 'Manifested' 'Y': 'Stacking' 'G': 'In Progress Outgoing' 'O': 'In Progress
-	 * Incoming' 'P': 'Assigned by Trucker' 'Z': 'Under Shifting' 'D': 'Delivered'
+	 * Container State: 
+	 * 'R': 'Before Reconcile' 
+	 * 'B': 'After Reconcile' 
+	 * 'M': 'Manifested' 
+	 * 'Y': 'Stacking' 
+	 * 'G': 'In Progress Outgoing' 
+	 * 'O': 'In Progress Incoming' 
+	 * 'P': 'Assigned by Trucker' 
+	 * 'Z': 'Under Shifting' 
+	 * 'D': 'Delivered'
 	 * 'E': 'Empty Gate Out'
 	 */
 	private String cntrState;
@@ -68,12 +81,12 @@ public class EdoPublicRes implements Serializable {
 		this.containerNumber = containerNumber;
 	}
 
-	public String getCarrierCode() {
-		return carrierCode;
+	public String getBusinessUnit() {
+		return businessUnit;
 	}
 
-	public void setCarrierCode(String carrierCode) {
-		this.carrierCode = carrierCode;
+	public void setBusinessUnit(String businessUnit) {
+		this.businessUnit = businessUnit;
 	}
 
 	public Date getGateOutDate() {
@@ -82,6 +95,14 @@ public class EdoPublicRes implements Serializable {
 
 	public void setGateOutDate(Date gateOutDate) {
 		this.gateOutDate = gateOutDate;
+	}
+
+	public Date getGateInDate() {
+		return gateInDate;
+	}
+
+	public void setGateInDate(Date gateInDate) {
+		this.gateInDate = gateInDate;
 	}
 
 	public String getVessel() {
@@ -122,6 +143,14 @@ public class EdoPublicRes implements Serializable {
 
 	public void setEmptyContainerDepot(String emptyContainerDepot) {
 		this.emptyContainerDepot = emptyContainerDepot;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 	public String getRemark() {
