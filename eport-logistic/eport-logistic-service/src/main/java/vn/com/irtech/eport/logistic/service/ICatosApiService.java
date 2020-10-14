@@ -52,6 +52,14 @@ public interface ICatosApiService {
 
 	public List<ContainerInfoDto> selectShipmentDetailsByBLNo(String blNo);
 
+	/**
+	 * Get container info list by bl no
+	 * 
+	 * @param blNo
+	 * @return List<ContainerInfoDto>
+	 */
+	public List<ContainerInfoDto> getContainerInfoListByBlNo(String blNo);
+
 	public ShipmentDetail selectShipmentDetailByContNo(ShipmentDetail shipmentDetail);
 
 	public List<String> selectVesselCodeBerthPlan(String opeCode);

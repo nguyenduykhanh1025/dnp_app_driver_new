@@ -300,6 +300,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/logout", "logout");
         filterChainDefinitionMap.put("/api/v1/edi/sendarrayedidata", "anon");
         filterChainDefinitionMap.put("/api/v1/edi/gethashcode", "anon");
+		filterChainDefinitionMap.put("/edo/lookup", "anon");
 //        filterChainDefinitionMap.put("/login", "anon,captchaValidate");
 //        filterChainDefinitionMap.put("/register", "anon,captchaValidate");
 

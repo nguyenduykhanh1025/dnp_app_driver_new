@@ -243,6 +243,31 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	}
 
 	@Override
+	public List<ContainerInfoDto> getContainerInfoListByBlNo(String blNo) {
+		try {
+			String url = Global.getApiUrl() + "/bl-no/containers";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+
+			JSONObject reqEntity = new JSONObject();
+			reqEntity.put("blNo", blNo);
+			HttpEntity<JSONObject> httpEntity = new HttpEntity<JSONObject>(reqEntity);
+
+			ResponseEntity<List<ContainerInfoDto>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
+					new ParameterizedTypeReference<List<ContainerInfoDto>>() {
+					});
+
+			List<ContainerInfoDto> shipmentDetails = response.getBody();
+			return shipmentDetails;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			return null;
+		}
+
+	}
+
+	@Override
 	public ShipmentDetail selectShipmentDetailByContNo(ShipmentDetail shipmentDetail) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/containerInfor";

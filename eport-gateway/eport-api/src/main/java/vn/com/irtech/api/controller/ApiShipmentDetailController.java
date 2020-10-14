@@ -37,6 +37,11 @@ public class ApiShipmentDetailController {
 		return shipmentDetailDao.selectShipmentDetailsByBLNo(shipmentEntity.getBlNo());
 	}
 
+	@PostMapping("/bl-no/containers")
+	public List<ContainerInfoDto> getListContainerInfoByBlNo(@RequestBody ShipmentEntity shipmentEntity) {
+		return shipmentDetailDao.selectContainerInfoByBLNo(shipmentEntity.getBlNo());
+	}
+
 	@PostMapping("/shipmentDetail/containerInfor")
 	public ShipmentDetailEntity getShipmentDetail(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
 		ShipmentDetailEntity ship = shipmentDetailDao.selectShipmentDetailByContNo(shipmentDetailEntity);

@@ -21,6 +21,14 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 
 	public List<ContainerInfoDto> selectShipmentDetailsByBLNo(String blNo);
 
+	/**
+	 * Select container info by bl no (container full can be already gate out)
+	 * 
+	 * @param blNo
+	 * @return
+	 */
+	public List<ContainerInfoDto> selectContainerInfoByBLNo(String blNo);
+
 	public ShipmentDetailEntity selectShipmentDetailByContNo(ShipmentDetailEntity shipmentDetailEntity);
 
 	public List<ShipmentDetailEntity> selectCoordinateOfContainers(String blNo);

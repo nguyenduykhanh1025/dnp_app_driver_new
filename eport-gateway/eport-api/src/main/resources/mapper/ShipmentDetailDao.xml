@@ -55,6 +55,22 @@
         </where>
     </select>
 
+	<select id="selectContainerInfoByBLNo" parameterType="String" resultType="vn.com.irtech.api.dto.ContainerInfoDto">
+        <include refid="selectContainerDetailVo"/>
+			, M.GATE_OUT
+            FROM DNP_PROD.TB_INVENTORY M
+        <where>
+            AND M.BL_NO = #{blNo}
+        </where>
+        UNION
+        <include refid="selectContainerDetailVo"/>
+			, M.GATE_OUT
+            FROM DNP_PROD.TB_MASTER M
+        <where>
+            AND M.BL_NO = #{blNo}
+        </where>
+    </select>
+
 	<select id="selectShipmentDetailByContainerNos" parameterType="String" resultType="vn.com.irtech.api.dto.ContainerInfoDto">
         <include refid="selectContainerDetailVo"/>
             FROM DNP_PROD.TB_INVENTORY M

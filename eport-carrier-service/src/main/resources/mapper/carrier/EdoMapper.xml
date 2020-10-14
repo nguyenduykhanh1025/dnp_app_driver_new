@@ -114,6 +114,8 @@
         </foreach>
       </if>
       <if test="carrierId != null ">and carrier_id = #{carrierId}</if>
+      <if test="params.blNo != null  and params.blNo != ''">and bill_of_lading = #{params.blNo}</if>
+      <if test="params.containerNo != null  and params.containerNo != ''">and container_number = #{params.containerNo}</if>
       <if test="carrierCode != null  and carrierCode != ''">and carrier_code = #{carrierCode}</if>
       <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
       <if test="releaseNo != null  and releaseNo != ''">and release_no = #{releaseNo}</if>

@@ -114,6 +114,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		if (StringUtils.isNotEmpty(trucker)) {
 			return trucker;
 		}
+		// Convert taxCode to ptnr code
+		String ptnrCode = catosApiService.getTruckerByTaxCode(taxCode);
+		if (StringUtils.isNotEmpty(ptnrCode)) {
+			return ptnrCode;
+		}
 		return taxCode;
 	}
 
@@ -475,7 +480,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setConsignee(detail.getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         try {
-            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
+			processOrder.setTruckCo(
+					getTruckerFromRegNoCatos(taxCode) + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
         } catch (Exception e) {
         	logger.error("Error when get company name with tax code: " + e);
         }
@@ -569,7 +575,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setConsignee(detail.getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         try {
-            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
+			processOrder.setTruckCo(
+					getTruckerFromRegNoCatos(taxCode) + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
         } catch (Exception e) {
         	logger.error("Error when get company name with tax code: " + e);
         }

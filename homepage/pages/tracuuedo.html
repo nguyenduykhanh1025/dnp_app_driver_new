@@ -9,17 +9,17 @@
     <title>DNP ePort - Tra cứu eDO</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
-    <link rel="stylesheet" href="/css/grt-youtube-popup.css" />
-    <link rel="stylesheet" href="/js/libs/easyui/themes/default/easyui.css" />
-    <link rel="stylesheet" href="/js/libs/easyui/themes/icon.css"/>
-    <link rel="stylesheet" href="/css/tracuu.css" />
+    <link rel="stylesheet" href="../css/grt-youtube-popup.css" />
+    <link rel="stylesheet" href="../js/libs/easyui/themes/default/easyui_backup.css" />
+    <link rel="stylesheet" href="../js/libs/easyui/themes/icon.css"/>
+    <link rel="stylesheet" href="../css/tracuu.css" />
   </head>
   <body>
     <div class="main-wrapper">
       <div class="intro pb-0">
         <div class="intro__header menu container-fluid d-flex justify-content-between align-items-center">
           <div class="logo">
-            <span> <img class="logoCDN" src="/images/CDN.png" height="35" /> DNP ePORT</span>
+            <span> <img class="logoCDN" src="../images/CDN.png" height="35" /> DNP ePORT</span>
           </div>
           <div class="nav">
             <nav class="navbar navbar-expand-sm navbar-light">
@@ -52,12 +52,12 @@
               <label for="billNo">Số Bill</label>
               <input type="text" name="billNo" class="form-control mx-sm-3" />
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
               <label for="capcha">Mã Captcha</label>
               <div class="capcha"></div>
               <input type="text" name="capcha" class="form-control mx-sm-3" />
-            </div>
-            <button class="btn btn-primary">Tìm kiếm</button>
+            </div> -->
+            <button class="btn btn-primary" onclick="searchEdo()">Tìm kiếm</button>
           </div>
         </div>
         <div class="content__table">
@@ -66,12 +66,15 @@
           <table id="dg" style="width: 100%" pageList="[20,50,100,150,200]">
             <thead>
               <tr>
-                <th data-options="field:'id', resizable:true, align:'right', fixed:true" sortable="true" width="60">Mã Lô</th>
-                <th data-options="field:'bookingNo', resizable:true, align:'left', fixed:true" sortable="true" width="150">Booking No</th>
-                <th data-options="field:'opeCode', resizable:true, align:'left', fixed:true" sortable="true" width="50">OPR</th>
-                <th data-options="field:'containerAmount', resizable:true, align:'center', fixed:true" sortable="true" width="40">SL</th>
-                <th data-options="field:'logisticName', resizable:true, align:'left', fixed:true" width="100">Logistics</th>
-                <th data-options="field:'createTime', resizable:true, align:'right', fixed:true" sortable="true" width="120">Ngày Tạo</th>
+                <th data-options="field:'billOfLading', resizable:true, halign:'left', align:'left', fixed:true" width="150">Số Bill</th>
+                <th data-options="field:'containerNumber', resizable:true, halign:'left', align:'left', fixed:true" width="120">Số Container</th>
+                <th data-options="field:'carrierCode', resizable:true, halign:'left', align:'left', fixed:true" width="70">OPR</th>
+                <th data-options="field:'gateOutDate', resizable:true, halign:'left', align:'left', fixed:true, formatter: formatDateTime" width="160">Ngày Gate Out Full</th>
+                <th data-options="field:'expiredDem', resizable:true, halign:'left', align:'left', fixed:true, formatter: formatDate" width="120">Expired Day</th>
+                <th data-options="field:'detFreeTime', resizable:true, halign:'left', align:'left', fixed:true" width="120">Detention Day</th>
+                <th data-options="field:'emptyContainerDepot', resizable:true, halign:'left', align:'left', fixed:true" width="220">Empty Return Place</th>
+                <th data-options="field:'cntrState', resizable:true, halign:'left', align:'left', fixed:true, formatter: formatStatus" width="140">Trạng Thái</th>
+                <th data-options="field:'remark', resizable:true, halign:'left', align:'left', fixed:true" width="270">Remark</th>
               </tr>
             </thead>
           </table>
@@ -93,8 +96,8 @@
     <script src="https://code.jquery.com/jquery-2.1.4.min.js" integrity="sha256-8WqyJLuWKRBVhxXIL1jBDD7SDxU936oZkCnxQbWwJVw=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="/js/libs/easyui/jquery.easyui.min.js"></script>
-    <script src="/js/libs/easyui/datagrid-filter.js"></script>
-    <script src="/js/tracuu.js"></script>
+    <script src="../js/libs/easyui/jquery.easyui.min.js"></script>
+    <script src="../js/libs/easyui/datagrid-filter.js"></script>
+    <script src="../js/tracuu.js"></script>
   </body>
 </html>
