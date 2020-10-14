@@ -33,6 +33,7 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.form.BookingInfo;
@@ -1119,15 +1120,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     	processOrder.setShipmentId(shipmentDetails.get(0).getShipmentId());
     	processOrder.setOrderNo(shipmentDetails.get(0).getOrderNo());
     	processOrder.setContNumber(shipmentDetails.size());
-    	List<Long> shipmentDetailIds = new ArrayList<>();
+		String containers = "";
     	for (ShipmentDetail shipmentDetail : shipmentDetails) {
-    		shipmentDetailIds.add(shipmentDetail.getId());
-    		shipmentDetail.setDoStatus("N");
-    		shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+			containers += shipmentDetail.getContainerNo() + ",";
     	}
-    	Map<String, Object> map = new HashMap<>();
-    	map.put("shipmentDetailIds", shipmentDetailIds);
-    	processOrder.setProcessData(new Gson().toJson(map));
+		ProcessJsonData processJsonData = new ProcessJsonData();
+		processJsonData.setContainers(containers.substring(0, containers.length() - 1));
+		processOrder.setProcessData(new Gson().toJson(processJsonData));
     	processOrderService.insertProcessOrder(processOrder);
     	ServiceSendFullRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
     	return serviceRobotReq;
@@ -1339,5 +1338,16 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	@Override
 	public int deleteShipmentDetailByCondition(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.deleteShipmentDetailByCondition(shipmentDetail);
+	}
+
+	/**
+	 * Update shipment detail by condition
+	 * 
+	 * @param shipmentDetail
+	 * @return int
+	 */
+	@Override
+	public int updateShipmentDetailByCondition(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.updateShipmentDetailByCondition(shipmentDetail);
 	}
 }

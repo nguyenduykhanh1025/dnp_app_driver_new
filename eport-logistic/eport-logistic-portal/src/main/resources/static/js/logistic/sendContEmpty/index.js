@@ -387,11 +387,13 @@ function getSelected(index, row) {
                     } else {
                         title += 'Trống';
                     }
+                    title += '<span id="attachFile"></span>';
                     $('#right-layout').layout('panel', 'center').panel('setTitle', title);
                     rowAmount = row.containerAmount;
                     checkList = Array(rowAmount).fill(0);
                     sztpListDisable = Array(rowAmount).fill(0);
                     allChecked = false;
+                    toggleAttachIcon(shipmentSelected.id);
                     $.ajax({
                         url: prefix + "/opr/" + shipmentSelected.opeCode + "/empty-expired-dem/require",
                         method: "GET",
@@ -439,11 +441,13 @@ function getSelected(index, row) {
                 } else {
                     title += 'Trống';
                 }
+                title += '<span id="attachFile"></span>';
                 $('#right-layout').layout('panel', 'center').panel('setTitle', title);
                 rowAmount = row.containerAmount;
                 checkList = Array(rowAmount).fill(0);
                 sztpListDisable = Array(rowAmount).fill(0);
                 allChecked = false;
+                toggleAttachIcon(shipmentSelected.id);
                 $.ajax({
                     url: prefix + "/opr/" + shipmentSelected.opeCode + "/empty-expired-dem/require",
                     method: "GET",
@@ -467,6 +471,25 @@ function getSelected(index, row) {
             return true;
         }
     }
+}
+
+function toggleAttachIcon(shipmentId) {
+    $.ajax({
+        type: "GET",
+        url: prefix + "/shipments/" + shipmentId + "/shipment-images",
+        contentType: "application/json",
+        success: function (data) {
+            if (data.code == 0) {
+                if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
+                    let html = '';
+                    data.shipmentFiles.forEach(function (element, index) {
+                        html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
+                    });
+                    $('#attachFile').html(html);
+                }
+            }
+        }
+    });
 }
 
 // FORMAT HANDSONTABLE COLUMN

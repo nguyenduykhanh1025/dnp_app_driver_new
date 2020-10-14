@@ -279,14 +279,18 @@ public class MqttService implements MqttCallback {
 		publish(topic, new MqttMessage(msg.getBytes()));
 	}
 
-	public void sendReleaseTerminalHoldForRobot(String containers, ShipmentDetail shipmentDetail) {
+	public void sendReleaseTerminalHoldForRobot(String containers, ShipmentDetail shipmentDetail, Integer serviceType) {
 		// Get list container need to check terminal hold
 		ContainerHoldInfo containerHoldInfo = new ContainerHoldInfo();
 		containerHoldInfo.setContainers(Convert.toStrArray(containers));
 		containerHoldInfo.setHoldChk("Y");
 		containerHoldInfo.setHoldCode(EportConstants.HOLD_CODE_DO);
 		containerHoldInfo.setHoldType(EportConstants.HOLD_TYPE_TERMINAL);
-		containerHoldInfo.setUserVoy(shipmentDetail.getVslNm() + shipmentDetail.getVoyNo());
+		if (serviceType == EportConstants.SERVICE_PICKUP_FULL) {
+			containerHoldInfo.setUserVoy(shipmentDetail.getVslNm() + shipmentDetail.getVoyNo());
+		} else if (serviceType == EportConstants.SERVICE_DROP_EMPTY) {
+			containerHoldInfo.setUserVoy("EMTY");
+		}
 		List<String> containerList = catosApiService.getContainerListHoldRelease(containerHoldInfo);
 
 		// Send list container not check terminal hold to robot
