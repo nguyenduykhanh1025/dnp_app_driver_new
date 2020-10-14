@@ -38,7 +38,7 @@ public class JwtAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		if (requestURI != null && (requestURI.contains("/login") || requestURI.contains("/error")
 				|| requestURI.contains("/transport/user/register") || requestURI.contains("/gate/detection")
 				|| requestURI.contains("/transport/user/resetpwd") || requestURI.contains("/logistic/user/register")
-				|| requestURI.contains("/logistic/user/resetpwd"))) {
+				|| requestURI.contains("/logistic/user/resetpwd") || requestURI.contains("/edo/lookup"))) {
 			return true;
 		}
 

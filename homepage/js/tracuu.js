@@ -1,4 +1,4 @@
-const PREFIX_URL = 'http://127.0.0.1:7072/carrier';
+const PREFIX_URL = 'https://app.danangport.com/api';
 $(document).ready(function (){
     $('input[name=billNo]').on('keypress',function(e) {
         if(e.which == 13) {
@@ -19,7 +19,7 @@ function searchEdo() {
     let blNo = $('input[name=billNo]').val().trim().toUpperCase();
     let containerNo = $('input[name=containerNo]').val().trim().toUpperCase();
     if (!blNo && !containerNo) {
-        alert("Quý khách vui lòng nhập số bill hoặc số container để tìm kiếm.");
+        alert("Vui lòng nhập số Bill hoặc số Container để tìm kiếm.");
     } else {
         loadTable({ billOfLading: blNo, containerNumber: containerNo });
     }
@@ -28,7 +28,7 @@ function searchEdo() {
 function loadTable(requestData) {
     if (requestData == null) {
         $("#dg").datagrid({
-            height: $(document).height() - 420,
+            height: $(document).height() - 220,
             singleSelect: true,
             collapsible: true,
             clientPaging: false,
@@ -40,7 +40,7 @@ function loadTable(requestData) {
         });
     } else {
         $("#dg").datagrid({
-            height: $(document).height() - 420,
+            height: $(document).height() - 220,
             url: PREFIX_URL + '/edo/lookup',
             method: 'POST',
             singleSelect: true,
