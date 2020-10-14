@@ -4,7 +4,7 @@ const PREFIX = ctx + "edo";
 $(function () {
   if(hasConsigneeUpdatePermission == true)
   {
-    $( "#consignee" ).hide();
+    $( "#consignee" ).attr("disabled", false);
   }
   $("#containerNumber").val(containerNumber);
   $("#expiredDem").val(formatDate(expiredDem));
@@ -55,7 +55,7 @@ function confirm() {
         method: "post",
         dataType: "json",
         data: {
-          id: id,
+          ids : id,
           expiredDem: formatDateForSubmit($("#expiredDem").val()),
           detFreeTime: $("#detFreeTime").val() == detFreeTime ? "" : $("#detFreeTime").val(),
           emptyContainerDepot: $("#emptyContainerDepot").val() == emptyContainerDepot ? "" : $("#emptyContainerDepot").val(),

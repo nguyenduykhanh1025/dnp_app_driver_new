@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.carrier.service.impl;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +21,7 @@ import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.common.utils.StringUtils;
 
 
 /**
@@ -152,103 +154,76 @@ public class EdoServiceImpl implements IEdoService
 		for(String s : text)
 		{
 			//carrierCode and createTime
-			if(s.contains("UNB+UNOA"))
-			{
+			if(s.contains("UNB+UNOA")) {
 				String[] carrierCodes = s.split("\\+");
-				if(carrierCodes.length > 2)
-				{
+				if(carrierCodes.length > 2) {
 					carrierCode = carrierCodes[2];
 				}
-				if(carrierCodes.length > 4)
-				{
-					String [] timeInfo = carrierCodes[4].split("\\:");
-					if(timeInfo.length > 1)
-					{
-						fileCreateTime.setYear(Integer.parseInt("20"+timeInfo[0].substring(0,2))-1900);
-						fileCreateTime.setMonth(Integer.parseInt(timeInfo[0].substring(2,4))-1);
-						fileCreateTime.setDate(Integer.parseInt(timeInfo[0].substring(4,6)));
-						fileCreateTime.setHours(Integer.parseInt(timeInfo[1].substring(0,2)));
-						fileCreateTime.setMinutes(Integer.parseInt(timeInfo[1].substring(2,4)));
-						fileCreateTime.setSeconds(00);
+				if(carrierCodes.length > 4) {
+					String strTime = carrierCodes[4].replaceAll(":", "");
+					try {
+						fileCreateTime = new SimpleDateFormat("yyMMddhhmm").parse(strTime);
+					} catch(Exception ex) {
+						ex.printStackTrace();
 					}
 				}
 				continue;
 			}
-			
-			if(s.contains("UNH"))
-			{
+			// Header
+			if(s.contains("UNH")) {
 				edi = new Edo();
 				edi.setCarrierCode(carrierCode);
 				edi.setFileCreateTime(fileCreateTime);
 				continue;
 			}
-
-			if(s.contains("BGM+12"))
-			{
+			// Begin message
+			if(s.contains("BGM+12")) {
 				String[] checkMess = s.split("\\+");
-				if(checkMess.length == 5 && checkMess[3].equals("3"))
-				{
+				if(checkMess.length == 5 && checkMess[3].equals("3")) {
 					checkBgm = false;
 				}
 				continue;
 			}
-			//Bill Of Lading
-			if(s.contains("RFF+BM"))
-			{
-				if(!s.isEmpty() && s.length() > 7)
-				{
-					s = s.substring(7,s.length());
-					edi.setBillOfLading(s);
+			//Bill Of Lading: RFF+BM:<BL_NO>
+			if(s.contains("RFF+BM")) {
+				String[] blNo = s.split("\\+");
+				if(blNo.length > 1 && StringUtils.isNotEmpty(blNo[1]) && blNo[1].split("\\:").length > 1) {
+					edi.setBillOfLading(blNo[1].split("\\:")[1]);
 				}
 				continue;
-				
 			}
-		
 			//contNo
-			if(s.contains("EQD+CN"))
-			{
-			
+			if(s.contains("EQD+CN")) {
 				String[] contNo = s.split("\\+");
-				if(contNo.length >= 2)
-				{
-                	edi.setContainerNumber(contNo[2]);
+				if(contNo.length > 2) {
+					edi.setContainerNumber(contNo[2]);
 				}
-				if(contNo.length >= 3)
-				{
-					String[] sztp = contNo[3].split("\\:");
-                	edi.setSztp(sztp[0]);
+				if(contNo.length > 3) {
+					edi.setSztp(contNo[3].split("\\:")[0]);
 				}
 				continue;
 			}
 			//orderNo
-			if(s.contains("RFF+AAJ"))	
-			{
-				if(!s.isEmpty() && s.length() > 8)
-				{
-					s = s.substring(8,s.length());
-					edi.setOrderNumber(s);
+			if(s.contains("RFF+AAJ")) {
+				String[] orderNo = s.split("\\+");
+				if(StringUtils.isNotEmpty(orderNo[1]) && orderNo[1].split("\\:").length > 1) {
+					edi.setOrderNumber(orderNo[1].split("\\:")[1]);
 				}
 				continue;
 			}
 			//releaseTo
-			if(s.contains("NAD+BJ"))
-			{
+			if(s.contains("NAD+BJ")) {
 				String[] releaseTo = s.split("\\+");
-				if(!releaseTo[3].isEmpty())
-				{
-					releaseTo[3] = releaseTo[3].substring(0, releaseTo[3].length());
-					String rs = releaseTo[3].replace(":", "");
-					edi.setConsignee(rs);
+				if(releaseTo.length > 3 && StringUtils.isNotEmpty(releaseTo[3])) {
+					edi.setConsignee(releaseTo[3].replace(":", ""));
 				}
 				continue;
 			}
-			//validToDay
-			if(s.contains("DTM+400"))
-			{
+			//validToDay// DTM+400:202007122359:203
+			if(s.contains("DTM+400")) {
 				String[] validToDay = s.split("\\:");
-				if(!validToDay[1].isEmpty())
-				{
-					validToDay[1] = validToDay[1].substring(0, validToDay[1].length() - 4);
+				if(validToDay.length > 1 && !validToDay[1].isEmpty()) {
+					validToDay[1] = validToDay[1].substring(0, 8);
 					LocalDate date = LocalDate.parse(validToDay[1], DateTimeFormatter.BASIC_ISO_DATE);
 					Date releaseDate = Date.from(date.atStartOfDay(defaultZoneId).toInstant());
 					releaseDate.setHours(23);
@@ -257,91 +232,73 @@ public class EdoServiceImpl implements IEdoService
 					edi.setExpiredDem(releaseDate);
 				}
 				continue;
-			}                                                                                                                                                                                                                                                                                                                                                                                           
+			}
 			//emptyContDepot
-			if(s.contains("LOC+99"))
-			{
+			if(s.contains("LOC+99")) {
 				String[] emptyContDepotA = s.split("\\+");
-				if(emptyContDepotA.length >= 4){
-					String[] emptyContDepot = emptyContDepotA[3].split(":");
-					edi.setEmptyContainerDepot(emptyContDepot[0]);
+				if(emptyContDepotA.length > 3){
+					edi.setEmptyContainerDepot(emptyContDepotA[3].split(":")[0]);
 				}
 				continue;		
 			}
 			//Unloading port
-			if(s.contains("LOC+170"))
-			{
+			if(s.contains("LOC+170")) {
 				String[] unloadingPorts = s.split("\\+");
-				if(unloadingPorts.length >= 4){
-					// Split POL: LOC+170+VNDAD:139:6+DA NANG:TER:ZZZ
+				if(unloadingPorts.length > 3){
+					// POL: LOC+170+VNDAD:139:6+DA NANG:TER:ZZZ
 					String pol = unloadingPorts[2].split(":")[0]; // VNDAD
 					String polName = unloadingPorts[3].split(":")[0];
 					edi.setPol(pol);
 					edi.setPolName(polName);
-					//String[] unloadingPort = unloadingPorts[3].split(":");
-					//edi.setPol(unloadingPort[0]);
 				}
 				continue;		
 			}
 			// Pick-up location
-			if(s.contains("LOC+176"))
-			{
+			if(s.contains("LOC+176")) {
 				String[] pickUpLocations = s.split("\\+");
-				if(pickUpLocations.length >= 4){
-					// LOC+176+VNDAD:139:6+DA NANG:TER:ZZZ
+				if(pickUpLocations.length > 3){
+					// POD: LOC+176+VNDAD:139:6+DA NANG:TER:ZZZ
 					String pod = pickUpLocations[2].split(":")[0];  // VNDAD
 					String podName = pickUpLocations[3].split(":")[0];
 					edi.setPod(pod);
 					edi.setPodName(podName);
-					//String[] pickUpLocation = pickUpLocations[3].split(":");
-					//edi.setPod(pickUpLocation[0]);
 				}
 				continue;		
 			}
-			//haulage
-			if(s.contains("FTX+AAI"))
-			{
+			//haulage // DET FREE TIME // FTX+AAI+++7
+			if(s.contains("FTX+AAI")) {
 				String[] haulage = s.split("\\+");
-				// TODO check null
-				haulage[4] = haulage[4].substring(0, haulage[4].length());
-				if (!haulage[4].isEmpty()) {
-					try{
-//						int i = Integer.parseInt(haulage[4]);
-//						edi.setDetFreeTime(i);
-						edi.setDetFreeTime(haulage[4]);
-					}catch (Exception e) {
-						e.printStackTrace();
+				if(haulage.length > 4 && StringUtils.isNotEmpty(haulage[4])) {
+					edi.setDetFreeTime(haulage[4]);
+				}
+				continue; 
+			}
+			//Voy and vessel
+			if(s.contains("TDT+20")) {
+				String[] infoDTD20 = s.split("\\+");
+				if(infoDTD20.length > 2) {
+					edi.setVoyNo(infoDTD20[2]);
+				}
+				if(infoDTD20.length > 5) {
+					String [] businessUnit = infoDTD20[5].split("\\:");
+					edi.setBusinessUnit(businessUnit[0]);
+				}
+				if(infoDTD20.length > 8) {
+					String [] vessel = infoDTD20[8].split("\\:");
+					edi.setVesselNo(vessel[0]);
+					if(vessel.length > 3) {
+						edi.setVessel(vessel[3]);
 					}
 				}
 				continue; 
 			}
-
-			//Voy and vessel
-			if(s.contains("TDT+20"))
-			{
-				String[] infoDTD20 = s.split("\\+");
-				if(infoDTD20.length > 8)
-				{
-					String [] vessel = infoDTD20[8].split("\\:");
-					String [] businessUnit = infoDTD20[5].split("\\:");
-					edi.setBusinessUnit(businessUnit[0]);
-					edi.setVoyNo(infoDTD20[2]);
-					edi.setVesselNo(vessel[0]);
-					edi.setVessel(vessel[3]); 
-				}
-				continue; 
-			}
-
-			if(s.contains("UNT"))
-			{
-				if(checkBgm)
-				{
+			// Tail
+			if(s.contains("UNT")) {
+				if(checkBgm) {
 					listEdi.add(edi);
 				}
 				checkBgm = true;
-				
 			}
-
 		}
 		return listEdi;
 	}

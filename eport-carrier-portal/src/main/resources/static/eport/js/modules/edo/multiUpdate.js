@@ -3,7 +3,7 @@ const PREFIX = ctx + "edo";
 $(function () {
   if(hasConsigneeUpdatePermission == true)
   {
-    $( "#consignee" ).hide();
+    $( "#consignee" ).attr("disabled", false);
   }
   $("#expiredDem").val(formatDate(expiredDem));
   $("#detFreeTime").val(detFreeTime);

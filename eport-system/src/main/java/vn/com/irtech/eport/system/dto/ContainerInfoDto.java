@@ -126,6 +126,15 @@ public class ContainerInfoDto implements Serializable {
 	 */
 	private String truckNo;
 
+	/**
+	 * Imdg class no (char:4).
+	 */
+	private String imdg;
+	/**
+	 * Un no (char:4).
+	 */
+	private String unno;
+
 	public String getCntrNo() {
 		return cntrNo;
 	}
@@ -404,6 +413,22 @@ public class ContainerInfoDto implements Serializable {
 
 	public void setTruckNo(String truckNo) {
 		this.truckNo = truckNo;
+	}
+
+	public String getImdg() {
+		return imdg;
+	}
+
+	public void setImdg(String imdg) {
+		this.imdg = imdg;
+	}
+
+	public String getUnno() {
+		return unno;
+	}
+
+	public void setUnno(String unno) {
+		this.unno = unno;
 	}
 	
 }
