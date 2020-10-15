@@ -257,9 +257,25 @@
 		SELECT 
    			POD || ': ' ||(SELECT PORT_NM FROM DNP_PROD.TB_PORT WHERE CNTRY_CD = SUBSTR(POD, 1, 2) AND PORT_CD = SUBSTR(POD, 3)) AS POD
 		FROM DNP_PROD.TB_VSL_POD
-		WHERE VSL_CD = #{vslNm} and CALL_SEQ = #{voyNo} and CALL_YEAR = #{year}
+		<where>
+		  <if test="vslNm != null and vslNm != ''"> AND VSL_CD = #{vslNm}</if>
+		  <if test="voyNo != null and voyNo != ''"> AND CALL_SEQ = #{voyNo}</if>
+		  <if test="year != null and year != ''"> AND CALL_YEAR = #{year}</if>
+		</where>
 		GROUP BY POD
         ORDER BY POD ASC
+	</select>
+	
+	<select id="selectOPRList" parameterType="ShipmentDetailEntity" resultType="String">
+		SELECT PTNR_CODE 
+		    FROM DNP_PROD.TB_VSL_OPR
+        <where>
+          <if test="vslNm != null and vslNm != ''"> AND VSL_CD = #{vslNm}</if>
+          <if test="voyNo != null and voyNo != ''"> AND CALL_SEQ = #{voyNo}</if>
+          <if test="year != null and year != ''"> AND CALL_YEAR = #{year}</if>
+        </where>
+		GROUP BY PTNR_CODE
+		ORDER BY PTNR_CODE ASC
 	</select>
 	
 	<select id="selectConsigneeList" resultType="String">

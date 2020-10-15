@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.annotation.RepeatSubmit;
 import vn.com.irtech.eport.common.config.Global;
@@ -96,8 +95,8 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@Autowired
 	private ICatosApiService catosApiService;
 
-	@Autowired
-	private ICarrierGroupService carrierService;
+//	@Autowired
+//	private ICarrierGroupService carrierService;
 
 	@Autowired
 	private IProcessBillService processBillService;
