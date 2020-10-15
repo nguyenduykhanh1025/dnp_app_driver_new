@@ -9,12 +9,14 @@ body {
 .intro {
   background: $primary;
   padding-bottom: 50px;
-  overflow: hidden;
   &__header {
     padding: 0 90px;
     height: 70px;
     background: #015198;
     position: relative;
+    @include responsive-down(XS) {
+      padding: 0;
+    }
     &.scroller {
       box-shadow: 0 1px 3px 0px rgba(0, 0, 0, 0.2);
       background-color: #015198;
@@ -37,6 +39,18 @@ body {
       background: transparent;
       .navbar-brand {
         color: $white;
+      }
+      #navbarNav {
+        @include responsive-down(SM) {
+          position: absolute;
+          width: max-content;
+          top: 100%;
+          right: 50%;
+          opacity: 1;
+          background: #015198;
+          z-index: 100;
+          padding: 20px;
+        }
       }
       .nav-item {
         &.active {
@@ -93,8 +107,18 @@ body {
         margin: 5px auto;
       }
     }
-    button {
-      background-color: #015198;
+    > div {
+      @include responsive-down(SM) {
+        flex-direction: column;
+        .form-group {
+          flex-direction: column;
+          margin-bottom: 1rem;
+        }
+      }
+      
+      button {
+        background-color: #015198;
+      }
     }
   }
 }
