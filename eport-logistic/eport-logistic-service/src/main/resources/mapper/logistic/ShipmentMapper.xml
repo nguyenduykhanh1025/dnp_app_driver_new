@@ -148,7 +148,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select count(*) from shipment
         <where>  
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
-            <if test="blNo != null and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="blNo != null and blNo != ''">
+                and ((bl_no = #{blNo} and house_bill is null) or (house_bill = #{blNo}))
+            </if>
             <if test="bookingNo != null and bookingNo != ''"> and booking_no = #{bookingNo}</if>
             <if test="logisticGroupId != null"> and logistic_group_id = #{logisticGroupId}</if>
         </where>
