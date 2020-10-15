@@ -53,6 +53,7 @@ $(document).ready(function () {
   $("#doStatus").combobox({
     panelHeight: 'auto',
     valueField: 'alias',
+    editable: false,
     textField: 'text',
     data: [{
       "alias": '',
@@ -86,7 +87,6 @@ $(document).ready(function () {
         shipment.logisticGroupId = null;
       }
       $('#vesselAndVoyages').combobox('select', 'Chọn tàu chuyến');
-      $('#doStatus').combobox('select', 'null');
       $("#containerNo").textbox('setText', '');
       loadTable();
     }

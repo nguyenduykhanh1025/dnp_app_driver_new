@@ -14,8 +14,11 @@ body {
     padding: 0 90px;
     height: 70px;
     background: transparent;
+    @include responsive-down(XS) {
+      padding: 0;
+    }
     &.scroller {
-      box-shadow: 0 1px 3px 0px rgba(0,0,0,.2);
+      box-shadow: 0 1px 3px 0px rgba(0, 0, 0, 0.2);
       background-color: #015198;
       position: fixed;
       z-index: 99;
@@ -34,6 +37,18 @@ body {
     }
     .navbar {
       background: transparent;
+      #navbarNav {
+        @include responsive-down(SM) {
+          position: absolute;
+          width: max-content;
+          top: 100%;
+          right: 50%;
+          opacity: 1;
+          background: #015198;
+          z-index: 999;
+          padding: 20px
+        }
+      }
       .navbar-brand {
         color: $white;
       }
@@ -76,9 +91,10 @@ body {
   }
   &__content {
     position: relative;
-    background-image: url('../images/domap2@2x.png');
+    background-image: url("../images/domap2@2x.png");
     background-repeat: no-repeat;
     padding: 0;
+    
     &--main-text {
       text-align: center;
       .big-text {
@@ -88,12 +104,15 @@ body {
           font-size: 26px;
           line-height: 1.2;
           text-align: center;
-          @include Responsive(MD) {
+          @include responsive-up(MD) {
             font-size: 30px;
           }
-          @include Responsive(XL) {
+          @include responsive-up(XL) {
             font-size: 35px;
           }
+        }
+        @include responsive-down(SM) {
+          margin-top: 50px;
         }
       }
       .play-button {
@@ -134,8 +153,15 @@ body {
           max-width: 550px;
           padding: 41px 65px;
           text-align: center;
+          @include responsive-down (XS) {
+            padding: 10px 20px;
+            min-width: 100px;
+          }
           img {
             margin-right: 20px;
+            @include responsive-down (XS) {
+              display: none;
+            }
           }
           div {
             span {
@@ -145,6 +171,9 @@ body {
               font-size: 16px;
               line-height: 22px;
               text-align: left;
+              @include responsive-down (XS) {
+                text-align: center;
+              }
               &:last-child {
                 font-weight: bold;
                 font-size: 22px;
@@ -152,25 +181,32 @@ body {
               }
             }
           }
-          
         }
       }
     }
   }
-  
 }
 
 .content {
   margin: 50px 0;
   .targets {
     padding: 0 90px;
+    @include responsive-down (SM) {
+      padding: 0;
+    }
     .details {
       margin-top: 70px;
+      @include responsive-down (SM) {
+        flex-direction: column;
+      }
       .target-wrapper {
         text-align: center;
         padding: 30px;
         box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.1);
         width: 30%;
+        @include responsive-down (SM) {
+          width: 100%;
+        }
         span {
           display: block;
         }
@@ -180,8 +216,15 @@ body {
   .advantages {
     margin: 120px 0;
     padding: 0 90px;
+    @include responsive-down (SM) {
+      padding: 0;
+      margin: 30px 0;
+    }
     &__content {
       margin-top: 70px;
+      @include responsive-down (SM) {
+        flex-direction: column;
+      }
       .advantage-wrapper {
         text-align: center;
         background: rgba(255, 255, 255, 0.01);
@@ -189,6 +232,10 @@ body {
         box-sizing: border-box;
         width: 32%;
         padding: 40px 20px;
+        @include responsive-down (SM) {
+          margin:5px auto !important;
+          width: 80%;
+        }
         span {
           display: block;
           &:last-child {
@@ -278,6 +325,10 @@ body {
   .annotations {
     margin-top: 120px;
     padding: 0 90px;
+    @include responsive-down (SM) {
+      padding: 0;
+      margin-top: 0;
+    }
     .annotation-details {
       margin-top: 70px;
       > .row {
@@ -345,6 +396,9 @@ body {
   background-image: url("../images/domap2@2x.png");
   background-size: contain;
   padding: 40px 90px;
+  @include responsive-down (SM) {
+    padding: 40px 10px;
+  }
   &__header {
     width: 40%;
     span {
@@ -398,12 +452,11 @@ body {
     position: relative;
     &:after {
       content: "";
+      display: block;
       position: absolute;
       bottom: -15px;
-      left: 0;
-      right: 0;
-      margin-left: auto;
-      margin-right: auto;
+      left: 50%;
+      transform: translate(-50%, 0);
       width: 120px;
       height: 3px;
       background-color: $secondary;
@@ -421,10 +474,8 @@ body {
     content: "";
     position: absolute;
     bottom: -5px;
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
+    left: 50%;
+    transform: translate(-50%, 0);
     width: 55px;
     height: 3px;
     background-color: $secondary;
