@@ -3,7 +3,7 @@ $SM:     768px;
 $MD:    1050px;   
 $XL:    1200px;     
 
-@mixin Responsive($canvas) {
+@mixin responsive-up($canvas) {
   @if $canvas == XS {
    @media only screen and (min-width: $XS) { @content; } 
   }
@@ -15,5 +15,20 @@ $XL:    1200px;
   }
   @else if $canvas == XL {
    @media only screen and (min-width: $XL) { @content; } 
+  }
+}
+
+@mixin responsive-down($canvas) {
+  @if $canvas == XS {
+   @media only screen and (max-width: $XS) { @content; } 
+  }
+  @else if $canvas == SM {
+   @media only screen and (max-width: $SM) { @content; } 
+  }
+  @else if $canvas == MD {
+   @media only screen and (max-width: $MD) { @content; } 
+  }
+  @else if $canvas == XL {
+   @media only screen and (max-width: $XL) { @content; } 
   }
 }
