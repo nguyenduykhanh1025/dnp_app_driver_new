@@ -1,8 +1,10 @@
 package vn.com.irtech.eport.logistic.mapper;
 
 import java.util.List;
+
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
+import vn.com.irtech.eport.logistic.dto.DriverTruckInfo;
 import vn.com.irtech.eport.logistic.form.DriverInfo;
 
 /**
@@ -82,4 +84,12 @@ public interface DriverAccountMapper
      * @return
      */
     public DriverInfo selectDriverAccountInfoById(Long id);
+
+	/**
+	 * Select driver with truck no info
+	 * 
+	 * @param ids
+	 * @return List<DriverTruckInfo>
+	 */
+	public List<DriverTruckInfo> selectDriverWithTruckNoInfo(String[] ids);
 }
