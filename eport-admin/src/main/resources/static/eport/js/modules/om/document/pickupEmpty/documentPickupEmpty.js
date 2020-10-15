@@ -53,6 +53,7 @@ $(document).ready(function () {
   $("#doStatus").combobox({
     panelHeight: 'auto',
     valueField: 'alias',
+    editable: false,
     textField: 'text',
     data: [{
       "alias": '',
