@@ -35,6 +35,8 @@ public interface ICatosApiService {
 	public List<ContainerInfoDto> getContainerPickup(String containerNos, String userVoy);
 
 	public List<String> getPODList(ShipmentDetail shipmentDetail);
+	
+	public List<String> getOPRList(ShipmentDetail shipmentDetail);
 
 	public List<String> getVesselCodeList();
 

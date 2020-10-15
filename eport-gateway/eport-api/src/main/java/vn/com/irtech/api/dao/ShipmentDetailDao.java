@@ -35,7 +35,19 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 
 	public List<String> selectVesselCodeList();
 
+	/**
+	 * Get list of POD for Vessel
+	 * @param shipmentDetailEntity: VSL_CD, YEAR, CALL_SEQ
+	 * @return List of POD
+	 */
 	public List<String> selectPODList(ShipmentDetailEntity shipmentDetailEntity);
+	
+	/**
+	 * Get all OPRs from vessel
+	 * @param shipmentDetailEntity: VSL_CD, YEAR, CALL_SEQ
+	 * @return List of OPR
+	 */
+	public List<String> selectOPRList(ShipmentDetailEntity shipmentDetailEntity);
 
 	public List<String> selectConsigneeList();
 

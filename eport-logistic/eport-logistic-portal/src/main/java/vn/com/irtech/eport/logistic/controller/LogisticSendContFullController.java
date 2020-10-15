@@ -702,6 +702,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@PostMapping("/shipment-detail/validation")
 	@ResponseBody
+	@RepeatSubmit
 	public AjaxResult validateShipmentDetail(String shipmentDetailIds) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
 				getUser().getGroupId());
@@ -765,8 +766,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			}
 			// Validate sztp
 			if (!sztps.contains(shipmentDetails.get(i).getSztp())) {
-				return error(
-						"Kích thước " + shipmentDetails.get(i).getSztp() + " không được phép làm lệnh trên eport.");
+				return error("Kích thước " + shipmentDetails.get(i).getSztp() + " chưa được hỗ trợ làm lệnh trên ePort.");
 			}
 			containerNos += shipmentDetails.get(i).getContainerNo() + ",";
 		}
@@ -777,19 +777,39 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		berthPlanInfoParam.setCallSeq(shipmentDetailReference.getVoyNo());
 		BerthPlanInfo berthPlanInfo = catosApiService.getBerthPlanInfo(berthPlanInfoParam);
 		if (berthPlanInfo == null) {
-			return error("Tàu chuyến không tồn tại trong hệ thống, quý khách vui lòng chọn tàu chuyến từ danh sách.");
+			return error("Tàu chuyến không tồn tại trong hệ thống, vui lòng chọn tàu chuyến từ danh sách.");
 		}
 
 		// validate consignee exist in catos
 		if (catosApiService.checkConsigneeExistInCatos(shipmentDetailReference.getConsignee()) == 0) {
-			return error(
-					"Tên chủ hàng quý khách nhập không đúng, vui lòng chọn tên chủ hàng từ trong danh sách của hệ thống gợi ý.");
+			return error("Tên chủ hàng quý khách nhập không đúng, vui lòng chọn chủ hàng từ danh sách.");
 		}
 
-		// validate pod exist in catos
-		if (catosApiService.checkPodExistIncatos(shipmentDetailReference.getDischargePort()) == 0) {
-			return error(
-					"Cảng dỡ hàng quý khách nhập không đúng, vui lòng chọn cảng từ trong dánh sách của hệ thống gợi ý.");
+//		// validate pod exist in catos
+//		if (catosApiService.checkPodExistIncatos(shipmentDetailReference.getDischargePort()) == 0) {
+//			return error(String.format("Cảng dỡ '%s' không đúng, vui lòng chọn trong danh sách gợi ý.", shipmentDetailReference.getDischargePort()));
+//		}
+		//validate POD in catos (POD: POD_NM)
+		List<String> pods = catosApiService.getPODList(shipmentDetailReference);
+		boolean podValidFlg = false;
+		for(String pod : pods) {
+			if(pod.startsWith(shipmentDetailReference.getDischargePort())) {
+				podValidFlg = true;
+				break;
+			}
+		}
+		if (!podValidFlg) {
+			return error(String.format("Cảng dỡ '%s' không đúng cho tàu chuyến '%s-%s', vui lòng chọn cảng từ danh sách.",
+							shipmentDetailReference.getDischargePort(), shipmentDetailReference.getVslName(),
+							shipmentDetailReference.getVoyCarrier()));
+		}
+		
+		// Validate OPR in catos
+		List<String> oprs = catosApiService.getOPRList(shipmentDetailReference);
+		if (oprs != null && oprs.size() > 0 && !oprs.contains(shipmentDetailReference.getOpeCode())) {
+			return error(String.format("OPR '%s' không đúng cho tàu chuyến:<br/>'%s-%s'. Vui lòng kiểm tra lại booking.",
+					shipmentDetailReference.getOpeCode(), shipmentDetailReference.getVslName(),
+					shipmentDetailReference.getVoyCarrier()));
 		}
 
 		// Validate container has job order no
@@ -821,11 +841,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 		String errorMsg = "";
 		if (StringUtils.isNotEmpty(containerHasOrderdEmpty)) {
-			errorMsg += "Các container " + containerHasOrderdEmpty.substring(0, containerHasOrderdEmpty.length() - 1)
+			errorMsg += "Các container: " + containerHasOrderdEmpty.substring(0, containerHasOrderdEmpty.length() - 1)
 					+ " đã có lệnh hạ rỗng.<br>";
 		}
 		if (StringUtils.isNotEmpty(containerHasOrderdFull)) {
-			errorMsg += "Các container " + containerHasOrderdFull.substring(0, containerHasOrderdFull.length() - 1)
+			errorMsg += "Các container: " + containerHasOrderdFull.substring(0, containerHasOrderdFull.length() - 1)
 					+ " đã có lệnh hạ hàng.";
 		}
 
