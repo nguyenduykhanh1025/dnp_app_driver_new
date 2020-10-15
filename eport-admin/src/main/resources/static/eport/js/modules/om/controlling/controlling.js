@@ -1206,8 +1206,10 @@ function loadShipmentDetails(id) {
 function checkAll() {
   if (!allChecked) {
     allChecked = true
-    checkList = Array(rowAmount).fill(0);
     for (let i = 0; i < checkList.length; i++) {
+      if (hot.getDataAtCell(i, 3) == null) {
+        break;
+      }
       checkList[i] = 1;
       $('#check' + i).prop('checked', true);
     }
@@ -1239,7 +1241,7 @@ function check(id) {
 function updateLayout() {
   allChecked = true;
   for (let i = 0; i < checkList.length; i++) {
-    let cellStatus = hot.getDataAtCell(i, 2);
+    let cellStatus = hot.getDataAtCell(i, 3);
     if (cellStatus != null) {
       if (checkList[i] != 1) {
         allChecked = false;

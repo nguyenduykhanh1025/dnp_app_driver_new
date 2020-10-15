@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 
-import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoHouseBill;
 import vn.com.irtech.eport.carrier.dto.EdoWithoutHouseBillReq;
@@ -64,8 +63,8 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 
 	@GetMapping("/separate")
 	public String separate(ModelMap mmap) {
-		List<CarrierGroup> carrierGroups = carrierGroupService.selectCarrierGroupName();
-		mmap.put("carrierGroups", carrierGroups);
+		List<String> oprCodeList = catosApiService.getOprCodeList();
+		mmap.put("carrierCodes", oprCodeList);
 		return PREFIX + "/separate";
 	}
 
@@ -94,11 +93,11 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 	@PostMapping("/separate/search")
 	@ResponseBody
 	public TableDataInfo searchEdo(@RequestBody PageAble<EdoWithoutHouseBillReq> param) {
-		List<Edo> dataList = new ArrayList<>();
-		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		List<Edo> dataList = null;
+		// startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		EdoWithoutHouseBillReq dataSearch = param.getData();
 		if (dataSearch == null) {
-			return getDataTable(dataList);
+			return getDataTable(new ArrayList<>());
 		}
 		dataList = edoService.selectListEdoWithoutHouseBillId(dataSearch);
 		if (CollectionUtils.isEmpty(dataList)) {

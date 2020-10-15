@@ -108,13 +108,27 @@
                             </div>
                         </div>
                         <div data-options="region:'center'" id="right-side__main-table">
-                            <div
-                                style="justify-content: space-between; display: flex; font-size: 13; font-weight: bold;">
-                                <div>
-                                    <button class="button-custom" onclick="confirmDocument()">Xác Nhận</button>
-                                </div>
-                                <div style="margin-right: 10px;">
-                                    <span id="shipmentInfo"></span>
+                            <div class="right-side__toolbar">
+                                <div class="datagrid-toolbar">
+                                    <table cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td>
+                                                <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
+                                                    <span class="l-btn-left"><span class="l-btn-text">
+                                                            <button onclick="confirmDocument()"
+                                                                class="btn btn-sm btn-success">
+                                                                <i class="fa fa-check text-primary"></i> Xác Nhận
+                                                            </button>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                            <td style="min-width: 320px;">
+                                                <span style="margin-left: 20px; font-weight: bold;"
+                                                    id="shipmentInfo"></span>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
                             </div>
                             <div id="container-grid" class="hot handsontable htColumnHeaders"></div>

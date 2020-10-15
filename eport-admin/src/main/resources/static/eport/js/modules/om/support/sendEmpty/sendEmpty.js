@@ -284,7 +284,7 @@ function configHandson() {
     width: "100%",
     minSpareRows: 0,
     rowHeights: 30,
-    fixedColumnsLeft: 3,
+    fixedColumnsLeft: 2,
     manualColumnResize: true,
     manualRowResize: true,
     renderAllRows: true,
@@ -297,34 +297,34 @@ function configHandson() {
         case 1:
           return '<a class="fa fa-history easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
         case 2:
-          return "Số Container";
-        case 3:
-          return "Sztp";
-        case 4:
-          return "Chủ hàng";
-        case 5:
-          return "Tàu - Chuyến";
-        case 6:
-          return "Trọng lượng";
-        case 7:
-          return "Loại hàng";
-        case 8:
-          return "Cảng Dở Hàng";
-        case 9:
-          return "Hạn Trả Vỏ";
-        case 10:
-          return "PTTT";
-        case 11:
-          return "Payer";
-        case 12:
           return "Số Tham Chiếu";
+        case 3:
+          return "Số Container";
+        case 4:
+          return "Sztp";
+        case 5:
+          return "Chủ hàng";
+        case 6:
+          return "Tàu - Chuyến";
+        case 7:
+          return "Trọng lượng";
+        case 8:
+          return "Loại hàng";
+        case 9:
+          return "Cảng Dở Hàng";
+        case 10:
+          return "Hạn Trả Vỏ";
+        case 11:
+          return "PTTT";
+        case 12:
+          return "Payer";
         case 13:
           return "Ghi Chú";
         case 14:
           return "Thông Báo Lỗi";
       }
     },
-    colWidths: [21, 21, 100, 50, 200, 150, 100, 100, 100, 150, 100, 100, 150, 150, 150],
+    colWidths: [21, 21, 150, 100, 50, 200, 150, 100, 100, 100, 150, 100, 100, 150, 150],
     filter: "true",
     columns: [
       {
@@ -336,6 +336,10 @@ function configHandson() {
         data: "historyEport",
         readOnly: true,
         renderer: historyEportRenderer
+      },
+      {
+        data: "orderNo",
+        renderer: orderNoRenderer,
       },
       {
         data: "containerNo",
@@ -377,10 +381,6 @@ function configHandson() {
       {
         data: "payer",
         renderer: payerRenderer,
-      },
-      {
-        data: "orderNo",
-        renderer: orderNoRenderer,
       },
       {
         data: "remark",

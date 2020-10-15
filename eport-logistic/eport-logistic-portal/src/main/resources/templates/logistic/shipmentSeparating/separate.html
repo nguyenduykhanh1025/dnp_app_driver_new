@@ -18,13 +18,13 @@
       <div class="col-lg-9 col-md-8 col-sm-7">
         <input name="billOfLading" class="form-control" onfocus="removeError(this)" type="text"/>
       </div>
-      <label class="col-lg-3 col-md-4 col-sm-5 col-form-label mt5" for="carrierCode"><b>Hãng tàu<i
+      <label class="col-lg-3 col-md-4 col-sm-5 col-form-label mt5" for="carrierCode"><b>OPR<i
         class="text-danger">*</i></b></label>
       <div class="col-lg-9 col-md-8 col-sm-7 mt5">
         <!-- <input name="carrierCode" class="form-control" onfocus="removeError(this)" type="text"/> -->
         <div class="input-group">
           <select name="carrierCode">
-            <option th:each="carrierGroup, iterator : ${carrierGroups}" th:value=${carrierGroup.groupCode} th:text=${carrierGroup.groupName}>
+            <option th:each="opr, iterator : ${carrierCodes}" th:value=${opr} th:text=${opr}>
             </option>
           </select>
         </div>
