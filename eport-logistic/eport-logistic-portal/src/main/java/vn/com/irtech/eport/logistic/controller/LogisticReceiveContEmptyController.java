@@ -535,13 +535,31 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	public AjaxResult deleteShipmentDetail(@PathVariable Long shipmentId,
 			@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		if (shipmentDetailIds != null) {
+
+			// Get shipment detail list by shipment detail ids
+			// Check if shipment detail qualify for delete (not verify otp is qualify)
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
+					getUser().getGroupId());
+			if (CollectionUtils.isEmpty(shipmentDetails)) {
+				// No shipment detail was found => return error
+				return error("không tìm thấy container cần xóa trong hệ thống, vui lòng kiểm tra lại.");
+			}
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				if ("Y".equals(shipmentDetail.getUserVerifyStatus())) {
+					return error(
+							"Những container hiện tại đã được xác nhận làm lệnh, do đó không thể xóa những container này.");
+				}
+			}
+
+			// Begin delete
 			shipmentDetailService.deleteShipmentDetailByIds(shipmentId, shipmentDetailIds, getUser().getGroupId());
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
+			// Set status for shipment when all container has been deleted
 			if (shipmentDetailService.countShipmentDetailList(shipmentDetail) == 0) {
 				Shipment shipment = new Shipment();
 				shipment.setId(shipmentId);
-				shipment.setStatus("1");
+				shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
 				shipment.setContSupplyStatus(0);
 				shipmentService.updateShipment(shipment);
 			}
