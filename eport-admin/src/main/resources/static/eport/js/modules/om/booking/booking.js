@@ -50,6 +50,31 @@ $(document).ready(function () {
     hot.render();
   }, 200);
 
+  $("#doStatus").combobox({
+    panelHeight: 'auto',
+    valueField: 'alias',
+    textField: 'text',
+    data: [{
+      "alias": '',
+      "text": "Trạng thái"
+    }, {
+      "alias": 'N',
+      "text": "Chưa kiểm tra",
+      "selected": true
+    }, {
+      "alias": 'Y',
+      "text": "Đã kiểm tra"
+    }],
+    onSelect: function (doStatus) {
+      if (doStatus.alias != '') {
+        shipment.params.doStatus = doStatus.alias;
+      } else {
+        shipment.params.doStatus = null;
+      }
+      loadTable();
+    }
+  });
+
   $("#logisticGroups").combobox({
     valueField: 'id',
     textField: 'groupName',
@@ -83,7 +108,6 @@ $(document).ready(function () {
   });
 
   $("#opr").combobox({
-    panelHeight: 'auto',
     panelMaxHeight: 200,
     valueField: 'dictValue',
     textField: 'dictLabel',
@@ -98,31 +122,6 @@ $(document).ready(function () {
     }
   });
   $('#opr').combobox('select', 'Chọn OPR');
-
-  $("#doStatus").combobox({
-    panelHeight: 'auto',
-    valueField: 'alias',
-    textField: 'text',
-    data: [{
-      "alias": '',
-      "text": "Trạng thái"
-    }, {
-      "alias": 'N',
-      "text": "Chưa kiểm tra",
-      "selected": true
-    }, {
-      "alias": 'Y',
-      "text": "Đã kiểm tra"
-    }],
-    onSelect: function (doStatus) {
-      if (doStatus.alias != '') {
-        shipment.params.doStatus = doStatus.alias;
-      } else {
-        shipment.params.doStatus = null;
-      }
-      loadTable();
-    }
-  });
 
   // loadTable();
 });
@@ -477,32 +476,32 @@ function configHandson() {
         case 3:
           return "Trạng Thái";
         case 4:
-          return "Số Container";
-        case 5:
-          return "Sztp";
-        case 6:
-          return "Chủ Hàng";
-        case 7:
-          return "Tàu - Chuyến";
-        case 8:
-          return "Trọng Lượng";
-        case 9:
-          return "Loại Hàng";
-        case 10:
-          return 'Số Seal';
-        case 11:
-          return "Cảng Dỡ Hàng";
-        case 12:
-          return "P.T.T.T";
-        case 13:
-          return "Payer";
-        case 14:
           return "Số Tham Chiếu";
+        case 5:
+          return "Số Container";
+        case 6:
+          return "Sztp";
+        case 7:
+          return "Chủ Hàng";
+        case 8:
+          return "Tàu - Chuyến";
+        case 9:
+          return "Trọng Lượng";
+        case 10:
+          return "Loại Hàng";
+        case 11:
+          return 'Số Seal';
+        case 12:
+          return "Cảng Dỡ Hàng";
+        case 13:
+          return "P.T.T.T";
+        case 14:
+          return "Payer";
         case 15:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 120, 100, 60, 200, 100, 100, 80, 80, 100, 100, 100, 130, 100],
+    colWidths: [23, 21, 21, 120, 130, 100, 60, 200, 100, 100, 80, 80, 100, 100, 100, 100],
     filter: "true",
     columns: [
       {
@@ -524,6 +523,10 @@ function configHandson() {
         data: "status",
         readOnly: true,
         renderer: statusIconsRenderer
+      },
+      {
+        data: "orderNo",
+        renderer: orderNoRenderer
       },
       {
         data: "containerNo",
@@ -564,10 +567,6 @@ function configHandson() {
       {
         data: "payer",
         renderer: payerRenderer
-      },
-      {
-        data: "orderNo",
-        renderer: orderNoRenderer
       },
       {
         data: "remark",
@@ -643,10 +642,9 @@ function loadShipmentDetails(id) {
 // TRIGGER CHECK ALL SHIPMENT DETAIL
 function checkAll() {
   if (!allChecked) {
-    allChecked = true
-    checkList = Array(rowAmount).fill(0);
+    allChecked = true;
     for (let i = 0; i < checkList.length; i++) {
-      if (hot.getDataAtCell(i, 1) == null) {
+      if (hot.getDataAtCell(i, 3) == null) {
         break;
       }
       checkList[i] = 1;
@@ -681,7 +679,7 @@ function check(id) {
 function updateLayout() {
   allChecked = true;
   for (let i = 0; i < checkList.length; i++) {
-    if (hot.getDataAtCell(i, 1) != null) {
+    if (hot.getDataAtCell(i, 3) != null) {
       if (checkList[i] != 1) {
         allChecked = false;
       }

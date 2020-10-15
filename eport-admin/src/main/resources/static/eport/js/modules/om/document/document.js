@@ -50,6 +50,31 @@ $(document).ready(function () {
     hot.render();
   }, 200);
 
+  $("#doStatus").combobox({
+    panelHeight: 'auto',
+    valueField: 'alias',
+    textField: 'text',
+    data: [{
+      "alias": '',
+      "text": "Trạng thái"
+    }, {
+      "alias": 'N',
+      "text": "Chưa thu",
+      "selected": true
+    }, {
+      "alias": 'Y',
+      "text": "Đã thu"
+    }],
+    onSelect: function (doStatus) {
+      if (doStatus.alias != '') {
+        shipment.params.doStatus = doStatus.alias;
+      } else {
+        shipment.params.doStatus = null;
+      }
+      loadTable();
+    }
+  });
+
   $("#logisticGroups").combobox({
     valueField: 'id',
     textField: 'groupName',
@@ -101,31 +126,6 @@ $(document).ready(function () {
     }
   });
   // $('#vesselAndVoyages').combobox('select', 'Chọn tàu chuyến');
-
-  $("#doStatus").combobox({
-    panelHeight: 'auto',
-    valueField: 'alias',
-    textField: 'text',
-    data: [{
-      "alias": '',
-      "text": "Trạng thái"
-    }, {
-      "alias": 'N',
-      "text": "Chưa thu",
-      "selected": true
-    }, {
-      "alias": 'Y',
-      "text": "Đã thu"
-    }],
-    onSelect: function (doStatus) {
-      if (doStatus.alias != '') {
-        shipment.params.doStatus = doStatus.alias;
-      } else {
-        shipment.params.doStatus = null;
-      }
-      loadTable();
-    }
-  });
 
   // loadTable();
 });
@@ -199,6 +199,12 @@ function getSelected(index, row) {
     rowAmount = shipmentSelected.containerAmount;
     checkList = Array(rowAmount).fill(0);
     allChecked = false;
+    let title = '';
+    title += 'Mã Lô: ' + row.id + ' - ';
+    title += 'SL: ' + row.containerAmount + ' - ';
+    title += 'BL No: ';
+    title += row.blNo;
+    $('#shipmentInfo').html(title);
   }
   loadShipmentDetails(shipmentSelected.id);
   loadListComment();
@@ -448,36 +454,36 @@ function configHandson() {
         case 3:
           return "Trạng Thái";
         case 4:
-          return "Số Container";
-        case 5:
-          return "Sztp";
-        case 6:
-          return "Hạn Lệnh";
-        case 7:
-          return "Nơi Hạ Vỏ";
-        case 8:
-          return "Ngày Miễn";
-        case 9:
-          return "Chủ Hàng";
-        case 10:
-          return "Tàu - Chuyến";
-        case 11:
-          return "Trọng Lượng";
-        case 12:
-          return "Loại Hàng";
-        case 13:
-          return "Cảng Xếp Hàng";
-        case 14:
-          return "P.T.T.T";
-        case 15:
-          return "Payer";
-        case 16:
           return "Số Tham Chiếu";
+        case 5:
+          return "Số Container";
+        case 6:
+          return "Sztp";
+        case 7:
+          return "Hạn Lệnh";
+        case 8:
+          return "Nơi Hạ Vỏ";
+        case 9:
+          return "Ngày Miễn";
+        case 10:
+          return "Chủ Hàng";
+        case 11:
+          return "Tàu - Chuyến";
+        case 12:
+          return "Trọng Lượng";
+        case 13:
+          return "Loại Hàng";
+        case 14:
+          return "Cảng Xếp Hàng";
+        case 15:
+          return "P.T.T.T";
+        case 16:
+          return "Payer";
         case 17:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 120, 100, 60, 100, 100, 100, 200, 150, 100, 100, 100, 100, 100, 130, 100],
+    colWidths: [23, 21, 21, 120, 130, 100, 60, 100, 100, 100, 200, 150, 100, 100, 100, 100, 100, 100],
     filter: "true",
     columns: [
       {
@@ -499,6 +505,10 @@ function configHandson() {
         data: "status",
         readOnly: true,
         renderer: statusIconsRenderer
+      },
+      {
+        data: "orderNo",
+        renderer: orderNoRenderer
       },
       {
         data: "containerNo",
@@ -550,10 +560,6 @@ function configHandson() {
       {
         data: "payer",
         renderer: payerRenderer
-      },
-      {
-        data: "orderNo",
-        renderer: orderNoRenderer
       },
       {
         data: "remark",
@@ -629,10 +635,9 @@ function loadShipmentDetails(id) {
 // TRIGGER CHECK ALL SHIPMENT DETAIL
 function checkAll() {
   if (!allChecked) {
-    allChecked = true
-    checkList = Array(rowAmount).fill(0);
+    allChecked = true;
     for (let i = 0; i < checkList.length; i++) {
-      if (hot.getDataAtCell(i, 1) == null) {
+      if (hot.getDataAtCell(i, 3) == null) {
         break;
       }
       checkList[i] = 1;
@@ -667,7 +672,7 @@ function check(id) {
 function updateLayout() {
   allChecked = true;
   for (let i = 0; i < checkList.length; i++) {
-    if (hot.getDataAtCell(i, 1) != null) {
+    if (hot.getDataAtCell(i, 3) != null) {
       if (checkList[i] != 1) {
         allChecked = false;
       }

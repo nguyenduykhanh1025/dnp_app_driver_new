@@ -296,38 +296,38 @@ function configHandson() {
         case 1:
           return '<a class="fa fa-history easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
         case 2:
-          return "Số Container";
-        case 3:
-          return "Sztp";
-        case 4:
-          return "Cấp từ ngày";
-        case 5:
-          return "Ngày hết hạn";
-        case 6:
-          return "Chủ hàng";
-        case 7:
-          return "Tàu - Chuyến";
-        case 8:
-          return "Loại hàng";
-        case 9:
-          return "Cảng Dở Hàng";
-        case 10:
-          return "T.Toán";
-        case 11:
-          return "TT T.Toán";
-        case 12:
-          return "Payer";
-        case 13:
-          return "Người Cấp Container";
-        case 14:
           return "Số Tham Chiếu";
+        case 3:
+          return "Số Container";
+        case 4:
+          return "Sztp";
+        case 5:
+          return "Cấp từ ngày";
+        case 6:
+          return "Ngày hết hạn";
+        case 7:
+          return "Chủ hàng";
+        case 8:
+          return "Tàu - Chuyến";
+        case 9:
+          return "Loại hàng";
+        case 10:
+          return "Cảng Dở Hàng";
+        case 11:
+          return "T.Toán";
+        case 12:
+          return "TT T.Toán";
+        case 13:
+          return "Payer";
+        case 14:
+          return "Người Cấp Container";
         case 15:
           return "Ghi Chú";
         case 16:
           return "Thông Báo Lỗi"
       }
     },
-    colWidths: [21, 21, 100, 50, 150, 150, 200, 250, 100, 100, 100, 100, 100, 100, 150, 150, 200],
+    colWidths: [21, 21, 150, 100, 50, 150, 150, 200, 250, 100, 100, 100, 100, 100, 100, 150, 200],
     filter: "true",
     columns: [
       {
@@ -339,6 +339,10 @@ function configHandson() {
         data: "historyEport",
         readOnly: true,
         renderer: historyEportRenderer
+      },
+      {
+        data: "orderNo",
+        renderer: orderNoRenderer,
       },
       {
         data: "containerNo",
@@ -388,10 +392,6 @@ function configHandson() {
       {
         data: "sztp",
         renderer: personOfContainerRenderer,
-      },
-      {
-        data: "orderNo",
-        renderer: orderNoRenderer,
       },
       {
         data: "remark",
@@ -672,12 +672,9 @@ function addComment() {
 
 function openHistoryFormCatos(row) {
   let containerInfo = sourceData[row];
-  let vslCd = '';
-  if (containerInfo.vslNm) {
-    vslCd = containerInfo.vslNm.split(" ")[0];
-  }
-  let voyNo = containerInfo.voyNo;
   let containerNo = containerInfo.containerNo;
+  let vslCd = 'EMTY';
+  let voyNo = '0000';
   if (containerInfo == null || !containerNo || !vslCd || !voyNo) {
     $.modal.alertWarning("Container chưa được khai báo.");
   } else {

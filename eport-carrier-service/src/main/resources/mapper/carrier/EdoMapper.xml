@@ -463,7 +463,7 @@
     WHERE
       house_bill_id is null
       <if test="billOfLading != null  and billOfLading != ''">and bill_of_lading = #{billOfLading}</if>
-      <if test="carrierCode != null  and carrierCode != ''">and carrier_code = #{carrierCode}</if>
+      <if test="carrierCode != null  and carrierCode != ''">and business_unit = #{carrierCode}</if>
       <if test="expiredDem != null and expiredDem != ''">and TO_CHAR(expired_dem, 'DD/MM/YYYY') = #{expiredDem}</if>
       <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
     ORDER BY create_time DESC
@@ -488,7 +488,7 @@
     right join edo_house_bill b on e.house_bill_id = b.id
     WHERE
       b.house_bill_no = #{billOfLading}
-      and e.carrier_code = #{carrierCode}
+      and e.business_unit = #{carrierCode}
       and TO_CHAR(e.expired_dem, 'DD/MM/YYYY') = #{expiredDem}
       and b.order_number = #{orderNumber}
     ORDER BY create_time DESC
