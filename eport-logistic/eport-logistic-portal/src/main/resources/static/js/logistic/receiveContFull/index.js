@@ -1,4 +1,5 @@
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
+const regexRemoveHtml = /(<([^>]+)>)/ig;
 const greenBlackColor = "rgb(104 241 131)";
 var prefix = ctx + "logistic/receive-cont-full";
 var interval, currentPercent, timeout;
@@ -1897,7 +1898,9 @@ function loadListComment(shipmentCommentId) {
         let commentTitle = '<span>Hỗ Trợ<span>';
         let commentNumber = 0;
         if (data.shipmentComments != null) {
+          console.log(data.shipmentComments);
           data.shipmentComments.forEach(function (element, index) {
+            console.log(element);
             let createTime = element.createTime;
             let date = '';
             let time = '';
@@ -1938,13 +1941,14 @@ function loadListComment(shipmentCommentId) {
 }
 
 function addComment() {
-  let topic = $('#topic').textbox('getText');
+  let topic = $('#topic').textbox('getText').trim();
   let content = $('.summernote').summernote('code');// get editor content
   let errorFlg = false;
+  let contentTemp = content.replace(regexRemoveHtml, "").replaceAll('&nbsp;', '').trim();
   if (!topic) {
     errorFlg = true;
     $.modal.alertWarning('Vui lòng nhập chủ đề.');
-  } else if (!content) {
+  } else if (!contentTemp) {
     errorFlg = true;
     $.modal.alertWarning('Vui lòng nhập nội dung.');
   }

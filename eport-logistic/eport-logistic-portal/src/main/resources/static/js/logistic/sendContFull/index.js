@@ -1,4 +1,5 @@
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
+const regexRemoveHtml = /(<([^>]+)>)/ig;
 var prefix = ctx + "logistic/send-cont-full";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot, isDestroy = false;
@@ -2031,13 +2032,14 @@ function loadListComment(shipmentCommentId) {
 }
 
 function addComment() {
-    let topic = $('#topic').textbox('getText');
+    let topic = $('#topic').textbox('getText').trim();
     let content = $('.summernote').summernote('code');// get editor content
     let errorFlg = false;
+    let contentTemp = content.replace(regexRemoveHtml, "").replaceAll('&nbsp;', '').trim();
     if (!topic) {
         errorFlg = true;
         $.modal.alertWarning('Vui lòng nhập chủ đề.');
-    } else if (!content) {
+    } else if (!contentTemp) {
         errorFlg = true;
         $.modal.alertWarning('Vui lòng nhập nội dung.');
     }

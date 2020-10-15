@@ -35,8 +35,10 @@ import vn.com.irtech.eport.carrier.domain.EdoHouseBill;
 import vn.com.irtech.eport.carrier.service.IEdoHouseBillService;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
@@ -62,6 +64,9 @@ public class LogisticReportPrintController extends LogisticBaseController {
 
 	@Autowired
 	private IEdoHouseBillService edoHouseBillService;
+
+	@Autowired
+	private IProcessOrderService processOrderService;
 
 	/**
 	 * Print Process Order
@@ -142,6 +147,9 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		List<Long> commands = shipmentDetailService.getProcessOrderIdListByShipment(shipmentDetail);
 		if (commands.size() > 0) {
 			for (Long cmd : commands) {
+				// Get process order object by id to get create time (datetime start make order)
+				ProcessOrder processOrder = processOrderService.selectProcessOrderById(cmd);
+
 				List<ShipmentDetail> list = new ArrayList<ShipmentDetail>();
 				for (ShipmentDetail detail : shipmentDetails) {
 					if (detail.getProcessOrderId().equals(cmd)) {
@@ -158,6 +166,8 @@ public class LogisticReportPrintController extends LogisticBaseController {
 					final Map<String, Object> parameters = new HashMap<>();
 					parameters.put("user", getGroup().getGroupName());
 					parameters.put("qrCode", detail.getOrderNo());
+					// put time start make order
+					parameters.put("orderCreateTime", processOrder.getCreateTime());
 					parameters.put("orderNo", detail.getOrderNo());
 					parameters.put("billingBooking",
 							(detail.getBlNo() != null ? detail.getBlNo() : "") + "/"
