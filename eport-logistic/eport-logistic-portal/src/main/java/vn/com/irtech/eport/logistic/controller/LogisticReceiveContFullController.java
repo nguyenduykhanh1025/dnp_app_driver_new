@@ -207,20 +207,33 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@PostMapping("/shipment")
 	@Transactional
 	@ResponseBody
-	public AjaxResult addShipment(Shipment shipment) {
-
-		if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
-			if (edoHouseBillService.getContainerAmountWithOrderNumber(shipment.getHouseBill(),
-					shipment.getOrderNumber()) == 0) {
-				return error("Thêm lô thất bại");
-			} else {
-				if (edoService.getContainerAmountWithOrderNumber(shipment.getBlNo(), shipment.getOrderNumber()) == 0) {
-					return error("Thêm lô thất bại");
-				}
+	public AjaxResult addShipment(Shipment shipmentInput) {
+		Shipment shipment = new Shipment();
+		// Check case house bill
+		if (StringUtils.isNotEmpty(shipmentInput.getHouseBill())) {
+			if (edoHouseBillService.getContainerAmountWithOrderNumber(shipmentInput.getHouseBill(),
+					shipmentInput.getOrderNumber()) != 0) {
+				// Shipment is house bill case => edo
+				shipment.setEdoFlg(EportConstants.DO_TYPE_CARRIER_EDO);
 			}
+		} else if (edoService.getContainerAmountWithOrderNumber(shipmentInput.getBlNo(),
+				shipmentInput.getOrderNumber()) != 0) {
+			// Case edo with master bill
+			shipment.setEdoFlg(EportConstants.DO_TYPE_CARRIER_EDO);
+		} else {
+			// If shipmen is not house bill or master bill with valid order number => DO
+			// type
+			shipment.setEdoFlg(EportConstants.DO_TYPE_CARRIER_DO);
 		}
 
 		LogisticAccount user = getUser();
+		shipment.setEdoFlg(shipmentInput.getEdoFlg());
+		shipment.setOpeCode(shipmentInput.getOpeCode());
+		shipment.setOrderNumber(shipmentInput.getOrderNumber());
+		shipment.setBlNo(shipmentInput.getBlNo());
+		shipment.setHouseBill(shipmentInput.getHouseBill());
+		shipment.setContainerAmount(shipmentInput.getContainerAmount());
+		shipment.setRemark(shipmentInput.getRemark());
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateBy(user.getFullName());

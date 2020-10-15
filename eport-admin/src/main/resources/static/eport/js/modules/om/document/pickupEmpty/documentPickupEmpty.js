@@ -864,11 +864,8 @@ function addComment() {
 
 function openHistoryFormCatos(row) {
   let containerInfo = sourceData[row];
-  let vslCd = '';
-  if (containerInfo.vslNm) {
-    vslCd = containerInfo.vslNm.split(" ")[0];
-  }
-  let voyNo = containerInfo.voyNo;
+  let vslCd = 'EMTY';
+  let voyNo = '0000';
   let containerNo = containerInfo.containerNo;
   if (containerInfo == null || !containerNo || !vslCd || !voyNo) {
     $.modal.alertWarning("Container chưa được khai báo.");
