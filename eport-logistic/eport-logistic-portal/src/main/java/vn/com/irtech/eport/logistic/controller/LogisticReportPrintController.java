@@ -64,7 +64,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 
 	@Autowired
 	private IEdoHouseBillService edoHouseBillService;
-
+	
 	@Autowired
 	private IProcessOrderService processOrderService;
 
@@ -149,7 +149,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 			for (Long cmd : commands) {
 				// Get process order object by id to get create time (datetime start make order)
 				ProcessOrder processOrder = processOrderService.selectProcessOrderById(cmd);
-
+				
 				List<ShipmentDetail> list = new ArrayList<ShipmentDetail>();
 				for (ShipmentDetail detail : shipmentDetails) {
 					if (detail.getProcessOrderId().equals(cmd)) {
