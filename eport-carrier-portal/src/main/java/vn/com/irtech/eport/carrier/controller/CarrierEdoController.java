@@ -101,19 +101,31 @@ public class CarrierEdoController extends CarrierBaseController {
 	@ResponseBody
 	public TableDataInfo edo(@RequestBody PageAble<Edo> param) {
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
-		Edo edo = param.getData();
-		if (edo == null) {
-			edo = new Edo();
+		Edo edoParam = param.getData();
+		if (edoParam == null) {
+			edoParam = new Edo();
 		}
-		if(edo.getBillOfLading() == null)
+		if (edoParam.getBillOfLading() == null)
 		{
 			return null;
 		}
-		edo.setCarrierCode(null);
-		edo.getParams().put("groupCode", super.getGroupCodes());
-		edo.setDelFlg(0);
-		edo.setContainerNumber(null);
-		List<Edo> dataList = edoService.selectEdoList(edo);
+		edoParam.setCarrierCode(null);
+		edoParam.getParams().put("groupCode", super.getGroupCodes());
+		edoParam.setDelFlg(0);
+		edoParam.setContainerNumber(null);
+		List<Edo> dataList = edoService.selectEdoList(edoParam);
+		Map<String, ContainerInfoDto> cntrInfoMap = getContainerInfoMap(edoParam.getBillOfLading());
+		for (Edo edo : dataList) {
+			// Get container info from catos mapping by container no
+			ContainerInfoDto cntrInfo = cntrInfoMap.get(edo.getContainerNumber());
+			Map<String, Object> extraData = new HashMap<>();
+			if (cntrInfo != null) {
+				extraData.put("jobOrderNo", cntrInfo.getJobOdrNo2());
+				extraData.put("gateOutDate", cntrInfo.getOutDate());
+				extraData.put("status", cntrInfo.getCntrState());
+			}
+			edo.setParams(extraData);
+		}
 		return getDataTable(dataList);
 	}
 
@@ -516,5 +528,26 @@ public class CarrierEdoController extends CarrierBaseController {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get list container by bill and convert to map container no - container info
+	 * obj
+	 * 
+	 * @param blNo
+	 * @return Map<String, ContainerInfoDto>
+	 */
+	private Map<String, ContainerInfoDto> getContainerInfoMap(String blNo) {
+		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoListByBlNo(blNo);
+		// List<ContainerInfoDto> cntrInfos =
+		// catosApiService.getContainerInfoListByBlNo(blNo);
+		// Map oject store container info data by key container no
+		Map<String, ContainerInfoDto> cntrInfoMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(cntrInfos)) {
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				cntrInfoMap.put(cntrInfo.getCntrNo(), cntrInfo);
+			}
+		}
+		return cntrInfoMap;
 	}
 }
