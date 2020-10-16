@@ -67,7 +67,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		}
 		// get robot status, update db when status was updated only
 		SysRobot robot = robotService.selectRobotByUuId(uuid);
-		if (StringUtils.isNotEmpty(status) && robot != null && !robot.getStatus().equals(status)) {
+		if (StringUtils.isNotEmpty(status) && robot != null) {
 			robot.setStatus(status);
 			robotService.updateRobot(robot);
 			logger.debug("Update robot " + uuid + " status to " + status);

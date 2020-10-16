@@ -1,15 +1,18 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
 import java.util.List;
-import vn.com.irtech.eport.common.utils.DateUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vn.com.irtech.eport.logistic.mapper.DriverAccountMapper;
+
+import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
+import vn.com.irtech.eport.logistic.dto.DriverTruckInfo;
 import vn.com.irtech.eport.logistic.form.DriverInfo;
+import vn.com.irtech.eport.logistic.mapper.DriverAccountMapper;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
-import vn.com.irtech.eport.common.core.text.Convert;
 
 /**
  * Driver login infoService Business Processing
@@ -114,4 +117,15 @@ public class DriverAccountServiceImpl implements IDriverAccountService {
     public DriverInfo selectDriverAccountInfoById(Long id) {
         return driverAccountMapper.selectDriverAccountInfoById(id);
     }
+
+	/**
+	 * Select driver with truck no info
+	 * 
+	 * @param ids
+	 * @return List<DriverTruckInfo>
+	 */
+	@Override
+	public List<DriverTruckInfo> selectDriverWithTruckNoInfoByIds(String ids) {
+		return driverAccountMapper.selectDriverWithTruckNoInfoByIds(Convert.toStrArray(ids));
+	}
 }
