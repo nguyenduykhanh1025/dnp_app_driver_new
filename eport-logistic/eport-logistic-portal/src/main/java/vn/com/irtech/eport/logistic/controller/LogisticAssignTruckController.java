@@ -38,8 +38,6 @@ import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
-import vn.com.irtech.eport.logistic.service.IDriverTruckService;
-import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -69,11 +67,11 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	@Autowired
 	private IPickupAssignService pickupAssignService;
 
-	@Autowired
-	private IDriverTruckService driverTruckService;
-	
-	@Autowired
-	private ILogisticTruckService logisticTruckService;
+//	@Autowired
+//	private IDriverTruckService driverTruckService;
+//	
+//	@Autowired
+//	private ILogisticTruckService logisticTruckService;
 	
 	@Autowired
 	private ISysNotificationService sysNotificationService;

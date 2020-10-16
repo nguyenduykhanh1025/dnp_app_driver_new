@@ -120,10 +120,21 @@ public class CatosApiServiceImpl implements ICatosApiService {
 		String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
 		logger.debug("Call CATOS API :{}", url);
 		RestTemplate restTemplate = new RestTemplate();
-		HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+		HttpEntity<ShipmentDetail> httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
 				new ParameterizedTypeReference<List<String>>() {
 				});
+		List<String> pods = response.getBody();
+		return pods;
+	}
+
+	@Override
+	public List<String> getOPRList(ShipmentDetail shipmentDetail) {
+		String url = Global.getApiUrl() + "/shipmentDetail/getOPRList";
+		logger.debug("Call CATOS API :{}", url);
+		RestTemplate restTemplate = new RestTemplate();
+		HttpEntity<ShipmentDetail> httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<String>>() { });
 		List<String> pods = response.getBody();
 		return pods;
 	}
@@ -359,7 +370,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String url = Global.getApiUrl() + "/unit-bill/list/send-cont";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+			HttpEntity<ShipmentDetail> httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
 					new ParameterizedTypeReference<List<ProcessBill>>() {
 					});
@@ -378,7 +389,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String url = Global.getApiUrl() + "/unit-bill/list/receive-cont";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+			HttpEntity<ShipmentDetail> httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
 					new ParameterizedTypeReference<List<ProcessBill>>() {
 					});
@@ -397,7 +408,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String url = Global.getApiUrl() + "/unit-bill/list/receive-cont/ssr";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+			HttpEntity<ShipmentDetail> httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
 					new ParameterizedTypeReference<List<ProcessBill>>() {
 					});
@@ -416,7 +427,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String url = Global.getApiUrl() + "/unit-bill/list/send-cont/ssr";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+			HttpEntity<ShipmentDetail> httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
 					new ParameterizedTypeReference<List<ProcessBill>>() {
 					});
@@ -623,7 +634,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String url = Global.getApiUrl() + "/consignee/list";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<PartnerInfoDto>(partnerReq);
+			HttpEntity<PartnerInfoDto> httpEntity = new HttpEntity<PartnerInfoDto>(partnerReq);
 			ResponseEntity<List<PartnerInfoDto>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
 					new ParameterizedTypeReference<List<PartnerInfoDto>>() {
 					});
@@ -753,6 +764,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	 * 
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getOprCodeList() {
 		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
@@ -882,7 +894,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String url = Global.getApiUrl() + "/shipmentDetai/inventory/position";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+			HttpEntity<ShipmentDetail> httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
 					new ParameterizedTypeReference<List<ShipmentDetail>>() {
 					});
@@ -907,7 +919,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String url = Global.getApiUrl() + "/carrier/blocks";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+			HttpEntity<ShipmentDetail> httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
 					new ParameterizedTypeReference<List<String>>() {
 					});
@@ -931,7 +943,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String url = Global.getApiUrl() + "/carrier/bays";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+			HttpEntity<ShipmentDetail> httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
 					new ParameterizedTypeReference<List<String>>() {
 					});
@@ -974,7 +986,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String url = Global.getApiUrl() + "/hold-check/containers";
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<ContainerHoldInfo>(containerHoldInfo);
+			HttpEntity<ContainerHoldInfo> httpEntity = new HttpEntity<ContainerHoldInfo>(containerHoldInfo);
 			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
 					new ParameterizedTypeReference<List<String>>() {
 					});
@@ -1040,7 +1052,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			RestTemplate restTemplate = new RestTemplate();
 			Map<String, Object> map = new HashMap<>();
 			map.put("containerNos", containerNos);
-			HttpEntity httpEntity = new HttpEntity<Map<String, Object>>(map);
+			HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<Map<String, Object>>(map);
 			ResponseEntity<List<ContainerInfoDto>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
 					new ParameterizedTypeReference<List<ContainerInfoDto>>() {
 					});
@@ -1064,7 +1076,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String url = Global.getApiUrl() + "/container/history";
 			logger.debug("Call CATOS API get container history :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<ContainerHistoryDto>(containerHistory);
+			HttpEntity<ContainerHistoryDto> httpEntity = new HttpEntity<ContainerHistoryDto>(containerHistory);
 			ResponseEntity<List<ContainerHistoryDto>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
 					new ParameterizedTypeReference<List<ContainerHistoryDto>>() {
 					});

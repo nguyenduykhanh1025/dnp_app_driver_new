@@ -28,7 +28,6 @@ import vn.com.irtech.eport.carrier.dto.EdoWithoutHouseBillReq;
 import vn.com.irtech.eport.carrier.dto.HouseBillRes;
 import vn.com.irtech.eport.carrier.dto.HouseBillSearchReq;
 import vn.com.irtech.eport.carrier.dto.SeparateHouseBillReq;
-import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoHouseBillService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -50,8 +49,8 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 	@Autowired
 	private IEdoHouseBillService edoHouseBillService;
 
-	@Autowired
-	private ICarrierGroupService carrierGroupService;
+//	@Autowired
+//	private ICarrierGroupService carrierGroupService;
 
 	@Autowired
 	private ICatosApiService catosApiService;

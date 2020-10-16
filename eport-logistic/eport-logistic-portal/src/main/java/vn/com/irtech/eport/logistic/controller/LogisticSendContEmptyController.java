@@ -789,15 +789,13 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			berthPlanInfoParam.setCallSeq(shipmentDetailReference.getVoyNo());
 			BerthPlanInfo berthPlanInfo = catosApiService.getBerthPlanInfo(berthPlanInfoParam);
 			if (berthPlanInfo == null) {
-				return error(
-						"Tàu chuyến không tồn tại trong hệ thống, quý khách vui lòng chọn tàu chuyến từ danh sách.");
+				return error("Tàu chuyến không tồn tại trong hệ thống, vui lòng chọn tàu chuyến từ danh sách.");
 			}
 		}
 
 		// validate consignee exist in catos
 		if (catosApiService.checkConsigneeExistInCatos(shipmentDetailReference.getConsignee()) == 0) {
-			return error(
-					"Tên chủ hàng quý khách nhập không đúng, vui lòng chọn tên chủ hàng từ trong danh sách của hệ thống gợi ý.");
+			return error("Tên chủ hàng không đúng, vui lòng chọn tên chủ hàng từ danh sách.");
 		}
 
 		// Validate container has job order no

@@ -44,7 +44,6 @@ import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
-import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.PaymentHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
@@ -161,8 +160,7 @@ public class LogisticCommonController extends LogisticBaseController {
 	@GetMapping("/otp/{shipmentDetailIds}")
 	@ResponseBody
 	public AjaxResult sendOTP(@PathVariable String shipmentDetailIds) {
-		LogisticGroup lGroup = getGroup();
-
+//		LogisticGroup lGroup = getGroup();
 		OtpCode otpCode = new OtpCode();
 		Random rd = new Random();
 		long rD = rd.nextInt(900000)+100000;
@@ -215,7 +213,6 @@ public class LogisticCommonController extends LogisticBaseController {
 		return ajaxResult;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@GetMapping("/source/option")
 	@ResponseBody
 	public AjaxResult getField() {
@@ -615,7 +612,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		List<ShipmentComment> shipmentComments = shipmentCommentService.selectShipmentCommentListForNotification(shipmentComment);
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentComments", shipmentComments);
-		Long total = new PageInfo(shipmentComments).getTotal();
+		Long total = new PageInfo<ShipmentComment>(shipmentComments).getTotal();
 		ajaxResult.put("total", total);
 		return ajaxResult;
 	}
