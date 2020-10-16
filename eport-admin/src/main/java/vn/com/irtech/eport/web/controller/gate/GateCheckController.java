@@ -69,17 +69,23 @@ public class GateCheckController extends BaseController {
 			pickupAssignParam.setParams(params);
 			// Get list pickup from param above
 			List<PickupAssign> pickupAssigns = pickupAssignService.selectPickupAssignList(pickupAssignParam);
-			// Driver ids to query driver info
-			String driverIds = "";
-			// Driver info with truck no list
-			for (PickupAssign pickupAssign : pickupAssigns) {
-				driverIds += pickupAssign.getDriverId() + ",";
+
+			if (CollectionUtils.isNotEmpty(pickupAssigns)) {
+				// Driver ids to query driver info
+				String driverIds = "";
+				// Driver info with truck no list
+				for (PickupAssign pickupAssign : pickupAssigns) {
+					driverIds += pickupAssign.getDriverId() + ",";
+				}
+				List<DriverTruckInfo> driverTruckInfos = driverAccountService
+						.selectDriverWithTruckNoInfoByIds(driverIds);
+				if (CollectionUtils.isEmpty(driverTruckInfos)) {
+					driverTruckInfos = new ArrayList<>();
+				}
+				ajaxResult.put("driverInfos", getDataTable(driverTruckInfos));
+			} else {
+				ajaxResult.put("driverInfos", getDataTable(new ArrayList<>()));
 			}
-			List<DriverTruckInfo> driverTruckInfos = driverAccountService.selectDriverWithTruckNoInfo(driverIds);
-			if (CollectionUtils.isEmpty(driverTruckInfos)) {
-				driverTruckInfos = new ArrayList<>();
-			}
-			ajaxResult.put("driverInfos", getDataTable(driverTruckInfos));
 		}
 		ajaxResult.put("shipmentDetails", getDataTable(shipmentDetails));
 		return ajaxResult;

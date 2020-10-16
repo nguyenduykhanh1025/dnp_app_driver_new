@@ -77,5 +77,5 @@ public interface IDriverAccountService
 	 * @param ids
 	 * @return List<DriverTruckInfo>
 	 */
-	public List<DriverTruckInfo> selectDriverWithTruckNoInfo(String ids);
+	public List<DriverTruckInfo> selectDriverWithTruckNoInfoByIds(String ids);
 }

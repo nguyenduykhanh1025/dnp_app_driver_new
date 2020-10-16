@@ -64,6 +64,12 @@
           #{carrier_code}
         </foreach>
       </if>
+      <if test="params.ids != null">
+        and id in
+        <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+          #{id}
+        </foreach>
+      </if>
       <if test="id != null ">and id = #{id}</if>
       <if test="carrierId != null ">and carrier_id = #{carrierId}</if>
       <if test="carrierCode != null  and carrierCode != ''">and carrier_code = #{carrierCode}</if>
