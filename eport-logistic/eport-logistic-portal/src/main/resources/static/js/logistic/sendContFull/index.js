@@ -1454,7 +1454,7 @@ function getDataFromTable(isValidate) {
         let shipmentDetail = new Object();
         if (isValidate) {
             if (!object["containerNo"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số container!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng nhập số container!");
                 errorFlg = true;
                 return false;
             } else if (!/^[A-Z]{4}[0-9]{7}$/g.test(object["containerNo"])) {
@@ -1462,45 +1462,49 @@ function getDataFromTable(isValidate) {
                 errorFlg = true;
                 return false;
             } else if (!object["consignee"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ hàng!");
+                $.modal.alertError("Hàng " + (index + 1) + ":Vui lòng chọn chủ hàng!");
                 errorFlg = true;
                 return false;
             } else if (!object["vslNm"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn tàu!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng chọn tàu - chuyến!");
                 errorFlg = true;
                 return false;
             } else if (!object["sztp"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng chọn kích thước!");
                 errorFlg = true;
                 return false;
             } else if (!object["wgt"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn trọng tải!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng nhập trọng lượng (kg)!");
+                errorFlg = true;
+                return false;
+            } else if (object["wgt"] < 1000) {
+                $.modal.alertError("Hàng " + (index + 1) + ": Trọng lượng (tính bằng kg) quá nhỏ, vui lòng kiểm tra lại!");
                 errorFlg = true;
                 return false;
             } else if (object["wgt"] > 99999) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Trọng lượng không được quá 5 chữ số!");
-                errorFlg = true;
-                return false;
+                    $.modal.alertError("Hàng " + (index + 1) + ": Trọng lượng quá lớn (hơn 100 tấn), vui lòng kiểm tra lại!");
+                    errorFlg = true;
+                    return false;
             } else if (!object["dischargePort"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn cảng dỡ hàng!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Hãy chọn cảng dỡ hàng từ danh sách!");
                 errorFlg = true;
                 return false;
             } else if (!object["cargoType"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn loại hàng!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Hãy chọn loại hàng từ danh sách!");
                 errorFlg = true;
                 return false;
             } else if (consignee != object["consignee"]) {
                 $.modal.alertError("Tên chủ hàng không được khác nhau!");
                 errorFlg = true;
                 return false;
-            } else if (consignee != object["consignee"]) {
-                $.modal.alertError("Tên chủ hàng không được khác nhau!");
-                errorFlg = true;
-                return false;
-            } else if (vessel != object["vslNm"]) {
-                $.modal.alertError("Tàu và Chuyến không được khác nhau!");
-                errorFlg = true;
-                return false;
+//            } else if (consignee != object["consignee"]) {
+//                $.modal.alertError("Tên chủ hàng không được khác nhau!");
+//                errorFlg = true;
+//                return false;
+//            } else if (vessel != object["vslNm"]) {
+//                $.modal.alertError("Tàu và Chuyến không được khác nhau!");
+//                errorFlg = true;
+//                return false;
             } else if (pod.split(": ")[0] != object["dischargePort"].split(": ")[0]) {
                 $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
                 errorFlg = true;
@@ -1518,7 +1522,7 @@ function getDataFromTable(isValidate) {
         contList.push(object["containerNo"]);
         let sizeType = object["sztp"].split(": ");
         if (sizeType[0] && sizeType[0].length > 3 && sizeType[0].substring(0, 4).includes("R") && !object["temperature"]) {
-            $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập nhiệt độ!");
+            $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng nhập nhiệt độ cho container lạnh!");
             errorFlg = true;
             return false;
         }
@@ -1557,7 +1561,7 @@ function getDataFromTable(isValidate) {
         let contTemp = "";
         $.each(contList, function (index, cont) {
             if (cont != "" && cont == contTemp) {
-                $.modal.alertError("Số container không được giống nhau!");
+                $.modal.alertError("Số container "+cont+" bị trùng, vui lòng kiểm tra lại!");
                 errorFlg = true;
                 return false;
             }
@@ -1567,7 +1571,7 @@ function getDataFromTable(isValidate) {
 
     // Get result in "selectedList" variable
     if (shipmentDetails.length == 0 && !errorFlg) {
-        $.modal.alert("Bạn chưa nhập thông tin.");
+        $.modal.alert("Vui lòng nhập thông tin cho các container đã chọn.");
         errorFlg = true;
     }
 
@@ -1581,7 +1585,7 @@ function getDataFromTable(isValidate) {
 // SAVE/EDIT/DELETE SHIPMENT DETAIL
 function saveShipmentDetail() {
     if (shipmentSelected == null) {
-        $.modal.alertError("Bạn cần chọn lô trước");
+        $.modal.alertError("Chưa chọn lô! Vui lòng chọn lô trước khi thao tác.");
         return;
     } else {
         if (getDataFromTable(true)) {
@@ -1615,7 +1619,7 @@ function saveShipmentDetail() {
                     },
                 });
             } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
-                $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
+                $.modal.alertError("Số container nhập vào vượt quá số container khai báo của lô.");
             } else {
                 $.modal.alertError("Hãy nhập thông tin chi tiết lô.");
             }
