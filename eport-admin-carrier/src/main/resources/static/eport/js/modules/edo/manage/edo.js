@@ -265,13 +265,18 @@ function formatStatus(value, row) {
   if (row && row.releaseStatus == 'Y') {
     return "<span class='label label-success'>Đã làm lệnh</span>";
   } else {
+    if(value == null || value == '' || value == undefined) {
+      return "<span class='label label-success'>Chưa làm lệnh</span>";
+    }
     switch (value) {
       case '1':
-        return "<span class='label label-success'>Chưa làm lệnh</span>";
+        return "<span class='label label-success'>Đã khai báo</span>";
       case '2':
-        return "<span class='label label-success'>Đã làm lệnh</span>";
+        return "<span class='label label-success'>Đã khai báo</span>";
       case '3':
-        return "<span class='label label-success'>Gate-in</span>";
+        return "<span class='label label-success'>Đã khai báo</span>";
+      case '5':
+      return "<span class='label label-success'>Đã Gate - Out</span>";
     }
   }
 }
@@ -406,4 +411,36 @@ function unlockEdo() {
       // Close form and do nothing
     });
   }
+}
+
+function formatStatusContainer(value, row) {
+  // Stack status 
+  let stacking = '<i id="stacking" class="fa fa-ship easyui-tooltip" title="Container chưa xuống bãi" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666;"></i>';
+  if (row.params.status != null && (row.params.status == 'Stacking' || row.params.status == 'Delivered')) {
+    stacking = '<i id="stacking" class="fa fa-ship easyui-tooltip" title="Container đã xuống bãi" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+  }
+
+  // Command process status
+  let process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Container chưa được khai báo" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666;"></i>';
+  if (row.status) {
+    process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Container đã được khai báo" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+  }
+  if (row.params.jobOrderNo) {
+    process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Container đã được làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+  }
+
+  // released status
+  let released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Container chưa được bốc đi" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+  if (row.params.status != null && row.params.status == 'Delivered') {
+    released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Container đã được bốc đi" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+  }
+  if (row.params.gateOutDate) {
+    released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Container đã được bốc đi" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+  }
+
+  // Return the content
+  let content = '<div>';
+  content += stacking + process + released;
+  content += '</div>';
+  return content;
 }

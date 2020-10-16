@@ -125,7 +125,7 @@ public class DriverAccountServiceImpl implements IDriverAccountService {
 	 * @return List<DriverTruckInfo>
 	 */
 	@Override
-	public List<DriverTruckInfo> selectDriverWithTruckNoInfo(String ids) {
-		return driverAccountMapper.selectDriverWithTruckNoInfo(Convert.toStrArray(ids));
+	public List<DriverTruckInfo> selectDriverWithTruckNoInfoByIds(String ids) {
+		return driverAccountMapper.selectDriverWithTruckNoInfoByIds(Convert.toStrArray(ids));
 	}
 }

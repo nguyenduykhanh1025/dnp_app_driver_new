@@ -152,6 +152,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         AND del_flag = 0
     </select>
 
-    <select id="selectDriverWithTruckNoInfo" parameterType="PickupAssign" resultType="vn.com.irtech.eport.logistic.dto.DriverTruckInfo">
+    <select id="selectDriverWithTruckNoInfoByIds" resultType="vn.com.irtech.eport.logistic.dto.DriverTruckInfo">
+        select d.mobile_number, d.full_name, d.id
+        from
+            (
+                select mobile_number, full_name, id
+                from driver_account 
+                where id in 
+                <foreach item="id" collection="array" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            ) d
+            right join driver_truck dt on d.id = dt.driver_id
     </select>
 </mapper>

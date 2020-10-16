@@ -13,6 +13,8 @@ public class DriverTruckInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private Long id;
+
 	private String plateNumber;
 
 	private String gatepass;
@@ -20,6 +22,14 @@ public class DriverTruckInfo implements Serializable {
 	private String full_name;
 
 	private String mobileNumber;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getPlateNumber() {
 		return plateNumber;
