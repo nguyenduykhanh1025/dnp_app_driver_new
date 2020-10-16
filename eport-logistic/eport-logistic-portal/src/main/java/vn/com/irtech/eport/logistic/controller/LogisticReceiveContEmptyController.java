@@ -879,29 +879,29 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		List<String> sztps = dictService.getListTag("sys_size_container_eport");
 		for (int i = 0; i < shipmentDetails.size(); i++) {
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getContainerNo())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa nhập số container!");
+				return error("Hàng " + (i + 1) + ": Chưa nhập số container!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getSztp())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn kích thước!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn kích thước!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getConsignee())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn chủ hàng!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn chủ hàng!");
 			}
 			if (shipmentDetailReference.getPlanningDate() == null) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa nhập ngày dự kiến bốc!");
+				return error("Hàng " + (i + 1) + ": Vui lòng nhập ngày dự kiến bốc!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getCargoType())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn loại hàng!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn loại hàng từ danh sách!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getVslNm())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn tàu!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn tàu - chuyến từ danh sách!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getVoyNo())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn chuyến!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn chuyến từ danh sách!");
 			}
 
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getDischargePort())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn cảng dỡ hàng!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn cảng dỡ hàng từ danh sách!");
 			}
 			if (!shipmentDetailReference.getConsignee().equals(shipmentDetails.get(i).getConsignee())) {
 				return error("Tên chủ hàng không được khác nhau!");
@@ -921,7 +921,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			// Validate sztp
 			if (!sztps.contains(shipmentDetails.get(i).getSztp())) {
 				return error(
-						"Kích thước " + shipmentDetails.get(i).getSztp() + " không được phép làm lệnh trên eport.");
+						"Kích thước " + shipmentDetails.get(i).getSztp() + " chưa được hỗ trợ làm lệnh trên ePort.");
 			}
 			containerNos += shipmentDetails.get(i).getContainerNo() + ",";
 		}
@@ -938,14 +938,12 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
 		// validate consignee exist in catos
 		if (catosApiService.checkConsigneeExistInCatos(shipmentDetailReference.getConsignee()) == 0) {
-			return error(
-					"Tên chủ hàng quý khách nhập không đúng, vui lòng chọn tên chủ hàng từ trong danh sách của hệ thống gợi ý.");
+			return error("Tên chủ hàng không đúng, vui lòng chọn tên chủ hàng từ danh sách.");
 		}
 
 		// validate pod exist in catos
 		if (catosApiService.checkPodExistIncatos(shipmentDetailReference.getDischargePort()) == 0) {
-			return error(
-					"Cảng dỡ hàng quý khách nhập không đúng, vui lòng chọn cảng từ trong dánh sách của hệ thống gợi ý.");
+			return error("Cảng dỡ hàng không đúng, vui lòng chọn cảng từ dánh sách.");
 		}
 
 		// Validate container has job order no

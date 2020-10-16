@@ -702,7 +702,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@PostMapping("/shipment-detail/validation")
 	@ResponseBody
-	@RepeatSubmit
 	public AjaxResult validateShipmentDetail(String shipmentDetailIds) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
 				getUser().getGroupId());
@@ -725,28 +724,31 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		List<String> sztps = dictService.getListTag("sys_size_container_eport");
 		for (int i = 0; i < shipmentDetails.size(); i++) {
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getContainerNo())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa nhập số container!");
+				return error("Hàng " + (i + 1) + ": Vui lòng nhập số container!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getConsignee())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn chủ hàng!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn chủ hàng từ danh sách!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getVslNm())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn tàu!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn tàu - chuyến từ danh sách!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getSztp())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn kích thước!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn kích thước!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getCargoType())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn loại hàng!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn loại hàng từ danh sách!");
 			}
 			if (shipmentDetails.get(i).getWgt() == null) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa nhập trọng lượng!");
+				return error("Hàng " + (i + 1) + ": Vui lòng nhập trọng lượng (kg)!");
+			}
+			if (shipmentDetails.get(i).getWgt() < 1000) {
+				return error("Hàng " + (i + 1) + ": Trọng lượng quá nhỏ (nhỏ hơn 1 tấn), vui lòng kiểm tra lại!");
 			}
 			if (shipmentDetails.get(i).getWgt() > 99999) {
-				return error("Hàng " + (i + 1) + ": Trọng lượng không được quá 5 chữ số!");
+				return error("Hàng " + (i + 1) + ": Trọng lượng quá lớn (hơn 100 tấn), vui lòng kiểm tra lại!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getDischargePort())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn cảng dỡ hàng!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn cảng dỡ hàng từ danh sách!");
 
 			}
 			if (!shipmentDetailReference.getConsignee().equals(shipmentDetails.get(i).getConsignee())) {
@@ -768,6 +770,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			if (!sztps.contains(shipmentDetails.get(i).getSztp())) {
 				return error("Kích thước " + shipmentDetails.get(i).getSztp() + " chưa được hỗ trợ làm lệnh trên ePort.");
 			}
+			// Validate dangrous cont
 			containerNos += shipmentDetails.get(i).getContainerNo() + ",";
 		}
 		// Valide vslnm and voy no exist in catos
@@ -782,7 +785,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 		// validate consignee exist in catos
 		if (catosApiService.checkConsigneeExistInCatos(shipmentDetailReference.getConsignee()) == 0) {
-			return error("Tên chủ hàng quý khách nhập không đúng, vui lòng chọn chủ hàng từ danh sách.");
+			return error("Tên chủ hàng không đúng, vui lòng chọn chủ hàng từ danh sách.");
 		}
 
 //		// validate pod exist in catos

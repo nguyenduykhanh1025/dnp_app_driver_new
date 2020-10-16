@@ -1328,7 +1328,7 @@ function getDataFromTable(isValidate) {
         var shipmentDetail = new Object();
         if (isValidate) {
             if (!object["containerNo"] && shipmentSelected.specificContFlg == 1) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số container!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Chưa nhập số container!");
                 errorFlg = true;
                 return false;
             } else if (!/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && shipmentSelected.specificContFlg == 1) {
@@ -1336,11 +1336,11 @@ function getDataFromTable(isValidate) {
                 errorFlg = true;
                 return false;
             } else if (!object["expiredDem"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng nhập hạn lệnh!");
                 errorFlg = true;
                 return false;
             } else if (!object["consignee"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ hàng!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng chọn chủ hàng từ danh sách!");
                 errorFlg = true;
                 return false;
                 // } else if (!object["opeCode"]) {
@@ -1348,33 +1348,33 @@ function getDataFromTable(isValidate) {
                 //     errorFlg = true;
                 //     return false;
             } else if (!object["vslNm"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Tàu và chuyến!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng chọn Tàu và chuyến từ danh sách!");
                 errorFlg = true;
                 return false;
             } else if (!object["sztp"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng chọn kích thước!");
                 errorFlg = true;
                 return false;
             } else if (!object["dischargePort"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Cảng dở hàng!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng chọn Cảng dở hàng từ danh sách!");
                 errorFlg = true;
                 return false;
             } else if (!object["planningDate"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Cảng dở hàng!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng nhập ngày dự kiến bốc!");
                 errorFlg = true;
                 return false;
             } else if (!object["cargoType"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Cảng dở hàng!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng chọn loại hàng!");
                 errorFlg = true;
                 return false;
                 // } else if (opecode != object["opeCode"]) {
                 //     $.modal.alertError("Hãng tàu không được khác nhau!");
                 //     errorFlg = true;
                 //     return false;
-            } else if (vessel != object["vslNm"]) {
-                $.modal.alertError("Tàu và Chuyến không được khác nhau!");
-                errorFlg = true;
-                return false;
+//            } else if (vessel != object["vslNm"]) {
+//                $.modal.alertError("Tàu và Chuyến không được khác nhau!");
+//                errorFlg = true;
+//                return false;
             } else if (pod.split(": ")[0] != object["dischargePort"].split(": ")[0]) {
                 $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
                 errorFlg = true;
