@@ -34,6 +34,7 @@ import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.StringUtils;
@@ -172,28 +173,66 @@ public class CarrierEdoController extends CarrierBaseController {
 	@Transactional
 	@Log(title = "Xóa container", businessType = BusinessType.DELETE, operatorType = OperatorType.SHIPPINGLINE)
 	public AjaxResult delContainer(String ids) {
-		Edo edo = new Edo();
 		if (ids == null) {
 			return error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
 		}
-		String[] idsList = ids.split(",");
-		edo.setCarrierCode(super.getUserGroup().getGroupCode());
-		edo.setCarrierId(super.getUser().getGroupId());
-		for (String id : idsList) {
-			Map<String, Object> groupCodes = new HashMap<>();
-			groupCodes.put("groupCode", super.getGroupCodes());
-			Edo edoCheck = new Edo();
-			edoCheck.setId(Long.parseLong(id));
-			edoCheck.setParams(groupCodes);
-			if (edoService.selectFirstEdo(edoCheck) == null) {
-				return AjaxResult.error("Container không tồn tại, vui lòng kiểm tra lại dữ liệu");
-			} else if (edoService.selectEdoById(Long.parseLong(id)).getStatus() != null) {
-				return AjaxResult.error("Bạn không thể xóa container này <br>Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
+//		String[] idsList = ids.split(",");
+//		edo.setCarrierCode(super.getUserGroup().getGroupCode());
+//		edo.setCarrierId(super.getUser().getGroupId());
+//		for (String id : idsList) {
+//			Map<String, Object> groupCodes = new HashMap<>();
+//			groupCodes.put("groupCode", super.getGroupCodes());
+//			Edo edoCheck = new Edo();
+//			edoCheck.setId(Long.parseLong(id));
+//			edoCheck.setParams(groupCodes);
+//			if (edoService.selectFirstEdo(edoCheck) == null) {
+//				return AjaxResult.error("Container không tồn tại, vui lòng kiểm tra lại dữ liệu");
+//			} else if (edoService.selectEdoById(Long.parseLong(id)).getStatus() != null) {
+//				return AjaxResult.error("Bạn không thể xóa container này <br>Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
+//			}
+//		}
+
+		// Get all edo need to delete
+		Edo edoParam = new Edo();
+		Map<String, Object> params = new HashMap<>();
+		params.put("groupCode", super.getGroupCodes());
+		params.put("ids", Convert.toStrArray(ids));
+		edoParam.setParams(params);
+		List<Edo> edos = edoService.selectEdoList(edoParam);
+
+		// Check if edo is exist
+		if (CollectionUtils.isEmpty(edos)) {
+			return error("Container không tồn tại, vui lòng kiểm tra lại dữ liệu.");
+		}
+
+		// Get edo info from catos
+		Map<String, ContainerInfoDto> cntrInfoMap = getContainerInfoMap(edoParam.getBillOfLading());
+		String containerRegister = "";
+		String containerOrder = "";
+		for (Edo edo : edos) {
+			if (StringUtils.isNotEmpty(edo.getStatus())) {
+				containerRegister += edo.getContainerNumber() + ",";
+			}
+			ContainerInfoDto cntrInfo = cntrInfoMap.get(edo.getContainerNumber());
+			if (cntrInfo != null) {
+				// Check catos has job order no
+				if (StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
+					containerOrder += edo.getContainerNumber() + ",";
+				}
 			}
 		}
-		for (String id : idsList) {
-			edoService.deleteEdoById(Long.parseLong(id));
+
+		if (containerRegister.length() > 0) {
+			return error("Các container " + containerRegister.substring(0, containerRegister.length() - 1)
+					+ " đã được khai báo trên cảng điện tử.<br>Không thể xóa những container này.");
 		}
+
+		if (containerOrder.length() > 0) {
+			return error("Các container " + containerOrder.substring(0, containerOrder.length() - 1)
+					+ " đã được làm lệnh.<br>Không thể xóa những container này.");
+		}
+
+		edoService.deleteEdoByIds(ids);
 		return AjaxResult.success("Xóa eDO thành công");
 	
 	}
