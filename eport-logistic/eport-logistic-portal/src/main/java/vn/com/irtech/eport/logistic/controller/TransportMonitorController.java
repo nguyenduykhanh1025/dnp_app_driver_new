@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import vn.com.irtech.eport.common.constant.EportConstants;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
@@ -39,7 +38,8 @@ public class TransportMonitorController extends LogisticBaseController{
     return AjaxResult.success("Thành công");
   }
   
-  @GetMapping("/list")
+  @SuppressWarnings("unchecked")
+@GetMapping("/list")
   @ResponseBody
   public AjaxResult getListInfo() {
 	  AjaxResult ajaxResult = AjaxResult.success();
@@ -57,7 +57,8 @@ public class TransportMonitorController extends LogisticBaseController{
 	  return ajaxResult;
   }
 
-  @PostMapping("/tableList")
+  @SuppressWarnings("unchecked")
+@PostMapping("/tableList")
 	@ResponseBody
   public TableDataInfo tableList(@RequestBody PageAble<PickupHistory> param) {
     startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());

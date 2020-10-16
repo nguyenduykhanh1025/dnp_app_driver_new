@@ -702,6 +702,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@PostMapping("/shipment-detail/validation")
 	@ResponseBody
+	@RepeatSubmit
 	public AjaxResult validateShipmentDetail(String shipmentDetailIds) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
 				getUser().getGroupId());
@@ -724,34 +725,39 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		List<String> sztps = dictService.getListTag("sys_size_container_eport");
 		for (int i = 0; i < shipmentDetails.size(); i++) {
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getContainerNo())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa nhập số container!");
+				return error("Hàng " + (i + 1) + ": Vui lòng nhập số container!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getConsignee())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn chủ hàng!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn chủ hàng từ danh sách!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getVslNm())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn tàu!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn tàu - chuyến từ danh sách!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getSztp())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn kích thước!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn kích thước!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getCargoType())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn loại hàng!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn loại hàng từ danh sách!");
 			}
 			if (shipmentDetails.get(i).getWgt() == null) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa nhập trọng lượng!");
+				return error("Hàng " + (i + 1) + ": Vui lòng nhập trọng lượng (kg)!");
+			}
+			if (shipmentDetails.get(i).getWgt() < 1000) {
+				return error("Hàng " + (i + 1) + ": Trọng lượng quá nhỏ (nhỏ hơn 1 tấn), vui lòng kiểm tra lại!");
 			}
 			if (shipmentDetails.get(i).getWgt() > 99999) {
-				return error("Hàng " + (i + 1) + ": Trọng lượng không được quá 5 chữ số!");
+				return error("Hàng " + (i + 1) + ": Trọng lượng quá lớn (hơn 100 tấn), vui lòng kiểm tra lại!");
 			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getDischargePort())) {
-				return error("Hàng " + (i + 1) + ": Quý khách chưa chọn cảng dỡ hàng!");
+				return error("Hàng " + (i + 1) + ": Vui lòng chọn cảng dỡ hàng từ danh sách!");
 
 			}
 			if (!shipmentDetailReference.getConsignee().equals(shipmentDetails.get(i).getConsignee())) {
 				return error("Tên chủ hàng không được khác nhau!");
 
 			}
+			// TODO Cần confirm lại với OM 1 số booking có làm được cho nhiều tàu-chuyến ko
+			/*
 			if (!shipmentDetailReference.getVslNm().equals(shipmentDetails.get(i).getVslNm())) {
 				return error("Tàu và Chuyến không được khác nhau!");
 
@@ -759,15 +765,15 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			if (!shipmentDetailReference.getVoyNo().equals(shipmentDetails.get(i).getVoyNo())) {
 				return error("Tàu và Chuyến không được khác nhau!");
 
-			}
+			} */
 			if (!shipmentDetailReference.getDischargePort().equals(shipmentDetails.get(i).getDischargePort())) {
 				return error("Cảng dỡ hàng không được khác nhau!");
 			}
 			// Validate sztp
 			if (!sztps.contains(shipmentDetails.get(i).getSztp())) {
-				return error(
-						"Kích thước " + shipmentDetails.get(i).getSztp() + " không được phép làm lệnh trên eport.");
+				return error("Kích thước " + shipmentDetails.get(i).getSztp() + " chưa được hỗ trợ làm lệnh trên ePort.");
 			}
+			// Validate dangrous cont
 			containerNos += shipmentDetails.get(i).getContainerNo() + ",";
 		}
 		// Valide vslnm and voy no exist in catos
@@ -777,19 +783,39 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		berthPlanInfoParam.setCallSeq(shipmentDetailReference.getVoyNo());
 		BerthPlanInfo berthPlanInfo = catosApiService.getBerthPlanInfo(berthPlanInfoParam);
 		if (berthPlanInfo == null) {
-			return error("Tàu chuyến không tồn tại trong hệ thống, quý khách vui lòng chọn tàu chuyến từ danh sách.");
+			return error("Tàu chuyến không tồn tại trong hệ thống, vui lòng chọn tàu chuyến từ danh sách.");
 		}
 
 		// validate consignee exist in catos
 		if (catosApiService.checkConsigneeExistInCatos(shipmentDetailReference.getConsignee()) == 0) {
-			return error(
-					"Tên chủ hàng quý khách nhập không đúng, vui lòng chọn tên chủ hàng từ trong danh sách của hệ thống gợi ý.");
+			return error("Tên chủ hàng không đúng, vui lòng chọn chủ hàng từ danh sách.");
 		}
 
-		// validate pod exist in catos
-		if (catosApiService.checkPodExistIncatos(shipmentDetailReference.getDischargePort()) == 0) {
-			return error(
-					"Cảng dỡ hàng quý khách nhập không đúng, vui lòng chọn cảng từ trong dánh sách của hệ thống gợi ý.");
+//		// validate pod exist in catos
+//		if (catosApiService.checkPodExistIncatos(shipmentDetailReference.getDischargePort()) == 0) {
+//			return error(String.format("Cảng dỡ '%s' không đúng, vui lòng chọn trong danh sách gợi ý.", shipmentDetailReference.getDischargePort()));
+//		}
+		//validate POD in catos (POD: POD_NM)
+		List<String> pods = catosApiService.getPODList(shipmentDetailReference);
+		boolean podValidFlg = false;
+		for(String pod : pods) {
+			if(pod.startsWith(shipmentDetailReference.getDischargePort())) {
+				podValidFlg = true;
+				break;
+			}
+		}
+		if (!podValidFlg) {
+			return error(String.format("Cảng dỡ '%s' không đúng cho tàu chuyến '%s-%s', vui lòng chọn cảng từ danh sách.",
+							shipmentDetailReference.getDischargePort(), shipmentDetailReference.getVslName(),
+							shipmentDetailReference.getVoyCarrier()));
+		}
+		
+		// Validate OPR in catos
+		List<String> oprs = catosApiService.getOPRList(shipmentDetailReference);
+		if (oprs != null && oprs.size() > 0 && !oprs.contains(shipmentDetailReference.getOpeCode())) {
+			return error(String.format("OPR '%s' không đúng cho tàu chuyến:<br/>'%s-%s'. Vui lòng kiểm tra lại booking.",
+					shipmentDetailReference.getOpeCode(), shipmentDetailReference.getVslName(),
+					shipmentDetailReference.getVoyCarrier()));
 		}
 
 		// Validate container has job order no
@@ -821,11 +847,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 		String errorMsg = "";
 		if (StringUtils.isNotEmpty(containerHasOrderdEmpty)) {
-			errorMsg += "Các container " + containerHasOrderdEmpty.substring(0, containerHasOrderdEmpty.length() - 1)
+			errorMsg += "Các container: " + containerHasOrderdEmpty.substring(0, containerHasOrderdEmpty.length() - 1)
 					+ " đã có lệnh hạ rỗng.<br>";
 		}
 		if (StringUtils.isNotEmpty(containerHasOrderdFull)) {
-			errorMsg += "Các container " + containerHasOrderdFull.substring(0, containerHasOrderdFull.length() - 1)
+			errorMsg += "Các container: " + containerHasOrderdFull.substring(0, containerHasOrderdFull.length() - 1)
 					+ " đã có lệnh hạ hàng.";
 		}
 

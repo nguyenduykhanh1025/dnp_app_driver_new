@@ -224,7 +224,7 @@
     function loadGroupNameForDelegated() {
       if ($('input[name=mst]').val() != null && $('input[name=mst]').val() != '') {
         $.ajax({
-          url: prefixDelegate + "/consignee/" + $('input[name=mst]').val(),
+          url: prefix + "/company/" + $('input[name=mst]').val(),
           method: "get"
         }).done(function (result) {
           if (result.code == 0) {

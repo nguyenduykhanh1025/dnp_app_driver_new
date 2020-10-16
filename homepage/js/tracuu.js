@@ -113,3 +113,14 @@ function formatStatus(value, row) {
     return value;
 }
 
+//For turn off menu if click outside
+$(window).click(function (e) {
+  if ($(".navbar-collapse").hasClass("show")) {
+    $(".navbar-collapse").collapse("hide");
+    e.preventDefault();
+  }
+});
+$(".navbar-collapse").click(function (event) {
+  event.stopPropagation();
+});
+
