@@ -48,7 +48,7 @@ function loadTable() {
         $.modal.closeLoading();
         if (res.code == 0) {
           loadTableLeft(res.shipmentDetails);
-          loadTableRight(res.shipmentId);
+          loadTableRight(res.driverInfos);
         } else {
           loadTableLeft([]);
           loadTableRight(null);

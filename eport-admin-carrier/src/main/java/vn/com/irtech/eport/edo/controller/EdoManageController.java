@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -25,6 +26,8 @@ import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Controller
 @RequestMapping("/edo/manage")
@@ -36,6 +39,9 @@ public class EdoManageController extends BaseController {
 
 	@Autowired
 	private IEdoAuditLogService edoAuditLogService;
+
+	@Autowired
+	private ICatosApiService catosApiService;
 
 	@GetMapping("/index")
 	public String index() {
@@ -58,14 +64,27 @@ public class EdoManageController extends BaseController {
 	@ResponseBody
 	public TableDataInfo edo(@RequestBody PageAble<Edo> param) {
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
-		Edo edo = param.getData();
-		if (edo == null) {
-			edo = new Edo();
+		Edo edoParam = param.getData();
+		if (edoParam == null) {
+			edoParam = new Edo();
 		}
-		if (edo.getBillOfLading() == null) {
+		if (edoParam.getBillOfLading() == null) {
 			return null;
 		}
-		List<Edo> dataList = edoService.selectEdoListForReport(edo);
+		List<Edo> dataList = edoService.selectEdoList(edoParam);
+		Map<String, ContainerInfoDto> cntrInfoMap = getContainerInfoMap(edoParam.getBillOfLading());
+		for (Edo edo : dataList) {
+			// Get container info from catos mapping by container no
+			ContainerInfoDto cntrInfo = cntrInfoMap.get(edo.getContainerNumber());
+			Map<String, Object> extraData = new HashMap<>();
+			if (cntrInfo != null) {
+				extraData.put("jobOrderNo", cntrInfo.getJobOdrNo2());
+				extraData.put("gateOutDate", cntrInfo.getOutDate());
+				extraData.put("status", cntrInfo.getCntrState());
+			}
+			edo.setParams(extraData);
+		}
+
 		return getDataTable(dataList);
 	}
 
@@ -152,5 +171,19 @@ public class EdoManageController extends BaseController {
 		edo.setParams(params);
 		edoService.updateEdoByCondition(edo);
 		return success("Xác nhận mở khoá thành công.");
+	}
+
+	private Map<String, ContainerInfoDto> getContainerInfoMap(String blNo) {
+		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoListByBlNo(blNo);
+		// List<ContainerInfoDto> cntrInfos =
+		// catosApiService.getContainerInfoListByBlNo(blNo);
+		// Map oject store container info data by key container no
+		Map<String, ContainerInfoDto> cntrInfoMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(cntrInfos)) {
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				cntrInfoMap.put(cntrInfo.getCntrNo(), cntrInfo);
+			}
+		}
+		return cntrInfoMap;
 	}
 }

@@ -907,6 +907,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 				return error("Tên chủ hàng không được khác nhau!");
 
 			}
+			/*
 			if (!shipmentDetailReference.getVslNm().equals(shipmentDetails.get(i).getVslNm())) {
 				return error("Tàu và Chuyến không được khác nhau!");
 
@@ -914,7 +915,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			if (!shipmentDetailReference.getVoyNo().equals(shipmentDetails.get(i).getVoyNo())) {
 				return error("Tàu và Chuyến không được khác nhau!");
 
-			}
+			} */
 			if (!shipmentDetailReference.getDischargePort().equals(shipmentDetails.get(i).getDischargePort())) {
 				return error("Cảng dỡ hàng không được khác nhau!");
 			}
