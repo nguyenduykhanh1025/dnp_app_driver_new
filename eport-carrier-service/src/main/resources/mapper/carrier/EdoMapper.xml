@@ -76,6 +76,7 @@
       <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
       <if test="releaseNo != null  and releaseNo != ''">and release_no = #{releaseNo}</if>
       <if test="billOfLading != null  and billOfLading != ''">and bill_of_lading = #{billOfLading}</if>
+      <if test="params.containerNumber != null  and params.containerNumber != ''">and container_number = #{params.containerNumber}</if>
       <if test="businessUnit != null  and businessUnit != ''">and business_unit = #{businessUnit}</if>
       <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">and empty_container_depot =
         #{emptyContainerDepot}

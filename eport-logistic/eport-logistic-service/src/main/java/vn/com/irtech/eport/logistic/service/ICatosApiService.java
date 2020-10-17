@@ -298,4 +298,12 @@ public interface ICatosApiService {
 	 * @return BerthPlanInfo
 	 */
 	public BerthPlanInfo getBerthPlanInfo(BerthPlanInfo berthPlanInfo);
+
+	/**
+	 * Get container info by ContainerInfoDto object
+	 * 
+	 * @param containerInfoDto
+	 * @return List<ContainerInfoDto>
+	 */
+	public List<ContainerInfoDto> getContainerInfoListByCondition(ContainerInfoDto containerInfoDto);
 }

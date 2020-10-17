@@ -23,6 +23,10 @@
             <artifactId>eport-system</artifactId>
         </dependency>
         
+        <dependency>
+            <groupId>vn.com.irtech.eport</groupId>
+            <artifactId>eport-logistic-service</artifactId>
+        </dependency>
     </dependencies>
 	
 </project>
