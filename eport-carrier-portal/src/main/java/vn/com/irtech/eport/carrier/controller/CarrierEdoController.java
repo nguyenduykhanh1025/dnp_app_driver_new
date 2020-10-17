@@ -287,7 +287,6 @@ public class CarrierEdoController extends CarrierBaseController {
 						return error(
 								"Container đã có lệnh trả rỗng tại cảng.<br>Không thể cập nhật số ngày miễn lưu vỏ.");
 					}
-
 				}
 
 				// Check if empty container depot has update
