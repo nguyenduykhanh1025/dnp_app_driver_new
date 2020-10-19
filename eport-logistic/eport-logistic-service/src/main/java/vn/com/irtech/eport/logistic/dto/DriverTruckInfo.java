@@ -19,7 +19,7 @@ public class DriverTruckInfo implements Serializable {
 
 	private String gatepass;
 
-	private String full_name;
+	private String fullName;
 
 	private String mobileNumber;
 
@@ -47,12 +47,12 @@ public class DriverTruckInfo implements Serializable {
 		this.gatepass = gatepass;
 	}
 
-	public String getFull_name() {
-		return full_name;
+	public String getFullName() {
+		return fullName;
 	}
 
-	public void setFull_name(String full_name) {
-		this.full_name = full_name;
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 
 	public String getMobileNumber() {

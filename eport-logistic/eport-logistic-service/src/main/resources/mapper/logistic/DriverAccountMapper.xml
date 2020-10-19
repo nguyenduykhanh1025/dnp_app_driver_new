@@ -153,16 +153,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectDriverWithTruckNoInfoByIds" resultType="vn.com.irtech.eport.logistic.dto.DriverTruckInfo">
-        select d.mobile_number, d.full_name, d.id
-        from
-            (
-                select mobile_number, full_name, id
-                from driver_account 
-                where id in 
-                <foreach item="id" collection="array" open="(" separator="," close=")">
-                    #{id}
-                </foreach>
-            ) d
-            right join driver_truck dt on d.id = dt.driver_id
+        select dr.mobile_number as mobileNumber, dr.full_name as fullName, tr.plate_number as plateNumber, tr.gatepass as gatepass from
+        (
+            select d.mobile_number, d.full_name, d.id, dt.truck_id
+            from
+                (
+                    select mobile_number, full_name, id
+                    from driver_account 
+                    where id in 
+                    <foreach item="id" collection="array" open="(" separator="," close=")">
+                        #{id}
+                    </foreach>
+                ) d
+                right join driver_truck dt on d.id = dt.driver_id
+                <where>
+                    and d.mobile_number is not null
+                </where>
+        ) dr left join logistic_truck tr on dr.truck_id = tr.id
+        <where>
+            and tr.type = '0'
+        </where>
     </select>
 </mapper>
