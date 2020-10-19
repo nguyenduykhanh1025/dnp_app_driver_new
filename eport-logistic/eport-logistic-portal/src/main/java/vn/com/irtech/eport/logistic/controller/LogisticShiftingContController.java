@@ -38,6 +38,7 @@ import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Controller
 @RequestMapping("/logistic/shifting-cont")
@@ -221,7 +222,8 @@ public class LogisticShiftingContController extends LogisticBaseController {
 		}
 
 		//Get coordinate from catos test
-		List<ShipmentDetail> coordinateOfList = catosApiService.getCoordinateOfContainers(preorderPickupConts.get(0).getBlNo());
+		List<ContainerInfoDto> coordinateOfList = catosApiService
+				.selectShipmentDetailsByBLNo(preorderPickupConts.get(0).getBlNo());
 		AjaxResult ajaxResult = AjaxResult.success();
 		List<Long> orderIds = new ArrayList<>();
 		List<ServiceSendFullRobotReq> reqs = null;
