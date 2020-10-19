@@ -11,6 +11,7 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 
 /**
@@ -86,9 +87,11 @@ public interface IShipmentDetailService
      */
     public List<ShipmentWaitExec> selectListShipmentWaitExec();
 
-    public List<ShipmentDetail[][]> getContPosition(List<ShipmentDetail> coordinateOfList, List<ShipmentDetail> shipmentDetails);
+	public List<ShipmentDetail[][]> getContPosition(String blNo, List<ShipmentDetail> shipmentDetails);
     
-    public List<ServiceSendFullRobotReq> calculateMovingCont(List<ShipmentDetail> coordinateOfList, List<ShipmentDetail> preorderPickupConts, List<ShipmentDetail> shipmentDetails, Shipment shipment, Boolean isCredit);
+	public List<ServiceSendFullRobotReq> calculateMovingCont(List<ContainerInfoDto> coordinateOfList,
+			List<ShipmentDetail> preorderPickupConts, List<ShipmentDetail> shipmentDetails, Shipment shipment,
+			Boolean isCredit);
 
     public List<ServiceSendFullRobotReq> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag);
 

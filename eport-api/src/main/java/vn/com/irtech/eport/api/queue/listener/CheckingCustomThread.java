@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.api.custom.queue.listener;
+package vn.com.irtech.eport.api.queue.listener;
 
 import javax.annotation.PostConstruct;
 
@@ -22,7 +22,7 @@ public class CheckingCustomThread {
 	private final static Logger logger = LoggerFactory.getLogger(CheckingCustomThread.class);
 
 	@Autowired
-	private CustomQueueService customQueueService;
+	private QueueService customQueueService;
 
 	@Autowired
 	private ICustomCheckService customerCheckServie;

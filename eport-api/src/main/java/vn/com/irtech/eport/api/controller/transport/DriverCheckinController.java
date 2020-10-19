@@ -5,8 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
-
 import vn.com.irtech.eport.api.consts.BusinessConsts;
-import vn.com.irtech.eport.api.consts.MqttConsts;
 import vn.com.irtech.eport.api.form.GateNotificationCheckInReq;
 import vn.com.irtech.eport.api.form.QrCodeReq;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
+import vn.com.irtech.eport.api.queue.listener.QueueService;
 import vn.com.irtech.eport.api.service.transport.IDriverCheckinService;
 import vn.com.irtech.eport.api.util.SecurityUtils;
 import vn.com.irtech.eport.common.annotation.Log;
@@ -36,7 +32,6 @@ import vn.com.irtech.eport.logistic.domain.LogisticTruck;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
-import vn.com.irtech.eport.system.dto.NotificationReq;
 
 @RestController
 @RequestMapping("/transport/checkin")
@@ -54,7 +49,13 @@ public class DriverCheckinController extends BaseController  {
 	private MqttService mqttService;
 	
 	@Autowired
+	private QueueService queueService;
+
+	@Autowired
 	private ILogisticTruckService logisticTruckService;
+	
+	private static final Long TIME_OUT_WAIT_DETECTION = 1000L;
+	private static final Integer RETRY_WAIT_DETECTION = 60;
 	
 	@Log(title = "Tài Xế Check-in", businessType = BusinessType.UPDATE, operatorType = OperatorType.MOBILE)
 	@PostMapping("")
@@ -69,12 +70,17 @@ public class DriverCheckinController extends BaseController  {
 		
 		ajaxResult.put("qrString", driverCheckinService.checkin(req, sessionId));
 		
-		sendCheckinReq(SecurityUtils.getCurrentUser().getUser().getUserId(), sessionId);
-		
+		// A thread running waiting to get detection info on demanding time
+		new Thread() {
+			public void run() {
+				sendCheckinReq(SecurityUtils.getCurrentUser().getUser().getUserId(), sessionId);
+			}
+		}.start();
+
 		return ajaxResult;
 	}
 	
-	public void sendCheckinReq(Long driverId, String sessionId) {
+	private void sendCheckinReq(Long driverId, String sessionId) {
 		PickupHistory pickupHistoryParam = new PickupHistory();
 		pickupHistoryParam.setDriverId(driverId);
 		pickupHistoryParam.setStatus(EportConstants.PICKUP_HISTORY_STATUS_WAITING);
@@ -82,14 +88,10 @@ public class DriverCheckinController extends BaseController  {
 		
 		if (CollectionUtils.isEmpty(pickupHistories)) {
 			String message = "Quý khách chưa đăng ký vận chuyển container ra/vào cảng.";
-			mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, sessionId, message);
+			mqttService.sendNotificationOfProcessForDriver(BusinessConsts.FINISH, BusinessConsts.FAIL, sessionId,
+					message);
 			throw new BusinessException(message);
 		}
-		
-		// contSendCount variable to count the number of cont send to gate in
-		// same to contReceivecount variable, depend on the number set to container1 or container2 attribute
-		int contSendCount = 0;
-		int contReceiveCount = 0;
 		
 		// Set pre data for gate notification check in request to notification app by gate user
 		// All flag and option of the object be false and will be true when meet condition
@@ -107,45 +109,52 @@ public class DriverCheckinController extends BaseController  {
 		gateNotificationCheckInReq.setTruckNo(pickHistoryGeneral.getTruckNo());
 		gateNotificationCheckInReq.setChassisNo(pickHistoryGeneral.getChassisNo());
 		
+		// contSendCount variable to count the number of cont send to gate in
+		// same to contReceivecount variable, depend on the number set to container1 or
+		// container2 attribute
+		int contSendCount = 0;
+		int contReceiveCount = 0;
+
 		// Get weight and self weight by truck no
 		LogisticTruck logisticTruckParam = new LogisticTruck();
 		logisticTruckParam.setPlateNumber(pickHistoryGeneral.getTruckNo());
 		logisticTruckParam.setType(EportConstants.TRUCK_TYPE_TRUCK_NO);
 		List<LogisticTruck> truckNos = logisticTruckService.selectLogisticTruckList(logisticTruckParam);
-		
+
 		logisticTruckParam.setPlateNumber(pickHistoryGeneral.getChassisNo());
 		logisticTruckParam.setType(EportConstants.TRUCK_TYPE_CHASSIS_NO);
 		List<LogisticTruck> chassisNos = logisticTruckService.selectLogisticTruckList(logisticTruckParam);
-		
+
 		if (CollectionUtils.isNotEmpty(chassisNos)) {
 			if (CollectionUtils.isNotEmpty(truckNos)) {
 				try {
 					gateNotificationCheckInReq.setLoadableWgt(chassisNos.get(0).getWgt());
 					gateNotificationCheckInReq.setDeduct(truckNos.get(0).getSelfWgt() + chassisNos.get(0).getSelfWgt());
-				} catch(Exception ex) {
+				} catch (Exception ex) {
 					logger.warn(">>>>>>>>>>>>>>>>> Weight failed", ex);
 				}
 			}
 		} else {
 			logger.warn(">>>>>>>>>>>>>>>>> Khong tim thay ro-mooc");
 		}
-		
+
 		// Begin interate pickup history list get by driver id
 		for (PickupHistory pickupHistory : pickupHistories) {
-			
+
 			// Get service type of pickup history
 			Integer serviceType = pickupHistory.getShipment().getServiceType();
-			
+
 			// Check if pickup is receive cont (out mode in gate)
 			// true then receive option of gate notification req true
 			// set other data for receive option
-			if (EportConstants.SERVICE_PICKUP_FULL == serviceType || EportConstants.SERVICE_PICKUP_EMPTY == serviceType) {
+			if (EportConstants.SERVICE_PICKUP_FULL == serviceType
+					|| EportConstants.SERVICE_PICKUP_EMPTY == serviceType) {
 				contReceiveCount++;
 				gateNotificationCheckInReq.setReceiveOption(true);
-				
+
 				// Check if cont count is 1 then that should be the first container out
 				if (contReceiveCount == 1) {
-					
+
 					// Check if is pickup by job order no or pickup by container
 					if (pickupHistory.getJobOrderFlg()) {
 						gateNotificationCheckInReq.setRefFlg1(true);
@@ -153,10 +162,10 @@ public class DriverCheckinController extends BaseController  {
 					} else {
 						gateNotificationCheckInReq.setContainerReceive1(pickupHistory.getContainerNo());
 					}
-					
-				// Not 1 then that definitely 2 -> container 2 or job 2
+
+					// Not 1 then that definitely 2 -> container 2 or job 2
 				} else {
-					
+
 					// Check if is pickup by job order no or pickup by container
 					if (pickupHistory.getJobOrderFlg()) {
 						gateNotificationCheckInReq.setRefFlg2(true);
@@ -165,14 +174,17 @@ public class DriverCheckinController extends BaseController  {
 						gateNotificationCheckInReq.setContainerReceive2(pickupHistory.getContainerNo());
 					}
 				}
-			// the data will be always pickup or drop container so no need for check for service type
-			// If it not pickup full or empty then it definitely is drop if exception then the data is stored wrong
-			// that should be bad
+				// the data will be always pickup or drop container so no need for check for
+				// service type
+				// If it not pickup full or empty then it definitely is drop if exception then
+				// the data is stored wrong
+				// that should be bad
 			} else {
 				contSendCount++;
 				gateNotificationCheckInReq.setSendOption(true);
-				
-				// The count for this option will be always 1 or 2, so 1 container no should be set for 1
+
+				// The count for this option will be always 1 or 2, so 1 container no should be
+				// set for 1
 				// If the exception happen then data is saved is wrong
 				if (contSendCount == 1) {
 					gateNotificationCheckInReq.setContainerSend1(pickupHistory.getContainerNo());
@@ -181,24 +193,6 @@ public class DriverCheckinController extends BaseController  {
 				}
 			}
 		}
-		
-		// Finally finish a long term set data for just one object to send to gate notification app
-		// this long set data may cause some exception and eventually corrupt the function
-		// Now parse the object to string to send via mqtt 
-		NotificationReq notificationReq = new NotificationReq();
-		notificationReq.setTitle("ePort: Yêu cầu check in tại cổng.");
-		notificationReq.setMsg("Có yếu cầu check in tại cổng xe " + gateNotificationCheckInReq.getTruckNo());
-		notificationReq.setType(EportConstants.APP_USER_TYPE_GATE);
-		notificationReq.setLink("");
-		notificationReq.setPriority(EportConstants.NOTIFICATION_PRIORITY_HIGH);
-		notificationReq.setGateData(gateNotificationCheckInReq);
-		
-		String msg = new Gson().toJson(notificationReq);
-		try {
-			logger.warn(">>>>>>>>>>>>>>>>> Send GATE Dialog: " + msg);
-			mqttService.publish(MqttConsts.NOTIFICATION_GATE_TOPIC, new MqttMessage(msg.getBytes()));
-		} catch (MqttException e) {
-			logger.error("Error when try sending notification request check in for gate: " + e);
-		}
+		queueService.offerCheckInReq(gateNotificationCheckInReq);
 	}
 }
