@@ -51,18 +51,18 @@ function loadTable() {
           loadTableRight(res.driverInfos);
         } else {
           loadTableLeft([]);
-          loadTableRight(null);
+          loadTableRight([]);
         }
       },
       error: function (err) {
         $.modal.closeLoading();
         loadTableLeft([]);
-        loadTableRight(null);
+        loadTableRight([]);
       }
     });
   } else {
     loadTableLeft([]);
-    loadTableRight(null);
+    loadTableRight([]);
   }
 }
 
@@ -84,13 +84,12 @@ function loadTableLeft(shipmentDetails) {
     loadMsg: " Đang xử lý...",
     loader: function (param, success, error) {
       success(shipmentDetails);
-      loadTableRight();
     }
   });
 }
 
-function loadTableRight(shipmentId) {
-  if (shipmentId == null) {
+function loadTableRight(driverInfos) {
+  if (driverInfos != null) {
     $("#dg-right").datagrid({
       height: $(document).height() - $(".main-body__search-wrapper").height() - 58,
       singleSelect: true,
@@ -101,10 +100,10 @@ function loadTableRight(shipmentId) {
       striped: true,
       loadMsg: " Đang xử lý...",
       loader: function (param, success, error) {
-        success([]);
+        success(driverInfos);
       }
     });
-  } else {
+  } else if (shipmentDetailIds.length > 0) {
     $("#dg-right").datagrid({
       height: $(document).height() - $(".main-body__search-wrapper").height() - 58,
       singleSelect: true,
@@ -119,13 +118,11 @@ function loadTableRight(shipmentId) {
           url: PREFIX + "/pickup-assign/list",
           method: "POST",
           data: {
-            shipmentDetailIds: shipmentDetailIds.join(),
-            shipmentId: shipmentId,
-            jobOrderNo: jobOrderNo
+            shipmentDetailIds: shipmentDetailIds.join()
           },
           success: function (res) {
             if (res.code == 0) {
-              success(res.pickupAssigns);
+              success(res.driverInfos);
             } else {
               success([]);
             }
@@ -168,7 +165,7 @@ function formatVslVoy(value, row) {
 
 function selectRowLeftTable(index, row) {
   shipmentDetailIds.push(row.id);
-  loadTableRight(row.shipmentId);
+  loadTableRight(null);
 }
 
 function unSelectRowLeftTable(index, row) {
@@ -177,5 +174,5 @@ function unSelectRowLeftTable(index, row) {
       shipmentDetailIds.splice(i, 1);
     }
   }
-  loadTableRight(row.shipmentId);
+  loadTableRight(null);
 }

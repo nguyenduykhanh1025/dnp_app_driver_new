@@ -1109,4 +1109,28 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+
+	/**
+	 * Get container info by ContainerInfoDto object
+	 * 
+	 * @param containerInfoDto
+	 * @return List<ContainerInfoDto>
+	 */
+	@Override
+	public List<ContainerInfoDto> getContainerInfoListByCondition(ContainerInfoDto containerInfoDto) {
+		try {
+			String url = Global.getApiUrl() + "/container-full/list";
+			logger.debug("Call CATOS API get container info :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity<ContainerInfoDto> httpEntity = new HttpEntity<ContainerInfoDto>(containerInfoDto);
+			ResponseEntity<List<ContainerInfoDto>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
+					new ParameterizedTypeReference<List<ContainerInfoDto>>() {
+					});
+			List<ContainerInfoDto> containerInfoDtos = response.getBody();
+			return containerInfoDtos;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api get container info", e);
+			return null;
+		}
+	}
 }
