@@ -92,9 +92,9 @@ public class LogisticShiftingContController extends LogisticBaseController {
 
 		//Get coordinate from catos
 		List<ShipmentDetail> coordinateOfList = catosApiService.getCoordinateOfContainers(blNo);
-		List<ShipmentDetail[][]> bayList = new ArrayList<>();
+		List<ShipmentDetail[][]> bayList = null;
 		try {
-			bayList = shipmentDetailService.getContPosition(coordinateOfList, shipmentDetails);
+			bayList = shipmentDetailService.getContPosition(blNo, shipmentDetails);
 		} catch (Exception e) {
 			logger.warn("Can't get container yard position!");
 		}
