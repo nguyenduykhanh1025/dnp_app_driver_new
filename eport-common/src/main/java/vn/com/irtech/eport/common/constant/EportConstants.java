@@ -270,4 +270,8 @@ public interface EportConstants {
 	public static final String CATOS_CONT_STACKING = "Stacking";
 	/** Catos container status delivered */
 	public static final String CATOS_CONT_DELIVERED = "Delivered";
+
+	// Key name to get data from cache
+	/** Key name for gate detection info saved in cache */
+	public static final String CACHE_GATE_DETECTION_KEY = "gateDetectionInfo";
 }

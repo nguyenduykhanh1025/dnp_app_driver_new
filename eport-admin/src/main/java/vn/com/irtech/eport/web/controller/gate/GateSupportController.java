@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
@@ -90,6 +91,9 @@ public class GateSupportController extends BaseController {
 		
 		gateDetectionService.insertGateDetection(dt);
 		
+		// Put gate detection info into cache to get when has driver request check in
+		CacheUtils.put(dt.getGateNo() + "_" + EportConstants.CACHE_GATE_DETECTION_KEY, dt);
+
 		// Send to monitor
 		webSocketService.sendMessage("/gate/detection/monitor", detection);
 		return success();
@@ -101,6 +105,14 @@ public class GateSupportController extends BaseController {
 		
 		logger.debug(">>>>> Receive sensor result info: " + new Gson().toJson(sensorResult));
 		CacheUtils.put("sensorInfo_" + sensorResult.getGateId(), sensorResult);
+		
+		// Check if truck on gate
+		List<Integer> sensorValue = sensorResult.getSensors();
+		if (sensorValue.size() >= 3) {
+			if (sensorValue.get(0) == 0 && sensorValue.get(1) == 0 && sensorValue.get(2) == 0) {
+				CacheUtils.remove(sensorResult.getGateId() + "_" + EportConstants.CACHE_GATE_DETECTION_KEY);
+			}
+		}
 		return success();
 	}
 	
