@@ -714,8 +714,11 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
         if (value > 99999) {
-            layer.msg('Trọng lượng không được quá 5 chữ số.', { icon: $.modal.icon(modal_status.FAIL), time: 2000, shift: 5 });
-            $(td).css("background-color", "red");
+            layer.msg('Trọng lượng (kg) quá lớn (hơn 100 tấn).', { icon: $.modal.icon(modal_status.FAIL), time: 2000, shift: 5 });
+            $(td).css("text-color", "red");
+        } else if (value < 1000) {
+        	layer.msg('Trọng lượng (kg) quá nhỏ (nhỏ hơn 1 tấn).', { icon: $.modal.icon(modal_status.FAIL), time: 2000, shift: 5 });
+            $(td).css("text-color", "red");
         }
         value = formatMoney(value);
     }

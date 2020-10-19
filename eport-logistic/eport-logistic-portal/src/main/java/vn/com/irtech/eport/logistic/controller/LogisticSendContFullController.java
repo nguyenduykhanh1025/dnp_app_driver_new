@@ -702,7 +702,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@PostMapping("/shipment-detail/validation")
 	@ResponseBody
-	@RepeatSubmit
 	public AjaxResult validateShipmentDetail(String shipmentDetailIds) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
 				getUser().getGroupId());
