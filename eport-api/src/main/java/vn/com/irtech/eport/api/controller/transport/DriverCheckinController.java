@@ -70,12 +70,7 @@ public class DriverCheckinController extends BaseController  {
 		
 		ajaxResult.put("qrString", driverCheckinService.checkin(req, sessionId));
 		
-		// A thread running waiting to get detection info on demanding time
-		new Thread() {
-			public void run() {
-				sendCheckinReq(SecurityUtils.getCurrentUser().getUser().getUserId(), sessionId);
-			}
-		}.start();
+		sendCheckinReq(SecurityUtils.getCurrentUser().getUser().getUserId(), sessionId);
 
 		return ajaxResult;
 	}
