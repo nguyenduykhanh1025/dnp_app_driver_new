@@ -422,7 +422,7 @@ public class GateTestController extends BaseController {
 		List<ShipmentDetail> shipmentDetails = catosApiService.getCoordinateOfContainers(blNo);
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			List<ShipmentDetail> coordinates = new ArrayList<>(shipmentDetails);
-			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(coordinates, shipmentDetails);
+			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(blNo, shipmentDetails);
 			ajaxResult.put("bayList", bay);
 			return ajaxResult;
 		}
@@ -435,8 +435,8 @@ public class GateTestController extends BaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		List<ShipmentDetail> shipmentDetails = catosApiService.getCoordinateOfContainersByJobOrderNo(jobOrder);
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			List<ShipmentDetail> coordinates = new ArrayList<>(shipmentDetails);
-			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(coordinates, shipmentDetails);
+			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(shipmentDetails.get(0).getBlNo(),
+					shipmentDetails);
 			ajaxResult.put("bayList", bay);
 			return ajaxResult;
 		}

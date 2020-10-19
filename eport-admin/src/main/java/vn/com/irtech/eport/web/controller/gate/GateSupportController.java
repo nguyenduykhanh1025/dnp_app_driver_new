@@ -1,6 +1,5 @@
 package vn.com.irtech.eport.web.controller.gate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -185,8 +184,7 @@ public class GateSupportController extends BaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		List<ShipmentDetail> shipmentDetails = catosApiService.getCoordinateOfContainers(blNo);
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			List<ShipmentDetail> coordinates = new ArrayList<>(shipmentDetails);
-			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(coordinates, shipmentDetails);
+			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(blNo, shipmentDetails);
 			ajaxResult.put("bayList", bay);
 			return ajaxResult;
 		}
@@ -199,8 +197,8 @@ public class GateSupportController extends BaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		List<ShipmentDetail> shipmentDetails = catosApiService.getCoordinateOfContainersByJobOrderNo(jobOrder);
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			List<ShipmentDetail> coordinates = new ArrayList<>(shipmentDetails);
-			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(coordinates, shipmentDetails);
+			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(shipmentDetails.get(0).getBlNo(),
+					shipmentDetails);
 			ajaxResult.put("bayList", bay);
 			return ajaxResult;
 		}
