@@ -280,7 +280,8 @@ public class GatePassHandler implements IMqttMessageListener {
 					mqttService.sendNotificationToGate(pickupHistory.getTruckNo(), message);
 					
 					if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
-						mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateInFormData.getSessionId(), message);
+						mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, message,
+								gateInFormData.getGateId());
 					}
 					
 					Map<String, Object> map = new HashMap<>();
@@ -359,7 +360,8 @@ public class GatePassHandler implements IMqttMessageListener {
 				if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
 					mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, pickupInResult, gateInFormData.getSessionId(), message);
 				}
-				mqttService.sendNotificationToGate(gateInFormData.getTruckNo(), message);
+				mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, message,
+						gateInFormData.getGateId());
 				
 				// re-try gate order with yard position
 				// Create new process order
