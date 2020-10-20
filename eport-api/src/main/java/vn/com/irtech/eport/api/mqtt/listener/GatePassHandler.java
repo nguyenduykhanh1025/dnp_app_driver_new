@@ -374,7 +374,12 @@ public class GatePassHandler implements IMqttMessageListener {
 				gateInFormData.setReceiptId(processOrder.getId());
 				for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
 					pickupHistory.setProcessOrderId(processOrderNew.getId());
+					// Not update bay because it can update like bay 09 => 09/10 (cause confuse for
+					// driver)
+					String bay = pickupHistory.getBay();
+					pickupHistory.setBay("");
 					pickupHistoryService.updatePickupHistory(pickupHistory);
+					pickupHistory.setBay(bay);
 				}
 				
 				// Parse data to string to send to robot
@@ -419,7 +424,6 @@ public class GatePassHandler implements IMqttMessageListener {
 					shipmentDetail.setId(pickupHistory.getShipmentDetailId());
 					shipmentDetail.setFinishStatus("E");
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
-					
 				}
 			}
 			
