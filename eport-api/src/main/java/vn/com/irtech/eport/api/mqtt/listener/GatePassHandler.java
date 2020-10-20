@@ -24,7 +24,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import vn.com.irtech.eport.api.consts.BusinessConsts;
-import vn.com.irtech.eport.api.consts.MessageConsts;
 import vn.com.irtech.eport.api.consts.MqttConsts;
 import vn.com.irtech.eport.api.form.DriverDataRes;
 import vn.com.irtech.eport.api.form.DriverRes;
@@ -253,9 +252,12 @@ public class GatePassHandler implements IMqttMessageListener {
 				logger.error("Error send result gate in for driver: " + e);
 			}
 			
-			// Send result gate in to smart app
 			try {
-				responseSmartGate(gateInFormData.getGateId(), BusinessConsts.SUCCESS, MessageHelper.getMessage(MessageConsts.E0028));
+				// Send result to gate app
+				String message = "Làm lệnh vào cổng thành công.";
+				mqttService.sendProgressToGate(BusinessConsts.FINISH, BusinessConsts.SUCCESS, message,
+						gateInFormData.getGateId());
+//				responseSmartGate(gateInFormData.getGateId(), BusinessConsts.SUCCESS, MessageHelper.getMessage(MessageConsts.E0028));
 			} catch (Exception e) {
 				logger.error("Error send result gate in for smart app: " + e);
 			}
@@ -446,7 +448,11 @@ public class GatePassHandler implements IMqttMessageListener {
 			}
 			
 			try {
-				responseSmartGate(gateInFormData.getGateId(), BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0024));
+				// Send result to gate app
+				String message = "Có lỗi xảy ra khi làm lệnh gate in.";
+				mqttService.sendProgressToGate(BusinessConsts.FINISH, BusinessConsts.FAIL, message,
+						gateInFormData.getGateId());
+//				responseSmartGate(gateInFormData.getGateId(), BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0024));
 			} catch (Exception e) {
 				logger.error("Error send result gate in for smart app: " + e);
 			}
@@ -475,20 +481,20 @@ public class GatePassHandler implements IMqttMessageListener {
 	}
 	
 	
-	/**
-	 * Response check in result to smart gate
-	 * 
-	 * @param result
-	 * @throws Exception
-	 */
-	private void responseSmartGate(String gateId, String result, String message) throws Exception {
-		Map<String, Object> map = new HashMap<>();
-		map.put("result", result);
-		map.put("message", message);
-		String msg = new Gson().toJson(map);
-		logger.debug("Send result to SmartGate App: " + msg);
-		mqttService.publish(MqttConsts.SMART_GATE_RES_TOPIC.replace("+", gateId), new MqttMessage(msg.getBytes()));
-	}
+//	/**
+//	 * Response check in result to smart gate
+//	 * 
+//	 * @param result
+//	 * @throws Exception
+//	 */
+//	private void responseSmartGate(String gateId, String result, String message) throws Exception {
+//		Map<String, Object> map = new HashMap<>();
+//		map.put("result", result);
+//		map.put("message", message);
+//		String msg = new Gson().toJson(map);
+//		logger.debug("Send result to SmartGate App: " + msg);
+//		mqttService.publish(MqttConsts.SMART_GATE_RES_TOPIC.replace("+", gateId), new MqttMessage(msg.getBytes()));
+//	}
 	
 	/**
 	 * Response check in result to driver

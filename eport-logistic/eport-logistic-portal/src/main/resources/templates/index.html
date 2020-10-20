@@ -36,7 +36,7 @@
                 </div>
               </a>
             </li>
-            <li class="dropdown user-menu" id="orderRegister">
+            <li class="dropdown user-menu" shiro:hasPermission="logistic:order" id="orderRegister">
               <a title="Đăng ký làm lệnh" class="menuItem"><i class="fa fa-calendar-check-o"></i>&nbsp; Đăng Ký Làm
                 Lệnh</a>
               <ul class="dropdown-menu">
@@ -53,7 +53,7 @@
                 <li><a class="menuItem">Rút Hàng Từ Cont Tại Cảng</a></li>
               </ul>
             </li>
-            <li class="dropdown user-menu" id="assignTruck">
+            <li class="dropdown user-menu" shiro:hasPermission="logistic:transport" id="assignTruck">
               <a title="Điều hành" class="menuItem"><i class="fa fa-users"></i>&nbsp; Điều hành</a>
               <ul class="dropdown-menu">
                 <li><a class="menuItem" th:href="@{/logistic/assignTruck}">Điều Xe</a></li>
@@ -61,7 +61,7 @@
                 <li><a class="menuItem" th:href="@{/logistic/container/status}">Tình Trạng Container</a></li>
               </ul>
             </li>
-            <li class="dropdown user-menu" id="truckManagement">
+            <li class="dropdown user-menu" shiro:hasPermission="logistic:transport" id="truckManagement">
               <a title="Quản Lý Đội Xe" class="menuItem"><i class="fa fa-truck"></i>&nbsp; Quản Lý
                 Đội Xe</a>
               <ul class="dropdown-menu">
@@ -70,14 +70,14 @@
                 <li><a class="menuItem" th:href="@{/logistic/truck/history}">Lịch Sử</a></li>
               </ul>
             </li>
-            <li class="dropdown user-menu" id="report">
+            <li class="dropdown user-menu" shiro:hasPermission="logistic:order" id="report">
               <a title="Báo Cáo" class="menuItem"><i class="fa fa-signal"></i>&nbsp; Báo Cáo</a>
               <ul class="dropdown-menu">
                 <li><a class="menuItem" th:href="@{/logistic/report/container}">Báo Cáo Nâng/Hạ Container</a></li>
                 <li><a class="menuItem" th:href="@{/logistic/report/costs}">Báo Cáo Cước Phí</a></li>
               </ul>
             </li>
-            <li class="dropdown user-menu" id="service">
+            <li class="dropdown user-menu" shiro:hasPermission="logistic:order" id="service">
               <a title="Hỗ trợ dịch vụ" class="menuItem"><i class="fa fa-users"></i>&nbsp; Hỗ Trợ Dịch
                 Vụ</a>
               <ul class="dropdown-menu">
@@ -87,7 +87,7 @@
                 <li><a class="menuItem" th:href="@{/logistic/shipmentSeparating}">Tách Bill Từ Master Bill</a></li>  */ -->
               </ul>
             </li>
-            <li class="dropdown user-menu" id="forwarder">
+            <li class="dropdown user-menu" shiro:hasPermission="logistic:forwarder" id="forwarder">
               <a title="Hỗ trợ dịch vụ" class="menuItem" th:href="@{/logistic/shipmentSeparating}"><i
                   class="fa fa-users"></i>&nbsp; Tách Bill Từ Master Bill</a>
             </li>
@@ -210,19 +210,19 @@
       var mode = "history";
       var historyPath = storage.get("historyPath");
       var currentPage = 1, pageSize = 5, notiCount = 0, total = 0, currentAmount = 0;
-      var fwdFlg = /*[[${fwdFlg}]]*/;
+      // var fwdFlg = /*[[${fwdFlg}]]*/;
 
-      $(document).ready(function () {
-        if (fwdFlg == 1) {
-          $('#orderRegister').hide();
-          $('#assignTruck').hide();
-          $('#truckManagement').hide();
-          $('#report').hide();
-          $('#service').hide();
-        } else {
-          $('#forwarder').hide();
-        }
-      });
+      // $(document).ready(function () {
+      //   if (fwdFlg == 1) {
+      //     $('#orderRegister').hide();
+      //     $('#assignTruck').hide();
+      //     $('#truckManagement').hide();
+      //     $('#report').hide();
+      //     $('#service').hide();
+      //   } else {
+      //     $('#forwarder').hide();
+      //   }
+      // });
 
       if ($.common.isNotEmpty(skin)) {
         $("body").addClass(skin.split('|')[0]);

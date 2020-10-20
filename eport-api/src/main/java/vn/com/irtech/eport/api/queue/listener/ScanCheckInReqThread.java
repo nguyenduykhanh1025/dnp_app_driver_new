@@ -154,7 +154,7 @@ public class ScanCheckInReqThread {
 		// Send accepted processing notification for driver
 		DriverRes driverRes = new DriverRes();
 		driverRes.setStatus(BusinessConsts.IN_PROGRESS);
-		driverRes.setResult("");
+		driverRes.setResult(BusinessConsts.BLANK);
 		driverRes.setMsg("Yêu cầu gate in đang được xử lý...");
 		try {
 			String msgDriver = new Gson().toJson(driverRes);

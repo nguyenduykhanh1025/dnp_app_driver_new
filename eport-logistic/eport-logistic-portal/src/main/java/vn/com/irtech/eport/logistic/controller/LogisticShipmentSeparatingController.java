@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,7 @@ import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 
 @Controller
+@RequiresPermissions("logistic:forwarder")
 @RequestMapping("/logistic/shipmentSeparating")
 public class LogisticShipmentSeparatingController extends LogisticBaseController {
 

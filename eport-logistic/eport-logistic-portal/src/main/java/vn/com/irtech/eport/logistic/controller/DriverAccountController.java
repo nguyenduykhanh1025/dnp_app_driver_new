@@ -44,6 +44,7 @@ import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
  * @date 2020-05-19
  */
 @Controller
+@RequiresPermissions("logistic:transport")
 @RequestMapping("/logistic/transport")
 public class DriverAccountController extends LogisticBaseController
 {

@@ -2,6 +2,7 @@ package vn.com.irtech.eport.logistic.controller;
 
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 
 @Controller
+@RequiresPermissions("logistic:order")
 @RequestMapping("/logistic/report/costs")
 public class LogisticReportCostsController extends LogisticBaseController {
 	

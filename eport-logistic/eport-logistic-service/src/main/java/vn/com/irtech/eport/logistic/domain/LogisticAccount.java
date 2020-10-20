@@ -1,13 +1,14 @@
 package vn.com.irtech.eport.logistic.domain;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import vn.com.irtech.eport.common.annotation.Excel;
-import vn.com.irtech.eport.common.annotation.Excels;
 import vn.com.irtech.eport.common.annotation.Excel.Type;
+import vn.com.irtech.eport.common.annotation.Excels;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
-import java.util.Date;
 
 /**
  * Logistic account Object logistic_account
@@ -65,6 +66,18 @@ public class LogisticAccount extends BaseEntity
     @Excel(name = "Login Date", width = 30, dateFormat = "yyyy-MM-dd")
     private Date loginDate;
     
+	/** Permission make order */
+	@Excel(name = "Permission Make Order")
+	private Boolean orderFlg;
+
+	/** Permission separate bill */
+	@Excel(name = "Permission Separate Bill")
+	private Boolean fwdFlg;
+
+	/** Permission Assign Driver */
+	@Excel(name = "Permission Assign Driver")
+	private Boolean transportFlg;
+
     @Excels({
         @Excel(name = "Group Code", targetAttr = "logisticGroup", type = Type.EXPORT)
     })
@@ -188,25 +201,40 @@ public class LogisticAccount extends BaseEntity
         return loginDate;
     }
 
-    @Override
+	public Boolean getOrderFlg() {
+		return orderFlg;
+	}
+
+	public void setOrderFlg(Boolean orderFlg) {
+		this.orderFlg = orderFlg;
+	}
+
+	public Boolean getFwdFlg() {
+		return fwdFlg;
+	}
+
+	public void setFwdFlg(Boolean fwdFlg) {
+		this.fwdFlg = fwdFlg;
+	}
+
+	public Boolean getTransportFlg() {
+		return transportFlg;
+	}
+
+	public void setTransportFlg(Boolean transportFlg) {
+		this.transportFlg = transportFlg;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("groupId", getGroupId())
-            .append("userName", getUserName())
-            .append("email", getEmail())
-            .append("password", getPassword())
-            .append("salt", getSalt())
-            .append("fullName", getFullName())
-            .append("status", getStatus())
-            .append("delFlag", getDelFlag())
-            .append("loginIp", getLoginIp())
-            .append("loginDate", getLoginDate())
-            .append("remark", getRemark())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
+				.append("id", getId()).append("groupId", getGroupId()).append("userName", getUserName())
+				.append("email", getEmail()).append("password", getPassword()).append("salt", getSalt())
+				.append("fullName", getFullName()).append("status", getStatus()).append("delFlag", getDelFlag())
+				.append("loginIp", getLoginIp()).append("loginDate", getLoginDate()).append("remark", getRemark())
+				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
+				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime())
+				.append("orderFlg", getOrderFlg()).append("fwdFlg", getFwdFlg())
+				.append("transportFlg", getTransportFlg()).toString();
     }
 }
