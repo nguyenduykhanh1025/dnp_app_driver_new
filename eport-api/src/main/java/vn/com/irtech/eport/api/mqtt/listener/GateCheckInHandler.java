@@ -139,6 +139,9 @@ public class GateCheckInHandler implements IMqttMessageListener {
 				// Begin interate pickup history list get by driver id
 				for (PickupHistory pickupHistory : pickupHistories) {
 					
+					pickupHistory.setProcessOrderId(processOrder.getId());
+					pickupHistoryService.updatePickupHistory(pickupHistory);
+
 					// Get service type of pickup history
 					Integer serviceType = pickupHistory.getShipment().getServiceType();
 					
@@ -184,11 +187,7 @@ public class GateCheckInHandler implements IMqttMessageListener {
 						
 						pickupIn.add(pickupHistory);
 					}
-					
-					pickupHistory.setProcessOrderId(processOrder.getId());
-					pickupHistoryService.updatePickupHistory(pickupHistory);
 				}
-				
 				
 				if (pickupIn.size() == 0) {
 					gateInFormData.setPickupOut(pickupOut);
@@ -211,7 +210,7 @@ public class GateCheckInHandler implements IMqttMessageListener {
 				Integer gross = gateNotificationCheckInReq.getWeight() - gateNotificationCheckInReq.getDeduct();
 				gateInFormData.setWgt(gross.toString());
 				gateInFormData.setSessionId(gateNotificationCheckInReq.getSessionId());
-				gateInFormData.setGateId(gateInFormData.getGateId());
+				gateInFormData.setGateId(gateNotificationCheckInReq.getGateId());
 				gateInFormData.setReceiptId(processOrder.getId());
 				
 				String msg = new Gson().toJson(gateInFormData);

@@ -273,14 +273,35 @@ public class GatePassHandler implements IMqttMessageListener {
 			//gateInFormData 
 			int yardPositionCount = 0;
 			int count = 0;
+			List<Long> pickupId = new ArrayList<>();
+			PickupHistory currentPickupHistory = null;
+			for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
+				if (!checkPickupHistoryHasPosition(pickupHistory)) {
+					if (currentPickupHistory == null) {
+						currentPickupHistory = pickupHistory;
+						pickupId.add(pickupHistory.getId());
+					} else {
+						// Check if 2 container need position is same vessel and voyage
+						// true => send both to 1 req to mc
+						if (pickupHistory.getShipmentDetail().getVslNm()
+								.equalsIgnoreCase(currentPickupHistory.getShipmentDetail().getVslNm())
+								|| pickupHistory.getShipmentDetail().getVoyNo()
+										.equalsIgnoreCase(currentPickupHistory.getShipmentDetail().getVoyNo())) {
+							pickupId.add(pickupHistory.getId());
+						}
+					}
+				}
+			}
 			for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
 				if (!checkPickupHistoryHasPosition(pickupHistory)) {
 					
 					String message = "Container " + pickupHistory.getContainerNo() + " chưa có tọa độ, đang thực hiện yêu cầu mc cấp tọa độ.";
-					mqttService.sendNotificationToGate(pickupHistory.getTruckNo(), message);
+					mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, message,
+							gateInFormData.getGateId());
 					
 					if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
-						mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateInFormData.getSessionId(), message);
+						mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK,
+								gateInFormData.getSessionId(), message);
 					}
 					
 					Map<String, Object> map = new HashMap<>();
@@ -288,7 +309,20 @@ public class GatePassHandler implements IMqttMessageListener {
 					String msg = new Gson().toJson(map);
 					try {
 						logger.debug("Received Position failed from Robot. Send MC request: " + msg);
-						mqttService.sendMessageToMcAppWindow(pickupHistory.getId());
+						// pickup id size = 2 => send both cont to mc
+						// send from the first cont is iterated
+						// ignore req when iterate to cont 2
+						if (pickupId.size() == 2) {
+							if (pickupId.get(0) == pickupHistory.getId()) {
+								mqttService.sendMessageToMcAppWindow(pickupId);
+							}
+						} else {
+							// 2 cont not same vessel and voyage
+							// send separately
+							List<Long> pickupIds = new ArrayList<>();
+							pickupIds.add(pickupHistory.getId());
+							mqttService.sendMessageToMcAppWindow(pickupIds);
+						}
 					} catch (MqttException e) {
 						logger.error("Erorr request yard position from mc: " + e);
 					}
@@ -359,7 +393,7 @@ public class GatePassHandler implements IMqttMessageListener {
 				if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
 					mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, pickupInResult, gateInFormData.getSessionId(), message);
 				}
-				mqttService.sendNotificationToGate(gateInFormData.getTruckNo(), message);
+				mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, message, gateInFormData.getGateId());
 				
 				// re-try gate order with yard position
 				// Create new process order
@@ -374,7 +408,12 @@ public class GatePassHandler implements IMqttMessageListener {
 				gateInFormData.setReceiptId(processOrder.getId());
 				for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
 					pickupHistory.setProcessOrderId(processOrderNew.getId());
+					// Not update bay because it can update like bay 09 => 09/10 (cause confuse for
+					// driver)
+					String bay = pickupHistory.getBay();
+					pickupHistory.setBay("");
 					pickupHistoryService.updatePickupHistory(pickupHistory);
+					pickupHistory.setBay(bay);
 				}
 				
 				// Parse data to string to send to robot
@@ -419,7 +458,6 @@ public class GatePassHandler implements IMqttMessageListener {
 					shipmentDetail.setId(pickupHistory.getShipmentDetailId());
 					shipmentDetail.setFinishStatus("E");
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
-					
 				}
 			}
 			
