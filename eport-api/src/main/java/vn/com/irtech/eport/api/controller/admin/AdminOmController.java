@@ -1,5 +1,8 @@
 package vn.com.irtech.eport.api.controller.admin;
 
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,20 +26,26 @@ public class AdminOmController extends BaseController {
 	private IPickupHistoryService pickupHistoryService;
 
 	@PostMapping("/pickup/yard-position")
-	public AjaxResult updateYardPosition(@RequestBody PickupHistory pickupHistory) {
-		if (pickupHistory.getId() == null) {
-			return error("id không được để trống.");
+	public AjaxResult updateYardPosition(@RequestBody List<PickupHistory> pickupHistories) {
+		if (CollectionUtils.isEmpty(pickupHistories)) {
+			return error("Không tìm thấy dữ liệu.");
 		}
-		PickupHistory pickupHistoryOrigin = pickupHistoryService.selectPickupHistoryById(pickupHistory.getId());
-		if (pickupHistoryOrigin == null) {
-			return error("id không tồn tại.");
+		for (PickupHistory pickupHistory : pickupHistories) {
+			if (pickupHistory.getId() == null) {
+				return error("id không được để trống.");
+			}
+			PickupHistory pickupHistoryOrigin = pickupHistoryService.selectPickupHistoryById(pickupHistory.getId());
+			if (pickupHistoryOrigin == null) {
+				return error("id không tồn tại.");
+			}
+			pickupHistoryOrigin.setBlock(pickupHistory.getBlock());
+			pickupHistoryOrigin.setBay(pickupHistory.getBay());
+			pickupHistoryOrigin.setLine(pickupHistory.getLine());
+			pickupHistoryOrigin.setTier(pickupHistory.getTier());
+			pickupHistoryOrigin.setArea(pickupHistory.getArea());
+			pickupHistoryService.updatePickupHistory(pickupHistoryOrigin);
+
 		}
-		pickupHistoryOrigin.setBlock(pickupHistory.getBlock());
-		pickupHistoryOrigin.setBay(pickupHistory.getBay());
-		pickupHistoryOrigin.setLine(pickupHistory.getLine());
-		pickupHistoryOrigin.setTier(pickupHistory.getTier());
-		pickupHistoryOrigin.setArea(pickupHistory.getArea());
-		pickupHistoryService.updatePickupHistory(pickupHistoryOrigin);
 		return success();
 	}
 }
