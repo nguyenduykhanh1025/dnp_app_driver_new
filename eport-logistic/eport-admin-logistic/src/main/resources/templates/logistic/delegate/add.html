@@ -179,7 +179,7 @@
     function loadGroupNameForDelegated() {
       if ($('input[name=delegateTaxcode]').val() != null && $('input[name=delegateTaxcode]').val() != '') {
         $.ajax({
-          url: prefix + "/company/" + $('input[name=delegateTaxcode]').val(),
+          url: prefix + "/consignee/" + $('input[name=delegateTaxcode]').val(),
           method: "get"
         }).done(function (result) {
           if (result.code == 0) {
