@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
 @Controller
+@RequiresPermissions("logistic:order")
 @RequestMapping("/")
 public class LogisticNapasPaymentController extends LogisticBaseController {
 	

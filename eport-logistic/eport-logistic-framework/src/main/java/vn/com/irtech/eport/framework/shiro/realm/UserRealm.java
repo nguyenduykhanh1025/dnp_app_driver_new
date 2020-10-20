@@ -1,5 +1,8 @@
 package vn.com.irtech.eport.framework.shiro.realm;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -18,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.common.exception.user.CaptchaException;
 import vn.com.irtech.eport.common.exception.user.RoleBlockedException;
 import vn.com.irtech.eport.common.exception.user.UserBlockedException;
@@ -26,6 +28,8 @@ import vn.com.irtech.eport.common.exception.user.UserNotExistsException;
 import vn.com.irtech.eport.common.exception.user.UserPasswordNotMatchException;
 import vn.com.irtech.eport.common.exception.user.UserPasswordRetryLimitExceedException;
 import vn.com.irtech.eport.framework.shiro.service.SysLoginService;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
+import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 
 /**
  * @author admin
@@ -38,12 +42,27 @@ public class UserRealm extends AuthorizingRealm
     private SysLoginService loginService;
 
     /**
-     * 授权
-     */
+	 * Authorization
+	 */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection arg0)
     {
-        return new SimpleAuthorizationInfo();
+		LogisticAccount user = ShiroUtils.getSysUser();
+		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+		Set<String> perms = new HashSet<>();
+		// TODO dynamic setting from DB
+		// set permission by flag
+		if (user.getOrderFlg()) {
+			perms.add("logistic:order");
+		}
+		if (user.getFwdFlg()) {
+			perms.add("logistic:forwarder");
+		}
+		if (user.getTransportFlg()) {
+			perms.add("logistic:transport");
+		}
+		info.setStringPermissions(perms);
+		return info;
     }
 
     @Override

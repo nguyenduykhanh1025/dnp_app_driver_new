@@ -48,13 +48,35 @@
                     <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle()"></i>
                 </div>
             </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Làm lệnh:</label>
+                <input type="hidden" name="orderFlg" id="orderFlg" th:field="*{orderFlg}">
+                <div id="orderToggle" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickOrderToggle()"></i>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Tách bill:</label>
+                <input type="hidden" name="fwdFlg" id="fwdFlg" th:field="*{fwdFlg}">
+                <div id="fwdToggle" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickFwdToggle()"></i>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Điều xe:</label>
+                <input type="hidden" name="transportFlg" id="transportFlg" th:field="*{transportFlg}">
+                <div id="transportToggle" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickTransportToggle()"></i>
+                </div>
+            </div>
         </form>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: select2-js" />
-    <script type="text/javascript">
+    <script type="text/javascript" th:inline="javascript">
         var prefix = ctx + "logistic/account";
+        var logisticAccount = /*[[${logisticAccount}]]*/;
         $("#form-account-edit").validate({
             focusCleanup: true
         });
@@ -90,6 +112,27 @@
             } else {
                 document.getElementById("toggle").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="clickToggle()"></i>';
             }
+            if (logisticAccount.orderFlg) {
+                document.getElementById("orderToggle").innerHTML = '<i class="fa fa-toggle-on text-info fa-2x" onclick="clickOrderToggle()"></i>';
+                $("#orderFlg").val(1);
+            } else {
+                document.getElementById("orderToggle").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="clickOrderToggle()"></i>';
+                $("#orderFlg").val(0);
+            }
+            if (logisticAccount.fwdFlg) {
+                document.getElementById("fwdToggle").innerHTML = '<i class="fa fa-toggle-on text-info fa-2x" onclick="clickFwdToggle()"></i>';
+                $("#fwdFlg").val(1);
+            } else {
+                document.getElementById("fwdToggle").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="clickFwdToggle()"></i>';
+                $("#fwdFlg").val(0);
+            }
+            if (logisticAccount.transportFlg) {
+                document.getElementById("transportToggle").innerHTML = '<i class="fa fa-toggle-on text-info fa-2x" onclick="clickTransportToggle()"></i>';
+                $("#transportFlg").val(1);
+            } else {
+                document.getElementById("transportToggle").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="clickTransportToggle()"></i>';
+                $("#transportFlg").val(0);
+            }
             $.ajax({
                 url: ctx + 'logistic/group/getGroupNameById',
                 method: 'POST',
@@ -112,6 +155,36 @@
             } else {
                 document.getElementById("toggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle()"></span>';
                 $("#status").val(0);
+            }
+        }
+
+        function clickOrderToggle() {
+            if ($("#orderFlg").val() == 1) {
+                document.getElementById("orderToggle").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickOrderToggle()"></span>';
+                $("#orderFlg").val(0);
+            } else {
+                document.getElementById("orderToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickOrderToggle()"></span>';
+                $("#orderFlg").val(1);
+            }
+        }
+
+        function clickFwdToggle() {
+            if ($("#fwdFlg").val() == 1) {
+                document.getElementById("fwdToggle").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickFwdToggle()"></span>';
+                $("#fwdFlg").val(0);
+            } else {
+                document.getElementById("fwdToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickFwdToggle()"></span>';
+                $("#fwdFlg").val(1);
+            }
+        }
+
+        function clickTransportToggle() {
+            if ($("#transportFlg").val() == 1) {
+                document.getElementById("transportToggle").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickTransportToggle()"></span>';
+                $("#transportFlg").val(0);
+            } else {
+                document.getElementById("transportToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickTransportToggle()"></span>';
+                $("#transportFlg").val(1);
             }
         }
     </script>

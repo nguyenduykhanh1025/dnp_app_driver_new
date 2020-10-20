@@ -53,6 +53,27 @@
                     <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle()"></i>
                 </div>
             </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Làm lệnh:</label>
+                <input type="hidden" name="orderFlg" id="orderFlg">
+                <div id="orderToggle" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickOrderToggle()"></i>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Tách bill:</label>
+                <input type="hidden" name="fwdFlg" id="fwdFlg">
+                <div id="fwdToggle" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickFwdToggle()"></i>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Điều xe:</label>
+                <input type="hidden" name="transportFlg" id="transportFlg">
+                <div id="transportToggle" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickTransportToggle()"></i>
+                </div>
+            </div>
             <div clas="form-group" style="padding-left: 150px;">
                 <input type="checkbox" class="form-check-input" id="isSendEmail" name="isSendEmail" checked>
                 <label class="control-label">Gửi email thông báo mở tài khoản</label>
@@ -105,6 +126,36 @@
             } else {
                 document.getElementById("toggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle()"></span>';
                 $("#status").val(0);
+            }
+        }
+
+        function clickOrderToggle() {
+            if ($("#orderFlg").val()) {
+                document.getElementById("orderToggle").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickOrderToggle()"></span>';
+                $("#orderFlg").val(false);
+            } else {
+                document.getElementById("orderToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickOrderToggle()"></span>';
+                $("#orderFlg").val(true);
+            }
+        }
+
+        function clickFwdToggle() {
+            if ($("#fwdFlg").val()) {
+                document.getElementById("fwdToggle").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickFwdToggle()"></span>';
+                $("#fwdFlg").val(false);
+            } else {
+                document.getElementById("fwdToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickFwdToggle()"></span>';
+                $("#fwdFlg").val(true);
+            }
+        }
+
+        function clickTransportToggle() {
+            if ($("#transportFlg").val()) {
+                document.getElementById("transportToggle").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickTransportToggle()"></span>';
+                $("#transportFlg").val(false);
+            } else {
+                document.getElementById("transportToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickTransportToggle()"></span>';
+                $("#transportFlg").val(true);
             }
         }
     </script>

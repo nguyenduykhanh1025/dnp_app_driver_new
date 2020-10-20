@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,7 @@ import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
 @Controller
+@RequiresPermissions("logistic:order")
 @RequestMapping("/logistic/receive-cont-full")
 public class LogisticReceiveContFullController extends LogisticBaseController {
 

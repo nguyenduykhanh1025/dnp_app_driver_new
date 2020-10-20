@@ -3,6 +3,7 @@ package vn.com.irtech.eport.logistic.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 
 @Controller
+@RequiresPermissions("logistic:transport")
 @RequestMapping("/logistic/transportMonitor")
 public class TransportMonitorController extends LogisticBaseController{
   

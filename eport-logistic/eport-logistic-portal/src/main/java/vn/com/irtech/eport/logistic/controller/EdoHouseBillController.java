@@ -28,6 +28,7 @@ import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
  * @date 2020-08-10
  */
 @Controller
+@RequiresPermissions("logistic:forwarder")
 @RequestMapping("/logistic/masterbill")
 public class EdoHouseBillController extends BaseController
 {

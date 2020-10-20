@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ import vn.com.irtech.eport.system.service.ISysNotificationService;
 import vn.com.irtech.eport.system.service.ISysUserTokenService;
 
 @Controller
+@RequiresPermissions("logistic:transport")
 @RequestMapping("/logistic/assignTruck")
 public class LogisticAssignTruckController extends LogisticBaseController{
 	
