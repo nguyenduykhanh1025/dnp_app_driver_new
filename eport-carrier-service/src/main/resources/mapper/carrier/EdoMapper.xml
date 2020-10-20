@@ -64,12 +64,19 @@
           #{carrier_code}
         </foreach>
       </if>
+      <if test="params.ids != null">
+        and id in
+        <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+          #{id}
+        </foreach>
+      </if>
       <if test="id != null ">and id = #{id}</if>
       <if test="carrierId != null ">and carrier_id = #{carrierId}</if>
       <if test="carrierCode != null  and carrierCode != ''">and carrier_code = #{carrierCode}</if>
       <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
       <if test="releaseNo != null  and releaseNo != ''">and release_no = #{releaseNo}</if>
       <if test="billOfLading != null  and billOfLading != ''">and bill_of_lading = #{billOfLading}</if>
+      <if test="params.containerNumber != null  and params.containerNumber != ''">and container_number = #{params.containerNumber}</if>
       <if test="businessUnit != null  and businessUnit != ''">and business_unit = #{businessUnit}</if>
       <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">and empty_container_depot =
         #{emptyContainerDepot}

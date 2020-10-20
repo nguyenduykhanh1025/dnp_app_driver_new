@@ -43,6 +43,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+            <if test="params.shipmentDetailIdNull != null"> and shipment_detail_id is null</if>
+            <if test="params.shipmentDetailIds != null">
+                and shipment_detail_id in
+                <foreach item="shipmentDetailId" collection="params.shipmentDetailIds" open="(" separator="," close=")">
+                    #{shipmentDetailId}
+                </foreach>
+            </if>
         </where>
     </select>
     

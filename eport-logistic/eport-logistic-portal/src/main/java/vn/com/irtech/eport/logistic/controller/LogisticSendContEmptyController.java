@@ -820,7 +820,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			if (ctnrInfoE != null) {
 				// Container has job order no 2 => has order
 				if (StringUtils.isNotEmpty(ctnrInfoE.getJobOdrNo())) {
-					containerHasOrderdFull += shipmentDetail.getContainerNo() + ",";
+					containerHasOrderdEmpty += shipmentDetail.getContainerNo() + ",";
 				}
 			}
 		}

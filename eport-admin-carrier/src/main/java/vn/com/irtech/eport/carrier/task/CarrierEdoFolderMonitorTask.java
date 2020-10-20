@@ -145,7 +145,7 @@ public class CarrierEdoFolderMonitorTask {
 	}
 
 	private void readEdiFile(File ediFile) throws IOException {
-		logger.info("Begin read edi file: " + ediFile.getAbsolutePath());
+		logger.debug("Begin read edi file: " + ediFile.getAbsolutePath());
 		String groupCode = getCarrierCode(ediFile);
 		// Check if carrier code is not null
 		if (groupCode == null) {
@@ -166,61 +166,65 @@ public class CarrierEdoFolderMonitorTask {
 		EdoAuditLog edoAuditLog = new EdoAuditLog();
 		Date timeNow = new Date();
 
-		// Create backup folder: $backupRootPath /{carrierCode}/YYYYMM
-		String backupFolder = edoBackupPath + File.separator + groupCode + File.separator
-				+ new SimpleDateFormat("yyyyMM").format(new Date());
-		File backupDir = new File(backupFolder);
-		if (!backupDir.exists()) {
-			backupDir.mkdirs();
-		}
-		// backup file path: backupFolder / edi.file.backup
-		File backupFile = new File(backupFolder + File.separator + ediFile.getName());
-		// If previous version is exist, rename with timestamp
-		if (backupFile.exists()) {
-			backupFile = new File(backupFolder + File.separator + ediFile.getName() + "."
-					+ String.valueOf(System.currentTimeMillis()));
-		}
-		// Move file to backup folder
-		Files.move(ediFile, backupFile);
-
-		// Insert to edo table
+		// Read edi file and parse to edo object
 		List<Edo> listEdo = edoService.readEdi(text);
-		for (Edo edo : listEdo) {
-			edo.setCarrierId(carrierGroup.getId());
-			edo.setCreateSource("EDI");
-			edoHistory.setBillOfLading(edo.getBillOfLading());
-			edoHistory.setOrderNumber(edo.getOrderNumber());
-			edoHistory.setCarrierCode(edo.getCarrierCode());
-			edoHistory.setCarrierId(carrierGroup.getId());
-			edoHistory.setEdiContent(content);
-			edoHistory.setFileName(ediFile.getName());
-			edoHistory.setCreateSource("EDI");
-			edoHistory.setContainerNumber(edo.getContainerNumber());
-			edoHistory.setCreateBy(carrierGroup.getGroupCode());
 
-			Edo edoCheck = edoService.checkContainerAvailable(edo.getContainerNumber(), edo.getBillOfLading());
-			if (edoCheck != null) {
-				edo.setId(edoCheck.getId());
-				edo.setUpdateTime(timeNow);
-				edo.setUpdateBy(carrierGroup.getGroupCode());
-				edoService.updateEdo(edo); // TODO
-				edoHistory.setEdoId(edo.getId());
-				edoHistory.setAction("Update");
-				edoHistoryService.insertEdoHistory(edoHistory);
-				edoAuditLog.setEdoId(edo.getId());
-				edoAuditLogService.updateAuditLog(edo);
-			} else {
-				edo.setCreateTime(timeNow);
-				edo.setCreateBy(carrierGroup.getGroupCode());
-				edoService.insertEdo(edo);
-				edoHistory.setEdoId(edo.getId());
-				edoHistory.setAction("Add");
-				edoHistoryService.insertEdoHistory(edoHistory);
-				edoAuditLog.setEdoId(edo.getId());
-				edoAuditLogService.addAuditLogFirst(edo);
+		// can not read edo file
+		if(listEdo == null || listEdo.size() == 0) {
+			// create error folder
+			moveToErrorFolder(groupCode, ediFile);
+			logger.error("No Container found in EDI File: " + ediFile.getName() + "\nEDI Content:\n" + content);
+			return;
+		}
+		// loop and insert
+		for (Edo edo : listEdo) {
+			try {
+				edo.setCarrierId(carrierGroup.getId());
+				edo.setCreateSource("EDI");
+				edoHistory.setBillOfLading(edo.getBillOfLading());
+				edoHistory.setOrderNumber(edo.getOrderNumber());
+				edoHistory.setCarrierCode(edo.getCarrierCode());
+				edoHistory.setCarrierId(carrierGroup.getId());
+				edoHistory.setEdiContent(content);
+				edoHistory.setFileName(ediFile.getName());
+				edoHistory.setCreateSource("EDI");
+				edoHistory.setContainerNumber(edo.getContainerNumber());
+				edoHistory.setCreateBy(carrierGroup.getGroupCode());
+	
+				Edo edoCheck = edoService.checkContainerAvailable(edo.getContainerNumber(), edo.getBillOfLading());
+				if (edoCheck != null) {
+					edo.setId(edoCheck.getId());
+					edo.setUpdateTime(timeNow);
+					edo.setUpdateBy(carrierGroup.getGroupCode());
+					// Update eDO
+					edoService.updateEdo(edo); // TODO update allowed items (not all)
+					// Update history
+					edoHistory.setEdoId(edo.getId());
+					edoHistory.setAction("Update");
+					edoHistoryService.insertEdoHistory(edoHistory);
+					edoAuditLog.setEdoId(edo.getId());
+					edoAuditLogService.updateAuditLog(edo);
+				} else {
+					edo.setCreateTime(timeNow);
+					edo.setCreateBy(carrierGroup.getGroupCode());
+					// insert eDO
+					edoService.insertEdo(edo);
+					// insert history
+					edoHistory.setEdoId(edo.getId());
+					edoHistory.setAction("Add");
+					edoHistoryService.insertEdoHistory(edoHistory);
+					edoAuditLog.setEdoId(edo.getId());
+					edoAuditLogService.addAuditLogFirst(edo);
+				}
+			} catch (Exception ex) {
+				logger.error("Error while INSERT EDI", ex);
+				moveToErrorFolder(groupCode, ediFile);
+				return;
 			}
 		}
-		logger.info("Finish read file: " + ediFile.getAbsolutePath());
+		// Move file to backup folder
+		moveToBackupFolder(groupCode, ediFile);
+		logger.debug("Finish read file: " + ediFile.getAbsolutePath());
 	}
 
 	/**
@@ -242,5 +246,45 @@ public class CarrierEdoFolderMonitorTask {
 			}
 		}
 		return null;
+	}
+	
+	private void moveToBackupFolder(String groupCode, File ediFile) throws IOException {
+		// Create backup folder: $backupRootPath /{carrierCode}/YYYYMM
+		String targetFolder = edoBackupPath + File.separator + groupCode + File.separator
+				+ new SimpleDateFormat("yyyyMM").format(new Date());
+
+		File targetDir = new File(targetFolder);
+		if (!targetDir.exists()) {
+			targetDir.mkdirs();
+		}
+		// backup file path: backupFolder / edi.file.backup
+		File targetFile = new File(targetFolder + File.separator + ediFile.getName());
+		// If previous version is exist, rename with timestamp
+		if (targetFile.exists()) {
+			targetFile = new File(targetFolder + File.separator + ediFile.getName() + "."
+					+ String.valueOf(System.currentTimeMillis()));
+		}
+		// Move file to error folder
+		Files.move(ediFile, targetFile);
+	}
+
+	private void moveToErrorFolder(String groupCode, File ediFile) throws IOException {
+		// Create error folder: $backupRootPath /{carrierCode}/YYYYMM_Error
+		String errorFolder =  edoBackupPath + File.separator + groupCode + File.separator
+				+ new SimpleDateFormat("yyyyMM").format(new Date()) + "_Error";
+		// create error folder
+		File errorDir = new File(errorFolder);
+		if (!errorDir.exists()) {
+			errorDir.mkdirs();
+		}
+		// backup file path: backupFolder / edi.file.backup
+		File errorFile = new File(errorFolder + File.separator + ediFile.getName());
+		// If previous version is exist, rename with timestamp
+		if (errorFile.exists()) {
+			errorFile = new File(errorFolder + File.separator + ediFile.getName() + "."
+					+ String.valueOf(System.currentTimeMillis()));
+		}
+		// Move file to error folder
+		Files.move(ediFile, errorFile);
 	}
 }

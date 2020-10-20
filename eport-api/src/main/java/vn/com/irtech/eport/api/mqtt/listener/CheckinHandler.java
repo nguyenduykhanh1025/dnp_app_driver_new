@@ -34,11 +34,8 @@ import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
-import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
-import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
@@ -97,7 +94,7 @@ public class CheckinHandler implements IMqttMessageListener {
 		try {
 			// checkinReq = new Gson().fromJson(messageContent, CheckinReq.class);
 			if (StringUtils.isEmpty(checkinReq.getSessionId())) {
-				logger.info("Checkin without QRCode");
+				logger.info("Check in without QRCode");
 				// Detect information from pickup and check-in
 				List<PickupHistoryDataRes> pickupHistoryDataRes = autoRecognizePickup(checkinReq.getInput());
 				// Pickup history has been detected, then set data to check-in

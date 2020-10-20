@@ -38,6 +38,7 @@ import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Controller
 @RequestMapping("/logistic/shifting-cont")
@@ -92,9 +93,9 @@ public class LogisticShiftingContController extends LogisticBaseController {
 
 		//Get coordinate from catos
 		List<ShipmentDetail> coordinateOfList = catosApiService.getCoordinateOfContainers(blNo);
-		List<ShipmentDetail[][]> bayList = new ArrayList<>();
+		List<ShipmentDetail[][]> bayList = null;
 		try {
-			bayList = shipmentDetailService.getContPosition(coordinateOfList, shipmentDetails);
+			bayList = shipmentDetailService.getContPosition(blNo, shipmentDetails);
 		} catch (Exception e) {
 			logger.warn("Can't get container yard position!");
 		}
@@ -221,7 +222,8 @@ public class LogisticShiftingContController extends LogisticBaseController {
 		}
 
 		//Get coordinate from catos test
-		List<ShipmentDetail> coordinateOfList = catosApiService.getCoordinateOfContainers(preorderPickupConts.get(0).getBlNo());
+		List<ContainerInfoDto> coordinateOfList = catosApiService
+				.selectShipmentDetailsByBLNo(preorderPickupConts.get(0).getBlNo());
 		AjaxResult ajaxResult = AjaxResult.success();
 		List<Long> orderIds = new ArrayList<>();
 		List<ServiceSendFullRobotReq> reqs = null;

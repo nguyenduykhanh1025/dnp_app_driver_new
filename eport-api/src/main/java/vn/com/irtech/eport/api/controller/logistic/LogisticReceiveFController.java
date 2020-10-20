@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import vn.com.irtech.eport.api.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.api.form.ProcessBillForm;
 import vn.com.irtech.eport.api.form.ShipmentDetailForm;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.api.mqtt.service.MqttService.EServiceRobot;
+import vn.com.irtech.eport.api.queue.listener.QueueService;
 import vn.com.irtech.eport.carrier.domain.EdoHouseBill;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoHouseBillService;
@@ -82,7 +82,7 @@ public class LogisticReceiveFController extends LogisticBaseController {
 	private ISysConfigService configService;
 	
 	@Autowired
-	private CustomQueueService customQueueService;
+	private QueueService customQueueService;
 	
 	@Autowired
 	private IOtpCodeService otpCodeService;

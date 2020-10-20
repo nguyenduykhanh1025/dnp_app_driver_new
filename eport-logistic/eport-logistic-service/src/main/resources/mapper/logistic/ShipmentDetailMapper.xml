@@ -459,15 +459,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null ">#{logisticGroupId},</if>
             <if test="processOrderId != null">#{processOrderId},</if>
             <if test="registerNo != null  and registerNo != ''">#{registerNo},</if>
-            <if test="containerNo != null  and containerNo != ''">#{containerNo},</if>
+            <if test="containerNo != null  and containerNo != ''">trim(upper(#{containerNo})),</if>
             <if test="containerStatus != null  and containerStatus != ''">#{containerStatus},</if>
             <if test="sztp != null  and sztp != ''">#{sztp},</if>
             <if test="sztpDefine != null  and sztpDefine != ''">#{sztpDefine},</if>
             <if test="temperature != null ">#{temperature},</if>
             <if test="fe != null  and fe != ''">#{fe},</if>
-            <if test="bookingNo != null  and bookingNo != ''">#{bookingNo},</if>
-            <if test="blNo != null  and blNo != ''">#{blNo},</if>
-            <if test="sealNo != null  and sealNo != ''">#{sealNo},</if>
+            <if test="bookingNo != null  and bookingNo != ''">trim(upper(#{bookingNo})),</if>
+            <if test="blNo != null  and blNo != ''">trim(upper(#{blNo})),</if>
+            <if test="sealNo != null  and sealNo != ''">trim(upper(#{sealNo})),</if>
             <if test="consignee != null  and consignee != ''">#{consignee},</if>
             <if test="expiredDem != null ">#{expiredDem},</if>
             <if test="detFreeTime != null ">#{detFreeTime},</if>
@@ -531,15 +531,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
             <if test="processOrderId != null">process_order_id = #{processOrderId},</if>
             <if test="registerNo != null  and registerNo != ''">register_no = #{registerNo},</if>
-            <if test="containerNo != null  and containerNo != ''">container_no = #{containerNo},</if>
+            <if test="containerNo != null  and containerNo != ''">container_no = trim(upper(#{containerNo})),</if>
             <if test="containerStatus != null  and containerStatus != ''">container_status = #{containerStatus},</if>
             <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
             <if test="sztpDefine != null  and sztpDefine != ''">sztp_define = #{sztpDefine},</if>
             <if test="temperature != null ">temperature = #{temperature},</if>
             <if test="fe != null  and fe != ''">fe = #{fe},</if>
-            <if test="bookingNo != null  and bookingNo != ''">booking_no = #{bookingNo},</if>
-            <if test="blNo != null  and blNo != ''">bl_no = #{blNo},</if>
-            <if test="sealNo != null  and sealNo != ''">seal_no = #{sealNo},</if>
+            <if test="bookingNo != null  and bookingNo != ''">booking_no = trim(upper(#{bookingNo})),</if>
+            <if test="blNo != null  and blNo != ''">bl_no = trim(upper(#{blNo})),</if>
+            <if test="sealNo != null  and sealNo != ''">seal_no = trim(upper(#{sealNo})),</if>
             <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
             <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
             <if test="detFreeTime != null ">det_free_time = #{detFreeTime},</if>

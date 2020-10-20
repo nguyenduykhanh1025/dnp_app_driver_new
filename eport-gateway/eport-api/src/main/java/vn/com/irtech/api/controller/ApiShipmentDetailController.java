@@ -341,4 +341,9 @@ public class ApiShipmentDetailController {
 	public BerthPlanInfo getBerthPlanInfo(@RequestBody BerthPlanInfo berthPlanInfo) {
 		return shipmentDetailDao.getBerthPlanInfo(berthPlanInfo);
 	}
+
+	@PostMapping("/container-full/list")
+	public List<ContainerInfoDto> getContainerInfoByContainerInfoDto(@RequestBody ContainerInfoDto containerInfoDto) {
+		return shipmentDetailDao.selectContainerInfoByCntrInfo(containerInfoDto);
+	}
 }

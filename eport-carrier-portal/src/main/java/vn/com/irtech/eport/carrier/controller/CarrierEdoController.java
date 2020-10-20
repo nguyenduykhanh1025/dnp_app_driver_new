@@ -34,6 +34,7 @@ import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.StringUtils;
@@ -101,19 +102,31 @@ public class CarrierEdoController extends CarrierBaseController {
 	@ResponseBody
 	public TableDataInfo edo(@RequestBody PageAble<Edo> param) {
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
-		Edo edo = param.getData();
-		if (edo == null) {
-			edo = new Edo();
+		Edo edoParam = param.getData();
+		if (edoParam == null) {
+			edoParam = new Edo();
 		}
-		if(edo.getBillOfLading() == null)
+		if (edoParam.getBillOfLading() == null)
 		{
 			return null;
 		}
-		edo.setCarrierCode(null);
-		edo.getParams().put("groupCode", super.getGroupCodes());
-		edo.setDelFlg(0);
-		edo.setContainerNumber(null);
-		List<Edo> dataList = edoService.selectEdoList(edo);
+		edoParam.setCarrierCode(null);
+		edoParam.getParams().put("groupCode", super.getGroupCodes());
+		edoParam.setDelFlg(0);
+		edoParam.setContainerNumber(null);
+		List<Edo> dataList = edoService.selectEdoList(edoParam);
+		Map<String, ContainerInfoDto> cntrInfoMap = getContainerInfoMap(edoParam.getBillOfLading());
+		for (Edo edo : dataList) {
+			// Get container info from catos mapping by container no
+			ContainerInfoDto cntrInfo = cntrInfoMap.get(edo.getContainerNumber());
+			Map<String, Object> extraData = new HashMap<>();
+			if (cntrInfo != null) {
+				extraData.put("jobOrderNo", cntrInfo.getJobOdrNo2());
+				extraData.put("gateOutDate", cntrInfo.getOutDate());
+				extraData.put("status", cntrInfo.getCntrState());
+			}
+			edo.setParams(extraData);
+		}
 		return getDataTable(dataList);
 	}
 
@@ -160,28 +173,66 @@ public class CarrierEdoController extends CarrierBaseController {
 	@Transactional
 	@Log(title = "Xóa container", businessType = BusinessType.DELETE, operatorType = OperatorType.SHIPPINGLINE)
 	public AjaxResult delContainer(String ids) {
-		Edo edo = new Edo();
 		if (ids == null) {
 			return error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
 		}
-		String[] idsList = ids.split(",");
-		edo.setCarrierCode(super.getUserGroup().getGroupCode());
-		edo.setCarrierId(super.getUser().getGroupId());
-		for (String id : idsList) {
-			Map<String, Object> groupCodes = new HashMap<>();
-			groupCodes.put("groupCode", super.getGroupCodes());
-			Edo edoCheck = new Edo();
-			edoCheck.setId(Long.parseLong(id));
-			edoCheck.setParams(groupCodes);
-			if (edoService.selectFirstEdo(edoCheck) == null) {
-				return AjaxResult.error("Container không tồn tại, vui lòng kiểm tra lại dữ liệu");
-			} else if (edoService.selectEdoById(Long.parseLong(id)).getStatus() != null) {
-				return AjaxResult.error("Bạn không thể xóa container này <br>Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
+//		String[] idsList = ids.split(",");
+//		edo.setCarrierCode(super.getUserGroup().getGroupCode());
+//		edo.setCarrierId(super.getUser().getGroupId());
+//		for (String id : idsList) {
+//			Map<String, Object> groupCodes = new HashMap<>();
+//			groupCodes.put("groupCode", super.getGroupCodes());
+//			Edo edoCheck = new Edo();
+//			edoCheck.setId(Long.parseLong(id));
+//			edoCheck.setParams(groupCodes);
+//			if (edoService.selectFirstEdo(edoCheck) == null) {
+//				return AjaxResult.error("Container không tồn tại, vui lòng kiểm tra lại dữ liệu");
+//			} else if (edoService.selectEdoById(Long.parseLong(id)).getStatus() != null) {
+//				return AjaxResult.error("Bạn không thể xóa container này <br>Thông tin cont đã được khách hàng khai báo trên cảng điện tử!");
+//			}
+//		}
+
+		// Get all edo need to delete
+		Edo edoParam = new Edo();
+		Map<String, Object> params = new HashMap<>();
+		params.put("groupCode", super.getGroupCodes());
+		params.put("ids", Convert.toStrArray(ids));
+		edoParam.setParams(params);
+		List<Edo> edos = edoService.selectEdoList(edoParam);
+
+		// Check if edo is exist
+		if (CollectionUtils.isEmpty(edos)) {
+			return error("Container không tồn tại, vui lòng kiểm tra lại dữ liệu.");
+		}
+
+		// Get edo info from catos
+		Map<String, ContainerInfoDto> cntrInfoMap = getContainerInfoMap(edoParam.getBillOfLading());
+		String containerRegister = "";
+		String containerOrder = "";
+		for (Edo edo : edos) {
+			if (StringUtils.isNotEmpty(edo.getStatus())) {
+				containerRegister += edo.getContainerNumber() + ",";
+			}
+			ContainerInfoDto cntrInfo = cntrInfoMap.get(edo.getContainerNumber());
+			if (cntrInfo != null) {
+				// Check catos has job order no
+				if (StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
+					containerOrder += edo.getContainerNumber() + ",";
+				}
 			}
 		}
-		for (String id : idsList) {
-			edoService.deleteEdoById(Long.parseLong(id));
+
+		if (containerRegister.length() > 0) {
+			return error("Các container " + containerRegister.substring(0, containerRegister.length() - 1)
+					+ " đã được khai báo trên cảng điện tử.<br>Không thể xóa những container này.");
 		}
+
+		if (containerOrder.length() > 0) {
+			return error("Các container " + containerOrder.substring(0, containerOrder.length() - 1)
+					+ " đã được làm lệnh.<br>Không thể xóa những container này.");
+		}
+
+		edoService.deleteEdoByIds(ids);
 		return AjaxResult.success("Xóa eDO thành công");
 	
 	}
@@ -189,51 +240,85 @@ public class CarrierEdoController extends CarrierBaseController {
 	@PostMapping("/update")
 	@ResponseBody
 	@Log(title = "Cập Nhật eDO", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
-	public AjaxResult multiUpdate(String ids, Edo edo) {
+	public AjaxResult multiUpdate(String ids, Edo edoInput) {
 		if (ids == null) {
 			return error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
 		}
 		// Validate permission
-		if(StringUtils.isNotEmpty(edo.getConsignee()) && !hasConsigneeUpdatePermission()) {
+		if(StringUtils.isNotEmpty(edoInput.getConsignee()) && !hasConsigneeUpdatePermission()) {
 			return AjaxResult.error("Không thể cập nhật Consignee, vui lòng kiếm tra lại dữ liệu.");
 		}
 		try {
-			String[] idsList = ids.split(",");
-			Edo edoCheck = null;
-			// Check each edo
-			for (String id : idsList) {
-				// create check object
-				edoCheck = new Edo();
-				edoCheck.setId(Long.parseLong(id));
-				edoCheck.getParams().put("groupCode", super.getGroupCodes());
-				if (edoService.selectFirstEdo(edoCheck) == null) {
-					return AjaxResult.error("Container không tồn tại, vui lòng kiếm tra lại dữ liệu");
-				} else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("5")) {
-					// FIXME Check catos
-					return AjaxResult.error("Không thể cập nhật container đã ra khỏi cảng.");
-				}
+
+			// Get all edo need to delete
+			Edo edoParam = new Edo();
+			Map<String, Object> params = new HashMap<>();
+			params.put("groupCode", super.getGroupCodes());
+			params.put("ids", Convert.toStrArray(ids));
+			edoParam.setParams(params);
+			List<Edo> edos = edoService.selectEdoList(edoParam);
+
+			// Check if edo is exist
+			if (CollectionUtils.isEmpty(edos)) {
+				return error("Container không tồn tại, vui lòng kiểm tra lại dữ liệu.");
 			}
 
-			// Send extension date request if has changed
-			// TODO: Need to test carefully, put a try catch to prevent current
-			// function fail
-			// FIXME Update lai phan nay: GiapHD
-//			try {
-//				sendExtesionDateReqToRobot(ids, edo.getExpiredDem());
-//			} catch (Exception e) {
-//				logger.error("Failed to make and send req extension expiredem from carrier: " + e);
-//			}
+			// Get edo info from catos
+			Map<String, ContainerInfoDto> cntrInfoMap = getContainerInfoMapFE(edoParam.getBillOfLading());
+			for (Edo edo : edos) {
+				// Container full in catos
+				ContainerInfoDto cntrFull = cntrInfoMap.get(edo.getContainerNumber() + "FULL");
+				// Container empty in catos (if exists mean container has already been gate out)
+				ContainerInfoDto cntrEmty = cntrInfoMap.get(edo.getContainerNumber() + "EMTY");
+				// Check if expired dem has update
+				if (edoInput.getExpiredDem() != null && edoInput.getExpiredDem().compareTo(edo.getExpiredDem()) != 0) {
+					// has update
+					if (cntrFull != null && StringUtils.isNotEmpty(cntrFull.getJobOdrNo2())) {
+						// TODO : Send req extend expired dem
+					}
+				}
+
+				// Check if det free time has update
+				if (StringUtils.isNotEmpty(edoInput.getDetFreeTime())
+						&& edoInput.getDetFreeTime().equals(edo.getDetFreeTime())) {
+					// has update
+					// Check condition drop empty container order has been made
+					if (cntrEmty != null && StringUtils.isNotEmpty(cntrEmty.getJobOdrNo())) {
+						return error(
+								"Container đã có lệnh trả rỗng tại cảng.<br>Không thể cập nhật số ngày miễn lưu vỏ.");
+					}
+				}
+
+				// Check if empty container depot has update
+				if (StringUtils.isNotEmpty(edoInput.getEmptyContainerDepot())
+						&& edoInput.getEmptyContainerDepot().equalsIgnoreCase(edo.getEmptyContainerDepot())) {
+					// has update
+					// Check condition drop empty container order has been made
+					if (cntrEmty != null && StringUtils.isNotEmpty(cntrEmty.getJobOdrNo())) {
+						return error(
+								"Container đã có lệnh trả rỗng tại cảng.<br>Không thể cập nhật nơi trả vỏ.");
+					}
+				}
+			}
+			
 			// Update
-			edo.setCarrierCode(super.getUserGroup().getGroupCode());
-			edo.setCarrierId(super.getUser().getGroupId());
+			String[] idsList = ids.split(",");
+			// Set input field permit update
+			Edo edoUpdate = new Edo();
+			edoUpdate.setExpiredDem(edoInput.getExpiredDem());
+			edoUpdate.setDetFreeTime(edoInput.getDetFreeTime());
+			edoUpdate.setEmptyContainerDepot(edoInput.getEmptyContainerDepot());
+			edoUpdate.setCarrierCode(super.getUserGroup().getGroupCode());
+			edoUpdate.setCarrierId(super.getUser().getGroupId());
 			for (String id : idsList) {
-				edo.setId(Long.parseLong(id));
-				edoService.updateEdo(edo);
-				edo.setCreateBy(super.getUser().getEmail());
-				edoAuditLogService.updateAuditLog(edo);
+				edoUpdate.setId(Long.parseLong(id));
+				edoService.updateEdo(edoUpdate);
+				edoUpdate.setCreateBy(super.getUser().getEmail());
+				edoAuditLogService.updateAuditLog(edoUpdate);
 			}
 			return AjaxResult.success("Update thành công");
 		} catch (Exception e) {
+			logger.error("Error when update edo from web carrier portal: " + e);
 			return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
 		}
 
@@ -516,5 +601,48 @@ public class CarrierEdoController extends CarrierBaseController {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get list container by bill and convert to map container no - container info
+	 * obj
+	 * 
+	 * @param blNo
+	 * @return Map<String, ContainerInfoDto>
+	 */
+	private Map<String, ContainerInfoDto> getContainerInfoMap(String blNo) {
+		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoListByBlNo(blNo);
+		// List<ContainerInfoDto> cntrInfos =
+		// catosApiService.getContainerInfoListByBlNo(blNo);
+		// Map oject store container info data by key container no
+		Map<String, ContainerInfoDto> cntrInfoMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(cntrInfos)) {
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				cntrInfoMap.put(cntrInfo.getCntrNo(), cntrInfo);
+			}
+		}
+		return cntrInfoMap;
+	}
+
+	/**
+	 * Get list container by bill and convert to map container no - container info
+	 * obj differentiate by fe
+	 * 
+	 * @param blNo
+	 * @return Map<String, ContainerInfoDto>
+	 */
+	private Map<String, ContainerInfoDto> getContainerInfoMapFE(String blNo) {
+		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoListByBlNo(blNo);
+		Map<String, ContainerInfoDto> cntrInfoMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(cntrInfos)) {
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				if ("EMTY".equalsIgnoreCase(cntrInfo.getVslCd())) {
+					cntrInfoMap.put(cntrInfo.getCntrNo() + "EMTY", cntrInfo);
+				} else {
+					cntrInfoMap.put(cntrInfo.getCntrNo() + "FULL", cntrInfo);
+				}
+			}
+		}
+		return cntrInfoMap;
 	}
 }

@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.web.controller.gate;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -14,7 +17,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.DriverTruckInfo;
+import vn.com.irtech.eport.logistic.service.IDriverAccountService;
+import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 
 @Controller
@@ -27,6 +36,12 @@ public class GateCheckController extends BaseController {
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
+
+	@Autowired
+	private IPickupAssignService pickupAssignService;
+
+	@Autowired
+	private IDriverAccountService driverAccountService;
 
 	@GetMapping()
 	public String getView() {
@@ -42,7 +57,37 @@ public class GateCheckController extends BaseController {
 		shipmentDetailParam.setOrderNo(jobOrderNo);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetailParam);
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			ajaxResult.put("shipmentId", shipmentDetails.get(0).getShipmentId());
+			// Get shipment id first shipment detail in list
+			Long shipmentId = shipmentDetails.get(0).getShipmentId();
+			ajaxResult.put("shipmentId", shipmentId);
+
+			// Pickup assign param
+			PickupAssign pickupAssignParam = new PickupAssign();
+			Map<String, Object> params = new HashMap<>();
+			// shipmentDetailIdNull to query pickup assign match shipment id but null
+			// shipment detail id
+			params.put("shipmentDetailIdNull", true);
+			pickupAssignParam.setShipmentId(shipmentId);
+			pickupAssignParam.setParams(params);
+			// Get list pickup from param above
+			List<PickupAssign> pickupAssigns = pickupAssignService.selectPickupAssignList(pickupAssignParam);
+
+			if (CollectionUtils.isNotEmpty(pickupAssigns)) {
+				// Driver ids to query driver info
+				String driverIds = "";
+				// Driver info with truck no list
+				for (PickupAssign pickupAssign : pickupAssigns) {
+					driverIds += pickupAssign.getDriverId() + ",";
+				}
+				List<DriverTruckInfo> driverTruckInfos = driverAccountService
+						.selectDriverWithTruckNoInfoByIds(driverIds.substring(0, driverIds.length() - 1));
+				if (CollectionUtils.isEmpty(driverTruckInfos)) {
+					driverTruckInfos = new ArrayList<>();
+				}
+				ajaxResult.put("driverInfos", getDataTable(driverTruckInfos));
+			} else {
+				ajaxResult.put("driverInfos", getDataTable(new ArrayList<>()));
+			}
 		}
 		ajaxResult.put("shipmentDetails", getDataTable(shipmentDetails));
 		return ajaxResult;
@@ -50,11 +95,36 @@ public class GateCheckController extends BaseController {
 
 	@PostMapping("/pickup-assign/list")
 	@ResponseBody
-	public AjaxResult getPickupAssignList(String shipmentDetailIds, Long shipmentId, String jobOrderNo) {
-		if (shipmentId == null) {
+	public AjaxResult getPickupAssignList(String shipmentDetailIds) {
+		if (StringUtils.isEmpty(shipmentDetailIds)) {
 			return error("Không tìm thấy thông tin.");
 		}
-
-		return null;
+		// Pickup assign param
+		PickupAssign pickupAssignParam = new PickupAssign();
+		Map<String, Object> params = new HashMap<>();
+		// shipmentDetailIdNull to query pickup assign match shipment id but null
+		// shipment detail id
+		params.put("shipmentDetailIds", Convert.toStrArray(shipmentDetailIds));
+		pickupAssignParam.setParams(params);
+		// Get list pickup from param above
+		List<PickupAssign> pickupAssigns = pickupAssignService.selectPickupAssignList(pickupAssignParam);
+		AjaxResult ajaxResult = AjaxResult.success();
+		if (CollectionUtils.isNotEmpty(pickupAssigns)) {
+			// Driver ids to query driver info
+			String driverIds = "";
+			// Driver info with truck no list
+			for (PickupAssign pickupAssign : pickupAssigns) {
+				driverIds += pickupAssign.getDriverId() + ",";
+			}
+			List<DriverTruckInfo> driverTruckInfos = driverAccountService
+					.selectDriverWithTruckNoInfoByIds(driverIds.substring(0, driverIds.length() - 1));
+			if (CollectionUtils.isEmpty(driverTruckInfos)) {
+				driverTruckInfos = new ArrayList<>();
+			}
+			ajaxResult.put("driverInfos", getDataTable(driverTruckInfos));
+		} else {
+			ajaxResult.put("driverInfos", getDataTable(new ArrayList<>()));
+		}
+		return ajaxResult;
 	}
 }

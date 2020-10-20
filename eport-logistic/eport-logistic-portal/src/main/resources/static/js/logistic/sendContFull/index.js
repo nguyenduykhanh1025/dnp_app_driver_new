@@ -534,14 +534,14 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 break;
         }
         // released status
-        let released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+        let released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
         switch (sourceData[row].finishStatus) {
             case 'Y':
-                released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Giao Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+                released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Đã Giao Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
                 break;
             case 'N':
                 if (sourceData[row].paymentStatus == 'Y') {
-                    released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                    released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Có Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
                 }
                 break;
         }
@@ -714,8 +714,11 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
         if (value > 99999) {
-            layer.msg('Trọng lượng không được quá 5 chữ số.', { icon: $.modal.icon(modal_status.FAIL), time: 2000, shift: 5 });
-            $(td).css("background-color", "red");
+            layer.msg('Trọng lượng (kg) quá lớn (hơn 100 tấn).', { icon: $.modal.icon(modal_status.FAIL), time: 2000, shift: 5 });
+            $(td).css("text-color", "red");
+        } else if (value < 1000) {
+        	layer.msg('Trọng lượng (kg) quá nhỏ (nhỏ hơn 1 tấn).', { icon: $.modal.icon(modal_status.FAIL), time: 2000, shift: 5 });
+            $(td).css("text-color", "red");
         }
         value = formatMoney(value);
     }

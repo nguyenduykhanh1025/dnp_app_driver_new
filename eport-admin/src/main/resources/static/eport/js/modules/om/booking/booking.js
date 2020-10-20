@@ -324,17 +324,36 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
       doStatus = '<i id="do" class="fa fa-file-text easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
     }
     // released status
-    let released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
-    switch (sourceData[row].finishStatus) {
-      case 'Y':
-        released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-        break;
-      case 'N':
-        if (sourceData[row].paymentStatus == 'Y') {
-          released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        }
-        break;
+    let released = '';
+    // Drop full
+    if (shipmentSelected.serviceType == 4) {
+      released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+      switch (sourceData[row].finishStatus) {
+        case 'Y':
+          released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+          break;
+        case 'N':
+          if (sourceData[row].paymentStatus == 'Y') {
+            released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+          }
+          break;
+      }
+    } else {
+      // Drop empty
+      released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+      switch (sourceData[row].finishStatus) {
+        case 'Y':
+          released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+          break;
+        case 'N':
+          if (sourceData[row].paymentStatus == 'Y') {
+            released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+          }
+          break;
+      }
     }
+    
+
     // Return the content
     let content = '<div>';
 

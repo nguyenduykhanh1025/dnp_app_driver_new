@@ -43,6 +43,7 @@ import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysDictData;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 import vn.com.irtech.eport.system.service.ISysDictDataService;
 import vn.com.irtech.eport.system.service.ISysDictTypeService;
@@ -211,31 +212,39 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public List<ShipmentDetail[][]> getContPosition(List<ShipmentDetail> coordinateOfList,
-            List<ShipmentDetail> shipmentDetails) {
+	public List<ShipmentDetail[][]> getContPosition(String blNo, List<ShipmentDetail> shipmentDetails) {
+		List<ContainerInfoDto> containerInfoDtos = catosApiService.selectShipmentDetailsByBLNo(blNo);
+
         // simulating the location of container in da nang port, mapping to matrix     
         // Update yard position for list container
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
-            for (int i = 0; i < coordinateOfList.size(); i++) {
-                if (shipmentDetail.getContainerNo().equals(coordinateOfList.get(i).getContainerNo())) {
-                    shipmentDetail.setBlock(coordinateOfList.get(i).getBlock());
-                    shipmentDetail.setBay(coordinateOfList.get(i).getBay());
-                    shipmentDetail.setRow(coordinateOfList.get(i).getRow());
-                    shipmentDetail.setTier(coordinateOfList.get(i).getTier());
-                    coordinateOfList.remove(i);
-                    i--;
+			for (int i = 0; i < containerInfoDtos.size(); i++) {
+				if (shipmentDetail.getContainerNo().equals(containerInfoDtos.get(i).getCntrNo())) {
+					String[] positionArr = containerInfoDtos.get(i).getLocation().split("-");
+					if (positionArr.length == 4) {
+						shipmentDetail.setBlock(positionArr[0]);
+						shipmentDetail.setBay(positionArr[1]);
+						shipmentDetail.setRow(Integer.parseInt(positionArr[2]));
+						shipmentDetail.setTier(Integer.parseInt(positionArr[3]));
+						containerInfoDtos.remove(i);
+						i--;
+					}
                 }
             }
         }
 
         // Add the rest unknown container in list 
-        for (int i = 0; i < coordinateOfList.size(); i++) {
-            ShipmentDetail shipmentDetail2 = new ShipmentDetail();
-            shipmentDetail2.setBlock(coordinateOfList.get(i).getBlock());
-            shipmentDetail2.setBay(coordinateOfList.get(i).getBay());
-            shipmentDetail2.setRow(coordinateOfList.get(i).getRow());
-            shipmentDetail2.setTier(coordinateOfList.get(i).getTier());
-            shipmentDetails.add(shipmentDetail2);
+		for (int i = 0; i < containerInfoDtos.size(); i++) {
+			String[] positionArr = containerInfoDtos.get(i).getLocation().split("-");
+			if (positionArr.length == 4) {
+				ShipmentDetail shipmentDetail2 = new ShipmentDetail();
+				shipmentDetail2.setBlock(positionArr[0]);
+				shipmentDetail2.setBay(positionArr[1]);
+				shipmentDetail2.setRow(Integer.parseInt(positionArr[2]));
+				shipmentDetail2.setTier(Integer.parseInt(positionArr[3]));
+				containerInfoDtos.remove(i);
+				i--;
+			}
         }
 
         // Sorting list container by bay
@@ -283,33 +292,41 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Override
     @Transactional
-    public List<ServiceSendFullRobotReq> calculateMovingCont(List<ShipmentDetail> coordinateOfList, List<ShipmentDetail> preorderPickupConts,
+	public List<ServiceSendFullRobotReq> calculateMovingCont(List<ContainerInfoDto> containerInfoDtos,
+			List<ShipmentDetail> preorderPickupConts,
             List<ShipmentDetail> shipmentDetails, Shipment shipment, Boolean isCredit) {
         try {
 
         	// simulating the location of container in da nang port, mapping to matrix     
             // Update yard position for list container
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
-                for (int i = 0; i < coordinateOfList.size(); i++) {
-                    if (shipmentDetail.getContainerNo().equals(coordinateOfList.get(i).getContainerNo())) {
-                        shipmentDetail.setBlock(coordinateOfList.get(i).getBlock());
-                        shipmentDetail.setBay(coordinateOfList.get(i).getBay());
-                        shipmentDetail.setRow(coordinateOfList.get(i).getRow());
-                        shipmentDetail.setTier(coordinateOfList.get(i).getTier());
-                        coordinateOfList.remove(i);
-                        i--;
+				for (int i = 0; i < containerInfoDtos.size(); i++) {
+					if (shipmentDetail.getContainerNo().equals(containerInfoDtos.get(i).getCntrNo())) {
+						String[] positionArr = containerInfoDtos.get(i).getLocation().split("-");
+						if (positionArr.length == 4) {
+							shipmentDetail.setBlock(positionArr[0]);
+							shipmentDetail.setBay(positionArr[1]);
+							shipmentDetail.setRow(Integer.parseInt(positionArr[2]));
+							shipmentDetail.setTier(Integer.parseInt(positionArr[3]));
+							containerInfoDtos.remove(i);
+							i--;
+						}
                     }
                 }
             }
 
             // Add the rest unknown container in list 
-            for (int i = 0; i < coordinateOfList.size(); i++) {
-                ShipmentDetail shipmentDetail2 = new ShipmentDetail();
-                shipmentDetail2.setBlock(coordinateOfList.get(i).getBlock());
-                shipmentDetail2.setBay(coordinateOfList.get(i).getBay());
-                shipmentDetail2.setRow(coordinateOfList.get(i).getRow());
-                shipmentDetail2.setTier(coordinateOfList.get(i).getTier());
-                shipmentDetails.add(shipmentDetail2);
+			for (int i = 0; i < containerInfoDtos.size(); i++) {
+				String[] positionArr = containerInfoDtos.get(i).getLocation().split("-");
+				if (positionArr.length == 4) {
+					ShipmentDetail shipmentDetail2 = new ShipmentDetail();
+					shipmentDetail2.setBlock(positionArr[0]);
+					shipmentDetail2.setBay(positionArr[1]);
+					shipmentDetail2.setRow(Integer.parseInt(positionArr[2]));
+					shipmentDetail2.setTier(Integer.parseInt(positionArr[3]));
+					containerInfoDtos.remove(i);
+					i--;
+				}
             }
 
             // Sorting list container by bay

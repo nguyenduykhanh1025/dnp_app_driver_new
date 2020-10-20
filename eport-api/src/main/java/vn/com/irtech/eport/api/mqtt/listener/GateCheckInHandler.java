@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,21 +17,16 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 
 import vn.com.irtech.eport.api.consts.BusinessConsts;
-import vn.com.irtech.eport.api.consts.MqttConsts;
-import vn.com.irtech.eport.api.form.DriverDataRes;
-import vn.com.irtech.eport.api.form.DriverRes;
 import vn.com.irtech.eport.api.form.GateInFormData;
 import vn.com.irtech.eport.api.form.GateNotificationCheckInReq;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.utils.StringUtils;
-import vn.com.irtech.eport.logistic.domain.LogisticTruck;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
-import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
 @Component
@@ -87,6 +81,8 @@ public class GateCheckInHandler implements IMqttMessageListener {
 		
 		String result = map.get("result") == null ? null : map.get("result").toString();
 		
+		String msg = map.get("msg") == null ? null : map.get("msg").toString();
+
 		String gateInData = map.get("gateInData") == null ? null : map.get("gateInData").toString();
 		
 		GateNotificationCheckInReq gateNotificationCheckInReq = new Gson().fromJson(gateInData, GateNotificationCheckInReq.class);
@@ -95,7 +91,6 @@ public class GateCheckInHandler implements IMqttMessageListener {
 		}
 		
 		if ("reject".equals(result)) {
-			String msg = "Thông tin xe/container không trùng khớp với thực tế. <br/>Vui lòng kiểm tra và thực hiện Check In lại hoặc gặp bàn cân để xử lý.";
 			if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSessionId())) {
 				mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateNotificationCheckInReq.getSessionId(), msg);
 			}
@@ -104,9 +99,10 @@ public class GateCheckInHandler implements IMqttMessageListener {
 		} 
 		
 		if ("accept".equals(result)) {
-			String msg = "Chấp nhận yêu cầu gate in, chuẩn bị làm lệnh gate in.";
+			String msgSend = "Chấp nhận yêu cầu gate in, chuẩn bị làm lệnh gate in.";
 			if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSessionId())) {
-				mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateNotificationCheckInReq.getSessionId(), msg);
+				mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK,
+						gateNotificationCheckInReq.getSessionId(), msgSend);
 			}
 			sendGateInOrderToRobot(gateNotificationCheckInReq);
 		}
