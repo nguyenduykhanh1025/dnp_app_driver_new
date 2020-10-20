@@ -11,6 +11,7 @@ $(function () {
   $("#detFreeTime").val(detFreeTime);
   $("#emptyContainerDepot").val(emptyContainerDepot);
   $("#consignee").val(consignee);
+  $("#remark").val(remark);
 })
 
 function formatDate(value) {
@@ -59,7 +60,8 @@ function confirm() {
           expiredDem: formatDateForSubmit($("#expiredDem").val()),
           detFreeTime: $("#detFreeTime").val() == detFreeTime ? "" : $("#detFreeTime").val(),
           emptyContainerDepot: $("#emptyContainerDepot").val() == emptyContainerDepot ? "" : $("#emptyContainerDepot").val(),
-          consignee: $("#consignee").val() == consignee ? "" : $("#consignee").val()
+          consignee: $("#consignee").val() == consignee ? "" : $("#consignee").val(),
+          remark: $("#remark").val() == remark ? "" : $("#remark").val()
         },
         success: function (data) {
           if (data.code == 0) {
