@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import vn.com.irtech.eport.api.config.MqttConfig;
 import vn.com.irtech.eport.api.consts.MqttConsts;
 import vn.com.irtech.eport.api.form.DriverRes;
+import vn.com.irtech.eport.api.form.GateRes;
 import vn.com.irtech.eport.api.mqtt.listener.CheckinHandler;
 import vn.com.irtech.eport.api.mqtt.listener.GateCheckInHandler;
 import vn.com.irtech.eport.api.mqtt.listener.GatePassHandler;
@@ -344,6 +345,20 @@ public class MqttService implements MqttCallback {
 			publish(MqttConsts.NOTIFICATION_GATE_TOPIC, new MqttMessage(msg.getBytes()));
 		} catch (MqttException e) {
 			logger.error("Error when try sending notification check in for gate: " + e);
+		}
+	}
+
+	public void sendProgressToGate(String status, String result, String msg, String gateId) {
+		GateRes gateRes = new GateRes();
+		gateRes.setStatus(status);
+		gateRes.setResult(result);
+		gateRes.setMsg(msg);
+		String message = new Gson().toJson(gateRes);
+		String topic = MqttConsts.NOTIFICATION_GATE_PROGRESS.replace("+", gateId);
+		try {
+			publish(topic, new MqttMessage(message.getBytes()));
+		} catch (MqttException e) {
+			logger.error("Error when try sending notification progress check in for gate: " + e);
 		}
 	}
 }
