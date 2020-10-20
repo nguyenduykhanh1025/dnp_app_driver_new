@@ -20,11 +20,6 @@ function confirm() {
   {
     detFreeTime = 0;
   }
-//  if($("#detFreeTime").val() < 0)
-//  {
-//    $.modal.alertError("Ngày miễn lưu vỏ phải là số nguyên dương !")
-//    return;
-//  }
 
   if(!checkValidDET($("#detFreeTime").val())) {
 	  $.modal.alertError("Ngày miễn lưu vỏ phải là số hoặc ngày tháng năm (dd/mm/yyyy) !")
@@ -47,7 +42,8 @@ function confirm() {
           expiredDem: formatDateForSubmit($("#expiredDem").val()),
           detFreeTime: $("#detFreeTime").val() == detFreeTime ? "" : $("#detFreeTime").val(),
           emptyContainerDepot: $("#emptyContainerDepot").val() == emptyContainerDepot ? "" : $("#emptyContainerDepot").val(),
-          consignee: $("#consignee").val() == consignee ? "" : $("#consignee").val()
+          consignee: $("#consignee").val() == consignee ? "" : $("#consignee").val(),
+          remark: $("#remark").val()
         },
         beforeSend: function () {
           $.modal.loading("Đang xử lý dữ liệu...");

@@ -308,6 +308,8 @@ public class CarrierEdoController extends CarrierBaseController {
 			edoUpdate.setExpiredDem(edoInput.getExpiredDem());
 			edoUpdate.setDetFreeTime(edoInput.getDetFreeTime());
 			edoUpdate.setEmptyContainerDepot(edoInput.getEmptyContainerDepot());
+			edoUpdate.setRemark(edoInput.getRemark());
+			edoUpdate.setConsignee(edoInput.getConsignee());
 			edoUpdate.setCarrierCode(super.getUserGroup().getGroupCode());
 			edoUpdate.setCarrierId(super.getUser().getGroupId());
 			for (String id : idsList) {
