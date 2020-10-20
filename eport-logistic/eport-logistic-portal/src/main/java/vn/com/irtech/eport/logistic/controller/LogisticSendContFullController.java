@@ -522,6 +522,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		} catch (Exception e) {
 			return error("Mã OTP nhập vào không hợp lệ!");
 		}
+		// TODO Un-support cash
+		if(!creditFlag) {
+			return error("Lỗi! Chưa hỗ trợ thanh toán trả trước (cash).");
+		}
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();
@@ -702,7 +706,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@PostMapping("/shipment-detail/validation")
 	@ResponseBody
-	@RepeatSubmit
 	public AjaxResult validateShipmentDetail(String shipmentDetailIds) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
 				getUser().getGroupId());

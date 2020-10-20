@@ -579,6 +579,10 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		} catch (Exception e) {
 			return error("Mã OTP nhập vào không hợp lệ!");
 		}
+		// TODO Un-support cash
+		if(!creditFlag) {
+			return error("Lỗi! Chưa hỗ trợ thanh toán trả trước (cash).");
+		}
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();
