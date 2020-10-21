@@ -1001,25 +1001,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectShipmentDetailForDriverSendCont" parameterType="vn.com.irtech.eport.logistic.form.PickupAssignForm" resultType="vn.com.irtech.eport.logistic.form.PickupAssignForm">
-        select sh.id as shipmentDetailId, sh.container_no as containerNo, sh.wgt as wgt, sh.sztp as sztp, a.id as pickupAssignId,
+        select sh.id as shipmentDetailId, sh.container_no as containerNo, sh.wgt as wgt, sh.sztp as sztp, sh.id as pickupAssignId,
         sh.cargo_type as cargoType, sh.consignee as consignee
         from shipment_detail sh
-        left join pickup_assign a on sh.shipment_id = a.shipment_id
         left join pickup_history p on sh.id = p.shipment_detail_id
         left join shipment s on sh.shipment_id = s.id
         <where>
-            a.shipment_detail_id is null
             and p.shipment_detail_id is null
             and sh.payment_status = 'Y'
             and sh.finish_status = 'N'
-            and a.id is not null
             <if test="serviceType != null">and s.service_type = #{serviceType}</if>
-            <if test="driverId != null "> and a.driver_id = #{driverId}</if>
+            <if test="logisticGroupId != null "> and sh.logistic_group_id = #{logisticGroupId}</if>
             <if test="pickUp.containerNo != null and pickUp.containerNo != ''"> and sh.container_no like concat(concat('%', #{pickUp.containerNo}), '%')</if>
             <if test="pickUp.consignee != null and pickUp.consignee != ''"> and sh.consignee = concat(concat('%', #{pickUp.consignee}), '%')</if>
         </where>
-        group by sh.id, sh.container_no, sh.wgt, sh.sztp, sh.cargo_type, sh.consignee, a.id, a.create_time 
-        order by a.create_time desc
+        group by sh.id, sh.container_no, sh.wgt, sh.sztp, sh.cargo_type, sh.consignee, sh.create_time 
+        order by sh.create_time desc
     </select>
 
     <update id="updateShipmentDetailByIds">

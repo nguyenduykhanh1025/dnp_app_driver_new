@@ -274,4 +274,5 @@ public interface EportConstants {
 	// Key name to get data from cache
 	/** Key name for gate detection info saved in cache */
 	public static final String CACHE_GATE_DETECTION_KEY = "gateDetectionInfo";
+
 }
