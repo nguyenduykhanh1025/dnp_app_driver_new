@@ -159,25 +159,4 @@ public class LogisticDelegatedController extends BaseController
 		}
 		return ajaxResult;
     }
-
-	@GetMapping("/company/{taxCode}")
-	@ResponseBody
-	public AjaxResult getCompanyInfoByTaxcode(@PathVariable String taxCode) {
-		AjaxResult ajaxResult = AjaxResult.success();
-		if (taxCode == null || "".equals(taxCode)) {
-			return error();
-		}
-		PartnerInfoDto partner = catosApiService.getGroupNameByTaxCode(taxCode);
-		String groupName = partner.getGroupName();
-		String address = partner.getAddress();
-		if (address != null) {
-			ajaxResult.put("address", address);
-		}
-		if (groupName != null) {
-			ajaxResult.put("groupName", groupName);
-		} else {
-			ajaxResult = AjaxResult.error();
-		}
-		return ajaxResult;
-	}
 }
