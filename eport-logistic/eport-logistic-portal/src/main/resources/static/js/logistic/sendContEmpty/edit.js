@@ -31,7 +31,7 @@ async function submitHandler() {
             $.modal.alertWarning("Mã OPR là bắt buộc.");
         } else if (!$("#containerAmount").val()) {
             $.modal.alertWarning("Số lượng container không hợp lệ.");
-        } else if ($("#blNo").val() != currentBill) {
+        } else if ($("#blNo").val() && $("#blNo").val() != currentBill) {
             let res = await getBillNoUnique();
             if (res.code == 500) {
                 $.modal.alertError(res.msg);
@@ -98,7 +98,7 @@ function edit(url) {
             }
             $.modal.enable();
         }
-    })
+    });
 }
 
 $(document).ready(function () {
