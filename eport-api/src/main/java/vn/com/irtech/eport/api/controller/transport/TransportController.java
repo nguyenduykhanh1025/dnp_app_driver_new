@@ -266,6 +266,7 @@ public class TransportController extends BaseController {
 				throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0016));
 			}
 			pickupHistory.setContainerNo(shipmentDetail.getContainerNo());
+			pickupHistory.setSztp(shipmentDetail.getSztp());
 			pickupHistory.setShipmentDetailId(shipmentDetailId);
 			pickupHistory.setLogisticGroupId(shipmentDetail.getLogisticGroupId());
 			pickupHistory.setShipmentId(shipmentDetail.getShipmentId());
