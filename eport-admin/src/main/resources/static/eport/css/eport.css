@@ -1091,3 +1091,7 @@ label {
   font-size: 13px;
   padding: 15px 20px;
 }
+
+.layui-layer-dialog .layui-layer-content {
+	word-break: break-word !important;
+}
