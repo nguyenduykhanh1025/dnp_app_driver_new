@@ -260,6 +260,11 @@ public class TransportController extends BaseController {
 					.checkPickupHistoryExists(shipmentDetail.getShipmentId(), shipmentDetailId) > 0) {
 				throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0009));
 			}
+			// Check max pickup driver can pick
+			shipment = shipmentService.selectShipmentById(shipmentDetail.getShipmentId());
+			if (!pickupHistoryService.checkPossiblePickup(userId, shipment.getServiceType(), shipmentDetail)) {
+				throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0016));
+			}
 			pickupHistory.setContainerNo(shipmentDetail.getContainerNo());
 			pickupHistory.setShipmentDetailId(shipmentDetailId);
 			pickupHistory.setLogisticGroupId(shipmentDetail.getLogisticGroupId());
