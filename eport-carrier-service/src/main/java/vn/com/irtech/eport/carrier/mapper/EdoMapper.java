@@ -151,4 +151,12 @@ public interface EdoMapper {
 	 * @return int
 	 */
 	public int updateEdoByCondition(Edo edo);
+
+	/**
+	 * Select edo list by house bill
+	 * 
+	 * @param houseBill
+	 * @return List<Edo>
+	 */
+	public List<Edo> selectEdoListByHouseBill(String houseBill);
 }

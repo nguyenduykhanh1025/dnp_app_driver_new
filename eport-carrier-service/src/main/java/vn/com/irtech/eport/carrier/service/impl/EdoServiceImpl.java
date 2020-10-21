@@ -442,4 +442,15 @@ public class EdoServiceImpl implements IEdoService
     public int updateEdoByCondition(Edo edo) {
 		return edoMapper.updateEdoByCondition(edo);
 	}
+
+	/**
+	 * Select edo list by house bill
+	 * 
+	 * @param houseBill
+	 * @return List<Edo>
+	 */
+	@Override
+	public List<Edo> selectEdoListByHouseBill(String houseBill) {
+		return edoMapper.selectEdoListByHouseBill(houseBill);
+	}
 }

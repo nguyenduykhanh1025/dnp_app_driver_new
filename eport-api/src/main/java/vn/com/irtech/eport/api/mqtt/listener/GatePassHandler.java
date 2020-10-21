@@ -158,12 +158,13 @@ public class GatePassHandler implements IMqttMessageListener {
 		List<ProcessHistory> processHistories = processHistoryService.selectProcessHistoryList(history);
 		if (CollectionUtils.isNotEmpty(processHistories)) {
 			history.setId(processHistories.get(0).getId());
+			history.setFinishTime(new Date());
 		}
 		history.setStatus(EportConstants.PROCESS_HISTORY_STATUS_FINISHED);
 		
 		// If Robot return success
 		if ("success".equalsIgnoreCase(result)) {
-			
+
 			if (CollectionUtils.isNotEmpty(gateInFormData.getPickupIn())) {
 				
 				// Iterate pickup in list
@@ -216,10 +217,6 @@ public class GatePassHandler implements IMqttMessageListener {
 							logger.error("Error when update pickup result from robot: " + pickupOutResult);;
 						}
 						
-						pickupHistory.setGateinDate(new Date());
-						pickupHistory.setStatus(EportConstants.PICKUP_HISTORY_STATUS_GATE_IN);
-						pickupHistoryService.updatePickupHistory(pickupHistory);
-						
 						// Data to send response to driver app when having session id
 						DriverDataRes driverData = new DriverDataRes();
 						driverData.setPickupHistoryId(pickupHistory.getId());
@@ -268,6 +265,8 @@ public class GatePassHandler implements IMqttMessageListener {
 			} catch (Exception e) {
 				logger.error("Error when send message mqtt to app notification: " + e);
 			}
+			history.setResult("S");
+			processOrder.setResult("S");
 		
 		} else if("position_failed".equalsIgnoreCase(result)) {
 			//gateInFormData 
@@ -445,8 +444,8 @@ public class GatePassHandler implements IMqttMessageListener {
 			}
 			
 			// Set current process order to failed 
-			processOrder.setResult("F");
-			
+			processOrder.setResult("M");
+			history.setResult("M");
 		} else {
 			
 			// Case gate-in failed 
@@ -476,7 +475,8 @@ public class GatePassHandler implements IMqttMessageListener {
 			
 			driverRes.setStatus(BusinessConsts.FINISH);
 			driverRes.setResult(BusinessConsts.FAIL);
-			driverRes.setMsg(MessageHelper.getMessage("Có lỗi xảy ra trong quá trình gate in. <br/>Vui lòng thử lại hoặc vào bàn cân để được hỗ trợ."));
+			driverRes.setMsg(MessageHelper.getMessage(
+					"Có lỗi xảy ra trong quá trình gate in. Vui lòng thử lại hoặc vào bàn cân để được hỗ trợ."));
 			try {
 				if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
 					responseDriver(driverRes, gateInFormData.getSessionId());
@@ -646,7 +646,8 @@ public class GatePassHandler implements IMqttMessageListener {
 				
 				// Check result up gate in order for said pickup history
 				if (EportConstants.GATE_RESULT_SUCCESS.equalsIgnoreCase(pickupRobotResult.getResult())) {
-					// Sucess case update status pickup is gate in
+					pickupHistory.setGateinDate(new Date());
+					// Success case update status pickup is gate in
 					pickupHistory.setStatus(EportConstants.PICKUP_HISTORY_STATUS_GATE_IN);
 					// Update status shipment detail finished
 					shipmentDetail.setFinishStatus("Y");

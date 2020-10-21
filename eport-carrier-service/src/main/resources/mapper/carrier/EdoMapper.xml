@@ -566,4 +566,23 @@
     </where>
   </update>
 
+  <select id="selectEdoListByHouseBill" resultMap="EdoResult">
+    select distinct e.id, e.carrier_id, e.carrier_code, e.order_number, e.release_no, e.bill_of_lading, e.business_unit, e.consignee, e.container_number,
+    e.expired_dem, e.empty_container_depot, e.det_free_time, e.secure_code, e.release_date, e.vessel, e.vessel_no , e.voy_no, e.sztp,
+    e.release_status, e.create_source, e.remark, e.del_flg, e.create_by, e.file_create_time, e.create_time, e.update_by,
+    e.update_time, e.transaction_id, e.pol, e.pod, e.house_bill_id, e.consignee_by_tax_code, e.tax_code , s.status as status
+    from (
+      select distinct eh.id, eh.carrier_id, eh.carrier_code, h.order_number, eh.release_no, eh.bill_of_lading, eh.business_unit, h.consignee2 as consignee, eh.container_number,
+      eh.expired_dem, eh.empty_container_depot, eh.det_free_time, eh.secure_code, eh.release_date, eh.vessel, eh.vessel_no , eh.voy_no, eh.sztp,
+      eh.release_status, eh.create_source, eh.remark, eh.del_flg, eh.create_by, eh.file_create_time, eh.create_time, eh.update_by,
+      eh.update_time, eh.transaction_id, eh.pol, eh.pod, eh.house_bill_id, eh.consignee_by_tax_code, eh.tax_code
+      from edo eh left join edo_house_bill h on eh.house_bill_id = h.id 
+      <where>
+        and h.house_bill_no2 is null
+        and h.house_bill_no = #{houseBill}
+      </where>
+    ) e
+    left join shipment_detail s on e.bill_of_lading = s.bl_no and e.container_number = s.container_no
+    ORDER BY e.create_time DESC
+  </select>
 </mapper>

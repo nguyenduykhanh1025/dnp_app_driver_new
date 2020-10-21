@@ -18,6 +18,8 @@ public class HouseBillSearchReq implements Serializable {
 	
 	private String houseBill;
 
+	private Boolean releaseFlg;
+
 	public String getKeyWord() {
 		return keyWord;
 	}
@@ -64,6 +66,14 @@ public class HouseBillSearchReq implements Serializable {
 
 	public void setHouseBill(String houseBill) {
 		this.houseBill = houseBill;
+	}
+
+	public Boolean getReleaseFlg() {
+		return releaseFlg;
+	}
+
+	public void setReleaseFlg(Boolean releaseFlg) {
+		this.releaseFlg = releaseFlg;
 	}
 
 }

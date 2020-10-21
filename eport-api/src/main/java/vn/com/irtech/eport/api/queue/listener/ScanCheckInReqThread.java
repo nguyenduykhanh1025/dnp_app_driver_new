@@ -172,8 +172,8 @@ public class ScanCheckInReqThread {
 	 */
 	private void sendFailedNotificationForDriver(GateNotificationCheckInReq checkInReq) {
 		DriverRes driverRes = new DriverRes();
-		driverRes.setStatus(BusinessConsts.FAIL);
-		driverRes.setResult(BusinessConsts.FINISH);
+		driverRes.setStatus(BusinessConsts.FINISH);
+		driverRes.setResult(BusinessConsts.FAIL);
 		driverRes.setMsg(
 				"Yêu cầu vào cổng của quý khách không được chấp nhận. Không thể nhận diện được thông tin vào cổng.");
 		try {
