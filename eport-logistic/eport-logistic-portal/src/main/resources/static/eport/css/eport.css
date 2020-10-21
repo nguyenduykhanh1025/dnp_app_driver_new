@@ -1110,3 +1110,7 @@ label {
 .text-white {
 	color: #ffffff !important;
 }
+
+.layui-layer-dialog .layui-layer-content {
+	word-break: break-word !important;
+}
