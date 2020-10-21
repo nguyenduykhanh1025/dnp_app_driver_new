@@ -204,6 +204,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null"> and logistic_group_id = #{logisticGroupId}</if>
             <if test="masterBill != null and masterBill != ''"> and upper(master_bill_no) like concat('%', concat(#{masterBill}, '%'))</if>
             <if test="houseBill != null and houseBill != ''"> and upper(house_bill_no) like concat('%', concat(#{houseBill}, '%'))</if>
+            <if test="releaseFlg != null"> and release_flg = #{releaseFlg}</if>
         </where>
         GROUP BY
         house_bill_no, master_bill_no, consignee2, carrier_code, order_number, consignee2_tax_code

@@ -325,7 +325,7 @@ laydate.render({
 function generatePDF() {
   if (!edo.billOfLading) {
     $.modal.alertError("Bạn chưa chọn Lô!");
-    return
+    return;
   }
   $.modal.openTab("In phiếu", ctx + "edo/print/bill/" + edo.billOfLading);
 }

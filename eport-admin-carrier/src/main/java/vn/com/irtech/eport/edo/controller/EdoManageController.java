@@ -177,7 +177,7 @@ public class EdoManageController extends BaseController {
 		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoListByBlNo(blNo);
 		// List<ContainerInfoDto> cntrInfos =
 		// catosApiService.getContainerInfoListByBlNo(blNo);
-		// Map oject store container info data by key container no
+		// Map object store container info data by key container no
 		Map<String, ContainerInfoDto> cntrInfoMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(cntrInfos)) {
 			for (ContainerInfoDto cntrInfo : cntrInfos) {
