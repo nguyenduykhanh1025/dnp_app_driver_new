@@ -29,9 +29,9 @@ public class ScanCheckInReqThread {
 
 	private final static Logger logger = LoggerFactory.getLogger(ScanCheckInReqThread.class);
 
-	private static final Long TIME_OUT_WAIT_DETECTION = 1000L;
+	private static final Long TIME_OUT_WAIT_DETECTION = 3000L;
 
-	private static final Integer RETRY_WAIT_DETECTION = 60;
+	private static final Integer RETRY_WAIT_DETECTION = 20;
 
 	@Autowired
 	private QueueService queueService;
@@ -53,10 +53,10 @@ public class ScanCheckInReqThread {
 					try {
 						GateNotificationCheckInReq checkInReq = queueService.getCheckInReq();
 						if (checkInReq != null) {
-							GateDetection gateDetection = gateDetection = (GateDetection) CacheUtils
+							GateDetection gateDetection = (GateDetection) CacheUtils
 									.get("gate1" + "_" + EportConstants.CACHE_GATE_DETECTION_KEY);
 							// Get detection info from cache
-							// Waiting and retry get info on demading time
+							// Waiting and retry get info on demanding time
 							for (int i = 1; i <= RETRY_WAIT_DETECTION; i++) {
 								// If detection exist in cache => break loop
 								if (gateDetection != null) {
@@ -154,7 +154,7 @@ public class ScanCheckInReqThread {
 		// Send accepted processing notification for driver
 		DriverRes driverRes = new DriverRes();
 		driverRes.setStatus(BusinessConsts.IN_PROGRESS);
-		driverRes.setResult("");
+		driverRes.setResult(BusinessConsts.BLANK);
 		driverRes.setMsg("Yêu cầu gate in đang được xử lý...");
 		try {
 			String msgDriver = new Gson().toJson(driverRes);

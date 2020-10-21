@@ -17,6 +17,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="delFlag"    column="del_flag"    />
         <result property="loginIp"    column="login_ip"    />
         <result property="loginDate"    column="login_date"    />
+        <result property="orderFlg"    column="order_flg"    />
+        <result property="fwdFlg"    column="fwd_flg"    />
+        <result property="transportFlg"    column="transport_flg"    />
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -29,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="groupName"    column="group_name"    />
     </resultMap>
     <sql id="selectLogisticAccountVo">
-        select id, group_id, user_name, email, password, mobile, salt, full_name, status, del_flag, login_ip, login_date, remark, create_by, create_time, update_by, update_time from logistic_account
+        select id, group_id, user_name, email, password, mobile, salt, full_name, status, del_flag, login_ip, login_date, order_flg, fwd_flg, transport_flg, remark, create_by, create_time, update_by, update_time from logistic_account
     </sql>
 
     <select id="selectLogisticAccountList" parameterType="LogisticAccount" resultMap="LogisticAccountResult">
@@ -78,6 +81,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null  and delFlag != ''">del_flag,</if>
             <if test="loginIp != null  and loginIp != ''">login_ip,</if>
             <if test="loginDate != null ">login_date,</if>
+            <if test="orderFlg != null ">order_flg,</if>
+            <if test="fwdFlg != null ">fwd_flg,</if>
+            <if test="transportFlg != null ">transport_flg,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -95,6 +101,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null  and delFlag != ''">#{delFlag},</if>
             <if test="loginIp != null  and loginIp != ''">#{loginIp},</if>
             <if test="loginDate != null ">#{loginDate},</if>
+            <if test="orderFlg != null ">#{orderFlg},</if>
+            <if test="fwdFlg != null ">#{fwdFlg},</if>
+            <if test="transportFlg != null ">#{transportFlg},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -115,6 +124,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null  and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="loginIp != null  and loginIp != ''">login_ip = #{loginIp},</if>
             <if test="loginDate != null ">login_date = #{loginDate},</if>
+            <if test="orderFlg != null ">order_flg = #{orderFlg},</if>
+            <if test="fwdFlg != null ">fwd_flg = #{fwdFlg},</if>
+            <if test="transportFlg != null ">transport_flg = #{transportFlg},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate

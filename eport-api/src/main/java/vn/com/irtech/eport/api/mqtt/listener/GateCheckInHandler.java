@@ -99,15 +99,13 @@ public class GateCheckInHandler implements IMqttMessageListener {
 		} 
 		
 		if ("accept".equals(result)) {
-			String msgSend = "Chấp nhận yêu cầu gate in, chuẩn bị làm lệnh gate in.";
+			String msgSend = "Chấp nhận yêu cầu vào cổng, chuẩn bị làm lệnh gate in.";
 			if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSessionId())) {
 				mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK,
 						gateNotificationCheckInReq.getSessionId(), msgSend);
 			}
 			sendGateInOrderToRobot(gateNotificationCheckInReq);
 		}
-		
-		
 	}
 	
 	/**
@@ -141,6 +139,9 @@ public class GateCheckInHandler implements IMqttMessageListener {
 				// Begin interate pickup history list get by driver id
 				for (PickupHistory pickupHistory : pickupHistories) {
 					
+					pickupHistory.setProcessOrderId(processOrder.getId());
+					pickupHistoryService.updatePickupHistory(pickupHistory);
+
 					// Get service type of pickup history
 					Integer serviceType = pickupHistory.getShipment().getServiceType();
 					
@@ -186,11 +187,7 @@ public class GateCheckInHandler implements IMqttMessageListener {
 						
 						pickupIn.add(pickupHistory);
 					}
-					
-					pickupHistory.setProcessOrderId(processOrder.getId());
-					pickupHistoryService.updatePickupHistory(pickupHistory);
 				}
-				
 				
 				if (pickupIn.size() == 0) {
 					gateInFormData.setPickupOut(pickupOut);
@@ -213,7 +210,7 @@ public class GateCheckInHandler implements IMqttMessageListener {
 				Integer gross = gateNotificationCheckInReq.getWeight() - gateNotificationCheckInReq.getDeduct();
 				gateInFormData.setWgt(gross.toString());
 				gateInFormData.setSessionId(gateNotificationCheckInReq.getSessionId());
-				gateInFormData.setGateId(gateInFormData.getGateId());
+				gateInFormData.setGateId(gateNotificationCheckInReq.getGateId());
 				gateInFormData.setReceiptId(processOrder.getId());
 				
 				String msg = new Gson().toJson(gateInFormData);
@@ -235,7 +232,8 @@ public class GateCheckInHandler implements IMqttMessageListener {
 					if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSessionId())) {
 						mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, gateNotificationCheckInReq.getSessionId(), message);
 					}
-					mqttService.sendNotificationToGate(gateNotificationCheckInReq.getTruckNo(), message);
+					mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, message,
+							gateInFormData.getGateId());
 				} else {
 					logger.debug("No GateRobot is available: " + msg);
 				}

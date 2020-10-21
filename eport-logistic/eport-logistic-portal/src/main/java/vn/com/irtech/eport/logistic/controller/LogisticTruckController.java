@@ -3,6 +3,7 @@ package vn.com.irtech.eport.logistic.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -28,6 +29,7 @@ import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
  * @date 2020-06-16
  */
 @Controller
+@RequiresPermissions("logistic:transport")
 @RequestMapping("/logistic/logisticTruck")
 public class LogisticTruckController extends LogisticBaseController
 {

@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import vn.com.irtech.eport.api.config.MqttConfig;
 import vn.com.irtech.eport.api.consts.MqttConsts;
 import vn.com.irtech.eport.api.form.DriverRes;
+import vn.com.irtech.eport.api.form.GateRes;
 import vn.com.irtech.eport.api.mqtt.listener.CheckinHandler;
 import vn.com.irtech.eport.api.mqtt.listener.GateCheckInHandler;
 import vn.com.irtech.eport.api.mqtt.listener.GatePassHandler;
@@ -269,37 +270,43 @@ public class MqttService implements MqttCallback {
 		return robotService.findFirstRobot(sysRobot);
 	}
 	
-	public void sendMessageToMcAppWindow(Long pickupHistoryId) throws MqttException {
-		// Send message to mc on web
-		Map<String, Object> map = new HashMap<>();
-		map.put("pickupHistoryId", pickupHistoryId.toString());
-		String msg = new Gson().toJson(map);
-		this.publish(MqttConsts.MC_REQ_TOPIC, new MqttMessage(msg.getBytes()));
-		
-		// Get data from pickup history id to send req to mc on app
-		PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(pickupHistoryId);
-		
-		// Set data
-		ShipmentDetail shipmentDetail = pickupHistory.getShipmentDetail();
+	public void sendMessageToMcAppWindow(List<Long> pickupHistoryIds) throws MqttException {
+		List<Map<String, Object>> list = new ArrayList<>();
 		NotificationReq notificationReq = new NotificationReq();
-		notificationReq.setTitle("ePort: Yêu cầu cấp tọa độ.");
-		notificationReq.setMsg("Có yêu cầu tọa độ cho container: " + pickupHistory.getShipment().getOpeCode() +
-				" - " + pickupHistory.getContainerNo() + " - " + shipmentDetail.getSztp() + " - " +
-				shipmentDetail.getVslNm() + shipmentDetail.getVoyNo() + " - " + shipmentDetail.getDischargePort());
-		notificationReq.setType(EportConstants.APP_USER_TYPE_MC);
-		notificationReq.setLink(sysConfigService.selectConfigByKey("domain.admin.name") + EportConstants.URL_POSITION_MC);
-		notificationReq.setPriority(EportConstants.NOTIFICATION_PRIORITY_HIGH);
-		Map<String, Object> data = new HashMap<>();
-		data.put("id", pickupHistoryId);
-		data.put("opeCode", pickupHistory.getShipment().getOpeCode());
-		data.put("containerNo", pickupHistory.getContainerNo());
-		data.put("wgt", shipmentDetail.getWgt());
-		data.put("sztp", shipmentDetail.getSztp());
-		data.put("userVoy", shipmentDetail.getVslNm()+shipmentDetail.getVoyNo());
-		data.put("dischargePort", shipmentDetail.getDischargePort());
-		data.put("cargoType", shipmentDetail.getCargoType());
-		notificationReq.setData(data);
-		
+		for (Long pickupHistoryId : pickupHistoryIds) {
+			// Send message to mc on web
+			Map<String, Object> map = new HashMap<>();
+			map.put("pickupHistoryId", pickupHistoryId.toString());
+			String msg = new Gson().toJson(map);
+			this.publish(MqttConsts.MC_REQ_TOPIC, new MqttMessage(msg.getBytes()));
+
+			// Get data from pickup history id to send req to mc on app
+			PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(pickupHistoryId);
+
+			// Set data
+			ShipmentDetail shipmentDetail = pickupHistory.getShipmentDetail();
+
+			notificationReq.setTitle("ePort: Yêu cầu cấp tọa độ.");
+			notificationReq.setMsg("Có yêu cầu tọa độ cho container: " + pickupHistory.getShipment().getOpeCode()
+					+ " - " + pickupHistory.getContainerNo() + " - " + shipmentDetail.getSztp() + " - "
+					+ shipmentDetail.getVslNm() + shipmentDetail.getVoyNo() + " - "
+					+ shipmentDetail.getDischargePort());
+			notificationReq.setType(EportConstants.APP_USER_TYPE_MC);
+			notificationReq
+					.setLink(sysConfigService.selectConfigByKey("domain.admin.name") + EportConstants.URL_POSITION_MC);
+			notificationReq.setPriority(EportConstants.NOTIFICATION_PRIORITY_HIGH);
+			Map<String, Object> data = new HashMap<>();
+			data.put("id", pickupHistoryId);
+			data.put("opeCode", pickupHistory.getShipment().getOpeCode());
+			data.put("containerNo", pickupHistory.getContainerNo());
+			data.put("wgt", shipmentDetail.getWgt());
+			data.put("sztp", shipmentDetail.getSztp());
+			data.put("userVoy", shipmentDetail.getVslNm() + shipmentDetail.getVoyNo());
+			data.put("dischargePort", shipmentDetail.getDischargePort());
+			data.put("cargoType", shipmentDetail.getCargoType());
+			list.add(data);
+			notificationReq.setData(list);
+		}
 		String req = new Gson().toJson(notificationReq);
 		this.publish(MqttConsts.NOTIFICATION_MC_TOPIC, new MqttMessage(req.getBytes()));
 	}
@@ -344,6 +351,20 @@ public class MqttService implements MqttCallback {
 			publish(MqttConsts.NOTIFICATION_GATE_TOPIC, new MqttMessage(msg.getBytes()));
 		} catch (MqttException e) {
 			logger.error("Error when try sending notification check in for gate: " + e);
+		}
+	}
+
+	public void sendProgressToGate(String status, String result, String msg, String gateId) {
+		GateRes gateRes = new GateRes();
+		gateRes.setStatus(status);
+		gateRes.setResult(result);
+		gateRes.setMsg(msg);
+		String message = new Gson().toJson(gateRes);
+		String topic = MqttConsts.NOTIFICATION_GATE_PROGRESS.replace("+", gateId);
+		try {
+			publish(topic, new MqttMessage(message.getBytes()));
+		} catch (MqttException e) {
+			logger.error("Error when try sending notification progress check in for gate: " + e);
 		}
 	}
 }

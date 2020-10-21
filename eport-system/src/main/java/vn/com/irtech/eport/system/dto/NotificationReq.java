@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.system.dto;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 public class NotificationReq implements Serializable {
@@ -17,7 +18,7 @@ public class NotificationReq implements Serializable {
 	
 	private Integer priority;
 	
-	private Map<String, Object> data;
+	private List<Map<String, Object>> data;
 	
 	private Object gateData;
 
@@ -61,11 +62,11 @@ public class NotificationReq implements Serializable {
 		this.priority = priority;
 	}
 
-	public Map<String, Object> getData() {
+	public List<Map<String, Object>> getData() {
 		return data;
 	}
 
-	public void setData(Map<String, Object> data) {
+	public void setData(List<Map<String, Object>> data) {
 		this.data = data;
 	}
 
