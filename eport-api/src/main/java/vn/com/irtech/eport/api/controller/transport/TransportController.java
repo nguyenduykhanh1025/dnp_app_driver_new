@@ -302,6 +302,7 @@ public class TransportController extends BaseController {
 				if (shipmentDetail != null) {
 					pickupHistory.setContainerNo(shipmentDetail.getContainerNo());
 					pickupHistory.setShipmentDetailId(shipmentDetail.getId());
+					pickupHistory.setSztp(shipmentDetail.getSztp());
 				} else {
 					shipmentDetail = null;
 					throw new BusinessException("Container này không tồn tại hoặc đã được nhận bởi tài xế khác.");
@@ -317,6 +318,7 @@ public class TransportController extends BaseController {
 				shipmentDetail = shipmentDetails.get(0);
 				if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 					pickupHistory.setJobOrderNo(shipmentDetail.getOrderNo());
+					pickupHistory.setSztp(shipmentDetail.getSztp());
 				} else {
 					throw new BusinessException(
 							"Không tìm thấy container đủ điều kiện đăng ký vận chuyển, quý khách vui lòng thử lại sau.");
@@ -342,7 +344,7 @@ public class TransportController extends BaseController {
 		if (pickupHistoryService.checkPlateNumberIsUnavailable(pickupHistory) > 0) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0027));
 		}
-		pickupHistory.setSztp(pickupHistoryTemp.getSztp());
+
 		LogisticTruck logisticTruck = new LogisticTruck();
 		logisticTruck.setPlateNumber(pickupHistoryTemp.getTruckNo());
 		List<LogisticTruck> logisticTrucks = logisticTruckService.selectLogisticTruckList(logisticTruck);
