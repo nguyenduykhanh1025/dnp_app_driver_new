@@ -208,28 +208,30 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
 
 		// Check if shipment must attach document for om check
-		Shipment search = new Shipment();
-		search.setBlNo(shipment.getBlNo());
-		search.setLogisticGroupId(shipment.getLogisticGroupId());
-		search.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
-		List<Shipment> receiveFullList = shipmentService.selectShipmentList(search);
-		boolean checkDocument = false;
-		if (CollectionUtils.isNotEmpty(receiveFullList)) {
+		boolean checkDocument = true;
+		if (StringUtils.isNotEmpty(shipment.getBlNo())) {
+			Shipment search = new Shipment();
+			search.setBlNo(shipment.getBlNo());
+			search.setLogisticGroupId(shipment.getLogisticGroupId());
+			search.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
+			List<Shipment> receiveFullList = shipmentService.selectShipmentList(search);
 
-			// lay 1 shipment (thong thuong chi co 1)
-			Shipment receiveFShipment = receiveFullList.get(0);
+			if (CollectionUtils.isNotEmpty(receiveFullList)) {
+				// lay 1 shipment (thong thuong chi co 1)
+				Shipment receiveFShipment = receiveFullList.get(0);
 
-			// Đổi opeCode operateCode -> groupCode
-			if (!shipment.getOpeCode().equals(receiveFShipment.getOpeCode())) {
-				String parentOpr = dictService.getLabel("carrier_parent_child_list", receiveFShipment.getOpeCode());
-				if (StringUtils.isEmpty(parentOpr) || !shipment.getOpeCode().equals(parentOpr)) {
-					return error(
-							"Mã OPR cho lô nhận container hàng và lô <br>giao container rỗng đang khác nhau. Vui lòng <br>kiểm tra lại.");
+				// Đổi opeCode operateCode -> groupCode
+				if (!shipment.getOpeCode().equals(receiveFShipment.getOpeCode())) {
+					String parentOpr = dictService.getLabel("carrier_parent_child_list", receiveFShipment.getOpeCode());
+					if (StringUtils.isEmpty(parentOpr) || !shipment.getOpeCode().equals(parentOpr)) {
+						return error(
+								"Mã OPR cho lô nhận container hàng và lô <br>giao container rỗng đang khác nhau. Vui lòng <br>kiểm tra lại.");
+					}
 				}
+				checkDocument = false;
 			}
-		} else {
-			checkDocument = true;
 		}
+
 		String shipmentImageIds = shipment.getParams().get("ids").toString();
 		if (checkDocument && StringUtils.isEmpty(shipmentImageIds)) {
 			return error("Lô quý khách đang khai báo hiện tại yêu cầu cần định kèm tệp.");
