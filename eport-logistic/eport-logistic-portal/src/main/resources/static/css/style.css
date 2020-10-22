@@ -586,6 +586,12 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
     padding: 7px 20px;
 }
 
+@media (max-width: 767px) {
+	.top-navigation .dropdown-menu>li>a {
+    	color: black;
+	}
+}
+
 .navbar .dropdown-menu {
     margin-top: 0px;
 }
