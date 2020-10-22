@@ -200,11 +200,6 @@ public class TransportController extends BaseController {
 				|| shipment.getServiceType() == EportConstants.SERVICE_PICKUP_EMPTY)
 				&& CollectionUtils.isNotEmpty(pickupAssigns)) {
 
-			// Set secret code for pickup assign id
-			for (PickupAssignForm pickupAssignForm : pickupAssigns) {
-				pickupAssignForm.setPickupAssignId((pickupAssignForm.getPickupAssignId() * 10) + 1);
-			}
-
 			List<PickupAssignForm> pickupAssign = pickupAssignService.selectPickupAssignListByDriverId(userId,
 					shipmentId);
 			if (CollectionUtils.isNotEmpty(pickupAssign)) {
@@ -451,7 +446,7 @@ public class TransportController extends BaseController {
 		}
 		AjaxResult ajaxResult = AjaxResult.success();
 		// Push pickup assign for driver to make confirm and make a pick up history
-		ajaxResult.put("pickupAssignId", pickupAssign.getId());
+		ajaxResult.put("pickupAssignId", (pickupAssign.getId() * 10) + 1);
 		startPage(1, 1, null);
 		// Get information of pickup before confirm get pickup
 		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
