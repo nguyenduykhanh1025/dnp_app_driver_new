@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
+
 import vn.com.irtech.eport.api.consts.BusinessConsts;
 import vn.com.irtech.eport.api.consts.MessageConsts;
 import vn.com.irtech.eport.api.message.MessageHelper;
@@ -221,6 +223,7 @@ public class TransportController extends BaseController {
 			}
 		}
 		Collections.sort(pickupAssigns, Collections.reverseOrder(new AssignContComparator()));
+		logger.debug("Get list by container by shipment id " + shipmentId + ": " + new Gson().toJson(pickupAssigns));
 		ajaxResult.put("data", pickupAssigns);
 		return ajaxResult;
 	}
@@ -235,6 +238,8 @@ public class TransportController extends BaseController {
 	@PostMapping("/pickup")
 	@ResponseBody
 	public AjaxResult pickup(@RequestBody PickupHistory pickupHistoryTemp) {
+
+		logger.debug("Receive request pickup from driver: " + new Gson().toJson(pickupHistoryTemp));
 
 		Long idSecret = pickupHistoryTemp.getPickupAssignId();
 
@@ -252,6 +257,7 @@ public class TransportController extends BaseController {
 		if (idSecret % 10 == 0) {
 			// shipment detail id
 			Long shipmentDetailId = idSecret / 10;
+			logger.debug("Request pickup with pickup assign id: " + shipmentDetailId);
 			shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
 
 			// Check in case shipment detail id not null (pickup container)
@@ -274,7 +280,7 @@ public class TransportController extends BaseController {
 		} else {
 			// pickup assign id
 			Long pickupAssignId = idSecret / 10;
-
+			logger.debug("Request pickup with pickup assign id: " + pickupAssignId);
 			// Get pickup assign to make pickup history
 			PickupAssign pickupAssign = pickupAssignService.selectPickupAssignById(pickupAssignId);
 
