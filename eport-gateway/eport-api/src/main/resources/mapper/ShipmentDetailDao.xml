@@ -801,6 +801,7 @@
 		FROM DNP_PROD.TB_PTNR
 		WHERE TRIM(REG_NO) = #{taxCode}
 		    AND UNUSED_CHK = 'N'
+		    AND PTNR_TYPE = 'TRK'
 		FETCH NEXT 1 ROWS ONLY
 	</select>
 
