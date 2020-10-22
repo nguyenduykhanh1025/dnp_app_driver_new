@@ -350,3 +350,14 @@ function unlockEdo() {
     });
   }
 }
+
+// Format logistic name for clickable show link 
+function formatLogistic(value, row, index) {
+  return '<a onclick="logisticInfo(' + row.logisticGroupId + "," + "'" + value + "')\"> " + value + "</a>";
+}
+
+function logisticInfo(id, logistics) {
+  $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function () {
+    $.modal.close();
+  });
+}

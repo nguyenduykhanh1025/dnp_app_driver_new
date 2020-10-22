@@ -53,6 +53,10 @@
                   width="70">Hãng tàu</th>
                 <th data-options="field:'contNumber',align:'right',halign:'center'" sortable="true" width="40">SL
                 </th>
+                <th data-options="field:'forwarderName',align:'right',halign:'center', formatter:formatLogistic"
+                  sortable="true" width="100">
+                  Forwarder
+                </th>
                 <th data-options="field:'createTime', align:'right', halign:'center', formatter: formatDate, fixed:true"
                   sortable="true" width="150">Ngày tạo</th>
               </tr>
@@ -68,8 +72,9 @@
                     <td>
                       <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
                         <span class="l-btn-left"><span class="l-btn-text">
-                            <button id="saveShipmentDetailBtn" onclick="printHouseBill()" class="btn btn-sm btn-default"><i
-                                class="fa fa-print text-primary"></i> In House Bill</button></span></span>
+                            <button id="saveShipmentDetailBtn" onclick="printHouseBill()"
+                              class="btn btn-sm btn-default"><i class="fa fa-print text-primary"></i> In House
+                              Bill</button></span></span>
                       </a>
                     </td>
                     <td>
