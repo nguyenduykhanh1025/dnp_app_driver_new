@@ -42,41 +42,41 @@ import vn.com.irtech.eport.web.dto.SensorResult;
 @Controller
 @RequestMapping("/gate/support")
 public class GateSupportController extends BaseController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(GateSupportController.class);
 
 	private final static String PREFIX = "gate/support";
-	
+
 	@Autowired
 	private WebSocketService webSocketService;
-	
+
 	@Autowired
 	private ILogisticGroupService logisticGroupService;
-	
+
 	@Autowired
 	private IDriverAccountService driverAccountService;
-	
+
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
-	
+
 	@Autowired
 	private IPickupHistoryService pickupHistoryService;
-	
+
 	@Autowired
 	private ICatosApiService catosApiService;
-	
+
 	@Autowired
 	private IGateDetectionService gateDetectionService;
-	
+
 	@GetMapping()
 	public String getView() {
 		return PREFIX + "/index";
 	}
-	
+
 	@PostMapping("/detection")
 	@ResponseBody
 	public AjaxResult submitDectionInfo(@Validated @RequestBody DetectionInfomation detection) {
-		
+
 		String detectJson = new Gson().toJson(detection);
 		logger.debug(">>>> Receive detection info:" + detectJson);
 		// Save detection info to cache
@@ -88,24 +88,32 @@ public class GateSupportController extends BaseController {
 		dt.setChassisNo(detection.getChassisNo());
 		dt.setContainerNo1(detection.getContainerNo1());
 		dt.setContainerNo2(detection.getContainerNo2());
-		
+
 		gateDetectionService.insertGateDetection(dt);
-		
+
 		// Put gate detection info into cache to get when has driver request check in
+		String truckNo = dt.getTruckNo();
+		String chassisNo = dt.getChassisNo();
+		if (StringUtils.isNotEmpty(truckNo)) {
+			dt.setTruckNo(truckNo.replace("-", ""));
+		}
+		if (StringUtils.isNotEmpty(chassisNo)) {
+			dt.setChassisNo(chassisNo.replace("-", ""));
+		}
 		CacheUtils.put(dt.getGateNo() + "_" + EportConstants.CACHE_GATE_DETECTION_KEY, dt);
 
 		// Send to monitor
 		webSocketService.sendMessage("/gate/detection/monitor", detection);
 		return success();
 	}
-	
+
 	@PostMapping("/sensor")
 	@ResponseBody
 	public AjaxResult submitSensorResult(@Validated @RequestBody SensorResult sensorResult) {
-		
+
 		logger.debug(">>>>> Receive sensor result info: " + new Gson().toJson(sensorResult));
 		CacheUtils.put("sensorInfo_" + sensorResult.getGateId(), sensorResult);
-		
+
 		// Check if truck on gate
 		List<Integer> sensorValue = sensorResult.getSensors();
 		if (sensorValue.size() >= 3) {
@@ -115,20 +123,20 @@ public class GateSupportController extends BaseController {
 		}
 		return success();
 	}
-	
+
 	@PostMapping("/logistics")
 	@ResponseBody
 	public List<LogisticGroup> getLogisticGroups() {
 		LogisticGroup logisticGroup = new LogisticGroup();
-	    logisticGroup.setGroupName("Chọn đơn vị Logistics");
-	    logisticGroup.setId(0L);
-	    LogisticGroup logisticGroupParam = new LogisticGroup();
-	    logisticGroupParam.setDelFlag("0");
-	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
-	    logisticGroups.add(0, logisticGroup);
-	    return logisticGroups;
+		logisticGroup.setGroupName("Chọn đơn vị Logistics");
+		logisticGroup.setId(0L);
+		LogisticGroup logisticGroupParam = new LogisticGroup();
+		logisticGroupParam.setDelFlag("0");
+		List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
+		logisticGroups.add(0, logisticGroup);
+		return logisticGroups;
 	}
-	
+
 	@PostMapping("/logistic/{groupId}/drivers")
 	@ResponseBody
 	public List<DriverAccount> getDriverAccounts(@PathVariable("groupId") Long groupId) {
@@ -136,7 +144,7 @@ public class GateSupportController extends BaseController {
 		driverAccount.setLogisticGroupId(groupId);
 		return driverAccountService.selectDriverAccountList(driverAccount);
 	}
-	
+
 	@PostMapping("/gateIn")
 	@ResponseBody
 	public AjaxResult gateIn(@RequestBody GateInDataReq gateInDataReq) {
@@ -145,14 +153,17 @@ public class GateSupportController extends BaseController {
 			pickupHistory.setTruckNo(gateInDataReq.getTruckNo());
 			pickupHistory.setChassisNo(gateInDataReq.getChassisNo());
 			pickupHistory.setStatus(0);
-			logger.debug("Get pickup history info from " + gateInDataReq.getTruckNo() + " and chassisno " + gateInDataReq.getChassisNo());;
+			logger.debug("Get pickup history info from " + gateInDataReq.getTruckNo() + " and chassisno "
+					+ gateInDataReq.getChassisNo());
+			;
 			List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistory);
 			if (CollectionUtils.isNotEmpty(pickupHistories)) {
 				// Check if having req option send container
 				if (gateInDataReq.getSendOption()) {
 					// Index of container to send (max = 1, min = 0)
 					for (PickupHistory pickupHistory2 : pickupHistories) {
-						if (StringUtils.isNotEmpty(gateInDataReq.getContainerSend1()) && gateInDataReq.getContainerSend1().equalsIgnoreCase(pickupHistory2.getContainerNo())) {
+						if (StringUtils.isNotEmpty(gateInDataReq.getContainerSend1()) && gateInDataReq
+								.getContainerSend1().equalsIgnoreCase(pickupHistory2.getContainerNo())) {
 							if (StringUtils.isNotEmpty(gateInDataReq.getYardPosition1())) {
 								String[] yardPositionArr = gateInDataReq.getYardPosition1().split("-");
 								if (yardPositionArr.length == 4) {
@@ -164,7 +175,8 @@ public class GateSupportController extends BaseController {
 								}
 							}
 						}
-						if (StringUtils.isNotEmpty(gateInDataReq.getContainerSend2()) && gateInDataReq.getContainerSend2().equalsIgnoreCase(pickupHistory2.getContainerNo())) {
+						if (StringUtils.isNotEmpty(gateInDataReq.getContainerSend2()) && gateInDataReq
+								.getContainerSend2().equalsIgnoreCase(pickupHistory2.getContainerNo())) {
 							if (StringUtils.isNotEmpty(gateInDataReq.getYardPosition2())) {
 								String[] yardPositionArr = gateInDataReq.getYardPosition1().split("-");
 								if (yardPositionArr.length == 4) {
@@ -178,18 +190,16 @@ public class GateSupportController extends BaseController {
 						}
 					}
 				}
-				
-				
+
 				// Check if have req option receive container
 				if (gateInDataReq.getReceiveOption()) {
-					// TODO : 
+					// TODO :
 				}
 			}
- 		}
+		}
 		return success();
 	}
-	
-	
+
 	@GetMapping("/blNo/{blNo}/yardPosition")
 	@ResponseBody
 	public AjaxResult getYardPositionByBlNo(@PathVariable String blNo) {
@@ -202,7 +212,7 @@ public class GateSupportController extends BaseController {
 		}
 		return AjaxResult.warn("Không tìm thấy tọa độ.");
 	}
-	
+
 	@GetMapping("/jobOrder/{jobOrder}/yardPosition")
 	@ResponseBody
 	public AjaxResult getYardPositionByJobOrder(@PathVariable("jobOrder") String jobOrder) {
@@ -216,7 +226,7 @@ public class GateSupportController extends BaseController {
 		}
 		return AjaxResult.warn("Không tìm thấy tọa độ.");
 	}
-	
+
 	@PostMapping("/pickupList")
 	@ResponseBody
 	public AjaxResult getPickupList(@RequestBody GateInTestDataReq gateInTestDataReq) {
@@ -229,7 +239,7 @@ public class GateSupportController extends BaseController {
 			AjaxResult ajaxResult = AjaxResult.success();
 			ajaxResult.put("pickupList", getDataTable(pickupHistories));
 			return ajaxResult;
- 		}
+		}
 		return AjaxResult.warn("Bạn chưa nhập truck no.");
 	}
 }
