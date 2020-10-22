@@ -118,6 +118,59 @@ body {
         }
       }
       .right-side {
+        #right-side__main-table {
+          .right-side__toolbar {
+            /* Dropdown Button */
+            .btn-more {
+              background-color: #337ab7;
+              color: white;
+              font-size: 12px;
+              outline: none;
+              border-radius: 0 2px 2px 0;
+              &:hover {
+                background-color: #337ab7 !important;
+              }
+              &.btn-main {
+                border-radius: 2px 0 0 2px;
+                margin-right: 0;
+              }
+            }
+
+            /* The container <div> - needed to position the dropdown content */
+            .dropdown {
+              position: absolute;
+              display: inline-block;
+            }
+
+            /* Dropdown Content (Hidden by Default) */
+            .dropdown-content {
+              display: none;
+              position: absolute;
+              background-color: #f1f1f1;
+              min-width: max-content;
+              z-index: 120;
+            }
+
+            /* Links inside the dropdown */
+            .dropdown-content a {
+              border-radius: 0 !important;
+              color: black;
+              padding: 3px 5px;
+              text-decoration: none;
+              font-size: 12px;
+              display: block;
+              &:hover {
+                background: #f9f9f9;
+              }
+            }
+
+            /* Show the dropdown menu on hover */
+            .dropdown:hover .dropdown-content {
+              display: block;
+            }
+            
+          }
+        }
         .handsontable th {
           color: #333;
           font-size: 12px;

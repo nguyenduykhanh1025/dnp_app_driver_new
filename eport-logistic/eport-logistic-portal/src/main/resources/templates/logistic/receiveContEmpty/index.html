@@ -176,21 +176,22 @@
                           </button>
                         </td>
                         <td>
-                          <div class="dropdown">
-                            <a class="btn btn-sm btn-primary dropdown-toggle" role="button" id="dropdownRequest"
-                              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Yêu cầu
-                              <i class="fa fa-chevron-down text-primary"></i>
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                              <a class="dropdown-item btn btn-sm btn-danger" onclick="requestCancelOrder()">
-                                <i class="fa fa-window-close text-primary"></i> Hủy lệnh
-                              </a>
-                              <a class="dropdown-item btn btn-sm btn-warning" onclick="requestCancelSupplyContainer()">
-                                <i class="fa fa-close text-primary"></i> Hủy yêu cầu cấp container
-                              </a>
-                              <a class="dropdown-item btn btn-sm btn-info" onclick="requestExchangeContainer()">
-                                <i class="fa fa-exchange text-primary"></i> Đổi container
-                              </a>
+                        <div class="dropdown-wrapper">
+                            <button class="btn btn-sm btn-more btn-main">Yêu cầu</button>
+                            <div class="dropdown">
+                              <button class="btn btn-sm btn-more" style="border-left: 1px solid #070f2d6b">
+                                <i class="fa fa-caret-down"></i>
+                              </button>
+                              <div class="dropdown-content">
+                                <a href="javascript:void(0)" onclick="requestCancelOrder()">
+                                <i class="fa fa-window-close text-primary"></i> Hủy lệnh</a>
+                             
+                                <a href="javascript:void(0)" onclick="requestCancelSupplyContainer()">
+                                <i class="fa fa-close text-primary"></i> Hủy yêu cầu cấp container</a>
+                             
+                                <a href="javascript:void(0)" onclick="requestExchangeContainer()">
+                                <i class="fa fa-exchange text-primary"></i> Đổi container</a>
+                              </div>
                             </div>
                           </div>
                         </td>
