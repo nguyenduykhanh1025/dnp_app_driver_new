@@ -185,31 +185,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="carrierCode" column="carrier_code" />
         <result property="orderNumber" column="order_number" />
         <result property="consignee2TaxCode" column="consignee2_tax_code" />
+        <result property="forwarderName" column="forwarder_name" />
+        <result property="logisticGroupId" column="logistic_group_id" />
     </resultMap>
 
     <select id="selectListHouseBillRes" parameterType="vn.com.irtech.eport.carrier.dto.HouseBillSearchReq" resultMap="HouseBillResResult">
-        SELECT
-        master_bill_no,
-        house_bill_no,
-        (select min(e2.create_time) from edo_house_bill e2 where e2.house_bill_no = e1.house_bill_no and e2.house_bill_no2 is null) as create_time,
-        carrier_code,
-        consignee2,
-        order_number,
-        consignee2_tax_code,
-        count(*) as cont_number
-        FROM
-        edo_house_bill e1
-        <where>
-            house_bill_no2 is null
-            <if test="logisticGroupId != null"> and logistic_group_id = #{logisticGroupId}</if>
-            <if test="masterBill != null and masterBill != ''"> and upper(master_bill_no) like concat('%', concat(#{masterBill}, '%'))</if>
-            <if test="houseBill != null and houseBill != ''"> and upper(house_bill_no) like concat('%', concat(#{houseBill}, '%'))</if>
-            <if test="releaseFlg != null"> and release_flg = #{releaseFlg}</if>
-        </where>
-        GROUP BY
-        house_bill_no, master_bill_no, consignee2, carrier_code, order_number, consignee2_tax_code
-        ORDER BY
-        create_time desc
+        select * from 
+        (
+            SELECT
+            master_bill_no,
+            house_bill_no,
+            (select min(e2.create_time) from edo_house_bill e2 where e2.house_bill_no = e1.house_bill_no and e2.house_bill_no2 is null) as create_time,
+            carrier_code,
+            consignee2,
+            order_number,
+            logistic_group_id,
+            consignee2_tax_code,
+            count(*) as cont_number,
+            (select l.group_name from logistic_group l where l.id = e1.logistic_group_id) as forwarder_name
+            FROM
+            edo_house_bill e1
+            <where>
+                house_bill_no2 is null
+                <if test="logisticGroupId != null"> and logistic_group_id = #{logisticGroupId}</if>
+                <if test="masterBill != null and masterBill != ''"> and upper(master_bill_no) like concat('%', concat(#{masterBill}, '%'))</if>
+                <if test="houseBill != null and houseBill != ''"> and upper(house_bill_no) like concat('%', concat(#{houseBill}, '%'))</if>
+                <if test="releaseFlg != null"> and release_flg = #{releaseFlg}</if>
+            </where>
+            GROUP BY
+            house_bill_no, master_bill_no, consignee2, carrier_code, order_number, consignee2_tax_code, logistic_group_id
+        )
+        ORDER BY create_time desc
     </select>
 
     <resultMap type="Edo" id="EdoResult">
