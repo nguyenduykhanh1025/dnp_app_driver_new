@@ -232,19 +232,22 @@ function historyEportRenderer(instance, td, row, col, prop, value, cellPropertie
 }
 function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
-  if (sourceData[row] && sourceData[row].dischargePort && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].customStatus && sourceData[row].finishStatus) {
+  if (sourceData[row] && sourceData[row].dischargePort && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].finishStatus) {
     // Customs Status
-    let customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
-    switch (sourceData[row].customStatus) {
-      case 'R':
-        customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-        break;
-      case 'Y':
-        customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #ed5565;"></i>';
-        break;
-      case 'N':
-        customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        break;
+    let customs = '';
+    if (sourceData[row].customStatus) {
+      customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+      switch (sourceData[row].customStatus) {
+        case 'R':
+          customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+          break;
+        case 'Y':
+          customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #ed5565;"></i>';
+          break;
+        case 'N':
+          customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+          break;
+      }
     }
     // Command process status
     let process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
@@ -865,7 +868,7 @@ function addComment() {
       content: content,
       shipmentId: shipmentSelected.id,
       logisticGroupId: shipmentSelected.logisticGroupId,
-	  serviceType: shipmentSelected.serviceType
+      serviceType: shipmentSelected.serviceType
     };
     $.ajax({
       url: PREFIX + "/shipment/comment",
