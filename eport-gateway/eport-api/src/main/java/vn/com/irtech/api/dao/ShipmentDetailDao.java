@@ -260,7 +260,14 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return List<ContainerInfoDto>
 	 */
 	public List<ContainerInfoDto> selectShipmentDetailByContainerNos(String[] containerNos);
-
+	
+	/**
+	 * Get container info stacking and all in history by list container no String[]
+	 * 
+	 * @param containerNos
+	 * @return List<ContainerInfoDto>
+	 */
+	public List<ContainerInfoDto> selectAllShipmentDetailByContainerNos(String[] containerNos);
 	/**
 	 * Get list of container info by JOB_ODR_NO from catos.<br>
 	 * Using when check if JOB_ODR_NO is successful create in catos.
