@@ -281,8 +281,15 @@ public interface ICatosApiService {
 	 * @param containerNo
 	 * @return List<ContaienrInfoDto>
 	 */
-	public List<ContainerInfoDto> getContainerInfoDtoByContNos(String containerNos);
+	List<ContainerInfoDto> getContainerInfoDtoByContNos(String containerNos);
 
+	/**
+	 * Get list container (include master) by container no list separated by comma
+	 * 
+	 * @param containerNo
+	 * @return List<ContaienrInfoDto>
+	 */
+	List<ContainerInfoDto> getAllContainerInfoDtoByContNos(String containerNos);
 	/**
 	 * Get container history info
 	 * 
@@ -306,4 +313,5 @@ public interface ICatosApiService {
 	 * @return List<ContainerInfoDto>
 	 */
 	public List<ContainerInfoDto> getContainerInfoListByCondition(ContainerInfoDto containerInfoDto);
+
 }

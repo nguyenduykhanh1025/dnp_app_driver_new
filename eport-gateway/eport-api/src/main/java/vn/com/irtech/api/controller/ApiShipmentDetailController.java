@@ -337,6 +337,12 @@ public class ApiShipmentDetailController {
 				.selectShipmentDetailByContainerNos(Convert.toStrArray(mapData.get("containerNos").toString()));
 	}
 
+	@PostMapping("/container/info/all")
+	public List<ContainerInfoDto> getAllContainerInfoByContainerNos(@RequestBody Map<String, Object> mapData) {
+		return shipmentDetailDao
+				.selectAllShipmentDetailByContainerNos(Convert.toStrArray(mapData.get("containerNos").toString()));
+	}
+
 	@PostMapping("/berth-plan/info")
 	public BerthPlanInfo getBerthPlanInfo(@RequestBody BerthPlanInfo berthPlanInfo) {
 		return shipmentDetailDao.getBerthPlanInfo(berthPlanInfo);
