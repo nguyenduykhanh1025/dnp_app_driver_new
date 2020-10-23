@@ -307,8 +307,11 @@ public class LogisticReportPrintController extends LogisticBaseController {
 
 	private void createHouseBillReport(final List<EdoHouseBill> houseBillList, OutputStream out) throws JRException {
 		// Fetching the report file from the resources folder.
-		final JasperReport report = (JasperReport) JRLoader
-				.loadObject(this.getClass().getResourceAsStream("/report/house_bill.jasper"));
+//		final JasperReport report = (JasperReport) JRLoader
+//				.loadObject(this.getClass().getResourceAsStream("/report/house_bill.jasper"));
+
+		JasperReport report = JasperCompileManager
+				.compileReport(this.getClass().getResourceAsStream("/report/jrxml/house_bill.jrxml"));
 
 		// Fetching the shipmentDetails from the data source.
 		// final JRBeanCollectionDataSource params = new
