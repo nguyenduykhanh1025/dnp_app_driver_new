@@ -21,7 +21,7 @@
                 END AS TRANS_TYPE,
                 
                 CASE
-                    WHEN M.CNTR_STATE = 'R' THEN 'Before Reconcile'
+                    WHEN M.CNTR_STATE = 'R' THEN 'Reserved'
                     WHEN M.CNTR_STATE = 'B' THEN 'After Reconcile'
                     WHEN M.CNTR_STATE = 'M' THEN 'Manifested'
                     WHEN M.CNTR_STATE = 'Y' THEN 'Stacking'
@@ -110,6 +110,7 @@
 
 	<select id="selectShipmentDetailByContainerNos" parameterType="String" resultType="vn.com.irtech.api.dto.ContainerInfoDto">
         <include refid="selectContainerDetailVo"/>
+            , M.IN_DATE, M.OUT_DATE
             FROM DNP_PROD.TB_INVENTORY M
         <where>
 			AND M.CNTR_NO in
@@ -119,6 +120,7 @@
         </where>
         UNION ALL
         <include refid="selectContainerDetailVo"/>
+            , NULL as IN_DATE, NULL as OUT_DATE
             FROM DNP_PROD.TB_RESERVE M
         <where>
             AND M.CNTR_STATE = 'R'
@@ -129,6 +131,40 @@
         </where>
     </select>
     
+    <select id="selectAllShipmentDetailByContainerNos" parameterType="String" resultType="vn.com.irtech.api.dto.ContainerInfoDto">
+        <include refid="selectContainerDetailVo"/>
+            , M.IN_DATE, M.OUT_DATE
+            FROM DNP_PROD.TB_INVENTORY M
+        <where>
+            AND M.CNTR_NO in
+            <foreach item="containerNo" collection="array" open="(" separator="," close=")">
+                #{containerNo}
+            </foreach>
+        </where>
+        UNION ALL
+        <include refid="selectContainerDetailVo"/>
+            , null as IN_DATE, null as OUT_DATE
+            FROM DNP_PROD.TB_RESERVE M
+        <where>
+            AND M.CNTR_STATE = 'R'
+            AND M.CNTR_NO in
+            <foreach item="containerNo" collection="array" open="(" separator="," close=")">
+                #{containerNo}
+            </foreach>
+        </where>
+        UNION ALL
+        <include refid="selectContainerDetailVo"/>
+            , M.IN_DATE, M.OUT_DATE
+            FROM DNP_PROD.TB_MASTER M
+        <where>
+            AND M.CNTR_STATE = 'D'
+            AND M.CNTR_NO in
+            <foreach item="containerNo" collection="array" open="(" separator="," close=")">
+                #{containerNo}
+            </foreach>
+        </where>
+    </select>
+
     <select id="selectShipmentDetailByJobOdrNo" parameterType="String" resultType="vn.com.irtech.api.dto.ContainerInfoDto">
         <include refid="selectContainerDetailVo"/>
             FROM DNP_PROD.TB_INVENTORY M
@@ -801,6 +837,7 @@
 		FROM DNP_PROD.TB_PTNR
 		WHERE TRIM(REG_NO) = #{taxCode}
 		    AND UNUSED_CHK = 'N'
+		    AND PTNR_TYPE = 'TRK'
 		FETCH NEXT 1 ROWS ONLY
 	</select>
 

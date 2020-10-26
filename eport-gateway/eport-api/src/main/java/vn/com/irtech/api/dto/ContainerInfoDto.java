@@ -92,12 +92,12 @@ public class ContainerInfoDto implements Serializable {
 	/**
 	 * Custom Hold: Y/N
 	 */
-	private String choldCheck;
+	private String choldChk;
 	
 	/**
 	 * Terminal hold: Y/N
 	 */
-	private String tholdCheck;
+	private String tholdChk;
 	
 	private String remark;
 	
@@ -342,20 +342,20 @@ public class ContainerInfoDto implements Serializable {
 		this.jobOdrNo2 = jobOdrNo2;
 	}
 
-	public String getCholdCheck() {
-		return choldCheck;
+	public String getCholdChk() {
+		return choldChk;
 	}
 
-	public void setCholdCheck(String choldCheck) {
-		this.choldCheck = choldCheck;
+	public void setCholdChk(String choldChk) {
+		this.choldChk = choldChk;
 	}
 
-	public String getTholdCheck() {
-		return tholdCheck;
+	public String getTholdChk() {
+		return tholdChk;
 	}
 
-	public void setTholdCheck(String tholdCheck) {
-		this.tholdCheck = tholdCheck;
+	public void setTholdChk(String tholdChk) {
+		this.tholdChk = tholdChk;
 	}
 
 	public String getRemark() {

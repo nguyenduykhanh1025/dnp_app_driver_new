@@ -139,18 +139,6 @@ public class Edo extends BaseEntity {
 	@Excel(name = "Consignee Tax Code")
 	private String consigneeByTaxCode;
 
-	/** Remark */
-	@Excel(name = "Remark")
-	private String remark;
-
-	public String getRemark() {
-		return this.remark;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-
 	public String getPolName() {
 		return polName;
 	}

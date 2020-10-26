@@ -139,7 +139,7 @@ public class LogisticDelegatedController extends BaseController
         return toAjax(logisticDelegatedService.deleteLogisticDelegatedByIds(ids));
     }
 
-    @GetMapping("/company/{taxCode}")
+    @GetMapping("/consignee/{taxCode}")
     @ResponseBody
     public AjaxResult getConsigneeInfoByTaxcode(@PathVariable String taxCode) {
         AjaxResult ajaxResult = AjaxResult.success();

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -184,8 +185,12 @@ public class EdoPrintController extends BaseController{
 	
 	private void createEdoReport(final List<Edo> edoList, OutputStream out) throws JRException {
 		// Fetching the report file from the resources folder.
-		final JasperReport report = (JasperReport) JRLoader
-				.loadObject(this.getClass().getResourceAsStream("/report/edo.jasper"));
+//		final JasperReport report = (JasperReport) JRLoader
+//				.loadObject(this.getClass().getResourceAsStream("/report/edo.jasper"));
+		
+		JasperReport report = JasperCompileManager
+				.compileReport(this.getClass().getResourceAsStream("/report/jrxml/edo.jrxml"));
+
 
 		// Fetching the shipmentDetails from the data source.
 		//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(shipmentDetails);
@@ -229,8 +234,11 @@ public class EdoPrintController extends BaseController{
 	
 	private void createHouseBillReport(final List<EdoHouseBill> houseBillList, OutputStream out) throws JRException {
 		// Fetching the report file from the resources folder.
-		final JasperReport report = (JasperReport) JRLoader
-				.loadObject(this.getClass().getResourceAsStream("/report/house_bill.jasper"));
+//		final JasperReport report = (JasperReport) JRLoader
+//				.loadObject(this.getClass().getResourceAsStream("/report/house_bill.jasper"));
+
+		JasperReport report = JasperCompileManager
+				.compileReport(this.getClass().getResourceAsStream("/report/jrxml/house_bill.jrxml"));
 
 		// Fetching the shipmentDetails from the data source.
 		// final JRBeanCollectionDataSource params = new
