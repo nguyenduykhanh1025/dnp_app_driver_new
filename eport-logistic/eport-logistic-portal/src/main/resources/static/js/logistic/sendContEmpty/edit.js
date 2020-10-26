@@ -8,7 +8,7 @@ if (shipment != null) {
     $("#shipmentCode").val(shipment.id);
     $("#containerAmount").val(shipment.containerAmount);
     $("#remark").val(shipment.remark);
-    $('#opeCode').val(shipment.opeCode);
+    $('#opeCode').val(shipment.opeCode + ":");
     if (shipment.sendContEmptyType == '0') {
         $('#sendContPort').prop('checked', true);
     } else {
@@ -43,14 +43,14 @@ async function submitHandler() {
         } else {
             edit(prefix + "/shipment/" + $('#id').val());
         }
-    } 
+    }
 }
 function getBillNoUnique() {
     return $.ajax({
         url: prefix + "/blNo/bl-no",
         method: "post",
         contentType: "application/json",
-        data: JSON.stringify({"blNo": $("#blNo").val()}),
+        data: JSON.stringify({ "blNo": $("#blNo").val() }),
     });
 }
 function checkBlNoUnique() {
@@ -60,13 +60,13 @@ function checkBlNoUnique() {
             url: prefix + "/blNo/bl-no",
             method: "post",
             contentType: "application/json",
-            data: JSON.stringify({"blNo": $("#blNo").val()}),
+            data: JSON.stringify({ "blNo": $("#blNo").val() }),
         }).done(function (result) {
             if (result.code == 500) {
                 $.modal.alertError(result.msg);
                 $("#blNo").addClass("error-input");
             } else {
-            	$("#blNo").removeClass("error-input");
+                $("#blNo").removeClass("error-input");
             }
         });
     }
@@ -75,7 +75,7 @@ function edit(url) {
     let shipmentUpdate = new Object();
     shipmentUpdate.id = shipment.id;
     shipmentUpdate.blNo = $('#blNo').val();
-    shipmentUpdate.opeCode = $('#opeCode').val();
+    shipmentUpdate.opeCode = $('#opeCode').val().split(": ")[0].replace(":", "");
     shipmentUpdate.containerAmount = $('#containerAmount').val();
     shipmentUpdate.sendContEmptyType = $('input[name="sendContEmptyType"]:checked').val();
     shipmentUpdate.params = new Object();
@@ -88,7 +88,7 @@ function edit(url) {
         beforeSend: function () {
             $.modal.loading("Đang xử lý, vui lòng chờ...");
         },
-        success: function(result) {
+        success: function (result) {
             $.modal.closeLoading();
             if (result.code == 0) {
                 parent.loadTable(result.msg);

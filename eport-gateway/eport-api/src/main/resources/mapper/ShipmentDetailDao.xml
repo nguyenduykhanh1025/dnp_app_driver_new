@@ -698,7 +698,7 @@
 	</select>
 
 	<select id="getOprCodeList" resultType	="String">
-		SELECT PTNR_CODE 
+		SELECT PTNR_CODE || ': ' || ENG_SNM AS PTNR_CODE
 		  FROM DNP_PROD.TB_PTNR 
 		  WHERE PTNR_TYPE = 'SHP' 
 		      AND PTNR_CODE NOT IN ('000','OWN')

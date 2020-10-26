@@ -360,7 +360,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				shipmentSendEmpty.setServiceType(Constants.SEND_CONT_EMPTY);
 				List<Shipment> shipments = shipmentService.selectShipmentList(shipmentSendEmpty);
 				// create if not exist // if exist then skip
-				if (CollectionUtils.isNotEmpty(shipments)) {
+				if (CollectionUtils.isEmpty(shipments)) {
 					// create send empty shipment
 					shipmentSendEmpty.setContainerAmount(Long.valueOf(firstDetail.getTier()));
 					shipmentSendEmpty.setLogisticAccountId(user.getId());
@@ -625,7 +625,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			return error("Mã OTP nhập vào không hợp lệ!");
 		}
 		// TODO Un-support cash
-		if(!creditFlag) {
+		if (!creditFlag) {
 			return error("Lỗi! Chưa hỗ trợ thanh toán trả trước (cash).");
 		}
 		OtpCode otpCode = new OtpCode();

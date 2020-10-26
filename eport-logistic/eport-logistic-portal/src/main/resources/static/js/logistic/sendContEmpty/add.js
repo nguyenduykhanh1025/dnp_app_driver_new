@@ -65,7 +65,7 @@ function getBillNoUnique() {
         url: prefix + "/unique/bl-no",
         method: "post",
         contentType: "application/json",
-        data: JSON.stringify({"blNo": $("#blNo").val()}),
+        data: JSON.stringify({ "blNo": $("#blNo").val() }),
     });
 }
 
@@ -76,13 +76,13 @@ function checkBlNoUnique() {
             url: prefix + "/unique/bl-no",
             method: "post",
             contentType: "application/json",
-            data: JSON.stringify({"blNo": $("#blNo").val()}),
+            data: JSON.stringify({ "blNo": $("#blNo").val() }),
         }).done(function (result) {
             if (result.code == 500) {
                 $.modal.alertError(result.msg);
                 $("#blNo").addClass("error-input");
             } else {
-            	$("#blNo").removeClass("error-input");
+                $("#blNo").removeClass("error-input");
             }
         });
     }
@@ -91,7 +91,7 @@ function checkBlNoUnique() {
 function save(url) {
     let shipment = new Object();
     shipment.blNo = $('#blNo').val();
-    shipment.opeCode = $('#opeCode').val();
+    shipment.opeCode = $('#opeCode').val().split(": ")[0].replace(":", "");
     shipment.containerAmount = $('#containerAmount').val();
     shipment.sendContEmptyType = $('input[name="sendContEmptyType"]:checked').val();
     shipment.remark = $('#remark').val();
@@ -105,7 +105,7 @@ function save(url) {
         beforeSend: function () {
             $.modal.loading("Đang xử lý, vui lòng chờ...");
         },
-        success: function(result) {
+        success: function (result) {
             $.modal.closeLoading();
             if (result.code == 0) {
                 parent.loadTable(result.msg);

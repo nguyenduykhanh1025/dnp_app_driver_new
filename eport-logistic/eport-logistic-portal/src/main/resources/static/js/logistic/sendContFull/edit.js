@@ -7,7 +7,7 @@ if (shipment != null) {
     $("#id").val(shipment.id);
     $("#shipmentCode").val(shipment.id);
     $("#bookingNo").val(shipment.bookingNo);
-    $("#opeCode").val(shipment.opeCode);
+    $("#opeCode").val(shipment.opeCode + ":");
     $("#containerAmount").val(shipment.containerAmount);
     $("#remark").val(shipment.remark);
     if (shipment.status > 1) {
@@ -71,7 +71,7 @@ function edit(url) {
     let shipmentUpdate = new Object();
     shipmentUpdate.id = shipment.id;
     shipmentUpdate.bookingNo = $('#bookingNo').val();
-    shipmentUpdate.opeCode = $('#opeCode').val();
+    shipmentUpdate.opeCode = $('#opeCode').val().split(": ")[0].replace(":", "");
     shipmentUpdate.sendContEmptyType = $('.sendContEmptyType').val();
     shipmentUpdate.containerAmount = $('#containerAmount').val();
     shipmentUpdate.params = new Object();

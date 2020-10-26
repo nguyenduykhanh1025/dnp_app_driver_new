@@ -311,10 +311,11 @@
     where container_number = #{container} and bill_of_lading = #{billNo}
   </select>
   <select id="getOpeCodeByBlNo" parameterType="String" resultType="String">
-    select carrier_code
+    select business_unit
     from edo
     where bill_of_lading = #{blNo} and house_bill_id is null
-    group by carrier_code
+    group by business_unit
+    fetch next 1 rows only
   </select>
   <select id="getCountContainerAmountByBlNo" parameterType="String" resultType="Long">
     select count(*)
