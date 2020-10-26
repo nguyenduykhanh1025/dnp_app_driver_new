@@ -101,7 +101,7 @@ function checkBookingNoUnique() {
 function save(url) {
     let shipment = new Object();
     shipment.bookingNo = $('#bookingNo').val();
-    shipment.opeCode = $('#opeCode').val();
+    shipment.opeCode = $('#opeCode').val().split(": ")[0].replace(":", "");
     shipment.containerAmount = $('#containerAmount').val();
     shipment.remark = $('#remark').val();
     shipment.params = new Object();

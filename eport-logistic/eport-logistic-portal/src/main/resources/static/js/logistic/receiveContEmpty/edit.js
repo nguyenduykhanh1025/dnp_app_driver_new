@@ -6,7 +6,7 @@ var shipmentFileIds = [];
 if (shipment != null) {
     $("#id").val(shipment.id);
     $("#shipmentCode").val(shipment.id);
-    $("#opeCode").val(shipment.opeCode);
+    $("#opeCode").val(shipment.opeCode + ":");
     $("#bookingNo").val(shipment.bookingNo);
     $("input[name='specificContFlg'][value='" + shipment.specificContFlg + "']").prop('checked', true);
     $("#containerAmount").val(shipment.containerAmount);
@@ -71,7 +71,7 @@ function edit(url) {
     shipmentUpdate.id = shipment.id;
     shipmentUpdate.bookingNo = $('#bookingNo').val();
     shipmentUpdate.specificContFlg = $("input[name='specificContFlg']:checked").val();
-    shipmentUpdate.opeCode = $('#opeCode').val();
+    shipmentUpdate.opeCode = $('#opeCode').val().split(": ")[0].replace(":", "");
     shipmentUpdate.containerAmount = $('#containerAmount').val();
     shipmentUpdate.remark = $('#remark').val();
     shipmentUpdate.params = new Object();
