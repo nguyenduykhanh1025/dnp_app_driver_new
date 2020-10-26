@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
-import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -213,16 +212,6 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			// Co loi bat thuong xay ra. order khong ton tai
 			throw new IllegalArgumentException("Can't find ShipmentDetail list by process order id");
 		}
-		orderNo = getJobOrderNo(processOrder.getServiceType(), shipmentDetails.get(0).getContainerNo());
-		if (StringUtils.isNotEmpty(orderNo)) {
-			result = "success";
-			// Get invoice no if paytype = cash
-			if ("Cash".equalsIgnoreCase(processOrder.getPayType())) {
-				invoiceNo = catosApiService.getInvoiceNoByOrderNo(orderNo);
-			}
-		} else {
-			result = "error";
-		}
 
 		// Get the true name of the service to make message send to om
 		String serviceName = "";
@@ -251,7 +240,19 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		String title = "";
 		String msg = "";
 		String historyResult = "";
-		if ("success".equalsIgnoreCase(result)) {
+
+		// Set job order no for list shipment detail
+		// Put list into error success list depend on has job order no or not
+		Map<String, List<ShipmentDetail>> shipmentDetailMap = getJobOrderNo(processOrder.getServiceType(),
+				shipmentDetails);
+		List<ShipmentDetail> successShipmentDetails = shipmentDetailMap.get("successShipmentDetails");
+		List<ShipmentDetail> errorShipmentDetails = shipmentDetailMap.get("errorShipmentDetails");
+
+		// Update process order
+		if (CollectionUtils.isNotEmpty(successShipmentDetails)) {
+			orderNo = successShipmentDetails.get(0).getOrderNo();
+
+			// Update shipment detail success, update process order success
 			processOrder.setOrderNo(orderNo);
 			processOrder.setInvoiceNo(invoiceNo);
 			processOrder.setStatus(2); // FINISH
@@ -259,65 +260,72 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			processOrder.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 			processOrderService.updateProcessOrder(processOrder);
 
-			// SAVE BILL TO PROCESS BILL BY INVOICE NO
-			if (invoiceNo != null && !invoiceNo.equals("")) {
-				processBillService.saveProcessBillByInvoiceNo(processOrder);
-			} else {
-				processBillService.saveProcessBillWithCredit(shipmentDetails, processOrder);
-			}
+			if (StringUtils.isNotEmpty(orderNo)) {
+				result = "success";
+				// Get invoice no if paytype = cash
+				if ("Cash".equalsIgnoreCase(processOrder.getPayType())) {
+					invoiceNo = catosApiService.getInvoiceNoByOrderNo(orderNo);
+				}
 
-			// UPDATE STATUS OF SHIPMENT DETAIL AFTER MAKE ORDER SUCCESS
-			shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo, processOrder);
-			Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
-			if (processOrder.getServiceType() == EportConstants.SERVICE_PICKUP_FULL
-					&& "1".equals(shipment.getEdoFlg())) {
-				for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
-					Edo edo = new Edo();
-					edo.setBillOfLading(shipment.getBlNo());
-					edo.setContainerNumber(shipmentDetail2.getContainerNo());
-					edo.setStatus("2"); // status process order has been made for this edo
-					edoService.updateEdoByBlCont(edo);
+				// SAVE BILL TO PROCESS BILL BY INVOICE NO
+				if (invoiceNo != null && !invoiceNo.equals("")) {
+					processBillService.saveProcessBillByInvoiceNo(processOrder);
+				} else {
+					processBillService.saveProcessBillWithCredit(successShipmentDetails, processOrder);
+				}
+
+				// UPDATE STATUS OF SHIPMENT DETAIL AFTER MAKE ORDER SUCCESS
+				shipmentDetailService.updateProcessStatus(successShipmentDetails, "Y", invoiceNo, processOrder);
+				Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
+
+				// SET RESULT FOR HISTORY SUCCESS
+				historyResult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
+				if (EportConstants.SERVICE_PICKUP_FULL == processOrder.getServiceType()
+						&& EportConstants.DO_TYPE_CARRIER_DO.equals(shipment.getEdoFlg())) {
+					this.sendProcessOrderHoldTerminal(processOrder, shipmentDetails);
+				}
+			} else {
+				result = "error";
+			}
+		}
+
+		// IF list error not null or empty => error
+		if (CollectionUtils.isNotEmpty(errorShipmentDetails)) {
+			// If result is error => send notification and update failed order status
+			if ("error".equalsIgnoreCase(result)) {
+				// Send notification order success to om to check whether some data is wrong or
+				// not
+				title = "ePort: Thông báo làm lệnh " + serviceName + " bị lỗi bởi robot " + robotUuId + ".";
+				msg = "Robot làm lệnh " + serviceName + " thất bại cho mã lô " + processOrder.getShipmentId()
+						+ " Job Order No " + processOrder.getOrderNo() + ": " + msgError;
+
+				// INIT PROCESS ORDER TO UPDATE
+				processOrder.setResult("F"); // RESULT FAILED
+				processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+				processOrder.setMsg(msgError); // Set message error from robot
+				processOrder.setErrorImagePath(errorImagePath); // Set error image path for om check
+				if (orderNo != null) {
+					processOrder.setOrderNo(orderNo);
+				}
+				processOrderService.updateProcessOrder(processOrder);
+
+				// SET RESULT FOR HISTORY FAILED
+				historyResult = EportConstants.PROCESS_HISTORY_RESULT_FAILED;
+
+				// Send notification for om
+				try {
+					mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg,
+							configService.getKey("domain.admin.name") + url, EportConstants.NOTIFICATION_PRIORITY_LOW);
+				} catch (Exception e) {
+					logger.warn(e.getMessage());
 				}
 			}
 
-			// SET RESULT FOR HISTORY SUCCESS
-			historyResult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
-			if (EportConstants.SERVICE_PICKUP_FULL == processOrder.getServiceType()
-					&& EportConstants.DO_TYPE_CARRIER_DO.equals(shipment.getEdoFlg())) {
-				this.sendProcessOrderHoldTerminal(processOrder, shipmentDetails);
-			}
-		} else {
-
-			// Send notification order success to om to check whether some data is wrong or
-			// not
-			title = "ePort: Thông báo làm lệnh " + serviceName + " bị lỗi bởi robot " + robotUuId + ".";
-			msg = "Robot làm lệnh " + serviceName + " thất bại cho mã lô " + processOrder.getShipmentId()
-					+ " Job Order No " + processOrder.getOrderNo() + ": " + msgError;
-
-			// INIT PROCESS ORDER TO UPDATE
-			processOrder.setResult("F"); // RESULT FAILED
-			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
-			processOrder.setMsg(msgError); // Set message error from robot
-			processOrder.setErrorImagePath(errorImagePath); // Set error image path for om check
-			if (orderNo != null) {
-				processOrder.setOrderNo(orderNo);
-			}
-			processOrderService.updateProcessOrder(processOrder);
-
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			// Update failed process status for container
+			for (ShipmentDetail shipmentDetail : errorShipmentDetails) {
 				shipmentDetail.setProcessStatus("E");
 				shipmentDetail.setUpdateBy(EportConstants.USER_NAME_SYSTEM);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
-			}
-			// SET RESULT FOR HISTORY FAILED
-			historyResult = EportConstants.PROCESS_HISTORY_RESULT_FAILED;
-
-			// Send notification for om
-			try {
-				mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg,
-						configService.getKey("domain.admin.name") + url, EportConstants.NOTIFICATION_PRIORITY_LOW);
-			} catch (Exception e) {
-				logger.warn(e.getMessage());
 			}
 		}
 
@@ -756,7 +764,8 @@ public class RobotResponseHandler implements IMqttMessageListener {
 				ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(),
 						ProcessJsonData.class);
 				// Retry hold and unhold terminal within 4 times
-				if (processJsonData.getRetryCount() != null && processJsonData.getRetryCount() < EportConstants.ROBOT_RETRY_TIMES_LIMIT) {
+				if (processJsonData.getRetryCount() != null
+						&& processJsonData.getRetryCount() < EportConstants.ROBOT_RETRY_TIMES_LIMIT) {
 					retrySendOrderToRobotTerminalHold(processOrder, processJsonData);
 				} else {
 					String title = "";
@@ -768,7 +777,8 @@ public class RobotResponseHandler implements IMqttMessageListener {
 					} else {
 						// Case unhold terminal
 						title = "Lỗi robot " + uuId + " mở terminal hold!";
-						msg = "Lỗi không mở khóa được terminal hold DO container " + processJsonData.getContainers() + ".";
+						msg = "Lỗi không mở khóa được terminal hold DO container " + processJsonData.getContainers()
+								+ ".";
 					}
 					// Send notification for om
 					try {
@@ -1077,12 +1087,72 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Get job order no for list shipment detail shipment detail has job no -> put
+	 * into list success shipment detail doesn't has job no -> put into list error
+	 * 
+	 * @param serviceType
+	 * @param shipmentDetails
+	 * @return Map<String, List<ShipmentDetail> contain 2 list error and success
+	 *         shipment detail
+	 */
+	public Map<String, List<ShipmentDetail>> getJobOrderNo(Integer serviceType, List<ShipmentDetail> shipmentDetails) {
+		// Map data contain 2 Shipment detail list (error list and success list)
+		Map<String, List<ShipmentDetail>> map = new HashMap<String, List<ShipmentDetail>>();
+		// Get Container No to get list from catos
+		String containers = "";
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			containers += shipmentDetail.getContainerNo() + ",";
+		}
+		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoDtoByContNos(containers);
+		// Convert list container info to map container no (key<String>), container info
+		// object (value<ContainerInfoDto>)
+		Map<String, ContainerInfoDto> cntrMap = new HashMap<String, ContainerInfoDto>();
+		if (CollectionUtils.isNotEmpty(cntrInfos)) {
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				cntrMap.put(cntrInfo.getCntrNo() + cntrInfo.getFe(), cntrInfo);
+			}
+		}
+
+		// Set job order no for container
+		List<ShipmentDetail> errorShipmentDetails = new ArrayList<ShipmentDetail>();
+		List<ShipmentDetail> successShipmentDetails = new ArrayList<ShipmentDetail>();
+
+		// Check service type
+		if (serviceType == EportConstants.SERVICE_PICKUP_FULL || serviceType == EportConstants.SERVICE_PICKUP_FULL) {
+			// Case Pickup
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				ContainerInfoDto cntrInfo = cntrMap.get(shipmentDetail.getContainerNo() + shipmentDetail.getFe());
+				if (cntrInfo != null && StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
+					shipmentDetail.setOrderNo(cntrInfo.getJobOdrNo2());
+					successShipmentDetails.add(shipmentDetail);
+				} else {
+					errorShipmentDetails.add(shipmentDetail);
+				}
+			}
+		} else {
+			// Case drop
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				ContainerInfoDto cntrInfo = cntrMap.get(shipmentDetail.getContainerNo() + shipmentDetail.getFe());
+				if (cntrInfo != null && StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
+					shipmentDetail.setOrderNo(cntrInfo.getJobOdrNo());
+					successShipmentDetails.add(shipmentDetail);
+				} else {
+					errorShipmentDetails.add(shipmentDetail);
+				}
+			}
+		}
+		map.put("errorShipmentDetails", errorShipmentDetails);
+		map.put("successShipmentDetails", successShipmentDetails);
+		return map;
+	}
+
 	private void retrySendOrderToRobotTerminalHold(ProcessOrder processOrder, ProcessJsonData processJsonData) {
 		// Insert new request order
 		processOrder.setId(null);
 		// Increase times retry by 1
-		processJsonData.setRetryCount(processJsonData.getRetryCount()+1);
+		processJsonData.setRetryCount(processJsonData.getRetryCount() + 1);
 		processOrder.setProcessData(new Gson().toJson(processJsonData));
 		processOrderService.insertProcessOrder(processOrder);
 		Map<String, Object> params = new HashMap<>();
