@@ -1135,7 +1135,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			// Case drop
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				ContainerInfoDto cntrInfo = cntrMap.get(shipmentDetail.getContainerNo() + shipmentDetail.getFe());
-				if (cntrInfo != null && StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
+				if (cntrInfo != null && StringUtils.isNotEmpty(cntrInfo.getJobOdrNo())) {
 					shipmentDetail.setOrderNo(cntrInfo.getJobOdrNo());
 					successShipmentDetails.add(shipmentDetail);
 				} else {
