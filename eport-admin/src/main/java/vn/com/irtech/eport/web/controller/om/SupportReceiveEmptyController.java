@@ -305,4 +305,29 @@ public class SupportReceiveEmptyController extends OmBaseController{
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
 	}
+
+//	@PostMapping("/order/retry")
+//    @ResponseBody
+//    public AjaxResult retryRobot(Long processOrderId) {
+//    	// Get process order by id
+//    	ProcessOrder pickupEmptyOrder = processOrderService.selectProcessOrderById(processOrderId);
+//    	
+//    	if (pickupEmptyOrder == null) {
+//    		return error("Không tìm thấy lệnh lỗi cần xử lý, vui lòng kiểm tra lại thông tin.");
+//    	}
+//    	
+//    	// Check and get pre-process order if exist (create or update booking process)
+//    	ProcessOrder processOrderParam = new ProcessOrder();
+//    	processOrderParam.setPostProcessId(processOrderId);
+//    	List<ProcessOrder> processOrders = processOrderService.selectProcessOrderList(processOrderParam);
+//    	ProcessOrder preProcessOrder = null;
+//    	if (CollectionUtils.isNotEmpty(processOrders)) {
+//    		preProcessOrder = processOrders.get(0); // Most of the time processOrders should be one
+//    	}
+//    	
+//    	// reset status
+//    	
+//    	
+//    	// send to robot
+//    }
 }
