@@ -7,7 +7,7 @@ $(document).ready(function () {
 
     // Check opr code need to attach booking
     $('#opeCode').change(function () {
-        if (oprListBookingCheck.includes($('#opeCode option:selected').val())) {
+        if (oprListBookingCheck.includes($('#opeCode option:selected').val().split(":")[0].replace(":",""))) {
             $('#dropzone').show();
             bookingAttach = true;
         } else {
