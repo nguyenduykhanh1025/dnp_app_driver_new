@@ -674,3 +674,7 @@ function openHistoryFormEport(row) {
     });
   }
 }
+
+function retryOrder() {
+  
+}

@@ -31,6 +31,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ContainerHoldInfo;
 import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
@@ -341,5 +342,54 @@ public class MqttService implements MqttCallback {
 				processOrderService.updateProcessOrder(processOrder);
 			}	
 		}
+	}
+
+	public void publicOrderToDemandRobot(ProcessOrder payLoad, String uuid)
+			throws MqttException {
+		SysRobot sysRobot = new SysRobot();
+		sysRobot.setUuId(uuid);
+		sysRobot.setStatus(EportConstants.ROBOT_STATUS_BUSY);
+		robotService.updateRobotByUuId(sysRobot);
+		String msg = new Gson().toJson(payLoad);
+		String topic = ROBOT_REQUEST_TOPIC.replace("+", uuid);
+		publish(topic, new MqttMessage(msg.getBytes()));
+		payLoad.setRobotUuid(uuid); // robot uuid in charge of process order
+		payLoad.setStatus(1); // on progress
+		processOrderService.updateProcessOrder(payLoad);
+	}
+
+	public enum EServiceRobot {
+		RECEIVE_CONT_FULL, // Boc hang
+		RECEIVE_CONT_EMPTY, // Boc rong
+		SEND_CONT_FULL, // Ha hang
+		SEND_CONT_EMPTY, // Ha rong
+		SHIFTING_CONT, // Dich chuyen
+		CHANGE_VESSEL, // Doi tau chuyen
+		CREATE_BOOKING, // Tao booking
+		EXTENSION_DATE, // Gia han lenh
+		GATE_IN, // Gate in
+		TERMINAL_CUSTOM_HOLD, // Terminal custom hold
+		CANCEL_DROP_FULL, // Cancel drop full
+		CANCEL_PICKUP_EMPTY, // Cancel pickup empty
+		EXPORT_RECEIPT // Export receipt
+	}
+
+	/**
+	 * 
+	 * @param payLoad
+	 * @param serviceRobot
+	 * @param uuid
+	 * @throws MqttException
+	 */
+	public void publicMessageToDemandRobot(ServiceSendFullRobotReq payLoad, EServiceRobot serviceRobot, String uuid)
+			throws MqttException {
+		String msg = new Gson().toJson(payLoad);
+		String topic = ROBOT_REQUEST_TOPIC.replace("+", uuid);
+		publish(topic, new MqttMessage(msg.getBytes()));
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setId(payLoad.processOrder.getId());
+		processOrder.setRobotUuid(uuid); // robot uuid in charge of process order
+		processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_PROCESSING); // on progress
+		processOrderService.updateProcessOrder(processOrder);
 	}
 }

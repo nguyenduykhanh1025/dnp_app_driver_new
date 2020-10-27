@@ -3,6 +3,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
@@ -43,8 +45,12 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
+import vn.com.irtech.eport.system.service.ISysRobotService;
+import vn.com.irtech.eport.web.mqtt.MqttService;
+import vn.com.irtech.eport.web.mqtt.MqttService.EServiceRobot;
 
 @Controller
 @RequestMapping("/om/support/receive-full")
@@ -79,6 +85,12 @@ public class SupportReceiveFullController extends OmBaseController{
     @Autowired
     private ServerConfig serverConfig;
     
+	@Autowired
+	private ISysRobotService sysRobotService;
+
+	@Autowired
+	private MqttService mqttService;
+
     @GetMapping("/view")
     public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap)
     {
@@ -303,5 +315,49 @@ public class SupportReceiveFullController extends OmBaseController{
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
+	}
+
+	@PostMapping("/order/retry")
+	@ResponseBody
+	public AjaxResult retryRobot(Long processOrderId) {
+		// Get process order by id
+		ProcessOrder pickupFullOrder = processOrderService.selectProcessOrderById(processOrderId);
+
+		if (pickupFullOrder == null) {
+			return error("Không tìm thấy lệnh lỗi cần xử lý, vui lòng kiểm tra lại thông tin.");
+		}
+
+		if (!EportConstants.PROCESS_ORDER_RESULT_FAILED.equalsIgnoreCase(pickupFullOrder.getResult())) {
+			return error("Lệnh bạn đang chọn không bị lỗi, vui lòng kiểm tra lại dữ liệu.");
+		}
+
+		// reset status
+		pickupFullOrder.setRunnable(true);
+		pickupFullOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_NEW);
+		pickupFullOrder.setResult(EportConstants.PROCESS_ORDER_RESULT_WAITING);
+		processOrderService.updateProcessOrder(pickupFullOrder);
+
+		// Send to robot
+		// Find robot booking
+		SysRobot robotParam = new SysRobot();
+		robotParam.setStatus(EportConstants.ROBOT_STATUS_AVAILABLE);
+		robotParam.setIsReceiveContFullOrder(true);
+		robotParam.setDisabled(false);
+		SysRobot robotPickupFull = sysRobotService.findFirstRobot(robotParam);
+
+		// If robot pickup empty available => send order to robot
+		if (robotPickupFull != null) {
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setProcessOrderId(processOrderId);
+			// Get list of shipment details for current processOrder
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(pickupFullOrder, shipmentDetails);
+			try {
+				mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_FULL, robotPickupFull.getUuId());
+			} catch (MqttException e) {
+				logger.error("Failed to send pickup full order to robot " + robotPickupFull.getUuId() + ":" + e);
+			}
+		}
+		return success();
 	}
 }
