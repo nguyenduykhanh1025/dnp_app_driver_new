@@ -1120,7 +1120,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		List<ShipmentDetail> successShipmentDetails = new ArrayList<ShipmentDetail>();
 
 		// Check service type
-		if (serviceType == EportConstants.SERVICE_PICKUP_FULL || serviceType == EportConstants.SERVICE_PICKUP_FULL) {
+		if (serviceType == EportConstants.SERVICE_PICKUP_FULL || serviceType == EportConstants.SERVICE_PICKUP_EMPTY) {
 			// Case Pickup
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				ContainerInfoDto cntrInfo = cntrMap.get(shipmentDetail.getContainerNo() + shipmentDetail.getFe());
