@@ -226,6 +226,9 @@ public class EdiServiceImpl implements IEdiService {
 		edo.setVessel(ediDataReq.getModTransName());
 		edo.setVoyNo(ediDataReq.getModTransVoyage());
 		edo.setBillOfLading(ediDataReq.getBillOfLading());
+		edo.setSztp(ediDataReq.getSztp());
+		edo.setPol(ediDataReq.getPol());
+		edo.setPod(ediDataReq.getPod());
 		edo.setTaxCode(ediDataReq.getConsigneeTaxcode());
 		edo.setTransactionId(transactionId);
 	}
