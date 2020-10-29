@@ -321,6 +321,10 @@ public class SupportReceiveEmptyController extends OmBaseController{
 	@PostMapping("/order/retry")
 	@ResponseBody
 	public AjaxResult retryRobot(Long processOrderId) {
+		if (processOrderId == null) {
+			return error("Bạn chưa chọn lệnh muốn cho robot chạy lại.");
+		}
+
 		// Get process order by id
 		ProcessOrder pickupEmptyOrder = processOrderService.selectProcessOrderById(processOrderId);
 

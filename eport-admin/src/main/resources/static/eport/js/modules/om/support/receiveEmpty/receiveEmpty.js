@@ -716,3 +716,30 @@ function openHistoryFormEport(row) {
     });
   }
 }
+
+function retryOrder() {
+  layer.confirm("Xác nhận robot làm lệnh lại.", {
+    icon: 3,
+    title: "Xác Nhận",
+    btn: ['Đồng Ý', 'Hủy Bỏ']
+  }, function () {
+
+    // UPDATE PROCESS ORDER TO DOING STATUS
+    $.ajax({
+      url: PREFIX + "/order/retry",
+      method: "POST",
+      data: {
+        processOrderId: processOrderSelected.id
+      }
+    }).done(function (res) {
+      layer.close(layer.index);
+      if (res.code != 0) {
+        $.modal.alertError(res.msg);
+      } else {
+        $.modal.alertSuccess(res.msg);
+      }
+    });
+  }, function () {
+    // Do nothing
+  });
+}
