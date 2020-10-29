@@ -252,6 +252,11 @@ public class SupportReceiveEmptyController extends OmBaseController{
 			// Co loi bat thuong xay ra. order khong ton tai
 			throw new IllegalArgumentException("Process order not exist");
 		}
+
+		if (!EportConstants.PROCESS_HISTORY_RESULT_FAILED.equals(processOrder.getResult())) {
+			throw new IllegalArgumentException("Lệnh này không bị lỗi, không thể thực hiện reset lại.");
+		}
+
 		// GET LIST SHIPMENT DETAIL BY PROCESS ORDER ID
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setProcessOrderId(processOrderId);

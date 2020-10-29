@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,27 +25,26 @@ import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
-import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.web.controller.AdminBaseController;
-import vn.com.irtech.eport.web.mqtt.MqttService;
 
 @Controller
-@RequestMapping("/om/document")
-public class DocumentGatheringController extends AdminBaseController  {
+@RequestMapping("/om/edo/order")
+public class EdoOrderManagementController extends AdminBaseController  {
 	
-	private static final Logger logger = LoggerFactory.getLogger(DocumentGatheringController.class); 
+	private static final Logger logger = LoggerFactory.getLogger(EdoOrderManagementController.class); 
 
-	private String PREFIX = "om/document";
+	private String PREFIX = "om/document/edoOrder";
 	
 	@Autowired
 	private IShipmentService shipmentService;
@@ -53,16 +53,13 @@ public class DocumentGatheringController extends AdminBaseController  {
 	private ILogisticGroupService logisticGroupService;
 	
 	@Autowired
-	private ICatosApiService catosApiService;
-	
-	@Autowired
 	private IShipmentDetailService shipmentDetailService;
 	
 	@Autowired
 	private IShipmentCommentService shipmentCommentService;
 	
 	@Autowired
-	private MqttService mqttService;
+	private DictService dictService;
 	
 	@Autowired
 	private ServerConfig serverConfig;
@@ -84,15 +81,15 @@ public class DocumentGatheringController extends AdminBaseController  {
 	    logisticGroups.add(0, logisticGroup);
 	    mmap.put("logisticGroups", logisticGroups);
 	    
-	    // Get list vslNm : vslNmae : voyNo
-	    List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlanWithoutOpe();
-	    if(berthplanList == null) {
-	    	berthplanList = new ArrayList<>();
+	    List<SysDictData> dictDatas = dictService.getType("opr_list_booking_check");
+	    if (CollectionUtils.isEmpty(dictDatas)) {
+	    	dictDatas = new ArrayList<>();
 	    }
-	    ShipmentDetail shipmentDetail = new ShipmentDetail();
-	    shipmentDetail.setVslAndVoy("Chọn tàu chuyến");
-	    berthplanList.add(0, shipmentDetail);
-	    mmap.put("vesselAndVoyages", berthplanList);
+	    SysDictData sysDictData = new SysDictData();
+    	sysDictData.setDictLabel("Chọn OPR");
+    	sysDictData.setDictValue("Chọn OPR");
+    	dictDatas.add(0, sysDictData);
+	    mmap.put("oprList", dictDatas);
 		return PREFIX + "/index";
 	}
 	
@@ -111,7 +108,7 @@ public class DocumentGatheringController extends AdminBaseController  {
 			shipment = new Shipment();
 		}
 		shipment.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
-		shipment.setEdoFlg(EportConstants.DO_TYPE_CARRIER_DO);
+		shipment.setEdoFlg(EportConstants.DO_TYPE_CARRIER_EDO);
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
 			params = new HashMap<>();
@@ -137,42 +134,14 @@ public class DocumentGatheringController extends AdminBaseController  {
 	@PostMapping("/confirmation")
 	@ResponseBody
 	@Transactional
-	public AjaxResult submitConfirmation(String doStatus, String content, String shipmentDetailIds, Long logisticGroupId) {
+	public AjaxResult submitConfirmation(String shipmentDetailIds, Long logisticGroupId) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, logisticGroupId);
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			if (shipmentDetail.getPaymentStatus().equals("N")) {
-				return error("Không thể xác nhận chứng từ gốc cho container chưa thanh toán. Vui lòng kiểm tra lại.");
-			}
-		}
-		String containers = "";
-		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			containers += shipmentDetail.getContainerNo() + ",";
-			shipmentDetail.setDoStatus(doStatus);
+			shipmentDetail.setDoStatus("Y");
 			shipmentDetail.setUpdateBy(getUser().getLoginName());
 			shipmentDetailService.updateShipmentDetail(shipmentDetail);
 		}
-		ShipmentDetail shipmentDetail = shipmentDetails.get(0);
-		Shipment shipment = shipmentService.selectShipmentById(shipmentDetail.getShipmentId());
-		
-		// Send release container request to robot
-		containers = containers.substring(0, containers.length()-1);
-		mqttService.sendReleaseTerminalHoldForRobot(containers, shipmentDetail, shipment.getServiceType());
-		
-		if (StringUtils.isNotEmpty(content)) {
-
-			ShipmentComment shipmentComment = new ShipmentComment();
-			shipmentComment.setLogisticGroupId(shipmentDetail.getLogisticGroupId());
-			shipmentComment.setShipmentId(shipmentDetail.getShipmentId());
-			shipmentComment.setUserId(getUserId());
-			shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
-			shipmentComment.setUserAlias(getUser().getDept().getDeptName());
-			shipmentComment.setCommentTime(new Date());
-			shipmentComment.setContent(content);
-			shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_OM_DOCUMENT);
-			shipmentComment.setServiceType(shipment.getServiceType());
-			shipmentCommentService.insertShipmentComment(shipmentComment);
-		}
- 		return success("Thu chứng từ gốc thành công");
+ 		return success("Xác nhận thành công.");
 	}
 	
 	@PostMapping("/shipment/comment")
@@ -184,6 +153,7 @@ public class DocumentGatheringController extends AdminBaseController  {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
+		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
