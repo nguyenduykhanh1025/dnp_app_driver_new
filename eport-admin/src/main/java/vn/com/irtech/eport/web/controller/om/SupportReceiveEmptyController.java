@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
@@ -44,8 +46,12 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
+import vn.com.irtech.eport.system.service.ISysRobotService;
+import vn.com.irtech.eport.web.mqtt.MqttService;
+import vn.com.irtech.eport.web.mqtt.MqttService.EServiceRobot;
 
 @Controller
 @RequestMapping("/om/support/receive-empty")
@@ -80,6 +86,12 @@ public class SupportReceiveEmptyController extends OmBaseController{
     @Autowired
     private ServerConfig serverConfig;
     
+	@Autowired
+	private ISysRobotService sysRobotService;
+
+	@Autowired
+	private MqttService mqttService;
+
     @GetMapping("/view")
     public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap)
     {
@@ -240,6 +252,11 @@ public class SupportReceiveEmptyController extends OmBaseController{
 			// Co loi bat thuong xay ra. order khong ton tai
 			throw new IllegalArgumentException("Process order not exist");
 		}
+
+		if (!EportConstants.PROCESS_HISTORY_RESULT_FAILED.equals(processOrder.getResult())) {
+			throw new IllegalArgumentException("Lệnh này không bị lỗi, không thể thực hiện reset lại.");
+		}
+
 		// GET LIST SHIPMENT DETAIL BY PROCESS ORDER ID
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setProcessOrderId(processOrderId);
@@ -306,28 +323,90 @@ public class SupportReceiveEmptyController extends OmBaseController{
 		return ajaxResult;
 	}
 
-//	@PostMapping("/order/retry")
-//    @ResponseBody
-//    public AjaxResult retryRobot(Long processOrderId) {
-//    	// Get process order by id
-//    	ProcessOrder pickupEmptyOrder = processOrderService.selectProcessOrderById(processOrderId);
-//    	
-//    	if (pickupEmptyOrder == null) {
-//    		return error("Không tìm thấy lệnh lỗi cần xử lý, vui lòng kiểm tra lại thông tin.");
-//    	}
-//    	
-//    	// Check and get pre-process order if exist (create or update booking process)
-//    	ProcessOrder processOrderParam = new ProcessOrder();
-//    	processOrderParam.setPostProcessId(processOrderId);
-//    	List<ProcessOrder> processOrders = processOrderService.selectProcessOrderList(processOrderParam);
-//    	ProcessOrder preProcessOrder = null;
-//    	if (CollectionUtils.isNotEmpty(processOrders)) {
-//    		preProcessOrder = processOrders.get(0); // Most of the time processOrders should be one
-//    	}
-//    	
-//    	// reset status
-//    	
-//    	
-//    	// send to robot
-//    }
+	@PostMapping("/order/retry")
+	@ResponseBody
+	public AjaxResult retryRobot(Long processOrderId) {
+		if (processOrderId == null) {
+			return error("Bạn chưa chọn lệnh muốn cho robot chạy lại.");
+		}
+
+		// Get process order by id
+		ProcessOrder pickupEmptyOrder = processOrderService.selectProcessOrderById(processOrderId);
+
+		if (pickupEmptyOrder == null) {
+			return error("Không tìm thấy lệnh lỗi cần xử lý, vui lòng kiểm tra lại thông tin.");
+		}
+
+		if (!EportConstants.PROCESS_ORDER_RESULT_FAILED.equalsIgnoreCase(pickupEmptyOrder.getResult())) {
+			return error("Lệnh bạn đang chọn không bị lỗi, vui lòng kiểm tra lại dữ liệu.");
+		}
+
+		// Check and get pre-process order if exist (create or update booking process)
+		ProcessOrder processOrderParam = new ProcessOrder();
+		processOrderParam.setPostProcessId(processOrderId);
+		List<ProcessOrder> processOrders = processOrderService.selectProcessOrderList(processOrderParam);
+		ProcessOrder preProcessOrder = null;
+		if (CollectionUtils.isNotEmpty(processOrders)) {
+			preProcessOrder = processOrders.get(0); // Most of the time processOrders should be one
+		}
+
+		// reset status
+		if (preProcessOrder != null) {
+			pickupEmptyOrder.setRunnable(false);
+			preProcessOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_NEW);
+			preProcessOrder.setResult(EportConstants.PROCESS_ORDER_RESULT_WAITING);
+			preProcessOrder.setRunnable(true);
+			processOrderService.updateProcessOrder(preProcessOrder);
+		} else {
+			pickupEmptyOrder.setRunnable(true);
+		}
+		pickupEmptyOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_NEW);
+		pickupEmptyOrder.setResult(EportConstants.PROCESS_ORDER_RESULT_WAITING);
+		processOrderService.updateProcessOrder(pickupEmptyOrder);
+
+		// Send to robot
+		if (preProcessOrder != null) {
+			// Send to robot create booking
+			// Find robot booking
+			SysRobot robotParam = new SysRobot();
+			robotParam.setStatus(EportConstants.ROBOT_STATUS_AVAILABLE);
+			robotParam.setIsCreateBookingOrder(true);
+			robotParam.setDisabled(false);
+			SysRobot robotBooking = sysRobotService.findFirstRobot(robotParam);
+
+			// If robot booking available => send order to robot
+			if (robotBooking != null) {
+				try {
+					mqttService.publicOrderToDemandRobot(preProcessOrder, robotBooking.getUuId());
+				} catch (MqttException e) {
+					logger.error("Failed to send booking order to robot " + robotBooking.getUuId() + ":" + e);
+				}
+			}
+		} else {
+			// Send to robot
+			// Find robot booking
+			SysRobot robotParam = new SysRobot();
+			robotParam.setStatus(EportConstants.ROBOT_STATUS_AVAILABLE);
+			robotParam.setIsReceiveContEmptyOrder(true);
+			robotParam.setDisabled(false);
+			SysRobot robotPickupEmpty = sysRobotService.findFirstRobot(robotParam);
+
+			// If robot pickup empty available => send order to robot
+			if (robotPickupEmpty != null) {
+				ShipmentDetail shipmentDetail = new ShipmentDetail();
+				shipmentDetail.setProcessOrderId(processOrderId);
+				// Get list of shipment details for current processOrder
+				List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+				ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(pickupEmptyOrder, shipmentDetails);
+				try {
+					mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_EMPTY,
+							robotPickupEmpty.getUuId());
+				} catch (MqttException e) {
+					logger.error("Failed to send pickup empty order to robot " + robotPickupEmpty.getUuId() + ":" + e);
+				}
+			}
+		}
+
+		return success();
+	}
 }

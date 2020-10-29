@@ -276,12 +276,15 @@
         #{emptyContainerDepot},
       </if>
       <if test="detFreeTime != null and detFreeTime != ''">det_free_time = #{detFreeTime},</if>
+      <if test="orderNumber != null  and orderNumber != ''">order_number = #{orderNumber},</if>
       <if test="secureCode != null  and secureCode != ''">secure_code = #{secureCode},</if>
       <if test="releaseDate != null ">release_date = #{releaseDate},</if>
       <if test="vessel != null  and vessel != ''">vessel = #{vessel},</if>
       <if test="vesselNo != null  and vesselNo != ''">vessel_no = #{vesselNo},</if>
       <if test="voyNo != null  and voyNo != ''">voy_no = #{voyNo},</if>
       <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
+      <if test="pol != null  and pol != ''">pol = #{pol},</if>
+      <if test="pod != null  and pod != ''">pod = #{pod},</if>
       <if test="status != null  and status != ''">status = #{status},</if>
       <if test="releaseStatus != null  and releaseStatus != ''">release_status = #{releaseStatus},</if>
       <if test="createSource != null  and createSource != ''">create_source = #{createSource},</if>

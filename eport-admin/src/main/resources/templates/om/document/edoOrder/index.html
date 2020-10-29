@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('EDO Order Management')" />
+    <th:block th:include="include :: easyui-css" />
+    <th:block th:include="include :: handsontable-css" />
+    <th:block th:include="include :: summernote-css" />
+    <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+</head>
+
+<body class="grey-background">
+    <div class="main-body">
+        <div class="main-body__search-wrapper mb-2">
+            <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+            <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+            <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+                <div class="flex__left w-20">
+                    <h3 class="mt-10">Kiểm Soát Bốc Hàng eDO</h3>
+                </div>
+                <div class="flex__right w-80">
+                    <div class="justify-content-around align-items-center" id="ff">
+                        <div class="d-inline">
+                            <input id="logisticGroups" class="easyui-combobox">
+                        </div>
+                        <div class="d-inline">
+                            <input class="easyui-textbox" id="blNo" data-options="prompt:'B/L No'" />
+                        </div>
+                        <div class="d-inline">
+                            <input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
+                        </div>
+                        <div class="d-inline">
+                            <input id="opr" class="easyui-combobox">
+                        </div>
+                        <div class="d-inline">
+                            <input id="doStatus" class="easyui-combobox">
+                        </div>
+                        <div class="d-inline">
+                            <button class="btn btn-success" onclick="search()">Tìm kiếm</button>
+                        </div>
+                        <div class="d-inline">
+                            <button class="btn btn-success btn-outline" onclick="clearInput()">Làm mới</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-body__table-wrapper">
+            <div class="easyui-layout" id="main-layout" style="width:100%">
+                <div class="left-side" data-options="region:'west',split:true, collapsible:false" title="Danh sách lô"
+                    style="width:30%;">
+                    <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
+                    <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+                        <thead>
+                            <tr>
+                                <th data-options="field:'id', resizable:true, align:'right', fixed:true" sortable="true"
+                                    width="60">Mã Lô</th>
+                                <th data-options="field:'blNo', resizable:true, align:'left', fixed:true"
+                                    sortable="true" width="150">B/L No</th>
+                                <th data-options="field:'opeCode', resizable:true, align:'left', fixed:true"
+                                    sortable="true" width="50">OPR</th>
+                                <th data-options="field:'containerAmount', resizable:true, align:'center', fixed:true"
+                                    sortable="true" width="40">SL</th>
+                                <th data-options="field:'logisticName', resizable:true, align:'left', fixed:true, formatter: formatLogistic"
+                                    width="100">Logistics</th>
+                                <th data-options="field:'createTime', resizable:true, align:'right', fixed:true"
+                                    sortable="true" width="120">Ngày Tạo</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="right-side" data-options="region:'center'" style="width:100%;">
+                    <div class="easyui-layout" id="right-layout" data-options="fit:true" style="position: relative;">
+                        <div style="height: 50%;" data-options="region:'south', split:true">
+                            <span class="right-side__collapse"><i class="fa fa-chevron-down"></i></span>
+                            <div class="panel-header" style="width: 100%; background-color: #f3f7fa;">
+                                <div class="panel-title" style="color: #333;">Hỗ Trợ</div>
+                            </div>
+                            <div id="comment-div" style="padding: 10px 20px 10px 20px;">
+                                <div id="commentList"></div>
+                                <div style="text-align: right;">
+                                    <div class="form-group row">
+                                        <label class="col-md-1 col-sm-2 col-xs-3">Tiêu đề <span
+                                                style="color: red;">*</span></label>
+                                        <div class="col-md-11 col-sm-10 col-xs-9">
+                                            <input class="easyui-textbox" id="topic" style="width: 100%;" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-1 col-sm-2 col-xs-3">Nội dung <span
+                                                style="color: red;">*</span></label>
+                                        <div class="col-md-11 col-sm-10 col-xs-9">
+                                            <textarea class="summernote"></textarea>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
+                                            <span class="l-btn-left"><span class="l-btn-text">
+                                                    <button id="sendComment" onclick="addComment()"
+                                                        class="btn btn-sm btn-primary">
+                                                        <i class="fa fa-send text-primary"></i>
+                                                        Gửi</button></span></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-options="region:'center'" id="right-side__main-table">
+                            <div class="right-side__toolbar">
+                                <div class="datagrid-toolbar">
+                                    <table cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td>
+                                                <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
+                                                    <span class="l-btn-left"><span class="l-btn-text">
+                                                            <button onclick="confirmDocument()"
+                                                                class="btn btn-sm btn-success">
+                                                                <i class="fa fa-check text-primary"></i> Xác Nhận
+                                                            </button>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                            <td style="min-width: 320px;">
+                                                <span style="margin-left: 20px; font-weight: bold;"
+                                                    id="shipmentInfo"></span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: summernote-js" />
+    <th:block th:include="include :: handsontable-js" />
+    <script type="text/javascript" th:inline="javascript">
+        $(".main-body").height($(document).height() - 10);
+        $(".easyui-layout").height($('.main-body').height() - 50);
+        var logisticGroups = /*[[${logisticGroups}]]*/;
+        var oprList = /*[[${oprList}]]*/;
+        var sId = /*[[${sId}]]*/;
+        var domain = /*[[${domain}]]*/;
+    </script>
+    <script th:src="@{/eport/js/modules/om/document/edoOrder/edoOrder.js?v=20201029}"></script>
+</body>
+
+</html>

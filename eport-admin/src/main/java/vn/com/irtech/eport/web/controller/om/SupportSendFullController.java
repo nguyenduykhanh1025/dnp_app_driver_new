@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
@@ -44,8 +46,12 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
+import vn.com.irtech.eport.system.service.ISysRobotService;
+import vn.com.irtech.eport.web.mqtt.MqttService;
+import vn.com.irtech.eport.web.mqtt.MqttService.EServiceRobot;
 
 @Controller
 @RequestMapping("/om/support/send-full")
@@ -81,6 +87,12 @@ public class SupportSendFullController extends OmBaseController{
     @Autowired
     private IShipmentCommentService shipmentCommentService;
     
+	@Autowired
+	private ISysRobotService sysRobotService;
+
+	@Autowired
+	private MqttService mqttService;
+
     @GetMapping("/view")
     public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap)
     {
@@ -241,6 +253,11 @@ public class SupportSendFullController extends OmBaseController{
 			// Co loi bat thuong xay ra. order khong ton tai
 			throw new IllegalArgumentException("Process order not exist");
 		}
+
+		if (!EportConstants.PROCESS_HISTORY_RESULT_FAILED.equals(processOrder.getResult())) {
+			throw new IllegalArgumentException("Lệnh này không bị lỗi, không thể thực hiện reset lại.");
+		}
+
 		// GET LIST SHIPMENT DETAIL BY PROCESS ORDER ID
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setProcessOrderId(processOrderId);
@@ -305,5 +322,53 @@ public class SupportSendFullController extends OmBaseController{
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
+	}
+
+	@PostMapping("/order/retry")
+	@ResponseBody
+	public AjaxResult retryRobot(Long processOrderId) {
+		if (processOrderId == null) {
+			return error("Bạn chưa chọn lệnh muốn cho robot chạy lại.");
+		}
+
+		// Get process order by id
+		ProcessOrder dropFullOrder = processOrderService.selectProcessOrderById(processOrderId);
+
+		if (dropFullOrder == null) {
+			return error("Không tìm thấy lệnh lỗi cần xử lý, vui lòng kiểm tra lại thông tin.");
+		}
+
+		if (!EportConstants.PROCESS_ORDER_RESULT_FAILED.equalsIgnoreCase(dropFullOrder.getResult())) {
+			return error("Lệnh bạn đang chọn không bị lỗi, vui lòng kiểm tra lại dữ liệu.");
+		}
+
+		// reset status
+		dropFullOrder.setRunnable(true);
+		dropFullOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_NEW);
+		dropFullOrder.setResult(EportConstants.PROCESS_ORDER_RESULT_WAITING);
+		processOrderService.updateProcessOrder(dropFullOrder);
+
+		// Send to robot
+		// Find robot booking
+		SysRobot robotParam = new SysRobot();
+		robotParam.setStatus(EportConstants.ROBOT_STATUS_AVAILABLE);
+		robotParam.setIsSendContFullOrder(true);
+		robotParam.setDisabled(false);
+		SysRobot robotSendFull = sysRobotService.findFirstRobot(robotParam);
+
+		// If robot drop full available => send order to robot
+		if (robotSendFull != null) {
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setProcessOrderId(processOrderId);
+			// Get list of shipment details for current processOrder
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(dropFullOrder, shipmentDetails);
+			try {
+				mqttService.publicMessageToDemandRobot(req, EServiceRobot.SEND_CONT_FULL, robotSendFull.getUuId());
+			} catch (MqttException e) {
+				logger.error("Failed to send drop full order to robot " + robotSendFull.getUuId() + ":" + e);
+			}
+		}
+		return success();
 	}
 }

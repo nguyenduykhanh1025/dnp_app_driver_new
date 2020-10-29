@@ -70,6 +70,7 @@ public interface EportConstants {
 	// Process order result
 	public static final String PROCESS_ORDER_RESULT_FAILED = "F";
 	public static final String PROCESS_ORDER_RESULT_SUCCESS = "S";
+	public static final String PROCESS_ORDER_RESULT_WAITING = "W";
 
 	// process history
 	public static final int PROCESS_HISTORY_STATUS_START = 1;

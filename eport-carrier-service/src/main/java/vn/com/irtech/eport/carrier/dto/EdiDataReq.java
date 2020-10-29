@@ -24,7 +24,7 @@ public class EdiDataReq implements Serializable {
 	private String consigneeTaxcode;
 
 	@NotBlank
-	private String secureCode;
+	private String orderNumber;
 
 	@NotBlank
 	private String containerNo;
@@ -47,6 +47,12 @@ public class EdiDataReq implements Serializable {
 
 	@NotBlank
 	private String billOfLading;
+
+	private String sztp;
+
+	private String pol;
+
+	private String pod;
 
 	@NotBlank
 	@AcceptedValues(values = {"N", "U", "D"}, message = "Must be any of {'N', 'U', 'D'}")
@@ -76,12 +82,12 @@ public class EdiDataReq implements Serializable {
 		this.consigneeTaxcode = consigneeTaxcode;
 	}
 
-	public String getSecureCode() {
-		return secureCode;
+	public String getOrderNumber() {
+		return orderNumber;
 	}
 
-	public void setSecureCode(String secureCode) {
-		this.secureCode = secureCode;
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 
 	public String getContainerNo() {
@@ -146,6 +152,30 @@ public class EdiDataReq implements Serializable {
 
 	public void setBillOfLading(String billOfLading) {
 		this.billOfLading = billOfLading;
+	}
+
+	public String getSztp() {
+		return sztp;
+	}
+
+	public void setSztp(String sztp) {
+		this.sztp = sztp;
+	}
+
+	public String getPol() {
+		return pol;
+	}
+
+	public void setPol(String pol) {
+		this.pol = pol;
+	}
+
+	public String getPod() {
+		return pod;
+	}
+
+	public void setPod(String pod) {
+		this.pod = pod;
 	}
 
 	public String getMsgFunc() {
