@@ -223,7 +223,7 @@ public class CacheUtils
 			key = keyArr[keyArr.length - 1];
 			Map<String, Object> map = new HashMap<>();
 			map.put("key", key);
-			map.put("value", get(Constants.SYS_CONFIG_KEY + key));
+			map.put("value", get(Constants.SYS_CONFIG_CACHE + Constants.SYS_CONFIG_KEY + key));
 			keyDataList.add(map);
 		}
 
@@ -236,7 +236,7 @@ public class CacheUtils
 			key = keyArr[keyArr.length - 1];
 			Map<String, Object> map = new HashMap<>();
 			map.put("key", key);
-			map.put("value", get(Constants.SYS_DICT_KEY + key));
+			map.put("value", get(Constants.SYS_DICT_CACHE + Constants.SYS_DICT_KEY + key));
 			keyDataList.add(map);
 		}
 		return keyDataList;
