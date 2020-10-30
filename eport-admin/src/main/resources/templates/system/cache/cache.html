@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('Cache management')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="config-form">
+					<div class="select-list">
+						<ul>
+                            <li>
+								Key name <input type="text" name="keyName"/>
+							</li>
+							<li>
+								Key <input type="text" name="key"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Làm mới</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm" id="toolbar" role="group">
+		        <a class="btn btn-danger" onclick="removeAll()">
+		            <i class="fa fa-remove">Xóa tất cả</i>
+		        </a>
+	        </div>
+	        <div class="col-sm-12 select-table table-striped">
+	            <table id="bootstrap-table"></table>
+	        </div>
+	    </div>
+	</div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "system/cache";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                modalName: "cache",
+                pagination: false,
+                columns: [{
+                    field: 'id',
+                    title: 'ID'
+                },
+                {
+                    field: 'key',
+                    title: 'Key'
+                },
+                {
+                    field: 'value',
+                    title: 'Value',
+                    formatter: function(value, row, index) {
+                    	return $.table.tooltip(value);
+                    }
+                },
+                {
+                    title: 'Hành động',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="remove(\'' + row.key + '\',\''+ row.keyName +'\')"><i class="fa fa-remove"></i>Delete</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+
+        function removeAll() {
+            layer.confirm("Xác nhận xóa toàn bộ cache.", {
+                icon: 3,
+                title: "Xác Nhận",
+                btn: ['Đồng Ý', 'Hủy Bỏ']
+            }, function () {
+                $.modal.loading("Đang xử lý ...");
+                layer.close(layer.index);
+                $.ajax({
+                    url: prefix + "/remove-all",
+                    method: "delete",
+                    success: function (res) {
+                        $.modal.closeLoading();
+                        if (res.code == 0) {
+                            $.modal.alertSuccess(res.msg);
+                            $.table.search();
+                        } else {
+                            $.modal.alertError(res.msg);
+                        }
+                    },
+                    error: function (data) {
+                        $.modal.closeLoading();
+                    }
+                });
+            }, function () {
+                // close form
+            });
+        }
+
+        function remove(key, keyName) {
+            layer.confirm("Xác nhận xóa cache này.", {
+                icon: 3,
+                title: "Xác Nhận",
+                btn: ['Đồng Ý', 'Hủy Bỏ']
+            }, function () {
+                $.modal.loading("Đang xử lý ...");
+                layer.close(layer.index);
+                $.ajax({
+                    url: prefix + "/" + keyName + "/" + key + "/remove",
+                    method: "delete",
+                    success: function (res) {
+                        $.modal.closeLoading();
+                        if (res.code == 0) {
+                            $.modal.alertSuccess(res.msg);
+                            $.table.search();
+                        } else {
+                            $.modal.alertError(res.msg);
+                        }
+                    },
+                    error: function (data) {
+                        $.modal.closeLoading();
+                    }
+                });
+            }, function () {
+                // close form
+            });
+        }
+    </script>
+</body>
+</html>

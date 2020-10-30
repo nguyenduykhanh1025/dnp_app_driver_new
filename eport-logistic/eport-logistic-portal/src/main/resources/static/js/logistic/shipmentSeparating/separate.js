@@ -127,7 +127,7 @@ $("#btnSearch").on("click", function () {
   let dataSearch = {
     billOfLading: $("input[name='billOfLading']").val(),
     orderNumber: $("input[name='orderNumber']").val(),
-    carrierCode: $("select[name='carrierCode']").val(),
+    carrierCode: $("select[name='carrierCode']").val().replace(":", ""),
     expiredDem: $("input[name='expiredDem']").val(),
   };
   let errorFlg = false;
