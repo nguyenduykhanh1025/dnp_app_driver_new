@@ -1,13 +1,14 @@
 package vn.com.irtech.eport.common.config.cache;
 
-import org.apache.shiro.cache.Cache;
-import org.apache.shiro.cache.CacheException;
-import org.springframework.data.redis.core.RedisTemplate;
-
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheException;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 public class RedisCache<K, V> implements Cache<K, V> {
     private final String cacheName;
@@ -18,6 +19,7 @@ public class RedisCache<K, V> implements Cache<K, V> {
         super();
         this.cacheName = cacheName;
         this.cacheExpireTime = cacheExpireTime;
+		redisTemplate.setKeySerializer(new StringRedisSerializer());
         this.redisTemplate = redisTemplate;
     }
 
