@@ -1,11 +1,18 @@
 package vn.com.irtech.eport.common.utils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.utils.spring.SpringUtils;
 
 /**
@@ -177,7 +184,7 @@ public class CacheUtils
      * @param cacheName
      * @return
      */
-    private static Cache<String, Object> getCache(String cacheName)
+	private static Cache<String, Object> getCache(String cacheName)
     {
     	if (cacheManager == null) {
 			return null;
@@ -190,4 +197,48 @@ public class CacheUtils
         return cache;
     }
 
+	public static List<Map<String, Object>> getAllCacheData() {
+		List<Map<String, Object>> keyDataList = new ArrayList<>();
+		Set<String> keys = null; // List keys from cache
+
+		// Get sys cache
+		Cache<String, Object> sysCache = getCache(SYS_CACHE);
+		keys = sysCache.keys();
+		for (Iterator<String> it = keys.iterator(); it.hasNext();) {
+			String key = it.next();
+			String[] keyArr = key.split(":");
+			key = keyArr[keyArr.length - 1];
+			Map<String, Object> map = new HashMap<>();
+			map.put("key", key);
+			map.put("value", get(key));
+			keyDataList.add(map);
+		}
+
+		// Get config cache
+		Cache<String, Object> configCache = getCache(Constants.SYS_CONFIG_CACHE);
+		keys = configCache.keys();
+		for (Iterator<String> it = keys.iterator(); it.hasNext();) {
+			String key = it.next();
+			String[] keyArr = key.split(":");
+			key = keyArr[keyArr.length - 1];
+			Map<String, Object> map = new HashMap<>();
+			map.put("key", key);
+			map.put("value", get(Constants.SYS_CONFIG_CACHE + Constants.SYS_CONFIG_KEY + key));
+			keyDataList.add(map);
+		}
+
+		// Get dictionary cache
+		Cache<String, Object> dictCache = getCache(Constants.SYS_DICT_CACHE);
+		keys = dictCache.keys();
+		for (Iterator<String> it = keys.iterator(); it.hasNext();) {
+			String key = it.next();
+			String[] keyArr = key.split(":");
+			key = keyArr[keyArr.length - 1];
+			Map<String, Object> map = new HashMap<>();
+			map.put("key", key);
+			map.put("value", get(Constants.SYS_DICT_CACHE + Constants.SYS_DICT_KEY + key));
+			keyDataList.add(map);
+		}
+		return keyDataList;
+	}
 }

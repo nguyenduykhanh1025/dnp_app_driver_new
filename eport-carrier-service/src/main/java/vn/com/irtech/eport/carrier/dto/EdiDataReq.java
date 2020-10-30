@@ -34,7 +34,7 @@ public class EdiDataReq implements Serializable {
 	private String detFreeDays;
 
 	@NotNull
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date expiryTs;
 
 	private String terOfMtReturn;
@@ -55,7 +55,7 @@ public class EdiDataReq implements Serializable {
 	private String pod;
 
 	@NotBlank
-	@AcceptedValues(values = {"N", "U", "D"}, message = "Must be any of {'N', 'U', 'D'}")
+	@AcceptedValues(values = { "N", "U", "D" }, message = "Must be any of {'N', 'U', 'D'}")
 	private String msgFunc;
 
 	public String getLineOper() {
