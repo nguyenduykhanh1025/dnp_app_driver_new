@@ -48,13 +48,10 @@ public class EdiDataReq implements Serializable {
 	@NotBlank
 	private String billOfLading;
 
-	@NotBlank
 	private String sztp;
 
-	@NotBlank
 	private String pol;
 
-	@NotBlank
 	private String pod;
 
 	@NotBlank
