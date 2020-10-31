@@ -45,7 +45,7 @@ public class SysCacheDataController extends BaseController
 	public AjaxResult removeAllCache() {
 		List<Map<String, String>> cacheList = CacheUtils.getAllCacheData(new CacheEntity());
 		for (Map<String, String> cacheMap : cacheList) {
-			CacheUtils.remove(cacheMap.get("keyMap"), cacheMap.get("key"));
+			CacheUtils.remove(cacheMap.get("keyName"), cacheMap.get("key"));
 		}
 		return success();
 	}
