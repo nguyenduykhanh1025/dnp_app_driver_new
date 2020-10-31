@@ -33,8 +33,12 @@ import vn.com.irtech.eport.framework.firebase.service.FirebaseService;
 import vn.com.irtech.eport.framework.mail.service.MailService;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
+import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
+import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysNotification;
 import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
 import vn.com.irtech.eport.system.domain.SysRobot;
@@ -79,6 +83,12 @@ public class EportTask {
 
 	@Autowired
 	private ISysNotificationReceiverService sysNotificationReceiverService;
+
+	@Autowired
+	private IShipmentDetailService shipmentDetailService;
+
+	@Autowired
+	private IProcessHistoryService processHistoryService;
 
 	@Autowired
 	private ISysUserTokenService sysUserTokenService;
@@ -135,11 +145,60 @@ public class EportTask {
 			now = DateUtils.addMinutes(now, expiredTime * (-1));
 			for (SysRobot robot : robots) {
 
+				// Response time exceed current time
+				if (robot.getResponseTime().getTime() < now.getTime()) {
+					robot.setStatus("2");
+					robotService.updateRobot(robot);
+
+					// Send notification to IT
+					try {
+						mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + robot.getUuId(),
+								configService.getKey("domain.admin.name") + "/system/robot/edit/" + robot.getId());
+					} catch (Exception e) {
+						logger.warn(e.getMessage());
+					}
+				}
+
 				List<ProcessOrder> processOrders = processOrderService.getProcessingProcessOrderByUuid(robot.getUuId());
 				if (processOrders != null && !processOrders.isEmpty()) {
 					for (ProcessOrder processOrder : processOrders) {
-						processOrder.setStatus(0);
+						processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_FINISHED);
+						processOrder.setResult(EportConstants.PROCESS_HISTORY_RESULT_FAILED);
 						processOrderService.updateProcessOrder(processOrder);
+
+						// Check process order is pickup or drop
+						if (processOrder.getServiceType() == EportConstants.SERVICE_PICKUP_FULL
+								|| processOrder.getServiceType() == EportConstants.SERVICE_PICKUP_EMPTY
+								|| processOrder.getServiceType() == EportConstants.SERVICE_DROP_FULL
+								|| processOrder.getServiceType() == EportConstants.SERVICE_DROP_EMPTY) {
+
+							// Get shipment detail list by process order
+							ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+							shipmentDetailParam.setProcessOrderId(processOrder.getId());
+							List<ShipmentDetail> shipmentDetails = shipmentDetailService
+									.selectShipmentDetailList(shipmentDetailParam);
+							if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+								// Get all id of shipment detail to update by ids
+								String shipmentDetailIds = "";
+								for (ShipmentDetail shipmentDetail : shipmentDetails) {
+									shipmentDetailIds += shipmentDetail.getId() + ",";
+								}
+								shipmentDetailParam = new ShipmentDetail();
+								shipmentDetailParam
+										.setProcessStatus(EportConstants.PROCESS_STATUS_SHIPMENT_DETAIL_ERROR);
+								shipmentDetailService.updateShipmentDetailByIds(
+										shipmentDetailIds.substring(0, shipmentDetailIds.length() - 1),
+										shipmentDetailParam);
+							}
+							ProcessHistory history = processHistoryService.selectProcessingHistory(processOrder.getId(),
+									robot.getUuId(), processOrder.getServiceType());
+							if (history != null) {
+								history.setResult(EportConstants.PROCESS_HISTORY_RESULT_FAILED); // RESULT SUCCESS
+								history.setStatus(EportConstants.PROCESS_HISTORY_STATUS_FINISHED);
+								history.setFinishTime(new Date());
+								processHistoryService.updateProcessHistory(history);
+							}
+						}
 
 						// Send notification to logistics
 						AjaxResult ajaxResult = null;
@@ -155,20 +214,6 @@ public class EportTask {
 						} catch (Exception e) {
 							logger.warn(e.getMessage());
 						}
-					}
-				}
-
-				// Response time exceed current time
-				if (robot.getResponseTime().getTime() < now.getTime()) {
-					robot.setStatus("2");
-					robotService.updateRobot(robot);
-
-					// Send notification to IT
-					try {
-						mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + robot.getUuId(),
-								configService.getKey("domain.admin.name") + "/system/robot/edit/" + robot.getId());
-					} catch (Exception e) {
-						logger.warn(e.getMessage());
 					}
 				}
 			}
