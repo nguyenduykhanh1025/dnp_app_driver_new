@@ -209,7 +209,8 @@ public class EportTask {
 						// Send notification to OM
 						try {
 							mqttService.sendNotification(NotificationCode.NOTIFICATION_OM,
-									"Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name")
+									"Lỗi lệnh số " + processOrder.getId() + " - Lô " + processOrder.getShipmentId(),
+									configService.getKey("domain.admin.name")
 											+ "/om/executeCatos/detail/" + processOrder.getId());
 						} catch (Exception e) {
 							logger.warn(e.getMessage());
