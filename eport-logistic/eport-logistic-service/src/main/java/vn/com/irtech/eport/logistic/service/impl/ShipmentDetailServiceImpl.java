@@ -726,12 +726,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 				if (StringUtils.isNotEmpty(shipmentDetail.getEmptyDepotLocation())) {
 					remark += "Ha vo " + shipmentDetail.getEmptyDepotLocation();
 				}
-				if (shipmentDetail.getDetFreeTime() != null) {
-					if (StringUtils.isNotEmpty(remark)) {
-						remark += ", ";
-					}
-					remark += "free " + shipmentDetail.getDetFreeTime() + " days";
-				}
 				shipmentDetail.setContainerRemark(remark);
 			}
 			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
