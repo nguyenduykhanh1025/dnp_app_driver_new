@@ -1,5 +1,8 @@
 package vn.com.irtech.eport.web.controller.system;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.domain.CacheEntity;
@@ -41,9 +43,10 @@ public class SysCacheDataController extends BaseController
 	@DeleteMapping("/remove-all")
 	@ResponseBody
 	public AjaxResult removeAllCache() {
-		CacheUtils.removeAll("sys-cache");
-		CacheUtils.removeAll(Constants.SYS_CONFIG_CACHE);
-		CacheUtils.removeAll(Constants.SYS_DICT_CACHE);
+		List<Map<String, String>> cacheList = CacheUtils.getAllCacheData(new CacheEntity());
+		for (Map<String, String> cacheMap : cacheList) {
+			CacheUtils.remove(cacheMap.get("keyName"), cacheMap.get("key"));
+		}
 		return success();
 	}
 

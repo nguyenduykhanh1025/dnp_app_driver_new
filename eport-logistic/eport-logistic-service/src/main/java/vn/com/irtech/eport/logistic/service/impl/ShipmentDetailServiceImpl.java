@@ -697,23 +697,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		} else {
 			processOrder.setPayType("Cash");
 		}
-
-		// Case drop empty need remark empty depot location and det free time
-		if (processOrder.getServiceType() == EportConstants.SERVICE_DROP_EMPTY
-				&& EportConstants.DROP_EMPTY_TO_DEPORT.equals(shipment.getSendContEmptyType())) {
-			// Them remark han lenh khi ha vo
-			String remark = "";
-			if (StringUtils.isNotEmpty(detail.getEmptyDepotLocation())) {
-				remark += "Ha vo " + detail.getEmptyDepotLocation();
-			}
-			if (detail.getDetFreeTime() != null) {
-				if (StringUtils.isNotEmpty(remark)) {
-					remark += ", ";
-				}
-				remark += "free " + detail.getDetFreeTime() + " days";
-			}
-			processOrder.setRemark(remark);
-		}
 		processOrderService.insertProcessOrder(processOrder);
 
 		String payer = taxCode;
@@ -735,10 +718,20 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			} else {
 				shipmentDetail.setPayType("Cash");
 			}
+			// Them remark han lenh khi ha vo
+			String remark = "";
+			// Case drop empty need remark empty depot location and det free time
+			if (processOrder.getServiceType() == EportConstants.SERVICE_DROP_EMPTY
+					&& EportConstants.DROP_EMPTY_TO_DEPORT.equals(shipment.getSendContEmptyType())) {
+				if (StringUtils.isNotEmpty(shipmentDetail.getEmptyDepotLocation())) {
+					remark += "Ha vo " + shipmentDetail.getEmptyDepotLocation();
+				}
+				shipmentDetail.setContainerRemark(remark);
+			}
 			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 
 			// Set remark has saved on process order for robot can mapping data easier
-			shipmentDetail.setRemark(processOrder.getRemark());
+			shipmentDetail.setRemark(remark);
 		}
 		return processOrder;
 	}
