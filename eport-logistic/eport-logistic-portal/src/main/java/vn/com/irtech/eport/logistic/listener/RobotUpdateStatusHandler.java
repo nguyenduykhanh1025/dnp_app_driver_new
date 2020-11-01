@@ -291,7 +291,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 						// Check if order is send empty set remark for container for empty depot location or det free time
 						if (EportConstants.SERVICE_DROP_EMPTY == reqProcessOrder.getServiceType()) {
 							for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
-								shipmentDetail2.setRemark(reqProcessOrder.getRemark());
+								shipmentDetail2.setRemark(shipmentDetail2.getContainerRemark());
 							}
 						}
 						

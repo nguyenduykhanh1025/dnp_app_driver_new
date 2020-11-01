@@ -79,8 +79,6 @@ public class GateSupportController extends BaseController {
 
 		String detectJson = new Gson().toJson(detection);
 		logger.debug(">>>> Receive detection info:" + detectJson);
-		// Save detection info to cache
-		CacheUtils.put("detectionInfo_" + detection.getGateId(), detection);
 		// Save to db
 		GateDetection dt = new GateDetection();
 		dt.setGateNo(detection.getGateId());

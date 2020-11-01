@@ -523,6 +523,11 @@ public class RobotResponseHandler implements IMqttMessageListener {
 				mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_FULL, robot.getUuId());
 				break;
 			case EportConstants.SERVICE_DROP_EMPTY:
+				// Set remark empty depot location and det free day remark
+				for (ShipmentDetail shDetail : shipmentDetails) {
+					shDetail.setRemark(shDetail.getContainerRemark());
+				}
+				req = new ServiceSendFullRobotReq(reqProcessOrder, shipmentDetails);
 				mqttService.publicMessageToDemandRobot(req, EServiceRobot.SEND_CONT_EMPTY, robot.getUuId());
 				break;
 			case EportConstants.SERVICE_PICKUP_EMPTY:
