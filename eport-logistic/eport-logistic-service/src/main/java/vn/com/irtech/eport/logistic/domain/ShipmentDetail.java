@@ -1,244 +1,347 @@
 package vn.com.irtech.eport.logistic.domain;
 
-import java.util.Date;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
+import java.util.Date;
+
 /**
  * Shipment Details Object shipment_detail
- * 
+ *
  * @author admin
  * @date 2020-05-07
  */
-public class ShipmentDetail extends BaseEntity
-{
+public class ShipmentDetail extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** ID */
+    /**
+     * ID
+     */
     private Long id;
 
-    /** Ma Lo */
+    /**
+     * Ma Lo
+     */
     @Excel(name = "Ma Lo")
     private Long shipmentId;
 
-    /** group id */
+    /**
+     * group id
+     */
     private Long logisticGroupId;
 
-    /** Ma Lenh */
+    /**
+     * Ma Lenh
+     */
     @Excel(name = "Ma Lenh")
     private Long processOrderId;
 
-    /** Ma DK */
+    /**
+     * Ma DK
+     */
     @Excel(name = "Ma DK")
     private String registerNo;
 
-    /** Container Number */
+    /**
+     * Container Number
+     */
     @Excel(name = "Container Number")
     private String containerNo;
 
-    /** Container Status (S,D) */
+    /**
+     * Container Status (S,D)
+     */
     @Excel(name = "Container Status (S,D)")
     private String containerStatus;
 
-    /** Size Type */
+    /**
+     * Size Type
+     */
     @Excel(name = "Size Type")
     private String sztp;
-    
-    /** Size Type define */
+
+    /**
+     * Size Type define
+     */
     @Excel(name = "Size Type Define")
     private String sztpDefine;
-    
-    /** Temperature */
+
+    /**
+     * Temperature
+     */
     @Excel(name = "Temperature")
     private String temperature;
-    
-    /** FE */
+
+    /**
+     * FE
+     */
     @Excel(name = "FE")
     private String fe;
 
-    /** Booking Number */
+    /**
+     * Booking Number
+     */
     @Excel(name = "Booking Number")
     private String bookingNo;
 
-    /** BL number */
+    /**
+     * BL number
+     */
     @Excel(name = "BL number")
     private String blNo;
 
-    /** Seal Number */
+    /**
+     * Seal Number
+     */
     @Excel(name = "Seal Number")
     private String sealNo;
 
-    /** Shipper/consignee */
+    /**
+     * Shipper/consignee
+     */
     @Excel(name = "Shipper/consignee")
     private String consignee;
 
-    /** Han Lenh */
+    /**
+     * Han Lenh
+     */
     @Excel(name = "Han Lenh", width = 30, dateFormat = "yyyy-MM-dd")
     private Date expiredDem;
 
-    /** Weight */
+    /**
+     * Weight
+     */
     @Excel(name = "Depot Free Time")
     private Integer detFreeTime;
-    
-    /** Weight */
+
+    /**
+     * Weight
+     */
     @Excel(name = "Weight")
     private Long wgt;
-    
-    /** Vessel name */
+
+    /**
+     * Vessel name
+     */
     @Excel(name = "Vessel name")
     private String vslName;
-    
-    /** Vessel code */
+
+    /**
+     * Vessel code
+     */
     @Excel(name = "Vessel code")
     private String vslNm;
 
-    /** Voyage */
+    /**
+     * Voyage
+     */
     @Excel(name = "Voyage")
     private String voyNo;
-    
-    /** Voyage carrier */
+
+    /**
+     * Voyage carrier
+     */
     @Excel(name = "Voyage carrier")
     private String voyCarrier;
 
-    /** Operator Code */
+    /**
+     * Operator Code
+     */
     @Excel(name = "Operator Code")
     private String opeCode;
-    
-    /** Carrier Name */
+
+    /**
+     * Carrier Name
+     */
     @Excel(name = "Carrier name")
     private String carrierName;
-    
-    /** Cang Chuyen Tai */
+
+    /**
+     * Cang Chuyen Tai
+     */
     @Excel(name = "Cang Chuyen Tai")
     private String loadingPort;
 
-    /** Cang Dich */
+    /**
+     * Cang Dich
+     */
     @Excel(name = "Cang Dich")
     private String dischargePort;
 
-    /** Phuong Tien */
+    /**
+     * Phuong Tien
+     */
     @Excel(name = "Phuong Tien")
     private String transportType;
 
-    /** Empty depot */
+    /**
+     * Empty depot
+     */
     @Excel(name = "Nơi Ha Vo")
     private String emptyDepot;
 
-    /** Han Lenh */
+    /**
+     * Han Lenh
+     */
     @Excel(name = "Han Tra Vo", width = 30, dateFormat = "yyyy-MM-dd")
     private Date emptyExpiredDem;
 
-    /** Empty depot */
+    /**
+     * Empty depot
+     */
     @Excel(name = "Bai Ha Vo")
     private String emptyDepotLocation;
-    
-    /** Cargo Type */
+
+    /**
+     * Cargo Type
+     */
     @Excel(name = "Loại Hang")
     private String cargoType;
 
-    /** VGM Check */
+    /**
+     * VGM Check
+     */
     @Excel(name = "VGM Check")
     private Boolean vgmChk;
 
-    /** VGM */
+    /**
+     * VGM
+     */
     @Excel(name = "VGM")
     private String vgm;
 
-    /** VGM Person Info */
+    /**
+     * VGM Person Info
+     */
     @Excel(name = "VGM Person Info")
     private String vgmPersonInfo;
 
-    /** Boc Chi Dinh (Y,N) */
+    /**
+     * Boc Chi Dinh (Y,N)
+     */
     @Excel(name = "Boc Chi Dinh (Y,N)")
     private String preorderPickup;
 
-    /** Trang Thai Thanh Toan Phi Dich Chuyen */
+    /**
+     * Trang Thai Thanh Toan Phi Dich Chuyen
+     */
     @Excel(name = "Trang Thai Thanh Toan Phi Dich Chuyen (Y, N)")
     private String prePickupPaymentStatus;
 
-    /** Custom Status (H,R) */
+    /**
+     * Custom Status (H,R)
+     */
     @Excel(name = "Custom Status (H,R)")
     private String customStatus;
 
-    /** Payment Status (Y,N,W,E) */
+    /**
+     * Payment Status (Y,N,W,E)
+     */
     @Excel(name = "Payment Status (Y,N,W,E)")
     private String paymentStatus;
 
-    /** Process Status(Y,N,E) */
+    /**
+     * Process Status(Y,N,E)
+     */
     @Excel(name = "Process Status(Y,N,E)")
     private String processStatus;
 
-    /** DO Status(Y,N) */
+    /**
+     * DO Status(Y,N)
+     */
     @Excel(name = "DO Status(Y,N")
     private String doStatus;
 
-    /** Ngay nhan DO goc */
+    /**
+     * Ngay nhan DO goc
+     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date doReceivedTime;
 
-    /** Xac Thuc (Y,N) */
+    /**
+     * Xac Thuc (Y,N)
+     */
     @Excel(name = "Xac Thuc (Y,N)")
     private String userVerifyStatus;
 
-    /** Finish Status(Y,N) */
+    /**
+     * Finish Status(Y,N)
+     */
     @Excel(name = "Finish Status(Y,N")
     private String finishStatus;
 
-    /** Status */
+    /**
+     * Status
+     */
     @Excel(name = "Status")
     private Integer status;
 
-    /** Order No */
+    /**
+     * Order No
+     */
     @Excel(name = "Order No")
     private String orderNo;
-    
-    /** Tax Code */
+
+    /**
+     * Tax Code
+     */
     @Excel(name = "Consignee Tax Code")
     private String taxCode;
-    
-    /** Consignee By Tax Code */
+
+    /**
+     * Consignee By Tax Code
+     */
     @Excel(name = "Consignee By Tax Code")
     private String consigneeByTaxCode;
 
-    /** Consignee By Tax Code */
+    /**
+     * Consignee By Tax Code
+     */
     @Excel(name = "Customs Numbers")
     private String customsNo;
-    
-    /** Create time */
+
+    /**
+     * Create time
+     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date customScanTime;
-    
-    /** Container supply status */
+
+    /**
+     * Container supply status
+     */
     @Excel(name = "Cont Supply Status")
     private String contSupplyStatus;
-    
-    /** Planning date */
+
+    /**
+     * Planning date
+     */
     @Excel(name = "Planning Date", width = 30, dateFormat = "yyyy-MM-dd")
     private Date planningDate;
-    
-    /** Quality requirement */
+
+    /**
+     * Quality requirement
+     */
     @Excel(name = "Quality Requirement")
     private String qualityRequirement;
-    
+
     @Excel(name = "Container Supplier Name")
     private String contSupplierName;
-    
-    /** Container supply remark */
+
+    /**
+     * Container supply remark
+     */
     @Excel(name = "Cont Supply Remark")
     private String contSupplyRemark;
 
     @Excel(name = "Payment Type(Cash/Credit)")
     private String payType;
-    
+
     @Excel(name = "Payer Taxcode")
     private String payer;
-    
+
     @Excel(name = "Payer Name")
     private String payerName;
 
@@ -264,33 +367,51 @@ public class ShipmentDetail extends BaseEntity
     private Integer assignNumber;
 
     private Integer serviceType;
-    
-    private String year;
-    
-    private String vslAndVoy;
-    
-    private String invoiceNo;
-    
-    private Long vatAfterFee; 
 
-    /** info for robot to know the index of record in catos */
+    private String year;
+
+    private String vslAndVoy;
+
+    private String invoiceNo;
+
+    private Long vatAfterFee;
+
+    /**
+     * info for robot to know the index of record in catos
+     */
     private Integer index;
 
-	/** Ngay tau den theo tau va chuyen */
-	private Date eta;
+    /**
+     * Ngay tau den theo tau va chuyen
+     */
+    private Date eta;
 
-	/** Ngay tau di (plan)*/
-	private Date etd;
-	
-	/** Ten mat hang: Khai bao khi ha bai cho xuat*/
-	private String commodity;
-	
-	/** Vị trí*/
-	private String location;
-	
-	/** Tinh trang container */
-	private String containerRemark;
-	
+    /**
+     * Ngay tau di (plan)
+     */
+    private Date etd;
+
+    /**
+     * Ten mat hang: Khai bao khi ha bai cho xuat
+     */
+    private String commodity;
+
+    /**
+     * Vị trí
+     */
+    private String location;
+
+    /**
+     * Tinh trang container
+     */
+    private String containerRemark;
+
+    /**
+     * Cont quá tải phía bên phải
+     * Dữ liệu cont đặc biệt giúp admin xác nhận request
+     */
+    private String rightOversize;
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -330,6 +451,7 @@ public class ShipmentDetail extends BaseEntity
     public String getRegisterNo() {
         return registerNo;
     }
+
     public void setContainerNo(String containerNo) {
         this.containerNo = containerNo;
     }
@@ -355,22 +477,22 @@ public class ShipmentDetail extends BaseEntity
     }
 
     public String getSztpDefine() {
-		return sztpDefine;
-	}
+        return sztpDefine;
+    }
 
-	public void setSztpDefine(String sztpDefine) {
-		this.sztpDefine = sztpDefine;
-	}
+    public void setSztpDefine(String sztpDefine) {
+        this.sztpDefine = sztpDefine;
+    }
 
-	public String getTemperature() {
-		return temperature;
-	}
+    public String getTemperature() {
+        return temperature;
+    }
 
-	public void setTemperature(String temperature) {
-		this.temperature = temperature;
-	}
+    public void setTemperature(String temperature) {
+        this.temperature = temperature;
+    }
 
-	public void setFe(String fe) {
+    public void setFe(String fe) {
         this.fe = fe;
     }
 
@@ -419,30 +541,30 @@ public class ShipmentDetail extends BaseEntity
     }
 
     public Integer getDetFreeTime() {
-		return detFreeTime;
-	}
+        return detFreeTime;
+    }
 
-	public void setDetFreeTime(Integer detFreeTime) {
-		this.detFreeTime = detFreeTime;
-	}
+    public void setDetFreeTime(Integer detFreeTime) {
+        this.detFreeTime = detFreeTime;
+    }
 
-	public void setWgt(Long wgt) {
+    public void setWgt(Long wgt) {
         this.wgt = wgt;
     }
 
     public Long getWgt() {
         return wgt;
     }
-    
+
     public String getVslName() {
-		return vslName;
-	}
+        return vslName;
+    }
 
-	public void setVslName(String vslName) {
-		this.vslName = vslName;
-	}
+    public void setVslName(String vslName) {
+        this.vslName = vslName;
+    }
 
-	public void setVslNm(String vslNm) {
+    public void setVslNm(String vslNm) {
         this.vslNm = vslNm;
     }
 
@@ -459,30 +581,30 @@ public class ShipmentDetail extends BaseEntity
     }
 
     public String getVoyCarrier() {
-		return voyCarrier;
-	}
+        return voyCarrier;
+    }
 
-	public void setVoyCarrier(String voyCarrier) {
-		this.voyCarrier = voyCarrier;
-	}
+    public void setVoyCarrier(String voyCarrier) {
+        this.voyCarrier = voyCarrier;
+    }
 
-	public void setOpeCode(String opeCode) {
+    public void setOpeCode(String opeCode) {
         this.opeCode = opeCode;
     }
 
     public String getOpeCode() {
         return opeCode;
     }
-    
+
     public String getCarrierName() {
-		return carrierName;
-	}
+        return carrierName;
+    }
 
-	public void setCarrierName(String carrierName) {
-		this.carrierName = carrierName;
-	}
+    public void setCarrierName(String carrierName) {
+        this.carrierName = carrierName;
+    }
 
-	public void setLoadingPort(String loadingPort) {
+    public void setLoadingPort(String loadingPort) {
         this.loadingPort = loadingPort;
     }
 
@@ -514,21 +636,21 @@ public class ShipmentDetail extends BaseEntity
         return emptyDepot;
     }
 
-	public Date getEmptyExpiredDem() {
-		return emptyExpiredDem;
-	}
+    public Date getEmptyExpiredDem() {
+        return emptyExpiredDem;
+    }
 
-	public void setEmptyExpiredDem(Date emptyExpiredDem) {
-		this.emptyExpiredDem = emptyExpiredDem;
-	}
+    public void setEmptyExpiredDem(Date emptyExpiredDem) {
+        this.emptyExpiredDem = emptyExpiredDem;
+    }
 
     public String getEmptyDepotLocation() {
-		return emptyDepotLocation;
-	}
+        return emptyDepotLocation;
+    }
 
-	public void setEmptyDepotLocation(String emptyDepotLocation) {
-		this.emptyDepotLocation = emptyDepotLocation;
-	}
+    public void setEmptyDepotLocation(String emptyDepotLocation) {
+        this.emptyDepotLocation = emptyDepotLocation;
+    }
 
     public void setCargoType(String cargoType) {
         this.cargoType = cargoType;
@@ -605,13 +727,13 @@ public class ShipmentDetail extends BaseEntity
     public void setDoStatus(String doStatus) {
         this.doStatus = doStatus;
     }
-    public String getDoStatus() 
-    {
+
+    public String getDoStatus() {
         return doStatus;
     }
 
     public void setDoReceivedTime(Date doReceivedTime) {
-        this. doReceivedTime = doReceivedTime;
+        this.doReceivedTime = doReceivedTime;
     }
 
     public Date getDoReceivedTime() {
@@ -649,16 +771,16 @@ public class ShipmentDetail extends BaseEntity
     public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
     }
-    
+
     public String getBlock() {
-		return block;
-	}
+        return block;
+    }
 
-	public void setBlock(String block) {
-		this.block = block;
-	}
+    public void setBlock(String block) {
+        this.block = block;
+    }
 
-	public void setBay(String bay) {
+    public void setBay(String bay) {
         this.bay = bay;
     }
 
@@ -681,6 +803,7 @@ public class ShipmentDetail extends BaseEntity
     public int getTier() {
         return tier;
     }
+
     public Integer getDriverAmount() {
         return driverAmount;
     }
@@ -691,53 +814,53 @@ public class ShipmentDetail extends BaseEntity
 
     public void setPayType(String payType) {
         this.payType = payType;
-    } 
+    }
 
     public String getPayType() {
         return payType;
     }
 
     public String getPayer() {
-		return payer;
-	}
+        return payer;
+    }
 
-	public void setPayer(String payer) {
-		this.payer = payer;
-	}
+    public void setPayer(String payer) {
+        this.payer = payer;
+    }
 
-	public String getPayerName() {
-		return payerName;
-	}
+    public String getPayerName() {
+        return payerName;
+    }
 
-	public void setPayerName(String payerName) {
-		this.payerName = payerName;
-	}
+    public void setPayerName(String payerName) {
+        this.payerName = payerName;
+    }
 
-	public String getDeliveryAddress() {
-		return deliveryAddress;
-	}
+    public String getDeliveryAddress() {
+        return deliveryAddress;
+    }
 
-	public void setDeliveryAddress(String deliveryAddress) {
-		this.deliveryAddress = deliveryAddress;
-	}
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
 
-	public String getDeliveryMobile() {
-		return deliveryMobile;
-	}
+    public String getDeliveryMobile() {
+        return deliveryMobile;
+    }
 
-	public void setDeliveryMobile(String deliveryMobile) {
-		this.deliveryMobile = deliveryMobile;
-	}
+    public void setDeliveryMobile(String deliveryMobile) {
+        this.deliveryMobile = deliveryMobile;
+    }
 
-	public String getDeliveryRemark() {
-		return deliveryRemark;
-	}
+    public String getDeliveryRemark() {
+        return deliveryRemark;
+    }
 
-	public void setDeliveryRemark(String deliveryRemark) {
-		this.deliveryRemark = deliveryRemark;
-	}
+    public void setDeliveryRemark(String deliveryRemark) {
+        this.deliveryRemark = deliveryRemark;
+    }
 
-	public void setAssignNumber(Integer assignNumber) {
+    public void setAssignNumber(Integer assignNumber) {
         this.assignNumber = assignNumber;
     }
 
@@ -752,24 +875,24 @@ public class ShipmentDetail extends BaseEntity
     public Integer getServiceType() {
         return serviceType;
     }
-    
+
 
     public String getYear() {
-		return year;
-	}
-
-	public void setYear(String year) {
-		this.year = year;
-	}
-
-	public String getVslAndVoy() {
-		return vslAndVoy;
-	}
-
-	public void setVslAndVoy(String vslAndVoy) {
-		this.vslAndVoy = vslAndVoy;
+        return year;
     }
-    
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getVslAndVoy() {
+        return vslAndVoy;
+    }
+
+    public void setVslAndVoy(String vslAndVoy) {
+        this.vslAndVoy = vslAndVoy;
+    }
+
     public Integer getIndex() {
         return this.index;
     }
@@ -778,210 +901,219 @@ public class ShipmentDetail extends BaseEntity
         this.index = index;
     }
 
-	public String getInvoiceNo() {
-		return invoiceNo;
-	}
+    public String getInvoiceNo() {
+        return invoiceNo;
+    }
 
-	public void setInvoiceNo(String invoiceNo) {
-		this.invoiceNo = invoiceNo;
-	}
+    public void setInvoiceNo(String invoiceNo) {
+        this.invoiceNo = invoiceNo;
+    }
 
-	public Long getVatAfterFee() {
-		return vatAfterFee;
-	}
+    public Long getVatAfterFee() {
+        return vatAfterFee;
+    }
 
-	public void setVatAfterFee(Long vatAfterFee) {
-		this.vatAfterFee = vatAfterFee;
-	}
+    public void setVatAfterFee(Long vatAfterFee) {
+        this.vatAfterFee = vatAfterFee;
+    }
 
-	public String getConsigneeByTaxCode() {
-		return consigneeByTaxCode;
-	}
+    public String getConsigneeByTaxCode() {
+        return consigneeByTaxCode;
+    }
 
-	public void setConsigneeByTaxCode(String consigneeByTaxCode) {
-		this.consigneeByTaxCode = consigneeByTaxCode;
-	}
-	
-	public String getTaxCode() {
-		return taxCode;
-	}
+    public void setConsigneeByTaxCode(String consigneeByTaxCode) {
+        this.consigneeByTaxCode = consigneeByTaxCode;
+    }
 
-	public void setTaxCode(String taxCode) {
-		this.taxCode = taxCode;
-	}
+    public String getTaxCode() {
+        return taxCode;
+    }
 
-	public String getCustomsNo() {
-		return customsNo;
-	}
+    public void setTaxCode(String taxCode) {
+        this.taxCode = taxCode;
+    }
 
-	public void setCustomsNo(String customsNo) {
-		this.customsNo = customsNo;
-	}
-	
-	public Date getCustomScanTime() {
-		return customScanTime;
-	}
+    public String getCustomsNo() {
+        return customsNo;
+    }
 
-	public void setCustomScanTime(Date customScanTime) {
-		this.customScanTime = customScanTime;
-	}
+    public void setCustomsNo(String customsNo) {
+        this.customsNo = customsNo;
+    }
 
-	public String getContSupplyStatus() {
-		return contSupplyStatus;
-	}
+    public Date getCustomScanTime() {
+        return customScanTime;
+    }
 
-	public void setContSupplyStatus(String contSupplyStatus) {
-		this.contSupplyStatus = contSupplyStatus;
-	}
+    public void setCustomScanTime(Date customScanTime) {
+        this.customScanTime = customScanTime;
+    }
 
-	public Date getPlanningDate() {
-		return planningDate;
-	}
+    public String getContSupplyStatus() {
+        return contSupplyStatus;
+    }
 
-	public void setPlanningDate(Date planningDate) {
-		this.planningDate = planningDate;
-	}
+    public void setContSupplyStatus(String contSupplyStatus) {
+        this.contSupplyStatus = contSupplyStatus;
+    }
 
-	public String getQualityRequirement() {
-		return qualityRequirement;
-	}
+    public Date getPlanningDate() {
+        return planningDate;
+    }
 
-	public void setQualityRequirement(String qualityRequirement) {
-		this.qualityRequirement = qualityRequirement;
-	}
+    public void setPlanningDate(Date planningDate) {
+        this.planningDate = planningDate;
+    }
 
-	public String getContSupplierName() {
-		return contSupplierName;
-	}
+    public String getQualityRequirement() {
+        return qualityRequirement;
+    }
 
-	public void setContSupplierName(String contSupplierName) {
-		this.contSupplierName = contSupplierName;
-	}
+    public void setQualityRequirement(String qualityRequirement) {
+        this.qualityRequirement = qualityRequirement;
+    }
 
-	public String getContSupplyRemark() {
-		return contSupplyRemark;
-	}
+    public String getContSupplierName() {
+        return contSupplierName;
+    }
 
-	public void setContSupplyRemark(String contSupplyRemark) {
-		this.contSupplyRemark = contSupplyRemark;
-	}
+    public void setContSupplierName(String contSupplierName) {
+        this.contSupplierName = contSupplierName;
+    }
 
-	public Date getEta() {
-		return eta;
-	}
+    public String getContSupplyRemark() {
+        return contSupplyRemark;
+    }
 
-	public void setEta(Date eta) {
-		this.eta = eta;
-	}
+    public void setContSupplyRemark(String contSupplyRemark) {
+        this.contSupplyRemark = contSupplyRemark;
+    }
 
-	public Date getEtd() {
-		return etd;
-	}
+    public Date getEta() {
+        return eta;
+    }
 
-	public void setEtd(Date etd) {
-		this.etd = etd;
-	}
+    public void setEta(Date eta) {
+        this.eta = eta;
+    }
 
-	public String getCommodity() {
-		return commodity;
-	}
+    public Date getEtd() {
+        return etd;
+    }
 
-	public void setCommodity(String commodity) {
-		this.commodity = commodity;
-	}
+    public void setEtd(Date etd) {
+        this.etd = etd;
+    }
 
-	public String getLocation() {
-		return location;
-	}
+    public String getCommodity() {
+        return commodity;
+    }
 
-	public void setLocation(String location) {
-		this.location = location;
-	}
-	
-	public String getContainerRemark() {
-		return containerRemark;
-	}
+    public void setCommodity(String commodity) {
+        this.commodity = commodity;
+    }
 
-	public void setContainerRemark(String containerRemark) {
-		this.containerRemark = containerRemark;
-	}
+    public String getLocation() {
+        return location;
+    }
 
-	@Override
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getContainerRemark() {
+        return containerRemark;
+    }
+
+    public void setContainerRemark(String containerRemark) {
+        this.containerRemark = containerRemark;
+    }
+
+    public String getRightOversize() {
+        return rightOversize;
+    }
+
+    public void setRightOversize(String rightOversize) {
+        this.rightOversize = rightOversize;
+    }
+
+    @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("shipmentId", getShipmentId())
-            .append("logisticGroupId", getLogisticGroupId())
-            .append("processOrderId", getProcessOrderId())
-            .append("registerNo", getRegisterNo())
-            .append("containerNo", getContainerNo())
-            .append("containerStatus", getContainerStatus())
-            .append("sztp", getSztp())
-            .append("sztpDefine", getSztpDefine())
-            .append("temperature", getTemperature())
-            .append("fe", getFe())
-            .append("bookingNo", getBookingNo())
-            .append("blNo", getBlNo())
-            .append("sealNo", getSealNo())
-            .append("consignee", getConsignee())
-            .append("expiredDem", getExpiredDem())
-            .append("detFreeTime", getDetFreeTime())
-            .append("wgt", getWgt())
-            .append("vslName", getVslName())
-            .append("vslNm", getVslNm())
-            .append("voyNo", getVoyNo())
-            .append("voyCarrier", getVoyCarrier())
-            .append("opeCode", getOpeCode())
-            .append("carrierName", getCarrierName())
-            .append("loadingPort", getLoadingPort())
-            .append("dischargePort", getDischargePort())
-            .append("transportType", getTransportType())
-            .append("emptyDepot", getEmptyDepot())
-            .append("cargoType", getCargoType())
-            .append("commodity", getCommodity())
-            .append("vgmChk", getVgmChk())
-            .append("vgm", getVgm())
-            .append("vgmPersonInfo", getVgmPersonInfo())
-            .append("preorderPickup", getPreorderPickup())
-            .append("prePickupPaymentStatus", getPrePickupPaymentStatus())
-            .append("customStatus", getCustomStatus())
-            .append("paymentStatus", getPaymentStatus())
-            .append("processStatus", getProcessStatus())
-            .append("doStatus", getDoStatus())
-            .append("doReceivedTime", getDoReceivedTime())
-            .append("userVerifyStatus", getUserVerifyStatus())
-            .append("finishStatus", getFinishStatus())
-            .append("status", getStatus())
-            .append("orderNo", getOrderNo())
-            .append("remark", getRemark())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("block", getBlock())
-            .append("bay", getBay())
-            .append("roww", getRow())
-            .append("tier", getTier())
-            .append("driverAmount", getDriverAmount())
-            .append("payType", getPayType())
-            .append("assignNumber", getAssignNumber())
-            .append("serviceType", getServiceType())
-            .append("year", getYear())
-            .append("vslAndVoy", getVslAndVoy())
-            .append("invoiceNo", getInvoiceNo())
-            .append("vatAfterFee", getVatAfterFee())
-            .append("taxCode", getTaxCode())
-            .append("consigneeByTaxCode", getConsigneeByTaxCode())
-            .append("customsNo", getCustomsNo())
-            .append("contSupplyStatus", getContSupplyStatus())
-            .append("planningDate", getPlanningDate())
-            .append("qualityRequirement", getQualityRequirement())
-            .append("contSupplyRemark", getContSupplyRemark())
-            .append("customScanTime", getCustomScanTime())
-            .append("eta", getEta())
-            .append("etd", getEtd())
-            .append("location", getLocation())
-            .append("containerRemark", getContainerRemark())
-            .toString();
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+                .append("id", getId())
+                .append("shipmentId", getShipmentId())
+                .append("logisticGroupId", getLogisticGroupId())
+                .append("processOrderId", getProcessOrderId())
+                .append("registerNo", getRegisterNo())
+                .append("containerNo", getContainerNo())
+                .append("containerStatus", getContainerStatus())
+                .append("sztp", getSztp())
+                .append("sztpDefine", getSztpDefine())
+                .append("temperature", getTemperature())
+                .append("fe", getFe())
+                .append("bookingNo", getBookingNo())
+                .append("blNo", getBlNo())
+                .append("sealNo", getSealNo())
+                .append("consignee", getConsignee())
+                .append("expiredDem", getExpiredDem())
+                .append("detFreeTime", getDetFreeTime())
+                .append("wgt", getWgt())
+                .append("vslName", getVslName())
+                .append("vslNm", getVslNm())
+                .append("voyNo", getVoyNo())
+                .append("voyCarrier", getVoyCarrier())
+                .append("opeCode", getOpeCode())
+                .append("carrierName", getCarrierName())
+                .append("loadingPort", getLoadingPort())
+                .append("dischargePort", getDischargePort())
+                .append("transportType", getTransportType())
+                .append("emptyDepot", getEmptyDepot())
+                .append("cargoType", getCargoType())
+                .append("commodity", getCommodity())
+                .append("vgmChk", getVgmChk())
+                .append("vgm", getVgm())
+                .append("vgmPersonInfo", getVgmPersonInfo())
+                .append("preorderPickup", getPreorderPickup())
+                .append("prePickupPaymentStatus", getPrePickupPaymentStatus())
+                .append("customStatus", getCustomStatus())
+                .append("paymentStatus", getPaymentStatus())
+                .append("processStatus", getProcessStatus())
+                .append("doStatus", getDoStatus())
+                .append("doReceivedTime", getDoReceivedTime())
+                .append("userVerifyStatus", getUserVerifyStatus())
+                .append("finishStatus", getFinishStatus())
+                .append("status", getStatus())
+                .append("orderNo", getOrderNo())
+                .append("remark", getRemark())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("block", getBlock())
+                .append("bay", getBay())
+                .append("roww", getRow())
+                .append("tier", getTier())
+                .append("driverAmount", getDriverAmount())
+                .append("payType", getPayType())
+                .append("assignNumber", getAssignNumber())
+                .append("serviceType", getServiceType())
+                .append("year", getYear())
+                .append("vslAndVoy", getVslAndVoy())
+                .append("invoiceNo", getInvoiceNo())
+                .append("vatAfterFee", getVatAfterFee())
+                .append("taxCode", getTaxCode())
+                .append("consigneeByTaxCode", getConsigneeByTaxCode())
+                .append("customsNo", getCustomsNo())
+                .append("contSupplyStatus", getContSupplyStatus())
+                .append("planningDate", getPlanningDate())
+                .append("qualityRequirement", getQualityRequirement())
+                .append("contSupplyRemark", getContSupplyRemark())
+                .append("customScanTime", getCustomScanTime())
+                .append("eta", getEta())
+                .append("etd", getEtd())
+                .append("location", getLocation())
+                .append("containerRemark", getContainerRemark())
+                .append("rightOverSize", getRightOversize())
+                .toString();
     }
 }
