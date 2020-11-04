@@ -64,6 +64,9 @@ public class DriverAccount extends BaseEntity {
 	@Excel(name = "Hieu Luc Den", width = 30, dateFormat = "dd-MM-yyyy")
 	private Date validDate;
 
+	/** Pickup assign id */
+	private Long pickupAssignId;
+
 	private LogisticGroup logisticGroup;
 
 	public LogisticGroup getLogisticGroup() {
@@ -157,6 +160,14 @@ public class DriverAccount extends BaseEntity {
 		return validDate;
 	}
 
+	public Long getPickupAssignId() {
+		return pickupAssignId;
+	}
+
+	public void setPickupAssignId(Long pickupAssignId) {
+		this.pickupAssignId = pickupAssignId;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -165,7 +176,8 @@ public class DriverAccount extends BaseEntity {
 				.append("password", getPassword()).append("salt", getSalt()).append("status", getStatus())
 				.append("delFlag", getDelFlag()).append("validDate", getValidDate()).append("remark", getRemark())
 				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
-				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).toString();
+				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime())
+				.append("pickupAssignId", getPickupAssignId()).append("params", getParams()).toString();
 	}
 
 	@Override
