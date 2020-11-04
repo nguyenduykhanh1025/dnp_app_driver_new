@@ -466,10 +466,25 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
           released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
         }
         break;
+    } 
+    // nhat
+    let cont = '<i id="contStatus" class="fa fa-user-circle-o easyui-tooltip" title="Chờ xác nhận" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+    switch (sourceData[row].contSpecialStatus) {
+      case 'S':
+    	  cont = '<i id="contStatus" class="fa fa-user-circle-o easyui-tooltip" title="Chờ xác nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+      case 'R': 
+    	  cont = '<i id="contStatus" class="fa fa-user-circle-o easyui-tooltip" title="Đã xác nhận" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+        break;  
     }
+    
+    
     // Return the content
     let content = '<div>';
-    // Domestic cont: VN --> not show
+    // Domestic cont: VN --> not show 
+    if (sourceData[row].contSpecialStatus) {
+        content += cont;
+    } 
     if (sourceData[row].loadingPort.substring(0, 2) != 'VN') {
       content += customs;
     }
@@ -479,6 +494,8 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     }
     content += released + '</div>';
     $(td).html(content);
+    
+    
   }
   return td;
 }
@@ -1065,6 +1082,11 @@ function checkAll() {
 }
 function check(id) {
   if (sourceData[id].id != null) {
+	
+	  
+	  console.log("jhjhjh" + sourceData[id].contSpecialStatus);
+	  
+	  
     if (checkList[id] == 0) {
       $('#check' + id).prop('checked', true);
       checkList[id] = 1;
@@ -1083,6 +1105,11 @@ function updateLayout() {
     let cellStatus = hot.getDataAtCell(i, 1);
     if (cellStatus != null) {
       if (checkList[i] == 1) {
+    	if("S" == sourceData[i].contSpecialStatus ){
+    		  status = 6;
+    		  //break; 
+    	} 
+    		  
         if (cellStatus == 2 && 'Y' == sourceData[i].userVerifyStatus) {
           verify = true;
         }
@@ -1135,6 +1162,10 @@ function updateLayout() {
     case 5:
       setLayoutFinishStatus();
       break;
+    case 6: 
+    	setLayoutContStatus();
+    	//$("#acceptBtn").prop("disabled", true);
+    	break;
     default:
       break;
   }
@@ -1198,6 +1229,10 @@ function reloadShipmentDetail() {
   }
   $("#deleteBtn").prop("disabled", true);
   $("#customBtn").prop("disabled", true);
+  
+  
+  //$("#acceptBtn").prop("disabled", true);
+  
   $("#verifyBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", true);
@@ -1205,6 +1240,22 @@ function reloadShipmentDetail() {
   setLayoutRegisterStatus();
   loadShipmentDetail(shipmentSelected.id);
 }
+
+
+// nhatlv 
+/*function getCheckDataList(isValidate, isNeedPickedCont) {
+	let myTableData = hot.getSourceData();
+	 let errorFlg = false;  
+	 for (let i = 0; i < checkList.length; i++) { 
+		 	if(Object.keys(myTableData[i]).length > 0){
+		 		if(checkList[i] == 1 || isNeedPickedCont && myTableData[i].sztp == "45P0"){
+		 			alert("Vao roi");
+		 		}  
+		 	}
+		  }
+}*/
+
+ 
 
 // GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
 function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
@@ -1533,6 +1584,13 @@ function checkCustomStatus() {
   }
 }
 
+// nhat add
+function CheckShipmentDetail() {
+	//alert("test");
+	//getCheckDataList(true, false); 
+	} 
+// 
+
 function verify() {
   $.modal.loading("Đang xử lý...");
   getDataSelectedFromTable(true, true);
@@ -1609,16 +1667,46 @@ function exportBill() {
 // Handling UI STATUS
 function setLayoutRegisterStatus() {
   $("#registerStatus").removeClass("label-primary disable").addClass("active");
+  
+  /*$("#acceptStatus").removeClass("label-primary active").addClass("disable");*/
+  
+  
   $("#customStatus").removeClass("label-primary active").addClass("disable");
   $("#verifyStatus").removeClass("label-primary active").addClass("disable");
   $("#paymentStatus").removeClass("label-primary active").addClass("disable");
   $("#finishStatus").removeClass("label-primary active").addClass("disable");
   $("#customBtn").prop("disabled", true);
+  
+  //$("#acceptBtn").prop("disabled", true);
+  
+  
   $("#verifyBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", true);
   $("#exportReceiptBtn").prop("disabled", true);
 }
+
+
+//nhat add
+/*function setLayoutContStatus() {
+	  $("#registerStatus").removeClass("active disable").addClass("label-primary");
+	  $("#customStatus").removeClass("active disable").addClass("label-primary");
+	  $("#verifyStatus").removeClass("active disable").addClass("label-primary");
+	  $("#paymentStatus").removeClass("label-primary disable").addClass("active");
+	  $("#finishStatus").removeClass("active label-primary").addClass("disable"); 
+	  //$("#acceptStatus").removeClass("active label-primary").addClass("active"); 
+	  $("#acceptStatus").removeClass("active disable").addClass("label-primary");
+	   
+	  $("#acceptBtn").prop("disabled", false); 
+	  
+	  
+	  $("#deleteBtn").prop("disabled", true);
+	  $("#customBtn").prop("disabled", true);
+	  $("#verifyBtn").prop("disabled", true);
+	  $("#payBtn").prop("disabled", false);
+	  $("#exportBillBtn").prop("disabled", true);
+	  $("#exportReceiptBtn").prop("disabled", true);
+	}*/
 
 function setLayoutCustomStatus() {
   $("#registerStatus").removeClass("active disable").addClass("label-primary");
@@ -1660,6 +1748,7 @@ function setLayoutPaymentStatus() {
   $("#exportReceiptBtn").prop("disabled", true);
 }
 
+ 
 function setLayoutFinishStatus() {
   $("#registerStatus").removeClass("active disable").addClass("label-primary");
   $("#verifyStatus").removeClass("active disable").addClass("label-primary");
@@ -1673,6 +1762,8 @@ function setLayoutFinishStatus() {
   $("#exportBillBtn").prop("disabled", false);
   $("#exportReceiptBtn").prop("disabled", false);
 }
+
+//end+69966999-
 
 function finishForm(result) {
   if (result.code == 0) {

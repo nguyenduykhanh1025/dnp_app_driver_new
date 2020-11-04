@@ -291,7 +291,19 @@ public class ShipmentDetail extends BaseEntity
 	/** Tinh trang container */
 	private String containerRemark;
 	
-    public void setId(Long id) {
+	/** Tinh trang container */
+	private String contSpecialStatus;
+	
+	
+    public String getContSpecialStatus() {
+		return contSpecialStatus;
+	}
+
+	public void setContSpecialStatus(String contSpecialStatus) {
+		this.contSpecialStatus = contSpecialStatus;
+	}
+
+	public void setId(Long id) {
         this.id = id;
     }
 

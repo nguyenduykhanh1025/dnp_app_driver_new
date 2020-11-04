@@ -118,8 +118,10 @@
                   <div class="panel-title" style="color: #333">Thông tin lô</div>
                   <div class="panel-tool" id="step-area">
                     <ul class="right-info">
-                      <li><a id="registerStatus" class="disable">Khai báo</a></li>
+                      <li><a id="registerStatus" class="disable">Khai báo</a></li> 
+                      <!-- <li><a id="acceptStatus" class="disable">Chờ kiểm tra</a></li>  -->
                       <li><a id="customStatus" class="disable">Thông quan</a></li>
+                        
                       <li><a id="verifyStatus" class="disable">Xác thực</a></li>
                       <li><a id="paymentStatus" class="disable">Thanh toán</a></li>
                       <li><a id="finishStatus" class="disable">Hoàn thành</a></li>
@@ -138,16 +140,32 @@
                               ></span
                             >
                           </a>
-                        </td>
-                        <td>
+                        </td> 
+                        
+                        <!-- <td>
                           <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
                             <span class="l-btn-left"
                               ><span class="l-btn-text">
-                                <button id="customBtn" onclick="checkCustomStatus()" disabled class="btn btn-sm btn-primary"><i class="fa fa-address-card text-primary"></i> Khai hải quan</button></span
+                                <button id="acceptBtn" onclick="CheckShipmentDetail()" disabled class="btn btn-sm btn-primary">
+                                	<i class="fa fa-save text-primary"></i> Chờ kiểm tra</button></span
                               ></span
                             >
                           </a>
+                        </td> -->
+                        
+                        <td>
+                          <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                            <span class="l-btn-left">
+                            	<span class="l-btn-text">
+                                	<button id="customBtn" onclick="checkCustomStatus()" disabled class="btn btn-sm btn-primary">
+                                	<i class="fa fa-address-card text-primary"></i> Khai hải quan</button>
+                                </span>
+                             </span>
+                          </a>
                         </td>
+                        
+                        
+                        
                         <td>
                           <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
                             <span class="l-btn-left"

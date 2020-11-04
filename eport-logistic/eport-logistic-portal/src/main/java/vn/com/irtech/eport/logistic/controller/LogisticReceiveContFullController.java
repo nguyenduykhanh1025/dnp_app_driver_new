@@ -429,7 +429,15 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					// search catos infor for specified container and replace infor
 					ctnrInfo = catosMap.get(shipmentDetail.getContainerNo());
 					if (ctnrInfo != null) {
-						shipmentDetail.setSztp(ctnrInfo.getSztp());
+						shipmentDetail.setSztp(ctnrInfo.getSztp()); 
+						// nhatlv check tường hợp insert với từng mã
+						
+						if("P".equalsIgnoreCase(ctnrInfo.getSztp().substring(2,3)) 
+						|| "T".equalsIgnoreCase(ctnrInfo.getSztp().substring(2,3))
+						|| "U".equalsIgnoreCase(ctnrInfo.getSztp().substring(2,3)))
+						{   
+							shipmentDetail.setContSpecialStatus("S"); 
+						} 
 						// shipmentDetail.setSztpDefine(catos.getSztpDefine()); // TODO
 						shipmentDetail.setCarrierName(ctnrInfo.getPtnrName());
 						shipmentDetail.setVslName(ctnrInfo.getVslNm());
@@ -517,6 +525,19 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 							shipmentDetailReference.setDetFreeTime(inputDetail.getDetFreeTime());
 						}
 						shipmentDetailReference.setUpdateTime(new Date());
+						if("P".equalsIgnoreCase(shipmentDetailReference.getSztp().substring(2,3)) 
+								|| "T".equalsIgnoreCase(shipmentDetailReference.getSztp().substring(2,3))
+								|| "U".equalsIgnoreCase(shipmentDetailReference.getSztp().substring(2,3)))
+								{   
+									shipmentDetailReference.setContSpecialStatus("S"); 
+									
+							   //!"R".equalsIgnoreCase(shipmentDetailReference.getContSpecialStatus())
+										
+									
+								} 
+						 
+						
+						// them status
 
 						if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
 							return error("Lưu khai báo thất bại từ container: " + inputDetail.getContainerNo());

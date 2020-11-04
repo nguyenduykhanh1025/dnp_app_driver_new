@@ -77,7 +77,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="etd"    column="etd"   />
         <result property="location"    column="location"   />
         <result property="containerRemark"    column="container_remark"   />
+        
+        <result property="contSpecialStatus"    column="cont_special_status"   /> 
     </resultMap>
+    
+    <!-- <resultMap type="ShipmentDetailExtend" id="ShipmentDetailResult" extends="ShipmentDetail">
+    	<result property="contSpecialStatus"    column="cont_special_status"   />  
+    </resultMap> -->
+    
+    
 
     <sql id="selectShipmentDetailVo">
         select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, container_status, sztp, 
@@ -87,7 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         pre_pickup_payment_status, custom_status, payment_status, process_status, do_status, do_received_time, 
         user_verify_status, finish_status, status, order_no, tax_code, consignee_by_tax_code, cont_supply_status, 
         planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, remark, pay_type, payer, payer_name, customs_no, 
-        custom_scan_time, delivery_address, delivery_mobile, delivery_remark, eta, etd, container_remark, det_free_time, create_by, create_time, update_by, update_time from shipment_detail
+        custom_scan_time, delivery_address, delivery_mobile, delivery_remark, eta, etd, container_remark, det_free_time, create_by, create_time, update_by, update_time,cont_special_status from shipment_detail
     </sql>
      <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail
@@ -255,7 +263,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	container_status, sztp, sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem, det_free_time, wgt, vsl_name,
         	vsl_nm || ': '|| vsl_name as vsl_nm,
         	voy_no, voy_carrier,
-        	ope_code || ': ' || carrier_name as ope_code,
+        	ope_code || ': ' || carrier_name as ope_code, cont_special_status,
         	carrier_name, loading_port, discharge_port, transport_type,
         	empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status,
         	custom_status, customs_no, custom_scan_time, payment_status, process_status, do_status, do_received_time, user_verify_status, finish_status,
@@ -526,8 +534,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updateShipmentDetail" parameterType="ShipmentDetail">
+    
+     <!-- <update id="updateShipmentDetail" parameterType="ShipmentDetailExtend"> -->
         update shipment_detail
         <trim prefix="SET" suffixOverrides=",">
+        
+        	<if test="contSpecialStatus != null ">cont_special_status = #{contSpecialStatus},</if>
+        	 
             <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
             <if test="processOrderId != null">process_order_id = #{processOrderId},</if>
             <if test="registerNo != null  and registerNo != ''">register_no = #{registerNo},</if>
