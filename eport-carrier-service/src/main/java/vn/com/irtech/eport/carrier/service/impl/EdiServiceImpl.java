@@ -33,6 +33,9 @@ public class EdiServiceImpl implements IEdiService {
 	@Autowired
 	private ICatosApiService catosApiService;
 
+	@Autowired
+	private QueueSer
+
 	@Override
 	public void executeListEdi(List<EdiDataReq> ediDataReqs, String partnerCode, Long carrierGroupId, String transactionId) {
 		for (EdiDataReq ediDataReq : ediDataReqs) {
@@ -63,12 +66,11 @@ public class EdiServiceImpl implements IEdiService {
 		edo.setCarrierCode(partnerCode);
 		edo.setDelFlg(0);
 
-		 if (edoService.selectFirstEdo(edo) != null) {
-			 throw new BusinessException(String.format("Edo to insert was existed (containerNo='%s', billOfLading=%s)",
-						ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
-		 }
-		
-		
+		if (edoService.selectFirstEdo(edo) != null) {
+			throw new BusinessException(String.format("Edo to insert was existed (containerNo='%s', billOfLading=%s)",
+					ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
+		}
+
 		Edo edoInsert = new Edo();
 		this.settingEdoData(edoInsert, ediDataReq, partnerCode, transactionId);
 		edoInsert.setCarrierId(carrierGroupId);
@@ -92,16 +94,17 @@ public class EdiServiceImpl implements IEdiService {
 		edo.setBillOfLading(ediDataReq.getBillOfLading());
 		edo.setCarrierCode(partnerCode);
 		edo.setDelFlg(0);
+		Edo odlEdo = edoService.selectFirstEdo(edo);
 
-		Edo edoUpdate = edoService.selectFirstEdo(edo);
-		if (edoUpdate == null || !edoUpdate.getCarrierCode().equals(partnerCode)) {
+		if (odlEdo == null) {
 			throw new BusinessException(String.format("Edo to update is not exist (containerNo='%s', billOfLading=%s)",
 					ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
 		}
+
+		Edo edoUpdate = new Edo();
+		this.settingEdoData(edoUpdate, ediDataReq, partnerCode, transactionId);
 		edoUpdate.setUpdateBy(partnerCode);
 		edoUpdate.setCarrierId(carrierGroupId);
-		this.settingEdoData(edoUpdate, ediDataReq, partnerCode, transactionId);
-		Edo odlEdo = edoService.selectEdoById(edoUpdate.getId());
 		if (edoUpdate.getExpiredDem() != null) {
 			Date setTimeUpdatExpicedDem = edoUpdate.getExpiredDem();
 			setTimeUpdatExpicedDem.setHours(23);
@@ -117,8 +120,17 @@ public class EdiServiceImpl implements IEdiService {
 		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoListByCondition(cntrInfoParam);
 
 		// check if expired dem has update
-		if (odlEdo.getExpiredDem().compareTo(edoUpdate.getExpiredDem()) == 0) {
-			edoUpdate.setExpiredDem(null);
+		if (edoUpdate.getExpiredDem() != null && odlEdo.getExpiredDem().compareTo(edoUpdate.getExpiredDem()) != 0) {
+			if (CollectionUtils.isNotEmpty(cntrInfos)) {
+				for (ContainerInfoDto cntrInfo : cntrInfos) {
+					if ("F".equalsIgnoreCase(cntrInfo.getFe()) && StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
+						// Edo has job order no in catos
+						edoUpdate.setUpdateTime(new Date());
+						edoUpdate.setJobOrderNo(cntrInfo.getJobOdrNo2());
+						queueService.offerEdoExtendExpiredDem(edoUpdate);
+					}
+				}
+			}
 		}
 
 		// check if det free time has update

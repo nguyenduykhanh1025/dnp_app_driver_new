@@ -55,8 +55,8 @@ import vn.com.irtech.eport.system.service.ISysDictDataService;
 public class CarrierEdoController extends CarrierBaseController {
 
 	private static final Pattern VALID_CONTAINER_NO_REGEX = Pattern.compile("^[A-Za-z]{4}[0-9]{7}$",
-	Pattern.CASE_INSENSITIVE);
-	
+			Pattern.CASE_INSENSITIVE);
+
 	private final String PREFIX = "edo";
 
 	@Autowired
@@ -69,7 +69,7 @@ public class CarrierEdoController extends CarrierBaseController {
 	private IEdoAuditLogService edoAuditLogService;
 
 	@Autowired
-    private ICatosApiService catosApiService;
+	private ICatosApiService catosApiService;
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
@@ -110,8 +110,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		if (edoParam == null) {
 			edoParam = new Edo();
 		}
-		if (edoParam.getBillOfLading() == null)
-		{
+		if (edoParam.getBillOfLading() == null) {
 			return null;
 		}
 		edoParam.setCarrierCode(null);
@@ -157,7 +156,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		Edo edo = edoService.selectEdoById(id);
 		// TODO set carier
 		map.put("edo", edo);
-		map.put("hasConsigneeUpdatePermission",hasConsigneeUpdatePermission());
+		map.put("hasConsigneeUpdatePermission", hasConsigneeUpdatePermission());
 		return PREFIX + "/update";
 	}
 
@@ -168,7 +167,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		Long id = Long.parseLong(idMap[0]);
 		Edo edo = edoService.selectEdoById(id);
 		map.put("edo", edo);
-		map.put("hasConsigneeUpdatePermission",hasConsigneeUpdatePermission());
+		map.put("hasConsigneeUpdatePermission", hasConsigneeUpdatePermission());
 		return PREFIX + "/multiUpdate";
 	}
 
@@ -238,7 +237,7 @@ public class CarrierEdoController extends CarrierBaseController {
 
 		edoService.deleteEdoByIds(ids);
 		return AjaxResult.success("Xóa eDO thành công");
-	
+
 	}
 
 	@PostMapping("/update")
@@ -249,7 +248,7 @@ public class CarrierEdoController extends CarrierBaseController {
 			return error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
 		}
 		// Validate permission
-		if(StringUtils.isNotEmpty(edoInput.getConsignee()) && !hasConsigneeUpdatePermission()) {
+		if (StringUtils.isNotEmpty(edoInput.getConsignee()) && !hasConsigneeUpdatePermission()) {
 			return AjaxResult.error("Không thể cập nhật Consignee, vui lòng kiếm tra lại dữ liệu.");
 		}
 		try {
@@ -279,6 +278,7 @@ public class CarrierEdoController extends CarrierBaseController {
 					// has update
 					if (cntrFull != null && StringUtils.isNotEmpty(cntrFull.getJobOdrNo2())) {
 						// Send req extend expired dem
+						edo.setUpdateTime(new Date());
 						edo.setJobOrderNo(cntrFull.getJobOdrNo2());
 						queueService.offerEdoExtendExpiredDem(edo);
 					}
@@ -301,12 +301,11 @@ public class CarrierEdoController extends CarrierBaseController {
 					// has update
 					// Check condition drop empty container order has been made
 					if (cntrEmty != null && StringUtils.isNotEmpty(cntrEmty.getJobOdrNo())) {
-						return error(
-								"Container đã có lệnh trả rỗng tại cảng.<br>Không thể cập nhật nơi trả vỏ.");
+						return error("Container đã có lệnh trả rỗng tại cảng.<br>Không thể cập nhật nơi trả vỏ.");
 					}
 				}
 			}
-			
+
 			// Update
 			String[] idsList = ids.split(",");
 			// Set input field permit update
@@ -350,7 +349,6 @@ public class CarrierEdoController extends CarrierBaseController {
 		List<EdoAuditLog> edoAuditLogsList = edoAuditLogService.selectEdoAuditLogList(edoAuditLog);
 		return getDataTable(edoAuditLogsList);
 	}
-
 
 	@PostMapping("/getVoyNo/{vessel}")
 	@ResponseBody
@@ -407,7 +405,6 @@ public class CarrierEdoController extends CarrierBaseController {
 		return PREFIX + "/releaseEdo";
 	}
 
-	
 	@GetMapping("/getOperateCode")
 	@ResponseBody
 	public String[] getOperateCode() {
@@ -458,8 +455,8 @@ public class CarrierEdoController extends CarrierBaseController {
 				e.setUpdateBy(getUser().getFullName());
 				if (StringUtils.isBlank(e.getCarrierCode()) || StringUtils.isBlank(e.getBillOfLading())
 						|| StringUtils.isBlank(e.getContainerNumber()) || StringUtils.isBlank(e.getConsignee())
-						 || StringUtils.isBlank(e.getEmptyContainerDepot()) || 
-						StringUtils.isBlank(e.getVessel()) || StringUtils.isBlank(e.getVoyNo())) {
+						|| StringUtils.isBlank(e.getEmptyContainerDepot()) || StringUtils.isBlank(e.getVessel())
+						|| StringUtils.isBlank(e.getVoyNo())) {
 					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
 							+ "'.<br/>Lỗi: Hãy nhập đầy đủ các trường bắt buộc.");
 				}
@@ -468,7 +465,7 @@ public class CarrierEdoController extends CarrierBaseController {
 					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
 							+ "'.<br/>Lỗi: Mã hãng tàu '" + e.getCarrierCode() + "' không đúng.");
 				}
-				
+
 				if (!isContainerNumber(e.getContainerNumber())) {
 					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
 							+ "'.<br/>Lỗi: Mã container không đúng tiêu chuẩn.");
@@ -486,8 +483,9 @@ public class CarrierEdoController extends CarrierBaseController {
 				}
 				// // DEM Free date la so
 				// if (e.getDetFreeTime() != null && e.getDetFreeTime() >= 10000) {
-				// 	return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
-				// 			+ "'.<br/>Lỗi: Ngày miễn lưu không được lớn hơn 9999");
+				// return AjaxResult.error("Có lỗi xảy ra ở container '" +
+				// e.getContainerNumber()
+				// + "'.<br/>Lỗi: Ngày miễn lưu không được lớn hơn 9999");
 				// }
 
 				// Bill is the same
