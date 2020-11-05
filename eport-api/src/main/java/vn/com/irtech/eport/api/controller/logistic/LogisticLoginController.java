@@ -22,6 +22,8 @@ import vn.com.irtech.eport.api.util.SecurityUtils;
 import vn.com.irtech.eport.api.util.TokenUtils;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.logistic.domain.LogisticAccount;
+import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
 import vn.com.irtech.eport.system.domain.SysUserToken;
 import vn.com.irtech.eport.system.service.ISysUserTokenService;
 
@@ -35,12 +37,18 @@ public class LogisticLoginController extends BaseController {
 	@Autowired
 	private ISysUserTokenService sysUserTokenService;
 
+	@Autowired
+	private ILogisticAccountService logisticAccountService;
+
 	@PostMapping("/login")
 	@ResponseBody
 	public AjaxResult login(@RequestBody LoginReq loginForm) {
 		AjaxResult ajaxResult = AjaxResult.success();
 		String token = loginService.login(loginForm, EportUserType.LOGISTIC);
 		ajaxResult.put("token", token);
+		LogisticAccount userInfo = logisticAccountService
+				.selectLogisticAccountById(SecurityUtils.getCurrentUser().getUser().getUserId());
+		ajaxResult.put("userName", userInfo.getFullName());
 		SysUserToken sysUserToken = new SysUserToken();
 		// Set firebase device token for notification
 		sysUserToken.setDeviceToken(loginForm.getDeviceToken());

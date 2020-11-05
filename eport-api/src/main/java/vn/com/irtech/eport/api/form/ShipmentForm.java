@@ -15,14 +15,12 @@ public class ShipmentForm  implements Serializable {
 	
 	private Integer serviceType;
 	
-	private String fe;
-	
-	private String taxCode;
-	
 	private Long containerAmount;
 	
 	private String edoFlg;
 	
+	private String opeCode;
+
 	private String status;
 	
 	private Date createTime;
@@ -59,22 +57,6 @@ public class ShipmentForm  implements Serializable {
 		this.serviceType = serviceType;
 	}
 
-	public String getFe() {
-		return fe;
-	}
-
-	public void setFe(String fe) {
-		this.fe = fe;
-	}
-
-	public String getTaxCode() {
-		return taxCode;
-	}
-
-	public void setTaxCode(String taxCode) {
-		this.taxCode = taxCode;
-	}
-
 	public Long getContainerAmount() {
 		return containerAmount;
 	}
@@ -89,6 +71,14 @@ public class ShipmentForm  implements Serializable {
 
 	public void setEdoFlg(String edoFlg) {
 		this.edoFlg = edoFlg;
+	}
+
+	public String getOpeCode() {
+		return opeCode;
+	}
+
+	public void setOpeCode(String opeCode) {
+		this.opeCode = opeCode;
 	}
 
 	public String getStatus() {

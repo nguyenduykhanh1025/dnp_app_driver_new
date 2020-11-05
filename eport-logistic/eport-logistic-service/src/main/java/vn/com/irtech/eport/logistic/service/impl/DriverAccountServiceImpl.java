@@ -128,4 +128,26 @@ public class DriverAccountServiceImpl implements IDriverAccountService {
 	public List<DriverTruckInfo> selectDriverWithTruckNoInfoByIds(String ids) {
 		return driverAccountMapper.selectDriverWithTruckNoInfoByIds(Convert.toStrArray(ids));
 	}
+
+	/**
+	 * Select assigned driver list
+	 * 
+	 * @param pickupAssign
+	 * @return List<DriverAccount>
+	 */
+	@Override
+	public List<DriverAccount> selectAssignedDriverList(PickupAssign pickupAssign) {
+		return driverAccountMapper.selectAssignedDriverList(pickupAssign);
+	}
+
+	/**
+	 * Select driver account by ids
+	 * 
+	 * @param driverAccount
+	 * @return List<DriverAccount>
+	 */
+	@Override
+	public List<DriverAccount> selectDriverListByIds(DriverAccount driverAccount) {
+		return driverAccountMapper.selectDriverListByIds(driverAccount);
+	}
 }
