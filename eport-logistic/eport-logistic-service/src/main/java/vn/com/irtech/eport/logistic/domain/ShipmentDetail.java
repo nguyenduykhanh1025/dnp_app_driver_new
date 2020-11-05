@@ -381,38 +381,33 @@ public class ShipmentDetail extends BaseEntity {
      */
     private Integer index;
 
-    /**
-     * Ngay tau den theo tau va chuyen
-     */
-    private Date eta;
+	/** Ngay tau den theo tau va chuyen */
+	private Date eta;
 
-    /**
-     * Ngay tau di (plan)
-     */
-    private Date etd;
+	/** Ngay tau di (plan)*/
+	private Date etd;
+	
+	/** Ten mat hang: Khai bao khi ha bai cho xuat*/
+	private String commodity;
+	
+	/** Vị trí*/
+	private String location;
+	
+	/** Tinh trang container */
+	private String containerRemark;
+	
+	/** Tinh trang container */
+	private String contSpecialStatus;
+	
+    public String getContSpecialStatus() {
+		return contSpecialStatus;
+	}
 
-    /**
-     * Ten mat hang: Khai bao khi ha bai cho xuat
-     */
-    private String commodity;
+	public void setContSpecialStatus(String contSpecialStatus) {
+		this.contSpecialStatus = contSpecialStatus;
+	}
 
-    /**
-     * Vị trí
-     */
-    private String location;
-
-    /**
-     * Tinh trang container
-     */
-    private String containerRemark;
-
-    /**
-     * Cont quá tải phía bên phải
-     * Dữ liệu cont đặc biệt giúp admin xác nhận request
-     */
-    private String rightOversize;
-
-    public void setId(Long id) {
+	public void setId(Long id) {
         this.id = id;
     }
 
@@ -1029,14 +1024,6 @@ public class ShipmentDetail extends BaseEntity {
         this.containerRemark = containerRemark;
     }
 
-    public String getRightOversize() {
-        return rightOversize;
-    }
-
-    public void setRightOversize(String rightOversize) {
-        this.rightOversize = rightOversize;
-    }
-
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
@@ -1113,7 +1100,6 @@ public class ShipmentDetail extends BaseEntity {
                 .append("etd", getEtd())
                 .append("location", getLocation())
                 .append("containerRemark", getContainerRemark())
-                .append("rightOverSize", getRightOversize())
                 .toString();
     }
 }

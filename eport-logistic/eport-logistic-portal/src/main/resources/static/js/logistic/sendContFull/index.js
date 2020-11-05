@@ -36,6 +36,9 @@ var detailInformationForContainerSpecial = {
   indexSelected: -1,
 };
 
+/**
+ * @author Khanh
+ */
 var dataTableHandson = [
   {
     key: "active",
@@ -1170,6 +1173,7 @@ function btnDetailRenderer(
     containerNo = hot.getDataAtCell(row, 2);
     sztp = hot.getDataAtCell(row, 3);
   }
+
   if (sourceData && sourceData.length > 0) {
     if (sourceData.length > row && sourceData[row].id) {
       value = `<button class="btn btn-default btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-check-circle"></i>Khai báo</button>`;
@@ -1706,8 +1710,13 @@ function updateLayout() {
     check = false,
     verify = false;
   allChecked = true;
+
+  /**
+   * Set active item in colunm status
+   */
   for (let i = 0; i < checkList.length; i++) {
     let cellStatus = hot.getDataAtCell(i, 1);
+
     if (cellStatus != null) {
       if (checkList[i] == 1) {
         if (cellStatus == 1 && "Y" == sourceData[i].userVerifyStatus) {
@@ -1727,12 +1736,14 @@ function updateLayout() {
       }
     }
   }
+
   $(".checker").prop("checked", allChecked);
   if (disposable) {
     $("#deleteBtn").prop("disabled", false);
   } else {
     $("#deleteBtn").prop("disabled", true);
   }
+
   if (diff) {
     status = 1;
   } else {
@@ -1765,8 +1776,54 @@ function updateLayout() {
     default:
       break;
   }
+  setLayoutConfirmRequestContSpecial();
 }
 
+/**
+ * @author Khanh
+ * @description set status for btn request + btn veryfi cont special
+ */
+function setLayoutConfirmRequestContSpecial() {
+  let isDisableStatusBtnRequestResult = false; // true: enable btn || false: disable btn
+  let isDisableStatusBtnVerifyResult = false; // true: enable btn || false: disable btn
+  let listSizeCategoryCont = [];
+
+  for (let i = 0; i < checkList.length; ++i) {
+    let dataColunmSizeCont = getCodeSizeContFromDataTableHandsonFollowIndex(i);
+    // status is checked
+    if (checkList[i] == 1) {
+      var markCounSpecial = getMarkSizeContSpecial(
+        dataColunmSizeCont.split("")
+      );
+      if (markCounSpecial) {
+        listSizeCategoryCont.push(markCounSpecial);
+      } else {
+        listSizeCategoryCont.push("G");
+      }
+    }
+  }
+  console.log("coooooooooooooooooooo");
+
+  if (!listSizeCategoryCont || !listSizeCategoryCont.length) {
+    isDisableStatusBtnRequestResult = true;
+    isDisableStatusBtnVerifyResult = true;
+  } else {
+    if (getMarkSizeContSpecial(listSizeCategoryCont)) {
+      isDisableStatusBtnVerifyResult = true;
+      if (listSizeCategoryCont.includes("G")) {
+        isDisableStatusBtnRequestResult = true;
+      }
+    } else {
+      isDisableStatusBtnRequestResult = true;
+    }
+  }
+
+  $("#requestShipmentDetailBtn").prop(
+    "disabled",
+    isDisableStatusBtnRequestResult
+  );
+  $("#verifyBtn").prop("disabled", isDisableStatusBtnVerifyResult);
+}
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) {
   $.modal.loading("Đang xử lý ...");
@@ -1881,6 +1938,7 @@ function getDataSelectedFromTable(isValidate) {
     shipmentDetail.processStatus = object["processStatus"];
     shipmentDetail.paymentStatus = object["paymentStatus"];
     shipmentDetail.userVerifyStatus = object["userVerifyStatus"];
+
     shipmentDetail.status = object["status"];
     shipmentDetail.shipmentId = shipmentSelected.id;
     shipmentDetail.id = object["id"];
@@ -2065,10 +2123,13 @@ function getDataFromTable(isValidate) {
     /**
      * add information detail of container special
      */
-    shipmentDetail = {
-      ...shipmentDetail,
-      ...detailInformationForContainerSpecial.data[index],
-    };
+    if (detailInformationForContainerSpecial.data[index]) {
+      shipmentDetail = {
+        ...shipmentDetail,
+        ...detailInformationForContainerSpecial.data[index],
+      };
+    }
+
     if (berthplanList) {
       for (let i = 0; i < berthplanList.length; i++) {
         if (object["vslNm"] == berthplanList[i].vslAndVoy) {
@@ -2816,51 +2877,84 @@ function requestShipmentDetail() {
     return;
   } else {
     if (getDataFromTable(true)) {
-      if (
-        shipmentDetails.length > 0 &&
-        shipmentDetails.length <= shipmentSelected.containerAmount
-      ) {
-        shipmentDetails[0].processStatus = conts;
-        $.modal.loading("Đang xử lý...");
-        console.log(shipmentDetails);
-        $.ajax({
-          url: prefix + "/" + shipmentSelected.id + "/shipment-detail-request",
-          method: "post",
-          contentType: "application/json",
-          accept: "text/plain",
-          data: JSON.stringify(shipmentDetails),
-          dataType: "text",
-          success: function (data) {
-            var result = JSON.parse(data);
-            if (result.code == 0) {
-              $.modal.msgSuccess(result.msg);
-              reloadShipmentDetail();
-            } else {
-              if (result.conts != null) {
-                $.modal.alertError(
-                  "Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>" +
-                    result.conts
-                );
-              } else {
-                $.modal.alertError(result.msg);
-              }
-            }
-            $.modal.closeLoading();
-          },
-          error: function (result) {
-            $.modal.alertError(
-              "Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau."
-            );
-            $.modal.closeLoading();
-          },
-        });
-      } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
-        $.modal.alertError(
-          "Số container nhập vào vượt quá số container khai báo của lô."
-        );
-      } else {
-        $.modal.alertError("Hãy nhập thông tin chi tiết lô.");
-      }
+      console.log(shipmentDetails);
+      //   if (
+      //     shipmentDetails.length > 0 &&
+      //     shipmentDetails.length <= shipmentSelected.containerAmount
+      //   ) {
+      //     shipmentDetails[0].processStatus = conts;
+      //     $.modal.loading("Đang xử lý...");
+      //     $.ajax({
+      //       url: prefix + "/" + shipmentSelected.id + "/shipment-detail-request",
+      //       method: "post",
+      //       contentType: "application/json",
+      //       accept: "text/plain",
+      //       data: JSON.stringify(shipmentDetails),
+      //       dataType: "text",
+      //       success: function (data) {
+      //         var result = JSON.parse(data);
+      //         if (result.code == 0) {
+      //           $.modal.msgSuccess(result.msg);
+      //           reloadShipmentDetail();
+      //         } else {
+      //           if (result.conts != null) {
+      //             $.modal.alertError(
+      //               "Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>" +
+      //                 result.conts
+      //             );
+      //           } else {
+      //             $.modal.alertError(result.msg);
+      //           }
+      //         }
+      //         $.modal.closeLoading();
+      //       },
+      //       error: function (result) {
+      //         $.modal.alertError(
+      //           "Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau."
+      //         );
+      //         $.modal.closeLoading();
+      //       },
+      //     });
+      //   } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
+      //     $.modal.alertError(
+      //       "Số container nhập vào vượt quá số container khai báo của lô."
+      //     );
+      //   } else {
+      //     $.modal.alertError("Hãy nhập thông tin chi tiết lô.");
+      //   }
     }
   }
+}
+
+/**
+ * @param {array} data
+ * @author Khanh
+ * check array data includes cont size special
+ * @returns {string} "P" || "T"
+ */
+function getMarkSizeContSpecial(data) {
+  const listMarkContSpecial = ["P", "R", "T", "U"];
+  var result = "";
+
+  for (let i = 0; i < listMarkContSpecial.length; ++i) {
+    if (data.includes(listMarkContSpecial[i])) {
+      result = listMarkContSpecial[i];
+      break;
+    }
+  }
+  return result;
+}
+
+/**
+ * @param {number} index
+ * @author Khanh
+ * get code size cont fron table in colunm 3
+ * @returns {String} "22P0" || "22GO"
+ */
+
+function getCodeSizeContFromDataTableHandsonFollowIndex(index) {
+  if (hot && hot.getDataAtCell(index, 3)) {
+    return hot.getDataAtCell(index, 3).substring(0, 4);
+  }
+  return "";
 }

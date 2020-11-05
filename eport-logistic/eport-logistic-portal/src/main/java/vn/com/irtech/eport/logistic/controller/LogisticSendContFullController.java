@@ -186,6 +186,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
         mmap.put("containerNo", containerNo);
         mmap.put("sztp", sztp);
         mmap.put("shipmentDetailId", shipmentDetailId);
+        mmap.put("shipmentDetail", this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId));
         return PREFIX + "/detail";
     }
 
@@ -978,19 +979,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
             logger.error("Gửi thông báo lỗi hải quan cho om: " + e);
         }
         return success();
-    }
-
-
-    @Log(title = "Khai Báo Cont", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
-    @PostMapping("/{shipmentId}/shipment-detail-request")
-    @ResponseBody
-    public AjaxResult requestShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails,
-                                            @PathVariable("shipmentId") Long shipmentId) {
-
-        for (ShipmentDetail shipmentDetail : shipmentDetails) {
-            System.out.println(shipmentDetail.toString());
-        }
-        return AjaxResult.success("OK");
     }
 
 }
