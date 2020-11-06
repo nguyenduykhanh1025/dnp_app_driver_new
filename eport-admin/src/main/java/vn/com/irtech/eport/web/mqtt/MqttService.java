@@ -38,6 +38,7 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.system.service.ISysRobotService;
+import vn.com.irtech.eport.web.mqtt.listener.AutoGatePassResponseHandler;
 import vn.com.irtech.eport.web.mqtt.listener.MCRequestHandler;
 import vn.com.irtech.eport.web.mqtt.listener.RobotResponseHandler;
 
@@ -69,6 +70,9 @@ public class MqttService implements MqttCallback {
 	@Autowired
 	private RobotResponseHandler robotResponseHandler;
 	
+	@Autowired
+	private AutoGatePassResponseHandler autoGatePassResponseHandler;
+
 	@Autowired
 	private ICatosApiService catosApiService;
 	
@@ -134,6 +138,7 @@ public class MqttService implements MqttCallback {
 		List<IMqttToken> tokens = new ArrayList<>();
 		tokens.add(mqttClient.subscribe(BASE + "/mc/plan/request", 1, mcRequestHandler));
 		tokens.add(mqttClient.subscribe(ROBOT_CONNECTION_RESPONSE, 1, robotResponseHandler));
+		tokens.add(mqttClient.subscribe(GATE_DETECTION_RESPONSE, 1, autoGatePassResponseHandler));
 		// subscribe default topics when connect
 //		tokens.add(mqttClient.subscribe(BASE, 0, robotUpdateStatusHandler));
 		// Wait for subscribe complete
