@@ -3,6 +3,8 @@ package vn.com.irtech.eport.carrier.task;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,8 +30,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
-
-import com.google.common.io.Files;
 
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.domain.Edo;
@@ -125,12 +125,32 @@ public class CarrierEdoFolderMonitorTask {
 					while (true) {
 						try {
 							String filePath = ediFileQueue.take();
+							// Check end delays for 5s with file create time
+							checkAndDelay(filePath, 5000);
 							readEdiFile(new File(filePath));
 						} catch (Exception e) {
 							e.printStackTrace();
 							logger.error("Error while read EDI file", e);
 						}
 					}
+				}
+
+				private void checkAndDelay(String filePath, int delayMs) {
+					try {
+						// read file create time
+						BasicFileAttributes attr = Files.readAttributes(new File(filePath).toPath(),
+								BasicFileAttributes.class);
+						long fileTimeInMs = attr.creationTime().toMillis();
+						long currentTimeInMs = System.currentTimeMillis();
+						long diff = currentTimeInMs - fileTimeInMs;
+						// Delay from 0~ delay mili-seconds
+						if (diff > 0 && diff < delayMs) {
+							Thread.sleep(delayMs - diff);
+						}
+					} catch (IOException | InterruptedException e) {
+						e.printStackTrace();
+					}
+
 				}
 			});
 		}
@@ -171,6 +191,9 @@ public class CarrierEdoFolderMonitorTask {
 			logger.error("Error when read EDI File. Carrier Group is not exist: " + groupCode);
 			return;
 		}
+
+		// Check file size diff => file upload not complete
+		long fileSize = Files.size(ediFile.toPath());
 		// Read file content
 		String content = FileUtils.readFileToString(ediFile, StandardCharsets.UTF_8);
 		content = content.replaceAll("\r\n|\r|\n", "");
@@ -181,7 +204,13 @@ public class CarrierEdoFolderMonitorTask {
 
 		// Read edi file and parse to edo object
 		List<Edo> listEdo = edoService.readEdi(text);
-
+		// Check if filesize has changed
+		if (Files.size(ediFile.toPath()) - fileSize != 0) {
+			// move to queue to read again
+			logger.debug("File has been changed, read again: " + ediFile.toPath());
+			ediFileQueue.offer(ediFile.getAbsolutePath());
+			return;
+		}
 		// can not read edo file
 		if(listEdo == null || listEdo.size() == 0) {
 			// create error folder
@@ -331,7 +360,7 @@ public class CarrierEdoFolderMonitorTask {
 					+ String.valueOf(System.currentTimeMillis()));
 		}
 		// Move file to error folder
-		Files.move(ediFile, targetFile);
+		com.google.common.io.Files.move(ediFile, targetFile);
 	}
 
 	private void moveToErrorFolder(String groupCode, File ediFile) throws IOException {
@@ -351,7 +380,7 @@ public class CarrierEdoFolderMonitorTask {
 					+ String.valueOf(System.currentTimeMillis()));
 		}
 		// Move file to error folder
-		Files.move(ediFile, errorFile);
+		com.google.common.io.Files.move(ediFile, errorFile);
 	}
 
 	private Map<String, ContainerInfoDto> getMapCntrInfoCatos(String containers, String blNo) {

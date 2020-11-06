@@ -54,6 +54,8 @@ public class MqttService implements MqttCallback {
 	private static final String NOTIFICATION_CONT_TOPIC = BASE + "/notification/cont";
 	private static final String ROBOT_CONNECTION_REQUEST = ROBOT_BASE + "/connection/+/request";
 	private static final String ROBOT_CONNECTION_RESPONSE = ROBOT_BASE + "/connection/+/response";
+	private static final String GATE_DETECTION_REQUEST = BASE + "/detection/gate/+/request";
+	private static final String GATE_DETECTION_RESPONSE = BASE + "/detection/gate/+/response";
 
 	@Autowired
 	private MqttAsyncClient mqttClient;
