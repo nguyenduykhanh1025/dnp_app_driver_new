@@ -28,7 +28,7 @@ logging:
 
 user:
   password:
-    maxRetryCount: 5
+    maxRetryCount: 50
 
 spring:
   thymeleaf:
