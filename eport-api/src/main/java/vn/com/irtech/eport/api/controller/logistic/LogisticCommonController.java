@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -105,7 +104,6 @@ public class LogisticCommonController extends LogisticBaseController {
 			for (Shipment shipment : shipments) {
 				ShipmentForm shipmentForm = new ShipmentForm();
 				BeanUtils.copyBeanProp(shipmentForm, shipment);
-				shipmentForm.setFe("F");
 				shipmentForms.add(shipmentForm);
 			}
 		}
@@ -241,16 +239,25 @@ public class LogisticCommonController extends LogisticBaseController {
 	 * 
 	 * @return AjaxResult
 	 */
-    @PostMapping("/notify")
+	@GetMapping("/notify")
 	@ResponseBody
 	public AjaxResult getNotifyList() {
 		startPage();
 		SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
 		sysNotificationReceiver.setUserId(SecurityUtils.getCurrentUser().getUser().getUserId());
 		sysNotificationReceiver.setUserType(BusinessConsts.LOGISTIC_USER_TYPE);
-		List<NotificationRes> notificationReses = sysNotificationReceiverService.getNotificationList(sysNotificationReceiver);
+		List<NotificationRes> notificationReses = sysNotificationReceiverService
+				.getNotificationList(sysNotificationReceiver);
+		if (CollectionUtils.isNotEmpty(notificationReses)) {
+			for (NotificationRes notificationRes : notificationReses) {
+				SysNotificationReceiver sysNotificationRecei = new SysNotificationReceiver();
+				sysNotificationRecei.setId(notificationRes.getId());
+				sysNotificationRecei.setSeenFlg(true);
+				sysNotificationReceiverService.updateSysNotificationReceiver(sysNotificationRecei);
+			}
+		}
 		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("notificationList", notificationReses);
+		ajaxResult.put("notificationList", getDataTable(notificationReses));
 		return ajaxResult;
-    }
+	}
 }

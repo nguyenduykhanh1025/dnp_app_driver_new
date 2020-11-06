@@ -20,6 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="pickupAssignId"    column="pickup_assign_id"    />
         <association property="logisticGroup"    column="logistic_group_id" javaType="LogisticGroup" resultMap="logisticGroupResult" />
     </resultMap>
     <resultMap type="LogisticGroup" id="logisticGroupResult">
@@ -172,6 +173,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ) dr left join logistic_truck tr on dr.truck_id = tr.id
         <where>
             and tr.type = '0'
+        </where>
+    </select>
+
+    <select id="selectAssignedDriverList" parameterType="PickupAssign" resultMap="DriverAccountResult">
+        select da.id, da.logistic_group_id, da.mobile_number, da.full_name, da.identify_card_no, da.status, da.del_flag, 
+            da.valid_date, pa.id as pickup_assign_id 
+        from driver_account da right join pickup_assign pa on da.id = pa.driver_id
+        <where>
+            <if test="shipmentId != null"> and pa.shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null"> and pa.logistic_group_id = #{logisticGroupId}</if>
+            <if test="shipmentDetailId != null"> and pa.shipment_detail_id = #{shipmentDetailId}</if>
+            <if test="params.mobileNumber != null and params.mobileNumber != ''"> and da.mobile_number like concat('%', concat(#{params.mobileNumber}, '%'))</if>
+            <if test="params.fullName != null and params.fullName != ''"> and da.full_name like concat('%', concat(#{params.fullName}, '%'))</if>
+            <if test="params.nullShipmentDetail != null"> and pa.shipment_detail_id is null</if>
+        </where>
+    </select>
+
+    <select id="selectDriverListByIds" parameterType="DriverAccount" resultMap="DriverAccountResult">
+        select * from driver_account
+        <where>
+            <if test="params.driverAccountIds != null">
+                and id in
+                <foreach item="id" collection="params.driverAccountIds" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="logisticGroupId != null"> and logistic_group_id = #{logisticGroupId}</if>
         </where>
     </select>
 </mapper>

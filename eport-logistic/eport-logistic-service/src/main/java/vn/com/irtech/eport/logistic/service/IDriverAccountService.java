@@ -78,4 +78,20 @@ public interface IDriverAccountService
 	 * @return List<DriverTruckInfo>
 	 */
 	public List<DriverTruckInfo> selectDriverWithTruckNoInfoByIds(String ids);
+
+	/**
+	 * Select assigned driver list
+	 * 
+	 * @param pickupAssign
+	 * @return List<DriverAccount>
+	 */
+	public List<DriverAccount> selectAssignedDriverList(PickupAssign pickupAssign);
+
+	/**
+	 * Select driver account by ids
+	 * 
+	 * @param driverAccount
+	 * @return List<DriverAccount>
+	 */
+	public List<DriverAccount> selectDriverListByIds(DriverAccount driverAccount);
 }
