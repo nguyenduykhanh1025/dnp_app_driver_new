@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 
@@ -391,5 +392,76 @@ public class MqttService implements MqttCallback {
 		processOrder.setRobotUuid(uuid); // robot uuid in charge of process order
 		processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_PROCESSING); // on progress
 		processOrderService.updateProcessOrder(processOrder);
+	}
+
+	@Transactional
+	public boolean publishMessageToRobot(ServiceSendFullRobotReq payLoad, EServiceRobot serviceRobot)
+			throws MqttException {
+		SysRobot sysRobot = this.getAvailableRobot(serviceRobot);
+		if (sysRobot == null) {
+			return false;
+		}
+		String msg = new Gson().toJson(payLoad);
+		String topic = ROBOT_REQUEST_TOPIC.replace("+", sysRobot.getUuId());
+		publish(topic, new MqttMessage(msg.getBytes()));
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setId(payLoad.processOrder.getId());
+		processOrder.setRobotUuid(sysRobot.getUuId()); // robot uuid in charge of process order
+		processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_PROCESSING); // on progress
+		processOrder.setRunnable(false);
+		processOrderService.updateProcessOrder(processOrder);
+		robotService.updateRobotStatusByUuId(sysRobot.getUuId(), EportConstants.ROBOT_STATUS_BUSY);
+		return true;
+	}
+
+	/**
+	 * Get a robot already to execute service
+	 * 
+	 * @param service
+	 * @return
+	 */
+	public SysRobot getAvailableRobot(EServiceRobot serviceRobot) {
+		SysRobot sysRobot = new SysRobot();
+		sysRobot.setStatus("0");
+		switch (serviceRobot) {
+		case RECEIVE_CONT_FULL:
+			sysRobot.setIsReceiveContFullOrder(true);
+			break;
+		case RECEIVE_CONT_EMPTY:
+			sysRobot.setIsReceiveContEmptyOrder(true);
+			break;
+		case SEND_CONT_FULL:
+			sysRobot.setIsSendContFullOrder(true);
+			break;
+		case SEND_CONT_EMPTY:
+			sysRobot.setIsSendContEmptyOrder(true);
+			break;
+		case SHIFTING_CONT:
+			sysRobot.setIsShiftingContOrder(true);
+			break;
+		case CHANGE_VESSEL:
+			sysRobot.setIsChangeVesselOrder(true);
+			break;
+		case CREATE_BOOKING:
+			sysRobot.setIsCreateBookingOrder(true);
+			break;
+		case EXTENSION_DATE:
+			sysRobot.setIsExtensionDateOrder(true);
+			break;
+		case TERMINAL_CUSTOM_HOLD:
+			sysRobot.setIsChangeTerminalCustomHold(true);
+			break;
+		case CANCEL_DROP_FULL:
+			sysRobot.setIsCancelSendContFullOrder(true);
+			break;
+		case CANCEL_PICKUP_EMPTY:
+			sysRobot.setIsCancelReceiveContEmptyOrder(true);
+			break;
+		case EXPORT_RECEIPT:
+			sysRobot.setIsExportReceipt(true);
+			break;
+		}
+		sysRobot.setDisabled(false);
+		return robotService.findFirstRobot(sysRobot);
 	}
 }

@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.carrier.listener;
+package vn.com.irtech.eport.web.queue.listener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
-import vn.com.irtech.eport.carrier.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.carrier.service.ICarrierQueueService;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.text.Convert;
@@ -32,6 +31,8 @@ import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.web.mqtt.MqttService;
+import vn.com.irtech.eport.web.mqtt.MqttService.EServiceRobot;
 
 @Component
 public class HandleExtendExpiredDemReqThread {

@@ -29,6 +29,7 @@ import vn.com.irtech.eport.api.form.ShipmentForm;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
+import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.StringUtils;
@@ -88,9 +89,6 @@ public class LogisticTruckAssignController extends LogisticBaseController {
 	@PostMapping("/serviceType/{serviceType}/shipments")
 	public AjaxResult getShipmentList(@PathVariable("serviceType") Integer serviceType,
 			@RequestBody PageAble<Shipment> params) {
-		// Pagination
-		startPage(params.getPageNum(), params.getPageSize(), params.getOrderBy());
-
 		// Only check if service is drop or pickup
 		// Only service with 1: pickup full, 2: drop empty, 3: pickup empty, 4: drop
 		// full
@@ -103,8 +101,10 @@ public class LogisticTruckAssignController extends LogisticBaseController {
 		}
 		shipmentInput.setServiceType(serviceType);
 		shipmentInput.setLogisticGroupId(getLogisticAccount().getGroupId());
-
+		// Pagination
+		startPage(params.getPageNum(), params.getPageSize(), params.getOrderBy());
 		List<Shipment> shipments = shipmentService.getShipmentListForAssign(shipmentInput);
+		TableDataInfo result = getDataTable(shipments);
 		List<ShipmentForm> shipmentsResult = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(shipments)) {
 			for (Shipment shipment : shipments) {
@@ -113,9 +113,9 @@ public class LogisticTruckAssignController extends LogisticBaseController {
 				shipmentsResult.add(shipmentForm);
 			}
 		}
-
+		result.setRows(shipmentsResult);
 		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("shipments", getDataTable(shipmentsResult));
+		ajaxResult.put("shipments", result);
 		return ajaxResult;
 	}
 	

@@ -121,7 +121,8 @@ public class EdiServiceImpl implements IEdiService {
 		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoListByCondition(cntrInfoParam);
 
 		// check if expired dem has update
-		if (edoUpdate.getExpiredDem() != null && odlEdo.getExpiredDem().compareTo(edoUpdate.getExpiredDem()) != 0) {
+		if (edoUpdate.getExpiredDem() != null && odlEdo.getExpiredDem() != null
+				&& odlEdo.getExpiredDem().compareTo(edoUpdate.getExpiredDem()) != 0) {
 			if (CollectionUtils.isNotEmpty(cntrInfos)) {
 				for (ContainerInfoDto cntrInfo : cntrInfos) {
 					if ("F".equalsIgnoreCase(cntrInfo.getFe()) && StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
@@ -137,7 +138,8 @@ public class EdiServiceImpl implements IEdiService {
 		// check if det free time has update
 		// if true (old != new) check container condition to update (container has not
 		// dropped cont empty yet)
-		if (odlEdo.getDetFreeTime() == edoUpdate.getDetFreeTime()) {
+		if (StringUtils.isNotEmpty(odlEdo.getDetFreeTime()) && StringUtils.isNotEmpty(edoUpdate.getDetFreeTime())
+				&& odlEdo.getDetFreeTime().equalsIgnoreCase(edoUpdate.getDetFreeTime())) {
 			edoUpdate.setDetFreeTime(null);
 		} else {
 			// Case has update => check condition
@@ -156,7 +158,9 @@ public class EdiServiceImpl implements IEdiService {
 		// check if empty cotnainer depot has update
 		// if true (old != new) => check contition to udpate (contaire has not dropped
 		// cont empty yet)
-		if (odlEdo.getEmptyContainerDepot().equals(edoUpdate.getEmptyContainerDepot())) {
+		if (StringUtils.isNotEmpty(odlEdo.getEmptyContainerDepot())
+				&& StringUtils.isNotEmpty(edoUpdate.getEmptyContainerDepot())
+				&& odlEdo.getEmptyContainerDepot().equals(edoUpdate.getEmptyContainerDepot())) {
 			edoUpdate.setEmptyContainerDepot(null);
 		} else {
 			// Case has update => check condition

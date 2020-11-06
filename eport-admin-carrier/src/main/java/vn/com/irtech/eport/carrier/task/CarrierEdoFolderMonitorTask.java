@@ -5,13 +5,16 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
@@ -33,9 +36,13 @@ import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
 import vn.com.irtech.eport.carrier.domain.EdoHistory;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
+import vn.com.irtech.eport.carrier.service.ICarrierQueueService;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
+import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Service
 @Configurable
@@ -56,6 +63,12 @@ public class CarrierEdoFolderMonitorTask {
 
 	@Autowired
 	private ICarrierGroupService carrierGroupService;
+
+	@Autowired
+	private ICatosApiService catosApiService;
+
+	@Autowired
+	private ICarrierQueueService queueService;
 
 	@Autowired
 	@Qualifier("threadPoolTaskExecutor")
@@ -176,6 +189,15 @@ public class CarrierEdoFolderMonitorTask {
 			logger.error("No Container found in EDI File: " + ediFile.getName() + "\nEDI Content:\n" + content);
 			return;
 		}
+
+		// For get list containers string to get cntr info from catos
+		String containers = "";
+		for (Edo edo : listEdo) {
+			containers += edo.getContainerNumber() + ",";
+		}
+		Map<String, ContainerInfoDto> cntrMap = getMapCntrInfoCatos(containers.substring(0, containers.length() - 1),
+				listEdo.get(0).getBillOfLading());
+
 		// loop and insert
 		for (Edo edo : listEdo) {
 			try {
@@ -193,17 +215,61 @@ public class CarrierEdoFolderMonitorTask {
 	
 				Edo edoCheck = edoService.checkContainerAvailable(edo.getContainerNumber(), edo.getBillOfLading());
 				if (edoCheck != null) {
-					edo.setId(edoCheck.getId());
-					edo.setUpdateTime(timeNow);
-					edo.setUpdateBy(carrierGroup.getGroupCode());
+					ContainerInfoDto cntrInfo = cntrMap.get(edoCheck.getContainerNumber());
+
+					Edo edoUpdate = new Edo();
+					edoUpdate.setId(edoCheck.getId());
+					edoUpdate.setUpdateTime(timeNow);
+					edoUpdate.setUpdateBy(carrierGroup.getGroupCode());
+
+					edoUpdate.setConsignee(edo.getConsignee());
+					edoUpdate.setDetFreeTime(edo.getDetFreeTime());
+					edoUpdate.setEmptyContainerDepot(edo.getEmptyContainerDepot());
+					edoUpdate.setTaxCode(edo.getTaxCode());
+					edoUpdate.setExpiredDem(edo.getExpiredDem());
+					// Validate edo field can update
+					if (cntrInfo == null || StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
+						// Case container don't has job order no in catos
+						// => can update
+						edoUpdate.setCarrierCode(edo.getCarrierCode());
+						edoUpdate.setBusinessUnit(edo.getBusinessUnit());
+						edoUpdate.setOrderNumber(edo.getOrderNumber());
+						edoUpdate.setContainerNumber(edo.getContainerNumber());
+						edoUpdate.setReleaseNo(edo.getReleaseNo());
+						edoUpdate.setVessel(edo.getVessel());
+						edoUpdate.setVoyNo(edo.getVoyNo());
+						edoUpdate.setBillOfLading(edo.getBillOfLading());
+						edoUpdate.setSztp(edo.getSztp());
+						edoUpdate.setPol(edo.getPol());
+						edoUpdate.setPod(edo.getPod());
+						edoUpdate.setConsignee(edo.getConsignee());
+					}
+
+					// validate expired dem if has update
+					if (edoUpdate.getExpiredDem() != null && edoCheck.getExpiredDem() != null
+							&& edoCheck.getExpiredDem().compareTo(edoUpdate.getExpiredDem()) != 0) {
+						if (cntrInfo != null && StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
+							// container has job order no in catos
+							// Check if expired dem need update
+							edoUpdate.setJobOrderNo(cntrInfo.getJobOdrNo2());
+							queueService.offerEdoExtendExpiredDem(edoUpdate);
+						}
+					}
+
+					// Container has not been ordered to drop to danang port yet
+					if (cntrInfo == null || StringUtils.isEmpty(cntrInfo.getJobOdrNo())) {
+						edoUpdate.setTaxCode(edo.getTaxCode());
+						edoUpdate.setEmptyContainerDepot(edo.getEmptyContainerDepot());
+					}
+
 					// Update eDO
-					edoService.updateEdo(edo); // TODO update allowed items (not all)
+					edoService.updateEdo(edoUpdate);
 					// Update history
-					edoHistory.setEdoId(edo.getId());
+					edoHistory.setEdoId(edoUpdate.getId());
 					edoHistory.setAction("Update");
 					edoHistoryService.insertEdoHistory(edoHistory);
 					edoAuditLog.setEdoId(edo.getId());
-					edoAuditLogService.updateAuditLog(edo);
+					edoAuditLogService.updateAuditLog(edoUpdate);
 				} else {
 					edo.setCreateTime(timeNow);
 					edo.setCreateBy(carrierGroup.getGroupCode());
@@ -286,5 +352,19 @@ public class CarrierEdoFolderMonitorTask {
 		}
 		// Move file to error folder
 		Files.move(ediFile, errorFile);
+	}
+
+	private Map<String, ContainerInfoDto> getMapCntrInfoCatos(String containers, String blNo) {
+		List<ContainerInfoDto> containerInfoDtos = catosApiService.getContainerInfoDtoByContNos(containers);
+		Map<String, ContainerInfoDto> containerInfoMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(containerInfoDtos)) {
+			for (ContainerInfoDto containerInfoDto : containerInfoDtos) {
+				if (StringUtils.isNotEmpty(containerInfoDto.getBlNo())
+						&& containerInfoDto.getBlNo().equalsIgnoreCase(blNo)) {
+					containerInfoMap.put(containerInfoDto.getCntrNo(), containerInfoDto);
+				}
+			}
+		}
+		return containerInfoMap;
 	}
 }
