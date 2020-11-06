@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.dto.EdiDataReq;
+import vn.com.irtech.eport.carrier.service.ICarrierQueueService;
 import vn.com.irtech.eport.carrier.service.IEdiService;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
@@ -34,7 +35,7 @@ public class EdiServiceImpl implements IEdiService {
 	private ICatosApiService catosApiService;
 
 	@Autowired
-	private QueueSer
+	private ICarrierQueueService queueService;
 
 	@Override
 	public void executeListEdi(List<EdiDataReq> ediDataReqs, String partnerCode, Long carrierGroupId, String transactionId) {

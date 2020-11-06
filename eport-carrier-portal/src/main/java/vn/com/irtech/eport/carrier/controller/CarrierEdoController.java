@@ -28,7 +28,7 @@ import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
 import vn.com.irtech.eport.carrier.listener.MqttService;
 import vn.com.irtech.eport.carrier.listener.MqttService.EServiceRobot;
-import vn.com.irtech.eport.carrier.listener.QueueService;
+import vn.com.irtech.eport.carrier.service.ICarrierQueueService;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
@@ -75,7 +75,7 @@ public class CarrierEdoController extends CarrierBaseController {
 	private IShipmentDetailService shipmentDetailService;
 
 	@Autowired
-	private QueueService queueService;
+	private ICarrierQueueService queueService;
 
 	@Autowired
 	private MqttService mqttService;

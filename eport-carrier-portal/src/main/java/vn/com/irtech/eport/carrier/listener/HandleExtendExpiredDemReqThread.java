@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.listener.MqttService.EServiceRobot;
+import vn.com.irtech.eport.carrier.service.ICarrierQueueService;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -40,7 +41,7 @@ public class HandleExtendExpiredDemReqThread {
 	private final static Long WAITING_THREAD_TIME = 180000L; // 3 minutes
 
 	@Autowired
-	private QueueService queueService;
+	private ICarrierQueueService queueService;
 
 	@Autowired
 	private MqttService mqttService;
@@ -65,6 +66,15 @@ public class HandleExtendExpiredDemReqThread {
 					try {
 						// Get all edo
 						List<Edo> edos = queueService.getAllEdoExtendExpiredDem();
+						try {
+							Thread.sleep(WAITING_THREAD_TIME);
+						} catch (InterruptedException e) {
+							logger.debug("Error when sleep thread " + e);
+						}
+						List<Edo> edos2 = queueService.getAllEdoExtendExpiredDem();
+						if (CollectionUtils.isNotEmpty(edos2)) {
+							edos.addAll(edos2);
+						}
 						if (CollectionUtils.isNotEmpty(edos)) {
 							// Sort edos by job order no
 							Collections.sort(edos, new JobOrderNoComparator());
@@ -83,16 +93,16 @@ public class HandleExtendExpiredDemReqThread {
 					} catch (Exception e) {
 						logger.error("Error when  " + e);
 					}
-					try {
-						Thread.sleep(WAITING_THREAD_TIME);
-					} catch (InterruptedException e) {
-						logger.debug("Error when sleep thread " + e);
-					}
 				}
 			}
 		});
 	}
 
+	/**
+	 * Remove same edo with same container no, get one with last update time
+	 * 
+	 * @param edos
+	 */
 	private void filterDuplicateContainer(List<Edo> edos) {
 		// Sort edos by container number
 		Collections.sort(edos, new ContainerNoComparator());
@@ -168,6 +178,7 @@ public class HandleExtendExpiredDemReqThread {
 		}
 
 		ProcessJsonData processJsonData = new ProcessJsonData();
+		processJsonData.setShipmentDetails(shipmentDetails);
 		processJsonData.setContainers(containers);
 		processOrder.setProcessData(new Gson().toJson(processJsonData));
 
