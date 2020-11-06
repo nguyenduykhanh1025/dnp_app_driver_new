@@ -1,12 +1,14 @@
 package vn.com.irtech.eport.carrier.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import vn.com.irtech.eport.common.annotation.Excel;
-import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import vn.com.irtech.eport.common.annotation.Excel;
+import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
 /**
  * Exchange Delivery Order Object edo
@@ -138,6 +140,9 @@ public class Edo extends BaseEntity {
 	/** Consignee by tax code */
 	@Excel(name = "Consignee Tax Code")
 	private String consigneeByTaxCode;
+
+	/** Job no make order from catos */
+	private String jobOrderNo;
 
 	public String getPolName() {
 		return polName;
@@ -409,6 +414,14 @@ public class Edo extends BaseEntity {
 
 	public void setConsigneeByTaxCode(String consigneeByTaxCode) {
 		this.consigneeByTaxCode = consigneeByTaxCode;
+	}
+
+	public String getJobOrderNo() {
+		return jobOrderNo;
+	}
+
+	public void setJobOrderNo(String jobOrderNo) {
+		this.jobOrderNo = jobOrderNo;
 	}
 
 	@Override

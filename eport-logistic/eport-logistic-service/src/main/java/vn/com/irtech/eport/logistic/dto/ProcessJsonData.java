@@ -3,6 +3,8 @@ package vn.com.irtech.eport.logistic.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+
 public class ProcessJsonData implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -19,6 +21,8 @@ public class ProcessJsonData implements Serializable {
 	
 	private String containers;
 	
+	private List<ShipmentDetail> shipmentDetails;
+
 	/** Number of times process retry send to robot after error */
 	private Integer retryCount;
 
@@ -69,4 +73,13 @@ public class ProcessJsonData implements Serializable {
 	public void setRetryCount(Integer retryCount) {
 		this.retryCount = retryCount;
 	}
+
+	public List<ShipmentDetail> getShipmentDetails() {
+		return shipmentDetails;
+	}
+
+	public void setShipmentDetails(List<ShipmentDetail> shipmentDetails) {
+		this.shipmentDetails = shipmentDetails;
+	}
+
 }

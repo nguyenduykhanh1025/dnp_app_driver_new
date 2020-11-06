@@ -718,6 +718,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		String hresult = null;
 		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
 		ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+
 		if ("success".equalsIgnoreCase(result)) {
 			processOrder.setStatus(2); // FINISH
 			processOrder.setResult("S"); // RESULT SUCESS
@@ -893,16 +894,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 	 */
 	public void sendExtendDateOrderToRobot(ProcessOrder processOrder, String uuid) {
 		ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
-		String[] containers = processJsonData.getContainers().split(",");
-		List<ShipmentDetail> shipmentDetails = new ArrayList<>();
-		if (containers.length > 0) {
-			for (String container : containers) {
-				ShipmentDetail shipmentDetail = new ShipmentDetail();
-				shipmentDetail.setContainerNo(container);
-				shipmentDetails.add(shipmentDetail);
-			}
-		}
-		ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+		ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(processOrder, processJsonData.getShipmentDetails());
 		try {
 			mqttService.publicMessageToDemandRobot(req, EServiceRobot.EXTENSION_DATE, uuid);
 		} catch (MqttException e) {
