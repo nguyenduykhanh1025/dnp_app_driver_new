@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysSyncQueueVo">
-        select id, sync_type, bl_no, cntr_no, job_odr_no, process_order_id, status, retry_times, create_time from sys_sync_queue
+        select id, sync_type, bl_no, cntr_no, job_odr_no, process_order_id, status, retry_times, expired_dem, det_free_time, create_time from sys_sync_queue
     </sql>
 
     <select id="selectSysSyncQueueList" parameterType="SysSyncQueue" resultMap="SysSyncQueueResult">
