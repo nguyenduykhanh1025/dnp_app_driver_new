@@ -54,22 +54,22 @@ public class MqttService implements MqttCallback {
 
 	@Autowired
 	private CheckinHandler checkinHandler;
-	
+
 	@Autowired
 	private GatePassHandler gatePassHandler;
-	
+
 	@Autowired
 	private GateCheckInHandler gateCheckInHandler;
-	
+
 	@Autowired
 	private IProcessOrderService processOrderService;
-	
+
 	@Autowired
 	private IPickupHistoryService pickupHistoryService;
-	
+
 	@Autowired
 	private ISysRobotService robotService;
-	
+
 	@Autowired
 	private ISysConfigService sysConfigService;
 
@@ -145,7 +145,6 @@ public class MqttService implements MqttCallback {
 		}
 	}
 
-
 	@PreDestroy
 	public void disconnect() {
 		try {
@@ -220,13 +219,14 @@ public class MqttService implements MqttCallback {
 	public void sendMessageToRobot(String message, String gateId) throws MqttException {
 		this.publish(MqttConsts.GATE_ROBOT_REQ_TOPIC.replace("+", gateId), new MqttMessage(message.getBytes()));
 	}
-	
+
 	public enum EServiceRobot {
 		RECEIVE_CONT_FULL, RECEIVE_CONT_EMPTY, SEND_CONT_FULL, SEND_CONT_EMPTY
 	}
-	
+
 	@Transactional
-	public boolean publishMessageToRobot(ServiceSendFullRobotReq payLoad, EServiceRobot serviceRobot) throws MqttException {
+	public boolean publishMessageToRobot(ServiceSendFullRobotReq payLoad, EServiceRobot serviceRobot)
+			throws MqttException {
 		SysRobot sysRobot = this.getAvailableRobot(serviceRobot);
 		if (sysRobot == null) {
 			return false;
@@ -242,7 +242,7 @@ public class MqttService implements MqttCallback {
 		robotService.updateRobotStatusByUuId(sysRobot.getUuId(), "1");
 		return true;
 	}
-	
+
 	/**
 	 * Get a robot already to execute service
 	 * 
@@ -253,23 +253,23 @@ public class MqttService implements MqttCallback {
 		SysRobot sysRobot = new SysRobot();
 		sysRobot.setStatus("0");
 		switch (serviceRobot) {
-			case RECEIVE_CONT_FULL:
-				sysRobot.setIsReceiveContFullOrder(true);
-				break;
-			case RECEIVE_CONT_EMPTY:
-				sysRobot.setIsReceiveContEmptyOrder(true);
-				break;
-			case SEND_CONT_FULL:
-				sysRobot.setIsSendContFullOrder(true);
-				break;
-			case SEND_CONT_EMPTY:
-				sysRobot.setIsSendContEmptyOrder(true);
-				break;
+		case RECEIVE_CONT_FULL:
+			sysRobot.setIsReceiveContFullOrder(true);
+			break;
+		case RECEIVE_CONT_EMPTY:
+			sysRobot.setIsReceiveContEmptyOrder(true);
+			break;
+		case SEND_CONT_FULL:
+			sysRobot.setIsSendContFullOrder(true);
+			break;
+		case SEND_CONT_EMPTY:
+			sysRobot.setIsSendContEmptyOrder(true);
+			break;
 		}
 		sysRobot.setDisabled(false);
 		return robotService.findFirstRobot(sysRobot);
 	}
-	
+
 	public void sendMessageToMcAppWindow(List<Long> pickupHistoryIds) throws MqttException {
 		List<Map<String, Object>> list = new ArrayList<>();
 		NotificationReq notificationReq = new NotificationReq();
@@ -296,7 +296,9 @@ public class MqttService implements MqttCallback {
 					.setLink(sysConfigService.selectConfigByKey("domain.admin.name") + EportConstants.URL_POSITION_MC);
 			notificationReq.setPriority(EportConstants.NOTIFICATION_PRIORITY_HIGH);
 			Map<String, Object> data = new HashMap<>();
-			data.put("id", pickupHistoryId);
+			// To differentiate with gate detection id
+			// => add post fix 0
+			data.put("id", pickupHistoryId + "0");
 			data.put("opeCode", pickupHistory.getShipment().getOpeCode());
 			data.put("containerNo", pickupHistory.getContainerNo());
 			data.put("wgt", shipmentDetail.getWgt());
@@ -310,7 +312,7 @@ public class MqttService implements MqttCallback {
 		String req = new Gson().toJson(notificationReq);
 		this.publish(MqttConsts.NOTIFICATION_MC_TOPIC, new MqttMessage(req.getBytes()));
 	}
-	
+
 	/**
 	 * Send message to driver the result or progress of process
 	 * 
@@ -331,7 +333,7 @@ public class MqttService implements MqttCallback {
 			logger.error("Error when send message to driver: " + e);
 		}
 	}
-	
+
 	/**
 	 * Send status of gate in order to gate
 	 * 
@@ -345,7 +347,7 @@ public class MqttService implements MqttCallback {
 		notificationReq.setType(EportConstants.APP_USER_TYPE_GATE);
 		notificationReq.setLink("");
 		notificationReq.setPriority(EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
-		
+
 		String msg = new Gson().toJson(notificationReq);
 		try {
 			publish(MqttConsts.NOTIFICATION_GATE_TOPIC, new MqttMessage(msg.getBytes()));

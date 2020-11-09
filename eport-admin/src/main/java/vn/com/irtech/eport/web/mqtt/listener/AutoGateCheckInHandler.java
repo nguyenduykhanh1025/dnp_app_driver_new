@@ -109,6 +109,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 			gateDetection.setGatepass(gateNotificationCheckInReq.getGatePass());
 			gateDetection.setTotalWgt(Long.parseLong(gateNotificationCheckInReq.getWeight().toString()));
 			gateDetection.setDeduct(Long.parseLong(gateNotificationCheckInReq.getDeduct().toString()));
+			gateDetection.setGateNo(gateNotificationCheckInReq.getGateId());
 
 			// Get container info from catos
 			Map<String, ContainerInfoDto> cntrMap = getCntrMapFromCatos(gateDetection);
