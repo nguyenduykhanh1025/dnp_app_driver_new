@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.web.mqtt.listener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +19,13 @@ import com.google.gson.Gson;
 
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.GateDetection;
+import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IGateDetectionService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.service.ISysRobotService;
+import vn.com.irtech.eport.web.dto.GateInFormData;
 import vn.com.irtech.eport.web.dto.GateNotificationCheckInReq;
 import vn.com.irtech.eport.web.mqtt.MqttService;
 
@@ -171,19 +174,23 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 	 * @param gateNotificationCheckInReq
 	 */
 	private void sendGateInOrderToRobot(GateDetection gateDetection) {
-//		try {
-//			GateInFormData gateInFormData = new GateInFormData();
-//			List<PickupHistory> pickupIn = new ArrayList<>();
-//			
-//			// Container 1
-//			if (StringUtils.isNotEmpty(gateDetection))
-//			
-//			// Container 2
-//			
+		try {
+			GateInFormData gateInFormData = new GateInFormData();
+			List<PickupHistory> pickupIn = new ArrayList<>();
+
+			// Container 1
+			if (StringUtils.isNotEmpty(gateDetection.getContainerNo1())) {
+
+			}
+
+			// Container 2
+			if (StringUtils.isNotEmpty(gateDetection.getContainerNo2())) {
+
+			}
+
 //			if (CollectionUtils.isNotEmpty(pickupHistories)) {
 //
 //				PickupHistory pickupHistoryGeneral = pickupHistories.get(0);
-//				
 //
 //				ProcessOrder processOrder = new ProcessOrder();
 //				processOrder.setShipmentId(pickupHistoryGeneral.getShipmentId());
@@ -211,8 +218,6 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 //						if (pickupHistory.getArea() == null) {
 //							pickupHistory.setArea("");
 //						}
-//
-//						
 //
 //						pickupIn.add(pickupHistory);
 //					}
@@ -257,8 +262,8 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 //					logger.debug("No GateRobot is available: " + msg);
 //				}
 //			}
-//		} catch (Exception e) {
-//			logger.error("Error when send order gate in: " + e);
-//		}
+		} catch (Exception e) {
+			logger.error("Error when send order gate in: " + e);
+		}
 	}
 }
