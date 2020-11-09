@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
 @Component
-public class AutoGatePassResponseHandler implements IMqttMessageListener {
+public class AutoGatePassHandler implements IMqttMessageListener {
 
-	private static final Logger logger = LoggerFactory.getLogger(AutoGatePassResponseHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(AutoGatePassHandler.class);
 
 	@Autowired
 	private ISysRobotService robotService;

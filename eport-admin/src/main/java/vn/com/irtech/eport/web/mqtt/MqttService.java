@@ -38,7 +38,8 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.system.service.ISysRobotService;
-import vn.com.irtech.eport.web.mqtt.listener.AutoGatePassResponseHandler;
+import vn.com.irtech.eport.web.mqtt.listener.AutoGateCheckInHandler;
+import vn.com.irtech.eport.web.mqtt.listener.AutoGatePassHandler;
 import vn.com.irtech.eport.web.mqtt.listener.MCRequestHandler;
 import vn.com.irtech.eport.web.mqtt.listener.RobotResponseHandler;
 
@@ -55,8 +56,8 @@ public class MqttService implements MqttCallback {
 	private static final String NOTIFICATION_CONT_TOPIC = BASE + "/notification/cont";
 	private static final String ROBOT_CONNECTION_REQUEST = ROBOT_BASE + "/connection/+/request";
 	private static final String ROBOT_CONNECTION_RESPONSE = ROBOT_BASE + "/connection/+/response";
-	private static final String GATE_DETECTION_REQUEST = BASE + "/detection/gate/+/request";
 	private static final String GATE_DETECTION_RESPONSE = BASE + "/detection/gate/+/response";
+	private static final String GATE_DETECTION_ROBOT_RESPONSE = ROBOT_BASE + "/detection/gate/+/response";
 
 	@Autowired
 	private MqttAsyncClient mqttClient;
@@ -71,7 +72,10 @@ public class MqttService implements MqttCallback {
 	private RobotResponseHandler robotResponseHandler;
 	
 	@Autowired
-	private AutoGatePassResponseHandler autoGatePassResponseHandler;
+	private AutoGateCheckInHandler autoGateCheckInHandler;
+
+	@Autowired
+	private AutoGatePassHandler autoGatePassHandler;
 
 	@Autowired
 	private ICatosApiService catosApiService;
@@ -138,7 +142,8 @@ public class MqttService implements MqttCallback {
 		List<IMqttToken> tokens = new ArrayList<>();
 		tokens.add(mqttClient.subscribe(BASE + "/mc/plan/request", 1, mcRequestHandler));
 		tokens.add(mqttClient.subscribe(ROBOT_CONNECTION_RESPONSE, 1, robotResponseHandler));
-		tokens.add(mqttClient.subscribe(GATE_DETECTION_RESPONSE, 1, autoGatePassResponseHandler));
+		tokens.add(mqttClient.subscribe(GATE_DETECTION_RESPONSE, 1, autoGateCheckInHandler));
+		tokens.add(mqttClient.subscribe(GATE_DETECTION_ROBOT_RESPONSE, 1, autoGatePassHandler));
 		// subscribe default topics when connect
 //		tokens.add(mqttClient.subscribe(BASE, 0, robotUpdateStatusHandler));
 		// Wait for subscribe complete

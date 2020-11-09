@@ -183,7 +183,7 @@ public class SyncQueueTask {
 		sysSyncQueueUpdate.setProcessOrderId(processOrder.getId());
 		sysSyncQueueUpdate.setRetryTimes(syncReference.getRetryTimes() + 1);
 		Map<String, Object> queueParams = new HashMap<>();
-		queueParams.put("ids", syncQueueIds);
+		queueParams.put("ids", Convert.toStrArray(syncQueueIds));
 		sysSyncQueueUpdate.setParams(queueParams);
 		sysSyncQueueService.updateSysSyncQueueWithCondition(sysSyncQueueUpdate);
 
