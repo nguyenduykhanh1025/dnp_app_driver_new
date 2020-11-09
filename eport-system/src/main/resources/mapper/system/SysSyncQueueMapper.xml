@@ -139,10 +139,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
             <if test="cntrNo != null  and cntrNo != ''"> and cntr_no = #{cntrNo}</if>
             <if test="jobOdrNo != null  and jobOdrNo != ''"> and job_odr_no = #{jobOdrNo}</if>
-            <if test="processOrderId != null "> and process_order_id = #{processOrderId}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="expiredDem != null"> and expired_dem = #{expiredDem}</if>
-            <if test="detFreeTime != null and detFreeTime != ''"> and det_free_time = #{detFreeTime}</if>
             <if test="params.ids != null">
                 and id in
                 <foreach item="id" collection="params.ids" open="(" separator="," close=")">
