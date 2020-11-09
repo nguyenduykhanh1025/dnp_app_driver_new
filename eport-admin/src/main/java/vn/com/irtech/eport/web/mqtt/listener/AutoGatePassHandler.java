@@ -145,9 +145,13 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 		}
 		history.setStatus(EportConstants.PROCESS_HISTORY_STATUS_FINISHED);
 
+		GateDetection gateDetection = gateDetectionService.selectGateDetectionById(gateInFormData.getId());
 		// If Robot return success
 		if ("success".equalsIgnoreCase(result)) {
 			try {
+				gateDetection.setStatus("S");
+				gateDetectionService.updateGateDetection(gateDetection);
+
 				// Send result to gate app
 				String message = "Làm lệnh vào cổng thành công.";
 				mqttService.sendProgressToGate(BusinessConsts.FINISH, BusinessConsts.SUCCESS, message,
@@ -161,8 +165,6 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 
 		} else if ("position_failed".equalsIgnoreCase(result)) {
 			if (gateInFormData.getId() != 0) {
-				GateDetection gateDetection = gateDetectionService.selectGateDetectionById(gateInFormData.getId());
-
 				String message = "Chưa có tọa độ, đang thực hiện yêu cầu mc cấp tọa độ.";
 				mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, message,
 						gateInFormData.getGateId());
@@ -204,6 +206,9 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 			history.setResult("M");
 		} else {
 			try {
+				gateDetection.setStatus("E");
+				gateDetectionService.updateGateDetection(gateDetection);
+
 				// Send result to gate app
 				String message = "Có lỗi xảy ra khi làm lệnh gate in.";
 				mqttService.sendProgressToGate(BusinessConsts.FINISH, BusinessConsts.FAIL, message,
@@ -244,6 +249,7 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 			// Container 1
 			if (StringUtils.isNotEmpty(gateDetection.getContainerNo1())) {
 				PickupHistory pickupHistory = new PickupHistory();
+				pickupHistory.setId(gateDetection.getId() * 10 + 1);
 				pickupHistory.setContainerNo(gateDetection.getContainerNo1());
 
 				// Check location
@@ -285,6 +291,7 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 			// Container 2
 			if (StringUtils.isNotEmpty(gateDetection.getContainerNo2())) {
 				PickupHistory pickupHistory = new PickupHistory();
+				pickupHistory.setId(gateDetection.getId() * 10 + 2);
 				pickupHistory.setContainerNo(gateDetection.getContainerNo2());
 
 				// Check location

@@ -98,6 +98,7 @@ public class GateSupportController extends BaseController {
 		dt.setChassisNo(detection.getChassisNo());
 		dt.setContainerNo1(detection.getContainerNo1());
 		dt.setContainerNo2(detection.getContainerNo2());
+		dt.setStatus("W");
 
 		gateDetectionService.insertGateDetection(dt);
 
