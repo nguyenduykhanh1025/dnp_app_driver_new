@@ -38,6 +38,7 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.system.service.ISysRobotService;
+import vn.com.irtech.eport.web.dto.GateRes;
 import vn.com.irtech.eport.web.mqtt.listener.AutoGateCheckInHandler;
 import vn.com.irtech.eport.web.mqtt.listener.AutoGatePassHandler;
 import vn.com.irtech.eport.web.mqtt.listener.MCRequestHandler;
@@ -58,6 +59,8 @@ public class MqttService implements MqttCallback {
 	private static final String ROBOT_CONNECTION_RESPONSE = ROBOT_BASE + "/connection/+/response";
 	private static final String GATE_DETECTION_RESPONSE = BASE + "/detection/gate/+/response";
 	private static final String GATE_DETECTION_ROBOT_RESPONSE = ROBOT_BASE + "/detection/gate/+/response";
+	private static final String GATE_ROBOT_REQ_TOPIC = BASE + "/robot/gate/+/request";
+	public static final String NOTIFICATION_GATE_PROGRESS = "eport/notification/gate/+/progress";
 
 	@Autowired
 	private MqttAsyncClient mqttClient;
@@ -475,5 +478,23 @@ public class MqttService implements MqttCallback {
 		}
 		sysRobot.setDisabled(false);
 		return robotService.findFirstRobot(sysRobot);
+	}
+
+	public void sendMessageToRobot(String message, String gateId) throws MqttException {
+		this.publish(GATE_ROBOT_REQ_TOPIC.replace("+", gateId), new MqttMessage(message.getBytes()));
+	}
+
+	public void sendProgressToGate(String status, String result, String msg, String gateId) {
+		GateRes gateRes = new GateRes();
+		gateRes.setStatus(status);
+		gateRes.setResult(result);
+		gateRes.setMsg(msg);
+		String message = new Gson().toJson(gateRes);
+		String topic = NOTIFICATION_GATE_PROGRESS.replace("+", gateId);
+		try {
+			publish(topic, new MqttMessage(message.getBytes()));
+		} catch (MqttException e) {
+			logger.error("Error when try sending notification progress check in for gate: " + e);
+		}
 	}
 }

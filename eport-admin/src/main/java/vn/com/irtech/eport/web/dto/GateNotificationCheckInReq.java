@@ -6,7 +6,7 @@ public class GateNotificationCheckInReq  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
+	private Long id = 0L;
 
 	private String truckNo;
 	

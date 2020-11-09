@@ -17,16 +17,20 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.GateDetection;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IGateDetectionService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
+import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 import vn.com.irtech.eport.web.dto.GateInFormData;
 import vn.com.irtech.eport.web.dto.GateNotificationCheckInReq;
+import vn.com.irtech.eport.web.mqtt.BusinessConsts;
 import vn.com.irtech.eport.web.mqtt.MqttService;
 
 @Component
@@ -103,6 +107,8 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 			gateDetection.setContainerNo1(gateNotificationCheckInReq.getContainerSend1());
 			gateDetection.setContainerNo2(gateNotificationCheckInReq.getContainerSend2());
 			gateDetection.setGatepass(gateNotificationCheckInReq.getGatePass());
+			gateDetection.setTotalWgt(Long.parseLong(gateNotificationCheckInReq.getWeight().toString()));
+			gateDetection.setDeduct(Long.parseLong(gateNotificationCheckInReq.getDeduct().toString()));
 
 			// Get container info from catos
 			Map<String, ContainerInfoDto> cntrMap = getCntrMapFromCatos(gateDetection);
@@ -180,88 +186,64 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 
 			// Container 1
 			if (StringUtils.isNotEmpty(gateDetection.getContainerNo1())) {
-
+				PickupHistory pickupHistory = new PickupHistory();
+				pickupHistory.setContainerNo(gateDetection.getContainerNo1());
+				pickupHistory.setBlock("");
+				pickupHistory.setArea("");
+				pickupIn.add(pickupHistory);
 			}
 
 			// Container 2
 			if (StringUtils.isNotEmpty(gateDetection.getContainerNo2())) {
-
+				PickupHistory pickupHistory = new PickupHistory();
+				pickupHistory.setContainerNo(gateDetection.getContainerNo2());
+				pickupHistory.setBlock("");
+				pickupHistory.setArea("");
+				pickupIn.add(pickupHistory);
 			}
 
-//			if (CollectionUtils.isNotEmpty(pickupHistories)) {
-//
-//				PickupHistory pickupHistoryGeneral = pickupHistories.get(0);
-//
-//				ProcessOrder processOrder = new ProcessOrder();
-//				processOrder.setShipmentId(pickupHistoryGeneral.getShipmentId());
-//				processOrder.setServiceType(EportConstants.SERVICE_GATE_IN);
-//				processOrder.setLogisticGroupId(pickupHistoryGeneral.getLogisticGroupId());
-//				processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_NEW);
-//				processOrderService.insertProcessOrder(processOrder);
-//
-//				// Begin interate pickup history list get by driver id
-//				for (PickupHistory pickupHistory : pickupHistories) {
-//
-//					pickupHistory.setProcessOrderId(processOrder.getId());
-//					pickupHistoryService.updatePickupHistory(pickupHistory);
-//
-//					// Get service type of pickup history
-//					Integer serviceType = pickupHistory.getShipment().getServiceType();
-//
-//					if (EportConstants.SERVICE_PICKUP_FULL == serviceType
-//							|| EportConstants.SERVICE_PICKUP_EMPTY == serviceType) {
-//						pickupOut.add(pickupHistory);
-//					} else {
-//						if (pickupHistory.getBlock() == null) {
-//							pickupHistory.setBlock("");
-//						}
-//						if (pickupHistory.getArea() == null) {
-//							pickupHistory.setArea("");
-//						}
-//
-//						pickupIn.add(pickupHistory);
-//					}
-//				}
-//
-//				gateInFormData.setPickupIn(pickupIn);
-//				gateInFormData.setModule("IN");
-//				gateInFormData.setContNumberIn(pickupIn.size());
-//
-//				gateInFormData.setGatePass(gateNotificationCheckInReq.getGatePass());
-//				gateInFormData.setTruckNo(gateNotificationCheckInReq.getTruckNo());
-//				gateInFormData.setChassisNo(gateNotificationCheckInReq.getChassisNo());
-//				Integer gross = gateNotificationCheckInReq.getWeight() - gateNotificationCheckInReq.getDeduct();
-//				gateInFormData.setWgt(gross.toString());
-//				gateInFormData.setSessionId(gateNotificationCheckInReq.getSessionId());
-//				gateInFormData.setGateId(gateNotificationCheckInReq.getGateId());
-//				gateInFormData.setReceiptId(processOrder.getId());
-//
-//				String msg = new Gson().toJson(gateInFormData);
-//				SysRobot robot = new SysRobot();
-//				robot.setStatus(EportConstants.ROBOT_STATUS_AVAILABLE);
-//				robot.setIsGateInOrder(true);
-//				robot.setDisabled(false);
-//				SysRobot sysRobot = robotService.findFirstRobot(robot);
-//				if (sysRobot != null) {
-//					processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_PROCESSING);
-//					processOrder.setRobotUuid(sysRobot.getUuId());
-//					processOrder.setProcessData(msg);
-//					processOrderService.updateProcessOrder(processOrder);
-//					robotService.updateRobotStatusByUuId(sysRobot.getUuId(), EportConstants.ROBOT_STATUS_BUSY);
-//					logger.debug("Send request to robot: " + sysRobot.getUuId() + ", content: " + msg);
-//					mqttService.sendMessageToRobot(msg, sysRobot.getUuId());
-//
-//					String message = "Đang thực hiện làm lệnh gate in";
-//					if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSessionId())) {
-//						mqttService.sendNotificationOfProcessForDriver(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK,
-//								gateNotificationCheckInReq.getSessionId(), message);
-//					}
-//					mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, message,
-//							gateInFormData.getGateId());
-//				} else {
-//					logger.debug("No GateRobot is available: " + msg);
-//				}
-//			}
+			if (CollectionUtils.isNotEmpty(pickupIn)) {
+				ProcessOrder processOrder = new ProcessOrder();
+				processOrder.setServiceType(EportConstants.SERVICE_GATE_IN);
+				processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_NEW);
+				processOrderService.insertProcessOrder(processOrder);
+
+				gateInFormData.setGateId(gateDetection.getGateNo());
+				gateInFormData.setId(gateDetection.getId());
+				gateInFormData.setPickupIn(pickupIn);
+				gateInFormData.setModule("IN");
+				gateInFormData.setContNumberIn(pickupIn.size());
+
+				gateInFormData.setGatePass(gateDetection.getGatepass());
+				gateInFormData.setTruckNo(gateDetection.getTruckNo());
+				gateInFormData.setChassisNo(gateDetection.getChassisNo());
+				Long gross = gateDetection.getTotalWgt() - gateDetection.getDeduct();
+				gateInFormData.setWgt(gross.toString());
+				gateInFormData.setGateId(gateDetection.getGateNo());
+				gateInFormData.setReceiptId(processOrder.getId());
+
+				String msg = new Gson().toJson(gateInFormData);
+				SysRobot robot = new SysRobot();
+				robot.setStatus(EportConstants.ROBOT_STATUS_AVAILABLE);
+				robot.setIsGateInOrder(true);
+				robot.setDisabled(false);
+				SysRobot sysRobot = robotService.findFirstRobot(robot);
+				if (sysRobot != null) {
+					processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_PROCESSING);
+					processOrder.setRobotUuid(sysRobot.getUuId());
+					processOrder.setProcessData(msg);
+					processOrderService.updateProcessOrder(processOrder);
+					robotService.updateRobotStatusByUuId(sysRobot.getUuId(), EportConstants.ROBOT_STATUS_BUSY);
+					logger.debug("Send request to robot: " + sysRobot.getUuId() + ", content: " + msg);
+					mqttService.sendMessageToRobot(msg, sysRobot.getUuId());
+
+					String message = "Đang thực hiện làm lệnh gate in";
+					mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, message,
+							gateInFormData.getGateId());
+				} else {
+					logger.debug("No GateRobot is available: " + msg);
+				}
+			}
 		} catch (Exception e) {
 			logger.error("Error when send order gate in: " + e);
 		}
