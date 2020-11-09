@@ -28,10 +28,10 @@ import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
 import vn.com.irtech.eport.carrier.listener.MqttService;
 import vn.com.irtech.eport.carrier.listener.MqttService.EServiceRobot;
-import vn.com.irtech.eport.carrier.service.ICarrierQueueService;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -45,8 +45,10 @@ import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysDictData;
+import vn.com.irtech.eport.system.domain.SysSyncQueue;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.service.ISysDictDataService;
+import vn.com.irtech.eport.system.service.ISysSyncQueueService;
 
 @Controller
 @RequestMapping("/edo")
@@ -75,7 +77,7 @@ public class CarrierEdoController extends CarrierBaseController {
 	private IShipmentDetailService shipmentDetailService;
 
 	@Autowired
-	private ICarrierQueueService queueService;
+	private ISysSyncQueueService sysSyncQueueService;
 
 	@Autowired
 	private MqttService mqttService;
@@ -277,10 +279,31 @@ public class CarrierEdoController extends CarrierBaseController {
 				if (edoInput.getExpiredDem() != null && edoInput.getExpiredDem().compareTo(edo.getExpiredDem()) != 0) {
 					// has update
 					if (cntrFull != null && StringUtils.isNotEmpty(cntrFull.getJobOdrNo2())) {
-						// Send req extend expired dem
-						edo.setUpdateTime(new Date());
-						edo.setJobOrderNo(cntrFull.getJobOdrNo2());
-						queueService.offerEdoExtendExpiredDem(edo);
+						// Get old request if exist, update else insert new request
+						SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
+						sysSyncQueueParam.setBlNo(edo.getBillOfLading());
+						sysSyncQueueParam.setCntrNo(edo.getContainerNumber());
+						sysSyncQueueParam.setJobOdrNo(cntrFull.getJobOdrNo2());
+						sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DEM);
+						sysSyncQueueParam.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+						List<SysSyncQueue> sysSyncQueues = sysSyncQueueService
+								.selectSysSyncQueueList(sysSyncQueueParam);
+						if (CollectionUtils.isNotEmpty(sysSyncQueues)) {
+							// Case update request in queue
+							SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
+							sysSyncQueueUpdate.setId(sysSyncQueues.get(0).getId());
+							sysSyncQueueUpdate.setExpiredDem(edo.getExpiredDem());
+						} else {
+							// Case insert new request in queue
+							SysSyncQueue sysSyncQueue = new SysSyncQueue();
+							sysSyncQueue.setSyncType(EportConstants.SYNC_QUEUE_DEM);
+							sysSyncQueue.setExpiredDem(edoInput.getExpiredDem());
+							sysSyncQueue.setBlNo(edo.getBillOfLading());
+							sysSyncQueue.setCntrNo(edo.getContainerNumber());
+							sysSyncQueue.setJobOdrNo(cntrFull.getJobOdrNo2());
+							sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+							sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
+						}
 					}
 				}
 
