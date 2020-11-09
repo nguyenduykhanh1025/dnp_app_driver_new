@@ -11,14 +11,16 @@ import org.springframework.stereotype.Service;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.dto.EdiDataReq;
-import vn.com.irtech.eport.carrier.service.ICarrierQueueService;
 import vn.com.irtech.eport.carrier.service.IEdiService;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.system.domain.SysSyncQueue;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
+import vn.com.irtech.eport.system.service.ISysSyncQueueService;
 
 @Service
 public class EdiServiceImpl implements IEdiService {
@@ -35,7 +37,7 @@ public class EdiServiceImpl implements IEdiService {
 	private ICatosApiService catosApiService;
 
 	@Autowired
-	private ICarrierQueueService queueService;
+	private ISysSyncQueueService sysSyncQueueService;
 
 	@Override
 	public void executeListEdi(List<EdiDataReq> ediDataReqs, String partnerCode, Long carrierGroupId, String transactionId) {
@@ -126,10 +128,31 @@ public class EdiServiceImpl implements IEdiService {
 			if (CollectionUtils.isNotEmpty(cntrInfos)) {
 				for (ContainerInfoDto cntrInfo : cntrInfos) {
 					if ("F".equalsIgnoreCase(cntrInfo.getFe()) && StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
-						// Edo has job order no in catos
-						edoUpdate.setUpdateTime(new Date());
-						edoUpdate.setJobOrderNo(cntrInfo.getJobOdrNo2());
-						queueService.offerEdoExtendExpiredDem(edoUpdate);
+						// Get old request if exist, update else insert new request
+						SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
+						sysSyncQueueParam.setBlNo(edo.getBillOfLading());
+						sysSyncQueueParam.setCntrNo(edo.getContainerNumber());
+						sysSyncQueueParam.setJobOdrNo(cntrInfo.getJobOdrNo2());
+						sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DEM);
+						sysSyncQueueParam.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+						List<SysSyncQueue> sysSyncQueues = sysSyncQueueService
+								.selectSysSyncQueueList(sysSyncQueueParam);
+						if (CollectionUtils.isNotEmpty(sysSyncQueues)) {
+							// Case update request in queue
+							SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
+							sysSyncQueueUpdate.setId(sysSyncQueues.get(0).getId());
+							sysSyncQueueUpdate.setExpiredDem(edo.getExpiredDem());
+						} else {
+							// Case insert new request in queue
+							SysSyncQueue sysSyncQueue = new SysSyncQueue();
+							sysSyncQueue.setSyncType(EportConstants.SYNC_QUEUE_DEM);
+							sysSyncQueue.setExpiredDem(edoUpdate.getExpiredDem());
+							sysSyncQueue.setBlNo(odlEdo.getBillOfLading());
+							sysSyncQueue.setCntrNo(odlEdo.getContainerNumber());
+							sysSyncQueue.setJobOdrNo(cntrInfo.getJobOdrNo2());
+							sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+							sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
+						}
 					}
 				}
 			}

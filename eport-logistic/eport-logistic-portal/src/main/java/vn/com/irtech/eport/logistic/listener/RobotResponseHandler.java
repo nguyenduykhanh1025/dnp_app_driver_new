@@ -44,8 +44,10 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysRobot;
+import vn.com.irtech.eport.system.domain.SysSyncQueue;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.service.ISysRobotService;
+import vn.com.irtech.eport.system.service.ISysSyncQueueService;
 
 @Component
 public class RobotResponseHandler implements IMqttMessageListener {
@@ -81,6 +83,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 	@Autowired
 	private IShipmentService shipmentService;
+
+	@Autowired
+	private ISysSyncQueueService sysSyncQueueService;
 
 	@Autowired
 	private ICatosApiService catosApiService;
@@ -719,11 +724,17 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
 		ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
 
+		// Update SysSyncQueue
+		SysSyncQueue syncQueueUpdate = new SysSyncQueue();
+		syncQueueUpdate.setProcessOrderId(processOrderId);
 		if ("success".equalsIgnoreCase(result)) {
 			processOrder.setStatus(2); // FINISH
 			processOrder.setResult("S"); // RESULT SUCESS
 			processOrderService.updateProcessOrder(processOrder);
 			hresult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
+			
+			// Update status sync queue
+			syncQueueUpdate.setStatus(EportConstants.SYNC_QUEUE_STATUS_SUCCESS);
 		} else {
 
 			// INIT PROCESS ORDER TO UPDATE
@@ -734,6 +745,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 			// SET RESULT FOR HISTORY FAILED
 			hresult = EportConstants.PROCESS_HISTORY_RESULT_FAILED;
+
+			// update status sync queue
+			syncQueueUpdate.setStatus(EportConstants.SYNC_QUEUE_STATUS_ERROR);
 
 			// Send error notification to om
 			String title = "Lỗi gia hạn lệnh robot " + uuId + ".";
@@ -747,6 +761,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 				logger.warn(e.getMessage());
 			}
 		}
+
+		// Update result of sync queue list to db
+		sysSyncQueueService.updateSysSyncQueueWithCondition(syncQueueUpdate);
 		updateHistory(processOrderId, uuId, EportConstants.SERVICE_EXTEND_DATE, hresult);
 	}
 

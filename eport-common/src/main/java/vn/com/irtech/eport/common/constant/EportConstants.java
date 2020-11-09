@@ -276,4 +276,19 @@ public interface EportConstants {
 	/** Key name for gate detection info saved in cache */
 	public static final String CACHE_GATE_DETECTION_KEY = "gateDetectionInfo";
 
+	// Synchronize queue type
+	/** Sync queue type expired dem */
+	public static final String SYNC_QUEUE_DEM = "DEM";
+	/** Sync queue type det free time */
+	public static final String SYNC_QUEUE_DET = "DET";
+
+	// Synchronize queue status
+	/** Sync queue status waiting */
+	public static final String SYNC_QUEUE_STATUS_WAITING = "W";
+	/** Sync queue status progress */
+	public static final String SYNC_QUEUE_STATUS_PROGRESS = "P";
+	/** Sync queue status success */
+	public static final String SYNC_QUEUE_STATUS_SUCCESS = "S";
+	/** Sync queue status error */
+	public static final String SYNC_QUEUE_STATUS_ERROR = "E";
 }
