@@ -122,6 +122,9 @@ public class GateDetection extends BaseEntity
 	/** Gatepass */
 	private String gatepass;
 
+	/** Status W: waiting, P: progress, S: success, E: Error */
+	private String status;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -385,6 +388,14 @@ public class GateDetection extends BaseEntity
 		this.gatepass = gatepass;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -397,7 +408,7 @@ public class GateDetection extends BaseEntity
 				.append("createTime", getCreateTime()).append("updateBy", getUpdateBy())
 				.append("opeCode1", getOpeCode1()).append("opeCode2", getOpeCode2())
 				.append("sztp1", getSztp1()).append("sztp2", getSztp2()).append("vslCd1", getVslCd1())
-				.append("vslCd2", getVslCd2()).append("callSeq1", getCallSeq1())
+				.append("vslCd2", getVslCd2()).append("callSeq1", getCallSeq1()).append("status", getStatus())
 				.append("callSeq2", getCallSeq2()).append("cargoType1", getCargoType1())
 				.append("cargoType2", getCargoType2()).append("pod1", getPod1()).append("pod2", getPod2())
 				.append("wgt1", getWgt2()).append("wgt2", getWgt2()).append("location1", getLocation1())

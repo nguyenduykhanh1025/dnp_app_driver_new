@@ -110,6 +110,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 			gateDetection.setTotalWgt(Long.parseLong(gateNotificationCheckInReq.getWeight().toString()));
 			gateDetection.setDeduct(Long.parseLong(gateNotificationCheckInReq.getDeduct().toString()));
 			gateDetection.setGateNo(gateNotificationCheckInReq.getGateId());
+			gateDetection.setStatus("P");
 
 			// Get container info from catos
 			Map<String, ContainerInfoDto> cntrMap = getCntrMapFromCatos(gateDetection);
@@ -188,6 +189,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 			// Container 1
 			if (StringUtils.isNotEmpty(gateDetection.getContainerNo1())) {
 				PickupHistory pickupHistory = new PickupHistory();
+				pickupHistory.setId(gateDetection.getId() * 10 + 1);
 				pickupHistory.setContainerNo(gateDetection.getContainerNo1());
 				pickupHistory.setBlock("");
 				pickupHistory.setArea("");
@@ -197,6 +199,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 			// Container 2
 			if (StringUtils.isNotEmpty(gateDetection.getContainerNo2())) {
 				PickupHistory pickupHistory = new PickupHistory();
+				pickupHistory.setId(gateDetection.getId() * 10 + 2);
 				pickupHistory.setContainerNo(gateDetection.getContainerNo2());
 				pickupHistory.setBlock("");
 				pickupHistory.setArea("");

@@ -67,6 +67,16 @@ function formatServiceType(value, row) {
       return 'Gate-in';
     case 9:
       return 'Gia hạn lệnh';
+    case 10:
+      return 'Terminal/Custom Hold';
+    case 11:
+      return 'Hủy hạ hàng';
+    case 12:
+      return 'Hủy bốc rỗng';
+    case 13:
+      return 'Xuất hóa đơn';
+    case 14:
+      return 'Gia hạn detension';
   }
 }
 
