@@ -381,33 +381,120 @@ public class ShipmentDetail extends BaseEntity {
      */
     private Integer index;
 
-	/** Ngay tau den theo tau va chuyen */
-	private Date eta;
+    /**
+     * Ngay tau den theo tau va chuyen
+     */
+    private Date eta;
 
-	/** Ngay tau di (plan)*/
-	private Date etd;
-	
-	/** Ten mat hang: Khai bao khi ha bai cho xuat*/
-	private String commodity;
-	
-	/** Vị trí*/
-	private String location;
-	
-	/** Tinh trang container */
-	private String containerRemark;
-	
-	/** Tinh trang container */
-	private String contSpecialStatus;
-	
+    /**
+     * Ngay tau di (plan)
+     */
+    private Date etd;
+
+    /**
+     * Ten mat hang: Khai bao khi ha bai cho xuat
+     */
+    private String commodity;
+
+    /**
+     * Vị trí
+     */
+    private String location;
+
+    /**
+     * Tinh trang container
+     */
+    private String containerRemark;
+
+    /**
+     * Tinh trang container
+     */
+    private String contSpecialStatus;
+
+    /**
+     * vgm Đơn vị kiểm định
+     */
+    private String vgmInspectionDepartment;
+
+    /**
+     * vgm Max gross
+     */
+    private String vgmMaxGross;
+
+    /**
+     * Ngày cài nhiệt độ
+     */
+    private Date daySetupTemperature;
+
+    /**
+     * T: là cont quá khổ | F: không phải là công quá khổ
+     */
+    private String oversize;
+
+    /**
+     * Loại cont quá khổ
+     */
+    private String oversizeType;
+
+    /**
+     * Quá khổ bên trên
+     */
+    private String oversizeTop;
+
+    /**
+     * Quá khổ bên phải
+     */
+    private String oversizeRight;
+
+    /**
+     * Quá khổ bên trái
+     */
+    private String oversizeLeft;
+
+    /**
+     * Quá khổ phía trước
+     */
+    private String oversizeFront;
+
+    /**
+     * Quá khổ phía sau
+     */
+    private String oversizeBack;
+
+    /**
+     * T: là cont nguy hiểm | F: không phải là cont nguy hiểm
+     */
+    private String dangerous;
+
+    /**
+     * Chỉ số nguy hiểm IMO
+     */
+    private String dangerousImo;
+
+    /**
+     * Chỉ số nguy hiểm UNNO
+     */
+    private String dangerousUnno;
+
+    /**
+     * Tên hàng hóa cont nguy hiểm
+     */
+    private String dangerousNameProduct;
+
+    /**
+     * Quy cách đóng gói cont nguy hiểm
+     */
+    private String dangerousPacking;
+
     public String getContSpecialStatus() {
-		return contSpecialStatus;
-	}
+        return contSpecialStatus;
+    }
 
-	public void setContSpecialStatus(String contSpecialStatus) {
-		this.contSpecialStatus = contSpecialStatus;
-	}
+    public void setContSpecialStatus(String contSpecialStatus) {
+        this.contSpecialStatus = contSpecialStatus;
+    }
 
-	public void setId(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -1024,6 +1111,138 @@ public class ShipmentDetail extends BaseEntity {
         this.containerRemark = containerRemark;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public int getRoww() {
+        return roww;
+    }
+
+    public void setRoww(int roww) {
+        this.roww = roww;
+    }
+
+    public String getVgmInspectionDepartment() {
+        return vgmInspectionDepartment;
+    }
+
+    public void setVgmInspectionDepartment(String vgmInspectionDepartment) {
+        this.vgmInspectionDepartment = vgmInspectionDepartment;
+    }
+
+    public String getVgmMaxGross() {
+        return vgmMaxGross;
+    }
+
+    public void setVgmMaxGross(String vgmMaxGross) {
+        this.vgmMaxGross = vgmMaxGross;
+    }
+
+    public Date getDaySetupTemperature() {
+        return daySetupTemperature;
+    }
+
+    public void setDaySetupTemperature(Date daySetupTemperature) {
+        this.daySetupTemperature = daySetupTemperature;
+    }
+
+    public String getOversize() {
+        return oversize;
+    }
+
+    public void setOversize(String oversize) {
+        this.oversize = oversize;
+    }
+
+    public String getOversizeType() {
+        return oversizeType;
+    }
+
+    public void setOversizeType(String oversizeType) {
+        this.oversizeType = oversizeType;
+    }
+
+    public String getOversizeTop() {
+        return oversizeTop;
+    }
+
+    public void setOversizeTop(String oversizeTop) {
+        this.oversizeTop = oversizeTop;
+    }
+
+    public String getOversizeRight() {
+        return oversizeRight;
+    }
+
+    public void setOversizeRight(String oversizeRight) {
+        this.oversizeRight = oversizeRight;
+    }
+
+    public String getOversizeLeft() {
+        return oversizeLeft;
+    }
+
+    public void setOversizeLeft(String oversizeLeft) {
+        this.oversizeLeft = oversizeLeft;
+    }
+
+    public String getOversizeFront() {
+        return oversizeFront;
+    }
+
+    public void setOversizeFront(String oversizeFront) {
+        this.oversizeFront = oversizeFront;
+    }
+
+    public String getOversizeBack() {
+        return oversizeBack;
+    }
+
+    public void setOversizeBack(String oversizeBack) {
+        this.oversizeBack = oversizeBack;
+    }
+
+    public String getDangerous() {
+        return dangerous;
+    }
+
+    public void setDangerous(String dangerous) {
+        this.dangerous = dangerous;
+    }
+
+    public String getDangerousImo() {
+        return dangerousImo;
+    }
+
+    public void setDangerousImo(String dangerousImo) {
+        this.dangerousImo = dangerousImo;
+    }
+
+    public String getDangerousUnno() {
+        return dangerousUnno;
+    }
+
+    public void setDangerousUnno(String dangerousUnno) {
+        this.dangerousUnno = dangerousUnno;
+    }
+
+    public String getDangerousNameProduct() {
+        return dangerousNameProduct;
+    }
+
+    public void setDangerousNameProduct(String dangerousNameProduct) {
+        this.dangerousNameProduct = dangerousNameProduct;
+    }
+
+    public String getDangerousPacking() {
+        return dangerousPacking;
+    }
+
+    public void setDangerousPacking(String dangerousPacking) {
+        this.dangerousPacking = dangerousPacking;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
@@ -1100,6 +1319,21 @@ public class ShipmentDetail extends BaseEntity {
                 .append("etd", getEtd())
                 .append("location", getLocation())
                 .append("containerRemark", getContainerRemark())
+                .append("inspectionDepartment", getVgmInspectionDepartment())
+                .append("maxGross", getVgmMaxGross())
+                .append("daySetupTemperature", getDaySetupTemperature())
+                .append("oversize", getOversize())
+                .append("oversizeCategory", getOversizeType())
+                .append("oversizeTop", getOversizeTop())
+                .append("oversizeRight", getOversizeRight())
+                .append("oversizeLeft", getOversizeLeft())
+                .append("oversizeFront", getOversizeFront())
+                .append("oversizeBack", getOversizeBack())
+                .append("dangerous", getDangerous())
+                .append("dangerIMO", getDangerousImo())
+                .append("dangerUNNO", getDangerousUnno())
+                .append("dangerNameProduct", getDangerousNameProduct())
+                .append("dangerPacking", getDangerousPacking())
                 .toString();
     }
 }

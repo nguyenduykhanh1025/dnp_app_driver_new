@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Khai báo chung</title>
     <th:block th:include="include :: header('Khai báo chung')" />
+    <th:block th:include="include :: datetimepicker-css" />
+
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
     <link rel="stylesheet" th:href="@{/css/logistic/detail.css}" />
   </head>
@@ -38,6 +40,7 @@
         </div>
         <div class="col-sm-12 text-black">
           <section class="tabs">
+          
             <input
               id="tab-1"
               type="radio"
@@ -109,11 +112,13 @@
                       ><b class="text-black">VGM:</b></label
                     >
                     <div class="col-sm-8 col-xs-6">
+                      <input type="hidden" value="false" name="vgmChk" />
                       <input
                         type="checkbox"
                         style="margin-top: 8px"
-                        id="vgm"
-                        name="vmg"
+                        id="vgmChk"
+                        value="true"
+                        name="vgmChk"
                       />
                     </div>
                   </div>
@@ -124,7 +129,12 @@
                       ><b class="text-black">Đơn vị kiểm định:</b></span
                     >
                     <div class="col-sm-8 col-xs-6">
-                      <input type="text" class="form-control" />
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="vgmInspectionDepartment"
+                        id="inspectionDepartment"
+                      />
                     </div>
                     <span
                       class="control-label col-sm-4 col-xs-6 mt5"
@@ -132,46 +142,68 @@
                       ><b class="text-black">Max Gross (kg):</b></span
                     >
                     <div class="col-sm-8 col-xs-6 mt5">
-                      <input type="number" class="form-control" />
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="vgmMaxGross"
+                        id="maxGross"
+                      />
                     </div>
                   </div>
                 </div>
                 <div class="form-horizontal mt10 row">
                   <div class="form-group col-sm-12 row">
-                    <label
+                    <!-- <label
                       class="control-label col-sm-2 col-xs-2"
                       style="text-align: left"
                       ><b class="text-black">Cài nhiệt độ:</b></label
-                    >
-                    <div
+                    > -->
+                    <!-- <div
                       class="col-sm-4 col-xs-4 d-flex"
                       style="justify-content: space-between; margin-top: 5px"
                     >
                       <span
                         ><input
                           type="radio"
-                          name="rdTemperature"
+                          name="isTemperature"
                           value="true"
                         />&nbsp;Cài nhiệt độ</span
                       >
                       <span
                         ><input
                           type="radio"
-                          name="rdTemperature"
+                          name="isTemperature"
                           value="false"
                         />&nbsp;Không cài nhiệt độ</span
                       >
-                    </div>
+                    </div> -->
+
                     <label class="control-label col-sm-3 col-xs-3"
                       ><b class="text-black">Nhiệt độ (độ C):</b></label
                     >
-                    <div class="col-sm-2 col-xs-2">
+                    <div class="col-sm-3 col-xs-3">
                       <input
                         type="text"
                         class="form-control"
                         id="temperature"
                         name="temperature"
                       />
+                    </div>
+                    <label class="control-label col-sm-3 col-xs-3"
+                      ><b class="text-black">Ngày cài nhiệt độ:</b></label
+                    >
+                    <div
+                      class="input-group date col-sm-3 col-xs-3"
+                      id="datetimepicker1"
+                    >
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="daySetupTemperature"
+                      />
+                      <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -188,24 +220,24 @@
                     <div class="col-sm-3 col-xs-2">
                       <input
                         type="radio"
-                        name="rdOversize"
+                        name="oversize"
                         id="rdOversize"
-                        value="false"
+                        value="F"
                       />&nbsp;Không quá khổ
                     </div>
                     <div class="col-sm-2 col-xs-2">
                       <input
                         type="radio"
-                        name="rdOversize"
+                        name="oversize"
                         id="rdOversize"
-                        value="true"
+                        value="T"
                       />&nbsp;Quá khổ
                     </div>
                     <div class="col-sm-5 col-xs-4">
                       (22G0 - dài: 112.5, rộng: 113.2, cao: 223.5 )
                     </div>
                   </div>
-                  <span id="oversizeFormContainer">
+                  <span>
                     <div
                       class="col-xs-12 p5"
                       id="categoryOversizeCheckboxes"
@@ -217,19 +249,25 @@
                       <div class="col-sm-2 col-xs-2">
                         <input
                           type="checkbox"
-                          data-category-Oversize="OW"
+                          class="ipCategoryOversize"
+                          name="oversizeCategory"
+                          value="OW"
                         />&nbsp;OW
                       </div>
                       <div class="col-sm-2 col-xs-2">
                         <input
                           type="checkbox"
-                          data-category-Oversize="OH"
+                          name="oversizeCategory"
+                          value="OH"
+                          class="ipCategoryOversize"
                         />&nbsp;OH
                       </div>
                       <div class="col-sm-2 col-xs-2">
                         <input
                           type="checkbox"
-                          data-category-Oversize="OL"
+                          name="oversizeCategory"
+                          value="OL"
+                          class="ipCategoryOversize"
                         />&nbsp;OL
                       </div>
                     </div>
@@ -241,7 +279,8 @@
                       >
                       <div class="col-sm-2 col-xs-2">
                         <input
-                          name="topOversize"
+                          name="oversizeTop"
+                          id="oversizeTop"
                           type="text"
                           class="form-control"
                         />
@@ -253,7 +292,8 @@
                       >
                       <div class="col-sm-2 col-xs-2">
                         <input
-                          name="rightOversize"
+                          name="oversizeRight"
+                          id="oversizeRight"
                           type="text"
                           class="form-control"
                         />
@@ -265,7 +305,8 @@
                       >
                       <div class="col-sm-2 col-xs-2">
                         <input
-                          name="leftOversize"
+                          name="oversizeLeft"
+                          id="oversizeLeft"
                           type="text"
                           class="form-control"
                         />
@@ -277,7 +318,8 @@
                       >
                       <div class="col-sm-2 col-xs-2 pt5">
                         <input
-                          name="frontOversize"
+                          name="oversizeFront"
+                          id="oversizeFront"
                           type="text"
                           class="form-control"
                         />
@@ -289,7 +331,8 @@
                       >
                       <div class="col-sm-2 col-xs-2 pt5">
                         <input
-                          name="backOversize"
+                          name="oversizeBack"
+                          id="oversizeBack"
                           type="text"
                           class="form-control"
                         />
@@ -310,16 +353,16 @@
                     <div class="col-sm-3 col-xs-2">
                       <input
                         type="radio"
-                        name="rdDangerous"
-                        value="false"
+                        name="dangerous"
+                        value="F"
                       />&nbsp;Cont bình thường
                     </div>
                     <div class="col-sm-3 col-xs-3">
                       <input
                         type="radio"
-                        name="rdDangerous"
+                        name="dangerous"
                         id="rdDangerous"
-                        value="true"
+                        value="T"
                       />&nbsp;Cont nguy hiểm
                     </div>
                   </div>
@@ -334,8 +377,13 @@
                         ><b class="text-black">IMO:</b></label
                       >
                       <div class="col-sm-6 col-xs-6">
-                        <select class="form-control">
-                          <option selected disabled>Chọn</option>
+                        <select
+                          class="form-control"
+                          id="dgIMO"
+                          name="dangerousIMO"
+                          required
+                        >
+                          <option selected></option>
                         </select>
                       </div>
                     </div>
@@ -349,8 +397,13 @@
                         ><b class="text-black">UNNO:</b></label
                       >
                       <div class="col-sm-6 col-xs-6">
-                        <select class="form-control">
-                          <option selected disabled>Chọn</option>
+                        <select
+                          class="form-control"
+                          id="dgUNNO"
+                          name="dangerousUNNO"
+                          required
+                        >
+                          <option selected></option>
                         </select>
                       </div>
                     </div>
@@ -364,7 +417,12 @@
                         ><b class="text-black">Tên hàng hóa:</b></label
                       >
                       <div class="col-sm-6 col-xs-6">
-                        <input type="text" class="form-control" />
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="dgNameProduct"
+                          name="dangerousNameProduct"
+                        />
                       </div>
                     </div>
                     <div class="col-xs-12 p5">
@@ -374,7 +432,12 @@
                         ><b class="text-black">Quy cách đóng gói:</b></label
                       >
                       <div class="col-sm-6 col-xs-6">
-                        <input type="text" class="form-control" />
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="dgPacking"
+                          name="dangerousPacking"
+                        />
                       </div>
                     </div>
                   </span>
@@ -390,12 +453,18 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
+
     <script type="text/javascript" th:inline="javascript">
       /**
        * Data load from server
       */
       var containerNo = /*[[${containerNo}]]*/;
       var shipmentDetail = [[${shipmentDetail}]];
+
+      var contCargoTypes = [[${contCargoTypes}]];
+      var contDangerousImos = [[${contDangerousImos}]];
+      var contDangerousUnnos = [[${contDangerousUnnos}]];
+
       var sztp = /*[[${sztp}]]*/;
       var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
     </script>
