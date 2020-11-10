@@ -74,11 +74,16 @@ public class SyncQueueTask {
 		List<SysSyncQueue> sysSyncQueuesDem = sysSyncQueueService
 				.selectSysSyncQueueWithDelayTimeList(sysSyncQueueParam);
 		if (CollectionUtils.isNotEmpty(sysSyncQueuesDem)) {
-			handlingListDemRequestUpdate(sysSyncQueuesDem);
+			handlingListRequestUpdate(sysSyncQueuesDem);
 		}
 
 		// Get list update det free time
-		// TODO
+		sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DET);
+		List<SysSyncQueue> sysSyncQueuesDet = sysSyncQueueService
+				.selectSysSyncQueueWithDelayTimeList(sysSyncQueueParam);
+		if (CollectionUtils.isNotEmpty(sysSyncQueuesDet)) {
+			handlingListRequestUpdate(sysSyncQueuesDem);
+		}
 	}
 
 	/**
@@ -86,7 +91,7 @@ public class SyncQueueTask {
 	 * 
 	 * @param sysSyncQueues
 	 */
-	private void handlingListDemRequestUpdate(List<SysSyncQueue> sysSyncQueues) {
+	private void handlingListRequestUpdate(List<SysSyncQueue> sysSyncQueues) {
 		// Sort sync queue list by order job order no
 		Collections.sort(sysSyncQueues, new JobOrderNoComparator());
 		// syncQueuesDem use to store sync queue with same job order no

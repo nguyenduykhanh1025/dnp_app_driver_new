@@ -34,6 +34,8 @@ public interface EportConstants {
 	public static final int SERVICE_CANCEL_PICKUP_EMPTY = 12;
 	/** Xuat hoa don */
 	public static final int SERVICE_EXPORT_RECEIPT = 13;
+	/** Gia han ngay mien luu vo */
+	public static final int SERVICE_EXTEND_DET = 14;
 	/** Update booking */
 	public static final int BOOKING_UPDATE = 1;
 	/** Update booking */

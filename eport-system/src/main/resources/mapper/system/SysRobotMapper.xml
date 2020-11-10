@@ -28,11 +28,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="isCancelSendContFullOrder"    column="is_cancel_send_cont_full_order"    />
         <result property="isCancelReceiveContEmptyOrder"    column="is_cancel_receive_cont_empty_order"    />
         <result property="isExportReceipt"    column="is_export_receipt"    />
+        <result property="isExtensionDetOrder"    column="is_extension_det_order"    />
         <result property="responseTime"    column="response_time"    />
     </resultMap>
 
     <sql id="selectRobotVo">
-        select id, uuid, status, disabled, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, is_gate_in_order, ip_address, create_by, create_time, update_by, update_time, remark, is_shifting_cont_order, is_change_vessel_order, is_create_booking_order, is_extension_date_order, is_change_terminal_custom_hold, is_cancel_send_cont_full_order, is_cancel_receive_cont_empty_order, is_export_receipt, response_time from sys_robot
+        select id, uuid, status, disabled, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, is_gate_in_order, ip_address, create_by, create_time, update_by, update_time, remark, is_shifting_cont_order, is_change_vessel_order, is_create_booking_order, is_extension_date_order, is_change_terminal_custom_hold, is_cancel_send_cont_full_order, is_cancel_receive_cont_empty_order, is_export_receipt, is_extension_det_order, response_time from sys_robot
     </sql>
 
     <select id="selectRobotList" parameterType="SysRobot" resultMap="RobotResult">
@@ -55,6 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isCancelSendContFullOrder != null"> and is_cancel_send_cont_full_order = #{isCancelSendContFullOrder}</if>
             <if test="isCancelReceiveContEmptyOrder != null"> and is_cancel_receive_cont_empty_order = #{isCancelReceiveContEmptyOrder}</if>
             <if test="isExportReceipt != null"> and is_export_receipt = #{isExportReceipt}</if>
+            <if test="isExtensionDetOrder != null"> and is_extension_det_order = #{isExtensionDetOrder}</if>
             <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
     </select>
@@ -90,6 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isCancelSendContFullOrder != null"> and is_cancel_send_cont_full_order = #{isCancelSendContFullOrder}</if>
             <if test="isCancelReceiveContEmptyOrder != null"> and is_cancel_receive_cont_empty_order = #{isCancelReceiveContEmptyOrder}</if>
             <if test="isExportReceipt != null"> and is_export_receipt = #{isExportReceipt}</if>
+            <if test="isExtensionDetOrder != null"> and is_extension_det_order = #{isExtensionDetOrder}</if>
             <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
         OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
@@ -121,6 +124,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isCancelSendContFullOrder != null">is_cancel_send_cont_full_order,</if>
             <if test="isCancelReceiveContEmptyOrder != null">is_cancel_receive_cont_empty_order,</if>
             <if test="isExportReceipt != null">is_export_receipt,</if>
+            <if test="isExtensionDetOrder != null">is_extension_det_order,</if>
             response_time,
             create_time
          </trim>
@@ -145,6 +149,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isCancelSendContFullOrder != null">#{isCancelSendContFullOrder},</if>
             <if test="isCancelReceiveContEmptyOrder != null">#{isCancelReceiveContEmptyOrder},</if>
             <if test="isExportReceipt != null">#{isExportReceipt},</if>
+            <if test="isExtensionDetOrder != null">#{isExtensionDetOrder},</if>
             sysdate,
             sysdate
          </trim>
@@ -172,6 +177,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isCancelSendContFullOrder != null">is_cancel_send_cont_full_order = #{isCancelSendContFullOrder},</if>
             <if test="isCancelReceiveContEmptyOrder != null">is_cancel_receive_cont_empty_order = #{isCancelReceiveContEmptyOrder},</if>
             <if test="isExportReceipt != null">is_export_receipt = #{isExportReceipt},</if>
+            <if test="isExtensionDetOrder != null">is_extension_det_order = #{isExtensionDetOrder},</if>
             <if test="responseTime != null"></if>
             response_time = sysdate,
             update_time = sysdate
@@ -223,6 +229,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isCancelSendContFullOrder != null">is_cancel_send_cont_full_order = #{isCancelSendContFullOrder},</if>
             <if test="isCancelReceiveContEmptyOrder != null">is_cancel_receive_cont_empty_order = #{isCancelReceiveContEmptyOrder},</if>
             <if test="isExportReceipt != null">is_export_receipt = #{isExportReceipt},</if>
+            <if test="isExtensionDetOrder != null">is_extension_det_order = #{isExtensionDetOrder},</if>
             response_time = sysdate,
             update_time = sysdate
         </trim>
@@ -252,6 +259,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isCancelSendContFullOrder != null">is_cancel_send_cont_full_order = #{isCancelSendContFullOrder},</if>
             <if test="isCancelReceiveContEmptyOrder != null">is_cancel_receive_cont_empty_order = #{isCancelReceiveContEmptyOrder},</if>
             <if test="isExportReceipt != null">is_export_receipt = #{isExportReceipt},</if>
+            <if test="isExtensionDetOrder != null">is_extension_det_order = #{isExtensionDetOrder},</if>
             <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
     </select>

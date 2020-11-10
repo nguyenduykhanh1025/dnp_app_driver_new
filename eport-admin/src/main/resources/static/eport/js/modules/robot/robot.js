@@ -164,6 +164,9 @@ function robotServiceFormater(value, row, index) {
   if (row.isExportReceipt) {
     content += '<span class="badge badge-primary">Xuất hóa đơn</span><span> </span>';
   }
+  if (row.isExtensionDetOrder) {
+    content += '<span class="badge badge-primary">Gia hạn detention</span><span> </span>';
+  }
   return content;
 }
 

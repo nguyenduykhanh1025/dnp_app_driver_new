@@ -476,7 +476,7 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 				data.put("opeCode", gateDetection.getOpeCode1());
 				data.put("containerNo", container1);
 				data.put("wgt", gateDetection.getWgt1());
-				data.put("sztp", gateDetection.getSztp2());
+				data.put("sztp", gateDetection.getSztp1());
 				data.put("userVoy", gateDetection.getVslCd1() + gateDetection.getCallSeq1());
 				data.put("dischargePort", gateDetection.getPod1());
 				data.put("cargoType", gateDetection.getCargoType1());
