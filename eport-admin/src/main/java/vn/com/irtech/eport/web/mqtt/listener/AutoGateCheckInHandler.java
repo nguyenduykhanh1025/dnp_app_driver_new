@@ -221,6 +221,9 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 				gateInFormData.setGatePass(gateDetection.getGatepass());
 				gateInFormData.setTruckNo(gateDetection.getTruckNo());
 				gateInFormData.setChassisNo(gateDetection.getChassisNo());
+				if (StringUtils.isEmpty(gateInFormData.getChassisNo())) {
+					gateInFormData.setChassisNo("");
+				}
 				Long gross = gateDetection.getTotalWgt() - gateDetection.getDeduct();
 				gateInFormData.setWgt(gross.toString());
 				gateInFormData.setGateId(gateDetection.getGateNo());
