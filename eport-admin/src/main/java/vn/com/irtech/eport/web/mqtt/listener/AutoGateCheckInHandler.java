@@ -126,6 +126,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 					gateDetection.setVslCd1(cntrInfo.getVslCd());
 					gateDetection.setCargoType1(cntrInfo.getCargoType());
 					gateDetection.setPod1(cntrInfo.getPod());
+					gateDetection.setFe1(cntrInfo.getFe());
 				}
 			}
 
@@ -140,6 +141,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 					gateDetection.setVslCd2(cntrInfo.getVslCd());
 					gateDetection.setCargoType2(cntrInfo.getCargoType());
 					gateDetection.setPod2(cntrInfo.getPod());
+					gateDetection.setFe2(cntrInfo.getFe());
 				}
 			}
 			gateDetectionService.updateGateDetection(gateDetection);

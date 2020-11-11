@@ -40,13 +40,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="processOrderId"    column="process_order_id"    />
         <result property="gatepass"    column="gatepass"    />
         <result property="status"    column="status"    />
+        <result property="fe1"    column="fe1"    />
+        <result property="fe2"    column="fe2"    />
     </resultMap>
 
     <sql id="selectGateDetectionVo">
         select id, gate_no, truck_no, chassis_no, container_no1, container_no2, chk_truck_no, chk_chassis_no, chk_container_no1, 
         chk_container_no2, total_wgt, deduct, process_flg, create_by, create_time, update_by, update_time, ope_code1, ope_code2,
         sztp1, sztp2, vsl_cd1, vsl_cd2, call_seq1, call_seq2, cargo_type1, cargo_type2, pod1, pod2, wgt1, wgt2, location1, location2, 
-        process_order_id, gatepass, status from gate_detection
+        process_order_id, gatepass, status, fe1, fe2 from gate_detection
     </sql>
 
     <select id="selectGateDetectionList" parameterType="GateDetection" resultMap="GateDetectionResult">
@@ -65,6 +67,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deduct != null "> and deduct = #{deduct}</if>
             <if test="processFlg != null  and processFlg != ''"> and process_flg = #{processFlg}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="fe1 != null  and fe1 != ''"> and fe1 = #{fe1}</if>
+            <if test="fe2 != null  and fe2 != ''"> and fe2 = #{fe2}</if>
         </where>
     </select>
     
@@ -111,6 +115,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="processOrderId != null">process_order_id,</if>
             <if test="gatepass != null">gatepass,</if>
             <if test="status != null">status,</if>
+            <if test="fe1 != null">fe1,</if>
+            <if test="fe2 != null">fe2,</if>
             <if test="createBy != null">create_by,</if>
             create_time
          </trim>
@@ -147,6 +153,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="processOrderId != null">#{processOrderId},</if>
             <if test="gatepass != null">#{gatepass},</if>
             <if test="status != null">#{status},</if>
+            <if test="fe1 != null">#{fe1},</if>
+            <if test="fe2 != null">#{fe2},</if>
             <if test="createBy != null">#{createBy},</if>
             sysdate
          </trim>
@@ -186,6 +194,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="processOrderId != null">process_order_id = #{processOrderId},</if>
             <if test="gatepass != null">gatepass = #{gatepass},</if>
             <if test="status != null">status = #{status},</if>
+            <if test="fe1 != null">fe1 = #{fe1},</if>
+            <if test="fe2 != null">fe2 = #{fe2},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
