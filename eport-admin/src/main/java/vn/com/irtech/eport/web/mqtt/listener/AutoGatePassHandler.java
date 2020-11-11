@@ -449,6 +449,7 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 			data.put("userVoy", gateDetection.getVslCd1() + gateDetection.getCallSeq1());
 			data.put("dischargePort", gateDetection.getPod1());
 			data.put("cargoType", gateDetection.getCargoType1());
+			data.put("fe", gateDetection.getFe1());
 			list.add(data);
 			// Container 2
 			data = new HashMap<>();
@@ -462,6 +463,7 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 			data.put("userVoy", gateDetection.getVslCd2() + gateDetection.getCallSeq2());
 			data.put("dischargePort", gateDetection.getPod2());
 			data.put("cargoType", gateDetection.getCargoType2());
+			data.put("fe", gateDetection.getFe2());
 			list.add(data);
 			notificationReq.setData(list);
 			String req = new Gson().toJson(notificationReq);
@@ -495,6 +497,7 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 				data.put("userVoy", gateDetection.getVslCd1() + gateDetection.getCallSeq1());
 				data.put("dischargePort", gateDetection.getPod1());
 				data.put("cargoType", gateDetection.getCargoType1());
+				data.put("fe", gateDetection.getFe1());
 				list.add(data);
 				notificationReq.setData(list);
 				String req = new Gson().toJson(notificationReq);
@@ -527,6 +530,7 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 				data.put("userVoy", gateDetection.getVslCd2() + gateDetection.getCallSeq2());
 				data.put("dischargePort", gateDetection.getPod2());
 				data.put("cargoType", gateDetection.getCargoType2());
+				data.put("fe", gateDetection.getFe2());
 				list.add(data);
 				notificationReq.setData(list);
 				String req = new Gson().toJson(notificationReq);
