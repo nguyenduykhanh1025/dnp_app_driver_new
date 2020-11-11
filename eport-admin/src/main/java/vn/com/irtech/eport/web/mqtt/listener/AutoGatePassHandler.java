@@ -285,6 +285,12 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 						pickupHistory.setArea(gateDetection.getLocation1());
 					}
 				}
+				if (StringUtils.isEmpty(pickupHistory.getBlock())) {
+					pickupHistory.setBlock("");
+				}
+				if (StringUtils.isEmpty(pickupHistory.getArea())) {
+					pickupHistory.setArea("");
+				}
 				pickupIn.add(pickupHistory);
 			}
 
@@ -326,6 +332,12 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 					} else {
 						pickupHistory.setArea(gateDetection.getLocation1());
 					}
+				}
+				if (StringUtils.isEmpty(pickupHistory.getBlock())) {
+					pickupHistory.setBlock("");
+				}
+				if (StringUtils.isEmpty(pickupHistory.getArea())) {
+					pickupHistory.setArea("");
 				}
 				pickupIn.add(pickupHistory);
 			}
