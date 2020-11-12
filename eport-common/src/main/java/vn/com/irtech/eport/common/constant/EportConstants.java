@@ -293,4 +293,10 @@ public interface EportConstants {
 	public static final String SYNC_QUEUE_STATUS_SUCCESS = "S";
 	/** Sync queue status error */
 	public static final String SYNC_QUEUE_STATUS_ERROR = "E";
+
+	// Type of gate in form data (Begin or continue)
+	/** Gate in form data type beginning */
+	public static final String GATE_REQ_TYPE_BEGIN = "B";
+	/** Gate in form data type continuing */
+	public static final String GATE_REQ_TYPE_CONTINUE = "C";
 }

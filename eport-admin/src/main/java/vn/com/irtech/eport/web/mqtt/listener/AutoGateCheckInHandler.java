@@ -186,6 +186,8 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 	private void sendGateInOrderToRobot(GateDetection gateDetection) {
 		try {
 			GateInFormData gateInFormData = new GateInFormData();
+			// Set type gate in form data is beginning
+			gateInFormData.setType(EportConstants.GATE_REQ_TYPE_BEGIN);
 			List<PickupHistory> pickupIn = new ArrayList<>();
 
 			// Container 1
@@ -195,6 +197,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 				pickupHistory.setContainerNo(gateDetection.getContainerNo1());
 				pickupHistory.setBlock("");
 				pickupHistory.setArea("");
+				pickupHistory.setLocationUpdate(false);
 				pickupIn.add(pickupHistory);
 			}
 
@@ -205,6 +208,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 				pickupHistory.setContainerNo(gateDetection.getContainerNo2());
 				pickupHistory.setBlock("");
 				pickupHistory.setArea("");
+				pickupHistory.setLocationUpdate(false);
 				pickupIn.add(pickupHistory);
 			}
 

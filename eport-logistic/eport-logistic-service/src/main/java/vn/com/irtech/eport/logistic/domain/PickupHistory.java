@@ -4,10 +4,10 @@ import java.util.Date;
 
 import javax.validation.constraints.NotEmpty;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
@@ -158,6 +158,8 @@ public class PickupHistory extends BaseEntity {
 	private Boolean jobOrderFlg;
 	
 	private Integer loadableWgt;
+
+	private Boolean locationUpdate;
 
 	public void setId(Long id) {
 		this.id = id;
@@ -517,6 +519,14 @@ public class PickupHistory extends BaseEntity {
 
 	public void setLoadableWgt(Integer loadableWgt) {
 		this.loadableWgt = loadableWgt;
+	}
+
+	public Boolean getLocationUpdate() {
+		return locationUpdate;
+	}
+
+	public void setLocationUpdate(Boolean locationUpdate) {
+		this.locationUpdate = locationUpdate;
 	}
 
 	@Override

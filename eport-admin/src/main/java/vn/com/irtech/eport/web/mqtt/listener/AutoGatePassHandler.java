@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.web.mqtt.listener;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.utils.StringUtils;
@@ -34,6 +36,7 @@ import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 import vn.com.irtech.eport.web.dto.GateInFormData;
+import vn.com.irtech.eport.web.dto.PickupRobotResult;
 import vn.com.irtech.eport.web.mqtt.BusinessConsts;
 import vn.com.irtech.eport.web.mqtt.MqttService;
 
@@ -111,12 +114,13 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 		String status = map.get("status") == null ? null : map.get("status").toString();
 		String result = map.get("result") == null ? null : map.get("result").toString();
 		String dataString = map.get("data") == null ? null : new Gson().toJson(map.get("data"));
+		String pickupInResult = map.get("pickupInResult") == null ? null : new Gson().toJson(map.get("pickupInResult"));
 
 		GateInFormData gateInFormData = new Gson().fromJson(dataString, GateInFormData.class);
 		if (gateInFormData != null && gateInFormData.getReceiptId() != null) {
 			robotService.updateRobotStatusByUuId(uuId, status);
 		}
-		this.updateHistory(gateInFormData, result, uuId, status);
+		this.updateHistory(gateInFormData, pickupInResult, result, uuId, status);
 	}
 
 	/**
@@ -125,7 +129,8 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 	 * @param gateInFormData
 	 * @param result
 	 */
-	private void updateHistory(GateInFormData gateInFormData, String result, String uuId, String status) {
+	private void updateHistory(GateInFormData gateInFormData, String pickupInResult, String result, String uuId,
+			String status) {
 		// Declare process order to update status
 		ProcessOrder processOrder = processOrderService.selectProcessOrderById(gateInFormData.getReceiptId());
 		processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_FINISHED);
@@ -146,6 +151,11 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 		history.setStatus(EportConstants.PROCESS_HISTORY_STATUS_FINISHED);
 
 		GateDetection gateDetection = gateDetectionService.selectGateDetectionById(gateInFormData.getId());
+		if (gateDetection != null && StringUtils.isNotEmpty(pickupInResult)) {
+			List<PickupRobotResult> pickupRobotResults = getListRobotResultPickupFromString(pickupInResult);
+			gateDetection = updateYardPositionOfGateDetection(pickupRobotResults, gateDetection);
+			gateDetectionService.updateGateDetection(gateDetection);
+		}
 		// If Robot return success
 		if ("success".equalsIgnoreCase(result)) {
 			try {
@@ -171,6 +181,9 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 
 				sendRequestToMc(gateDetection);
 
+				// Gate detection reference to check if location is updated by mc
+				GateDetection gateDetectionRef = null;
+
 				for (int i = 1; i <= RETRY_WAIT_MC; i++) {
 					logger.debug("Wait " + TIME_OUT_WAIT_MC + " miliseconds");
 					try {
@@ -179,16 +192,16 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 						logger.error("Error sleep to wait mc: " + e);
 					}
 					logger.debug("Check db for position");
-					gateDetection = gateDetectionService.selectGateDetectionById(gateInFormData.getId());
-					if (hasLocation(gateDetection)) {
+					gateDetectionRef = gateDetectionService.selectGateDetectionById(gateInFormData.getId());
+					if (hasLocation(gateDetectionRef)) {
 						break;
 					}
 				}
-				if (hasLocation(gateDetection)) {
+				if (hasLocation(gateDetectionRef)) {
 					message = "Đã có tọa độ đầy đủ, tiếp tục làm lệnh gate in";
 					mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, message,
 							gateInFormData.getGateId());
-					sendGateInOrderToRobot(gateDetection);
+					sendGateInOrderToRobot(gateDetection, gateDetectionRef);
 				} else {
 					try {
 						// Send result to gate app
@@ -241,9 +254,11 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 	 * 
 	 * @param gateNotificationCheckInReq
 	 */
-	private void sendGateInOrderToRobot(GateDetection gateDetection) {
+	private void sendGateInOrderToRobot(GateDetection gateDetection, GateDetection gateDetectionRef) {
 		try {
 			GateInFormData gateInFormData = new GateInFormData();
+			// Send gate in req case continue after mc update position
+			gateInFormData.setType(EportConstants.GATE_REQ_TYPE_CONTINUE);
 			List<PickupHistory> pickupIn = new ArrayList<>();
 
 			// Container 1
@@ -253,8 +268,8 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 				pickupHistory.setContainerNo(gateDetection.getContainerNo1());
 
 				// Check location
-				if (StringUtils.isNotEmpty(gateDetection.getLocation1())) {
-					String[] location1 = gateDetection.getLocation1().split("-");
+				if (StringUtils.isNotEmpty(gateDetectionRef.getLocation1())) {
+					String[] location1 = gateDetectionRef.getLocation1().split("-");
 					if (location1.length >= 4) {
 						pickupHistory.setBlock(location1[0]);
 						pickupHistory.setLine(location1[2]);
@@ -284,6 +299,13 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 					} else {
 						pickupHistory.setArea(gateDetection.getLocation1());
 					}
+					// Check if location is updated or already had position
+					// If already had => location update is false else true
+					if (gateDetectionRef.getLocation1().equalsIgnoreCase(gateDetection.getLocation1())) {
+						pickupHistory.setLocationUpdate(false);
+					} else {
+						pickupHistory.setLocationUpdate(true);
+					}
 				}
 				if (StringUtils.isEmpty(pickupHistory.getBlock())) {
 					pickupHistory.setBlock("");
@@ -301,8 +323,8 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 				pickupHistory.setContainerNo(gateDetection.getContainerNo2());
 
 				// Check location
-				if (StringUtils.isNotEmpty(gateDetection.getLocation2())) {
-					String[] location2 = gateDetection.getLocation2().split("-");
+				if (StringUtils.isNotEmpty(gateDetectionRef.getLocation2())) {
+					String[] location2 = gateDetectionRef.getLocation2().split("-");
 					if (location2.length >= 4) {
 						pickupHistory.setBlock(location2[0]);
 						pickupHistory.setLine(location2[2]);
@@ -331,6 +353,13 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 						}
 					} else {
 						pickupHistory.setArea(gateDetection.getLocation1());
+					}
+					// Check if location is updated or already had position
+					// If already had => location update is false else true
+					if (gateDetectionRef.getLocation2().equalsIgnoreCase(gateDetection.getLocation2())) {
+						pickupHistory.setLocationUpdate(false);
+					} else {
+						pickupHistory.setLocationUpdate(true);
 					}
 				}
 				if (StringUtils.isEmpty(pickupHistory.getBlock())) {
@@ -419,6 +448,17 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 		boolean sameVessel = false;
 		String container1 = gateDetection.getContainerNo1();
 		String container2 = gateDetection.getContainerNo2();
+		if (StringUtils.isNotEmpty(container1) && StringUtils.isNotEmpty(gateDetection.getLocation1())) {
+			// Container 1 has position => no need to send request position to mc
+			// set blank to exclude
+			container1 = "";
+		}
+		if (StringUtils.isNotEmpty(container2) && StringUtils.isNotEmpty(gateDetection.getLocation2())) {
+			// Container 1 has position => no need to send request position to mc
+			// set blank to exclude
+			container2 = "";
+		}
+
 		if (StringUtils.isNotEmpty(container1) && StringUtils.isNotEmpty(container2)) {
 			if (gateDetection.getVslCd1().equalsIgnoreCase(gateDetection.getVslCd2())
 					&& gateDetection.getCallSeq1().equalsIgnoreCase(gateDetection.getCallSeq2())) {
@@ -541,5 +581,39 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Parsing json string of robot result data to List robot result object
+	 * 
+	 * @param pickupResult
+	 * @return List robot result object
+	 */
+	private List<PickupRobotResult> getListRobotResultPickupFromString(String pickupResult) {
+		Type listType = new TypeToken<ArrayList<PickupRobotResult>>() {
+		}.getType();
+		ArrayList<PickupRobotResult> pickupRobotResults = new Gson().fromJson(pickupResult, listType);
+		return pickupRobotResults;
+	}
+
+	/**
+	 * Set yard position (block-bay-row-tier)
+	 * 
+	 * @param pickupRobotResults
+	 * @param gateDetection
+	 * @return
+	 */
+	private GateDetection updateYardPositionOfGateDetection(List<PickupRobotResult> pickupRobotResults,
+			GateDetection gateDetection) {
+		for (PickupRobotResult pickupRobotResult : pickupRobotResults) {
+
+			// Check if container need update yard position is container 1
+			if (pickupRobotResult.getContainerNo().equalsIgnoreCase(gateDetection.getContainerNo1())) {
+				gateDetection.setLocation1(pickupRobotResult.getYardPosition());
+			} else if (pickupRobotResult.getContainerNo().equalsIgnoreCase(gateDetection.getContainerNo2())) {
+				gateDetection.setLocation2(pickupRobotResult.getYardPosition());
+			}
+		}
+		return gateDetection;
 	}
 }
