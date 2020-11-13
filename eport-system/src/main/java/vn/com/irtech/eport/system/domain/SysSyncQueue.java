@@ -157,7 +157,7 @@ public class SysSyncQueue extends BaseEntity
 				.append("retryTimes", getRetryTimes()).append("createTime", getCreateTime())
 				.append("createTime", getCreateTime()).append("createTime", getCreateTime())
 				.append("expiredDem", getExpiredDem()).append("detFreeTime", getDetFreeTime())
-				.append("params", getParams())
+				.append("remark", getRemark()).append("params", getParams())
             .toString();
     }
 }
