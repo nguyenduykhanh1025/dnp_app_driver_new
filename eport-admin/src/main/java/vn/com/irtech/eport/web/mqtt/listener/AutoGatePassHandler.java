@@ -175,6 +175,10 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 
 		} else if ("position_failed".equalsIgnoreCase(result)) {
 			if (gateInFormData.getId() != 0) {
+				// The order in catos after register job gate in is reversed
+				// => need to reverse data between 2 container to mapping with catos
+				gateDetection = reverseData(gateDetection);
+
 				String message = "Chưa có tọa độ, đang thực hiện yêu cầu mc cấp tọa độ.";
 				mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, message,
 						gateInFormData.getGateId());
@@ -606,13 +610,61 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 	private GateDetection updateYardPositionOfGateDetection(List<PickupRobotResult> pickupRobotResults,
 			GateDetection gateDetection) {
 		for (PickupRobotResult pickupRobotResult : pickupRobotResults) {
-
 			// Check if container need update yard position is container 1
 			if (pickupRobotResult.getContainerNo().equalsIgnoreCase(gateDetection.getContainerNo1())) {
 				gateDetection.setLocation1(pickupRobotResult.getYardPosition());
 			} else if (pickupRobotResult.getContainerNo().equalsIgnoreCase(gateDetection.getContainerNo2())) {
 				gateDetection.setLocation2(pickupRobotResult.getYardPosition());
 			}
+		}
+		return gateDetection;
+	}
+
+	private GateDetection reverseData(GateDetection gateDetection) {
+		if (StringUtils.isNotEmpty(gateDetection.getContainerNo2())) {
+			String container1 = gateDetection.getContainerNo1();
+			String opeCode1 = gateDetection.getOpeCode1();
+			String sztp1 = gateDetection.getSztp1();
+			String vslCd1 = gateDetection.getVslCd1();
+			String callSeq1 = gateDetection.getCallSeq1();
+			String cargoType1 = gateDetection.getCargoType1();
+			String pod1 = gateDetection.getPod1();
+			Long wgt1 = gateDetection.getWgt1();
+			String location1 = gateDetection.getLocation1();
+			String location2 = gateDetection.getLocation2();
+			String fe1 = gateDetection.getFe1();
+			Map<String, Object> params = new HashMap<>();
+
+			gateDetection.setContainerNo1(gateDetection.getContainerNo2());
+			gateDetection.setOpeCode1(gateDetection.getOpeCode2());
+			gateDetection.setSztp1(gateDetection.getSztp2());
+			gateDetection.setVslCd1(gateDetection.getVslCd2());
+			gateDetection.setCallSeq1(gateDetection.getCallSeq2());
+			gateDetection.setCargoType1(gateDetection.getCargoType2());
+			gateDetection.setPod1(gateDetection.getPod2());
+			gateDetection.setWgt1(gateDetection.getWgt2());
+			if (StringUtils.isEmpty(location2)) {
+				params.put("nullLocation1", true);
+			}
+			gateDetection.setLocation1(gateDetection.getLocation2());
+			gateDetection.setFe1(gateDetection.getFe2());
+
+			gateDetection.setContainerNo2(container1);
+			gateDetection.setOpeCode2(opeCode1);
+			gateDetection.setSztp2(sztp1);
+			gateDetection.setVslCd2(vslCd1);
+			gateDetection.setCallSeq2(callSeq1);
+			gateDetection.setCargoType2(cargoType1);
+			gateDetection.setPod2(pod1);
+			gateDetection.setWgt2(wgt1);
+			if (StringUtils.isEmpty(location1)) {
+				params.put("nullLocation2", true);
+			}
+			gateDetection.setLocation2(location1);
+			gateDetection.setFe2(fe1);
+
+			gateDetection.setParams(params);
+			gateDetectionService.updateGateDetection(gateDetection);
 		}
 		return gateDetection;
 	}

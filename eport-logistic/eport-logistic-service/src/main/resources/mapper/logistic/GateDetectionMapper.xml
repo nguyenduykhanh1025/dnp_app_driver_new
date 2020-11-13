@@ -199,6 +199,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="params.nullLocation1 != null">location1 = null,</if>
+            <if test="params.nullLocation2 != null">location2 = null,</if>
             update_time = sysdate
         </trim>
         where id = #{id}
