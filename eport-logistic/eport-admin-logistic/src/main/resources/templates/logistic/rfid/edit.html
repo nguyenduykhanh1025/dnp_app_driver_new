@@ -103,23 +103,23 @@
             $("input[name=truckType][value=" + rfidTruck.truckType + "]").attr('checked', 'checked');
 
             // Logistics
-            $("#logisticGroupId").val(rfidTruck.logisticGroupId);
-            $.ajax({
-                url: ctx + 'logistic/group/searchGroupNameByKeyword',
-                method: 'get',
-                data: {
-                    keyword: params.term == null ? "" : params.term,
-                    groupId: rfidTruck.logisticGroupId == null ? "0" : rfidTruck.logisticGroupId
-                },
-                success: function(res) {
-                    if (res) {
-                        $('.groupName').val(res[0].text);
-                    }
-                },
-                error: function(err) {
-                    $.modal.alertError('Thất bại');
-                }
-            });
+            // $("#logisticGroupId").val(rfidTruck.logisticGroupId);
+            // $.ajax({
+            //     url: ctx + 'logistic/group/searchGroupNameByKeyword',
+            //     method: 'get',
+            //     data: {
+            //         keyword: params.term == null ? "" : params.term,
+            //         groupId: rfidTruck.logisticGroupId == null ? "0" : rfidTruck.logisticGroupId
+            //     },
+            //     success: function(res) {
+            //         if (res) {
+            //             $('.groupName').val(res[0].text);
+            //         }
+            //     },
+            //     error: function(err) {
+            //         $.modal.alertError('Thất bại');
+            //     }
+            // });
 
             // Set up select 2 for logistic group
             $('.groupName').select2({
