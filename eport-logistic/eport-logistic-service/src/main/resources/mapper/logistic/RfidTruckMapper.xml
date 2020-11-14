@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.RfidTruckMapper">
+    
+    <resultMap type="RfidTruck" id="RfidTruckResult">
+        <result property="id"    column="id"    />
+        <result property="rfid"    column="rfid"    />
+        <result property="plateNumber"    column="plate_number"    />
+        <result property="truckType"    column="truck_type"    />
+        <result property="gatePass"    column="gate_pass"    />
+        <result property="wgt"    column="wgt"    />
+        <result property="logisticGroupId"    column="logistic_group_id"    />
+        <result property="disabled"    column="disabled"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="remark"    column="remark"    />
+        <result property="loadableWgt"    column="loadable_wgt"    />
+    </resultMap>
+
+    <sql id="selectRfidTruckVo">
+        select id, rfid, plate_number, truck_type, gate_pass, wgt, logistic_group_id, disabled, create_time, create_by, update_time, update_by, remark, loadable_wgt from rfid_truck
+    </sql>
+
+    <select id="selectRfidTruckList" parameterType="RfidTruck" resultMap="RfidTruckResult">
+        <include refid="selectRfidTruckVo"/>
+        <where>  
+            <if test="rfid != null  and rfid != ''"> and rfid like concat('%', concat(#{rfid}, '%'))</if>
+            <if test="plateNumber != null  and plateNumber != ''"> and plate_number like concat('%', concat(#{plateNumber}, '%'))</if>
+            <if test="truckType != null  and truckType != ''"> and truck_type = #{truckType}</if>
+            <if test="gatePass != null  and gatePass != ''"> and gate_pass = #{gatePass}</if>
+            <if test="wgt != null "> and wgt = #{wgt}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="disabled != null "> and disabled = #{disabled}</if>
+            <if test="loadableWgt != null "> and loadable_wgt = #{loadableWgt}</if>
+        </where>
+    </select>
+    
+    <select id="selectRfidTruckById" parameterType="Long" resultMap="RfidTruckResult">
+        <include refid="selectRfidTruckVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRfidTruck" parameterType="RfidTruck" useGeneratedKeys="true" keyProperty="id">
+    	<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_rfid_truck.nextval as id from DUAL
+		</selectKey>
+        insert into rfid_truck
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="rfid != null and rfid != ''">rfid,</if>
+            <if test="plateNumber != null">plate_number,</if>
+            <if test="truckType != null">truck_type,</if>
+            <if test="gatePass != null">gate_pass,</if>
+            <if test="wgt != null">wgt,</if>
+            <if test="logisticGroupId != null">logistic_group_id,</if>
+            <if test="disabled != null">disabled,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="loadableWgt != null">loadable_wgt,</if>
+            create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="rfid != null and rfid != ''">#{rfid},</if>
+            <if test="plateNumber != null">#{plateNumber},</if>
+            <if test="truckType != null">#{truckType},</if>
+            <if test="gatePass != null">#{gatePass},</if>
+            <if test="wgt != null">#{wgt},</if>
+            <if test="logisticGroupId != null">#{logisticGroupId},</if>
+            <if test="disabled != null">#{disabled},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="loadableWgt != null">#{loadableWgt},</if>
+            sysdate
+         </trim>
+    </insert>
+
+    <update id="updateRfidTruck" parameterType="RfidTruck">
+        update rfid_truck
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="rfid != null and rfid != ''">rfid = #{rfid},</if>
+            <if test="plateNumber != null">plate_number = #{plateNumber},</if>
+            <if test="truckType != null">truck_type = #{truckType},</if>
+            <if test="gatePass != null">gate_pass = #{gatePass},</if>
+            <if test="wgt != null">wgt = #{wgt},</if>
+            <if test="logisticGroupId != null">logistic_group_id = #{logisticGroupId},</if>
+            <if test="disabled != null">disabled = #{disabled},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="loadableWgt != null">loadable_wgt = #{loadableWgt},</if>
+            update_time = sysdate
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRfidTruckById" parameterType="Long">
+        delete from rfid_truck where id = #{id}
+    </delete>
+
+    <delete id="deleteRfidTruckByIds" parameterType="String">
+        delete from rfid_truck where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
