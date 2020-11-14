@@ -18,7 +18,9 @@ import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
+import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.RfidTruck;
+import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IRfidTruckService;
 
 /**
@@ -29,97 +31,98 @@ import vn.com.irtech.eport.logistic.service.IRfidTruckService;
  */
 @Controller
 @RequestMapping("/logistic/rfid")
-public class RfidTruckController extends BaseController
-{
-    private String prefix = "logistic/rfid";
+public class RfidTruckController extends BaseController {
+	private String prefix = "logistic/rfid";
 
-    @Autowired
-    private IRfidTruckService rfidTruckService;
+	@Autowired
+	private ILogisticGroupService logisticGroupService;
 
-    @GetMapping()
-    public String rfid()
-    {
-        return prefix + "/rfid";
-    }
+	@Autowired
+	private IRfidTruckService rfidTruckService;
 
-    /**
-     * Get RFID Truck List
-     */
-    @PostMapping("/list")
-    @ResponseBody
-    public TableDataInfo list(RfidTruck rfidTruck)
-    {
-        startPage();
-        List<RfidTruck> list = rfidTruckService.selectRfidTruckList(rfidTruck);
-        return getDataTable(list);
-    }
+	@GetMapping()
+	public String rfid() {
+		return prefix + "/rfid";
+	}
 
-    /**
-     * Export RFID Truck List
-     */
-    @Log(title = "RFID Truck", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    @ResponseBody
-    public AjaxResult export(RfidTruck rfidTruck)
-    {
-        List<RfidTruck> list = rfidTruckService.selectRfidTruckList(rfidTruck);
-        ExcelUtil<RfidTruck> util = new ExcelUtil<RfidTruck>(RfidTruck.class);
-        return util.exportExcel(list, "rfid");
-    }
+	/**
+	 * Get RFID Truck List
+	 */
+	@PostMapping("/list")
+	@ResponseBody
+	public TableDataInfo list(RfidTruck rfidTruck) {
+		startPage();
+		List<RfidTruck> list = rfidTruckService.selectRfidTruckList(rfidTruck);
+		return getDataTable(list);
+	}
 
-    /**
-     * Add RFID Truck
-     */
-    @GetMapping("/add")
-    public String add()
-    {
-        return prefix + "/add";
-    }
+	/**
+	 * Export RFID Truck List
+	 */
+	@Log(title = "RFID Truck", businessType = BusinessType.EXPORT)
+	@PostMapping("/export")
+	@ResponseBody
+	public AjaxResult export(RfidTruck rfidTruck) {
+		List<RfidTruck> list = rfidTruckService.selectRfidTruckList(rfidTruck);
+		ExcelUtil<RfidTruck> util = new ExcelUtil<RfidTruck>(RfidTruck.class);
+		return util.exportExcel(list, "rfid");
+	}
 
-    /**
+	/**
+	 * Add RFID Truck
+	 */
+	@GetMapping("/add")
+	public String add() {
+		return prefix + "/add";
+	}
+
+	/**
 	 * Insert RFID Truck
 	 */
-    @Log(title = "RFID Truck", businessType = BusinessType.INSERT)
-    @PostMapping("/add")
-    @ResponseBody
-    public AjaxResult addSave(RfidTruck rfidTruck)
-    {
+	@Log(title = "RFID Truck", businessType = BusinessType.INSERT)
+	@PostMapping("/add")
+	@ResponseBody
+	public AjaxResult addSave(RfidTruck rfidTruck) {
 		rfidTruck.setCreateBy(ShiroUtils.getLoginName());
-        return toAjax(rfidTruckService.insertRfidTruck(rfidTruck));
-    }
+		return toAjax(rfidTruckService.insertRfidTruck(rfidTruck));
+	}
 
-    /**
-     * Update RFID Truck
-     */
-    @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Long id, ModelMap mmap)
-    {
-        RfidTruck rfidTruck = rfidTruckService.selectRfidTruckById(id);
-        mmap.put("rfidTruck", rfidTruck);
-        return prefix + "/edit";
-    }
+	/**
+	 * Update RFID Truck
+	 */
+	@GetMapping("/edit/{id}")
+	public String edit(@PathVariable("id") Long id, ModelMap mmap) {
+		RfidTruck rfidTruck = rfidTruckService.selectRfidTruckById(id);
+		mmap.put("rfidTruck", rfidTruck);
+		if (rfidTruck.getLogisticGroupId() != null) {
+			LogisticGroup logisticGroup = logisticGroupService.selectLogisticGroupById(rfidTruck.getLogisticGroupId());
+			if (logisticGroup != null) {
+				mmap.put("logisticGroupName", logisticGroup.getGroupName());
+			}
 
-    /**
-     * Update Save RFID Truck
-     */
-    @Log(title = "RFID Truck", businessType = BusinessType.UPDATE)
-    @PostMapping("/edit")
-    @ResponseBody
-    public AjaxResult editSave(RfidTruck rfidTruck)
-    {
-        return toAjax(rfidTruckService.updateRfidTruck(rfidTruck));
-    }
+		}
+		return prefix + "/edit";
+	}
 
-    /**
-     * Delete RFID Truck
-     */
-    @Log(title = "RFID Truck", businessType = BusinessType.DELETE)
-    @PostMapping( "/remove")
-    @ResponseBody
-    public AjaxResult remove(String ids)
-    {
-        return toAjax(rfidTruckService.deleteRfidTruckByIds(ids));
-    }
+	/**
+	 * Update Save RFID Truck
+	 */
+	@Log(title = "RFID Truck", businessType = BusinessType.UPDATE)
+	@PostMapping("/edit")
+	@ResponseBody
+	public AjaxResult editSave(RfidTruck rfidTruck) {
+		return toAjax(rfidTruckService.updateRfidTruck(rfidTruck));
+	}
+
+	/**
+	 * Delete RFID Truck
+	 */
+	@Log(title = "RFID Truck", businessType = BusinessType.DELETE)
+	@PostMapping("/remove")
+	@ResponseBody
+	public AjaxResult remove(String ids) {
+		return toAjax(rfidTruckService.deleteRfidTruckByIds(ids));
+	}
 
 	@PostMapping("/disabled/change")
 	@ResponseBody
