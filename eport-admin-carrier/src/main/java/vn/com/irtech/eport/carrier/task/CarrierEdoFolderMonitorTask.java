@@ -260,8 +260,9 @@ public class CarrierEdoFolderMonitorTask {
 					edoUpdate.setEmptyContainerDepot(edo.getEmptyContainerDepot());
 					edoUpdate.setTaxCode(edo.getTaxCode());
 					edoUpdate.setExpiredDem(edo.getExpiredDem());
+					edoUpdate.setCarrierCode(edoCheck.getCarrierCode());
 					// Validate edo field can update
-					if (cntrFull == null || StringUtils.isNotEmpty(cntrFull.getJobOdrNo2())) {
+					if (cntrFull == null || StringUtils.isEmpty(cntrFull.getJobOdrNo2())) {
 						// Case container don't has job order no in catos
 						// => can update
 						edoUpdate.setCarrierCode(edo.getCarrierCode());
