@@ -138,7 +138,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 //
 //        return PREFIX + "/shipmentImage";
 //    }
-
+	//logistic/receive-cont-empty/shipments/{shipmentId}/shipment-images
 	@GetMapping("/shipments/{shipmentId}/shipment-images")
 	@ResponseBody
 	public AjaxResult getShipmentImages(@PathVariable("shipmentId") Long shipmentId) {
@@ -156,7 +156,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		}
 		return error();
 	}
-
+	
 	// FORM ADD NEW SHIPMENT
 	@GetMapping("/shipment/add")
 	public String add(ModelMap mmap) {

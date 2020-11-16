@@ -286,6 +286,18 @@
 	<script th:src="@{/js/bootstrap-toggle.min.js}"></script>
 </div>
 
+
+<!-- dropzone-->
+<div th:fragment="dropzone-css">
+    <link th:href="@{/ajax/libs/dropzone/basic.min.css}" rel="stylesheet"/>
+	<link th:href="@{/ajax/libs/dropzone/dropzone.min.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="dropzone-js">
+    <script th:src="@{/ajax/libs/dropzone/dropzone.min.js}"></script>
+	<script th:src="@{/ajax/libs/dropzone/dropzone-amd-module.min.js}"></script>
+</div>
+
+
 <div th:fragment="footer-novalidate">
   <a id="scroll-up" href="#" class="btn btn-sm display"><i class="fa fa-angle-double-up"></i></a>
 <script th:src="@{/js/jquery.min.js}"></script>

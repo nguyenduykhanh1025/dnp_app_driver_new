@@ -99,7 +99,10 @@ $(document).ready(function () {
         success: function (file, response) {
             if (response.code == 0) {
                 $.modal.msgSuccess("Đính kèm tệp thành công.");
+                
                 shipmentFileIds.push(response.shipmentFileId);
+                
+                
                 let html = `<div class="preview-block">
                     <img src="` + ctx + `img/document.png" alt="Tài liệu" />
                     <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + response.shipmentFileId + `)" >

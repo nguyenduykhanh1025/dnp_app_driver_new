@@ -156,6 +156,13 @@ public class ShipmentServiceImpl implements IShipmentService {
     public List<Shipment> selectShipmentListByWithShipmentDetailFilter(Shipment shipment) {
 		return shipmentMapper.selectShipmentListByWithShipmentDetailFilter(shipment);
 	}
+	
+	@Override
+    public List<Shipment> selectShipmentListByWithShipmentDetailFilterApply(Shipment shipment) {
+		return shipmentMapper.selectShipmentListByWithShipmentDetailFilterApply(shipment);
+	}
+	
+	
     /**
      * input: serviceType(bat buoc)
      * getShipmentsForSupportCustomBy in OM SupportCustomReceiveFull, SupportCustomSendFull

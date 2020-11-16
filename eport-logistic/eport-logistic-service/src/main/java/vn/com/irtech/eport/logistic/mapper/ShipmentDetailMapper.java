@@ -30,6 +30,11 @@ public interface ShipmentDetailMapper {
 	 * @return Shipment Details List
 	 */
 	public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail);
+	
+	
+	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail);
+	
+	
 
 	/**
 	 * Add Shipment Details
@@ -47,6 +52,10 @@ public interface ShipmentDetailMapper {
 	 */
 	public int updateShipmentDetail(ShipmentDetail shipmentDetail);
 
+	
+	public int updateShipmentDetailApply(ShipmentDetail shipmentDetail);
+	
+	
 	/**
 	 * Delete Shipment Details
 	 * 
@@ -176,8 +185,8 @@ public interface ShipmentDetailMapper {
 	 * @return int
 	 */
 	public int updateShipmentDetailByIds(@Param("shipmentDetailIds") String[] shipmentDetailIds,
-			@Param("shipmentDetail") ShipmentDetail shipmentDetail);
-
+			@Param("shipmentDetail") ShipmentDetail shipmentDetail); 
+ 
 	/**
 	 * Reset custom status to null
 	 * 

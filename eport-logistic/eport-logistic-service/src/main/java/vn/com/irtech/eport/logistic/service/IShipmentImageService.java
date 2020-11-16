@@ -15,6 +15,10 @@ public interface IShipmentImageService {
 
     List<ShipmentImage> selectShipmentImagesByShipmentId(Long shipmentId);
     
+    List<ShipmentImage> selectShipmentImagesByShipmentDetailId(Long shipmentId);
+    
+    
+    
     /**
      * Update shipment image that in ids array 
      * 

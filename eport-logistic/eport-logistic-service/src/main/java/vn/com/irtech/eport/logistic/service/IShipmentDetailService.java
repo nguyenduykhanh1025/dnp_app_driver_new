@@ -36,6 +36,8 @@ public interface IShipmentDetailService {
 	 * @return Shipment Details List
 	 */
 	public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail);
+	
+	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail);
 
 	/**
 	 * Add Shipment Details
@@ -52,6 +54,8 @@ public interface IShipmentDetailService {
 	 * @return result
 	 */
 	public int updateShipmentDetail(ShipmentDetail shipmentDetail);
+	
+	public int updateShipmentDetailApply(ShipmentDetail shipmentDetail);
 
 	/**
 	 * Batch Delete Shipment Details
@@ -311,7 +315,9 @@ public interface IShipmentDetailService {
 	 * @param shipmentDetail
 	 * @return int
 	 */
-	public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail);
+	public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail); 
+	
+	
 
 	/**
 	 * Reset custom status to null for shipmentId

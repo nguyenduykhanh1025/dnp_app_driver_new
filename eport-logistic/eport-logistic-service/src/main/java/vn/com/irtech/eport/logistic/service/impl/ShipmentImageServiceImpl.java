@@ -35,6 +35,11 @@ public class ShipmentImageServiceImpl implements IShipmentImageService {
         return shipmentImageMapper.selectShipmentImagesByShipmentId(shipmentId);
     }
     
+    @Override
+    public List<ShipmentImage> selectShipmentImagesByShipmentDetailId(final Long shipmentId) {
+        return shipmentImageMapper.selectShipmentImagesByShipmentDetailId(shipmentId);
+    }
+     
     /**
      * Update shipment image that in ids array 
      * 

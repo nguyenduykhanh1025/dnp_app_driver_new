@@ -1,5 +1,7 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +26,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.alibaba.druid.sql.visitor.functions.Substring;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 import vn.com.irtech.eport.carrier.domain.EdoHouseBill;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
@@ -31,13 +37,19 @@ import vn.com.irtech.eport.carrier.service.IEdoHouseBillService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.annotation.RepeatSubmit;
+import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
+import vn.com.irtech.eport.common.exception.file.InvalidExtensionException;
+import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
+import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -45,6 +57,7 @@ import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
 import vn.com.irtech.eport.logistic.listener.MqttService;
@@ -55,6 +68,7 @@ import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.service.ISysConfigService;
@@ -73,6 +87,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
+	
+	@Autowired
+	private IShipmentImageService shipmentImageService;
 
 	@Autowired
 	private IOtpCodeService otpCodeService;
@@ -280,7 +297,28 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		return error("Chỉnh sửa lô thất bại");
 	}
-
+	
+	@GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail") 
+	public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
+			@PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
+		mmap.put("containerNo", containerNo);
+		mmap.put("sztp", sztp);
+		mmap.put("shipmentDetailId", shipmentDetailId); 
+		mmap.put("shipmentDetail",shipmentDetailService.selectShipmentDetailById( shipmentDetailId));//obj    
+		 
+	//// nhat add
+			ShipmentImage shipmentImage = new ShipmentImage();
+			shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+			for (ShipmentImage shipmentImage2 : shipmentImages) {
+				shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+			}
+		mmap.put("shipmentFiles", shipmentImages);
+			 
+		return PREFIX + "/detail";
+	}
+	 
+	
 	@GetMapping("/shipment/{shipmentId}/shipment-detail")
 	@ResponseBody
 	public AjaxResult listShipmentDetail(@PathVariable Long shipmentId) {
@@ -293,6 +331,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
+		 
+		
 		// auto load containers detail for eDO for first time
 		if ("1".equals(shipment.getEdoFlg()) && shipmentDetails.size() == 0) {
 			if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
@@ -328,7 +368,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 
 		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("shipmentDetails", shipmentDetails);
+		ajaxResult.put("shipmentDetails", shipmentDetails); 
 		return ajaxResult;
 	}
 
@@ -430,14 +470,17 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					ctnrInfo = catosMap.get(shipmentDetail.getContainerNo());
 					if (ctnrInfo != null) {
 						shipmentDetail.setSztp(ctnrInfo.getSztp()); 
-						// nhatlv check tường hợp insert với từng mã
+						//check tường hợp insert với từng mã
 						
-						if("P".equalsIgnoreCase(ctnrInfo.getSztp().substring(2,3)) 
+						/*if(("P".equalsIgnoreCase(ctnrInfo.getSztp().substring(2,3)) 
 						|| "T".equalsIgnoreCase(ctnrInfo.getSztp().substring(2,3))
 						|| "U".equalsIgnoreCase(ctnrInfo.getSztp().substring(2,3)))
-						{   
+						&& (!"R".equalsIgnoreCase(shipmentDetail.getContSpecialStatus()) ||
+								!"C".equalsIgnoreCase(shipmentDetail.getContSpecialStatus()) ||
+								!"D".equalsIgnoreCase(shipmentDetail.getContSpecialStatus()))
+						){   
 							shipmentDetail.setContSpecialStatus("S"); 
-						} 
+						} */
 						// shipmentDetail.setSztpDefine(catos.getSztpDefine()); // TODO
 						shipmentDetail.setCarrierName(ctnrInfo.getPtnrName());
 						shipmentDetail.setVslName(ctnrInfo.getVslNm());
@@ -525,18 +568,29 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 							shipmentDetailReference.setDetFreeTime(inputDetail.getDetFreeTime());
 						}
 						shipmentDetailReference.setUpdateTime(new Date());
-						if("P".equalsIgnoreCase(shipmentDetailReference.getSztp().substring(2,3)) 
+						
+						
+							
+							/*if(("P".equalsIgnoreCase(shipmentDetailReference.getSztp().substring(2,3)) 
+									|| "T".equalsIgnoreCase(shipmentDetailReference.getSztp().substring(2,3))
+									|| "U".equalsIgnoreCase(shipmentDetailReference.getSztp().substring(2,3)) 
+									)&& (!"R".equalsIgnoreCase(shipmentDetailReference.getContSpecialStatus()) || 
+											!"C".equalsIgnoreCase(shipmentDetailReference.getContSpecialStatus())||
+											!"D".equalsIgnoreCase(shipmentDetailReference.getContSpecialStatus())))
+									{  
+										shipmentDetailReference.setContSpecialStatus("S");  
+									}*/  
+			
+						/*if(("P".equalsIgnoreCase(shipmentDetailReference.getSztp().substring(2,3)) 
 								|| "T".equalsIgnoreCase(shipmentDetailReference.getSztp().substring(2,3))
 								|| "U".equalsIgnoreCase(shipmentDetailReference.getSztp().substring(2,3)))
-								{   
-									shipmentDetailReference.setContSpecialStatus("S"); 
-									
-							   //!"R".equalsIgnoreCase(shipmentDetailReference.getContSpecialStatus())
-										
-									
-								} 
-						 
-						
+								&& (!"R".equalsIgnoreCase(shipmentDetailReference.getContSpecialStatus()) || 
+									!"C".equalsIgnoreCase(shipmentDetailReference.getContSpecialStatus()) ||
+									!"D".equalsIgnoreCase(shipmentDetailReference.getContSpecialStatus()))
+								)
+								{  
+									shipmentDetailReference.setContSpecialStatus("S");   
+								}  */
 						// them status
 
 						if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
@@ -1109,4 +1163,101 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 		return error("Yêu cầu hủy lệnh thất bại, quý khách vui lòng liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
 	}
+	
+	// nhat
+	@PostMapping("/file")
+	@ResponseBody
+	public AjaxResult saveFile(MultipartFile file) throws IOException, InvalidExtensionException {
+		String basePath = String.format("%s/%s", Global.getUploadPath() + "/receiveContFull", getUser().getGroupId());
+		String now = DateUtils.dateTimeNow();
+		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+		String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+        
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setPath(filePath);
+		shipmentImage.setCreateTime(DateUtils.getNowDate());
+		shipmentImage.setCreateBy(getUser().getFullName()); 
+		
+		//shipmentImage.setShipmentDetailId(shipmentDetailId);
+		
+		// bam luu da moi thuc hien ham insert vì nếu insert thì sẽ vào insert lô
+		//shipmentImageService.insertShipmentImage(shipmentImage);
+
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentFileId", shipmentImage.getId());
+		
+		ajaxResult.put("file", filePath); 
+		return ajaxResult;
+	}
+	
+	@PostMapping("/uploadFile")
+	@ResponseBody
+	public AjaxResult uploadFile(@RequestParam(value="filePaths[]") String[] filePaths, String shipmentDetailId, Long shipmentId, String shipmentSztp) throws IOException, InvalidExtensionException {
+		
+		for (String i : filePaths) {
+			ShipmentImage shipmentImage = new ShipmentImage();
+			shipmentImage.setPath(i);
+			shipmentImage.setShipmentId(shipmentId);
+			shipmentImage.setShipmentDetailId(shipmentDetailId);  
+			
+			if(shipmentSztp == null || "".equals(shipmentSztp)){
+				shipmentImage.setFileType("D"); 
+			} 
+			if("P".equalsIgnoreCase(shipmentSztp.substring(2,3))){
+				shipmentImage.setFileType("P"); 
+			}
+			if("T".equalsIgnoreCase(shipmentSztp.substring(2,3))){
+				shipmentImage.setFileType("T"); 
+			}
+			if("U".equalsIgnoreCase(shipmentSztp.substring(2,3))){
+				shipmentImage.setFileType("U"); 
+			}
+			if("R".equalsIgnoreCase(shipmentSztp.substring(2,3))){// cont lạnh là R còn các cont còn lại để sau
+				shipmentImage.setFileType("R"); 
+			}
+			
+			
+			 //shipmentImage.setFileType(shipmentSztp.substring(2,3)); 
+				 
+			shipmentImageService.insertShipmentImage(shipmentImage);// them detail
+		}
+		return success();
+	} 
+	 
+	 
+	@DeleteMapping("/booking/file")
+	@ResponseBody
+	public AjaxResult deleteFile(Long id) throws IOException {
+		ShipmentImage shipmentImageParam = new ShipmentImage();
+		shipmentImageParam.setId(id);
+		ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+		String[] fileArr = shipmentImage.getPath().split("/");
+		File file = new File(
+				Global.getUploadPath() + "/booking/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
+		if (file.delete()) {
+			shipmentImageService.deleteShipmentImageById(id);
+		}
+		return success();
+	}
+	  
+	@Log(title = "Phê duyệt", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
+	//@PostMapping("/shipment/{shipmentId}")
+	@PostMapping("/shipment-detail/request-confirm") 
+	@ResponseBody
+	/*public AjaxResult CheckShipmentDetail(@PathVariable("shipmentDetailId") Long shipmentDetailId) {*/
+	public AjaxResult CheckShipmentDetail(String shipmentDetailIds ) {
+	//Shipment referenceShipment = shipmentService.selectShipmentById(shipmentDetailId);
+		// Validate permission 
+		
+		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
+		shipmentDetailUpdate.setContSpecialStatus("1"); 
+		//shipmentDetailUpdate.setShipmentId(shipmentDetailId); 
+		//shipmentDetailUpdate.setId(shipmentDetailId);   
+		//shipmentDetailService.updateShipmentDetail(shipmentDetailUpdate); 
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds,shipmentDetailUpdate);
+		
+		return success("Yêu cầu xác nhận thành công");
+		} 
 }
+	
+

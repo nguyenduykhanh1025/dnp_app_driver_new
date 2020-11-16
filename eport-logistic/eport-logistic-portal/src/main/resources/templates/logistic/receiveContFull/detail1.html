@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Khai báo chung</title>
+    <th:block th:include="include :: header('Khai báo chung')" />
+    <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
+    <link rel="stylesheet" th:href="@{/css/logistic/detail.css}" /> 
+    <th:block th:include="include :: dropzone-css" /> 
+</head>
+
+<style type="text/css">
+  .container {
+    padding-top: 10px;
+  }
+
+  .form-group>label {
+    text-align: right;
+  }
+
+  .form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+  }
+
+  .error-input {
+    background-color: #fbe2e2;
+    border-color: #c66161;
+    color: #c00;
+  }
+  img {max-width: 50px;}
+
+.preview-block {
+    max-width: 50px;
+}
+</style>
+
+<body>
+    <div class="container-fluid">
+        <div class="form-horizontal mt10">
+            <div class="form-group col-sm-6">
+                <label class="control-label col-sm-4 col-xs-6" for="cont"><b class="text-black">Số container:</b></label>
+                <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="containerNo" readonly />
+                </div>
+            </div>
+            
+            <div class="form-group col-sm-6">
+                <label class="control-label col-sm-4 col-xs-6" for="cont"><b class="text-black">Kích thước:</b></label>
+                <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="sizeCont" readonly />
+                </div>
+            </div>
+            
+            <div class="form-group col-sm-6">
+                <label class="control-label col-sm-4 col-xs-6" for="cont"><b class="text-black">Hạn lệnh:</b></label>
+                <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="expiredDem" readonly />
+                </div>
+            </div>
+             
+            
+            
+            <div class="form-group col-sm-6">
+                <label class="control-label col-sm-4 col-xs-6" for="size"><b class="text-black">Hãng tàu:</b></label>
+                <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="sztp" readonly />
+                </div>
+            </div>
+            
+            <div class="form-group col-sm-6">
+                <label class="control-label col-sm-4 col-xs-6" for="size"><b class="text-black">Chủ hàng:</b></label>
+                <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="consignee" readonly />
+                </div>
+            </div>
+            <div class="form-group col-sm-6">
+                <label class="control-label col-sm-4 col-xs-6" for="size"><b class="text-black">Seal No:</b></label>
+                <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="sealNo" readonly />
+                </div>
+            </div>
+            <!-- // add tệp -->
+           <div class="form-group col-sm-6" id="dropzone">
+	       <!--  <span class="col-md-2 col-sm-3 col-xs-4"></span> -->
+	        <div class="col-sm-8 col-xs-6">
+	          <button type="button" id="attachButton" class="btn btn-sm btn-default">
+	            <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+	          </button>
+	        </div>
+	        <div class="preview-container col-md-6 col-sm-6 col-xs-6"></div>
+	      </div> 
+       
+        </div>
+        
+        <div class="col-sm-12 layui-layer-btn footer">
+            <a class="layui-layer-btn0" onclick="confirm()">Lưu</a>
+            <a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" /> 
+    <th:block th:include="include :: dropzone-js" />
+    <script type="text/javascript" th:inline="javascript">
+        var containerNo = [[${containerNo}]];
+        var sztp = [[${sztp}]];
+        var shipmentDetailId = [[${shipmentDetailId}]];  
+        var shipmentDetail = [[${shipmentDetail}]];  
+        
+    </script>
+    <script th:src="@{/js/logistic/receiveContFull/addFile.js}"></script>
+    <script th:src="@{/js/logistic/receiveContFull/detail.js}"></script>
+    
+     
+</body>
+
+</html>

@@ -142,6 +142,12 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.selectShipmentDetailList(shipmentDetail);
 	}
+	
+	@Override
+	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.selectShipmentDetailListCont(shipmentDetail);
+	}
+	
 
 	/**
 	 * Add Shipment Details
@@ -166,6 +172,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		shipmentDetail.setUpdateTime(DateUtils.getNowDate());
 		return shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 	}
+	
+	@Override
+	public int updateShipmentDetailApply(ShipmentDetail shipmentDetail) {
+		shipmentDetail.setUpdateTime(DateUtils.getNowDate());
+		return shipmentDetailMapper.updateShipmentDetailApply(shipmentDetail);
+	}
+	
+	
 
 	/**
 	 * Delete Shipment Details By ID
@@ -1367,7 +1381,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	@Override
 	public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.updateShipmentDetailByIds(Convert.toStrArray(shipmentDetailIds), shipmentDetail);
-	}
+	} 
+	
 
 	@Override
 	public void resetCustomStatus(Long shipmentId) {

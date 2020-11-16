@@ -3,7 +3,7 @@ const regexRemoveHtml = /(<([^>]+)>)/ig;
 const greenBlackColor = "rgb(104 241 131)";
 var prefix = ctx + "logistic/receive-cont-full";
 var interval, currentPercent, timeout;
-var dogrid = document.getElementById("container-grid"), hot;
+var dogrid = document.getElementById("container-grid"), hot,isDestroy = false;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, orderNumber = 0, isChange;
 var contList = [], orders = [], processOrderIds, taxCodeArr;
 var conts = '';
@@ -18,6 +18,34 @@ var voyCarrier;
 var onChangeFlg = false, currentIndexRow, rejectChange = false;
 var fromDate, toDate;
 var myDropzone;
+
+/*const SPECIAL_STATUS = {
+		  start: "1",//  1: Chưa xác nhận 
+		  pending: "2",// Đã xác nhận
+		  approve: "3",// Chờ xác nhận
+		  reject: "4",// Từ chối
+		};*/
+
+const DANGEROUS_STATUS = {
+		  yet: "T", // là cont dangerous
+		  pending: "2", // là cont danger đang chờ xét duyết
+		  approve: "3", // là cont danger đã đc xét duyết
+		  reject: "4", // là cont danger đã bị từ chối
+		  NOT: "F", // không phải là cont danger
+		};
+
+const SPECIAL_STATUS = {
+		  yet: "1",//g gần như null
+		  pending: "2",// chờ pd
+		  approve: "3",// accept
+		  reject: "4",// reject
+		  /*ice_pending: "I",
+		  dangerous_pending: "G",
+		  oversize_pending: "O",*/
+		};
+
+
+ 
 var containerRemarkArr = []; // array container remark get from catos mapping with row in handsontable by index of element in array
 var locations = [];
 //dictionary sizeList
@@ -223,7 +251,7 @@ function dateparser(s) {
 }
 
 // LOAD SHIPMENT LIST
-function loadTable() {
+function loadTable() { 
   $("#dg").datagrid({
     url: ctx + "logistic/shipments",
     height: $('.main-body').height() - 75,
@@ -336,6 +364,9 @@ function getSelected(index, row) {
           checkList = Array(rowAmount).fill(0);
           allChecked = false;
           loadShipmentDetail(row.id);
+          
+          toggleAttachIcon(shipmentSelected.id);
+          
           onChangeFlg = false;
           currentIndexRow = index;
           loadListComment();
@@ -378,6 +409,9 @@ function getSelected(index, row) {
         checkList = Array(rowAmount).fill(0);
         allChecked = false;
         loadShipmentDetail(row.id);
+        
+        toggleAttachIcon(shipmentSelected.id);
+        
         onChangeFlg = false;
         currentIndexRow = index;
         loadListComment();
@@ -388,6 +422,26 @@ function getSelected(index, row) {
       return true;
     }
   }
+}
+
+
+function toggleAttachIcon(shipmentId) {
+    $.ajax({
+        type: "GET",
+        url: prefix + "/shipment/" + shipmentId + "/shipment-detail",
+        contentType: "application/json",
+        success: function (data) {
+            if (data.code == 0) {
+                if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
+                    let html = '';
+                    data.shipmentFiles.forEach(function (element, index) {
+                        html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
+                    });
+                    $('#attachFile').html(html);
+                }
+            }
+        }
+    });
 }
 
 // FORMAT HANDSONTABLE COLUMN
@@ -467,24 +521,14 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
         }
         break;
     } 
-    // nhat
-    let cont = '<i id="contStatus" class="fa fa-user-circle-o easyui-tooltip" title="Chờ xác nhận" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
-    switch (sourceData[row].contSpecialStatus) {
-      case 'S':
-    	  cont = '<i id="contStatus" class="fa fa-user-circle-o easyui-tooltip" title="Chờ xác nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-        break;
-      case 'R': 
-    	  cont = '<i id="contStatus" class="fa fa-user-circle-o easyui-tooltip" title="Đã xác nhận" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        break;  
-    }
-    
-    
+      
     // Return the content
-    let content = '<div>';
-    // Domestic cont: VN --> not show 
-    if (sourceData[row].contSpecialStatus) {
-        content += cont;
-    } 
+    let content = '<div>'; 
+    
+    if (!sourceData[row].sztp.includes("G")) {
+        content += getRequestConfigIcon(sourceData[row].contSpecialStatus);
+      }
+    
     if (sourceData[row].loadingPort.substring(0, 2) != 'VN') {
       content += customs;
     }
@@ -499,6 +543,31 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
   }
   return td;
 }
+
+function getRequestConfigIcon(contSpecialStatus) {
+	  let contSpecialStatusResult =
+	    '<i id="verify" class="fa fa-user-circle-o" title="Chưa yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
+	  switch (contSpecialStatus) {
+	    case SPECIAL_STATUS.yet: // 1
+	      contSpecialStatusResult =    
+	        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
+	      break;
+	    case SPECIAL_STATUS.pending:// 2
+	      contSpecialStatusResult =
+	        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ffff66"></i>';
+	      break;
+	    case SPECIAL_STATUS.approve:// 3
+	      contSpecialStatusResult =
+	        '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
+	      break;
+	    case SPECIAL_STATUS.reject:// 4
+	      contSpecialStatusResult =
+	        '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
+	      break;
+	  }
+	  return contSpecialStatusResult;
+	}
+  
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value != null && value != '') {
     if (hot.getDataAtCell(row, 1) != null) {
@@ -645,7 +714,34 @@ function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'sztp' + row).addClass("htMiddle").addClass("htCenter");
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
+   
 }
+
+//nhatlv
+function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
+	    $(td).attr('id', 'wgt' + row).addClass("htMiddle").addClass("htCenter");
+	    let containerNo, sztp;
+	    if (!isDestroy) {
+	        containerNo = hot.getDataAtCell(row, 2);
+	        sztp = hot.getDataAtCell(row, 9);
+	    }
+	    
+	    if (sourceData && sourceData.length > 0) {
+	    	 
+	        if (sourceData.length > row && sourceData[row].id) {
+	        	
+	        	  
+	        	if("P" == sourceData[row].sztp.substring(2,3) ||  "T" == sourceData[row].sztp.substring(2,3) || "U" == sourceData[row].sztp.substring(2,3)|| "R" == sourceData[row].sztp.substring(2,3)){
+	        	
+	        		value = '<button class="btn btn-default btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
+	        	}
+	            
+	        } 
+	    }
+	    $(td).html(value);
+	    cellProperties.readOnly = 'true';
+	    return td;
+	}
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
     value = '';
@@ -787,41 +883,45 @@ function configHandson() {
           return "Trạng Thái";
         case 2:
           return '<span class="required">Container No</span>';
+          
         case 3:
-          return '<span class="required">Hạn Lệnh</span>';
+            return '<span class="required">Action</span>';
+            
         case 4:
-          return 'Ngày Miễn<br>Lưu Bãi';
+          return '<span class="required">Hạn Lệnh</span>';
         case 5:
-          return '<span class="required">Chủ Hàng</span>';
+          return 'Ngày Miễn<br>Lưu Bãi';
         case 6:
-          return '<span class="required">Nơi Hạ Vỏ</span>';
+          return '<span class="required">Chủ Hàng</span>';
         case 7:
-          return "Kích Thước";
+          return '<span class="required">Nơi Hạ Vỏ</span>';
         case 8:
-          return '<span class="required">Hãng Tàu</span>';
+          return "Kích Thước";
         case 9:
-          return '<span class="required">Tàu</span>';
+          return '<span class="required">Hãng Tàu</span>';
         case 10:
-          return '<span class="required">Chuyến</span>';
+          return '<span class="required">Tàu</span>';
         case 11:
-          return "Seal No";
+          return '<span class="required">Chuyến</span>';
         case 12:
-          return "Trọng Lượng (kg)";
+          return "Seal No";
         case 13:
-          return '<span class="required">Cảng Xếp Hàng</span>';
+          return "Trọng Lượng (kg)";
         case 14:
-          return "Cảng Dỡ Hàng";
+          return '<span class="required">Cảng Xếp Hàng</span>';
         case 15:
-          return 'PTTT';
+          return "Cảng Dỡ Hàng";
         case 16:
-          return 'Mã Số Thuế';
+          return 'PTTT';
         case 17:
-          return 'Người Thanh Toán';
+          return 'Mã Số Thuế';
         case 18:
+          return 'Người Thanh Toán';
+        case 19:
           return "Ghi Chú";
       }
     },
-    colWidths: [40, 120, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200],
+    colWidths: [40, 120, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200,100],
     filter: "true",
     columns: [
       {
@@ -840,6 +940,15 @@ function configHandson() {
         strict: true,
         renderer: containerNoRenderer,
       },
+      // nhat
+      {
+          data: "btnInformationContainer",
+          strict: true,
+          readonly: true,
+          renderer: detailRenderer
+        },
+        
+        
       {
         data: "expiredDem",
         type: "date",
@@ -1058,7 +1167,7 @@ hot = new Handsontable(dogrid, config);
 // TRIGGER CHECK ALL SHIPMENT DETAIL
 function checkAll() {
   if (!allChecked) {
-    allChecked = true
+    allChecked = true 
     checkList = Array(rowAmount).fill(0);
     for (let i = 0; i < checkList.length; i++) {
       if (hot.getDataAtCell(i, 1) == null) {
@@ -1068,7 +1177,7 @@ function checkAll() {
       $('#check' + i).prop('checked', true);
     }
   } else {
-    allChecked = false;
+    allChecked = false; 
     checkList = Array(rowAmount).fill(0);
     for (let i = 0; i < checkList.length; i++) {
       $('#check' + i).prop('checked', false);
@@ -1081,11 +1190,7 @@ function checkAll() {
   $('.checker').prop('checked', allChecked);
 }
 function check(id) {
-  if (sourceData[id].id != null) {
-	
-	  
-	  console.log("jhjhjh" + sourceData[id].contSpecialStatus);
-	  
+  if (sourceData[id].id != null) { 
 	  
     if (checkList[id] == 0) {
       $('#check' + id).prop('checked', true);
@@ -1098,21 +1203,43 @@ function check(id) {
     updateLayout();
   }
 }
+
+
+
 function updateLayout() {
   let disposable = true, status = 1, diff = false, check = false, verify = false;
-  allChecked = true;
+  allChecked = true; 
+  checkcode = true;// check mã
   for (let i = 0; i < checkList.length; i++) {
     let cellStatus = hot.getDataAtCell(i, 1);
     if (cellStatus != null) {
-      if (checkList[i] == 1) {
-    	if("S" == sourceData[i].contSpecialStatus ){
-    		  status = 6;
-    		  //break; 
-    	} 
-    		  
+      if (checkList[i] == 1) {   
+    	
         if (cellStatus == 2 && 'Y' == sourceData[i].userVerifyStatus) {
           verify = true;
         }
+        
+     // neu bang G thì hiện nút khai hải quan lên
+     // chưa check được trường hợp check all của nút khai hải quan vì có trường hợp bằng G vào
+  	  if("G" == sourceData[i].sztp.substring(2,3)){
+  		  $("#customBtn").prop("disabled", false);
+  		  
+  	  }
+  	  // nếu khác G và contSpecialStatus == 3 thì hiện nút khai hải quan ra
+  	  if("G" != sourceData[i].sztp.substring(2,3) &&  "3" == sourceData[i].contSpecialStatus){
+  		  
+  		  $("#customBtn").prop("disabled", false);// khai hải quan enable
+  	  }
+  	  	 
+  	  // nếu khác G và contSpecialStatus != 3 thì ẩn nút khai hải quan đi
+  	  		
+  	  if("G" != sourceData[i].sztp.substring(2,3) &&  "3" != sourceData[i].contSpecialStatus){
+		  
+		  $("#customBtn").prop("disabled", true);// khai hải quan enable
+	  }	
+  	  		
+  	  // end
+  	  
         check = true;
         if (cellStatus > 2) {
           disposable = false;
@@ -1161,15 +1288,155 @@ function updateLayout() {
       break;
     case 5:
       setLayoutFinishStatus();
-      break;
-    case 6: 
-    	setLayoutContStatus();
-    	//$("#acceptBtn").prop("disabled", true);
-    	break;
+      break; 
     default:
       break;
   }
+  ///////
+  setLayoutConfirmRequestContSpecial();
+  //setLayoutCustomRequestContSpecial();
+  
 }
+////////
+/*function setLayoutConfirmRequestContSpecial() {
+	  $("#acceptBtn").prop("disabled",isHaveContSpecialInListChecked());
+	  
+}*/
+
+function setLayoutConfirmRequestContSpecial() {
+	  $("#acceptBtn").prop( "disabled", !isOnlyHaveContSpecialInListChecked()
+	  );
+	}
+
+
+////// yêu cầu xác nhận
+function isOnlyHaveContSpecialInListChecked() {
+	  let result = true; // true: enable btn || false: disable btn
+	  let listSizeCategoryCont = [];
+
+	  for (let i = 0; i < checkList.length; ++i) {
+	    let dataColunmSizeCont = getCodeSizeContFromDataTableHandsonFollowIndex(i);
+	    // status is checked
+	    if (checkList[i] == 1) {
+	      var markCounSpecial = getMarkSizeContSpecial(
+	        dataColunmSizeCont.split("")
+	      );
+	      if (
+	        (markCounSpecial &&
+	          isContNeedRequestConfirmFollowContSpecialStatus(i)) ||
+	        isContNeedRequestConfirmFollowContDangerousStatus(i)
+	      ) {
+	        listSizeCategoryCont.push(markCounSpecial);
+	      } else {
+	        listSizeCategoryCont.push("G");
+	      }
+	    }
+	  }
+
+	  if (!listSizeCategoryCont || !listSizeCategoryCont.length) {
+	    result = false;
+	  } else {
+	    if (getMarkSizeContSpecial(listSizeCategoryCont)) {
+	      if (listSizeCategoryCont.includes("G")) {
+	        result = false;
+	      }
+	    } else {
+	      result = false;
+	    }
+	  }
+	  return result;
+	}
+	
+	
+///////
+function isHaveContSpecialNotYetRequestConfirm() {
+  let result = false;
+  for (let i = 0; i < checkList.length; ++i) {
+    let dataColunmSizeCont = getCodeSizeContFromDataTableHandsonFollowIndex(i);
+    // status is checked
+    if (checkList[i] == 1) {
+      var markCounSpecial = getMarkSizeContSpecial(
+        dataColunmSizeCont.split("")
+      );
+      if (markCounSpecial) {
+        if (
+          !sourceData[i].contSpecialStatus ||
+          sourceData[i].contSpecialStatus == SPECIAL_STATUS.yet ||
+          sourceData[i].contSpecialStatus == SPECIAL_STATUS.pending
+        ) {
+          result = true;
+        }
+      }
+    }
+  }
+  return result;
+}
+
+
+///////////
+function getCodeSizeContFromDataTableHandsonFollowIndex(index) {
+	  if (hot && hot.getDataAtCell(index, 8)) {
+	    return hot.getDataAtCell(index, 8).substring(0, 4);
+	  }
+	  return "";
+	}
+
+/////
+function isContNeedRequestConfirmFollowContSpecialStatus(index) {
+	  return (
+	    sourceData[index].contSpecialStatus == DANGEROUS_STATUS.yet ||
+	    sourceData[index].contSpecialStatus == DANGEROUS_STATUS.reject ||
+	    !sourceData[index].contSpecialStatus
+	  );
+	}
+
+/////
+function isContNeedRequestConfirmFollowContDangerousStatus(index) {
+	  return (
+	    sourceData[index].dangerous == DANGEROUS_STATUS.yet ||
+	    sourceData[index].dangerous == DANGEROUS_STATUS.reject
+	  );
+	}
+
+/////// 
+function getMarkSizeContSpecial(data) {
+	  const listMarkContSpecial = ["P", "R", "T", "U"];
+	  var result = "";
+
+	  for (let i = 0; i < listMarkContSpecial.length; ++i) {
+	    if (data.includes(listMarkContSpecial[i])) {
+	      result = listMarkContSpecial[i];
+	      break;
+	    }
+	  }
+	  return result;
+	}
+
+ 
+///////////  
+function isHaveContSpecialNotYetRequestConfirm() {
+	  let result = false;
+	  for (let i = 0; i < checkList.length; ++i) {
+	    let dataColunmSizeCont = getCodeSizeContFromDataTableHandsonFollowIndex(i);
+	    // status is checked
+	    if (checkList[i] == 1) {
+	      var markCounSpecial = getMarkSizeContSpecial( dataColunmSizeCont.split(""));
+	      if (markCounSpecial) {
+	        if (
+	          !sourceData[i].contSpecialStatus ||
+	          sourceData[i].contSpecialStatus == SPECIAL_STATUS.yet ||
+	          sourceData[i].contSpecialStatus == SPECIAL_STATUS.pending
+	        ) {
+	          result = true;
+	        }
+	      }
+	    }
+	  }
+	  return result;
+	}
+
+
+
 
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) {
@@ -1206,10 +1473,16 @@ function loadShipmentDetail(id) {
         }
 
         hot.destroy();
+        
+        isDestroy = true;
+        
         configHandson();
         hot = new Handsontable(dogrid, config);
         hot.loadData(sourceData);
         hot.render();
+        
+        isDestroy = false;
+        
         setLayoutRegisterStatus();
         onChangeFlg = false;
       }
@@ -1218,6 +1491,14 @@ function loadShipmentDetail(id) {
       $.modal.closeLoading();
     }
   });
+}
+
+function openDetail(id, containerNo, sztp) {
+    if (!id) {
+        id = 0;
+    }
+    //debugger
+    $.modal.openCustomForm("Khai báo chi tiết", prefix + "/shipment-detail/" + id + "/cont/" + containerNo + "/sztp/" + sztp + "/detail", 800, 460);
 }
 
 function reloadShipmentDetail() {
@@ -1239,22 +1520,8 @@ function reloadShipmentDetail() {
   $("#exportReceiptBtn").prop("disabled", true);
   setLayoutRegisterStatus();
   loadShipmentDetail(shipmentSelected.id);
+   
 }
-
-
-// nhatlv 
-/*function getCheckDataList(isValidate, isNeedPickedCont) {
-	let myTableData = hot.getSourceData();
-	 let errorFlg = false;  
-	 for (let i = 0; i < checkList.length; i++) { 
-		 	if(Object.keys(myTableData[i]).length > 0){
-		 		if(checkList[i] == 1 || isNeedPickedCont && myTableData[i].sztp == "45P0"){
-		 			alert("Vao roi");
-		 		}  
-		 	}
-		  }
-}*/
-
  
 
 // GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
@@ -1584,12 +1851,40 @@ function checkCustomStatus() {
   }
 }
 
-// nhat add
+
+// nhat
 function CheckShipmentDetail() {
-	//alert("test");
-	//getCheckDataList(true, false); 
-	} 
-// 
+if (getDataSelectedFromTable(true, false) && shipmentDetails.length > 0) { 
+    $.modal.confirmShipment("Xác nhận yêu cầu xác nhận ?", function () {
+      $.modal.loading("Đang xử lý...");
+      $.ajax({
+    	  //url: prefix +  "/" + shipmentSelected.id +"/shipment-detail/request-confirm",  shipmentId
+    	  
+    	  //url: prefix + "/shipment-detail/" + shipmentSelected.shipmentDetailId, 
+    	  url: prefix + "/shipment-detail/request-confirm/" ,  
+	        method : "post", 
+	        data : { 
+	        	shipmentDetailIds : shipmentDetailIds
+	        },
+        success: function (result) {
+          if (result.code == 0) {
+            $.modal.alertSuccess(result.msg);
+            reloadShipmentDetail();
+          } else {
+            $.modal.alertError(result.msg);
+          }
+          $.modal.closeLoading();
+        },
+        error: function (result) {
+          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại sau.");
+          $.modal.closeLoading();
+        },
+      });
+    });
+  }
+}
+
+  
 
 function verify() {
   $.modal.loading("Đang xử lý...");
@@ -1685,41 +1980,46 @@ function setLayoutRegisterStatus() {
   $("#exportBillBtn").prop("disabled", true);
   $("#exportReceiptBtn").prop("disabled", true);
 }
+ 
 
-
-//nhat add
-/*function setLayoutContStatus() {
-	  $("#registerStatus").removeClass("active disable").addClass("label-primary");
-	  $("#customStatus").removeClass("active disable").addClass("label-primary");
-	  $("#verifyStatus").removeClass("active disable").addClass("label-primary");
-	  $("#paymentStatus").removeClass("label-primary disable").addClass("active");
-	  $("#finishStatus").removeClass("active label-primary").addClass("disable"); 
-	  //$("#acceptStatus").removeClass("active label-primary").addClass("active"); 
-	  $("#acceptStatus").removeClass("active disable").addClass("label-primary");
-	   
-	  $("#acceptBtn").prop("disabled", false); 
-	  
-	  
-	  $("#deleteBtn").prop("disabled", true);
-	  $("#customBtn").prop("disabled", true);
-	  $("#verifyBtn").prop("disabled", true);
-	  $("#payBtn").prop("disabled", false);
-	  $("#exportBillBtn").prop("disabled", true);
-	  $("#exportReceiptBtn").prop("disabled", true);
-	}*/
-
-function setLayoutCustomStatus() {
+/*function setLayoutCustomStatus() {
   $("#registerStatus").removeClass("active disable").addClass("label-primary");
   $("#customStatus").removeClass("label-primary disable").addClass("active");
   $("#verifyStatus").removeClass("label-primary active").addClass("disable");
   $("#paymentStatus").removeClass("label-primary active").addClass("disable");
   $("#finishStatus").removeClass("label-primary active").addClass("disable");
-  $("#customBtn").prop("disabled", false);
+  
+  
+  
+  $("#customBtn").prop("disabled", false); 
+  
+  //$("#customBtn").prop("disabled", true);
+  
+  
   $("#verifyBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", false);
   $("#exportReceiptBtn").prop("disabled", false);
-}
+}*/
+
+
+function setLayoutCustomStatus() {
+	  $("#registerStatus").removeClass("active disable").addClass("label-primary");
+	  $("#verifyStatus").removeClass("active disable").addClass("label-primary");
+	  $("#paymentStatus").removeClass("active disable").addClass("label-primary");
+	  $("#customStatus").removeClass("label-primary disable").addClass("active");
+	  $("#finishStatus").removeClass("label-primary active").addClass("disable");
+	  $("#verifyBtn").prop("disabled", true);
+	  $("#deleteBtn").prop("disabled", true);
+	  $("#payBtn").prop("disabled", true);
+	  
+	  //$("#customBtn").prop("disabled", false);
+	  $("#exportBillBtn").prop("disabled", false);
+	  $("#exportReceiptBtn").prop("disabled", false);
+	  $("#exportPackingListBtn").prop("disabled", false);
+	}
+
+
 
 function setLayoutVerifyUserStatus() {
   $("#registerStatus").removeClass("active disable").addClass("label-primary");

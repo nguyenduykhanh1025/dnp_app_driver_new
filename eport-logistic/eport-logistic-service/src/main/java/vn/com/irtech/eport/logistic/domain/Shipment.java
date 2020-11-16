@@ -91,8 +91,18 @@ public class Shipment extends BaseEntity
     
     /** order number nhận cont house bill */
     private String orderNumber;
+    
+    private String sztp;
 
-    /** House bill no */
+    public String getSztp() {
+		return sztp;
+	}
+
+	public void setSztp(String sztp) {
+		this.sztp = sztp;
+	}
+
+	/** House bill no */
     private String houseBill;
     
     /** Số lương process bill: dùng để ẩn button thanh toán om nếu null */
