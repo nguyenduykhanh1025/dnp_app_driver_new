@@ -1158,4 +1158,26 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+
+	/**
+	 * Get partner info
+	 * 
+	 * @param partnerType
+	 * @param taxCode
+	 * @return PartnerInfoDto
+	 */
+	@Override
+	public PartnerInfoDto getPartnerInfo(String partnerType, String taxCode) {
+		try {
+			String url = Global.getApiUrl() + "/partner-info/partner-type/" + partnerType + "/tax-code/" + taxCode;
+			logger.debug("Call CATOS API get partner info :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<PartnerInfoDto> response = restTemplate.getForEntity(url, PartnerInfoDto.class);
+			PartnerInfoDto partnerInfoDto = response.getBody();
+			return partnerInfoDto;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api get berth plan info", e);
+			return null;
+		}
+	}
 }

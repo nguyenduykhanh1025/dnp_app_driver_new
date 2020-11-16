@@ -4,50 +4,231 @@
 
     <sql id="selectContainerDetailVo">
         SELECT
-                M.CNTR_NO, M.SZTP, M.FE, M.IX_CD, M.PTNR_CODE, 
-                (SELECT ENG_SNM FROM DNP_PROD.TB_PTNR WHERE PTNR_CODE = M.PTNR_CODE AND PTNR_TYPE = 'SHP') AS PTNR_NAME,
-                <!-- Vessel Info -->
-                M.VSL_CD, M.CALL_YEAR, M.CALL_SEQ, M.USER_VOY,
-                (SELECT VSL_NM FROM DNP_PROD.TB_VSL WHERE VSL_CD = M.VSL_CD) AS VSL_NM,
-                (SELECT B.IN_VOY FROM DNP_PROD.TB_BERTHPLAN B WHERE B.VSL_CD = M.VSL_CD AND B.CALL_YEAR = M.CALL_YEAR AND B.CALL_SEQ = M.CALL_SEQ) AS IN_VOY,
-                M.BOOKING_NO, M.BL_NO, M.CARGO_TYPE, M.SEAL_NO1, M.SEAL_NO3, M.WGT, M.CONSIGNEE, M.VGM, M.CHOLD_CHK, M.THOLD_CHK, M.POD, M.POL,
-                CASE
-                    WHEN M.TRANS_TYPE = 'T' THEN 'Truck'
-                    WHEN M.TRANS_TYPE = 'V' THEN 'Vessel'
-                    WHEN M.TRANS_TYPE = 'C' THEN 'CFS'
-                    WHEN M.TRANS_TYPE = 'P' THEN 'Bundle'
-                    WHEN M.TRANS_TYPE = 'M' THEN 'Mode change'
-                    ELSE M.TRANS_TYPE
-                END AS TRANS_TYPE,
-                
-                CASE
-                    WHEN M.CNTR_STATE = 'R' THEN 'Reserved'
-                    WHEN M.CNTR_STATE = 'B' THEN 'After Reconcile'
-                    WHEN M.CNTR_STATE = 'M' THEN 'Manifested'
-                    WHEN M.CNTR_STATE = 'Y' THEN 'Stacking'
-                    WHEN M.CNTR_STATE = 'G' THEN 'In Progress Outgoing'
-                    WHEN M.CNTR_STATE = 'O' THEN 'In Progress Incoming'
-                    WHEN M.CNTR_STATE = 'P' THEN 'Assigned by Trucker'
-                    WHEN M.CNTR_STATE = 'Z' THEN 'Under Shifting'
-                    WHEN M.CNTR_STATE = 'D' THEN 'Delivered'
-                    WHEN M.CNTR_STATE = 'E' THEN 'Empty Gate Out'
-                    ELSE M.CNTR_STATE
-                END AS CNTR_STATE,
-                M.REMARK,
-                M.BLOCK || '-' || M.BAY || '-' || M.ROWW || '-' || M.TIER AS LOCATION,
-                M.AREA,
-				M.JOB_ODR_NO,
-				M.JOB_ODR_NO2
+			M.CNTR_NO, M.SZTP, M.FE, M.IX_CD, M.PTNR_CODE, 
+			(SELECT ENG_SNM FROM DNP_PROD.TB_PTNR WHERE PTNR_CODE = M.PTNR_CODE AND PTNR_TYPE = 'SHP') AS PTNR_NAME,
+			<!-- Vessel Info -->
+			M.VSL_CD, M.CALL_YEAR, M.CALL_SEQ, M.USER_VOY,
+			(SELECT VSL_NM FROM DNP_PROD.TB_VSL WHERE VSL_CD = M.VSL_CD) AS VSL_NM,
+			(SELECT B.IN_VOY FROM DNP_PROD.TB_BERTHPLAN B WHERE B.VSL_CD = M.VSL_CD AND B.CALL_YEAR = M.CALL_YEAR AND B.CALL_SEQ = M.CALL_SEQ) AS IN_VOY,
+			M.BOOKING_NO, M.BL_NO, M.CARGO_TYPE, M.SEAL_NO1, M.SEAL_NO3, M.WGT, M.CONSIGNEE, M.VGM, M.CHOLD_CHK, M.THOLD_CHK, M.POD, M.POL,
+			CASE
+				WHEN M.TRANS_TYPE = 'T' THEN 'Truck'
+				WHEN M.TRANS_TYPE = 'V' THEN 'Vessel'
+				WHEN M.TRANS_TYPE = 'C' THEN 'CFS'
+				WHEN M.TRANS_TYPE = 'P' THEN 'Bundle'
+				WHEN M.TRANS_TYPE = 'M' THEN 'Mode change'
+				ELSE M.TRANS_TYPE
+			END AS TRANS_TYPE,
+			
+			CASE
+				WHEN M.CNTR_STATE = 'R' THEN 'Reserved'
+				WHEN M.CNTR_STATE = 'B' THEN 'After Reconcile'
+				WHEN M.CNTR_STATE = 'M' THEN 'Manifested'
+				WHEN M.CNTR_STATE = 'Y' THEN 'Stacking'
+				WHEN M.CNTR_STATE = 'G' THEN 'In Progress Outgoing'
+				WHEN M.CNTR_STATE = 'O' THEN 'In Progress Incoming'
+				WHEN M.CNTR_STATE = 'P' THEN 'Assigned by Trucker'
+				WHEN M.CNTR_STATE = 'Z' THEN 'Under Shifting'
+				WHEN M.CNTR_STATE = 'D' THEN 'Delivered'
+				WHEN M.CNTR_STATE = 'E' THEN 'Empty Gate Out'
+				ELSE M.CNTR_STATE
+			END AS CNTR_STATE,
+			M.REMARK,
+			M.BLOCK || '-' || M.BAY || '-' || M.ROWW || '-' || M.TIER AS LOCATION,
+			M.AREA,
+			M.JOB_ODR_NO,
+			M.JOB_ODR_NO2,
+			M.IMDG,
+			M.UNNO
+    </sql>
+
+	<!-- Query container info with oversize container info from oversize table -->
+	<sql id="customInventoryTable">
+		SELECT 'TB_INVENTORY'
+				TABLE_NAME,
+			M.VSL_CD,
+			M.CALL_YEAR,
+			M.CALL_SEQ,
+			M.SO_NO,
+			M.CNTR_NO,
+			FE,
+			IX_CD,
+			PTNR_CODE,
+			SHIFT_ACC,
+			SZTP,
+			SZTP2,
+			POR,
+			POD,
+			FDEST,
+			DELV,
+			WGT,
+			CARGO_TYPE,
+			SET_TEMP,
+			AIRVENT,
+			IMDG,
+			UNNO,
+			DMG_COND,
+			SUBSTR (M.SZTP2, 1, 1)
+				AS CNTR_LEN,
+			SUBSTR (M.SZTP2, 2, 1)
+				AS CNTR_HW,
+			SUBSTR (M.SZTP2, 3, 2)
+				AS CNTR_TYPE,
+			SEAL_NO1,
+			SEAL_NO2,
+			BOOKING_NO,
+			BL_NO,
+			O.OV_HEIGHT,
+			O.OV_FORE,
+			O.OV_AFT,
+			O.OV_PORT,
+			O.OV_STBD,
+			O.OS_HEIGHT,
+			O.OS_PORT,
+			O.OS_STBD,
+			TRUCKER,
+			TRANS_TYPE,
+			M.TRANS_TYPE2,
+			PREV_VSL,
+			PREV_YEAR,
+			PREV_SEQ,
+			REMARK,
+			M.IN_TMNL_DATE,
+			M.IN_DATE,
+			M.OUT_DATE,
+			M.DISPATCH_MODE,
+			M.DISPATCH_MODE2,
+			M.JOB_ODR_NO,
+			M.JOB_ODR_NO2,
+			USER_VOY,
+			NVL (EMTY_CHK, 'N')
+				AS EMTY_CHK,
+			AREA,
+			STORAGE_CODE,
+			COD,
+			POL,
+			FPOD,
+			CNTR_STATE,
+			EDI_TEMP,
+			PREV_USER_VOY,
+			SHIFT_TIME,
+			SHIFT_TYPE,
+			SHIFT_RSN,
+			CONSIGNEE,
+			SEAL_NO3,
+			CHOLD_CHK,
+			NVL (THOLD_CHK, 'N')
+				AS THOLD_CHK,
+			IN_LANE,
+			OUT_LANE,
+			SOC_CHK,
+			NVL (DG_CHK, 'N')
+				AS DG_CHK,
+			RETURN_RSN,
+			NVL (DOMESTIC_CHK, 'N')
+				AS DOMESTIC_CHK,
+			LBAY,
+			LROW,
+			LTIER,
+			DBAY,
+			DROW,
+			DTIER,
+			BLOCK,
+			BAY,
+			ROWW,
+			TIER,
+			OWNER,
+			GWAY,
+			HANDLE_INSTR,
+			YHANDLE_INSTR,
+			YSPECIAL_TYPE,
+			ABS_CONST,
+			TRN_VOY,
+			TRN_VOY2,
+			TRUCKER2,
+			TRUCK_NO,
+			TRUCK_NO2,
+			UNPLUG_INSTR,
+			CNTR_COND,
+			DEFECTIVE_CODE,
+			CLEAN_CODE,
+			POWER_CODE,
+			NVL (M.REHANDLE_CODE, 'U')
+				AS REHANDLE_CODE,
+			REHANDLE_RSN,
+			REHANDLE_STAFF,
+			LCL_FCL,
+			DHD,
+			LHD,
+			DHATCH_IDX,
+			LHATCH_IDX,
+			NVL (M.DMG_CHK, 'N')
+				AS DMG_CHK,
+			STUFF_CHK,
+			NVL (M.OVERLAND_CHK, 'N')
+				AS OVERLAND_CHK,
+			NVL (M.RELEASE_CHK, 'N')
+				AS RELEASE_CHK,
+			NVL (INSPECT_CHK, 'N')
+				AS INSPECT_CHK,
+			FORWARDER,
+			COMMODITY,
+			DEQU_NO,
+			LEQU_NO,
+			PREINFO_CHK,
+			LBAY_SEQ,
+			BAY_IDX,
+			ROW_IDX,
+			M.CNTR_ID,
+			M.CNTR_UID,
+			TO_NUMBER (
+				TRUNC (NVL (M.OUT_DATE, SYSDATE))
+				- TRUNC (NVL (M.IN_TMNL_DATE, M.IN_DATE))
+				+ 1)
+				AS STACK_DAYS,
+			CEIL (
+				NVL (M.OUT_DATE, SYSDATE)
+				- NVL (M.IN_TMNL_DATE, M.IN_DATE))
+				AS STACK_DAYS_D24,
+			M.DBAY || M.DROW || M.DTIER
+				AS SHIP_LOCD,
+			M.LBAY || M.LROW || M.LTIER
+				AS SHIP_LOCL,
+			M.VGM,
+			M.VGM_CHK,
+			M.CUSTOM_APP_TYPE,
+			M.COMMODITY_DESC,
+			M.CONSIGNEE_NM,
+			M.CNTR_RMK1,
+			M.DOOR_DIR
+		FROM DNP_PROD.TB_INVENTORY M, DNP_PROD.TB_OVERSIZE O
+		WHERE M.CNTR_ID = O.CNTR_ID(+)
     </sql>
 
     <select id="selectShipmentDetailsByBLNo" parameterType="String" resultType="vn.com.irtech.api.dto.ContainerInfoDto">
         <include refid="selectContainerDetailVo"/>
-            FROM DNP_PROD.TB_INVENTORY M
+			,M.OV_HEIGHT,
+			M.OV_FORE,
+			M.OV_AFT,
+			M.OV_PORT,
+			M.OV_STBD,
+			M.OS_HEIGHT,
+			M.OS_PORT,
+			M.OS_STBD
+            FROM (<include refid="customInventoryTable"/>) M
         <where>
             AND M.BL_NO = #{blNo}
         </where>
         UNION ALL
         <include refid="selectContainerDetailVo"/>
+			,NULL AS OV_HEIGHT,
+			NULL AS OV_FORE,
+			NULL AS OV_AFT,
+			NULL AS OV_PORT,
+			NULL AS OV_STBD,
+			NULL AS OS_HEIGHT,
+			NULL AS OS_PORT,
+			NULL AS OS_STBD 
             FROM DNP_PROD.TB_RESERVE M
         <where>
             AND M.CNTR_STATE = 'R'
@@ -226,8 +407,18 @@
                     ELSE M.CNTR_STATE
                 END AS containerStatus,
 				REMARK AS containerRemark,
-				BLOCK || '-' || BAY || '-' || ROWW || '-' || TIER AS location
-			          FROM DNP_PROD.TB_INVENTORY M
+				BLOCK || '-' || BAY || '-' || ROWW || '-' || TIER AS location,
+				M.IMDG AS dangerousImo,
+				M.UNNO AS dangerousUnno,
+				M.OV_HEIGHT AS ovHeight,
+				M.OV_FORE AS ovFore,
+				M.OV_AFT AS ovAft,
+				M.OV_PORT AS ovPort,
+				M.OV_STBD AS ovStbd,
+				M.OS_HEIGHT AS osHeight,
+				M.OS_PORT AS osPort,
+				M.OS_STBD AS osStbd
+					FROM (<include refid="customInventoryTable"/>) M
 		<where>
 			<if test="containerNo != null and containerNo != ''"> AND CNTR_NO = #{containerNo}</if>
 			<if test="blNo != null and blNo != ''">
@@ -284,6 +475,16 @@
                 END AS containerStatus,
 				REMARK AS containerRemark,
 				BLOCK || '-' || BAY || '-' || ROWW || '-' || TIER AS location
+				M.IMDG AS dangerousImo,
+				M.UNNO AS dangerousUnno,
+				NULL AS ovHeight,
+				NULL AS ovFore,
+				NULL AS ovAft,
+				NULL AS ovPort,
+				NULL AS ovStbd,
+				NULL AS osHeight,
+				NULL AS osPort,
+				NULL AS osStbd
 			          FROM DNP_PROD.TB_RESERVE M
 		<where>
 			<if test="containerNo != null and containerNo != ''"> AND CNTR_NO = #{containerNo}</if>
@@ -911,5 +1112,18 @@
 		</where>
 		ORDER BY t.vsl_cd ASC
 		FETCH NEXT 1 ROWS ONLY
+	</select>
+
+	<select id="getPartnerInfo" resultType="vn.com.irtech.api.dto.PartnerInfoDto">
+		SELECT
+	    	ENG_SNM as groupName,
+	    	ADDR as address
+		FROM DNP_PROD.TB_PTNR
+		<where> 
+			TRIM(REG_NO) = #{taxCode}
+		    AND UNUSED_CHK = 'N' 
+		    AND ROWNUM = 1
+			<if test="partnerType != null and partnerType != ''"> AND PTNR_TYPE = #{partnerType}</if>
+		</where>
 	</select>
 </mapper>

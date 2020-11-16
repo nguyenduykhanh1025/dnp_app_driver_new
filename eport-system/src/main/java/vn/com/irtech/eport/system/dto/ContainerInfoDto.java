@@ -135,6 +135,30 @@ public class ContainerInfoDto implements Serializable {
 	 */
 	private String unno;
 
+	/** Oversize catos OV_HEIGHT */
+	private String ovHeight;
+
+	/** Oversize catos OV_FORE */
+	private String ovFore;
+
+	/** Oversize catos OV_AFT */
+	private String ovAft;
+
+	/** Oversize catos OV_PORT */
+	private String ovPort;
+
+	/** Oversize catos OV_STBD */
+	private String ovStbd;
+
+	/** Oversize catos OS_HEIGHT */
+	private String osHeight;
+
+	/** Oversize catos OS_PORT */
+	private String osPort;
+
+	/** Oversize catos OS_STBD */
+	private String osStbd;
+
 	public String getCntrNo() {
 		return cntrNo;
 	}
@@ -429,6 +453,70 @@ public class ContainerInfoDto implements Serializable {
 
 	public void setUnno(String unno) {
 		this.unno = unno;
+	}
+
+	public String getOvHeight() {
+		return ovHeight;
+	}
+
+	public void setOvHeight(String ovHeight) {
+		this.ovHeight = ovHeight;
+	}
+
+	public String getOvFore() {
+		return ovFore;
+	}
+
+	public void setOvFore(String ovFore) {
+		this.ovFore = ovFore;
+	}
+
+	public String getOvAft() {
+		return ovAft;
+	}
+
+	public void setOvAft(String ovAft) {
+		this.ovAft = ovAft;
+	}
+
+	public String getOvPort() {
+		return ovPort;
+	}
+
+	public void setOvPort(String ovPort) {
+		this.ovPort = ovPort;
+	}
+
+	public String getOvStbd() {
+		return ovStbd;
+	}
+
+	public void setOvStbd(String ovStbd) {
+		this.ovStbd = ovStbd;
+	}
+
+	public String getOsHeight() {
+		return osHeight;
+	}
+
+	public void setOsHeight(String osHeight) {
+		this.osHeight = osHeight;
+	}
+
+	public String getOsPort() {
+		return osPort;
+	}
+
+	public void setOsPort(String osPort) {
+		this.osPort = osPort;
+	}
+
+	public String getOsStbd() {
+		return osStbd;
+	}
+
+	public void setOsStbd(String osStbd) {
+		this.osStbd = osStbd;
 	}
 	
 }

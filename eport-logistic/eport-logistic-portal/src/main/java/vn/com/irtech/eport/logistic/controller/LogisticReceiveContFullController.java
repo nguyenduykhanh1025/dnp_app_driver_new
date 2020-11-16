@@ -305,7 +305,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			// List<ShipmentDetail> shipmentDetailsCatos =
 			// catosApiService.selectShipmentDetailsByBLNo(shipment.getBlNo());
 			Map<String, ContainerInfoDto> catosDetailMap = getCatosShipmentDetail(shipment.getBlNo());
-			// Get opecode, sealNo, wgt, pol,pod
+			// Get opecode, sealNo, wgt, pol, pod
 			ContainerInfoDto catos = null;
 			for (ShipmentDetail detail : shipmentDetails) {
 				catos = catosDetailMap.get(detail.getContainerNo());

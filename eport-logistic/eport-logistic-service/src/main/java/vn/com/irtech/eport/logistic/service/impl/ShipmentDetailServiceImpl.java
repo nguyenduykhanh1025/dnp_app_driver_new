@@ -44,7 +44,6 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
-import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 import vn.com.irtech.eport.system.service.ISysDictDataService;
 import vn.com.irtech.eport.system.service.ISysDictTypeService;
 
@@ -119,6 +118,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			return ptnrCode;
 		}
 		return taxCode;
+	}
+
+	private String getTruckCoName(String taxCode) {
+		String trucker = sysDictDataService.selectDictLabel("carrier_trucker_list", taxCode);
+		if (StringUtils.isNotEmpty(trucker)) {
+			return catosApiService.getPartnerInfo(EportConstants.PTNR_TYPE_SHIPPING_LINE, taxCode).getGroupName();
+		}
+		return catosApiService.getPartnerInfo(EportConstants.PTNR_TYPE_CONSIGNEE, taxCode).getGroupName();
 	}
 
 	/**
@@ -501,7 +508,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
 		try {
 			processOrder.setTruckCo(
-					getTruckerFromRegNoCatos(taxCode) + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
+					getTruckerFromRegNoCatos(taxCode) + " : "
+							+ getTruckCoName(taxCode));
 		} catch (Exception e) {
 			logger.error("Error when get company name with tax code: " + e);
 		}
@@ -533,7 +541,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		String payerName = "";
 		try {
 			logger.debug("Get payer name for shipment detail by tax code: " + taxCode);
-			payerName = getGroupNameByTaxCode(taxCode).getGroupName();
+			payerName = catosApiService.getGroupNameByTaxCode(taxCode).getGroupName();
 		} catch (Exception e) {
 			logger.error("Error when get payer name for " + payer + ": " + e);
 		}
@@ -600,7 +608,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
 		try {
 			processOrder.setTruckCo(
-					getTruckerFromRegNoCatos(taxCode) + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
+					getTruckerFromRegNoCatos(taxCode) + " : "
+							+ getTruckCoName(taxCode));
 		} catch (Exception e) {
 			logger.error("Error when get company name with tax code: " + e);
 		}
@@ -638,7 +647,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		String payerName = "";
 		try {
 			logger.debug("Get payer name for shipment detail by tax code: " + taxCode);
-			payerName = getGroupNameByTaxCode(taxCode).getGroupName();
+			payerName = catosApiService.getGroupNameByTaxCode(taxCode).getGroupName();
 		} catch (Exception e) {
 			logger.error("Error when get payer name for " + payer + ": " + e);
 		}
@@ -703,7 +712,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		String payerName = "";
 		try {
 			logger.debug("Get payer name for shipment detail by tax code: " + taxCode);
-			payerName = getGroupNameByTaxCode(taxCode).getGroupName();
+			payerName = catosApiService.getGroupNameByTaxCode(taxCode).getGroupName();
 		} catch (Exception e) {
 			logger.error("Error when get payer name for " + payer + ": " + e);
 		}
@@ -764,44 +773,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			}
 			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 		}
-	}
-
-	@Override
-	public PartnerInfoDto getGroupNameByTaxCode(String taxCode) throws Exception {
-		// String apiUrl = "https://thongtindoanhnghiep.co/api/company/";
-		// String methodName = "GET";
-		// String readLine = null;
-		// HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl + "/" +
-		// taxCode).openConnection();
-		// connection.setRequestMethod(methodName);
-		// connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1;
-		// WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95
-		// Safari/537.11");
-		//
-		// int responseCode = connection.getResponseCode();
-		// StringBuffer response = new StringBuffer();
-		// if (responseCode == HttpURLConnection.HTTP_OK) {
-		// BufferedReader in = new BufferedReader(new
-		// InputStreamReader(connection.getInputStream()));
-		// while ((readLine = in.readLine()) != null) {
-		// response.append(readLine);
-		// };
-		// in.close();
-		// } else {
-		// String error = responseCode + " : " + methodName + " NOT WORKED";
-		// return error;
-		// }
-		// String str = response.toString();
-		// JsonObject convertedObject = new Gson().fromJson(str, JsonObject.class);
-		// if(convertedObject.get("Title").toString().equals("null"))
-		// {
-		// return null;
-		// }
-		// return convertedObject.get("Title").toString().replace("\"", "");
-		String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/" + taxCode;
-		RestTemplate restTemplate = new RestTemplate();
-		PartnerInfoDto partnerInfoDto = restTemplate.getForObject(url, PartnerInfoDto.class);
-		return partnerInfoDto;
 	}
 
 	@Override
