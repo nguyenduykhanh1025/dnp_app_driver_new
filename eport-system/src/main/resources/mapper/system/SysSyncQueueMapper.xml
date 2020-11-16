@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.system.mapper.SysSyncQueueMapper">
+    
+    <resultMap type="SysSyncQueue" id="SysSyncQueueResult">
+        <result property="id"    column="id"    />
+        <result property="syncType"    column="sync_type"    />
+        <result property="blNo"    column="bl_no"    />
+        <result property="cntrNo"    column="cntr_no"    />
+        <result property="jobOdrNo"    column="job_odr_no"    />
+        <result property="processOrderId"    column="process_order_id"    />
+        <result property="status"    column="status"    />
+        <result property="retryTimes"    column="retry_times"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="expiredDem"    column="expired_dem"    />
+        <result property="detFreeTime"    column="det_free_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysSyncQueueVo">
+        select id, sync_type, bl_no, cntr_no, job_odr_no, process_order_id, status, retry_times, expired_dem, det_free_time, remark, create_time from sys_sync_queue
+    </sql>
+
+    <select id="selectSysSyncQueueList" parameterType="SysSyncQueue" resultMap="SysSyncQueueResult">
+        <include refid="selectSysSyncQueueVo"/>
+        <where>  
+            <if test="syncType != null  and syncType != ''"> and sync_type = #{syncType}</if>
+            <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="cntrNo != null  and cntrNo != ''"> and cntr_no = #{cntrNo}</if>
+            <if test="jobOdrNo != null  and jobOdrNo != ''"> and job_odr_no = #{jobOdrNo}</if>
+            <if test="processOrderId != null "> and process_order_id = #{processOrderId}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="retryTimes != null "> and retry_times = #{retryTimes}</if>
+            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="detFreeTime != null and detFreeTime != ''"> and det_free_time = #{detFreeTime}</if>
+            <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysSyncQueueById" parameterType="Long" resultMap="SysSyncQueueResult">
+        <include refid="selectSysSyncQueueVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysSyncQueue" parameterType="SysSyncQueue">
+    	<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_sys_sync_queue.nextval as id from DUAL
+		</selectKey>
+        insert into sys_sync_queue
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="syncType != null and syncType != ''">sync_type,</if>
+            <if test="blNo != null">bl_no,</if>
+            <if test="cntrNo != null">cntr_no,</if>
+            <if test="jobOdrNo != null">job_odr_no,</if>
+            <if test="processOrderId != null">process_order_id,</if>
+            <if test="status != null">status,</if>
+            <if test="retryTimes != null">retry_times,</if>
+            <if test="expiredDem != null ">expired_dem,</if>
+            <if test="detFreeTime != null and detFreeTime != ''">det_free_time,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            create_time,
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="syncType != null and syncType != ''">#{syncType},</if>
+            <if test="blNo != null">#{blNo},</if>
+            <if test="cntrNo != null">#{cntrNo},</if>
+            <if test="jobOdrNo != null">#{jobOdrNo},</if>
+            <if test="processOrderId != null">#{processOrderId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="retryTimes != null">#{retryTimes},</if>
+            <if test="expiredDem != null ">#{expiredDem},</if>
+            <if test="detFreeTime != null and detFreeTime != ''">#{detFreeTime},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            sysdate,
+         </trim>
+    </insert>
+
+    <update id="updateSysSyncQueue" parameterType="SysSyncQueue">
+        update sys_sync_queue
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="syncType != null and syncType != ''">sync_type = #{syncType},</if>
+            <if test="blNo != null">bl_no = #{blNo},</if>
+            <if test="cntrNo != null">cntr_no = #{cntrNo},</if>
+            <if test="jobOdrNo != null">job_odr_no = #{jobOdrNo},</if>
+            <if test="processOrderId != null">process_order_id = #{processOrderId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="retryTimes != null">retry_times = #{retryTimes},</if>
+            <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
+            <if test="detFreeTime != null and detFreeTime != ''">det_free_time = #{detFreeTime},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+            <if test="params.waitingOrError != null"> and (status = 'W' or status = 'E')</if>
+            create_time = sysdate,
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysSyncQueueById" parameterType="Long">
+        delete from sys_sync_queue where id = #{id}
+    </delete>
+
+    <delete id="deleteSysSyncQueueByIds" parameterType="String">
+        delete from sys_sync_queue where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectSysSyncQueueWithDelayTimeList" parameterType="SysSyncQueue" resultMap="SysSyncQueueResult">
+        <include refid="selectSysSyncQueueVo"/>
+        <where>  
+            <if test="syncType != null  and syncType != ''"> and sync_type = #{syncType}</if>
+            <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="cntrNo != null  and cntrNo != ''"> and cntr_no = #{cntrNo}</if>
+            <if test="jobOdrNo != null  and jobOdrNo != ''"> and job_odr_no = #{jobOdrNo}</if>
+            <if test="processOrderId != null "> and process_order_id = #{processOrderId}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="retryTimes != null"> and retry_times &lt;= #{retryTimes}</if>
+            <if test="expiredDem != null"> and expired_dem = #{expiredDem}</if>
+            <if test="detFreeTime != null and detFreeTime != ''"> and det_free_time = #{detFreeTime}</if>
+            <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+            <if test="createTime != null"> and create_time &lt;= #{createTime}</if>
+        </where>
+    </select>
+
+    <update id="updateSysSyncQueueWithCondition" parameterType="SysSyncQueue">
+        update sys_sync_queue
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="syncType != null and syncType != ''">sync_type = #{syncType},</if>
+            <if test="blNo != null">bl_no = #{blNo},</if>
+            <if test="cntrNo != null">cntr_no = #{cntrNo},</if>
+            <if test="jobOdrNo != null">job_odr_no = #{jobOdrNo},</if>
+            <if test="processOrderId != null">process_order_id = #{processOrderId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="retryTimes != null">retry_times = #{retryTimes},</if>
+            <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
+            <if test="detFreeTime != null and detFreeTime != ''">det_free_time = #{detFreeTime},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+            create_time = sysdate,
+        </trim>
+        <where>
+            <if test="syncType != null  and syncType != ''"> and sync_type = #{syncType}</if>
+            <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="cntrNo != null  and cntrNo != ''"> and cntr_no = #{cntrNo}</if>
+            <if test="jobOdrNo != null  and jobOdrNo != ''"> and job_odr_no = #{jobOdrNo}</if>
+            <if test="params.ids != null">
+                and id in
+                <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </update>
+</mapper>

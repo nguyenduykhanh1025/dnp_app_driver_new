@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 
@@ -37,6 +38,9 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.system.service.ISysRobotService;
+import vn.com.irtech.eport.web.dto.GateRes;
+import vn.com.irtech.eport.web.mqtt.listener.AutoGateCheckInHandler;
+import vn.com.irtech.eport.web.mqtt.listener.AutoGatePassHandler;
 import vn.com.irtech.eport.web.mqtt.listener.MCRequestHandler;
 import vn.com.irtech.eport.web.mqtt.listener.RobotResponseHandler;
 
@@ -53,6 +57,10 @@ public class MqttService implements MqttCallback {
 	private static final String NOTIFICATION_CONT_TOPIC = BASE + "/notification/cont";
 	private static final String ROBOT_CONNECTION_REQUEST = ROBOT_BASE + "/connection/+/request";
 	private static final String ROBOT_CONNECTION_RESPONSE = ROBOT_BASE + "/connection/+/response";
+	private static final String GATE_DETECTION_RESPONSE = BASE + "/detection/gate/+/response";
+	private static final String GATE_DETECTION_ROBOT_RESPONSE = ROBOT_BASE + "/detection/gate/+/response";
+	private static final String GATE_ROBOT_REQ_TOPIC = BASE + "/robot/gate/+/request";
+	public static final String NOTIFICATION_GATE_PROGRESS = "eport/notification/gate/+/progress";
 
 	@Autowired
 	private MqttAsyncClient mqttClient;
@@ -66,6 +74,12 @@ public class MqttService implements MqttCallback {
 	@Autowired
 	private RobotResponseHandler robotResponseHandler;
 	
+	@Autowired
+	private AutoGateCheckInHandler autoGateCheckInHandler;
+
+	@Autowired
+	private AutoGatePassHandler autoGatePassHandler;
+
 	@Autowired
 	private ICatosApiService catosApiService;
 	
@@ -131,6 +145,8 @@ public class MqttService implements MqttCallback {
 		List<IMqttToken> tokens = new ArrayList<>();
 		tokens.add(mqttClient.subscribe(BASE + "/mc/plan/request", 1, mcRequestHandler));
 		tokens.add(mqttClient.subscribe(ROBOT_CONNECTION_RESPONSE, 1, robotResponseHandler));
+		tokens.add(mqttClient.subscribe(GATE_DETECTION_RESPONSE, 1, autoGateCheckInHandler));
+		tokens.add(mqttClient.subscribe(GATE_DETECTION_ROBOT_RESPONSE, 1, autoGatePassHandler));
 		// subscribe default topics when connect
 //		tokens.add(mqttClient.subscribe(BASE, 0, robotUpdateStatusHandler));
 		// Wait for subscribe complete
@@ -371,7 +387,8 @@ public class MqttService implements MqttCallback {
 		TERMINAL_CUSTOM_HOLD, // Terminal custom hold
 		CANCEL_DROP_FULL, // Cancel drop full
 		CANCEL_PICKUP_EMPTY, // Cancel pickup empty
-		EXPORT_RECEIPT // Export receipt
+		EXPORT_RECEIPT, // Export receipt
+		EXTENSION_DET // Gia han det free times
 	}
 
 	/**
@@ -391,5 +408,97 @@ public class MqttService implements MqttCallback {
 		processOrder.setRobotUuid(uuid); // robot uuid in charge of process order
 		processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_PROCESSING); // on progress
 		processOrderService.updateProcessOrder(processOrder);
+	}
+
+	@Transactional
+	public boolean publishMessageToRobot(ServiceSendFullRobotReq payLoad, EServiceRobot serviceRobot)
+			throws MqttException {
+		SysRobot sysRobot = this.getAvailableRobot(serviceRobot);
+		if (sysRobot == null) {
+			return false;
+		}
+		String msg = new Gson().toJson(payLoad);
+		String topic = ROBOT_REQUEST_TOPIC.replace("+", sysRobot.getUuId());
+		publish(topic, new MqttMessage(msg.getBytes()));
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setId(payLoad.processOrder.getId());
+		processOrder.setRobotUuid(sysRobot.getUuId()); // robot uuid in charge of process order
+		processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_PROCESSING); // on progress
+		processOrder.setRunnable(false);
+		processOrderService.updateProcessOrder(processOrder);
+		robotService.updateRobotStatusByUuId(sysRobot.getUuId(), EportConstants.ROBOT_STATUS_BUSY);
+		return true;
+	}
+
+	/**
+	 * Get a robot already to execute service
+	 * 
+	 * @param service
+	 * @return
+	 */
+	public SysRobot getAvailableRobot(EServiceRobot serviceRobot) {
+		SysRobot sysRobot = new SysRobot();
+		sysRobot.setStatus("0");
+		switch (serviceRobot) {
+		case RECEIVE_CONT_FULL:
+			sysRobot.setIsReceiveContFullOrder(true);
+			break;
+		case RECEIVE_CONT_EMPTY:
+			sysRobot.setIsReceiveContEmptyOrder(true);
+			break;
+		case SEND_CONT_FULL:
+			sysRobot.setIsSendContFullOrder(true);
+			break;
+		case SEND_CONT_EMPTY:
+			sysRobot.setIsSendContEmptyOrder(true);
+			break;
+		case SHIFTING_CONT:
+			sysRobot.setIsShiftingContOrder(true);
+			break;
+		case CHANGE_VESSEL:
+			sysRobot.setIsChangeVesselOrder(true);
+			break;
+		case CREATE_BOOKING:
+			sysRobot.setIsCreateBookingOrder(true);
+			break;
+		case EXTENSION_DATE:
+			sysRobot.setIsExtensionDateOrder(true);
+			break;
+		case TERMINAL_CUSTOM_HOLD:
+			sysRobot.setIsChangeTerminalCustomHold(true);
+			break;
+		case CANCEL_DROP_FULL:
+			sysRobot.setIsCancelSendContFullOrder(true);
+			break;
+		case CANCEL_PICKUP_EMPTY:
+			sysRobot.setIsCancelReceiveContEmptyOrder(true);
+			break;
+		case EXPORT_RECEIPT:
+			sysRobot.setIsExportReceipt(true);
+			break;
+		case EXTENSION_DET:
+			sysRobot.setIsExtensionDetOrder(true);
+			break;
+		}
+		sysRobot.setDisabled(false);
+		return robotService.findFirstRobot(sysRobot);
+	}
+
+	public void sendMessageToRobot(String message, String gateId) throws MqttException {
+		this.publish(GATE_ROBOT_REQ_TOPIC.replace("+", gateId), new MqttMessage(message.getBytes()));
+	}
+
+	public void sendProgressToGate(String status, String result, String msg, String gateId) {
+		GateRes gateRes = new GateRes();
+		gateRes.setStatus(status);
+		gateRes.setResult(result);
+		gateRes.setMsg(msg);
+		String message = new Gson().toJson(gateRes);
+		String topic = NOTIFICATION_GATE_PROGRESS.replace("+", gateId);
+		try {
+			publish(topic, new MqttMessage(message.getBytes()));
+		} catch (MqttException e) {
+			logger.error("Error when try sending notification progress check in for gate: " + e);
+		}
 	}
 }

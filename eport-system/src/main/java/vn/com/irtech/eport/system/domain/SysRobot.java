@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
@@ -68,6 +69,9 @@ public class SysRobot extends BaseEntity {
 	
 	@Excel(name = "Export Receipt")
 	private Boolean isExportReceipt;
+
+	@Excel(name = "Extension Det Order")
+	private Boolean isExtensionDetOrder;
 
 	/** ip address */
 	@Excel(name = "ip address")
@@ -240,6 +244,14 @@ public class SysRobot extends BaseEntity {
 		this.isExportReceipt = isExportReceipt;
 	}
 
+	public Boolean getIsExtensionDetOrder() {
+		return isExtensionDetOrder;
+	}
+
+	public void setIsExtensionDetOrder(Boolean isExtensionDetOrder) {
+		this.isExtensionDetOrder = isExtensionDetOrder;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -257,6 +269,7 @@ public class SysRobot extends BaseEntity {
 				.append("isCancelSendContFullOrder", getIsCancelSendContFullOrder())
 				.append("isCancelReceiveContEmptyOrder", getIsCancelReceiveContEmptyOrder())
 				.append("isExportReceipt", getIsExportReceipt())
+				.append("isExtensionDetOrder", getIsExtensionDetOrder())
 				.append("ipAddress", getIpAddress())
 				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
 				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("remark", getRemark())

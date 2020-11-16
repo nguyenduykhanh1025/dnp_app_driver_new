@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
-import vn.com.irtech.eport.system.domain.SysConfig;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
@@ -52,29 +52,47 @@ public class SysRobotController extends BaseController {
 		robotParam.setStatus(robot.getStatus());
 		if (robot.getServiceType() !=null ) {
 			switch (robot.getServiceType()) {
-				case 1:
+			case EportConstants.SERVICE_PICKUP_FULL:
 					robotParam.setIsReceiveContFullOrder(true);
 					break;
-				case 2:
+				case EportConstants.SERVICE_DROP_EMPTY:
 					robotParam.setIsSendContEmptyOrder(true);
 					break;
-				case 3:
+				case EportConstants.SERVICE_PICKUP_EMPTY:
 					robotParam.setIsReceiveContEmptyOrder(true);
 					break;
-				case 4:
+				case EportConstants.SERVICE_DROP_FULL:
 					robotParam.setIsSendContFullOrder(true);
 					break;
-				case 5:
+				case EportConstants.SERVICE_SHIFTING:
 					robotParam.setIsShiftingContOrder(true);
 					break;
-				case 6:
+				case EportConstants.SERVICE_CHANGE_VESSEL:
 					robotParam.setIsChangeVesselOrder(true);
 					break;
-				case 7:
+				case EportConstants.SERVICE_CREATE_BOOKING:
 					robotParam.setIsCreateBookingOrder(true);
 					break;
-				case 8:
-					robotParam.setIsReceiveContFullOrder(true);
+				case EportConstants.SERVICE_GATE_IN:
+					robotParam.setIsGateInOrder(true);
+					break;
+				case EportConstants.SERVICE_EXTEND_DATE:
+					robotParam.setIsExtensionDateOrder(true);
+					break;
+				case EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD:
+					robotParam.setIsChangeTerminalCustomHold(true);
+					break;
+				case EportConstants.SERVICE_CANCEL_DROP_FULL:
+					robotParam.setIsCancelSendContFullOrder(true);
+					break;
+				case EportConstants.SERVICE_CANCEL_PICKUP_EMPTY:
+					robotParam.setIsCancelReceiveContEmptyOrder(true);
+					break;
+				case EportConstants.SERVICE_EXPORT_RECEIPT:
+					robotParam.setIsExportReceipt(true);
+					break;
+				case EportConstants.SERVICE_EXTEND_DET:
+					robotParam.setIsExtensionDetOrder(true);
 					break;
 				default:
 					break;

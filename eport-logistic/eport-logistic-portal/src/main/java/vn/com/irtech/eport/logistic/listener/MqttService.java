@@ -207,7 +207,8 @@ public class MqttService implements MqttCallback {
 		TERMINAL_CUSTOM_HOLD, // Terminal custom hold
 		CANCEL_DROP_FULL, // Cancel drop full
 		CANCEL_PICKUP_EMPTY, // Cancel pickup empty
-		EXPORT_RECEIPT // Export receipt
+		EXPORT_RECEIPT, // Export receipt
+		EXTENSION_DET // update detention days
 	}
 
 	@Transactional

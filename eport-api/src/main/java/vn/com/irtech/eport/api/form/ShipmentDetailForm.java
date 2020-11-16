@@ -15,8 +15,6 @@ public class ShipmentDetailForm  implements Serializable {
 
 	private String sztp;
 
-	private String sztpDefine;
-
 	private String fe;
 
 	private String sealNo;
@@ -29,8 +27,6 @@ public class ShipmentDetailForm  implements Serializable {
 
 	private Long wgt;
 
-	private String vslName;
-
 	private String vslNm;
 
 	private String voyNo;
@@ -38,8 +34,6 @@ public class ShipmentDetailForm  implements Serializable {
 	private String voyCarrier;
 
 	private String opeCode;
-
-	private String carrierName;
 
 	private String loadingPort;
 
@@ -101,14 +95,6 @@ public class ShipmentDetailForm  implements Serializable {
 		this.sztp = sztp;
 	}
 
-	public String getSztpDefine() {
-		return sztpDefine;
-	}
-
-	public void setSztpDefine(String sztpDefine) {
-		this.sztpDefine = sztpDefine;
-	}
-
 	public String getFe() {
 		return fe;
 	}
@@ -157,14 +143,6 @@ public class ShipmentDetailForm  implements Serializable {
 		this.wgt = wgt;
 	}
 
-	public String getVslName() {
-		return vslName;
-	}
-
-	public void setVslName(String vslName) {
-		this.vslName = vslName;
-	}
-
 	public String getVslNm() {
 		return vslNm;
 	}
@@ -195,14 +173,6 @@ public class ShipmentDetailForm  implements Serializable {
 
 	public void setOpeCode(String opeCode) {
 		this.opeCode = opeCode;
-	}
-
-	public String getCarrierName() {
-		return carrierName;
-	}
-
-	public void setCarrierName(String carrierName) {
-		this.carrierName = carrierName;
 	}
 
 	public String getLoadingPort() {

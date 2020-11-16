@@ -85,7 +85,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="logisticGroupId != null">#{logisticGroupId},</if>
-            <if test="delegateTaxCode != null and delegateTaxCode != ''">#{delegateTaxCode},</if>
+            <if test="delegateTaxCode != null and delegateTaxCode != ''">trim(#{delegateTaxCode}),</if>
             <if test="delegateCompany != null and delegateCompany != ''">#{delegateCompany},</if>
             <if test="delegateType != null and delegateType != ''">#{delegateType},</if>
             <if test="validFrom != null">#{validFrom},</if>
@@ -101,7 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update logistic_delegated
         <trim prefix="SET" suffixOverrides=",">
             <if test="logisticGroupId != null">logistic_group_id = #{logisticGroupId},</if>
-            <if test="delegateTaxCode != null and delegateTaxCode != ''">delegate_tax_code = #{delegateTaxCode},</if>
+            <if test="delegateTaxCode != null and delegateTaxCode != ''">delegate_tax_code = trim(#{delegateTaxCode}),</if>
             <if test="delegateCompany != null and delegateCompany != ''">delegate_company = #{delegateCompany},</if>
             <if test="delegateType != null and delegateType != ''">delegate_type = #{delegateType},</if>
             <if test="validFrom != null">valid_from = #{validFrom},</if>

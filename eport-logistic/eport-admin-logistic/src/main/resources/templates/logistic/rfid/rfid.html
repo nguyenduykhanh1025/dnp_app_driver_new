@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('List RFID Truck')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>RFID：</label>
+                                <input type="text" name="rfid" onkeyup="search()"/>
+                            </li>
+                            <li>
+                                <label>Biển Số Xe：</label>
+                                <input type="text" name="plateNumber"  onkeyup="search()"/>
+                            </li>
+                            <li>
+                                <label>Loại Xe：</label>
+                                <select name="truckType">
+                                    <option value="">Tất cả</option>
+                                    <option value="T">Đầu kéo</option>
+                                    <option value="C">Rơ moóc</option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()">
+                    <i class="fa fa-plus"></i> Add
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()">
+                    <i class="fa fa-edit"></i> Edit
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()">
+                    <i class="fa fa-remove"></i> Delete
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "logistic/rfid";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                modalName: "RFID Truck",
+                height: $(document).height() - 120,
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'id',
+                    title: 'ID'
+                },
+                {
+                    field: 'rfid',
+                    title: 'RFID'
+                },
+                {
+                    field: 'plateNumber',
+                    title: 'Biển Số Xe'
+                },
+                {
+                    field: 'truckType',
+                    title: 'Loại Xe',
+                    formatter: function (value, row, index) {
+                        return truckTypeFormatter(value, row, index);
+                    }
+                },
+                {
+                    field: 'Disabled',
+                    title: 'Logistics',
+                    formatter: function (value, row, index) {
+                        return disabledFormatter(value, row, index);
+                    }
+                },
+                {
+                    title: 'Action',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>Edit</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Delete</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+
+        function truckTypeFormatter(value, row, index) {
+            // Return blank if value is empty
+            if (value == null || value == '') {
+                return 'Không xác định';
+            } 
+            switch (value) {
+                case 'T':
+                    return 'Đầu kéo';
+                case 'C':
+                    return 'Rơ moóc';
+                default:
+                    return 'Không xác định';
+            }
+        }
+
+        function disabledFormatter(value, row, index) {
+            if (row.disabled == 0) {
+                return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="disableRfid(\'' + row.id + '\',\'' + row.rfid + '\')"></i> ';
+            } else {
+                return '<i class=\"fa fa-toggle-on text-info fa-2x\" style="color: #ed5565;" onclick="enableRfid(\'' + row.id + '\',\'' + row.rfid + '\')"></i> ';
+            }
+        }
+
+        /* disable rfid */
+        function disableRfid(id, rfid) {
+            $.modal.confirm("Xác nhận vô hiệu hóa rfid " + rfid + "？", function () {
+                $.operate.post(prefix + "/disabled/change", { "id": id, "disabled": 1 });
+            });
+        }
+
+        /* enable rfid */
+            function enableRfid(id, rfid) {
+            $.modal.confirm("Xác nhận kích hoạt lại rfid " + rfid + "？", function () {
+                $.operate.post(prefix + "/disabled/change", { "id": id, "disabled": 0 });
+            });
+        }
+
+        $( document ).ready(function() {
+            $('input[name ="rfid"]').keypress(function(event){
+                let keycode = (event.keyCode ? event.keyCode : event.which);
+                if(keycode == '13') {
+                    $.table.search();
+                }
+            });
+
+            $('input[name ="plateNumber"]').keypress(function(event){
+                let keycode = (event.keyCode ? event.keyCode : event.which);
+                if(keycode == '13') {
+                    $.table.search();
+                }
+            });
+
+            $('select[name ="truckType"').on('change',function(){
+                $.table.search();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -345,7 +345,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			// List<ShipmentDetail> shipmentDetailsCatos =
 			// catosApiService.selectShipmentDetailsByBLNo(shipment.getBlNo());
 			Map<String, ContainerInfoDto> catosDetailMap = getCatosShipmentDetail(shipment.getBlNo());
-			// Get opecode, sealNo, wgt, pol,pod
+			// Get opecode, sealNo, wgt, pol, pod
 			ContainerInfoDto catos = null;
 			for (ShipmentDetail detail : shipmentDetails) {
 				catos = catosDetailMap.get(detail.getContainerNo());
@@ -404,7 +404,13 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					// create send empty shipment
 					shipmentSendEmpty.setContainerAmount(Long.valueOf(firstDetail.getTier()));
 					shipmentSendEmpty.setLogisticAccountId(user.getId());
-					shipmentSendEmpty.setOpeCode(shipment.getOpeCode());
+					// Convert ope code child to parent (example: WHA -> WHL)
+					String oprParent = dictService.getLabel("carrier_parent_child_list", shipment.getOpeCode());
+					if (StringUtils.isNotEmpty(oprParent)) {
+						shipmentSendEmpty.setOpeCode(oprParent);
+					} else {
+						shipmentSendEmpty.setOpeCode(shipment.getOpeCode());
+					}
 					shipmentSendEmpty.setLogisticGroupId(user.getGroupId());
 					shipmentSendEmpty.setCreateTime(new Date());
 					shipmentSendEmpty.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
@@ -535,7 +541,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						shipmentDetail.setVslNm("EMTY");
 						shipmentDetail.setVoyNo("0000");
 						shipmentDetail.setLocation(null);
-						shipmentDetail.setOpeCode(shipmentDetail.getOpeCode());
+						shipmentDetail.setOpeCode(shipmentSendEmpty.getOpeCode());
 						shipmentDetail.setEmptyDepotLocation(
 								getEmptyDepotLocation(shipmentDetail.getSztp(), shipmentDetail.getOpeCode()));
 						shipmentDetail.setStatus(1);

@@ -74,9 +74,9 @@ function formatDate(value) {
 
 function formatStatus(value) {
   if (value == 'P') {
-    return "Thanh Toán";
+    return "Làm lệnh";
   }
-  return "Làm lệnh";
+  return "Thanh Toán";
 }
 
 $("#delegateType").combobox({

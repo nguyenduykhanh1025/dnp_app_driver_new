@@ -17,16 +17,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="chkContainerNo2"    column="chk_container_no2"    />
         <result property="totalWgt"    column="total_wgt"    />
         <result property="deduct"    column="deduct"    />
-        <result property="wgt"    column="wgt"    />
         <result property="processFlg"    column="process_flg"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
+        <result property="opeCode1"    column="ope_code1"    />
+        <result property="opeCode2"    column="ope_code2"    />
+        <result property="sztp1"    column="sztp1"    />
+        <result property="sztp2"    column="sztp2"    />
+        <result property="vslCd1"    column="vsl_cd1"    />
+        <result property="vslCd2"    column="vsl_cd2"    />
+        <result property="callSeq1"    column="call_seq1"    />
+        <result property="callSeq2"    column="call_seq2"    />
+        <result property="cargoType1"    column="cargo_type1"    />
+        <result property="cargoType2"    column="cargo_type2"    />
+        <result property="pod1"    column="pod1"    />
+        <result property="pod2"    column="pod2"    />
+        <result property="wgt1"    column="wgt1"    />
+        <result property="wgt2"    column="wgt2"    />
+        <result property="location1"    column="location1"    />
+        <result property="location2"    column="location2"    />
+        <result property="processOrderId"    column="process_order_id"    />
+        <result property="gatepass"    column="gatepass"    />
+        <result property="status"    column="status"    />
+        <result property="fe1"    column="fe1"    />
+        <result property="fe2"    column="fe2"    />
     </resultMap>
 
     <sql id="selectGateDetectionVo">
-        select id, gate_no, truck_no, chassis_no, container_no1, container_no2, chk_truck_no, chk_chassis_no, chk_container_no1, chk_container_no2, total_wgt, deduct, wgt, process_flg, create_by, create_time, update_by, update_time from gate_detection
+        select id, gate_no, truck_no, chassis_no, container_no1, container_no2, chk_truck_no, chk_chassis_no, chk_container_no1, 
+        chk_container_no2, total_wgt, deduct, process_flg, create_by, create_time, update_by, update_time, ope_code1, ope_code2,
+        sztp1, sztp2, vsl_cd1, vsl_cd2, call_seq1, call_seq2, cargo_type1, cargo_type2, pod1, pod2, wgt1, wgt2, location1, location2, 
+        process_order_id, gatepass, status, fe1, fe2 from gate_detection
     </sql>
 
     <select id="selectGateDetectionList" parameterType="GateDetection" resultMap="GateDetectionResult">
@@ -43,8 +65,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="chkContainerNo2 != null  and chkContainerNo2 != ''"> and chk_container_no2 = #{chkContainerNo2}</if>
             <if test="totalWgt != null "> and total_wgt = #{totalWgt}</if>
             <if test="deduct != null "> and deduct = #{deduct}</if>
-            <if test="wgt != null "> and wgt = #{wgt}</if>
             <if test="processFlg != null  and processFlg != ''"> and process_flg = #{processFlg}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="fe1 != null  and fe1 != ''"> and fe1 = #{fe1}</if>
+            <if test="fe2 != null  and fe2 != ''"> and fe2 = #{fe2}</if>
         </where>
     </select>
     
@@ -71,8 +95,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="chkContainerNo2 != null">chk_container_no2,</if>
             <if test="totalWgt != null">total_wgt,</if>
             <if test="deduct != null">deduct,</if>
-            <if test="wgt != null">wgt,</if>
             <if test="processFlg != null">process_flg,</if>
+            <if test="opeCode1 != null and opeCode1 != ''">ope_code1,</if>
+            <if test="opeCode2 != null and opeCode2 != ''">ope_code2,</if>
+            <if test="sztp1 != null and sztp1 != ''">sztp1,</if>
+            <if test="sztp2 != null and sztp2 != ''">sztp2,</if>
+            <if test="vslCd1 != null and vslCd1 != ''">vsl_cd1,</if>
+            <if test="vslCd2 != null and vslCd2 != ''">vsl_cd2,</if>
+            <if test="callSeq1 != null and callSeq1 != ''">call_seq1,</if>
+            <if test="callSeq2 != null and callSeq2 != ''">call_seq2,</if>
+            <if test="cargoType1 != null and cargoType1 != ''">cargo_type1,</if>
+            <if test="cargoType2 != null and cargoType2 != ''">cargo_type2,</if>
+            <if test="pod1 != null and pod1 != ''">pod1,</if>
+            <if test="pod2 != null and pod2 != ''">pod2,</if>
+            <if test="wgt1 != null">wgt1,</if>
+            <if test="wgt2 != null">wgt2,</if>
+            <if test="location1 != null and location1 != ''">location1,</if>
+            <if test="location2 != null and location2 != ''">location2,</if>
+            <if test="processOrderId != null">process_order_id,</if>
+            <if test="gatepass != null">gatepass,</if>
+            <if test="status != null">status,</if>
+            <if test="fe1 != null">fe1,</if>
+            <if test="fe2 != null">fe2,</if>
             <if test="createBy != null">create_by,</if>
             create_time
          </trim>
@@ -89,8 +133,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="chkContainerNo2 != null">#{chkContainerNo2},</if>
             <if test="totalWgt != null">#{totalWgt},</if>
             <if test="deduct != null">#{deduct},</if>
-            <if test="wgt != null">#{wgt},</if>
             <if test="processFlg != null">#{processFlg},</if>
+            <if test="opeCode1 != null and opeCode1 != ''">#{opeCode1},</if>
+            <if test="opeCode2 != null and opeCode2 != ''">#{opeCode2},</if>
+            <if test="sztp1 != null and sztp1 != ''">#{sztp1},</if>
+            <if test="sztp2 != null and sztp2 != ''">#{sztp2},</if>
+            <if test="vslCd1 != null and vslCd1 != ''">#{vslCd1},</if>
+            <if test="vslCd2 != null and vslCd2 != ''">#{vslCd2},</if>
+            <if test="callSeq1 != null and callSeq1 != ''">#{callSeq1},</if>
+            <if test="callSeq2 != null and callSeq2 != ''">#{callSeq2},</if>
+            <if test="cargoType1 != null and cargoType1 != ''">#{cargoType1},</if>
+            <if test="cargoType2 != null and cargoType2 != ''">#{cargoType2},</if>
+            <if test="pod1 != null and pod1 != ''">#{pod1},</if>
+            <if test="pod2 != null and pod2 != ''">#{pod2},</if>
+            <if test="wgt1 != null">#{wgt1},</if>
+            <if test="wgt2 != null">#{wgt2},</if>
+            <if test="location1 != null and location1 != ''">#{location1},</if>
+            <if test="location2 != null and location2 != ''">#{location2},</if>
+            <if test="processOrderId != null">#{processOrderId},</if>
+            <if test="gatepass != null">#{gatepass},</if>
+            <if test="status != null">#{status},</if>
+            <if test="fe1 != null">#{fe1},</if>
+            <if test="fe2 != null">#{fe2},</if>
             <if test="createBy != null">#{createBy},</if>
             sysdate
          </trim>
@@ -110,11 +174,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="chkContainerNo2 != null">chk_container_no2 = #{chkContainerNo2},</if>
             <if test="totalWgt != null">total_wgt = #{totalWgt},</if>
             <if test="deduct != null">deduct = #{deduct},</if>
-            <if test="wgt != null">wgt = #{wgt},</if>
             <if test="processFlg != null">process_flg = #{processFlg},</if>
+            <if test="opeCode1 != null and opeCode1 != ''">ope_code1 = #{opeCode1},</if>
+            <if test="opeCode2 != null and opeCode2 != ''">ope_code2 = #{opeCode2},</if>
+            <if test="sztp1 != null and sztp1 != ''">sztp1 = #{sztp1},</if>
+            <if test="sztp2 != null and sztp2 != ''">sztp2 = #{sztp2},</if>
+            <if test="vslCd1 != null and vslCd1 != ''">vsl_cd1 = #{vslCd1},</if>
+            <if test="vslCd2 != null and vslCd2 != ''">vsl_cd2 = #{vslCd2},</if>
+            <if test="callSeq1 != null and callSeq1 != ''">call_seq1 = #{callSeq1},</if>
+            <if test="callSeq2 != null and callSeq2 != ''">call_seq2 = #{callSeq2},</if>
+            <if test="cargoType1 != null and cargoType1 != ''">cargo_type1 = #{cargoType1},</if>
+            <if test="cargoType2 != null and cargoType2 != ''">cargo_type2 = #{cargoType2},</if>
+            <if test="pod1 != null and pod1 != ''">pod1 = #{pod1},</if>
+            <if test="pod2 != null and pod2 != ''">pod2 = #{pod2},</if>
+            <if test="wgt1 != null">wgt1 = #{wgt1},</if>
+            <if test="wgt2 != null">wgt2 = #{wgt2},</if>
+            <if test="location1 != null and location1 != ''">location1 = #{location1},</if>
+            <if test="location2 != null and location2 != ''">location2 = #{location2},</if>
+            <if test="processOrderId != null">process_order_id = #{processOrderId},</if>
+            <if test="gatepass != null">gatepass = #{gatepass},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="fe1 != null">fe1 = #{fe1},</if>
+            <if test="fe2 != null">fe2 = #{fe2},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="params.nullLocation1 != null">location1 = null,</if>
+            <if test="params.nullLocation2 != null">location2 = null,</if>
             update_time = sysdate
         </trim>
         where id = #{id}

@@ -3,6 +3,8 @@ package vn.com.irtech.eport.web.controller.gate;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +36,13 @@ import vn.com.irtech.eport.logistic.service.IGateDetectionService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.web.dto.DetectionInfomation;
 import vn.com.irtech.eport.web.dto.GateInDataReq;
 import vn.com.irtech.eport.web.dto.GateInTestDataReq;
+import vn.com.irtech.eport.web.dto.GateNotificationCheckInReq;
 import vn.com.irtech.eport.web.dto.SensorResult;
+import vn.com.irtech.eport.web.mqtt.MqttService;
 
 @Controller
 @RequestMapping("/gate/support")
@@ -46,6 +51,10 @@ public class GateSupportController extends BaseController {
 	private static final Logger logger = LoggerFactory.getLogger(GateSupportController.class);
 
 	private final static String PREFIX = "gate/support";
+
+	private static final String GATE_DETECTION_REQUEST = "eport/detection/gate/+/request";
+
+	private static final Integer DEFAULT_DEDUCT_TRUCK = 13000;
 
 	@Autowired
 	private WebSocketService webSocketService;
@@ -68,6 +77,9 @@ public class GateSupportController extends BaseController {
 	@Autowired
 	private IGateDetectionService gateDetectionService;
 
+	@Autowired
+	private MqttService mqttService;
+
 	@GetMapping()
 	public String getView() {
 		return PREFIX + "/index";
@@ -86,6 +98,7 @@ public class GateSupportController extends BaseController {
 		dt.setChassisNo(detection.getChassisNo());
 		dt.setContainerNo1(detection.getContainerNo1());
 		dt.setContainerNo2(detection.getContainerNo2());
+		dt.setStatus("W");
 
 		gateDetectionService.insertGateDetection(dt);
 
@@ -99,6 +112,8 @@ public class GateSupportController extends BaseController {
 			dt.setChassisNo(chassisNo.replace("-", ""));
 		}
 		CacheUtils.put(dt.getGateNo() + "_" + EportConstants.CACHE_GATE_DETECTION_KEY, dt);
+
+		senDetectionInfoToGate(dt);
 
 		// Send to monitor
 		webSocketService.sendMessage("/gate/detection/monitor", detection);
@@ -120,6 +135,44 @@ public class GateSupportController extends BaseController {
 			}
 		}
 		return success();
+	}
+
+	private void senDetectionInfoToGate(GateDetection detectionInfo) {
+		GateNotificationCheckInReq gateNotificationCheckInReq = new GateNotificationCheckInReq();
+		gateNotificationCheckInReq.setReceiveOption(false);
+		gateNotificationCheckInReq.setSendOption(true);
+		gateNotificationCheckInReq.setRefFlg1(false);
+		gateNotificationCheckInReq.setRefFlg2(false);
+		gateNotificationCheckInReq.setId(detectionInfo.getId());
+		String truckNo = detectionInfo.getTruckNo();
+		if (StringUtils.isNotEmpty(truckNo)) {
+			gateNotificationCheckInReq.setTruckNo(truckNo);
+			int truckLength = truckNo.length();
+			if (truckLength > 5) {
+				gateNotificationCheckInReq.setGatePass(truckNo.substring(truckLength - 5, truckLength));
+			}
+		}
+		gateNotificationCheckInReq.setChassisNo(detectionInfo.getChassisNo());
+		gateNotificationCheckInReq.setDeduct(DEFAULT_DEDUCT_TRUCK);
+		gateNotificationCheckInReq.setContainerSend1(detectionInfo.getContainerNo1());
+		gateNotificationCheckInReq.setContainerSend2(detectionInfo.getContainerNo2());
+
+		NotificationReq notificationReq = new NotificationReq();
+		notificationReq.setTitle("ePort: Phát hiện xe tại cổng.");
+		notificationReq.setMsg("Có xe ở cổng đang đợi làm lệnh " + gateNotificationCheckInReq.getTruckNo());
+		notificationReq.setType(EportConstants.APP_USER_TYPE_GATE);
+		notificationReq.setLink("");
+		notificationReq.setPriority(EportConstants.NOTIFICATION_PRIORITY_HIGH);
+		notificationReq.setGateData(gateNotificationCheckInReq);
+
+		String msg = new Gson().toJson(notificationReq);
+		try {
+			logger.warn(">>>>>>>>>>>>>>>>> Send GATE Dialog: " + msg);
+			mqttService.publish(GATE_DETECTION_REQUEST.replace("+", detectionInfo.getGateNo()),
+					new MqttMessage(msg.getBytes()));
+		} catch (MqttException e) {
+			logger.error("Error when try sending notification request check in for gate: " + e);
+		}
 	}
 
 	@PostMapping("/logistics")

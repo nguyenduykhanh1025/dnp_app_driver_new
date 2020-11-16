@@ -3,15 +3,20 @@ package vn.com.irtech.eport.carrier.task;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
@@ -26,8 +31,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
-import com.google.common.io.Files;
-
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
@@ -36,6 +39,12 @@ import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
+import vn.com.irtech.eport.common.constant.EportConstants;
+import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.system.domain.SysSyncQueue;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
+import vn.com.irtech.eport.system.service.ISysSyncQueueService;
 
 @Service
 @Configurable
@@ -56,6 +65,12 @@ public class CarrierEdoFolderMonitorTask {
 
 	@Autowired
 	private ICarrierGroupService carrierGroupService;
+
+	@Autowired
+	private ICatosApiService catosApiService;
+
+	@Autowired
+	private ISysSyncQueueService sysSyncQueueService;
 
 	@Autowired
 	@Qualifier("threadPoolTaskExecutor")
@@ -112,12 +127,32 @@ public class CarrierEdoFolderMonitorTask {
 					while (true) {
 						try {
 							String filePath = ediFileQueue.take();
+							// Check end delays for 5s with file create time
+							checkAndDelay(filePath, 5000);
 							readEdiFile(new File(filePath));
 						} catch (Exception e) {
 							e.printStackTrace();
 							logger.error("Error while read EDI file", e);
 						}
 					}
+				}
+
+				private void checkAndDelay(String filePath, int delayMs) {
+					try {
+						// read file create time
+						BasicFileAttributes attr = Files.readAttributes(new File(filePath).toPath(),
+								BasicFileAttributes.class);
+						long fileTimeInMs = attr.creationTime().toMillis();
+						long currentTimeInMs = System.currentTimeMillis();
+						long diff = currentTimeInMs - fileTimeInMs;
+						// Delay from 0~ delay mili-seconds
+						if (diff > 0 && diff < delayMs) {
+							Thread.sleep(delayMs - diff);
+						}
+					} catch (IOException | InterruptedException e) {
+						e.printStackTrace();
+					}
+
 				}
 			});
 		}
@@ -158,6 +193,9 @@ public class CarrierEdoFolderMonitorTask {
 			logger.error("Error when read EDI File. Carrier Group is not exist: " + groupCode);
 			return;
 		}
+
+		// Check file size diff => file upload not complete
+		long fileSize = Files.size(ediFile.toPath());
 		// Read file content
 		String content = FileUtils.readFileToString(ediFile, StandardCharsets.UTF_8);
 		content = content.replaceAll("\r\n|\r|\n", "");
@@ -168,7 +206,13 @@ public class CarrierEdoFolderMonitorTask {
 
 		// Read edi file and parse to edo object
 		List<Edo> listEdo = edoService.readEdi(text);
-
+		// Check if filesize has changed
+		if (Files.size(ediFile.toPath()) - fileSize != 0) {
+			// move to queue to read again
+			logger.debug("File has been changed, read again: " + ediFile.toPath());
+			ediFileQueue.offer(ediFile.getAbsolutePath());
+			return;
+		}
 		// can not read edo file
 		if(listEdo == null || listEdo.size() == 0) {
 			// create error folder
@@ -176,6 +220,16 @@ public class CarrierEdoFolderMonitorTask {
 			logger.error("No Container found in EDI File: " + ediFile.getName() + "\nEDI Content:\n" + content);
 			return;
 		}
+
+		// For get list containers string to get container info from catos
+		String containers = "";
+		for (Edo edo : listEdo) {
+			containers += edo.getContainerNumber() + ",";
+		}
+		// remove last comma
+		containers = containers.substring(0, containers.length() - 1);
+		Map<String, ContainerInfoDto> cntrMap = getContainerInfoMapFE(containers);
+
 		// loop and insert
 		for (Edo edo : listEdo) {
 			try {
@@ -193,17 +247,121 @@ public class CarrierEdoFolderMonitorTask {
 	
 				Edo edoCheck = edoService.checkContainerAvailable(edo.getContainerNumber(), edo.getBillOfLading());
 				if (edoCheck != null) {
-					edo.setId(edoCheck.getId());
-					edo.setUpdateTime(timeNow);
-					edo.setUpdateBy(carrierGroup.getGroupCode());
+					ContainerInfoDto cntrFull = cntrMap.get(edoCheck.getContainerNumber() + "F");
+					ContainerInfoDto cntrEmty = cntrMap.get(edoCheck.getContainerNumber() + "E");
+
+					Edo edoUpdate = new Edo();
+					edoUpdate.setId(edoCheck.getId());
+					edoUpdate.setUpdateTime(timeNow);
+					edoUpdate.setUpdateBy(carrierGroup.getGroupCode());
+
+					edoUpdate.setConsignee(edo.getConsignee());
+					edoUpdate.setDetFreeTime(edo.getDetFreeTime());
+					edoUpdate.setEmptyContainerDepot(edo.getEmptyContainerDepot());
+					edoUpdate.setTaxCode(edo.getTaxCode());
+					edoUpdate.setExpiredDem(edo.getExpiredDem());
+					// Validate edo field can update
+					if (cntrFull == null || StringUtils.isNotEmpty(cntrFull.getJobOdrNo2())) {
+						// Case container don't has job order no in catos
+						// => can update
+						edoUpdate.setCarrierCode(edo.getCarrierCode());
+						edoUpdate.setBusinessUnit(edo.getBusinessUnit());
+						edoUpdate.setOrderNumber(edo.getOrderNumber());
+						edoUpdate.setContainerNumber(edo.getContainerNumber());
+						edoUpdate.setReleaseNo(edo.getReleaseNo());
+						edoUpdate.setVessel(edo.getVessel());
+						edoUpdate.setVoyNo(edo.getVoyNo());
+						edoUpdate.setBillOfLading(edo.getBillOfLading());
+						edoUpdate.setSztp(edo.getSztp());
+						edoUpdate.setPol(edo.getPol());
+						edoUpdate.setPod(edo.getPod());
+						edoUpdate.setConsignee(edo.getConsignee());
+					}
+
+					// validate expired dem if has update
+					if (edoUpdate.getExpiredDem() != null && edoCheck.getExpiredDem() != null
+							&& edoCheck.getExpiredDem().compareTo(edoUpdate.getExpiredDem()) != 0) {
+						if (cntrFull != null && StringUtils.isNotEmpty(cntrFull.getJobOdrNo2())) {
+							// Get old request if exist, update else insert new request
+							SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
+							sysSyncQueueParam.setBlNo(edoUpdate.getBillOfLading());
+							sysSyncQueueParam.setCntrNo(edoUpdate.getContainerNumber());
+							sysSyncQueueParam.setJobOdrNo(cntrFull.getJobOdrNo2());
+							sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DEM);
+							sysSyncQueueParam.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+							List<SysSyncQueue> sysSyncQueues = sysSyncQueueService
+									.selectSysSyncQueueList(sysSyncQueueParam);
+							if (CollectionUtils.isNotEmpty(sysSyncQueues)) {
+								// Case update request in queue
+								SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
+								sysSyncQueueUpdate.setId(sysSyncQueues.get(0).getId());
+								sysSyncQueueUpdate.setExpiredDem(edoUpdate.getExpiredDem());
+								sysSyncQueueService.updateSysSyncQueue(sysSyncQueueUpdate);
+							} else {
+								// Case insert new request in queue
+								SysSyncQueue sysSyncQueue = new SysSyncQueue();
+								sysSyncQueue.setSyncType(EportConstants.SYNC_QUEUE_DEM);
+								sysSyncQueue.setExpiredDem(edoUpdate.getExpiredDem());
+								sysSyncQueue.setBlNo(edoUpdate.getBillOfLading());
+								sysSyncQueue.setCntrNo(edoUpdate.getContainerNumber());
+								sysSyncQueue.setJobOdrNo(cntrFull.getJobOdrNo2());
+								sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+								sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
+							}
+						}
+					}
+
+					// Check det free time is updated
+					if (edoUpdate.getDetFreeTime() != null && edoCheck.getDetFreeTime() != null
+							&& edoCheck.getDetFreeTime().compareTo(edoUpdate.getDetFreeTime()) != 0) {
+						if (cntrEmty == null || StringUtils.isEmpty(cntrEmty.getJobOdrNo())) {
+							// Get old request if exist, update else insert new request
+							SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
+							sysSyncQueueParam.setBlNo(edoUpdate.getBillOfLading());
+							sysSyncQueueParam.setCntrNo(edoUpdate.getContainerNumber());
+							sysSyncQueueParam.setJobOdrNo(cntrEmty.getJobOdrNo());
+							sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DET);
+							sysSyncQueueParam.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+							List<SysSyncQueue> sysSyncQueues = sysSyncQueueService
+									.selectSysSyncQueueList(sysSyncQueueParam);
+							if (CollectionUtils.isNotEmpty(sysSyncQueues)) {
+								// Case update request in queue
+								SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
+								sysSyncQueueUpdate.setId(sysSyncQueues.get(0).getId());
+								sysSyncQueueUpdate.setDetFreeTime(edoUpdate.getDetFreeTime());
+								sysSyncQueueUpdate.setRemark(
+										getRemarkAfterUpdateDet(edoUpdate.getDetFreeTime(), cntrEmty.getRemark()));
+								sysSyncQueueService.updateSysSyncQueue(sysSyncQueueUpdate);
+							} else {
+								// Case insert new request in queue
+								SysSyncQueue sysSyncQueue = new SysSyncQueue();
+								sysSyncQueue.setSyncType(EportConstants.SYNC_QUEUE_DET);
+								sysSyncQueue.setDetFreeTime(edoUpdate.getDetFreeTime());
+								sysSyncQueue.setRemark(
+										getRemarkAfterUpdateDet(edoUpdate.getDetFreeTime(), cntrEmty.getRemark()));
+								sysSyncQueue.setBlNo(edoUpdate.getBillOfLading());
+								sysSyncQueue.setCntrNo(edoUpdate.getContainerNumber());
+								sysSyncQueue.setJobOdrNo(cntrEmty.getJobOdrNo());
+								sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+								sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
+							}
+						}
+					}
+
+					// Container has not been ordered to drop to danang port yet
+					if (cntrEmty == null || StringUtils.isEmpty(cntrEmty.getJobOdrNo())) {
+						edoUpdate.setTaxCode(edo.getTaxCode());
+						edoUpdate.setEmptyContainerDepot(edo.getEmptyContainerDepot());
+					}
+
 					// Update eDO
-					edoService.updateEdo(edo); // TODO update allowed items (not all)
+					edoService.updateEdo(edoUpdate);
 					// Update history
-					edoHistory.setEdoId(edo.getId());
+					edoHistory.setEdoId(edoUpdate.getId());
 					edoHistory.setAction("Update");
 					edoHistoryService.insertEdoHistory(edoHistory);
 					edoAuditLog.setEdoId(edo.getId());
-					edoAuditLogService.updateAuditLog(edo);
+					edoAuditLogService.updateAuditLog(edoUpdate);
 				} else {
 					edo.setCreateTime(timeNow);
 					edo.setCreateBy(carrierGroup.getGroupCode());
@@ -265,7 +423,7 @@ public class CarrierEdoFolderMonitorTask {
 					+ String.valueOf(System.currentTimeMillis()));
 		}
 		// Move file to error folder
-		Files.move(ediFile, targetFile);
+		com.google.common.io.Files.move(ediFile, targetFile);
 	}
 
 	private void moveToErrorFolder(String groupCode, File ediFile) throws IOException {
@@ -285,6 +443,62 @@ public class CarrierEdoFolderMonitorTask {
 					+ String.valueOf(System.currentTimeMillis()));
 		}
 		// Move file to error folder
-		Files.move(ediFile, errorFile);
+		com.google.common.io.Files.move(ediFile, errorFile);
+	}
+
+	/**
+	 * Get list container by containerNos (separated by comma) and convert to map
+	 * container no - container info obj differentiate by fe
+	 * 
+	 * @param containerNos
+	 * @return Map<String, ContainerInfoDto>
+	 */
+	private Map<String, ContainerInfoDto> getContainerInfoMapFE(String containerNos) {
+		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoDtoByContNos(containerNos);
+		Map<String, ContainerInfoDto> cntrInfoMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(cntrInfos)) {
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				if ("E".equalsIgnoreCase(cntrInfo.getFe())
+						&& !EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(cntrInfo.getCntrState())
+						&& !EportConstants.CATOS_CONT_STACKING.equalsIgnoreCase(cntrInfo.getCntrState())) {
+					cntrInfoMap.put(cntrInfo.getCntrNo() + cntrInfo.getFe(), cntrInfo);
+				} else if ("F".equalsIgnoreCase(cntrInfo.getFe())
+						&& !EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(cntrInfo.getCntrState())) {
+					cntrInfoMap.put(cntrInfo.getCntrNo() + cntrInfo.getFe(), cntrInfo);
+				}
+			}
+		}
+		return cntrInfoMap;
+	}
+
+	/**
+	 * Replace det free time remark in catos if has remark or append new remark
+	 * 
+	 * @param detFreeTime
+	 * @param currentRemark
+	 * @return
+	 */
+	private String getRemarkAfterUpdateDet(String detFreeTime, String currentRemark) {
+		boolean isAppend = true;
+		if (StringUtils.isNotEmpty(currentRemark)) {
+			String[] arrStr = currentRemark.split(" ");
+			for (int i = 0; i < arrStr.length; i++) {
+				// format remark free xxx days
+				// current word is free => next will be det free time
+				// change next word
+				if (arrStr[i].equalsIgnoreCase("free")) {
+					arrStr[i + 1] = detFreeTime;
+					isAppend = false;
+					currentRemark = String.join(" ", arrStr);
+					break;
+				}
+			}
+		} else {
+			currentRemark = "";
+		}
+		if (isAppend) {
+			currentRemark += StringUtils.format(", free {} days", detFreeTime);
+		}
+		return currentRemark;
 	}
 }

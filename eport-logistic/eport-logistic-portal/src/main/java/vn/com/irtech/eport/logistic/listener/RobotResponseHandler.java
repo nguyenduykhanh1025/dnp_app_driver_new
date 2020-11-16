@@ -44,8 +44,10 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysRobot;
+import vn.com.irtech.eport.system.domain.SysSyncQueue;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.service.ISysRobotService;
+import vn.com.irtech.eport.system.service.ISysSyncQueueService;
 
 @Component
 public class RobotResponseHandler implements IMqttMessageListener {
@@ -81,6 +83,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 	@Autowired
 	private IShipmentService shipmentService;
+
+	@Autowired
+	private ISysSyncQueueService sysSyncQueueService;
 
 	@Autowired
 	private ICatosApiService catosApiService;
@@ -169,6 +174,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 					break;
 				case EportConstants.SERVICE_EXPORT_RECEIPT:
 					this.updateExportReceipt(result, receiptId, uuId);
+					break;
+				case EportConstants.SERVICE_EXTEND_DET:
+					this.updateExtensionDetOrder(result, receiptId, uuId);
 					break;
 				default:
 					break;
@@ -504,7 +512,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		if (robot.getIsExportReceipt()) {
 			serviceTypes += EportConstants.SERVICE_EXPORT_RECEIPT + ",";
 		}
-
+		if (robot.getIsExtensionDetOrder()) {
+			serviceTypes += EportConstants.SERVICE_EXTEND_DET + ",";
+		}
 		if (serviceTypes.length() > 0) {
 			serviceTypes = serviceTypes.substring(0, serviceTypes.length() - 1);
 		}
@@ -559,6 +569,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 				break;
 			case EportConstants.SERVICE_EXPORT_RECEIPT:
 				sendExportReceiptToRobot(reqProcessOrder, robot.getUuId());
+				break;
+			case EportConstants.SERVICE_EXTEND_DET:
+				sendExtendDateOrderToRobot(reqProcessOrder, robot.getUuId());
 				break;
 			}
 			return "1";
@@ -718,11 +731,18 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		String hresult = null;
 		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
 		ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+
+		// Update SysSyncQueue
+		SysSyncQueue syncQueueUpdate = new SysSyncQueue();
+		syncQueueUpdate.setProcessOrderId(processOrderId);
 		if ("success".equalsIgnoreCase(result)) {
 			processOrder.setStatus(2); // FINISH
 			processOrder.setResult("S"); // RESULT SUCESS
 			processOrderService.updateProcessOrder(processOrder);
 			hresult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
+			
+			// Update status sync queue
+			syncQueueUpdate.setStatus(EportConstants.SYNC_QUEUE_STATUS_SUCCESS);
 		} else {
 
 			// INIT PROCESS ORDER TO UPDATE
@@ -733,6 +753,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 			// SET RESULT FOR HISTORY FAILED
 			hresult = EportConstants.PROCESS_HISTORY_RESULT_FAILED;
+
+			// update status sync queue
+			syncQueueUpdate.setStatus(EportConstants.SYNC_QUEUE_STATUS_ERROR);
 
 			// Send error notification to om
 			String title = "Lỗi gia hạn lệnh robot " + uuId + ".";
@@ -746,7 +769,60 @@ public class RobotResponseHandler implements IMqttMessageListener {
 				logger.warn(e.getMessage());
 			}
 		}
+
+		// Update result of sync queue list to db
+		sysSyncQueueService.updateSysSyncQueueWithCondition(syncQueueUpdate);
 		updateHistory(processOrderId, uuId, EportConstants.SERVICE_EXTEND_DATE, hresult);
+	}
+
+	private void updateExtensionDetOrder(String result, String receiptId, String uuId) {
+		// INIT PROCESS HISTORY
+		Long processOrderId = Long.parseLong(receiptId);
+		String hresult = null;
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
+		ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+
+		// Update SysSyncQueue
+		SysSyncQueue syncQueueUpdate = new SysSyncQueue();
+		syncQueueUpdate.setProcessOrderId(processOrderId);
+		if ("success".equalsIgnoreCase(result)) {
+			processOrder.setStatus(2); // FINISH
+			processOrder.setResult("S"); // RESULT SUCESS
+			processOrderService.updateProcessOrder(processOrder);
+			hresult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
+
+			// Update status sync queue
+			syncQueueUpdate.setStatus(EportConstants.SYNC_QUEUE_STATUS_SUCCESS);
+		} else {
+
+			// INIT PROCESS ORDER TO UPDATE
+			processOrder.setResult("F"); // RESULT FAILED
+			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			processOrder.setRunnable(false);
+			processOrderService.updateProcessOrder(processOrder);
+
+			// SET RESULT FOR HISTORY FAILED
+			hresult = EportConstants.PROCESS_HISTORY_RESULT_FAILED;
+
+			// update status sync queue
+			syncQueueUpdate.setStatus(EportConstants.SYNC_QUEUE_STATUS_ERROR);
+
+			// Send error notification to om
+			String title = "Lỗi cập nhật ngày miễn lưu vỏ robot " + uuId + ".";
+			String content = "Lỗi cập nhật ngày miễn lưu vỏ cho job order no " + processOrder.getOrderNo()
+					+ " của các container " + processJsonData.getContainers() + ".";
+			// Send notification for om
+			try {
+				mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, content,
+						configService.getKey("domain.admin.name"), EportConstants.NOTIFICATION_PRIORITY_LOW);
+			} catch (Exception e) {
+				logger.warn(e.getMessage());
+			}
+		}
+
+		// Update result of sync queue list to db
+		sysSyncQueueService.updateSysSyncQueueWithCondition(syncQueueUpdate);
+		updateHistory(processOrderId, uuId, EportConstants.SERVICE_EXTEND_DET, hresult);
 	}
 
 	/**
@@ -893,16 +969,26 @@ public class RobotResponseHandler implements IMqttMessageListener {
 	 */
 	public void sendExtendDateOrderToRobot(ProcessOrder processOrder, String uuid) {
 		ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
-		String[] containers = processJsonData.getContainers().split(",");
-		List<ShipmentDetail> shipmentDetails = new ArrayList<>();
-		if (containers.length > 0) {
-			for (String container : containers) {
-				ShipmentDetail shipmentDetail = new ShipmentDetail();
-				shipmentDetail.setContainerNo(container);
-				shipmentDetails.add(shipmentDetail);
-			}
+		ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(processOrder, processJsonData.getShipmentDetails());
+		try {
+			mqttService.publicMessageToDemandRobot(req, EServiceRobot.EXTENSION_DATE, uuid);
+		} catch (MqttException e) {
+			logger.error("Error when send waiting extend date order to robot: " + e);
 		}
-		ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+	}
+
+	/**
+	 * Send extend detention day order to robot
+	 * 
+	 * @param processOrder
+	 * @param uuid
+	 */
+	public void sendExtendDetOrderToRobot(ProcessOrder processOrder, String uuid) {
+		ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+		Map<String, Object> params = new HashMap<>();
+		params.put("containers", processJsonData.getContainers());
+		processOrder.setParams(params);
+		ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(processOrder, processJsonData.getShipmentDetails());
 		try {
 			mqttService.publicMessageToDemandRobot(req, EServiceRobot.EXTENSION_DATE, uuid);
 		} catch (MqttException e) {

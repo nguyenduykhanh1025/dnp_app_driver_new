@@ -261,6 +261,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contSupplyRemark != null and contSupplyRemark != 'contSupplyRemark'"> and cont_supply_remark = #{contSupplyRemark}</if>
             <if test="contSupplierName != null and contSupplierName != 'contSupplierName'"> and cont_supplier_name = #{contSupplierName}</if>
             <if test="orderNo != null and orderNo != ''"> and order_no = #{orderNo}</if>
+            <if test="params.containerNos != null and params.containerNos != ''"> 
+                and container_no in
+                <foreach item="id" collection="params.containerNos" open="(" separator="," close=")">
+                    #{containerNo}
+                </foreach>
+            </if>
         </where>
        
     </select>

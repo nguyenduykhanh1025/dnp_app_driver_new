@@ -475,7 +475,6 @@ public class TransportController extends BaseController {
 	 */
 	@GetMapping("/notify")
 	@ResponseBody
-	@Transactional
 	public AjaxResult getNotifyList() {
 		startPage();
 		SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();

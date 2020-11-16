@@ -34,6 +34,8 @@ public interface EportConstants {
 	public static final int SERVICE_CANCEL_PICKUP_EMPTY = 12;
 	/** Xuat hoa don */
 	public static final int SERVICE_EXPORT_RECEIPT = 13;
+	/** Gia han ngay mien luu vo */
+	public static final int SERVICE_EXTEND_DET = 14;
 	/** Update booking */
 	public static final int BOOKING_UPDATE = 1;
 	/** Update booking */
@@ -276,4 +278,25 @@ public interface EportConstants {
 	/** Key name for gate detection info saved in cache */
 	public static final String CACHE_GATE_DETECTION_KEY = "gateDetectionInfo";
 
+	// Synchronize queue type
+	/** Sync queue type expired dem */
+	public static final String SYNC_QUEUE_DEM = "DEM";
+	/** Sync queue type det free time */
+	public static final String SYNC_QUEUE_DET = "DET";
+
+	// Synchronize queue status
+	/** Sync queue status waiting */
+	public static final String SYNC_QUEUE_STATUS_WAITING = "W";
+	/** Sync queue status progress */
+	public static final String SYNC_QUEUE_STATUS_PROGRESS = "P";
+	/** Sync queue status success */
+	public static final String SYNC_QUEUE_STATUS_SUCCESS = "S";
+	/** Sync queue status error */
+	public static final String SYNC_QUEUE_STATUS_ERROR = "E";
+
+	// Type of gate in form data (Begin or continue)
+	/** Gate in form data type beginning */
+	public static final String GATE_REQ_TYPE_BEGIN = "B";
+	/** Gate in form data type continuing */
+	public static final String GATE_REQ_TYPE_CONTINUE = "C";
 }

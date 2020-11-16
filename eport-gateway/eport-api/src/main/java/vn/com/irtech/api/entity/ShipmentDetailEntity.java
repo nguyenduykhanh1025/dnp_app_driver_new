@@ -1,11 +1,11 @@
 package vn.com.irtech.api.entity;
 
+import java.util.Date;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.util.Date;
 
 /**
  * Shipment Details Object shipment_detail
@@ -159,6 +159,36 @@ public class ShipmentDetailEntity extends BaseEntity
     /** Container Remark */
     private String containerRemark;
     
+	/** Dangerous IMO */
+	private String dangerousImo;
+
+	/** Dangerous UNNO */
+	private String dangerousUnno;
+
+	/** Oversize catos OV_HEIGHT */
+	private String ovHeight;
+
+	/** Oversize catos OV_FORE */
+	private String ovFore;
+
+	/** Oversize catos OV_AFT */
+	private String ovAft;
+
+	/** Oversize catos OV_PORT */
+	private String ovPort;
+
+	/** Oversize catos OV_STBD */
+	private String ovStbd;
+
+	/** Oversize catos OS_HEIGHT */
+	private String osHeight;
+
+	/** Oversize catos OS_PORT */
+	private String osPort;
+
+	/** Oversize catos OS_STBD */
+	private String osStbd;
+
     public void setCargoType(String cargoType) {
         this.cargoType = cargoType;
     }
@@ -576,61 +606,121 @@ public class ShipmentDetailEntity extends BaseEntity
 		this.containerRemark = containerRemark;
 	}
 
+	public Integer getRoww() {
+		return roww;
+	}
+
+	public void setRoww(Integer roww) {
+		this.roww = roww;
+	}
+
+	public String getDangerousImo() {
+		return dangerousImo;
+	}
+
+	public void setDangerousImo(String dangerousImo) {
+		this.dangerousImo = dangerousImo;
+	}
+
+	public String getDangerousUnno() {
+		return dangerousUnno;
+	}
+
+	public void setDangerousUnno(String dangerousUnno) {
+		this.dangerousUnno = dangerousUnno;
+	}
+
+	public String getOvHeight() {
+		return ovHeight;
+	}
+
+	public void setOvHeight(String ovHeight) {
+		this.ovHeight = ovHeight;
+	}
+
+	public String getOvFore() {
+		return ovFore;
+	}
+
+	public void setOvFore(String ovFore) {
+		this.ovFore = ovFore;
+	}
+
+	public String getOvAft() {
+		return ovAft;
+	}
+
+	public void setOvAft(String ovAft) {
+		this.ovAft = ovAft;
+	}
+
+	public String getOvPort() {
+		return ovPort;
+	}
+
+	public void setOvPort(String ovPort) {
+		this.ovPort = ovPort;
+	}
+
+	public String getOvStbd() {
+		return ovStbd;
+	}
+
+	public void setOvStbd(String ovStbd) {
+		this.ovStbd = ovStbd;
+	}
+
+	public String getOsHeight() {
+		return osHeight;
+	}
+
+	public void setOsHeight(String osHeight) {
+		this.osHeight = osHeight;
+	}
+
+	public String getOsPort() {
+		return osPort;
+	}
+
+	public void setOsPort(String osPort) {
+		this.osPort = osPort;
+	}
+
+	public String getOsStbd() {
+		return osStbd;
+	}
+
+	public void setOsStbd(String osStbd) {
+		this.osStbd = osStbd;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("shipmentId", getShipmentId())
-            .append("logisticGroupId", getLogisticGroupId())
-            .append("processOrderId", getProcessOrderId())
-            .append("registerNo", getRegisterNo())
-            .append("containerNo", getContainerNo())
-            .append("containerStatus", getContainerStatus())
-            .append("sztp", getSztp())
-            .append("fe", getFe())
-            .append("bookingNo", getBookingNo())
-            .append("blNo", getBlNo())
-            .append("sealNo", getSealNo())
-            .append("consignee", getConsignee())
-            .append("expiredDem", getExpiredDem())
-            .append("wgt", getWgt())
-            .append("vslName", getVslName())
-            .append("vslNm", getVslNm())
-            .append("voyNo", getVoyNo())
-            .append("voyCarrier", getVoyCarrier())
-            .append("opeCode", getOpeCode())
-            .append("loadingPort", getLoadingPort())
-            .append("dischargePort", getDischargePort())
-            .append("transportType", getTransportType())
-            .append("emptyDepot", getEmptyDepot())
-            .append("vgmChk", getVgmChk())
-            .append("vgm", getVgm())
-            .append("vgmPersonInfo", getVgmPersonInfo())
-            .append("customStatus", getCustomStatus())
-            .append("paymentStatus", getPaymentStatus())
-            .append("processStatus", getProcessStatus())
-            .append("doStatus", getDoStatus())
-            .append("doReceivedTime", getDoReceivedTime())
-            .append("userVerifyStatus", getUserVerifyStatus())
-            .append("preorderPickup", getPreorderPickup())
-            .append("shiftingContNumber", getShiftingContNumber())
-            .append("status", getStatus())
-            .append("block",getBlock())
-            .append("bay", getBay())
-            .append("roww", getRow())
-            .append("tier", getTier())
-            .append("year", getYear())
-            .append("vslAndVoy", getVslAndVoy())
-            .append("remark", getRemark())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("orderNo", getOrderNo())
-            .append("eta", getEta())
-            .append("etd", getEtd())
-            .append("location", getLocation())
-            .append("containerRemark", getContainerRemark())
-            .toString();
+				.append("id", getId()).append("shipmentId", getShipmentId())
+				.append("logisticGroupId", getLogisticGroupId()).append("processOrderId", getProcessOrderId())
+				.append("registerNo", getRegisterNo()).append("containerNo", getContainerNo())
+				.append("containerStatus", getContainerStatus()).append("sztp", getSztp()).append("fe", getFe())
+				.append("bookingNo", getBookingNo()).append("blNo", getBlNo()).append("sealNo", getSealNo())
+				.append("consignee", getConsignee()).append("expiredDem", getExpiredDem()).append("wgt", getWgt())
+				.append("vslName", getVslName()).append("vslNm", getVslNm()).append("voyNo", getVoyNo())
+				.append("voyCarrier", getVoyCarrier()).append("opeCode", getOpeCode())
+				.append("loadingPort", getLoadingPort()).append("dischargePort", getDischargePort())
+				.append("transportType", getTransportType()).append("emptyDepot", getEmptyDepot())
+				.append("vgmChk", getVgmChk()).append("vgm", getVgm()).append("vgmPersonInfo", getVgmPersonInfo())
+				.append("customStatus", getCustomStatus()).append("paymentStatus", getPaymentStatus())
+				.append("processStatus", getProcessStatus()).append("doStatus", getDoStatus())
+				.append("doReceivedTime", getDoReceivedTime()).append("userVerifyStatus", getUserVerifyStatus())
+				.append("preorderPickup", getPreorderPickup()).append("shiftingContNumber", getShiftingContNumber())
+				.append("status", getStatus()).append("block", getBlock()).append("bay", getBay())
+				.append("roww", getRow()).append("tier", getTier()).append("year", getYear())
+				.append("vslAndVoy", getVslAndVoy()).append("remark", getRemark()).append("createBy", getCreateBy())
+				.append("createTime", getCreateTime()).append("updateBy", getUpdateBy())
+				.append("updateTime", getUpdateTime()).append("orderNo", getOrderNo()).append("eta", getEta())
+				.append("etd", getEtd()).append("location", getLocation()).append("dangerousImo", getDangerousImo())
+				.append("dangerousUnno", getDangerousUnno()).append("ovHeight", getOvHeight())
+				.append("ovFore", getOvFore()).append("ovAft", getOvAft()).append("ovPort", getOvPort())
+				.append("ovStbd", getOvStbd()).append("osHeight", getOsHeight()).append("osPort", getOsPort())
+				.append("osStbd", getOsStbd()).append("containerRemark", getContainerRemark()).toString();
     }
 }
