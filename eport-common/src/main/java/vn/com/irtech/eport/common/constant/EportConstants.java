@@ -299,4 +299,14 @@ public interface EportConstants {
 	public static final String GATE_REQ_TYPE_BEGIN = "B";
 	/** Gate in form data type continuing */
 	public static final String GATE_REQ_TYPE_CONTINUE = "C";
+
+	// Type of partner code in catos
+	/** partner type consignee */
+	public static final String PTNR_TYPE_CONSIGNEE = "CNS";
+	/** partner type shipping line */
+	public static final String PTNR_TYPE_SHIPPING_LINE = "SHP";
+	/** partner type trucker */
+	public static final String PTNR_TYPE_TRUCKER = "TRK";
+	/** partner type forwarder */
+	public static final String PTNR_TYPE_FORWARDER = "FWD";
 }

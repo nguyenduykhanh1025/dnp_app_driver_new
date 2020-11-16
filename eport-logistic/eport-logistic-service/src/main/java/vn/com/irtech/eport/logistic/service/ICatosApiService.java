@@ -314,4 +314,12 @@ public interface ICatosApiService {
 	 */
 	public List<ContainerInfoDto> getContainerInfoListByCondition(ContainerInfoDto containerInfoDto);
 
+	/**
+	 * Get partner info
+	 * 
+	 * @param partnerType
+	 * @param taxCode
+	 * @return PartnerInfoDto
+	 */
+	public PartnerInfoDto getPartnerInfo(String partnerType, String taxCode);
 }
