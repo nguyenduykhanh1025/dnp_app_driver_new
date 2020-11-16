@@ -93,10 +93,6 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
         dictDatas.add(0, sysDictData);
         mmap.put("oprList", dictDatas);
         
-        mmap.put("contCargoTypes", dictDataService.getType("cont_cargo_type"));
-        mmap.put("contDangerousImos", dictDataService.getType("cont_dangerous_imo"));
-        mmap.put("contDangerousUnnos", dictDataService.getType("cont_dangerous_unno"));
-        
         return PREFIX + "/index";
     }
 

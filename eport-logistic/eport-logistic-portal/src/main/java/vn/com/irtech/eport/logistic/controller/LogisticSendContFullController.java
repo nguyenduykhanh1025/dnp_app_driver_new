@@ -933,7 +933,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
     @PostMapping("/cont-special/file")
     @ResponseBody
-    public AjaxResult savContSpecialeFile(MultipartFile file) throws IOException, InvalidExtensionException {
+    public AjaxResult saveContSpecialeFile(MultipartFile file) throws IOException, InvalidExtensionException {
         String basePath = String.format("%s/%s", Global.getUploadPath() + "/contSpecial", getUser().getGroupId());
         String now = DateUtils.dateTimeNow();
         String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
