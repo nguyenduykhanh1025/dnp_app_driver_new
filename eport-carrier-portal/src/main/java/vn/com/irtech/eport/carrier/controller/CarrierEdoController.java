@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.Gson;
-
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
 import vn.com.irtech.eport.carrier.listener.MqttService;
-import vn.com.irtech.eport.carrier.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
@@ -40,8 +36,6 @@ import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
-import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysDictData;
@@ -268,13 +262,22 @@ public class CarrierEdoController extends CarrierBaseController {
 				return error("Container không tồn tại, vui lòng kiểm tra lại dữ liệu.");
 			}
 
+			// Get container no string with container no separated by comma
+			// Use to query container info from catos
+			String containerNos = "";
+			for (Edo edo : edos) {
+				containerNos += edo.getContainerNumber() + ",";
+			}
+			// Remove last comma
+			containerNos = containerNos.substring(0, containerNos.length() - 1);
+
 			// Get edo info from catos
-			Map<String, ContainerInfoDto> cntrInfoMap = getContainerInfoMapFE(edoParam.getBillOfLading());
+			Map<String, ContainerInfoDto> cntrInfoMap = getContainerInfoMapFE(containerNos);
 			for (Edo edo : edos) {
 				// Container full in catos
-				ContainerInfoDto cntrFull = cntrInfoMap.get(edo.getContainerNumber() + "FULL");
+				ContainerInfoDto cntrFull = cntrInfoMap.get(edo.getContainerNumber() + "F");
 				// Container empty in catos (if exists mean container has already been gate out)
-				ContainerInfoDto cntrEmty = cntrInfoMap.get(edo.getContainerNumber() + "EMTY");
+				ContainerInfoDto cntrEmty = cntrInfoMap.get(edo.getContainerNumber() + "E");
 				// Check if expired dem has update
 				if (edoInput.getExpiredDem() != null && edoInput.getExpiredDem().compareTo(edo.getExpiredDem()) != 0) {
 					// has update
@@ -292,7 +295,8 @@ public class CarrierEdoController extends CarrierBaseController {
 							// Case update request in queue
 							SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
 							sysSyncQueueUpdate.setId(sysSyncQueues.get(0).getId());
-							sysSyncQueueUpdate.setExpiredDem(edo.getExpiredDem());
+							sysSyncQueueUpdate.setExpiredDem(edoInput.getExpiredDem());
+							sysSyncQueueService.updateSysSyncQueue(sysSyncQueueUpdate);
 						} else {
 							// Case insert new request in queue
 							SysSyncQueue sysSyncQueue = new SysSyncQueue();
@@ -313,8 +317,35 @@ public class CarrierEdoController extends CarrierBaseController {
 					// has update
 					// Check condition drop empty container order has been made
 					if (cntrEmty != null && StringUtils.isNotEmpty(cntrEmty.getJobOdrNo())) {
-						return error(
-								"Container đã có lệnh trả rỗng tại cảng.<br>Không thể cập nhật số ngày miễn lưu vỏ.");
+						// Get old request if exist, update else insert new request
+						SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
+						sysSyncQueueParam.setBlNo(edo.getBillOfLading());
+						sysSyncQueueParam.setCntrNo(edo.getContainerNumber());
+						sysSyncQueueParam.setJobOdrNo(cntrEmty.getJobOdrNo());
+						sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DET);
+						sysSyncQueueParam.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+						List<SysSyncQueue> sysSyncQueues = sysSyncQueueService
+								.selectSysSyncQueueList(sysSyncQueueParam);
+						if (CollectionUtils.isNotEmpty(sysSyncQueues)) {
+							// Case update request in queue
+							SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
+							sysSyncQueueUpdate.setId(sysSyncQueues.get(0).getId());
+							sysSyncQueueUpdate.setDetFreeTime(edoInput.getDetFreeTime());
+							sysSyncQueueParam.setRemark(getRemarkAfterUpdateDet(edoInput.getDetFreeTime(), cntrEmty.getRemark()));
+							sysSyncQueueService.updateSysSyncQueue(sysSyncQueueUpdate);
+						} else {
+							// Case insert new request in queue
+							SysSyncQueue sysSyncQueue = new SysSyncQueue();
+							sysSyncQueue.setSyncType(EportConstants.SYNC_QUEUE_DET);
+							sysSyncQueue.setDetFreeTime(edoInput.getDetFreeTime());
+							sysSyncQueue.setRemark(
+									getRemarkAfterUpdateDet(edoInput.getDetFreeTime(), cntrEmty.getRemark()));
+							sysSyncQueue.setBlNo(edo.getBillOfLading());
+							sysSyncQueue.setCntrNo(edo.getContainerNumber());
+							sysSyncQueue.setJobOdrNo(cntrEmty.getJobOdrNo());
+							sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+							sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
+						}
 					}
 				}
 
@@ -559,79 +590,6 @@ public class CarrierEdoController extends CarrierBaseController {
 		return VALID_CONTAINER_NO_REGEX.matcher(input).find();
 	}
 
-	// FIXME Check lai logic gia han lenh
-	private void sendExtesionDateReqToRobot(String edoIds, Date expiredDem) {
-		// Get edo list from edoIds String array
-		List<Edo> edos = edoService.selectEdoByIds(edoIds);
-
-		// update expired dem shipment detail has bill no, opr mapping with edo
-		Edo edoReference = edos.get(0); // Get first element of edo list
-		if (edoReference.getExpiredDem() != expiredDem) {
-			ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
-			shipmentDetailUpdate.setBlNo(edoReference.getBillOfLading());
-			shipmentDetailUpdate.setOpeCode(edoReference.getCarrierCode());
-			shipmentDetailUpdate.setExpiredDem(expiredDem);
-			shipmentDetailService.updateShipmentDetailByCondition(shipmentDetailUpdate);
-		}
-
-		String containers = ""; // Store list container separated by comma
-		for (Edo edo : edos) {
-			// Filter all container that has change expired dem
-			if (edo.getExpiredDem() != null && edo.getExpiredDem() != expiredDem) {
-				containers += edo.getContainerNumber() + ",";
-			}
-		}
-
-		// Continue if has container that changed expired dem
-		if (StringUtils.isNotEmpty(containers)) {
-			containers = containers.substring(0, containers.length() - 1);
-
-			// Get container info in catos from containers to check if container has job
-			// order no or not
-			List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoDtoByContNos(containers);
-
-			// Continue if list is not null or empty
-			if (CollectionUtils.isNotEmpty(cntrInfos)) {
-				List<ShipmentDetail> shDtHasOrderList = new ArrayList<>();
-
-				// Condition: cntrInfo has FE = F, jobOrderNo2 != null,
-				// cntrInfo not in edoHasOrderList (Case duplicate record when query catos)
-				for (ContainerInfoDto cntrInfo : cntrInfos) {
-					if ("F".equals(cntrInfo.getCntrNo()) && StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
-						// Set info container need to extend expired dem to ShipmentDetail object
-						ShipmentDetail shipmentDetail = new ShipmentDetail();
-						shipmentDetail.setContainerNo(cntrInfo.getCntrNo());
-						shipmentDetail.setFe("F");
-						shipmentDetail.setOrderNo(cntrInfo.getJobOdrNo2());
-						// Add object if not exist in the list
-						if (!shDtHasOrderList.contains(shipmentDetail)) {
-							shDtHasOrderList.add(shipmentDetail);
-						}
-					}
-				}
-
-				if (CollectionUtils.isNotEmpty(shDtHasOrderList)) {
-					// Make order extension date req
-					List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService
-							.makeExtensionDateOrder(shDtHasOrderList, expiredDem, null);
-					if (CollectionUtils.isNotEmpty(serviceRobotReqs)) {
-						for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
-							// Send to robot
-							try {
-								if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.EXTENSION_DATE)) {
-									break;
-								}
-							} catch (MqttException e) {
-								logger.debug("Failed to send extension date req to robot: "
-										+ new Gson().toJson(serviceRobotReq) + e);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
 	/**
 	 * Get list container by bill and convert to map container no - container info
 	 * obj
@@ -654,24 +612,58 @@ public class CarrierEdoController extends CarrierBaseController {
 	}
 
 	/**
-	 * Get list container by bill and convert to map container no - container info
-	 * obj differentiate by fe
+	 * Get list container by containerNos (separated by comma) and convert to map
+	 * container no - container info obj differentiate by fe
 	 * 
-	 * @param blNo
+	 * @param containerNos
 	 * @return Map<String, ContainerInfoDto>
 	 */
-	private Map<String, ContainerInfoDto> getContainerInfoMapFE(String blNo) {
-		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoListByBlNo(blNo);
+	private Map<String, ContainerInfoDto> getContainerInfoMapFE(String containerNos) {
+		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoDtoByContNos(containerNos);
 		Map<String, ContainerInfoDto> cntrInfoMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(cntrInfos)) {
 			for (ContainerInfoDto cntrInfo : cntrInfos) {
-				if ("EMTY".equalsIgnoreCase(cntrInfo.getVslCd())) {
-					cntrInfoMap.put(cntrInfo.getCntrNo() + "EMTY", cntrInfo);
-				} else {
-					cntrInfoMap.put(cntrInfo.getCntrNo() + "FULL", cntrInfo);
+				if ("E".equalsIgnoreCase(cntrInfo.getFe())
+						&& !EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(cntrInfo.getCntrState())
+						&& !EportConstants.CATOS_CONT_STACKING.equalsIgnoreCase(cntrInfo.getCntrState())) {
+					cntrInfoMap.put(cntrInfo.getCntrNo() + cntrInfo.getFe(), cntrInfo);
+				} else if ("F".equalsIgnoreCase(cntrInfo.getFe())
+						&& !EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(cntrInfo.getCntrState())) {
+					cntrInfoMap.put(cntrInfo.getCntrNo() + cntrInfo.getFe(), cntrInfo);
 				}
 			}
 		}
 		return cntrInfoMap;
+	}
+
+	/**
+	 * Replace det free time remark in catos if has remark or append new remark
+	 * 
+	 * @param detFreeTime
+	 * @param currentRemark
+	 * @return
+	 */
+	private String getRemarkAfterUpdateDet(String detFreeTime, String currentRemark) {
+		boolean isAppend = true;
+		if (StringUtils.isNotEmpty(currentRemark)) {
+			String[] arrStr = currentRemark.split(" ");
+			for (int i = 0; i < arrStr.length; i++) {
+				// format remark free xxx days
+				// current word is free => next will be det free time
+				// change next word
+				if (arrStr[i].equalsIgnoreCase("free")) {
+					arrStr[i + 1] = detFreeTime;
+					isAppend = false;
+					currentRemark = String.join(" ", arrStr);
+					break;
+				}
+			}
+		} else {
+			currentRemark = "";
+		}
+		if (isAppend) {
+			currentRemark += StringUtils.format(", free {} days", detFreeTime);
+		}
+		return currentRemark;
 	}
 }

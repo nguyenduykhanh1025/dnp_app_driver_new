@@ -340,6 +340,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 							case EportConstants.SERVICE_EXPORT_RECEIPT:
 								sendExportReceiptToRobot(reqProcessOrder, uuId);
 								break;
+							case EportConstants.SERVICE_EXTEND_DET:
+								sendExtendDetOrderToRobot(reqProcessOrder, uuId);
+								break;
 						}
 					}
 				}
@@ -470,6 +473,25 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		}
 	}
 	
+	/**
+	 * Send extend detention days order to robot
+	 * 
+	 * @param processOrder
+	 * @param uuid
+	 */
+	public void sendExtendDetOrderToRobot(ProcessOrder processOrder, String uuid) {
+		ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+		Map<String, Object> params = new HashMap<>();
+		params.put("containers", processJsonData.getContainers());
+		processOrder.setParams(params);
+		ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(processOrder, processJsonData.getShipmentDetails());
+		try {
+			mqttService.publicMessageToDemandRobot(req, EServiceRobot.EXTENSION_DET, uuid);
+		} catch (MqttException e) {
+			logger.error("Error when send waiting extend det order to robot: " + e);
+		}
+	}
+
 	/**
 	 * Send process order change vessel that in queue waiting to execute
 	 * 

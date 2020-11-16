@@ -436,6 +436,6 @@ public class GateDetection extends BaseEntity
 				.append("wgt1", getWgt2()).append("wgt2", getWgt2()).append("location1", getLocation1())
 				.append("location2", getLocation2()).append("processOrderId", getProcessOrderId())
 				.append("gatepass", getGatepass()).append("updateTime", getUpdateTime()).append("fe1", getFe1())
-				.append("fe2", getFe2()).toString();
+				.append("params", getParams()).append("fe2", getFe2()).toString();
     }
 }

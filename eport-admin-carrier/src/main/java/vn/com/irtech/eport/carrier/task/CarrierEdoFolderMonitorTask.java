@@ -221,13 +221,14 @@ public class CarrierEdoFolderMonitorTask {
 			return;
 		}
 
-		// For get list containers string to get cntr info from catos
+		// For get list containers string to get container info from catos
 		String containers = "";
 		for (Edo edo : listEdo) {
 			containers += edo.getContainerNumber() + ",";
 		}
-		Map<String, ContainerInfoDto> cntrMap = getMapCntrInfoCatos(containers.substring(0, containers.length() - 1),
-				listEdo.get(0).getBillOfLading());
+		// remove last comma
+		containers = containers.substring(0, containers.length() - 1);
+		Map<String, ContainerInfoDto> cntrMap = getContainerInfoMapFE(containers);
 
 		// loop and insert
 		for (Edo edo : listEdo) {
@@ -246,7 +247,8 @@ public class CarrierEdoFolderMonitorTask {
 	
 				Edo edoCheck = edoService.checkContainerAvailable(edo.getContainerNumber(), edo.getBillOfLading());
 				if (edoCheck != null) {
-					ContainerInfoDto cntrInfo = cntrMap.get(edoCheck.getContainerNumber());
+					ContainerInfoDto cntrFull = cntrMap.get(edoCheck.getContainerNumber() + "F");
+					ContainerInfoDto cntrEmty = cntrMap.get(edoCheck.getContainerNumber() + "E");
 
 					Edo edoUpdate = new Edo();
 					edoUpdate.setId(edoCheck.getId());
@@ -259,7 +261,7 @@ public class CarrierEdoFolderMonitorTask {
 					edoUpdate.setTaxCode(edo.getTaxCode());
 					edoUpdate.setExpiredDem(edo.getExpiredDem());
 					// Validate edo field can update
-					if (cntrInfo == null || StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
+					if (cntrFull == null || StringUtils.isNotEmpty(cntrFull.getJobOdrNo2())) {
 						// Case container don't has job order no in catos
 						// => can update
 						edoUpdate.setCarrierCode(edo.getCarrierCode());
@@ -279,12 +281,12 @@ public class CarrierEdoFolderMonitorTask {
 					// validate expired dem if has update
 					if (edoUpdate.getExpiredDem() != null && edoCheck.getExpiredDem() != null
 							&& edoCheck.getExpiredDem().compareTo(edoUpdate.getExpiredDem()) != 0) {
-						if (cntrInfo != null && StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
+						if (cntrFull != null && StringUtils.isNotEmpty(cntrFull.getJobOdrNo2())) {
 							// Get old request if exist, update else insert new request
 							SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
 							sysSyncQueueParam.setBlNo(edoUpdate.getBillOfLading());
 							sysSyncQueueParam.setCntrNo(edoUpdate.getContainerNumber());
-							sysSyncQueueParam.setJobOdrNo(cntrInfo.getJobOdrNo2());
+							sysSyncQueueParam.setJobOdrNo(cntrFull.getJobOdrNo2());
 							sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DEM);
 							sysSyncQueueParam.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
 							List<SysSyncQueue> sysSyncQueues = sysSyncQueueService
@@ -294,6 +296,7 @@ public class CarrierEdoFolderMonitorTask {
 								SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
 								sysSyncQueueUpdate.setId(sysSyncQueues.get(0).getId());
 								sysSyncQueueUpdate.setExpiredDem(edoUpdate.getExpiredDem());
+								sysSyncQueueService.updateSysSyncQueue(sysSyncQueueUpdate);
 							} else {
 								// Case insert new request in queue
 								SysSyncQueue sysSyncQueue = new SysSyncQueue();
@@ -301,7 +304,44 @@ public class CarrierEdoFolderMonitorTask {
 								sysSyncQueue.setExpiredDem(edoUpdate.getExpiredDem());
 								sysSyncQueue.setBlNo(edoUpdate.getBillOfLading());
 								sysSyncQueue.setCntrNo(edoUpdate.getContainerNumber());
-								sysSyncQueue.setJobOdrNo(cntrInfo.getJobOdrNo2());
+								sysSyncQueue.setJobOdrNo(cntrFull.getJobOdrNo2());
+								sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+								sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
+							}
+						}
+					}
+
+					// Check det free time is updated
+					if (edoUpdate.getDetFreeTime() != null && edoCheck.getDetFreeTime() != null
+							&& edoCheck.getDetFreeTime().compareTo(edoUpdate.getDetFreeTime()) != 0) {
+						if (cntrEmty == null || StringUtils.isEmpty(cntrEmty.getJobOdrNo())) {
+							// Get old request if exist, update else insert new request
+							SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
+							sysSyncQueueParam.setBlNo(edoUpdate.getBillOfLading());
+							sysSyncQueueParam.setCntrNo(edoUpdate.getContainerNumber());
+							sysSyncQueueParam.setJobOdrNo(cntrEmty.getJobOdrNo());
+							sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DET);
+							sysSyncQueueParam.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+							List<SysSyncQueue> sysSyncQueues = sysSyncQueueService
+									.selectSysSyncQueueList(sysSyncQueueParam);
+							if (CollectionUtils.isNotEmpty(sysSyncQueues)) {
+								// Case update request in queue
+								SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
+								sysSyncQueueUpdate.setId(sysSyncQueues.get(0).getId());
+								sysSyncQueueUpdate.setDetFreeTime(edoUpdate.getDetFreeTime());
+								sysSyncQueueUpdate.setRemark(
+										getRemarkAfterUpdateDet(edoUpdate.getDetFreeTime(), cntrEmty.getRemark()));
+								sysSyncQueueService.updateSysSyncQueue(sysSyncQueueUpdate);
+							} else {
+								// Case insert new request in queue
+								SysSyncQueue sysSyncQueue = new SysSyncQueue();
+								sysSyncQueue.setSyncType(EportConstants.SYNC_QUEUE_DET);
+								sysSyncQueue.setDetFreeTime(edoUpdate.getDetFreeTime());
+								sysSyncQueue.setRemark(
+										getRemarkAfterUpdateDet(edoUpdate.getDetFreeTime(), cntrEmty.getRemark()));
+								sysSyncQueue.setBlNo(edoUpdate.getBillOfLading());
+								sysSyncQueue.setCntrNo(edoUpdate.getContainerNumber());
+								sysSyncQueue.setJobOdrNo(cntrEmty.getJobOdrNo());
 								sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
 								sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
 							}
@@ -309,7 +349,7 @@ public class CarrierEdoFolderMonitorTask {
 					}
 
 					// Container has not been ordered to drop to danang port yet
-					if (cntrInfo == null || StringUtils.isEmpty(cntrInfo.getJobOdrNo())) {
+					if (cntrEmty == null || StringUtils.isEmpty(cntrEmty.getJobOdrNo())) {
 						edoUpdate.setTaxCode(edo.getTaxCode());
 						edoUpdate.setEmptyContainerDepot(edo.getEmptyContainerDepot());
 					}
@@ -406,17 +446,59 @@ public class CarrierEdoFolderMonitorTask {
 		com.google.common.io.Files.move(ediFile, errorFile);
 	}
 
-	private Map<String, ContainerInfoDto> getMapCntrInfoCatos(String containers, String blNo) {
-		List<ContainerInfoDto> containerInfoDtos = catosApiService.getContainerInfoDtoByContNos(containers);
-		Map<String, ContainerInfoDto> containerInfoMap = new HashMap<>();
-		if (CollectionUtils.isNotEmpty(containerInfoDtos)) {
-			for (ContainerInfoDto containerInfoDto : containerInfoDtos) {
-				if (StringUtils.isNotEmpty(containerInfoDto.getBlNo())
-						&& containerInfoDto.getBlNo().equalsIgnoreCase(blNo)) {
-					containerInfoMap.put(containerInfoDto.getCntrNo(), containerInfoDto);
+	/**
+	 * Get list container by containerNos (separated by comma) and convert to map
+	 * container no - container info obj differentiate by fe
+	 * 
+	 * @param containerNos
+	 * @return Map<String, ContainerInfoDto>
+	 */
+	private Map<String, ContainerInfoDto> getContainerInfoMapFE(String containerNos) {
+		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoDtoByContNos(containerNos);
+		Map<String, ContainerInfoDto> cntrInfoMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(cntrInfos)) {
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				if ("E".equalsIgnoreCase(cntrInfo.getFe())
+						&& !EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(cntrInfo.getCntrState())
+						&& !EportConstants.CATOS_CONT_STACKING.equalsIgnoreCase(cntrInfo.getCntrState())) {
+					cntrInfoMap.put(cntrInfo.getCntrNo() + cntrInfo.getFe(), cntrInfo);
+				} else if ("F".equalsIgnoreCase(cntrInfo.getFe())
+						&& !EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(cntrInfo.getCntrState())) {
+					cntrInfoMap.put(cntrInfo.getCntrNo() + cntrInfo.getFe(), cntrInfo);
 				}
 			}
 		}
-		return containerInfoMap;
+		return cntrInfoMap;
+	}
+
+	/**
+	 * Replace det free time remark in catos if has remark or append new remark
+	 * 
+	 * @param detFreeTime
+	 * @param currentRemark
+	 * @return
+	 */
+	private String getRemarkAfterUpdateDet(String detFreeTime, String currentRemark) {
+		boolean isAppend = true;
+		if (StringUtils.isNotEmpty(currentRemark)) {
+			String[] arrStr = currentRemark.split(" ");
+			for (int i = 0; i < arrStr.length; i++) {
+				// format remark free xxx days
+				// current word is free => next will be det free time
+				// change next word
+				if (arrStr[i].equalsIgnoreCase("free")) {
+					arrStr[i + 1] = detFreeTime;
+					isAppend = false;
+					currentRemark = String.join(" ", arrStr);
+					break;
+				}
+			}
+		} else {
+			currentRemark = "";
+		}
+		if (isAppend) {
+			currentRemark += StringUtils.format(", free {} days", detFreeTime);
+		}
+		return currentRemark;
 	}
 }

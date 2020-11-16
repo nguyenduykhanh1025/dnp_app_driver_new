@@ -117,43 +117,40 @@ public class EdiServiceImpl implements IEdiService {
 		}
 
 		// Get container info from catos
-		ContainerInfoDto cntrInfoParam = new ContainerInfoDto();
-		cntrInfoParam.setBlNo(ediDataReq.getBillOfLading());
-		cntrInfoParam.setCntrNo(ediDataReq.getContainerNo());
-		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoListByCondition(cntrInfoParam);
+		Map<String, ContainerInfoDto> cntrMap = getContainerInfoMapFE(ediDataReq.getContainerNo());
+		// Container full in catos
+		ContainerInfoDto cntrFull = cntrMap.get(ediDataReq.getContainerNo() + "F");
+		// Container empty in catos (if exists mean container has already been gate out)
+		ContainerInfoDto cntrEmty = cntrMap.get(ediDataReq.getContainerNo() + "E");
 
 		// check if expired dem has update
 		if (edoUpdate.getExpiredDem() != null && odlEdo.getExpiredDem() != null
 				&& odlEdo.getExpiredDem().compareTo(edoUpdate.getExpiredDem()) != 0) {
-			if (CollectionUtils.isNotEmpty(cntrInfos)) {
-				for (ContainerInfoDto cntrInfo : cntrInfos) {
-					if ("F".equalsIgnoreCase(cntrInfo.getFe()) && StringUtils.isNotEmpty(cntrInfo.getJobOdrNo2())) {
-						// Get old request if exist, update else insert new request
-						SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
-						sysSyncQueueParam.setBlNo(edo.getBillOfLading());
-						sysSyncQueueParam.setCntrNo(edo.getContainerNumber());
-						sysSyncQueueParam.setJobOdrNo(cntrInfo.getJobOdrNo2());
-						sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DEM);
-						sysSyncQueueParam.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
-						List<SysSyncQueue> sysSyncQueues = sysSyncQueueService
-								.selectSysSyncQueueList(sysSyncQueueParam);
-						if (CollectionUtils.isNotEmpty(sysSyncQueues)) {
-							// Case update request in queue
-							SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
-							sysSyncQueueUpdate.setId(sysSyncQueues.get(0).getId());
-							sysSyncQueueUpdate.setExpiredDem(edo.getExpiredDem());
-						} else {
-							// Case insert new request in queue
-							SysSyncQueue sysSyncQueue = new SysSyncQueue();
-							sysSyncQueue.setSyncType(EportConstants.SYNC_QUEUE_DEM);
-							sysSyncQueue.setExpiredDem(edoUpdate.getExpiredDem());
-							sysSyncQueue.setBlNo(odlEdo.getBillOfLading());
-							sysSyncQueue.setCntrNo(odlEdo.getContainerNumber());
-							sysSyncQueue.setJobOdrNo(cntrInfo.getJobOdrNo2());
-							sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
-							sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
-						}
-					}
+			if (cntrFull != null && StringUtils.isNotEmpty(cntrFull.getJobOdrNo2())) {
+				// Get old request if exist, update else insert new request
+				SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
+				sysSyncQueueParam.setBlNo(edo.getBillOfLading());
+				sysSyncQueueParam.setCntrNo(edo.getContainerNumber());
+				sysSyncQueueParam.setJobOdrNo(cntrFull.getJobOdrNo2());
+				sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DEM);
+				sysSyncQueueParam.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+				List<SysSyncQueue> sysSyncQueues = sysSyncQueueService.selectSysSyncQueueList(sysSyncQueueParam);
+				if (CollectionUtils.isNotEmpty(sysSyncQueues)) {
+					// Case update request in queue
+					SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
+					sysSyncQueueUpdate.setId(sysSyncQueues.get(0).getId());
+					sysSyncQueueUpdate.setExpiredDem(edoUpdate.getExpiredDem());
+					sysSyncQueueService.updateSysSyncQueue(sysSyncQueueUpdate);
+				} else {
+					// Case insert new request in queue
+					SysSyncQueue sysSyncQueue = new SysSyncQueue();
+					sysSyncQueue.setSyncType(EportConstants.SYNC_QUEUE_DEM);
+					sysSyncQueue.setExpiredDem(edoUpdate.getExpiredDem());
+					sysSyncQueue.setBlNo(odlEdo.getBillOfLading());
+					sysSyncQueue.setCntrNo(odlEdo.getContainerNumber());
+					sysSyncQueue.setJobOdrNo(cntrFull.getJobOdrNo2());
+					sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+					sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
 				}
 			}
 		}
@@ -163,39 +160,47 @@ public class EdiServiceImpl implements IEdiService {
 		// dropped cont empty yet)
 		if (StringUtils.isNotEmpty(odlEdo.getDetFreeTime()) && StringUtils.isNotEmpty(edoUpdate.getDetFreeTime())
 				&& odlEdo.getDetFreeTime().equalsIgnoreCase(edoUpdate.getDetFreeTime())) {
-			edoUpdate.setDetFreeTime(null);
-		} else {
-			// Case has update => check condition
-			if (CollectionUtils.isNotEmpty(cntrInfos)) {
-				for (ContainerInfoDto cntrInfo : cntrInfos) {
-					if ("EMTY".equalsIgnoreCase(cntrInfo.getVslCd())
-							&& StringUtils.isNotEmpty(cntrInfo.getJobOdrNo())) {
-						throw new BusinessException(String.format(
-								"Empty container has already been in Da Nang port (containerNo='%s', billOfLading=%s)",
-								ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
-					}
+			if (cntrEmty != null && StringUtils.isNotEmpty(cntrEmty.getJobOdrNo())) {
+				// Get old request if exist, update else insert new request
+				SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
+				sysSyncQueueParam.setBlNo(edo.getBillOfLading());
+				sysSyncQueueParam.setCntrNo(edo.getContainerNumber());
+				sysSyncQueueParam.setJobOdrNo(cntrEmty.getJobOdrNo());
+				sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DET);
+				sysSyncQueueParam.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+				List<SysSyncQueue> sysSyncQueues = sysSyncQueueService.selectSysSyncQueueList(sysSyncQueueParam);
+				if (CollectionUtils.isNotEmpty(sysSyncQueues)) {
+					// Case update request in queue
+					SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
+					sysSyncQueueUpdate.setId(sysSyncQueues.get(0).getId());
+					sysSyncQueueUpdate.setDetFreeTime(edoUpdate.getDetFreeTime());
+					sysSyncQueueUpdate
+							.setRemark(getRemarkAfterUpdateDet(edoUpdate.getDetFreeTime(), cntrEmty.getRemark()));
+					sysSyncQueueService.updateSysSyncQueue(sysSyncQueueUpdate);
+				} else {
+					// Case insert new request in queue
+					SysSyncQueue sysSyncQueue = new SysSyncQueue();
+					sysSyncQueue.setSyncType(EportConstants.SYNC_QUEUE_DET);
+					sysSyncQueue.setDetFreeTime(edoUpdate.getDetFreeTime());
+					sysSyncQueue.setRemark(getRemarkAfterUpdateDet(edoUpdate.getDetFreeTime(), cntrEmty.getRemark()));
+					sysSyncQueue.setBlNo(edo.getBillOfLading());
+					sysSyncQueue.setCntrNo(edo.getContainerNumber());
+					sysSyncQueue.setJobOdrNo(cntrEmty.getJobOdrNo());
+					sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+					sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
 				}
 			}
 		}
 
 		// check if empty cotnainer depot has update
-		// if true (old != new) => check contition to udpate (contaire has not dropped
+		// if true (old != new) => check contition to udpate (container has not dropped
 		// cont empty yet)
-		if (StringUtils.isNotEmpty(odlEdo.getEmptyContainerDepot())
-				&& StringUtils.isNotEmpty(edoUpdate.getEmptyContainerDepot())
-				&& odlEdo.getEmptyContainerDepot().equals(edoUpdate.getEmptyContainerDepot())) {
-			edoUpdate.setEmptyContainerDepot(null);
-		} else {
-			// Case has update => check condition
-			if (CollectionUtils.isNotEmpty(cntrInfos)) {
-				for (ContainerInfoDto cntrInfo : cntrInfos) {
-					if ("EMTY".equalsIgnoreCase(cntrInfo.getVslCd())
-							&& StringUtils.isNotEmpty(cntrInfo.getJobOdrNo())) {
-						throw new BusinessException(String.format(
-								"Empty container has already been in Da Nang port (containerNo='%s', billOfLading=%s)",
-								ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
-					}
-				}
+		if (StringUtils.isNotEmpty(edoUpdate.getEmptyContainerDepot())
+				&& !edoUpdate.getEmptyContainerDepot().equalsIgnoreCase(odlEdo.getEmptyContainerDepot())) {
+			if (cntrEmty != null && StringUtils.isNotEmpty(cntrEmty.getJobOdrNo())) {
+				throw new BusinessException(String.format(
+						"Empty container has already been in Da Nang port (containerNo='%s', billOfLading=%s)",
+						ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
 			}
 		}
 		int statusUpdate = edoService.updateEdo(edoUpdate);
@@ -272,4 +277,59 @@ public class EdiServiceImpl implements IEdiService {
 		edo.setTransactionId(transactionId);
 	}
 
+	/**
+	 * Get list container by containerNos (separated by comma) and convert to map
+	 * container no - container info obj differentiate by fe
+	 * 
+	 * @param containerNos
+	 * @return Map<String, ContainerInfoDto>
+	 */
+	private Map<String, ContainerInfoDto> getContainerInfoMapFE(String containerNos) {
+		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerInfoDtoByContNos(containerNos);
+		Map<String, ContainerInfoDto> cntrInfoMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(cntrInfos)) {
+			for (ContainerInfoDto cntrInfo : cntrInfos) {
+				if ("E".equalsIgnoreCase(cntrInfo.getFe())
+						&& !EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(cntrInfo.getCntrState())
+						&& !EportConstants.CATOS_CONT_STACKING.equalsIgnoreCase(cntrInfo.getCntrState())) {
+					cntrInfoMap.put(cntrInfo.getCntrNo() + cntrInfo.getFe(), cntrInfo);
+				} else if ("F".equalsIgnoreCase(cntrInfo.getFe())
+						&& !EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(cntrInfo.getCntrState())) {
+					cntrInfoMap.put(cntrInfo.getCntrNo() + cntrInfo.getFe(), cntrInfo);
+				}
+			}
+		}
+		return cntrInfoMap;
+	}
+
+	/**
+	 * Replace det free time remark in catos if has remark or append new remark
+	 * 
+	 * @param detFreeTime
+	 * @param currentRemark
+	 * @return
+	 */
+	private String getRemarkAfterUpdateDet(String detFreeTime, String currentRemark) {
+		boolean isAppend = true;
+		if (StringUtils.isNotEmpty(currentRemark)) {
+			String[] arrStr = currentRemark.split(" ");
+			for (int i = 0; i < arrStr.length; i++) {
+				// format remark free xxx days
+				// current word is free => next will be det free time
+				// change next word
+				if (arrStr[i].equalsIgnoreCase("free")) {
+					arrStr[i + 1] = detFreeTime;
+					isAppend = false;
+					currentRemark = String.join(" ", arrStr);
+					break;
+				}
+			}
+		} else {
+			currentRemark = "";
+		}
+		if (isAppend) {
+			currentRemark += StringUtils.format(", free {} days", detFreeTime);
+		}
+		return currentRemark;
+	}
 }

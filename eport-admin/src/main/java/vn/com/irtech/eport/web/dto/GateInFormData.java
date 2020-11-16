@@ -35,6 +35,9 @@ public class GateInFormData  implements Serializable {
 	
 	private Long receiptId;
 
+	/** B: begin, C: continue */
+	private String type;
+
 	public Long getId() {
 		return id;
 	}
@@ -137,6 +140,14 @@ public class GateInFormData  implements Serializable {
 
 	public void setReceiptId(Long receiptId) {
 		this.receiptId = receiptId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

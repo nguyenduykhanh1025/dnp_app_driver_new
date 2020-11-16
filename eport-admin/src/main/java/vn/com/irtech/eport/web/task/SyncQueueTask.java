@@ -55,8 +55,8 @@ public class SyncQueueTask {
 	@Autowired
 	private MqttService mqttService;
 
-	public void synchronizeQueue(Integer delayTimeSeconds, Integer retryTimes) {
-		logger.debug("====================Begin synchronize queue: delay time (second) " + delayTimeSeconds
+	public void synchronizeDemQueue(Integer delayTimeSeconds, Integer retryTimes) {
+		logger.debug("====================Begin synchronize dem queue: delay time (second) " + delayTimeSeconds
 				+ " retry times " + retryTimes);
 		// delayDate = now - delayTimeMs
 		Date delayDate = DateUtils.addSeconds(new Date(), (-1) * retryTimes);
@@ -74,15 +74,7 @@ public class SyncQueueTask {
 		List<SysSyncQueue> sysSyncQueuesDem = sysSyncQueueService
 				.selectSysSyncQueueWithDelayTimeList(sysSyncQueueParam);
 		if (CollectionUtils.isNotEmpty(sysSyncQueuesDem)) {
-			handlingListRequestUpdate(sysSyncQueuesDem);
-		}
-
-		// Get list update det free time
-		sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DET);
-		List<SysSyncQueue> sysSyncQueuesDet = sysSyncQueueService
-				.selectSysSyncQueueWithDelayTimeList(sysSyncQueueParam);
-		if (CollectionUtils.isNotEmpty(sysSyncQueuesDet)) {
-			handlingListRequestUpdate(sysSyncQueuesDem);
+			handlingListDemRequestUpdate(sysSyncQueuesDem);
 		}
 	}
 
@@ -91,7 +83,7 @@ public class SyncQueueTask {
 	 * 
 	 * @param sysSyncQueues
 	 */
-	private void handlingListRequestUpdate(List<SysSyncQueue> sysSyncQueues) {
+	private void handlingListDemRequestUpdate(List<SysSyncQueue> sysSyncQueues) {
 		// Sort sync queue list by order job order no
 		Collections.sort(sysSyncQueues, new JobOrderNoComparator());
 		// syncQueuesDem use to store sync queue with same job order no
@@ -207,6 +199,126 @@ public class SyncQueueTask {
 			// In the following line you set the criterion,
 			// which is the name of Contact in my example scenario
 			return syncQueue1.getJobOdrNo().compareTo(syncQueue2.getJobOdrNo());
+		}
+	}
+
+	/**
+	 * Synchronize det free time queue request
+	 * 
+	 * @param delayTimeSeconds
+	 * @param retryTimes
+	 * @param contAmount       (Amount of container can be send to robot each time)
+	 */
+	public void synchronizeDetQueue(Integer delayTimeSeconds, Integer retryTimes, Integer contAmount) {
+		logger.debug("====================Begin synchronize queue: delay time (second) " + delayTimeSeconds
+				+ " retry times " + retryTimes);
+		// delayDate = now - delayTimeMs
+		Date delayDate = DateUtils.addSeconds(new Date(), (-1) * retryTimes);
+		// Params to get SysSyncQueue match in retryTimes and delayTimeSeconds demand
+		SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
+		sysSyncQueueParam.setCreateTime(delayDate);
+		sysSyncQueueParam.setRetryTimes(retryTimes);
+		Map<String, Object> params = new HashMap<>();
+		// To query sys sync queue having status waiting or error with the permitted
+		// retry times
+		params.put("waitingOrError", true);
+
+		// Get list update det free time
+		sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DET);
+		List<SysSyncQueue> sysSyncQueuesDet = sysSyncQueueService
+				.selectSysSyncQueueWithDelayTimeList(sysSyncQueueParam);
+		if (CollectionUtils.isNotEmpty(sysSyncQueuesDet)) {
+			handlingListDetRequestUpdate(sysSyncQueuesDet, contAmount);
+		}
+	}
+
+	/**
+	 * Handling list det free time update request
+	 * 
+	 * @param sysSyncQueues
+	 * @param contAmount
+	 */
+	private void handlingListDetRequestUpdate(List<SysSyncQueue> sysSyncQueues, Integer contAmount) {
+		// Divide container list to small group
+		// Catos can't update too many container in one go
+		List<SysSyncQueue> reqQueueList = new ArrayList<>();
+		while (sysSyncQueues.size() > contAmount) {
+			reqQueueList = sysSyncQueues.subList(0, contAmount);
+			sendDetReqToRobot(reqQueueList);
+			sysSyncQueues.removeAll(reqQueueList);
+		}
+		sendDetReqToRobot(sysSyncQueues);
+	}
+
+	/**
+	 * Create process order update det free time, update det free times in eport if
+	 * exist, send process order to robot
+	 * 
+	 * @param sysSyncQueues
+	 */
+	private void sendDetReqToRobot(List<SysSyncQueue> sysSyncQueues) {
+		SysSyncQueue syncReference = sysSyncQueues.get(0);
+
+		// Create process order
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setRemark(syncReference.getRemark());
+		processOrder.setServiceType(EportConstants.SERVICE_EXTEND_DET);
+		processOrder.setOrderNo(syncReference.getJobOdrNo());
+		processOrder.setContNumber(sysSyncQueues.size());
+
+		List<ShipmentDetail> shipmentDetails = new ArrayList<ShipmentDetail>();
+		String syncQueueIds = "";
+		String containers = "";
+		for (SysSyncQueue syncQueue : sysSyncQueues) {
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setContainerNo(syncQueue.getCntrNo());
+			shipmentDetail.setRemark(syncQueue.getRemark());
+			shipmentDetails.add(shipmentDetail);
+			containers += syncQueue.getCntrNo() + ",";
+			syncQueueIds += syncQueue.getId() + ",";
+		}
+
+		// container no separated by comma use to query
+		containers = containers.substring(0, containers.length() - 1);
+		// String ids separated by comma use to update status for sync queue list by
+		// batch (update where id in (??,??,??)
+		syncQueueIds = syncQueueIds.substring(0, syncQueueIds.length() - 1);
+
+		// - Set list container data with det free times need to update into process
+		// json
+		// data (field in Process Order obj)
+		// - When all robot is busy, process order will be waiting to the next robot
+		// available
+		// - Info of det free time remark need to update in catos will be store in here
+		// to get
+		// from database
+		ProcessJsonData processJsonData = new ProcessJsonData();
+		processJsonData.setShipmentDetails(shipmentDetails);
+		processJsonData.setContainers(containers);
+		processOrder.setProcessData(new Gson().toJson(processJsonData));
+		Map<String, Object> params = new HashMap<>();
+		params.put("containers", containers);
+		processOrder.setParams(params);
+		processOrderService.insertProcessOrder(processOrder);
+
+		// Update status sync queue list
+		SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
+		sysSyncQueueUpdate.setStatus(EportConstants.SYNC_QUEUE_STATUS_PROGRESS);
+		sysSyncQueueUpdate.setSyncType(EportConstants.SYNC_QUEUE_DET);
+		sysSyncQueueUpdate.setProcessOrderId(processOrder.getId());
+		sysSyncQueueUpdate.setRetryTimes(syncReference.getRetryTimes() + 1);
+		Map<String, Object> queueParams = new HashMap<>();
+		queueParams.put("ids", Convert.toStrArray(syncQueueIds));
+		sysSyncQueueUpdate.setParams(queueParams);
+		sysSyncQueueService.updateSysSyncQueueWithCondition(sysSyncQueueUpdate);
+
+		// Form a object with master data is process order data and sub data is list
+		// container with specific expired dem need to extend
+		ServiceSendFullRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+		try {
+			mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.EXTENSION_DET);
+		} catch (MqttException e) {
+			logger.debug("Failed to send extension det req to robot: " + new Gson().toJson(serviceRobotReq) + e);
 		}
 	}
 }

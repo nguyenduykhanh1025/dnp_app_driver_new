@@ -387,7 +387,8 @@ public class MqttService implements MqttCallback {
 		TERMINAL_CUSTOM_HOLD, // Terminal custom hold
 		CANCEL_DROP_FULL, // Cancel drop full
 		CANCEL_PICKUP_EMPTY, // Cancel pickup empty
-		EXPORT_RECEIPT // Export receipt
+		EXPORT_RECEIPT, // Export receipt
+		EXTENSION_DET // Gia han det free times
 	}
 
 	/**
@@ -474,6 +475,9 @@ public class MqttService implements MqttCallback {
 			break;
 		case EXPORT_RECEIPT:
 			sysRobot.setIsExportReceipt(true);
+			break;
+		case EXTENSION_DET:
+			sysRobot.setIsExtensionDetOrder(true);
 			break;
 		}
 		sysRobot.setDisabled(false);
