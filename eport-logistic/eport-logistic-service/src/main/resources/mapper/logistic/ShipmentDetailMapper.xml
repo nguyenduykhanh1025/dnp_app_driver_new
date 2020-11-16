@@ -183,7 +183,7 @@
             <if test="registerNo != null  and registerNo != ''">and register_no = #{registerNo}</if>
             <if test="containerNo != null  and containerNo != ''">and container_no = #{containerNo}</if>
             <if test="containerStatus != null  and containerStatus != ''">and container_status = #{containerStatus}</if>
-            <if test="sztp != null  and sztp != ''">and sztp like concat(#{sztp}, '%')</if>
+            <if test="sztp != null  and sztp != ''">and sztp like concat(concat('%',#{sztp}),'%')</if>
             <if test="temperature != null ">and temperature = #{temperature}</if>
             <if test="fe != null  and fe != ''">and fe = #{fe}</if>
             <if test="bookingNo != null  and bookingNo != ''">and booking_no = #{bookingNo}</if>
@@ -238,6 +238,7 @@
                 #{contSupplierName}
             </if>
             <if test="orderNo != null and orderNo != ''">and order_no = #{orderNo}</if>
+            <if test="dangerous != null and dangerous != ''">and dangerous = #{dangerous}</if>
         </where>
 
     </select>
@@ -385,6 +386,7 @@
         custom_status, payment_status, process_status,cont_special_status, do_status, do_received_time, user_verify_status, finish_status,
         cont_supply_status, planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, pay_type, payer,
         payer_name, customs_no, custom_scan_time,
+        dangerous,
         delivery_address, delivery_mobile, delivery_remark, eta, etd, status, remark, create_by, create_time, update_by,
         update_time
         from shipment_detail
@@ -650,9 +652,6 @@
         <!-- <update id="updateShipmentDetail" parameterType="ShipmentDetailExtend"> -->
         update shipment_detail
         <trim prefix="SET" suffixOverrides=",">
-
-            <if test="contSpecialStatus != null ">cont_special_status = #{contSpecialStatus},</if>
-
             <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
             <if test="processOrderId != null">process_order_id = #{processOrderId},</if>
             <if test="registerNo != null  and registerNo != ''">register_no = #{registerNo},</if>
@@ -700,7 +699,7 @@
             <if test="oversizeFront != null and oversizeFront != ''">oversize_front = #{oversizeFront},</if>
             <if test="oversizeBack != null and oversizeBack != ''">oversize_back = #{oversizeBack},</if>
 
-            <if test="dangerous != null">dangerous = #{dangerous},</if>
+            <if test="dangerous != null and dangerous != ''">dangerous = #{dangerous},</if>
             <if test="dangerousImo != null and dangerousImo != ''">dangerous_imo = #{dangerousImo},</if>
             <if test="dangerousUnno != null and dangerousUnno != ''">dangerous_unno = #{dangerousUnno},</if>
             <if test="dangerousNameProduct != null and dangerousNameProduct != ''">dangerous_name_product =
@@ -715,6 +714,8 @@
             <if test="customStatus != null  and customStatus != ''">custom_status = #{customStatus},</if>
             <if test="paymentStatus != null  and paymentStatus != ''">payment_status = #{paymentStatus},</if>
             <if test="processStatus != null  and processStatus != ''">process_status = #{processStatus},</if>
+            <if test="contSpecialStatus != null and contSpecialStatus != ''">cont_special_status = #{contSpecialStatus},</if>
+            
             <if test="doStatus != null  and doStatus != ''">do_status = #{doStatus},</if>
             <if test="doReceivedTime != null">do_received_time = #{doReceivedTime},</if>
             <if test="userVerifyStatus != null  and userVerifyStatus != ''">user_verify_status = #{userVerifyStatus},
@@ -1381,6 +1382,12 @@
             <if test="shipmentDetail.etd != null">etd = #{shipmentDetail.etd},</if>
             <if test="shipmentDetail.updateBy != null and shipmentDetail.updateBy != ''">update_by =
                 #{shipmentDetail.updateBy},
+            </if>
+            <if test="shipmentDetail.contSpecialStatus != null and shipmentDetail.contSpecialStatus != ''">cont_special_status =
+                #{shipmentDetail.contSpecialStatus},
+            </if>
+            <if test="shipmentDetail.dangerous != null and shipmentDetail.dangerous != ''">dangerous =
+                #{shipmentDetail.dangerous},
             </if>
             update_time = sysdate
         </trim>

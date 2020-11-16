@@ -12,10 +12,16 @@
         <result property="createTime" column="create_time"/>
         <result property="updateBy" column="update_by"/>
         <result property="updateTime" column="update_time"/>
+        <result property="shipmentDetailId" column="shipment_detail_id"/>
+        
+        <result property="fileType" column="file_type"/>
+        
+        
+        
     </resultMap>
 
     <sql id="selectShipmentImageVo">
-        select id, shipment_id, path, create_by, create_time, update_by, update_time from shipment_image
+        select id, shipment_id, path, create_by, create_time, update_by, update_time,shipment_detail_id, file_type from shipment_image
     </sql>
 
     <select id="selectShipmentImageList" parameterType="ShipmentImage" resultMap="ShipmentImageResult">
@@ -24,6 +30,7 @@
             <if test="id != null "> and id = #{id}</if>
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
             <if test="path != null and path != ''"> and path = #{path}</if>
+            <if test="shipmentDetailId != null and shipmentDetailId != ''"> and shipment_detail_id = #{shipmentDetailId}</if>
         </where>
         order by create_time desc
     </select>
@@ -45,6 +52,17 @@
         </where>
         order by create_time desc
     </select>
+    
+    <select id="selectShipmentImagesByShipmentDetailId" parameterType="Long" resultMap="ShipmentImageResult">
+        select id, shipment_id, path, create_by, create_time, update_by, update_time, shipment_detail_id
+        from shipment_image
+        <where>
+            shipment_detail_id = #{shipmentId}
+        </where>
+        order by create_time desc
+    </select>
+    
+    
 
     <insert id="insertShipmentImage" parameterType="ShipmentImage" useGeneratedKeys="true" keyProperty="id">
         <selectKey keyProperty="id" order="BEFORE" resultType="Long">
@@ -55,14 +73,21 @@
             <if test="id != null and id != 0">id,</if>
             <if test="shipmentId != null ">shipment_id,</if>
             <if test="path != null  and path != ''">path,</if>
-            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if> 
+            <if test="shipmentDetailId != null  and shipmentDetailId != ''">shipment_detail_id,</if>
+            
+            <if test="fileType != null  and fileType != ''">file_type,</if>
+            
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
  			<if test="id != null">#{id},</if>
             <if test="shipmentId != null ">#{shipmentId},</if>
             <if test="path != null  and path != ''">#{path},</if>
-            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if> 
+            <if test="shipmentDetailId != null  and shipmentDetailId != ''">#{shipmentDetailId},</if>
+            
+            <if test="fileType != null  and fileType != ''">#{fileType},</if>
             sysdate
         </trim>
     </insert>

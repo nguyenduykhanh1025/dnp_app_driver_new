@@ -441,9 +441,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="params.fromDate != null">and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
             <if test="params.toDate != null">and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
             <if test="params.containerNo != null and params.containerNo != ''">and sh.container_no like concat(concat('%', #{params.containerNo}), '%')</if>
+            <if test="params.sztp != null and params.sztp != ''">and sh.sztp like concat(concat('%', #{params.sztp}), '%')</if>
             <if test="params.vslNm != null and params.vslNm != ''">and sh.vsl_nm = #{params.vslNm}</if>
             <if test="params.voyNo != null and params.voyNo != ''">and sh.voy_no = #{params.voyNo}</if>
             <if test="params.doStatus != null and params.doStatus != ''">and sh.do_status = #{params.doStatus}</if>
+            <if test="params.contSpecialStatus != null and params.contSpecialStatus != ''">and sh.cont_special_status = #{params.contSpecialStatus}</if>
+            <if test="params.dangerous != null and params.dangerous != ''">and sh.dangerous = #{params.dangerous}</if>
             <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
             <if test="params.serviceArray != null">
                 and s.service_type in

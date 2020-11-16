@@ -132,7 +132,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
     @GetMapping("/otp/cont-list/confirmation/{shipmentDetailIds}")
     public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds,
-                                            ModelMap mmap) {
+            ModelMap mmap) {
         List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
                 getUser().getGroupId());
         mmap.put("creditFlag", getGroup().getCreditFlag());
@@ -145,8 +145,8 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
     @GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}/{taxCode}/{shipmentId}")
     public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds,
-                                @PathVariable("shipmentId") Long shipmentId, @PathVariable("creditFlag") boolean creditFlag,
-                                @PathVariable("taxCode") String taxCode, ModelMap mmap) {
+            @PathVariable("shipmentId") Long shipmentId, @PathVariable("creditFlag") boolean creditFlag,
+            @PathVariable("taxCode") String taxCode, ModelMap mmap) {
         mmap.put("shipmentDetailIds", shipmentDetailIds);
         mmap.put("numberPhone", getUser().getMobile());
         mmap.put("creditFlag", creditFlag);
@@ -185,7 +185,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
     @GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail")
     public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
-                                             @PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
+            @PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
         mmap.put("containerNo", containerNo);
         mmap.put("sztp", sztp);
         mmap.put("shipmentDetailId", shipmentDetailId);
@@ -195,7 +195,16 @@ public class LogisticSendContFullController extends LogisticBaseController {
         mmap.put("contDangerousUnnos", dictDataService.getType("cont_dangerous_unno"));
 
         mmap.put("shipmentDetail", this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId));
+        
+        ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+		for (ShipmentImage shipmentImage2 : shipmentImages) {
+			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+		}
+		mmap.put("shipmentFiles", shipmentImages);
         return PREFIX + "/detail";
+    	
     }
 
     @GetMapping("/req/cancel/confirmation")
@@ -253,9 +262,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
         shipment.setLogisticGroupId(getUser().getGroupId());
         shipment.setBookingNo(bookingNo);
         shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
-//		if(catosApiService.checkBookingNoForSendFReceiveE(bookingNo, "F").intValue() == 0) {
-//			return error("Booking No này chưa có trong hệ thống. Vui lòng liên hệ OM để tạo !");
-//		}
+        // if(catosApiService.checkBookingNoForSendFReceiveE(bookingNo, "F").intValue()
+        // == 0) {
+        // return error("Booking No này chưa có trong hệ thống. Vui lòng liên hệ OM để
+        // tạo !");
+        // }
         if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
             return success();
         }
@@ -342,7 +353,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
         } else {
             ajaxResult = AjaxResult.error("Lô không tồn tại, vui lòng kiểm tra lại.");
         }
-        
+
         return ajaxResult;
     }
 
@@ -350,8 +361,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
     @PostMapping("/{shipmentId}/shipment-detail")
     @ResponseBody
     public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails,
-                                         @PathVariable("shipmentId") Long shipmentId) {
-
+            @PathVariable("shipmentId") Long shipmentId) {
 
         if (CollectionUtils.isNotEmpty(shipmentDetails)) {
             LogisticAccount user = getUser();
@@ -372,9 +382,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
             boolean updateShipment = true; // if true => need to update status shipment from init to save
             for (ShipmentDetail inputDetail : shipmentDetails) {
-                System.out.println("VGM check: " + inputDetail.getVgmChk());
-                System.out.println("VGM check: " + inputDetail.getVgmInspectionDepartment());
-                System.out.println("VGM check: " + inputDetail.getVgmMaxGross());
+                
                 if (inputDetail.getId() != null) {
                     // Case update
                     ShipmentDetail shipmentDetailReference = shipmentDetailService
@@ -384,9 +392,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
                     if (!shipmentDetailReference.getLogisticGroupId().equals(user.getGroupId())) {
                         return error("Không tìm thấy thông tin, vui lòng kiểm tra lại");
                     }
-
                     updateShipment = false;
-                    if ("N".equalsIgnoreCase(shipmentDetailReference.getUserVerifyStatus())) {
+                    
+                   
                         shipmentDetailReference.setContainerNo(inputDetail.getContainerNo());
                         shipmentDetailReference.setSztp(inputDetail.getSztp());
                         shipmentDetailReference.setSztpDefine(inputDetail.getSztpDefine());
@@ -408,23 +416,22 @@ public class LogisticSendContFullController extends LogisticBaseController {
                         shipmentDetailReference.setVgmMaxGross(inputDetail.getVgmMaxGross());
                         shipmentDetailReference.setVgmInspectionDepartment(inputDetail.getVgmInspectionDepartment());
 
-                        shipmentDetailReference.setOversize(inputDetail.getOversize());
                         shipmentDetailReference.setOversizeBack(inputDetail.getOversizeBack());
                         shipmentDetailReference.setOversizeFront(inputDetail.getOversizeFront());
                         shipmentDetailReference.setOversizeLeft(inputDetail.getOversizeLeft());
                         shipmentDetailReference.setOversizeRight(inputDetail.getOversizeRight());
                         shipmentDetailReference.setOversizeTop(inputDetail.getOversizeTop());
                         shipmentDetailReference.setOversizeType(inputDetail.getOversizeType());
-
+                        
                         shipmentDetailReference.setDangerous(inputDetail.getDangerous());
                         shipmentDetailReference.setDangerousImo(inputDetail.getDangerousImo());
                         shipmentDetailReference.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
                         shipmentDetailReference.setDangerousPacking(inputDetail.getDangerousPacking());
                         shipmentDetailReference.setDangerousUnno(inputDetail.getDangerousUnno());
-                        
+
                         shipmentDetailReference.setTemperature(inputDetail.getTemperature());
                         shipmentDetailReference.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
-                    }
+                    
                     shipmentDetailReference.setRemark(inputDetail.getRemark());
                     if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
                         return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
@@ -472,13 +479,13 @@ public class LogisticSendContFullController extends LogisticBaseController {
                     shipmentDetail.setOversizeRight(inputDetail.getOversizeRight());
                     shipmentDetail.setOversizeTop(inputDetail.getOversizeTop());
                     shipmentDetail.setOversizeType(inputDetail.getOversizeType());
-
+                    
                     shipmentDetail.setDangerous(inputDetail.getDangerous());
                     shipmentDetail.setDangerousImo(inputDetail.getDangerousImo());
                     shipmentDetail.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
                     shipmentDetail.setDangerousPacking(inputDetail.getDangerousPacking());
                     shipmentDetail.setDangerousUnno(inputDetail.getDangerousUnno());
-                    
+
                     shipmentDetail.setTemperature(inputDetail.getTemperature());
                     shipmentDetail.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
 
@@ -505,7 +512,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
     @Transactional
     @ResponseBody
     public AjaxResult deleteShipmentDetail(@PathVariable("shipmentId") Long shipmentId,
-                                           @RequestBody ContainerServiceForm inputForm) {
+            @RequestBody ContainerServiceForm inputForm) {
         // check shipment permission
         Shipment shipment = shipmentService.selectShipmentById(shipmentId);
         if (!verifyPermission(shipment.getLogisticGroupId())) {
@@ -548,7 +555,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
     @ResponseBody
     @RepeatSubmit
     public AjaxResult verifyOtp(@PathVariable String otp, String shipmentDetailIds, String taxCode,
-                                boolean creditFlag) {
+            boolean creditFlag) {
         try {
             Long.parseLong(otp);
         } catch (Exception e) {
@@ -632,7 +639,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
     @PostMapping("/custom-status/shipment-detail")
     @ResponseBody
     public AjaxResult checkCustomStatus(@RequestParam(value = "declareNos") String declareNoList,
-                                        @RequestParam(value = "shipmentDetailIds") String shipmentDetailIds) {
+            @RequestParam(value = "shipmentDetailIds") String shipmentDetailIds) {
         // FIXME chuyen params thanh POST REQUEST BODY
         if (StringUtils.isNotEmpty(declareNoList)) {
             List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
@@ -792,21 +799,24 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
             }
             // TODO Cần confirm lại với OM 1 số booking có làm được cho nhiều tàu-chuyến ko
-			/*
-			if (!shipmentDetailReference.getVslNm().equals(shipmentDetails.get(i).getVslNm())) {
-				return error("Tàu và Chuyến không được khác nhau!");
-
-			}
-			if (!shipmentDetailReference.getVoyNo().equals(shipmentDetails.get(i).getVoyNo())) {
-				return error("Tàu và Chuyến không được khác nhau!");
-
-			} */
+            /*
+             * if
+             * (!shipmentDetailReference.getVslNm().equals(shipmentDetails.get(i).getVslNm()
+             * )) { return error("Tàu và Chuyến không được khác nhau!");
+             * 
+             * } if
+             * (!shipmentDetailReference.getVoyNo().equals(shipmentDetails.get(i).getVoyNo()
+             * )) { return error("Tàu và Chuyến không được khác nhau!");
+             * 
+             * }
+             */
             if (!shipmentDetailReference.getDischargePort().equals(shipmentDetails.get(i).getDischargePort())) {
                 return error("Cảng dỡ hàng không được khác nhau!");
             }
             // Validate sztp
             if (!sztps.contains(shipmentDetails.get(i).getSztp())) {
-                return error("Kích thước " + shipmentDetails.get(i).getSztp() + " chưa được hỗ trợ làm lệnh trên ePort.");
+                return error(
+                        "Kích thước " + shipmentDetails.get(i).getSztp() + " chưa được hỗ trợ làm lệnh trên ePort.");
             }
             // Validate dangrous cont
             containerNos += shipmentDetails.get(i).getContainerNo() + ",";
@@ -826,11 +836,14 @@ public class LogisticSendContFullController extends LogisticBaseController {
             return error("Tên chủ hàng không đúng, vui lòng chọn chủ hàng từ danh sách.");
         }
 
-//		// validate pod exist in catos
-//		if (catosApiService.checkPodExistIncatos(shipmentDetailReference.getDischargePort()) == 0) {
-//			return error(String.format("Cảng dỡ '%s' không đúng, vui lòng chọn trong danh sách gợi ý.", shipmentDetailReference.getDischargePort()));
-//		}
-        //validate POD in catos (POD: POD_NM)
+        // // validate pod exist in catos
+        // if
+        // (catosApiService.checkPodExistIncatos(shipmentDetailReference.getDischargePort())
+        // == 0) {
+        // return error(String.format("Cảng dỡ '%s' không đúng, vui lòng chọn trong danh
+        // sách gợi ý.", shipmentDetailReference.getDischargePort()));
+        // }
+        // validate POD in catos (POD: POD_NM)
         List<String> pods = catosApiService.getPODList(shipmentDetailReference);
         boolean podValidFlg = false;
         for (String pod : pods) {
@@ -840,17 +853,19 @@ public class LogisticSendContFullController extends LogisticBaseController {
             }
         }
         if (!podValidFlg) {
-            return error(String.format("Cảng dỡ '%s' không đúng cho tàu chuyến '%s-%s', vui lòng chọn cảng từ danh sách.",
-                    shipmentDetailReference.getDischargePort(), shipmentDetailReference.getVslName(),
-                    shipmentDetailReference.getVoyCarrier()));
+            return error(
+                    String.format("Cảng dỡ '%s' không đúng cho tàu chuyến '%s-%s', vui lòng chọn cảng từ danh sách.",
+                            shipmentDetailReference.getDischargePort(), shipmentDetailReference.getVslName(),
+                            shipmentDetailReference.getVoyCarrier()));
         }
 
         // Validate OPR in catos
         List<String> oprs = catosApiService.getOPRList(shipmentDetailReference);
         if (oprs != null && oprs.size() > 0 && !oprs.contains(shipmentDetailReference.getOpeCode())) {
-            return error(String.format("OPR '%s' không đúng cho tàu chuyến:<br/>'%s-%s'. Vui lòng kiểm tra lại booking.",
-                    shipmentDetailReference.getOpeCode(), shipmentDetailReference.getVslName(),
-                    shipmentDetailReference.getVoyCarrier()));
+            return error(
+                    String.format("OPR '%s' không đúng cho tàu chuyến:<br/>'%s-%s'. Vui lòng kiểm tra lại booking.",
+                            shipmentDetailReference.getOpeCode(), shipmentDetailReference.getVslName(),
+                            shipmentDetailReference.getVoyCarrier()));
         }
 
         // Validate container has job order no
@@ -919,7 +934,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
     @PostMapping("/file")
     @ResponseBody
     public AjaxResult saveFile(MultipartFile file) throws IOException, InvalidExtensionException {
-        String basePath = String.format("%s/%s", Global.getUploadPath() + "/booking", getUser().getGroupId());
+        String basePath = String.format("%s/%s", Global.getUploadPath() + "/sendContFull", getUser().getGroupId());
         String now = DateUtils.dateTimeNow();
         String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
         String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
@@ -928,14 +943,15 @@ public class LogisticSendContFullController extends LogisticBaseController {
         shipmentImage.setPath(filePath);
         shipmentImage.setCreateTime(DateUtils.getNowDate());
         shipmentImage.setCreateBy(getUser().getFullName());
-        shipmentImageService.insertShipmentImage(shipmentImage);
 
         AjaxResult ajaxResult = AjaxResult.success();
         ajaxResult.put("shipmentFileId", shipmentImage.getId());
+
+        ajaxResult.put("file", filePath);
         return ajaxResult;
     }
 
-    @DeleteMapping("/booking/file")
+    @DeleteMapping("/file")
     @ResponseBody
     public AjaxResult deleteFile(Long id) throws IOException {
         ShipmentImage shipmentImageParam = new ShipmentImage();
@@ -943,10 +959,12 @@ public class LogisticSendContFullController extends LogisticBaseController {
         ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
         String[] fileArr = shipmentImage.getPath().split("/");
         File file = new File(
-                Global.getUploadPath() + "/booking/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
+                Global.getUploadPath() + "/sendContFull/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
+        
         if (file.delete()) {
-            shipmentImageService.deleteShipmentImageById(id);
+        	shipmentImageService.deleteShipmentImageById(id);
         }
+		
         return success();
     }
 
@@ -1023,6 +1041,72 @@ public class LogisticSendContFullController extends LogisticBaseController {
         return error("Yêu cầu hủy lệnh thất bại, quý khách vui lòng liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
     }
 
+    @PostMapping("/request-special-cancel/shipment-detail")
+    @ResponseBody
+    public AjaxResult reqCancelRequestContSpecialContainer(String shipmentDetailIds, String contReqRemark) {
+        System.out.print(shipmentDetailIds);
+        System.out.print(contReqRemark);
+        List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
+                getUser().getGroupId());
+        if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+
+            // Validate before send req cancel order
+            for (ShipmentDetail shipmentDetail : shipmentDetails) {
+                if ((shipmentDetail.getContSpecialStatus() != null
+                        && !shipmentDetail.getContSpecialStatus().equals(EportConstants.CONT_REQUEST_SPECIAL_PENDING))
+                        || (shipmentDetail.getDangerous() != null && !shipmentDetail.getDangerous()
+                                .equals(EportConstants.CONT_REQUEST_DANGEROUS_PENDING))) {
+                    return error("Container quý khách chọn chưa được yêu cầu xác nhận.");
+                }
+            }
+
+            // Update status req cancel order
+            for (ShipmentDetail shipmentDetail : shipmentDetails) {
+                shipmentDetail.setContSpecialStatus(EportConstants.CONT_REQUEST_SPECIAL_YET);
+
+                if (shipmentDetail.getDangerous() != null
+                        && shipmentDetail.getDangerous().equals(EportConstants.CONT_REQUEST_SPECIAL_PENDING)) {
+                    shipmentDetail.setDangerous(EportConstants.CONT_REQUEST_DANGEROUS_YET);
+                }
+                shipmentDetail.setUpdateBy(getUser().getUserName());
+                shipmentDetailService.updateShipmentDetail(shipmentDetail);
+            }
+
+            ShipmentDetail shipmentDetail = shipmentDetails.get(0);
+            // Write comment for topic supply container
+            if (StringUtils.isNotEmpty(contReqRemark)) {
+                ShipmentComment shipmentComment = new ShipmentComment();
+                shipmentComment.setLogisticGroupId(getUser().getGroupId());
+                shipmentComment.setShipmentId(shipmentDetail.getShipmentId());
+                shipmentComment.setUserId(getUserId());
+                shipmentComment.setUserType(EportConstants.COMMENTOR_LOGISTIC);
+                shipmentComment.setUserAlias(getGroup().getGroupName());
+                shipmentComment.setCommentTime(new Date());
+                shipmentComment.setContent(contReqRemark);
+                shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CANCEL_DROP_FULL);
+                shipmentComment.setServiceType(shipmentDetail.getServiceType());
+                shipmentCommentService.insertShipmentComment(shipmentComment);
+            }
+
+            // Set up data to send app notificaton
+            String title = "ePort: Yêu cầu huỷ yêu cầu xác nhận container đặc biệt.";
+            String msg = "Có yêu cầu huỷ yêu cầu xác nhận container hàng cho Booking: " + shipmentDetail.getBookingNo()
+                    + ", Hãng tàu: " + shipmentDetail.getOpeCode() + ", Trucker: " + getGroup().getGroupName()
+                    + ", Chủ hàng: " + shipmentDetails.get(0).getConsignee();
+            try {
+                mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg,
+                        configService.getKey("domain.admin.name") + EportConstants.URL_CANCEL_ORDER_SUPPORT,
+                        EportConstants.NOTIFICATION_PRIORITY_LOW);
+            } catch (MqttException e) {
+                logger.error("Error when push request cancel order drop full: " + e);
+            }
+            return success("Đã yêu cầu hủy yêu cầu xác nhận, quý khách vui lòng đợi bộ phận thủ tục xử lý.");
+        }
+
+        return error(
+                "Yêu cầu hủy yêu cầu xác nhận thất bại, quý khách vui lòng liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
+    }
+
     @GetMapping("/shipment/{shipmentId}/custom/notification")
     @ResponseBody
     public AjaxResult sendNotificationCustomError(@PathVariable("shipmentId") String shipmentId) {
@@ -1039,8 +1123,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
     @PostMapping("/{shipmentId}/shipment-detail/request-confirm")
     @ResponseBody
     public AjaxResult requestConfirmShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails,
-                                         @PathVariable("shipmentId") Long shipmentId) {
-
+            @PathVariable("shipmentId") Long shipmentId) {
 
         if (CollectionUtils.isNotEmpty(shipmentDetails)) {
             LogisticAccount user = getUser();
@@ -1061,6 +1144,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
             boolean updateShipment = true; // if true => need to update status shipment from init to save
             for (ShipmentDetail inputDetail : shipmentDetails) {
+
                 if (inputDetail.getId() != null) {
                     // Case update
                     ShipmentDetail shipmentDetailReference = shipmentDetailService
@@ -1102,16 +1186,28 @@ public class LogisticSendContFullController extends LogisticBaseController {
                         shipmentDetailReference.setOversizeTop(inputDetail.getOversizeTop());
                         shipmentDetailReference.setOversizeType(inputDetail.getOversizeType());
 
-                        shipmentDetailReference.setDangerous(inputDetail.getDangerous());
                         shipmentDetailReference.setDangerousImo(inputDetail.getDangerousImo());
                         shipmentDetailReference.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
                         shipmentDetailReference.setDangerousPacking(inputDetail.getDangerousPacking());
                         shipmentDetailReference.setDangerousUnno(inputDetail.getDangerousUnno());
-                        
+
                         shipmentDetailReference.setTemperature(inputDetail.getTemperature());
                         shipmentDetailReference.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
 
-                        shipmentDetailReference.setContSpecialStatus("2");
+                        if(inputDetail.getContSpecialStatus() == null) {
+                        	 shipmentDetailReference.setContSpecialStatus(null);
+                        }
+                        else if (inputDetail.getContSpecialStatus().equals(EportConstants.CONT_REQUEST_SPECIAL_YET)
+                                || inputDetail.getContSpecialStatus()
+                                        .equals(EportConstants.CONT_REQUEST_DANGEROUS_REJECT)) {
+                            shipmentDetailReference.setContSpecialStatus(EportConstants.CONT_REQUEST_SPECIAL_PENDING);
+                        }
+
+                        if (inputDetail.getDangerous() != null && (inputDetail.getDangerous()
+                                .equals(EportConstants.CONT_REQUEST_DANGEROUS_YET)
+                                || inputDetail.getDangerous().equals(EportConstants.CONT_REQUEST_DANGEROUS_REJECT))) {
+                            shipmentDetailReference.setDangerous(EportConstants.CONT_REQUEST_DANGEROUS_PENDING);
+                        }
                     }
                     shipmentDetailReference.setRemark(inputDetail.getRemark());
                     if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
@@ -1161,16 +1257,28 @@ public class LogisticSendContFullController extends LogisticBaseController {
                     shipmentDetail.setOversizeTop(inputDetail.getOversizeTop());
                     shipmentDetail.setOversizeType(inputDetail.getOversizeType());
 
-                    shipmentDetail.setDangerous(inputDetail.getDangerous());
                     shipmentDetail.setDangerousImo(inputDetail.getDangerousImo());
                     shipmentDetail.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
                     shipmentDetail.setDangerousPacking(inputDetail.getDangerousPacking());
                     shipmentDetail.setDangerousUnno(inputDetail.getDangerousUnno());
-                    
+
                     shipmentDetail.setTemperature(inputDetail.getTemperature());
                     shipmentDetail.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
 
-                    shipmentDetail.setContSpecialStatus("2");
+                    if(shipmentDetail.getContSpecialStatus() == null){
+                    	shipmentDetail.setContSpecialStatus(null);
+                    }
+                    else if (inputDetail.getContSpecialStatus().equals(EportConstants.CONT_REQUEST_SPECIAL_YET)
+                            || inputDetail.getContSpecialStatus()
+                                    .equals(EportConstants.CONT_REQUEST_DANGEROUS_REJECT)) {
+                        shipmentDetail.setContSpecialStatus(EportConstants.CONT_REQUEST_SPECIAL_PENDING);
+                    }
+
+                    if (inputDetail.getDangerous() != null && (inputDetail.getDangerous()
+                            .equals(EportConstants.CONT_REQUEST_DANGEROUS_YET)
+                            || inputDetail.getDangerous().equals(EportConstants.CONT_REQUEST_DANGEROUS_REJECT))) {
+                        shipmentDetail.setDangerous(EportConstants.CONT_REQUEST_DANGEROUS_PENDING);
+                    }
 
                     if (attachBooking) {
                         shipmentDetail.setDoStatus("N");
@@ -1185,9 +1293,43 @@ public class LogisticSendContFullController extends LogisticBaseController {
                 shipment.setStatus(EportConstants.SHIPMENT_STATUS_SAVE);
                 shipmentService.updateShipment(shipment);
             }
-            return success("Lưu khai báo thành công");
+            return success("Yêu cầu xác nhận thành công");
         }
-        return error("Lưu khai báo thất bại");
+        return error("Yêu cầu xác nhận thất bại");
+    }
+
+    @PostMapping("/uploadFile")
+    @ResponseBody
+    public AjaxResult uploadFile(@RequestParam(value = "filePaths[]") String[] filePaths, String shipmentDetailId,
+            Long shipmentId, String shipmentSztp) throws IOException, InvalidExtensionException {
+
+        for (String i : filePaths) {
+            ShipmentImage shipmentImage = new ShipmentImage();
+            shipmentImage.setPath(i);
+            shipmentImage.setShipmentId(shipmentId);
+            shipmentImage.setShipmentDetailId(shipmentDetailId);
+
+            // sztp cuar ngy hieemr khong co
+            if (shipmentSztp == null || "".equals(shipmentSztp)) {
+                shipmentImage.setFileType("D");
+            } else {
+                if ("P".equalsIgnoreCase(shipmentSztp.substring(2, 3))) {
+                    shipmentImage.setFileType("P");
+                }
+                if ("T".equalsIgnoreCase(shipmentSztp.substring(2, 3))) {
+                    shipmentImage.setFileType("T");
+                }
+                if ("U".equalsIgnoreCase(shipmentSztp.substring(2, 3))) {
+                    shipmentImage.setFileType("U");
+                }
+                if ("R".equalsIgnoreCase(shipmentSztp.substring(2, 3))) {
+                    shipmentImage.setFileType("R");
+                }
+            }
+
+            shipmentImageService.insertShipmentImage(shipmentImage);// them detail
+        }
+        return success();
     }
 
 }

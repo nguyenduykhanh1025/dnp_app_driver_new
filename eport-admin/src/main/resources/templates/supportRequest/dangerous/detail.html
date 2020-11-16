@@ -7,9 +7,9 @@
     <title>Khai báo chung</title>
     <th:block th:include="include :: header('Khai báo chung')" />
     <th:block th:include="include :: datetimepicker-css" />
-    
+    <th:block th:include="include :: dropzone-css" />
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
-    <link rel="stylesheet" th:href="@{/css/logistic/detail.css}" />
+    <link rel="stylesheet" th:href="@{/eport/css/supportRequest/detail.css}" />
   </head>
 
   <body>
@@ -40,10 +40,7 @@
         </div>
         <div
           class="col-sm-12 text-black"
-          style="
-            height: 300px;
-            overflow-y: auto;
-          "
+          style="height: 400px; overflow-y: auto"
         >
           <section class="tabs">
             <input
@@ -62,7 +59,7 @@
               class="tab-selector-2"
             />
             <label for="tab-2" class="tab-label-2">Quá khổ</label>
-            
+
             <input
               id="tab-3"
               type="radio"
@@ -77,7 +74,7 @@
               <div class="content-1">
                 <div
                   class="form-horizontal mt10 row"
-                  style="border-bottom: 1px dashed #ccc"
+                  style="border-bottom: 1px dashed #ccc;height: 40px;margin-bottom: 5px;"
                 >
                   <div class="form-group col-sm-4 row">
                     <label class="control-label col-sm-4 col-xs-6"
@@ -159,7 +156,7 @@
                 <div class="form-horizontal mt10 row">
                   <div
                     class="col-xs-12 p5"
-                    style="border-bottom: 1px dashed #ccc"
+                    style="border-bottom: 1px dashed #ccc;height: 40px;margin-bottom: 5px;"
                   >
                     <label class="control-label col-sm-2 col-xs-2 pt0"
                       ><b class="text-black">Quá khổ:</b></label
@@ -188,7 +185,7 @@
                     <div
                       class="col-xs-12 p5"
                       id="categoryOversizeCheckboxes"
-                      style="border-bottom: 1px dashed #ccc"
+                      style="border-bottom: 1px dashed #ccc;height: 40px;margin-bottom: 5px;"
                     >
                       <label class="control-label col-sm-2 col-xs-2 pt0"
                         ><b class="text-black">Loại:</b></label
@@ -219,9 +216,7 @@
                       </div>
                     </div>
                     <div class="col-xs-12 p5">
-                      <label
-                        class="control-label col-sm-2 col-xs-2 pt0"
-                        style="height: 34px; line-height: 34px"
+                      <label class="control-label col-sm-2 col-xs-2 pt0"
                         ><b class="text-black">Bên trên (cm):</b></label
                       >
                       <div class="col-sm-2 col-xs-2">
@@ -232,9 +227,7 @@
                           class="form-control"
                         />
                       </div>
-                      <label
-                        class="control-label col-sm-2 col-xs-2 pt0"
-                        style="height: 34px; line-height: 34px"
+                      <label class="control-label col-sm-2 col-xs-2 pt0"
                         ><b class="text-black">Bên phải (cm):</b></label
                       >
                       <div class="col-sm-2 col-xs-2">
@@ -245,9 +238,7 @@
                           class="form-control"
                         />
                       </div>
-                      <label
-                        class="control-label col-sm-2 col-xs-2 pt0"
-                        style="height: 34px; line-height: 34px"
+                      <label class="control-label col-sm-2 col-xs-2 pt0"
                         ><b class="text-black">Bên trái (cm):</b></label
                       >
                       <div class="col-sm-2 col-xs-2">
@@ -258,9 +249,7 @@
                           class="form-control"
                         />
                       </div>
-                      <label
-                        class="control-label col-sm-2 col-xs-2 pt5 pl0"
-                        style="height: 34px; line-height: 34px"
+                      <label class="control-label col-sm-2 col-xs-2 pt5 pl0"
                         ><b class="text-black">Phía trước (cm):</b></label
                       >
                       <div class="col-sm-2 col-xs-2 pt5">
@@ -271,9 +260,7 @@
                           class="form-control"
                         />
                       </div>
-                      <label
-                        class="control-label col-sm-2 col-xs-2 pt5"
-                        style="height: 34px; line-height: 34px"
+                      <label class="control-label col-sm-2 col-xs-2 pt5"
                         ><b class="text-black">Phía sau (cm):</b></label
                       >
                       <div class="col-sm-2 col-xs-2 pt5">
@@ -285,20 +272,9 @@
                         />
                       </div>
 
-                      <div class="form-group col-sm-6" id="dropzoneOversize">
-                        <!--  <span class="col-md-2 col-sm-3 col-xs-4"></span> -->
-                        <div class="col-sm-8 col-xs-6">
-                          <button
-                            type="button"
-                            id="attachButtonOversize"
-                            class="btn btn-sm btn-default"
-                          >
-                            <i class="fa fa-paperclip text-primary"></i> Đính
-                            kèm tệp
-                          </button>
-                        </div>
+                      <div class="form-group col-sm-12" id="dropzoneOversize">
                         <div
-                          class="preview-container-oversize col-md-6 col-sm-6 col-xs-6"
+                          class="preview-container-oversize col-md-12 col-sm-12 col-xs-12"
                         ></div>
                       </div>
                     </div>
@@ -309,7 +285,7 @@
                 <div class="form-horizontal mt10 row">
                   <div
                     class="col-xs-12 p5"
-                    style="border-bottom: 1px dashed #ccc"
+                    style="border-bottom: 1px dashed #ccc;height: 40px;margin-bottom: 5px;"
                   >
                     <label class="control-label col-sm-3 col-xs-3 pt0"
                       ><b class="text-black">Cont nguy hiểm:</b></label
@@ -333,11 +309,10 @@
                   <span id="dangerousFormContainer">
                     <div
                       class="col-xs-12 p5"
-                      style="border-bottom: 1px dashed #ccc"
+                      style="border-bottom: 1px dashed #ccc;height: 40px;margin-bottom: 5px;"
                     >
                       <label
                         class="control-label col-sm-3 col-xs-3 pt0 asterisk"
-                        style="height: 34px; line-height: 34px"
                         ><b class="text-black">IMO:</b></label
                       >
                       <div class="col-sm-6 col-xs-6">
@@ -353,11 +328,10 @@
                     </div>
                     <div
                       class="col-xs-12 p5"
-                      style="border-bottom: 1px dashed #ccc"
+                      style="border-bottom: 1px dashed #ccc;height: 40px;margin-bottom: 5px;"
                     >
                       <label
                         class="control-label col-sm-3 col-xs-3 pt0 asterisk"
-                        style="height: 34px; line-height: 34px"
                         ><b class="text-black">UNNO:</b></label
                       >
                       <div class="col-sm-6 col-xs-6">
@@ -373,11 +347,9 @@
                     </div>
                     <div
                       class="col-xs-12 p5"
-                      style="border-bottom: 1px dashed #ccc"
+                      style="border-bottom: 1px dashed #ccc;height: 40px;margin-bottom: 5px;"
                     >
-                      <label
-                        class="control-label col-sm-3 col-xs-3 pt0"
-                        style="height: 34px; line-height: 34px"
+                      <label class="control-label col-sm-3 col-xs-3 pt0"
                         ><b class="text-black">Tên hàng hóa:</b></label
                       >
                       <div class="col-sm-6 col-xs-6">
@@ -390,9 +362,7 @@
                       </div>
                     </div>
                     <div class="col-xs-12 p5">
-                      <label
-                        class="control-label col-sm-3 col-xs-3 pt0"
-                        style="height: 34px; line-height: 34px"
+                      <label class="control-label col-sm-3 col-xs-3 pt0"
                         ><b class="text-black">Quy cách đóng gói:</b></label
                       >
                       <div class="col-sm-6 col-xs-6">
@@ -405,17 +375,7 @@
                       </div>
                     </div>
 
-                    <div class="form-group col-sm-6" id="dropzoneDangerous">
-                      <div class="col-sm-8 col-xs-6">
-                        <button
-                          type="button"
-                          id="attachButtonDangerous"
-                          class="btn btn-sm btn-default"
-                        >
-                          <i class="fa fa-paperclip text-primary"></i> Đính kèm
-                          tệp
-                        </button>
-                      </div>
+                    <div class="form-group col-sm-12" id="dropzoneDangerous">
                       <div
                         class="preview-container-dangerous col-md-12 col-sm-12 col-xs-12"
                       ></div>
@@ -441,8 +401,7 @@
             width: 100%;
           "
         >
-          <a class="layui-layer-btn0" onclick="submitHandler()">Lưu</a>
-          <a class="layui-layer-btn1" onclick="onCloseModel()">Hủy</a>
+          <a class="layui-layer-btn0" onclick="onCloseModel()">Đóng</a>
         </div>
       </form>
     </div>
@@ -453,17 +412,19 @@
       /**
        * Data load from server
       */
-      var containerNo = /*[[${containerNo}]]*/;
+      var containerNo = [[${containerNo}]];
       var shipmentDetail = [[${shipmentDetail}]];
 
       var contCargoTypes = [[${contCargoTypes}]];
       var contDangerousImos = [[${contDangerousImos}]];
       var contDangerousUnnos = [[${contDangerousUnnos}]];
 
-      var sztp = /*[[${sztp}]]*/;
+      var sztp = [[${sztp}]];
       var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
       var shipmentFiles = [[${shipmentFiles}]];
     </script>
-    <script th:src="@{/js/logistic/sendContFull/detail.js}"></script>
+    <script
+      th:src="@{/eport/js/modules/supportRequest/dangerous/detail.js?v=2020107}"
+    ></script>
   </body>
 </html>

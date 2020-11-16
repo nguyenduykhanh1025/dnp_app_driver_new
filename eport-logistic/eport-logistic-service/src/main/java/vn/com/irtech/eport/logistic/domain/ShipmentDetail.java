@@ -462,7 +462,7 @@ public class ShipmentDetail extends BaseEntity {
     private String oversizeBack;
 
     /**
-     * T: là cont nguy hiểm | F: không phải là cont nguy hiểm
+     * T : là cont dangerous | F: ko là cont dangerous | 2 : là cont dangerous chờ xét duyệt | 3 :  la cont dangerous đã được xét duyệt | 4 từ chối
      */
     private String dangerous;
 
@@ -1319,21 +1319,22 @@ public class ShipmentDetail extends BaseEntity {
                 .append("etd", getEtd())
                 .append("location", getLocation())
                 .append("containerRemark", getContainerRemark())
-                .append("inspectionDepartment", getVgmInspectionDepartment())
-                .append("maxGross", getVgmMaxGross())
+                .append("vgmInspectionDepartment", getVgmInspectionDepartment())
+                .append("vgmMaxGross", getVgmMaxGross())
                 .append("daySetupTemperature", getDaySetupTemperature())
                 .append("oversize", getOversize())
-                .append("oversizeCategory", getOversizeType())
+                .append("oversizeType", getOversizeType())
                 .append("oversizeTop", getOversizeTop())
                 .append("oversizeRight", getOversizeRight())
                 .append("oversizeLeft", getOversizeLeft())
                 .append("oversizeFront", getOversizeFront())
                 .append("oversizeBack", getOversizeBack())
                 .append("dangerous", getDangerous())
-                .append("dangerIMO", getDangerousImo())
-                .append("dangerUNNO", getDangerousUnno())
-                .append("dangerNameProduct", getDangerousNameProduct())
-                .append("dangerPacking", getDangerousPacking())
+                .append("dangerousImo", getDangerousImo())
+                .append("dangerousUnno", getDangerousUnno())
+                .append("dangerousNameProduct", getDangerousNameProduct())
+                .append("dangerousPacking", getDangerousPacking())
+                .append("contSpecialStatus", getContSpecialStatus())
                 .toString();
     }
 }
