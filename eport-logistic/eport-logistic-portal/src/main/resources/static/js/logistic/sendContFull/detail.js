@@ -16,7 +16,9 @@ const KEY_FORM = {
   OVERSIZE: "oversize",
   DANGEROUS: "dangerous",
 };
+
 var shipmentFilePaths = { oversize: [], dangerous: [] };
+var filesRemove = [];
 
 $("#form-detail-add").validate({
   onkeyup: false,
@@ -408,20 +410,39 @@ function submitHandler() {
             : data.dangerous,
       };
 
-      if (shipmentFilePaths.dangerous.length) {
-        saveFile(shipmentFilePaths.dangerous, "");
+      let isCanSubmit = true;
+      if (data.dangerous && data.dangerous != DANGEROUS_STATUS.NOT) {
+        if (!shipmentFilePaths.dangerous.length) {
+          isCanSubmit = false;
+          $.modal.alertWarning(
+            "File container nguy hiểm chưa được upload. Vui lòng upload file."
+          );
+        }
+      } else if (data.contSpecialStatus) {
+        if (!shipmentFilePaths.oversize.length) {
+          isCanSubmit = false;
+          $.modal.alertWarning(
+            "File container đặc biệt chưa được upload. Vui lòng upload file."
+          );
+        }
       }
-      if (shipmentFilePaths.oversize.length) {
-        saveFile(shipmentFilePaths.oversize, shipmentDetail.sztp);
-      }
+      if (isCanSubmit) {
+        if (shipmentFilePaths.dangerous.length) {
+          saveFile(shipmentFilePaths.dangerous, "");
+        }
+        if (shipmentFilePaths.oversize.length) {
+          saveFile(shipmentFilePaths.oversize, shipmentDetail.sztp);
+        }
 
-      parent.submitDataFromDetailModal(data);
-      onCloseModel();
+        parent.submitDataFromDetailModal(data);
+        onCloseModel();
+      }
     }
   }
 }
 
 function saveFile(filePaths, shipmentSztp) {
+  console.log('cooooooooooo');
   $.ajax({
     url: PREFIX + "/uploadFile",
     method: "POST",
@@ -582,28 +603,35 @@ function removeImage(element, fileIndex) {
   } else {
     shipmentFiles.forEach(function (value, index) {
       if (value.id == fileIndex) {
-        $.ajax({
-          url: PREFIX + "/file",
-          method: "DELETE",
-          data: {
-            id: value.id,
-          },
-          beforeSend: function () {
-            $.modal.loading("Đang xử lý, vui lòng chờ...");
-          },
-          success: function (result) {
-            $.modal.closeLoading();
-            if (result.code == 0) {
-              $.modal.msgSuccess("Xóa tệp thành công.");
-              $(element).parent("div.preview-block").remove();
-              shipmentFiles.splice(index, 1);
-            } else {
-              $.modal.alertWarning("Xóa tệp thất bại.");
-            }
-          },
-        });
+        filesRemove.push(value.id);
+        shipmentFiles.splice(index, 1);
+
         return false;
       }
     });
   }
+}
+
+function confirmRemove() {
+  filesRemove.forEach((item) => {
+    $.ajax({
+      url: PREFIX + "/cont-special/file",
+      method: "DELETE",
+      data: {
+        id: item,
+      },
+      beforeSend: function () {
+        $.modal.loading("Đang xử lý, vui lòng chờ...");
+      },
+      success: function (result) {
+        $.modal.closeLoading();
+        if (result.code == 0) {
+          $.modal.msgSuccess("Xóa tệp thành công.");
+          $(element).parent("div.preview-block").remove();
+        } else {
+          $.modal.alertWarning("Xóa tệp thất bại.");
+        }
+      },
+    });
+  });
 }

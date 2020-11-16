@@ -931,10 +931,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
         return containerInfoMap;
     }
 
-    @PostMapping("/file")
+    @PostMapping("/cont-special/file")
     @ResponseBody
-    public AjaxResult saveFile(MultipartFile file) throws IOException, InvalidExtensionException {
-        String basePath = String.format("%s/%s", Global.getUploadPath() + "/sendContFull", getUser().getGroupId());
+    public AjaxResult savContSpecialeFile(MultipartFile file) throws IOException, InvalidExtensionException {
+        String basePath = String.format("%s/%s", Global.getUploadPath() + "/contSpecial", getUser().getGroupId());
         String now = DateUtils.dateTimeNow();
         String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
         String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
@@ -951,15 +951,15 @@ public class LogisticSendContFullController extends LogisticBaseController {
         return ajaxResult;
     }
 
-    @DeleteMapping("/file")
+    @DeleteMapping("/cont-special/file")
     @ResponseBody
-    public AjaxResult deleteFile(Long id) throws IOException {
+    public AjaxResult deleteSendContFullFile(Long id) throws IOException {
         ShipmentImage shipmentImageParam = new ShipmentImage();
         shipmentImageParam.setId(id);
         ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
         String[] fileArr = shipmentImage.getPath().split("/");
         File file = new File(
-                Global.getUploadPath() + "/sendContFull/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
+                Global.getUploadPath() + "/contSpecial/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
         
         if (file.delete()) {
         	shipmentImageService.deleteShipmentImageById(id);
@@ -967,6 +967,22 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		
         return success();
     }
+
+    @DeleteMapping("/booking/file")
+	@ResponseBody
+	public AjaxResult deleteFile(Long id) throws IOException {
+		ShipmentImage shipmentImageParam = new ShipmentImage();
+		shipmentImageParam.setId(id);
+		ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+		String[] fileArr = shipmentImage.getPath().split("/");
+		File file = new File(
+				Global.getUploadPath() + "/booking/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
+		if (file.delete()) {
+			shipmentImageService.deleteShipmentImageById(id);
+		}
+		return success();
+	}
+
 
     @GetMapping("/shipments/{shipmentId}/shipment-images")
     @ResponseBody
@@ -1331,5 +1347,24 @@ public class LogisticSendContFullController extends LogisticBaseController {
         }
         return success();
     }
+
+    @PostMapping("/file")
+	@ResponseBody
+	public AjaxResult saveFile(MultipartFile file) throws IOException, InvalidExtensionException {
+		String basePath = String.format("%s/%s", Global.getUploadPath() + "/booking", getUser().getGroupId());
+		String now = DateUtils.dateTimeNow();
+		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+		String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setPath(filePath);
+		shipmentImage.setCreateTime(DateUtils.getNowDate());
+		shipmentImage.setCreateBy(getUser().getFullName());
+		shipmentImageService.insertShipmentImage(shipmentImage);
+
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentFileId", shipmentImage.getId());
+		return ajaxResult;
+	}
 
 }
