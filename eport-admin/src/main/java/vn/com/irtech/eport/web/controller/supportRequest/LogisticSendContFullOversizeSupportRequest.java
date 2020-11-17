@@ -126,6 +126,7 @@ public class LogisticSendContFullOversizeSupportRequest extends AdminBaseControl
         ShipmentDetail shipmentDetail = new ShipmentDetail();
         shipmentDetail.setShipmentId(shipmentId);
         shipmentDetail.setSztp(KEY_OVERSIDE);
+        shipmentDetail.setContSpecialStatus(EportConstants.CONT_REQUEST_SPECIAL_PENDING);
         List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
         ajaxResult.put("shipmentDetails", shipmentDetails);
         return ajaxResult;

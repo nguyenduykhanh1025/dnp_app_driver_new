@@ -408,6 +408,7 @@ function reFormatNumber(value) {
   if (!value) return 0;
   return parseInt(value.replaceAll(",", ""));
 }
+
 /**
  * @param {none}
  * @author Khanh
@@ -415,7 +416,7 @@ function reFormatNumber(value) {
  * @returns ice: true | not ice: false
  */
 function isContIce() {
-  return sztp.includes("R") ? true : false;
+  return shipmentDetail.sztp.includes("R") ? true : false;
 }
 
 /**
@@ -425,7 +426,7 @@ function isContIce() {
  * @returns oversize: true | not oversize: false
  */
 function isContOversize() {
-  return sztp.includes("P") ? true : false;
+  return shipmentDetail.sztp.includes("P") ? true : false;
 }
 
 /**

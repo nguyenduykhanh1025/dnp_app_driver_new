@@ -239,6 +239,7 @@
             </if>
             <if test="orderNo != null and orderNo != ''">and order_no = #{orderNo}</if>
             <if test="dangerous != null and dangerous != ''">and dangerous = #{dangerous}</if>
+            <if test="contSpecialStatus != null and contSpecialStatus != ''">and cont_special_status = #{contSpecialStatus}</if>
         </where>
 
     </select>
