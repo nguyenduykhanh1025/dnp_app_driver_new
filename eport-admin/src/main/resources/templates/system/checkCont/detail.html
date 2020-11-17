@@ -19,8 +19,17 @@
 	.form-horizontal.mt10.row { height: 40px !important;}
 	
 	content-2 { height: 10px !important; }
+	.preview-block { float: left;}
 	
-	 .preview-block { float: left;  width: 70px !important; }
+	.col-sm-12.text-black {
+	    margin-left: 14%;
+	}
+	.tabs {
+	    position: relative;
+	    margin: 5px auto;
+	}
+	
+	 /* .preview-block { float: left;  width: 70px !important; } */
 </style>  
    <body>
       <div class="container-fluid">
@@ -60,7 +69,7 @@
                            <div class="form-group col-sm-5 row">
                               <span class="control-label col-sm-6 col-xs-6"
                                  style="text-align: left"><b
-                                 class="text-black">sealNo:</b></span>
+                                 class="text-black">SealNo:</b></span>
                               <div class="col-sm-6 col-xs-6">
                                  <input type="text" class="form-control" id="sealNo" name="sealNo" readonly />
                               </div>
@@ -83,7 +92,7 @@
                                  <input type="text" class="form-control" id="temperature" name="temperature" readonly />
                               </div>
                            </div>
-                           <div class="form-group col-sm-5 row">   
+                           <!-- <div class="form-group col-sm-5 row">   
 			                    <span class="control-label col-sm-6 col-xs-6" style="text-align: left">
 			                    	<b class="text-black">Ngày rút điện:</b>
 			                    </span>
@@ -93,7 +102,7 @@
 			                        <span class="glyphicon glyphicon-calendar"></span>
 			                      </span>
 			                    </div>
-		                  </div> 
+		                  </div>  -->
                         </div> 
                         
         <!-- //////////// add tệp cont lạnh///////-->
@@ -110,12 +119,20 @@
                         <div class="form-horizontal mt10 row">
                           
 		                       <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-		                           <div class="form-group col-sm-5 row">
+		                           <!-- <div class="form-group col-sm-5 row">
 		                              <span class="control-label col-sm-6 col-xs-6"
 		                                 style="text-align: left"><b
 		                                 class="text-black">sealNo:</b></span>
 		                              <div class="col-sm-6 col-xs-6">
 		                                 <input type="text" class="form-control" id="sealNoQK" name="sealNoQK" readonly />
+		                              </div>
+		                           </div> -->
+		                           <div class="form-group col-sm-5 row">
+		                              <span class="control-label col-sm-6 col-xs-6"
+		                                 style="text-align: left"><b
+		                                 class="text-black">Phía sau (cm):</b></span>
+		                              <div class="col-sm-6 col-xs-6">
+		                                 <input type="text" class="form-control" id="oversizeBack" name="oversizeBack" readonly />
 		                              </div>
 		                           </div>
 		                           <div class="form-group col-sm-5 row">
@@ -164,7 +181,7 @@
 		                              </div>
 		                           </div>
 		                       </div>
-		                       <div class="form-horizontal mt10 row" >
+		                       <!-- <div class="form-horizontal mt10 row" >
 		                           <div class="form-group col-sm-5 row">
 		                              <span class="control-label col-sm-6 col-xs-6"
 		                                 style="text-align: left"><b
@@ -173,7 +190,7 @@
 		                                 <input type="text" class="form-control" id="oversizeBack" name="oversizeBack" readonly />
 		                              </div>
 		                           </div> 
-		                       </div> 
+		                       </div>  -->
         <!-- //////////// add tệp cont quá khổ///////-->
 				           <div class="form-group col-sm-12" id="dropzoneQK"> 
 					        <div class="col-sm-12 col-xs-12">
@@ -192,7 +209,7 @@
 		                           <div class="form-group col-sm-5 row">
 		                              <span class="control-label col-sm-6 col-xs-6"
 		                                 style="text-align: left"><b
-		                                 class="text-black">sealNo:</b></span>
+		                                 class="text-black">SealNo:</b></span>
 		                              <div class="col-sm-6 col-xs-6">
 		                                 <input type="text" class="form-control" id="sealNoNH" name="sealNoNH" readonly />
 		                              </div>
@@ -279,16 +296,45 @@
          var shipmentImage = [[${shipmentImage}]]; 
          var shipmentFiles = [[${shipmentFiles}]]; 
       </script> 
-      <script th:src="@{/eport/js/modules/applyReiceive/detail.js?v=0920123}"></script>
+      <script th:src="@{/eport/js/modules/applyReiceive/detail.js?v=092012345}"></script>
        
 	<script type="text/javascript">  
-		 var contsztp  = $('#sizeCont').val();// lấy sztp 
+		/*  var contsztp  = $('#sizeCont').val();// lấy sztp 
 		  var cont = contsztp.substring(2,3);// lấy mã cont cắt ra 
 		  if(cont == 'R'){// nếu cont lạnh thì show table
 			  document.getElementById("tab-1").checked = true; // checked vào cont lạnh
 			  document.getElementById("tab-2").disabled = true;// disabled check cont khổ đi
 			  document.getElementById("tab-3").disabled = true;// disabled check cont nguy hiểm 
-		  } 
+		  }  */
+		  
+		  $(document).ready(function() { 
+		      var dangerous = shipmentDetail.dangerous;
+		      var contsztp = shipmentDetail.sztp;
+		      var cont = contsztp.substring(2,3);// lấy mã cont cắt ra 
+		      var oversizeTop = shipmentDetail.oversizeTop;  
+		      var oversizeRight = shipmentDetail.oversizeRight;  
+		      var oversizeLeft = shipmentDetail.oversizeLeft;
+		      var oversizeFront = shipmentDetail.oversizeFront;
+		      var oversizeBack = shipmentDetail.oversizeBack; 
+		      $("#tab-1").prop('disabled', true); // disabled check cont lạnh
+		      $("#tab-2").prop('disabled', true); // disabled check cont quá khổ
+		      $("#tab-3").prop('disabled', true); // disabled check cont nguy hiểm  
+		      
+			  if(dangerous) {
+				  console.log(dangerous);
+				  $("#tab-3").prop('disabled', false); //  check cont nguy hiểm
+				  $("#tab-3").prop('checked', true); // disabled check cont nguy hiểm 
+			  }
+			  if(cont == 'R'){// nếu cont lạnh thì show table
+				  $("#tab-1").prop('disabled', false); // checked vào cont lạnh
+				  $("#tab-1").prop('checked', true); // disabled check cont lạnh
+			  }
+			  if(oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack){// nếu cont quá khổ thì show 
+				  $("#tab-2").prop('disabled', false); // checked vào cont qúa khổ
+				  $("#tab-2").prop('checked', true); // disabled check cont quá khổ
+			  }
+			 
+		  });
 	</script>
    </body>
 </html>

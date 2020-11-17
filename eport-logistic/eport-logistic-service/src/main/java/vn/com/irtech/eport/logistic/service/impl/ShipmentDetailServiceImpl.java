@@ -148,6 +148,20 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		return shipmentDetailMapper.selectShipmentDetailListCont(shipmentDetail);
 	}
 	
+	@Override
+	public List<ShipmentDetail> selectShipmentDetailDangerous(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.selectShipmentDetailDangerous(shipmentDetail);
+	}
+	
+	@Override
+	public List<ShipmentDetail> selectShipmentDetailListContOverSize(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.selectShipmentDetailListContOverSize(shipmentDetail);
+	}
+	
+	
+	
+	
+	
 
 	/**
 	 * Add Shipment Details

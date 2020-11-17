@@ -1210,7 +1210,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		shipmentDetail.setShipmentId(shipmentId);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
 		 
-		
 		// auto load containers detail for eDO for first time
 		if ("1".equals(shipment.getEdoFlg()) && shipmentDetails.size() == 0) {
 			if (StringUtils.isNotEmpty(shipment.getHouseBill())) {

@@ -20,6 +20,12 @@ $('#wgtQK').val(shipmentDetail.wgt); // trọng lượng quá khổ
 $('#wgtNH').val(shipmentDetail.wgt); // trọng lượng Nguy hiểm 
 
 $('#temperature').val(shipmentDetail.temperature);// nhiệt độ 
+
+$('#oversizeTop').val(shipmentDetail.oversizeTop);//  
+$('#oversizeRight').val(shipmentDetail.oversizeRight);//  
+$('#oversizeLeft').val(shipmentDetail.oversizeLeft);//  
+$('#oversizeFront').val(shipmentDetail.oversizeFront);//  
+$('#oversizeBack').val(shipmentDetail.oversizeBack);//   
  
 function closeForm() {
     $.modal.close();
@@ -30,7 +36,7 @@ $( document ).ready(function() {
         let htmlInit = '';
         shipmentFiles.forEach(function (element, index) { 
         	shipmentFiles.push(element.id);
-        	if(element.fileType == "t" || element.fileType == "T"){
+        	if(element.fileType == "r" || element.fileType == "R"){
         		htmlInit = `<div class="preview-block">
                 <a href=${element.path} target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" /></a>
                 <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + element.id + `)" disabled>
@@ -41,16 +47,16 @@ $( document ).ready(function() {
         	}
         	if(element.fileType == "d" || element.fileType == "D"){
         		htmlInit = `<div class="preview-block">
-        		<a href=${element.path} target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" />
+        		<a href=${element.path} target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" /></a>
                 <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + element.id + `)" disabled>
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>`;
             	$('.preview-containerNH').append(htmlInit); 
         	}
-        	if(element.fileType == "p" || element.fileType == "P"){
+        	if(element.fileType == "o" || element.fileType == "O"){
         		htmlInit = `<div class="preview-block">
-        		<a href=${element.path} target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" />
+        		<a href=${element.path} target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" /></a>
                 <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + element.id + `)" disabled>
                 <span aria-hidden="true">&times;</span>
                 </button>

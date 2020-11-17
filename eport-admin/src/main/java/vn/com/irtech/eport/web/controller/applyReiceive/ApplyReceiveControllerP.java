@@ -112,13 +112,16 @@ public class ApplyReceiveControllerP extends AdminBaseController  {
 		if (params == null) {
 			params = new HashMap<>();
 		}
+		params.put("serviceType", "1");
 		//params.put("processStatus", "Y");
 		//Integer[] serviceArray = { EportConstants.SERVICE_DROP_EMPTY, EportConstants.SERVICE_DROP_FULL };
 		//params.put("serviceArray", serviceArray);
-		//shipment.setParams(params);
-		//List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
+		shipment.setParams(params);  
 		
-		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilterApply(shipment);
+		//List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilterApply(shipment);
+		
+		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailDangerous(shipment);
+		
 		ajaxResult.put("shipments", getDataTable(shipments));
 		return ajaxResult;
 	}
@@ -129,9 +132,11 @@ public class ApplyReceiveControllerP extends AdminBaseController  {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setSztp("P");
-		//List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailListCont(shipmentDetail);
+		//shipmentDetail.setSztp("P");
+		 
+		//List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailListCont(shipmentDetail);
+		
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailDangerous(shipmentDetail);
 		
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;
@@ -153,7 +158,7 @@ public class ApplyReceiveControllerP extends AdminBaseController  {
     public AjaxResult rejectRequestContIce(String shipmentDetailIds) {
         ShipmentDetail shipmentDetail = new ShipmentDetail();
 
-        shipmentDetail.setContSpecialStatus("4");
+//        shipmentDetail.setDangerous(EportConstants.CONT_REQUEST_DANGEROUS_REJECT); // 4
         shipmentDetail.setUpdateBy(getUser().getLoginName());
 
         shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
@@ -170,7 +175,10 @@ public class ApplyReceiveControllerP extends AdminBaseController  {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, logisticGroupId);
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			//shipmentDetail.setDoStatus("Y");
-			shipmentDetail.setContSpecialStatus("3");
+			//shipmentDetail.setContSpecialStatus("3");
+			
+			shipmentDetail.setDangerous(EportConstants.CONT_REQUEST_DANGEROUS_APPROVE);// 3
+			
 			shipmentDetail.setUpdateBy(getUser().getLoginName());
 			shipmentDetailService.updateShipmentDetailApply(shipmentDetail);
 			

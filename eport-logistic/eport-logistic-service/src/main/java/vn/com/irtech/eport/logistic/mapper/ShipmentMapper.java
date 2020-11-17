@@ -103,6 +103,12 @@ public interface ShipmentMapper
     
     public List<Shipment> selectShipmentListByWithShipmentDetailFilterApply(Shipment shipment);
     
+    public List<Shipment> selectShipmentListByWithShipmentDetailDangerous(Shipment shipment);
+    
+    public List<Shipment> selectShipmentListByWithShipmentOverSize(Shipment shipment);
+    
+    
+    
     /**
      * input: serviceType(bat buoc)
      * getShipmentsForSupportCustom in OM SupportCustomReceiveFull, SupportCustomSendFull

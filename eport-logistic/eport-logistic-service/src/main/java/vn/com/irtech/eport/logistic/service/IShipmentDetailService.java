@@ -38,7 +38,11 @@ public interface IShipmentDetailService {
 	public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail);
 	
 	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail);
-
+	
+	public List<ShipmentDetail> selectShipmentDetailDangerous(ShipmentDetail shipmentDetail);
+	
+	public List<ShipmentDetail> selectShipmentDetailListContOverSize(ShipmentDetail shipmentDetail);
+	
 	/**
 	 * Add Shipment Details
 	 * 

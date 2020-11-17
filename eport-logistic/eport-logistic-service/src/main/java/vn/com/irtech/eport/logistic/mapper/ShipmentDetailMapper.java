@@ -34,6 +34,10 @@ public interface ShipmentDetailMapper {
 	
 	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail);
 	
+	public List<ShipmentDetail> selectShipmentDetailDangerous(ShipmentDetail shipmentDetail);
+	
+	public List<ShipmentDetail> selectShipmentDetailListContOverSize(ShipmentDetail shipmentDetail);
+	
 	
 
 	/**

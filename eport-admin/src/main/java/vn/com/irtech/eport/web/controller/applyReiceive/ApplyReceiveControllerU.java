@@ -118,7 +118,10 @@ public class ApplyReceiveControllerU extends AdminBaseController  {
 		//shipment.setParams(params);
 		//List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		
-		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilterApply(shipment);
+		//List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilterApply(shipment);
+		
+		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentOverSize(shipment);
+		
 		ajaxResult.put("shipments", getDataTable(shipments));
 		return ajaxResult;
 	}
@@ -129,9 +132,11 @@ public class ApplyReceiveControllerU extends AdminBaseController  {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setSztp("U");
-		//List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailListCont(shipmentDetail);
+		/*shipmentDetail.setSztp("U");*/
+		 
+		//List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailListCont(shipmentDetail);
+		
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailListContOverSize(shipmentDetail);
 		
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;

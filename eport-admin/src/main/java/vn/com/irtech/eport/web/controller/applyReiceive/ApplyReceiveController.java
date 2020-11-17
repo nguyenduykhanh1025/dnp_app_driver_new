@@ -115,9 +115,11 @@ public class ApplyReceiveController extends AdminBaseController  {
 			params = new HashMap<>();
 		}
 		//params.put("processStatus", "Y");
+		
+		params.put("serviceType", "1");
 		//Integer[] serviceArray = { EportConstants.SERVICE_DROP_EMPTY, EportConstants.SERVICE_DROP_FULL };
 		//params.put("serviceArray", serviceArray);
-		//shipment.setParams(params);
+		shipment.setParams(params);
 		//List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilterApply(shipment);
@@ -155,6 +157,8 @@ public class ApplyReceiveController extends AdminBaseController  {
     public AjaxResult rejectRequestContIce(String shipmentDetailIds) {
         ShipmentDetail shipmentDetail = new ShipmentDetail();
 
+        shipmentDetail.setSztp("R");
+        
         shipmentDetail.setContSpecialStatus("4");
         shipmentDetail.setUpdateBy(getUser().getLoginName());
 
@@ -172,6 +176,7 @@ public class ApplyReceiveController extends AdminBaseController  {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, logisticGroupId);
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			//shipmentDetail.setDoStatus("Y");
+			//lạnh
 			shipmentDetail.setContSpecialStatus("3");
 			shipmentDetail.setUpdateBy(getUser().getLoginName());
 			shipmentDetailService.updateShipmentDetailApply(shipmentDetail);

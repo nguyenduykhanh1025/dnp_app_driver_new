@@ -162,6 +162,20 @@ public class ShipmentServiceImpl implements IShipmentService {
 		return shipmentMapper.selectShipmentListByWithShipmentDetailFilterApply(shipment);
 	}
 	
+	@Override
+    public List<Shipment> selectShipmentListByWithShipmentDetailDangerous(Shipment shipment) {
+		return shipmentMapper.selectShipmentListByWithShipmentDetailDangerous(shipment);
+	}
+	
+	@Override
+    public List<Shipment> selectShipmentListByWithShipmentOverSize(Shipment shipment) {
+		return shipmentMapper.selectShipmentListByWithShipmentOverSize(shipment);
+	}
+	
+	
+	
+	
+	
 	
     /**
      * input: serviceType(bat buoc)

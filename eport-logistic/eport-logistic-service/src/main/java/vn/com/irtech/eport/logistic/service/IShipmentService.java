@@ -102,6 +102,13 @@ public interface IShipmentService {
     
     public List<Shipment> selectShipmentListByWithShipmentDetailFilterApply(Shipment shipment);
     
+    // list dangerous
+    public List<Shipment> selectShipmentListByWithShipmentDetailDangerous(Shipment shipment);
+    
+    public List<Shipment> selectShipmentListByWithShipmentOverSize(Shipment shipment);
+    
+    
+    
     
     /**
      * input: serviceType(bat buoc)
