@@ -32,8 +32,7 @@
             <if test="path != null and path != ''"> and path = #{path}</if>
             
             <if test="shipmentDetailId != null and shipmentDetailId != ''"> and shipment_detail_id = #{shipmentDetailId}</if>
-            
-            <!-- <if test="fileType != null and fileType != ''"> and file_type = #{fileType}</if> -->
+          
             
         </where>
         order by create_time desc

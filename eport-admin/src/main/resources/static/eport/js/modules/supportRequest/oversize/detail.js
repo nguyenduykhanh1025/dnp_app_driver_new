@@ -1,4 +1,5 @@
-const PREFIX = ctx + "logistic/send-cont-full";
+const PREFIX = ctx + "support-request/oversize";
+
 const DANGEROUS_STATUS = {
   yet: "T", // là cont dangerous
   pending: "2", // là cont danger đang chờ xét duyết
@@ -31,6 +32,7 @@ $("#datetimepicker1").datetimepicker({
 
 $(document).ready(function () {
   initValueToElementHTML();
+  
   initOptionForSelectCargoTypeSelect();
   initOptionForSelectIMOSelect();
   initOptionForSelectUNNOSelect();
@@ -45,9 +47,11 @@ $(document).ready(function () {
  * @description create another values if exist from server
  */
 function initValueToElementHTML() {
+  
   $("#containerNo").val(containerNo);
   $("#sztp").val(sztp);
 
+  
   if (shipmentDetail) {
     const {
       vgmChk,
@@ -91,21 +95,7 @@ function initValueToElementHTML() {
       dangerousNameProduct,
       dangerousPacking
     );
-
-    //"preview-container-dangerous",
-    ("");
-    initDropzone(
-      "dropzoneOversize",
-      "preview-container-oversize",
-      "attachButtonOversize",
-      KEY_FORM.OVERSIZE
-    );
-    initDropzone(
-      "dropzoneDangerous",
-      "preview-container-dangerous",
-      "attachButtonDangerous",
-      KEY_FORM.DANGEROUS
-    );
+    
   }
 }
 
@@ -167,58 +157,6 @@ function initElementHTMLInInformationCommonTab(
     });
 }
 
-/**
- * @author Khanh
- * @description init dropzone + handle add file to client
- */
-
-function initDropzone(
-  idDropzone,
-  classPreviewContainer,
-  idButtonAttach,
-  keyForm
-) {
-  let previewTemplate = "<span data-dz-name></span>";
-  myDropzone = new Dropzone(`#${idDropzone}`, {
-    url: PREFIX + "/file",
-    method: "post",
-    paramName: "file",
-    maxFiles: 5,
-    maxFilesize: 10, //MB
-    // autoProcessQueue: false,
-    previewTemplate: previewTemplate,
-    previewsContainer: `.${classPreviewContainer}`, // Define the container to display the previews
-    clickable: `#${idButtonAttach}`, // Define the element that should be used as click trigger to select files.
-    init: function () {
-      this.on("maxfilesexceeded", function (file) {
-        $.modal.alertError("Số lượng tệp đính kèm vượt số lượng cho phép.");
-        this.removeFile(file);
-      });
-    },
-    success: function (file, response) {
-      if (response.code == 0) {
-        $.modal.msgSuccess("Đính kèm tệp thành công.");
-
-        shipmentFilePaths[`${keyForm}`].push(response.file);
-
-        let html =
-          `<div class="preview-block" style="width: 70px;float: left;">
-                <img src="` +
-          ctx +
-          `img/document.png" alt="Tài liệu" style="max-width: 50px;"/>
-                <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` +
-          response.shipmentFileId +
-          `)" >
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>`;
-        $(`.${classPreviewContainer}`).append(html);
-      } else {
-        $.modal.alertError("Đính kèm tệp thất bại, vui lòng thử lại sau.");
-      }
-    },
-  });
-}
 /**
  * @author Khanh
  * @description create another values on tab oversize if exist from server
@@ -553,15 +491,10 @@ function initFileIsExist(previewClass, fileType) {
       shipmentFiles.push(element.id);
       if (element.fileType == fileType) {
         htmlInit =
-          `<div class="preview-block" style="width: 70px;float: left;">
+          `<div class="preview-block" style="width: 70px;float: left;margin-top: 10px;">
           <a href=${element.path} target="_blank"><img src="` +
           ctx +
           `img/document.png" alt="Tài liệu" style="max-width: 50px;"/></a>
-          <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` +
-          element.id +
-          `)">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>`;
         $(`.${previewClass}`).append(htmlInit);
       }
@@ -569,41 +502,3 @@ function initFileIsExist(previewClass, fileType) {
   }
 }
 
-function removeImage(element, fileIndex) {
-  if (
-    shipmentDetail.dangerous == DANGEROUS_STATUS.pending ||
-    shipmentDetail.dangerous == DANGEROUS_STATUS.approve ||
-    shipmentDetail.contSpecialStatus == SPECIAL_STATUS.pending ||
-    shipmentDetail.contSpecialStatus == SPECIAL_STATUS.approve
-  ) {
-    $.modal.alertWarning(
-      "Container đang hoặc đã yêu cầu xác nhận, không thể xóa tệp đã đính kèm."
-    );
-  } else {
-    shipmentFiles.forEach(function (value, index) {
-      if (value.id == fileIndex) {
-        $.ajax({
-          url: PREFIX + "/file",
-          method: "DELETE",
-          data: {
-            id: value.id,
-          },
-          beforeSend: function () {
-            $.modal.loading("Đang xử lý, vui lòng chờ...");
-          },
-          success: function (result) {
-            $.modal.closeLoading();
-            if (result.code == 0) {
-              $.modal.msgSuccess("Xóa tệp thành công.");
-              $(element).parent("div.preview-block").remove();
-              shipmentFiles.splice(index, 1);
-            } else {
-              $.modal.alertWarning("Xóa tệp thất bại.");
-            }
-          },
-        });
-        return false;
-      }
-    });
-  }
-}

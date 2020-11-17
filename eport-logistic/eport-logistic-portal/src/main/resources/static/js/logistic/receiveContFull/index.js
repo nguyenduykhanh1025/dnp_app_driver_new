@@ -724,18 +724,12 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
 	    if (!isDestroy) {
 	        containerNo = hot.getDataAtCell(row, 2);
 	        sztp = hot.getDataAtCell(row, 9);
-	    }
-	    
-	    if (sourceData && sourceData.length > 0) {
-	    	 
-	        if (sourceData.length > row && sourceData[row].id) {
-	        	
-	        	  
-	        	if("P" == sourceData[row].sztp.substring(2,3) ||  "T" == sourceData[row].sztp.substring(2,3) || "U" == sourceData[row].sztp.substring(2,3)|| "R" == sourceData[row].sztp.substring(2,3)){
-	        	
+	    } 
+	    if (sourceData && sourceData.length > 0) { 
+	        if (sourceData.length > row && sourceData[row].id) { 
+	        	if("G" != sourceData[row].sztp.substring(2,3)){ 
 	        		value = '<button class="btn btn-default btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
-	        	}
-	            
+	        	} 
 	        } 
 	    }
 	    $(td).html(value);
@@ -1221,7 +1215,7 @@ function updateLayout() {
         
      // neu bang G thì hiện nút khai hải quan lên
      // chưa check được trường hợp check all của nút khai hải quan vì có trường hợp bằng G vào
-  	  if("G" == sourceData[i].sztp.substring(2,3)){
+  	  /*if("G" == sourceData[i].sztp.substring(2,3)){
   		  $("#customBtn").prop("disabled", false);
   		  
   	  }
@@ -1236,7 +1230,7 @@ function updateLayout() {
   	  if("G" != sourceData[i].sztp.substring(2,3) &&  "3" != sourceData[i].contSpecialStatus){
 		  
 		  $("#customBtn").prop("disabled", true);// khai hải quan enable
-	  }	
+	  }	*/
   	  		
   	  // end
   	  
@@ -1294,21 +1288,19 @@ function updateLayout() {
   }
   ///////
   setLayoutConfirmRequestContSpecial();
-  //setLayoutCustomRequestContSpecial();
+  
+  setLayoutCustomBTN();
   
 }
-////////
-/*function setLayoutConfirmRequestContSpecial() {
-	  $("#acceptBtn").prop("disabled",isHaveContSpecialInListChecked());
-	  
-}*/
-
+//  ẩn hiện nút yêu cầu xác nhận
 function setLayoutConfirmRequestContSpecial() {
-	  $("#acceptBtn").prop( "disabled", !isOnlyHaveContSpecialInListChecked()
-	  );
+	  $("#acceptBtn").prop("disabled", isDisableBtnRequestConfirm());
 	}
-
-
+// ẩn hiện nút khai hải quan
+function setLayoutCustomBTN() {
+	  $("#customBtn").prop("disabled", isDisableCustomBTN());
+	}
+  
 ////// yêu cầu xác nhận
 function isOnlyHaveContSpecialInListChecked() {
 	  let result = true; // true: enable btn || false: disable btn
@@ -1320,7 +1312,7 @@ function isOnlyHaveContSpecialInListChecked() {
 	    if (checkList[i] == 1) {
 	      var markCounSpecial = getMarkSizeContSpecial(
 	        dataColunmSizeCont.split("")
-	      );
+	      ); 
 	      if (
 	        (markCounSpecial &&
 	          isContNeedRequestConfirmFollowContSpecialStatus(i)) ||
@@ -1346,31 +1338,93 @@ function isOnlyHaveContSpecialInListChecked() {
 	  }
 	  return result;
 	}
+
+////////////////
+
+function isCantVerify() {
+	  return !isDisableBtnRequestConfirm();
+	}
+
+///////
+
+// disable/ enable khai hải quan
+// nấu getMarkSizeContSpecialBTN khai báo từ danh sách bằng G hoặc status = 3 thì enable nút lên
+function isDisableCustomBTN() {
+	let result = false; // true: enable btn || false: disable btn
+
+	  for (let i = 0; i < checkList.length; ++i) {
+	    let dataColunmSizeCont = getCodeSizeContFromDataTableHandsonFollowIndex(i);
+	    // status is checked
+	    if (checkList[i] == 1) {
+	      var markCounSpecial = getMarkSizeContSpecialBTN(
+	        dataColunmSizeCont.split("")
+	      );
+	      if (   //markCounSpecial == "" trường hợp nó bằng P,R,T,U nhưng trạng thái nó đã được duyệt chưa check 
+	    	//markCounSpecial  == 'U'
+	        (markCounSpecial == "G" || 
+	        isContContSpecialStatus(i)
+	        ) 
+	        //|| isContNeedRequestConfirmFollowContDangerousStatus(i)
+	        
+	      ) {
+	      } else {
+	        result = true;
+	      }
+	    }
+	  }
+
+	  return result;
+	}
+
+////
+function isDisableBtnRequestConfirm() {
+	  let result = false; // true: enable btn || false: disable btn
+
+	  for (let i = 0; i < checkList.length; ++i) {
+	    let dataColunmSizeCont = getCodeSizeContFromDataTableHandsonFollowIndex(i);
+	    // status is checked
+	    if (checkList[i] == 1) {
+	      var markCounSpecial = getMarkSizeContSpecial(
+	        dataColunmSizeCont.split("")// P,R,T,U
+	      );
+	      if (
+	        (markCounSpecial &&
+	          isContNeedRequestConfirmFollowContSpecialStatus(i)) ||
+	        isContNeedRequestConfirmFollowContDangerousStatus(i)
+	      ) {
+	      } else {
+	        result = true;
+	      }
+	    }
+	  }
+
+	  return result;
+	}
 	
 	
 ///////
 function isHaveContSpecialNotYetRequestConfirm() {
-  let result = false;
-  for (let i = 0; i < checkList.length; ++i) {
-    let dataColunmSizeCont = getCodeSizeContFromDataTableHandsonFollowIndex(i);
-    // status is checked
-    if (checkList[i] == 1) {
-      var markCounSpecial = getMarkSizeContSpecial(
-        dataColunmSizeCont.split("")
-      );
-      if (markCounSpecial) {
-        if (
-          !sourceData[i].contSpecialStatus ||
-          sourceData[i].contSpecialStatus == SPECIAL_STATUS.yet ||
-          sourceData[i].contSpecialStatus == SPECIAL_STATUS.pending
-        ) {
-          result = true;
-        }
-      }
-    }
-  }
-  return result;
-}
+	  let result = false;
+	  for (let i = 0; i < checkList.length; ++i) {
+	    let dataColunmSizeCont = getCodeSizeContFromDataTableHandsonFollowIndex(i);
+	    // status is checked
+	    if (checkList[i] == 1) {
+	      var markCounSpecial = getMarkSizeContSpecial(
+	        dataColunmSizeCont.split("")
+	      );
+	      if (markCounSpecial) {
+	        if (
+	          !sourceData[i].contSpecialStatus ||
+	          sourceData[i].contSpecialStatus == SPECIAL_STATUS.yet ||
+	          sourceData[i].contSpecialStatus == SPECIAL_STATUS.pending
+	        ) {
+	          result = true;
+	        }
+	      }
+	    }
+	  }
+	  return result;
+	}
 
 
 ///////////
@@ -1383,13 +1437,29 @@ function getCodeSizeContFromDataTableHandsonFollowIndex(index) {
 
 /////
 function isContNeedRequestConfirmFollowContSpecialStatus(index) {
-	  return (
-	    sourceData[index].contSpecialStatus == DANGEROUS_STATUS.yet ||
-	    sourceData[index].contSpecialStatus == DANGEROUS_STATUS.reject ||
+	  return ( ////// ở đây
+	    sourceData[index].contSpecialStatus == SPECIAL_STATUS.yet ||
+	    sourceData[index].contSpecialStatus == SPECIAL_STATUS.reject ||
 	    !sourceData[index].contSpecialStatus
 	  );
 	}
 
+/////
+function isContContSpecialStatus(index) {// khai hai quan
+	  return ( ////// ở đây
+	    sourceData[index].contSpecialStatus == SPECIAL_STATUS.approve 
+	    //|| !sourceData[index].contSpecialStatus
+	  );
+	}
+
+
+/////
+function statusCont(index){
+	if(sourceData[index].sztp == '3'){
+		return false;
+	}
+	 return true;	
+	}
 /////
 function isContNeedRequestConfirmFollowContDangerousStatus(index) {
 	  return (
@@ -1397,8 +1467,36 @@ function isContNeedRequestConfirmFollowContDangerousStatus(index) {
 	    sourceData[index].dangerous == DANGEROUS_STATUS.reject
 	  );
 	}
+//////
 
+function isCantVerifyFollowDangerousStatus(index) {
+	  if (
+	    !sourceData[index].dangerous ||
+	    sourceData[index].dangerous == DANGEROUS_STATUS.NOT
+	  ) {
+	    return true;
+	  }
+	  if (
+	    sourceData[index].dangerous &&
+	    sourceData[index].dangerous == DANGEROUS_STATUS.approve
+	  ) {
+	    return true;
+	  }
+	  return false;
+	}
+
+ 
 /////// 
+function isCantVerifyFollowSpecialStatus(index) {
+	  if (!sourceData[index].contSpecialStatus) {
+	    return true;
+	  }
+	  if (sourceData[index].contSpecialStatus == SPECIAL_STATUS.approve) {
+	    return true;
+	  }
+	  return false;
+	}
+//////
 function getMarkSizeContSpecial(data) {
 	  const listMarkContSpecial = ["P", "R", "T", "U"];
 	  var result = "";
@@ -1411,6 +1509,24 @@ function getMarkSizeContSpecial(data) {
 	  }
 	  return result;
 	}
+ 
+
+//////
+function getMarkSizeContSpecialBTN(data) {// khai hải quan
+	  const listMarkContSpecial = ["P", "R", "T", "U","G"];
+	  var result = "";
+
+	  for (let i = 0; i < listMarkContSpecial.length; ++i) {
+	    if (data.includes(listMarkContSpecial[i])) {
+	      result = listMarkContSpecial[i];
+	      break;
+	    }
+	  }
+	  return result;
+	}
+
+
+
 
  
 ///////////  
@@ -1457,6 +1573,9 @@ function loadShipmentDetail(id) {
         containerRemarkArr = Array(rowAmount).fill('');
         locations = Array(rowAmount).fill('');
         sourceData.forEach(function iterate(shipmentDetail, index) {
+        	
+        	
+        	
           if (shipmentDetail.id == null) {
             saved = false;
           }
@@ -1857,10 +1976,7 @@ function CheckShipmentDetail() {
 if (getDataSelectedFromTable(true, false) && shipmentDetails.length > 0) { 
     $.modal.confirmShipment("Xác nhận yêu cầu xác nhận ?", function () {
       $.modal.loading("Đang xử lý...");
-      $.ajax({
-    	  //url: prefix +  "/" + shipmentSelected.id +"/shipment-detail/request-confirm",  shipmentId
-    	  
-    	  //url: prefix + "/shipment-detail/" + shipmentSelected.shipmentDetailId, 
+      $.ajax({ 
     	  url: prefix + "/shipment-detail/request-confirm/" ,  
 	        method : "post", 
 	        data : { 

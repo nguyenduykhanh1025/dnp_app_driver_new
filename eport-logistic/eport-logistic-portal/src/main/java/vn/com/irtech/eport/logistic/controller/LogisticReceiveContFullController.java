@@ -298,79 +298,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error("Chỉnh sửa lô thất bại");
 	}
 	
-	@GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail") 
-	public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
-			@PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
-		mmap.put("containerNo", containerNo);
-		mmap.put("sztp", sztp);
-		mmap.put("shipmentDetailId", shipmentDetailId); 
-		mmap.put("shipmentDetail",shipmentDetailService.selectShipmentDetailById( shipmentDetailId));//obj    
-		 
-	//// nhat add
-			ShipmentImage shipmentImage = new ShipmentImage();
-			shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
-			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
-			for (ShipmentImage shipmentImage2 : shipmentImages) {
-				shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
-			}
-		mmap.put("shipmentFiles", shipmentImages);
-			 
-		return PREFIX + "/detail";
-	}
+
 	 
 	
-	@GetMapping("/shipment/{shipmentId}/shipment-detail")
-	@ResponseBody
-	public AjaxResult listShipmentDetail(@PathVariable Long shipmentId) {
-		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
-		// check if shipment exist and allow permission
-		if (shipment == null || !verifyPermission(shipment.getLogisticGroupId())) {
-			return error("Không tìm thấy lô");
-		}
-		// get list shipment detail by Id
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setShipmentId(shipmentId);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
-		 
-		
-		// auto load containers detail for eDO for first time
-		if ("1".equals(shipment.getEdoFlg()) && shipmentDetails.size() == 0) {
-			if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
-				shipmentDetails = shipmentDetailService.getShipmentDetailFromHouseBill(shipment.getHouseBill());
-			} else {
-				// get infor from edi
-				shipmentDetails = shipmentDetailService.getShipmentDetailsFromEDIByBlNo(shipment.getBlNo());
-			}
-			// get infor from catos
-			// List<ShipmentDetail> shipmentDetailsCatos =
-			// catosApiService.selectShipmentDetailsByBLNo(shipment.getBlNo());
-			Map<String, ContainerInfoDto> catosDetailMap = getCatosShipmentDetail(shipment.getBlNo());
-			// Get opecode, sealNo, wgt, pol, pod
-			ContainerInfoDto catos = null;
-			for (ShipmentDetail detail : shipmentDetails) {
-				catos = catosDetailMap.get(detail.getContainerNo());
-				if (catos != null) {
-					// Overwrite information from CATOS
-					detail.setSztp(catos.getSztp());
-					// Block-Bay-Row-Tier
-					detail.setLocation(catos.getLocation());
-					detail.setContainerRemark(catos.getRemark());
-					detail.setOpeCode(catos.getPtnrCode() + ": " + catos.getPtnrName());
-					detail.setVslNm(catos.getVslCd() + ": " + catos.getVslNm());// overwrite VSL_CD:VSL_NM from CATOS
-					detail.setVoyCarrier(catos.getInVoy()); // Carrier voyage name on booking
-					detail.setVoyNo(catos.getUserVoy());
-					detail.setSealNo(catos.getSealNo1());
-					detail.setWgt(catos.getWgt());
-					detail.setLoadingPort(catos.getPol()); // overwrite from CATOS
-					detail.setDischargePort(catos.getPod()); // overwrite from CATOS
-				}
-			}
-		}
-
-		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("shipmentDetails", shipmentDetails); 
-		return ajaxResult;
-	}
+	
 
 	@Log(title = "Khai Báo Cont", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment-detail")
@@ -1198,34 +1129,35 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	
 	@PostMapping("/uploadFile")
 	@ResponseBody
-	public AjaxResult uploadFile(@RequestParam(value="filePaths[]") String[] filePaths, String shipmentDetailId, Long shipmentId, String shipmentSztp) throws IOException, InvalidExtensionException {
+	//oversizeTop  oversizeRight oversizeLeft oversizeFront oversizeBack
+	public AjaxResult uploadFile(@RequestParam(value="filePaths[]") String[] filePaths, 
+								String shipmentDetailId, Long shipmentId, 
+								String shipmentSztp,String shipmentDangerous,
+								String oversizeTop,String oversizeRight,
+								String oversizeLeft,String oversizeFront,
+								String oversizeBack) throws IOException, 
+								InvalidExtensionException {
 		
 		for (String i : filePaths) {
 			ShipmentImage shipmentImage = new ShipmentImage();
 			shipmentImage.setPath(i);
 			shipmentImage.setShipmentId(shipmentId);
 			shipmentImage.setShipmentDetailId(shipmentDetailId);  
-			
-			if(shipmentSztp == null || "".equals(shipmentSztp)){
+
+			if(!"".equalsIgnoreCase(shipmentDangerous) || shipmentDangerous != null){// cont nguy hiểm
 				shipmentImage.setFileType("D"); 
-			} 
-			if("P".equalsIgnoreCase(shipmentSztp.substring(2,3))){
-				shipmentImage.setFileType("P"); 
 			}
-			if("T".equalsIgnoreCase(shipmentSztp.substring(2,3))){
-				shipmentImage.setFileType("T"); 
-			}
-			if("U".equalsIgnoreCase(shipmentSztp.substring(2,3))){
-				shipmentImage.setFileType("U"); 
-			}
-			if("R".equalsIgnoreCase(shipmentSztp.substring(2,3))){// cont lạnh là R còn các cont còn lại để sau
+			
+			if("R".equalsIgnoreCase(shipmentSztp.substring(2,3))){// cont lạnh  
 				shipmentImage.setFileType("R"); 
 			}
-			
-			
-			 //shipmentImage.setFileType(shipmentSztp.substring(2,3)); 
-				 
-			shipmentImageService.insertShipmentImage(shipmentImage);// them detail
+			//oversizeTop  oversizeRight oversizeLeft oversizeFront oversizeBack
+			if(!"".equalsIgnoreCase(oversizeTop) || oversizeTop != null || !"".equalsIgnoreCase(oversizeRight) || oversizeRight != null
+			|| !"".equalsIgnoreCase(oversizeLeft) || oversizeLeft != null || !"".equalsIgnoreCase(oversizeFront) || oversizeFront != null
+			|| !"".equalsIgnoreCase(oversizeBack) || oversizeBack != null){// cont cont quá khổ
+				shipmentImage.setFileType("O");
+			}  
+			shipmentImageService.insertShipmentImage(shipmentImage);// them detail 
 		}
 		return success();
 	} 
@@ -1264,6 +1196,107 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		
 		return success("Yêu cầu xác nhận thành công");
 		} 
+	
+	@GetMapping("/shipment/{shipmentId}/shipment-detail")
+	@ResponseBody
+	public AjaxResult listShipmentDetail(@PathVariable Long shipmentId) {
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		// check if shipment exist and allow permission
+		if (shipment == null || !verifyPermission(shipment.getLogisticGroupId())) {
+			return error("Không tìm thấy lô");
+		}
+		// get list shipment detail by Id
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setShipmentId(shipmentId);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
+		 
+		
+		// auto load containers detail for eDO for first time
+		if ("1".equals(shipment.getEdoFlg()) && shipmentDetails.size() == 0) {
+			if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
+				shipmentDetails = shipmentDetailService.getShipmentDetailFromHouseBill(shipment.getHouseBill());
+			} else {
+				// get infor from edi
+				shipmentDetails = shipmentDetailService.getShipmentDetailsFromEDIByBlNo(shipment.getBlNo());
+			}
+			// get infor from catos
+			// List<ShipmentDetail> shipmentDetailsCatos =
+			// catosApiService.selectShipmentDetailsByBLNo(shipment.getBlNo());
+			Map<String, ContainerInfoDto> catosDetailMap = getCatosShipmentDetail(shipment.getBlNo());
+			// Get opecode, sealNo, wgt, pol, pod
+			ContainerInfoDto catos = null;
+			for (ShipmentDetail detail : shipmentDetails) {
+				catos = catosDetailMap.get(detail.getContainerNo());
+				if (catos != null) {
+					// Overwrite information from CATOS
+					detail.setSztp(catos.getSztp());
+					// Block-Bay-Row-Tier
+					detail.setLocation(catos.getLocation());
+					detail.setContainerRemark(catos.getRemark());
+					detail.setOpeCode(catos.getPtnrCode() + ": " + catos.getPtnrName());
+					detail.setVslNm(catos.getVslCd() + ": " + catos.getVslNm());// overwrite VSL_CD:VSL_NM from CATOS
+					detail.setVoyCarrier(catos.getInVoy()); // Carrier voyage name on booking
+					detail.setVoyNo(catos.getUserVoy());
+					detail.setSealNo(catos.getSealNo1());
+					detail.setWgt(catos.getWgt());
+					detail.setLoadingPort(catos.getPol()); // overwrite from CATOS
+					detail.setDischargePort(catos.getPod()); // overwrite from CATOS
+					
+					// cont lạnh thì theo sztp = R
+					// cont nguy hiểm : khác null. or khác rỗng
+					detail.setDangerousImo(catos.getImdg()); // overwrite from catos IMDG
+					detail.setDangerousUnno(catos.getUnno()); // 
+					 
+					// cont quá khổ: 
+					// thêm entiti để hiểu được: Nếu các trường có ký hiệu đầu là os hoặc ov thì nó là quá khổ.
+					// os 
+					detail.setOvHeight(catos.getOsHeight()); 
+					detail.setOsPort(catos.getOsPort()); 
+					detail.setOsStbd(catos.getOsStbd());
+					  
+					// ov 
+					detail.setOvAft(catos.getOvAft());  
+					detail.setOvFore(catos.getOvFore());
+					detail.setOvHeight(catos.getOvHeight());
+					detail.setOvPort(catos.getOvPort());
+					detail.setOvStbd(catos.getOvStbd());
+					
+					
+				}
+			}
+		}
+
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentDetails", shipmentDetails); 
+		return ajaxResult;
+	}
+	
+	// nhat
+	@GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail") 
+	public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
+			@PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
+		mmap.put("containerNo", containerNo);
+		mmap.put("sztp", sztp);
+		mmap.put("shipmentDetailId", shipmentDetailId); 
+		mmap.put("shipmentDetail",shipmentDetailService.selectShipmentDetailById( shipmentDetailId));//obj
+		
+		
+		
+		 
+	//// nhat add
+			ShipmentImage shipmentImage = new ShipmentImage();
+			shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+			for (ShipmentImage shipmentImage2 : shipmentImages) {
+				shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+			}
+		mmap.put("shipmentFiles", shipmentImages);
+		
+		
+		//   
+			 
+		return PREFIX + "/detail";
+	}
 }
 	
 

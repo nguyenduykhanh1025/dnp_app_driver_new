@@ -8,6 +8,10 @@ import vn.com.irtech.eport.common.core.domain.BaseEntity;
  * @author ThanhD
  * @date 2020-07-28
  */
+/**
+ * @author KunlezIsme
+ *
+ */
 public class ShipmentImage extends BaseEntity {
     private static final long serialVersionUID = 1L;
 

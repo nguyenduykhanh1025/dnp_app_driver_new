@@ -99,11 +99,11 @@ public interface EportConstants {
 	/** Container status process order */
 	public static final Integer CONTAINER_STATUS_PROCESSING = 2;
 	/** Container status process order */
-//	public static final Integer CONTAINER_STATUS_PAYMENT = 3;
-//	/** Container status process order */
-//	public static final Integer CONTAINER_STATUS_CUSTOM = 4;
-//	/** Container status process order */
-//	public static final Integer CONTAINER_STATUS_FINISH = 5;
+	// public static final Integer CONTAINER_STATUS_PAYMENT = 3;
+	// /** Container status process order */
+	// public static final Integer CONTAINER_STATUS_CUSTOM = 4;
+	// /** Container status process order */
+	// public static final Integer CONTAINER_STATUS_FINISH = 5;
 
 	// Container supply status
 	/** Container supply status init */
@@ -278,7 +278,7 @@ public interface EportConstants {
 	/** Key name for gate detection info saved in cache */
 	public static final String CACHE_GATE_DETECTION_KEY = "gateDetectionInfo";
 
-	// Synchronize queue type
+// Synchronize queue type
 	/** Sync queue type expired dem */
 	public static final String SYNC_QUEUE_DEM = "DEM";
 	/** Sync queue type det free time */
@@ -299,4 +299,40 @@ public interface EportConstants {
 	public static final String GATE_REQ_TYPE_BEGIN = "B";
 	/** Gate in form data type continuing */
 	public static final String GATE_REQ_TYPE_CONTINUE = "C";
+
+	// Type of partner code in catos
+	/** partner type consignee */
+	public static final String PTNR_TYPE_CONSIGNEE = "CNS";
+	/** partner type shipping line */
+	public static final String PTNR_TYPE_SHIPPING_LINE = "SHP";
+	/** partner type trucker */
+	public static final String PTNR_TYPE_TRUCKER = "TRK";
+	/** partner type forwarder */
+	public static final String PTNR_TYPE_FORWARDER = "FWD";
+
+	/**
+	 * Tình trạng yêu cầu các cont đặc biệt
+	 */
+	// Cont chưa yêu cầu xác nhận
+	public static final String CONT_REQUEST_SPECIAL_YET = "1";
+	// Cont đang chờ xác nhận
+	public static final String CONT_REQUEST_SPECIAL_PENDING = "2";
+	// Cont đã được xác nhận
+	public static final String CONT_REQUEST_SPECIAL_APPROVE = "3";
+	// Cont bị từ chối xác nhận
+	public static final String CONT_REQUEST_SPECIAL_REJECT = "4";
+
+	/**
+	 * Tình trạng yêu cầu các cont nguy hiểm
+	 */
+	// Không phải cont nguy hiểm
+	public static final String CONT_REQUEST_DANGEROUS_FALSE = "F";
+	// Cont chưa yêu cầu xác nhận || là cont nguy hiểm
+	public static final String CONT_REQUEST_DANGEROUS_YET = "T";
+	// Cont nguy hiểm đang chờ xác nhận
+	public static final String CONT_REQUEST_DANGEROUS_PENDING = "2";
+	// Cont nguy hiểm đã được xác nhận
+	public static final String CONT_REQUEST_DANGEROUS_APPROVE = "3";
+	// Cont nguy hiểm bị từ chối xác nhận
+	public static final String CONT_REQUEST_DANGEROUS_REJECT = "4";
 }
