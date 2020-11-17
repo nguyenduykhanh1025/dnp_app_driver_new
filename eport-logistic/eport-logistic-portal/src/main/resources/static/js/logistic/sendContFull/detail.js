@@ -178,7 +178,6 @@ function initDropzone(
   idButtonAttach,
   keyForm
 ) {
-  console.log(keyForm);
   let previewTemplate = "<span data-dz-name></span>";
   myDropzone = new Dropzone(`#${idDropzone}`, {
     url: PREFIX + "/cont-special/file",
@@ -409,18 +408,52 @@ function submitHandler() {
             : data.dangerous,
       };
 
-      if (shipmentFilePaths.dangerous.length) {
-        saveFile(shipmentFilePaths.dangerous, "");
+      //validate file
+      let isValidateFile = true;
+      
+      if (data.dangerous && data.dangerous != DANGEROUS_STATUS.NOT) {
+        console.log(data.dangerous);
+        console.log(shipmentFilePaths.dangerous);
+        // dangerous khong co dinh kem file
+        if (!shipmentFilePaths.dangerous.length) {
+          isValidateFile = false;
+          $.modal.alertWarning(
+            "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file."
+          );
+        }
       }
-      if (shipmentFilePaths.oversize.length) {
-        saveFile(shipmentFilePaths.oversize, shipmentDetail.sztp);
-      }
-      if (shipmentFilePaths.ice.length) {
-        saveFile(shipmentFilePaths.ice, shipmentDetail.sztp);
+      if (data.oversize && data.oversize != "F") {
+        if (!shipmentFilePaths.oversize.length) {
+          isValidateFile = false;
+          $.modal.alertWarning(
+            "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file."
+          );
+        }
       }
 
-      parent.submitDataFromDetailModal(data);
-      onCloseModel();
+      if (data.temperature) {
+        if (!shipmentFilePaths.ice.length) {
+          isValidateFile = false;
+          $.modal.alertWarning(
+            "Chưa đính kèm tệp cho container lạnh. Vui lòng đính kèm file."
+          );
+        }
+      }
+
+      if (isValidateFile) {
+        if (shipmentFilePaths.dangerous.length) {
+          saveFile(shipmentFilePaths.dangerous, "");
+        }
+        if (shipmentFilePaths.oversize.length) {
+          saveFile(shipmentFilePaths.oversize, shipmentDetail.sztp);
+        }
+        if (shipmentFilePaths.ice.length) {
+          saveFile(shipmentFilePaths.ice, shipmentDetail.sztp);
+        }
+
+        parent.submitDataFromDetailModal(data);
+        onCloseModel();
+      }
     }
   }
 }
@@ -555,7 +588,9 @@ function initFileIsExist(previewClass, fileType) {
     let htmlInit = "";
     shipmentFiles.forEach(function (element, index) {
       if (element) {
-        shipmentFiles.push(element.id);
+        // shipmentFiles.push(element.id);
+
+        shipmentFilePaths[`${getKeyFormByKeyType(fileType)}`].push(element);
         if (element.fileType == fileType) {
           htmlInit =
             `<div class="preview-block" style="width: 70px;float: left;">
@@ -611,5 +646,17 @@ function removeImage(element, fileIndex) {
         return false;
       }
     });
+  }
+}
+
+function getKeyFormByKeyType(keyType) {
+  if (keyType == "D") {
+    return KEY_FORM.DANGEROUS;
+  } else if (keyType == "R") {
+    return KEY_FORM.ICE;
+  } else if (keyType == "P") {
+    return KEY_FORM.OVERSIZE;
+  } else {
+    return "";
   }
 }

@@ -199,9 +199,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
         ShipmentImage shipmentImage = new ShipmentImage();
         shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
         List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
-        for (ShipmentImage shipmentImage2 : shipmentImages) {
-            shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
-        }
         mmap.put("shipmentFiles", shipmentImages);
         return PREFIX + "/detail";
 
@@ -1074,8 +1071,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if ((shipmentDetail.getContSpecialStatus() != null
                         && !shipmentDetail.getContSpecialStatus().equals(EportConstants.CONT_REQUEST_SPECIAL_PENDING))
-                        || (shipmentDetail.getDangerous() != null && !shipmentDetail.getDangerous()
-                                .equals(EportConstants.CONT_REQUEST_DANGEROUS_PENDING))) {
+                        || (shipmentDetail.getDangerous() != null
+                                && !shipmentDetail.getDangerous().equals(EportConstants.CONT_REQUEST_DANGEROUS_FALSE)
+                                && !shipmentDetail.getDangerous()
+                                        .equals(EportConstants.CONT_REQUEST_DANGEROUS_PENDING))) {
                     return error("Container quý khách chọn chưa được yêu cầu xác nhận.");
                 }
             }

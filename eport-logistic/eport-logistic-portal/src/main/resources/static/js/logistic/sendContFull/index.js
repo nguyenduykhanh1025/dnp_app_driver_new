@@ -3385,9 +3385,6 @@ function requestConfirmContSpecialCancelOrder() {
       );
       // status is checked
       if (checkList[i] == 1) {
-        // var markCounSpecial = getMarkSizeContSpecial(
-        //   dataColunmSizeCont.split("")
-        // );
         if (
           !(
             sourceData[i].dangerous == DANGEROUS_STATUS.pending ||

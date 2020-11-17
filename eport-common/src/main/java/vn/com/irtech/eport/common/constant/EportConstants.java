@@ -276,6 +276,38 @@ public interface EportConstants {
 	/** Key name for gate detection info saved in cache */
 	public static final String CACHE_GATE_DETECTION_KEY = "gateDetectionInfo";
 
+	// Synchronize queue type
+	/** Sync queue type expired dem */
+	public static final String SYNC_QUEUE_DEM = "DEM";
+	/** Sync queue type det free time */
+	public static final String SYNC_QUEUE_DET = "DET";
+
+	// Synchronize queue status
+	/** Sync queue status waiting */
+	public static final String SYNC_QUEUE_STATUS_WAITING = "W";
+	/** Sync queue status progress */
+	public static final String SYNC_QUEUE_STATUS_PROGRESS = "P";
+	/** Sync queue status success */
+	public static final String SYNC_QUEUE_STATUS_SUCCESS = "S";
+	/** Sync queue status error */
+	public static final String SYNC_QUEUE_STATUS_ERROR = "E";
+
+	// Type of gate in form data (Begin or continue)
+	/** Gate in form data type beginning */
+	public static final String GATE_REQ_TYPE_BEGIN = "B";
+	/** Gate in form data type continuing */
+	public static final String GATE_REQ_TYPE_CONTINUE = "C";
+
+	// Type of partner code in catos
+	/** partner type consignee */
+	public static final String PTNR_TYPE_CONSIGNEE = "CNS";
+	/** partner type shipping line */
+	public static final String PTNR_TYPE_SHIPPING_LINE = "SHP";
+	/** partner type trucker */
+	public static final String PTNR_TYPE_TRUCKER = "TRK";
+	/** partner type forwarder */
+	public static final String PTNR_TYPE_FORWARDER = "FWD";
+
 	/**
 	 * Tình trạng yêu cầu các cont đặc biệt
 	 */
