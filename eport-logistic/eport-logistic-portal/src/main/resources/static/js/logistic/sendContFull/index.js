@@ -35,6 +35,8 @@ var detailInformationForContainerSpecial = {
   data: [],
   indexSelected: -1,
 };
+
+var consigneeList, vslNmList, currentProcessId, currentSubscription;
 const SPECIAL_STATUS = {
   yet: "1",
   pending: "2",
@@ -53,6 +55,84 @@ const DANGEROUS_STATUS = {
 /**
  * @author Khanh
  */
+
+//dictionary sizeList
+$.ajax({
+  type: "GET",
+  url: ctx + "logistic/size/container/list",
+  success(data) {
+    if (data.code == 0) {
+      data.data.forEach((element) => {
+        sizeList.push(element["dictLabel"]);
+      });
+    }
+  },
+});
+
+$.ajax({
+  url: ctx + "logistic/source/consignee",
+  method: "GET",
+  success: function (data) {
+    if (data.code == 0) {
+      consigneeList = data.consigneeList;
+    }
+  },
+});
+
+$.ajax({
+  url: prefix + "/berthplan/vessel-voyage/list",
+  method: "GET",
+  success: function (data) {
+    if (data.code == 0) {
+      berthplanList = data.berthplanList;
+      vslNmList = data.vesselAndVoyages;
+    }
+  },
+});
+var cargoTypeList = [
+  "AK:Over Dimension",
+  "BB:Break Bulk",
+  "BN:Bundle",
+  "DG:Dangerous",
+  "DR:Reefer & DG",
+  "DE:Dangerous Empty",
+  "FR:Fragile",
+  "GP:General",
+  "MT:Empty",
+  "RF:Reefer",
+];
+
+var toolbar = [
+  {
+    text:
+      '<button class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Thêm</button>',
+    handler: function () {
+      $.operate.addShipment();
+    },
+  },
+  {
+    text:
+      '<button class="btn btn-sm btn-default" ><i class="fa fa-edit text-warning"></i> Sửa</button>',
+    handler: function () {
+      $.operate.editShipment();
+    },
+  },
+  {
+    text:
+      '<button class="btn btn-sm btn-default"><i class="fa fa-remove text-danger"></i> Xóa</button>',
+    handler: function () {
+      removeShipment();
+    },
+  },
+  {
+    text:
+      '<button class="btn btn-sm btn-default"><i class="fa fa-refresh text-success"></i></button>',
+    handler: function () {
+      handleRefresh();
+    },
+  },
+];
+
 var dataTableHandson = [
   {
     key: "active",
@@ -253,84 +333,6 @@ var dataTableHandson = [
     columns: {
       data: "remark",
       renderer: remarkRenderer,
-    },
-  },
-];
-
-//dictionary sizeList
-$.ajax({
-  type: "GET",
-  url: ctx + "logistic/size/container/list",
-  success(data) {
-    if (data.code == 0) {
-      data.data.forEach((element) => {
-        sizeList.push(element["dictLabel"]);
-      });
-    }
-  },
-});
-var consigneeList, vslNmList, currentProcessId, currentSubscription;
-
-$.ajax({
-  url: ctx + "logistic/source/consignee",
-  method: "GET",
-  success: function (data) {
-    if (data.code == 0) {
-      consigneeList = data.consigneeList;
-    }
-  },
-});
-
-$.ajax({
-  url: prefix + "/berthplan/vessel-voyage/list",
-  method: "GET",
-  success: function (data) {
-    if (data.code == 0) {
-      berthplanList = data.berthplanList;
-      vslNmList = data.vesselAndVoyages;
-    }
-  },
-});
-var cargoTypeList = [
-  "AK:Over Dimension",
-  "BB:Break Bulk",
-  "BN:Bundle",
-  "DG:Dangerous",
-  "DR:Reefer & DG",
-  "DE:Dangerous Empty",
-  "FR:Fragile",
-  "GP:General",
-  "MT:Empty",
-  "RF:Reefer",
-];
-
-var toolbar = [
-  {
-    text:
-      '<button class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Thêm</button>',
-    handler: function () {
-      $.operate.addShipment();
-    },
-  },
-  {
-    text:
-      '<button class="btn btn-sm btn-default" ><i class="fa fa-edit text-warning"></i> Sửa</button>',
-    handler: function () {
-      $.operate.editShipment();
-    },
-  },
-  {
-    text:
-      '<button class="btn btn-sm btn-default"><i class="fa fa-remove text-danger"></i> Xóa</button>',
-    handler: function () {
-      removeShipment();
-    },
-  },
-  {
-    text:
-      '<button class="btn btn-sm btn-default"><i class="fa fa-refresh text-success"></i></button>',
-    handler: function () {
-      handleRefresh();
     },
   },
 ];
@@ -844,9 +846,9 @@ function statusIconsRenderer(
     if (
       (!sourceData[row].contSpecialStatus ||
         sourceData[row].contSpecialStatus == SPECIAL_STATUS.approve) &&
-        (!sourceData[row].dangerous ||
-      sourceData[row].dangerous == DANGEROUS_STATUS.NOT ||
-      sourceData[row].dangerous == DANGEROUS_STATUS.approve)
+      (!sourceData[row].dangerous ||
+        sourceData[row].dangerous == DANGEROUS_STATUS.NOT ||
+        sourceData[row].dangerous == DANGEROUS_STATUS.approve)
     ) {
       switch (sourceData[row].processStatus) {
         case "E":
@@ -942,11 +944,11 @@ function getRequestConfigIcon(contSpecialStatus, dangerous) {
   let contSpecialStatusResult = "";
 
   if (
-    contSpecialStatus == SPECIAL_STATUS.yet ||
-    dangerous == DANGEROUS_STATUS.yet
+    contSpecialStatus == SPECIAL_STATUS.reject ||
+    dangerous == DANGEROUS_STATUS.reject
   ) {
     contSpecialStatusResult =
-      '<i id="verify" class="fa fa-user-circle-o" title="Có thể yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db"></i>';
+      '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
   } else if (
     contSpecialStatus == SPECIAL_STATUS.pending ||
     dangerous == DANGEROUS_STATUS.pending
@@ -962,13 +964,12 @@ function getRequestConfigIcon(contSpecialStatus, dangerous) {
     contSpecialStatusResult =
       '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhật đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
   } else if (
-    contSpecialStatus == SPECIAL_STATUS.reject ||
-    dangerous == DANGEROUS_STATUS.reject
+    contSpecialStatus == SPECIAL_STATUS.yet ||
+    dangerous == DANGEROUS_STATUS.yet
   ) {
     contSpecialStatusResult =
-      '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
+      '<i id="verify" class="fa fa-user-circle-o" title="Có thể yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db"></i>';
   }
-
   return contSpecialStatusResult;
 }
 
@@ -1243,17 +1244,7 @@ function btnDetailRenderer(
     if (sourceData.length > row && sourceData[row].id) {
       value = `<button class="btn btn-default btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-check-circle"></i>Chi tiết</button>`;
     } else if (containerNo && sztp) {
-      value =
-        '<button class="btn btn-success btn-xs" id="detailBtn ' +
-        row +
-        '" onclick="openDetail(' +
-        null +
-        ",'" +
-        containerNo +
-        "'," +
-        "'" +
-        sztp +
-        '\')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
+      value = `<button class="btn btn-default btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-check-circle"></i>Chi tiết</button>`;
     } else {
       value =
         '<button class="btn btn-success btn-xs" id="detailBtn ' +
@@ -1490,6 +1481,65 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 // CONFIGURATE HANDSONTABLE
 function configHandson() {
+  // console.log(consigneeList);
+  // config = {
+  //   stretchH: "all",
+  //   height: $("#right-side__main-table").height() - 35,
+  //   minRows: rowAmount,
+  //   maxRows: rowAmount,
+  //   width: "100%",
+  //   minSpareRows: 0,
+  //   rowHeights: 30,
+  //   fixedColumnsLeft: 3,
+  //   trimDropdown: false,
+  //   manualColumnResize: true,
+  //   manualRowResize: true,
+  //   renderAllRows: true,
+  //   rowHeaders: true,
+  //   comments: true,
+  //   className: "htMiddle htCenter",
+  //   colHeaders: [...dataTableHandson.map((item) => item.colHeaders)],
+  //   colWidths: [...dataTableHandson.map((item) => item.colWidths)],
+  //   filter: "true",
+  //   columns: [...dataTableHandson.map((item) => item.columns)],
+  //   beforeKeyDown: function (e) {
+  //     let selected;
+  //     switch (e.keyCode) {
+  //       // Arrow Left
+  //       case 37:
+  //         selected = hot.getSelected()[0];
+  //         if (selected[3] == 0) {
+  //           e.stopImmediatePropagation();
+  //         }
+  //         break;
+  //       // Arrow Up
+  //       case 38:
+  //         selected = hot.getSelected()[0];
+  //         if (selected[2] == 0) {
+  //           e.stopImmediatePropagation();
+  //         }
+  //         break;
+  //       // Arrow Right
+  //       case 39:
+  //         selected = hot.getSelected()[0];
+  //         if (selected[3] == 16) {
+  //           e.stopImmediatePropagation();
+  //         }
+  //         break;
+  //       // Arrow Down
+  //       case 40:
+  //         selected = hot.getSelected()[0];
+  //         if (selected[2] == rowAmount - 1) {
+  //           e.stopImmediatePropagation();
+  //         }
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   },
+  //   afterChange: onChange,
+  // };
+
   config = {
     stretchH: "all",
     height: $("#right-side__main-table").height() - 35,
@@ -1506,10 +1556,169 @@ function configHandson() {
     rowHeaders: true,
     comments: true,
     className: "htMiddle htCenter",
-    colHeaders: [...dataTableHandson.map((item) => item.colHeaders)],
-    colWidths: [...dataTableHandson.map((item) => item.colWidths)],
+    colHeaders: function (col) {
+      switch (col) {
+        case 0:
+          var txt = "<input type='checkbox' class='checker' ";
+          txt += "onclick='checkAll()' ";
+          txt += ">";
+          return txt;
+        case 1:
+          return "Trạng Thái";
+        case 2:
+          return '<span class="required">Container No</span>';
+        case 3:
+          return '<span class="required">Kích Thước</span>';
+        case 4:
+          return '<span class="required">Chủ Hàng</span>';
+        case 5:
+          return '<span class="required">Tàu và Chuyến</span>';
+        case 6:
+          return "Ngày tàu đến";
+        case 7:
+          return '<span class="required">Cảng Dỡ Hàng</span>';
+        case 8:
+          return '<span class="required">Trọng Lượng (kg)</span>';
+        case 9:
+          return '<span class="required">Loại Hàng</span>';
+        case 10:
+          return "Tên Hàng";
+        case 11:
+          return "Số Seal";
+        case 12:
+          return "Nhiệt Độ (c)";
+        case 13:
+          return "PTTT";
+        case 14:
+          return "Mã Số Thuế";
+        case 15:
+          return "Người Thanh Toán";
+        case 16:
+          return "Ghi Chú";
+        case 17:
+          return '<span class="required">Chi Tiết</span>';
+      }
+    },
+    colWidths: [
+      40,
+      150,
+      100,
+      150,
+      150,
+      200,
+      100,
+      120,
+      120,
+      80,
+      100,
+      100,
+      80,
+      80,
+      100,
+      130,
+      200,
+      150,
+    ],
     filter: "true",
-    columns: [...dataTableHandson.map((item) => item.columns)],
+    columns: [
+      {
+        data: "active",
+        type: "checkbox",
+        className: "htCenter",
+        renderer: checkBoxRenderer,
+      },
+      {
+        data: "status",
+        readOnly: true,
+        renderer: statusIconsRenderer,
+      },
+      {
+        data: "containerNo",
+        strict: true,
+        renderer: containerNoRenderer,
+      },
+      {
+        data: "sztp",
+        type: "autocomplete",
+        source: sizeList,
+        strict: true,
+        renderer: sizeRenderer,
+      },
+      {
+        data: "consignee",
+        strict: true,
+        type: "autocomplete",
+        source: consigneeList,
+        renderer: consigneeRenderer,
+      },
+      {
+        data: "vslNm",
+        type: "autocomplete",
+        source: vslNmList,
+        strict: true,
+        renderer: vslNmRenderer,
+      },
+      {
+        data: "eta",
+        renderer: etaRenderer,
+      },
+      {
+        data: "dischargePort",
+        strict: true,
+        type: "autocomplete",
+        renderer: dischargePortRenderer,
+      },
+      {
+        data: "wgt",
+        type: "numeric",
+        strict: true,
+        renderer: wgtRenderer,
+      },
+      {
+        data: "cargoType",
+        strict: true,
+        type: "autocomplete",
+        source: cargoTypeList,
+        renderer: cargoTypeRenderer,
+      },
+      {
+        data: "commodity",
+        renderer: commodityRenderer,
+      },
+      {
+        data: "sealNo",
+        renderer: sealNoRenderer,
+      },
+      {
+        data: "temperature",
+        type: "numeric",
+        strict: true,
+        readonly: true,
+        renderer: temperatureRenderer,
+      },
+      {
+        data: "payType",
+        renderer: payTypeRenderer,
+      },
+      {
+        data: "payer",
+        renderer: payerRenderer,
+      },
+      {
+        data: "payerName",
+        renderer: payerNameRenderer,
+      },
+      {
+        data: "remark",
+        renderer: remarkRenderer,
+      },
+      {
+        data: "btnInformationContainer",
+        strict: true,
+        readonly: true,
+        renderer: btnDetailRenderer,
+      },
+    ],
     beforeKeyDown: function (e) {
       let selected;
       switch (e.keyCode) {
@@ -1547,6 +1756,153 @@ function configHandson() {
     },
     afterChange: onChange,
   };
+}
+configHandson();
+function onChange(changes, source) {
+  if (!changes) {
+    return;
+  }
+  onChangeFlg = true;
+  changes.forEach(function (change) {
+    // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
+    if (change[1] == "vslNm" && change[3] != null && change[3] != "") {
+      let vesselAndVoy = hot.getDataAtCell(change[0], 5);
+      //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
+      if (vesselAndVoy) {
+        if (currentVesselVoyage != vesselAndVoy) {
+          currentVesselVoyage = vesselAndVoy;
+          let shipmentDetail = new Object();
+          for (let i = 0; i < berthplanList.length; i++) {
+            if (vesselAndVoy == berthplanList[i].vslAndVoy) {
+              currentEta = berthplanList[i].eta;
+              shipmentDetail.vslNm = berthplanList[i].vslNm;
+              shipmentDetail.voyNo = berthplanList[i].voyNo;
+              shipmentDetail.year = berthplanList[i].year;
+              $.modal.loading("Đang xử lý ...");
+              $.ajax({
+                url: ctx + "/logistic/pods",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(shipmentDetail),
+                success: function (data) {
+                  $.modal.closeLoading();
+                  if (data.code == 0) {
+                    hot.updateSettings({
+                      cells: function (row, col, prop) {
+                        if (col == 7) {
+                          let cellProperties = {};
+                          dischargePortList = data.dischargePorts;
+                          cellProperties.source = dischargePortList;
+                          return cellProperties;
+                        }
+                      },
+                    });
+                  }
+                },
+              });
+            }
+          }
+        }
+        hot.setDataAtCell(change[0], 6, currentEta);
+      }
+      // check to input temperature
+    } else if (change[1] == "sztp") {
+      if (change[3] && hot.getDataAtCell(change[0], 2)) {
+        $("#detailBtn" + change[0]).prop("disabled", false);
+      } else {
+        $("#detailBtn" + change[0]).prop("disabled", true);
+      }
+
+      if (
+        change[3] &&
+        change[3].length > 3 &&
+        change[3].substring(0, 4).includes("R")
+      ) {
+        temperatureDisable[change[0]] = 0;
+        hot.updateSettings({
+          cells: function (row, col, prop) {
+            if (row == change[0] && col == 12) {
+              let cellProperties = {};
+              cellProperties.readOnly = false;
+              return cellProperties;
+            }
+          },
+        });
+      } else {
+        temperatureDisable[change[0]] = 1;
+        hot.updateSettings({
+          cells: function (row, col, prop) {
+            if (row == change[0] && col == 12) {
+              let cellProperties = {};
+              cellProperties.readOnly = true;
+              $("#temperature" + row).css(
+                "background-color",
+                "rgb(232, 232, 232)"
+              );
+              return cellProperties;
+            }
+          },
+        });
+      }
+    } else if (change[1] == "containerNo") {
+      if (!change[3]) {
+        sztpListDisable[change[0]] = 0;
+        cleanCell(change[0], 3, sizeList);
+      } else {
+        if (checkContainerNo(change[3])) {
+          $.ajax({
+            url: prefix + "/containerNo/" + change[3] + "/sztp",
+            method: "GET",
+            success: function (data) {
+              if (data.code == 0) {
+                if (data.sztp && data.sztp[0] != "{") {
+                  sizeList.forEach((element) => {
+                    if (data.sztp == element.substring(0, 4)) {
+                      data.sztp = element;
+                      return false;
+                    }
+                  });
+                  sztpListDisable[change[0]] = 1;
+                  hot.setDataAtCell(change[0], 3, data.sztp);
+                } else {
+                  sztpListDisable[change[0]] = 0;
+                  cleanCell(change[0], 3, sizeList);
+                }
+              } else {
+                sztpListDisable[change[0]] = 0;
+                cleanCell(change[0], 3, sizeList);
+              }
+            },
+            error: function (err) {
+              sztpListDisable[change[0]] = 0;
+              cleanCell(change[0], 3, sizeList);
+            },
+          });
+        } else {
+          sztpListDisable[change[0]] = 0;
+          cleanCell(change[0], 3, sizeList);
+        }
+      }
+      if (change[3] && hot.getDataAtCell(change[0], 3)) {
+        $("#detailBtn" + change[0]).prop("disabled", false);
+      } else {
+        $("#detailBtn" + change[0]).prop("disabled", true);
+      }
+    }
+  });
+}
+
+function cleanCell(roww, coll, src) {
+  hot.setDataAtCell(roww, coll, "");
+  hot.updateSettings({
+    cells: function (row, col, prop) {
+      if (row == roww && col == coll) {
+        let cellProperties = {};
+        cellProperties.source = src;
+        return cellProperties;
+      }
+    },
+  });
 }
 configHandson();
 function onChange(changes, source) {
@@ -2262,6 +2618,7 @@ function getDataFromTable(isValidate) {
         ...detailInformationForContainerSpecial.data[index],
       };
     }
+
     if (berthplanList) {
       for (let i = 0; i < berthplanList.length; i++) {
         if (object["vslNm"] == berthplanList[i].vslAndVoy) {
@@ -2725,15 +3082,18 @@ function exportPackingList() {
 
 function openDetail(id, containerNo, sztp, row) {
   if (!id) {
-    id = 0;
+    $.modal.alertWarning(
+      "Container chưa được lưu. Vui lòng lưu khai báo trước."
+    );
+  } else {
+    detailInformationForContainerSpecial.indexSelected = row;
+    $.modal.openCustomForm(
+      "Khai báo chi tiết",
+      `${prefix}/shipment-detail/${id}/cont/${containerNo}/sztp/${sztp}/detail`,
+      800,
+      460
+    );
   }
-  detailInformationForContainerSpecial.indexSelected = row;
-  $.modal.openCustomForm(
-    "Khai báo chi tiết",
-    `${prefix}/shipment-detail/${id}/cont/${containerNo}/sztp/${sztp}/detail`,
-    800,
-    460
-  );
 }
 
 function removeShipment() {
@@ -3025,9 +3385,6 @@ function requestConfirmContSpecialCancelOrder() {
       );
       // status is checked
       if (checkList[i] == 1) {
-        // var markCounSpecial = getMarkSizeContSpecial(
-        //   dataColunmSizeCont.split("")
-        // );
         if (
           !(
             sourceData[i].dangerous == DANGEROUS_STATUS.pending ||
@@ -3110,6 +3467,7 @@ function openFormRemarkBeforeReqSpecialCancelOrder() {
 function submitDataFromDetailModal(data) {
   const { indexSelected } = detailInformationForContainerSpecial;
   detailInformationForContainerSpecial.data[indexSelected] = data;
+  console.log(data);
   saveShipmentDetail();
 }
 

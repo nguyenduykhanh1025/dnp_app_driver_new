@@ -195,16 +195,13 @@ public class LogisticSendContFullController extends LogisticBaseController {
         mmap.put("contDangerousUnnos", dictDataService.getType("cont_dangerous_unno"));
 
         mmap.put("shipmentDetail", this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId));
-        
+
         ShipmentImage shipmentImage = new ShipmentImage();
-		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
-		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
-		for (ShipmentImage shipmentImage2 : shipmentImages) {
-			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
-		}
-		mmap.put("shipmentFiles", shipmentImages);
+        shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+        List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+        mmap.put("shipmentFiles", shipmentImages);
         return PREFIX + "/detail";
-    	
+
     }
 
     @GetMapping("/req/cancel/confirmation")
@@ -382,7 +379,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
             boolean updateShipment = true; // if true => need to update status shipment from init to save
             for (ShipmentDetail inputDetail : shipmentDetails) {
-                
+
                 if (inputDetail.getId() != null) {
                     // Case update
                     ShipmentDetail shipmentDetailReference = shipmentDetailService
@@ -393,45 +390,44 @@ public class LogisticSendContFullController extends LogisticBaseController {
                         return error("Không tìm thấy thông tin, vui lòng kiểm tra lại");
                     }
                     updateShipment = false;
-                    
-                   
-                        shipmentDetailReference.setContainerNo(inputDetail.getContainerNo());
-                        shipmentDetailReference.setSztp(inputDetail.getSztp());
-                        shipmentDetailReference.setSztpDefine(inputDetail.getSztpDefine());
-                        shipmentDetailReference.setConsignee(inputDetail.getConsignee());
-                        shipmentDetailReference.setVslNm(inputDetail.getVslNm());
-                        shipmentDetailReference.setVoyNo(inputDetail.getVoyNo());
-                        shipmentDetailReference.setYear(inputDetail.getYear());
-                        shipmentDetailReference.setVslName(inputDetail.getVslName());
-                        shipmentDetailReference.setVoyCarrier(inputDetail.getVoyCarrier());
-                        shipmentDetailReference.setEta(inputDetail.getEta());
-                        shipmentDetailReference.setEtd(inputDetail.getEtd());
-                        shipmentDetailReference.setDischargePort(inputDetail.getDischargePort());
-                        shipmentDetailReference.setWgt(inputDetail.getWgt());
-                        shipmentDetailReference.setCargoType(inputDetail.getCargoType());
-                        shipmentDetailReference.setCommodity(inputDetail.getCommodity());
-                        shipmentDetailReference.setSealNo(inputDetail.getSealNo());
 
-                        shipmentDetailReference.setVgmChk(inputDetail.getVgmChk());
-                        shipmentDetailReference.setVgmMaxGross(inputDetail.getVgmMaxGross());
-                        shipmentDetailReference.setVgmInspectionDepartment(inputDetail.getVgmInspectionDepartment());
+                    shipmentDetailReference.setContainerNo(inputDetail.getContainerNo());
+                    shipmentDetailReference.setSztp(inputDetail.getSztp());
+                    shipmentDetailReference.setSztpDefine(inputDetail.getSztpDefine());
+                    shipmentDetailReference.setConsignee(inputDetail.getConsignee());
+                    shipmentDetailReference.setVslNm(inputDetail.getVslNm());
+                    shipmentDetailReference.setVoyNo(inputDetail.getVoyNo());
+                    shipmentDetailReference.setYear(inputDetail.getYear());
+                    shipmentDetailReference.setVslName(inputDetail.getVslName());
+                    shipmentDetailReference.setVoyCarrier(inputDetail.getVoyCarrier());
+                    shipmentDetailReference.setEta(inputDetail.getEta());
+                    shipmentDetailReference.setEtd(inputDetail.getEtd());
+                    shipmentDetailReference.setDischargePort(inputDetail.getDischargePort());
+                    shipmentDetailReference.setWgt(inputDetail.getWgt());
+                    shipmentDetailReference.setCargoType(inputDetail.getCargoType());
+                    shipmentDetailReference.setCommodity(inputDetail.getCommodity());
+                    shipmentDetailReference.setSealNo(inputDetail.getSealNo());
 
-                        shipmentDetailReference.setOversizeBack(inputDetail.getOversizeBack());
-                        shipmentDetailReference.setOversizeFront(inputDetail.getOversizeFront());
-                        shipmentDetailReference.setOversizeLeft(inputDetail.getOversizeLeft());
-                        shipmentDetailReference.setOversizeRight(inputDetail.getOversizeRight());
-                        shipmentDetailReference.setOversizeTop(inputDetail.getOversizeTop());
-                        shipmentDetailReference.setOversizeType(inputDetail.getOversizeType());
-                        
-                        shipmentDetailReference.setDangerous(inputDetail.getDangerous());
-                        shipmentDetailReference.setDangerousImo(inputDetail.getDangerousImo());
-                        shipmentDetailReference.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
-                        shipmentDetailReference.setDangerousPacking(inputDetail.getDangerousPacking());
-                        shipmentDetailReference.setDangerousUnno(inputDetail.getDangerousUnno());
+                    shipmentDetailReference.setVgmChk(inputDetail.getVgmChk());
+                    shipmentDetailReference.setVgmMaxGross(inputDetail.getVgmMaxGross());
+                    shipmentDetailReference.setVgmInspectionDepartment(inputDetail.getVgmInspectionDepartment());
 
-                        shipmentDetailReference.setTemperature(inputDetail.getTemperature());
-                        shipmentDetailReference.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
-                    
+                    shipmentDetailReference.setOversizeBack(inputDetail.getOversizeBack());
+                    shipmentDetailReference.setOversizeFront(inputDetail.getOversizeFront());
+                    shipmentDetailReference.setOversizeLeft(inputDetail.getOversizeLeft());
+                    shipmentDetailReference.setOversizeRight(inputDetail.getOversizeRight());
+                    shipmentDetailReference.setOversizeTop(inputDetail.getOversizeTop());
+                    shipmentDetailReference.setOversizeType(inputDetail.getOversizeType());
+
+                    shipmentDetailReference.setDangerous(inputDetail.getDangerous());
+                    shipmentDetailReference.setDangerousImo(inputDetail.getDangerousImo());
+                    shipmentDetailReference.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
+                    shipmentDetailReference.setDangerousPacking(inputDetail.getDangerousPacking());
+                    shipmentDetailReference.setDangerousUnno(inputDetail.getDangerousUnno());
+
+                    shipmentDetailReference.setTemperature(inputDetail.getTemperature());
+                    shipmentDetailReference.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
+
                     shipmentDetailReference.setRemark(inputDetail.getRemark());
                     if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
                         return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
@@ -479,8 +475,14 @@ public class LogisticSendContFullController extends LogisticBaseController {
                     shipmentDetail.setOversizeRight(inputDetail.getOversizeRight());
                     shipmentDetail.setOversizeTop(inputDetail.getOversizeTop());
                     shipmentDetail.setOversizeType(inputDetail.getOversizeType());
-                    
-                    shipmentDetail.setDangerous(inputDetail.getDangerous());
+
+                    if (inputDetail.getSztp().substring(2, 3).indexOf("P") != -1
+                            || inputDetail.getSztp().substring(2, 3).indexOf("R") != -1) {
+                        shipmentDetail.setContSpecialStatus(EportConstants.CONT_REQUEST_SPECIAL_YET);
+                    } else {
+                        shipmentDetail.setContSpecialStatus(null);
+                    }
+
                     shipmentDetail.setDangerousImo(inputDetail.getDangerousImo());
                     shipmentDetail.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
                     shipmentDetail.setDangerousPacking(inputDetail.getDangerousPacking());
@@ -931,10 +933,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
         return containerInfoMap;
     }
 
-    @PostMapping("/file")
+    @PostMapping("/cont-special/file")
     @ResponseBody
-    public AjaxResult saveFile(MultipartFile file) throws IOException, InvalidExtensionException {
-        String basePath = String.format("%s/%s", Global.getUploadPath() + "/sendContFull", getUser().getGroupId());
+    public AjaxResult saveContSpecialeFile(MultipartFile file) throws IOException, InvalidExtensionException {
+        String basePath = String.format("%s/%s", Global.getUploadPath() + "/contSpecial", getUser().getGroupId());
         String now = DateUtils.dateTimeNow();
         String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
         String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
@@ -951,7 +953,24 @@ public class LogisticSendContFullController extends LogisticBaseController {
         return ajaxResult;
     }
 
-    @DeleteMapping("/file")
+    @DeleteMapping("/cont-special/file")
+    @ResponseBody
+    public AjaxResult deleteSendContFullFile(Long id) throws IOException {
+        ShipmentImage shipmentImageParam = new ShipmentImage();
+        shipmentImageParam.setId(id);
+        ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+        String[] fileArr = shipmentImage.getPath().split("/");
+        File file = new File(
+                Global.getUploadPath() + "/contSpecial/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
+
+        if (file.delete()) {
+            shipmentImageService.deleteShipmentImageById(id);
+        }
+
+        return success();
+    }
+
+    @DeleteMapping("/booking/file")
     @ResponseBody
     public AjaxResult deleteFile(Long id) throws IOException {
         ShipmentImage shipmentImageParam = new ShipmentImage();
@@ -959,12 +978,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
         ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
         String[] fileArr = shipmentImage.getPath().split("/");
         File file = new File(
-                Global.getUploadPath() + "/sendContFull/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
-        
+                Global.getUploadPath() + "/booking/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
         if (file.delete()) {
-        	shipmentImageService.deleteShipmentImageById(id);
+            shipmentImageService.deleteShipmentImageById(id);
         }
-		
         return success();
     }
 
@@ -1054,8 +1071,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if ((shipmentDetail.getContSpecialStatus() != null
                         && !shipmentDetail.getContSpecialStatus().equals(EportConstants.CONT_REQUEST_SPECIAL_PENDING))
-                        || (shipmentDetail.getDangerous() != null && !shipmentDetail.getDangerous()
-                                .equals(EportConstants.CONT_REQUEST_DANGEROUS_PENDING))) {
+                        || (shipmentDetail.getDangerous() != null
+                                && !shipmentDetail.getDangerous().equals(EportConstants.CONT_REQUEST_DANGEROUS_FALSE)
+                                && !shipmentDetail.getDangerous()
+                                        .equals(EportConstants.CONT_REQUEST_DANGEROUS_PENDING))) {
                     return error("Container quý khách chọn chưa được yêu cầu xác nhận.");
                 }
             }
@@ -1194,10 +1213,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
                         shipmentDetailReference.setTemperature(inputDetail.getTemperature());
                         shipmentDetailReference.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
 
-                        if(inputDetail.getContSpecialStatus() == null) {
-                        	 shipmentDetailReference.setContSpecialStatus(null);
-                        }
-                        else if (inputDetail.getContSpecialStatus().equals(EportConstants.CONT_REQUEST_SPECIAL_YET)
+                        if (inputDetail.getContSpecialStatus() == null) {
+                            shipmentDetailReference.setContSpecialStatus(null);
+                        } else if (inputDetail.getContSpecialStatus().equals(EportConstants.CONT_REQUEST_SPECIAL_YET)
                                 || inputDetail.getContSpecialStatus()
                                         .equals(EportConstants.CONT_REQUEST_DANGEROUS_REJECT)) {
                             shipmentDetailReference.setContSpecialStatus(EportConstants.CONT_REQUEST_SPECIAL_PENDING);
@@ -1265,10 +1283,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
                     shipmentDetail.setTemperature(inputDetail.getTemperature());
                     shipmentDetail.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
 
-                    if(shipmentDetail.getContSpecialStatus() == null){
-                    	shipmentDetail.setContSpecialStatus(null);
-                    }
-                    else if (inputDetail.getContSpecialStatus().equals(EportConstants.CONT_REQUEST_SPECIAL_YET)
+                    if (shipmentDetail.getContSpecialStatus() == null) {
+                        shipmentDetail.setContSpecialStatus(null);
+                    } else if (inputDetail.getContSpecialStatus().equals(EportConstants.CONT_REQUEST_SPECIAL_YET)
                             || inputDetail.getContSpecialStatus()
                                     .equals(EportConstants.CONT_REQUEST_DANGEROUS_REJECT)) {
                         shipmentDetail.setContSpecialStatus(EportConstants.CONT_REQUEST_SPECIAL_PENDING);
@@ -1330,6 +1347,25 @@ public class LogisticSendContFullController extends LogisticBaseController {
             shipmentImageService.insertShipmentImage(shipmentImage);// them detail
         }
         return success();
+    }
+
+    @PostMapping("/file")
+    @ResponseBody
+    public AjaxResult saveFile(MultipartFile file) throws IOException, InvalidExtensionException {
+        String basePath = String.format("%s/%s", Global.getUploadPath() + "/booking", getUser().getGroupId());
+        String now = DateUtils.dateTimeNow();
+        String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+        String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+
+        ShipmentImage shipmentImage = new ShipmentImage();
+        shipmentImage.setPath(filePath);
+        shipmentImage.setCreateTime(DateUtils.getNowDate());
+        shipmentImage.setCreateBy(getUser().getFullName());
+        shipmentImageService.insertShipmentImage(shipmentImage);
+
+        AjaxResult ajaxResult = AjaxResult.success();
+        ajaxResult.put("shipmentFileId", shipmentImage.getId());
+        return ajaxResult;
     }
 
 }

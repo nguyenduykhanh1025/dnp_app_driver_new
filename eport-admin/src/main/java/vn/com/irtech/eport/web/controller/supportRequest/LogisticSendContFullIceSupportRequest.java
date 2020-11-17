@@ -17,9 +17,11 @@ import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.domain.SysUser;
@@ -54,6 +56,12 @@ public class LogisticSendContFullIceSupportRequest extends AdminBaseController {
     @Autowired
     private ServerConfig serverConfig;
 
+    @Autowired
+    private DictService dictDataService;
+
+    @Autowired
+    private IShipmentImageService shipmentImageService;
+    
     @GetMapping
     public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
 
@@ -178,4 +186,28 @@ public class LogisticSendContFullIceSupportRequest extends AdminBaseController {
         ajaxResult.put("shipmentCommentId", shipmentComment.getId());
         return ajaxResult;
     }
+
+    @GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail")
+    public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
+            @PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
+    	mmap.put("containerNo", containerNo);
+        mmap.put("sztp", sztp);
+        mmap.put("shipmentDetailId", shipmentDetailId);
+
+        mmap.put("contCargoTypes", dictDataService.getType("cont_cargo_type"));
+        mmap.put("contDangerousImos", dictDataService.getType("cont_dangerous_imo"));
+        mmap.put("contDangerousUnnos", dictDataService.getType("cont_dangerous_unno"));
+
+        mmap.put("shipmentDetail", this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId));
+        
+        ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+		for (ShipmentImage shipmentImage2 : shipmentImages) {
+			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+		}
+		mmap.put("shipmentFiles", shipmentImages);
+        return PREFIX + "/detail";
+    }
+
 }

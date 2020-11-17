@@ -62,10 +62,10 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
 
     @Autowired
     private DictService dictDataService;
-    
+
     @Autowired
     private IShipmentImageService shipmentImageService;
-    
+
     @GetMapping
     public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
 
@@ -92,11 +92,7 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
         sysDictData.setDictValue("Chọn OPR");
         dictDatas.add(0, sysDictData);
         mmap.put("oprList", dictDatas);
-        
-        mmap.put("contCargoTypes", dictDataService.getType("cont_cargo_type"));
-        mmap.put("contDangerousImos", dictDataService.getType("cont_dangerous_imo"));
-        mmap.put("contDangerousUnnos", dictDataService.getType("cont_dangerous_unno"));
-        
+
         return PREFIX + "/index";
     }
 
@@ -117,9 +113,9 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
         // get cont is cont dangerous
         params.put("dangerous", EportConstants.CONT_REQUEST_DANGEROUS_PENDING);
         params.put("doStatus", "");
-        
+
         shipment.setParams(params);
-        
+
         List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 
         ajaxResult.put("shipments", getDataTable(shipments));
@@ -140,8 +136,8 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
 
     @GetMapping("/reject/shipment/{shipmentId}/logistic-group/{logisticGroupId}/shipment-detail/{shipmentDetailIds}")
     public String openRejectComment(@PathVariable("shipmentId") String shipmentId,
-                                    @PathVariable("shipmentDetailIds") String shipmentDetailIds,
-                                    @PathVariable("logisticGroupId") String logisticGroupId, ModelMap mmap) {
+            @PathVariable("shipmentDetailIds") String shipmentDetailIds,
+            @PathVariable("logisticGroupId") String logisticGroupId, ModelMap mmap) {
         mmap.put("shipmentId", shipmentId);
         mmap.put("logisticGroupId", logisticGroupId);
         mmap.put("shipmentDetailIds", shipmentDetailIds);
@@ -156,7 +152,7 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
         shipmentDetail.setDangerous(EportConstants.CONT_REQUEST_DANGEROUS_APPROVE);
         shipmentDetail.setUpdateBy(getUser().getLoginName());
         shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
-        
+
         return success("Xác nhận thành công.");
     }
 
@@ -193,29 +189,11 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
         ajaxResult.put("shipmentCommentId", shipmentComment.getId());
         return ajaxResult;
     }
-    
+
     @GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail")
     public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
             @PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
-//        mmap.put("containerNo", containerNo);
-//        mmap.put("sztp", sztp);
-//        mmap.put("shipmentDetailId", shipmentDetailId);
-//
-//        mmap.put("contCargoTypes", dictDataService.getType("cont_cargo_type"));
-//        mmap.put("contDangerousImos", dictDataService.getType("cont_dangerous_imo"));
-//        mmap.put("contDangerousUnnos", dictDataService.getType("cont_dangerous_unno"));
-//        mmap.put("shipmentDetail", this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId));
-//        
-//        ShipmentImage shipmentImage = new ShipmentImage();
-//		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
-//		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
-//		for (ShipmentImage shipmentImage2 : shipmentImages) {
-//			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
-//		}
-//		mmap.put("shipmentFiles", shipmentImages);
-//		
-//        return PREFIX + "/detail";
-    	mmap.put("containerNo", containerNo);
+        mmap.put("containerNo", containerNo);
         mmap.put("sztp", sztp);
         mmap.put("shipmentDetailId", shipmentDetailId);
 
@@ -224,17 +202,15 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
         mmap.put("contDangerousUnnos", dictDataService.getType("cont_dangerous_unno"));
 
         mmap.put("shipmentDetail", this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId));
-        
+
         ShipmentImage shipmentImage = new ShipmentImage();
-		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
-		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
-		for (ShipmentImage shipmentImage2 : shipmentImages) {
-			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
-		}
-		mmap.put("shipmentFiles", shipmentImages);
+        shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+        List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+        for (ShipmentImage shipmentImage2 : shipmentImages) {
+            shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+        }
+        mmap.put("shipmentFiles", shipmentImages);
         return PREFIX + "/detail";
     }
-
-    
 
 }

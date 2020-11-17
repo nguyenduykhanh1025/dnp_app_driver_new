@@ -15,8 +15,9 @@ const SPECIAL_STATUS = {
 const KEY_FORM = {
   OVERSIZE: "oversize",
   DANGEROUS: "dangerous",
+  ICE: "ice",
 };
-var shipmentFilePaths = { oversize: [], dangerous: [] };
+var shipmentFilePaths = { oversize: [], dangerous: [], ice: [] };
 
 $("#form-detail-add").validate({
   onkeyup: false,
@@ -68,6 +69,7 @@ function initValueToElementHTML() {
       dangerousNameProduct,
       dangerousPacking,
     } = shipmentDetail;
+
     initElementHTMLInInformationCommonTab(
       vgmChk,
       vgmInspectionDepartment,
@@ -106,6 +108,12 @@ function initValueToElementHTML() {
       "attachButtonDangerous",
       KEY_FORM.DANGEROUS
     );
+    initDropzone(
+      "dropzoneIce",
+      "preview-container-ice",
+      "attachButtonIce",
+      KEY_FORM.ICE
+    );
   }
 }
 
@@ -114,29 +122,19 @@ function initValueToElementHTML() {
  * @description create another values on tab common if exist from server
  */
 function initElementHTMLInInformationCommonTab(
-  wgt,
   vgmChk,
   vgmInspectionDepartment,
   vgmMaxGross,
   temperature,
   daySetupTemperature
 ) {
-  $("#wgt").val(formatNumber(wgt));
-  $("#wgt").change(function () {
-    const valueNumber = reFormatNumber($(this).val());
-    $(this).val(formatNumber(valueNumber));
-  });
-  $("#wgt").focus(function () {
-    const valueNumber = reFormatNumber($(this).val());
-    $(this).val(valueNumber);
-  });
-
   $("#vgmChk")
     .prop("checked", vgmChk ? true : false)
     .change(function () {
       $("#inspectionDepartment").prop("disabled", !this.checked);
       $("#maxGross").prop("disabled", !this.checked);
     });
+
   $("#temperature")
     .val(temperature ? temperature : null)
     .prop("disabled", !isContIce() ? true : false);
@@ -165,6 +163,8 @@ function initElementHTMLInInformationCommonTab(
       const valueNumber = reFormatNumber($(this).val());
       $(this).val(valueNumber);
     });
+
+  initFileIsExist("preview-container-ice", "R");
 }
 
 /**
@@ -180,7 +180,7 @@ function initDropzone(
 ) {
   let previewTemplate = "<span data-dz-name></span>";
   myDropzone = new Dropzone(`#${idDropzone}`, {
-    url: PREFIX + "/file",
+    url: PREFIX + "/cont-special/file",
     method: "post",
     paramName: "file",
     maxFiles: 5,
@@ -198,7 +198,6 @@ function initDropzone(
     success: function (file, response) {
       if (response.code == 0) {
         $.modal.msgSuccess("Đính kèm tệp thành công.");
-
         shipmentFilePaths[`${keyForm}`].push(response.file);
 
         let html =
@@ -408,15 +407,52 @@ function submitHandler() {
             : data.dangerous,
       };
 
-      if (shipmentFilePaths.dangerous.length) {
-        saveFile(shipmentFilePaths.dangerous, "");
+      //validate file
+      let isValidateFile = true;
+      
+      
+      if (data.dangerous && data.dangerous != DANGEROUS_STATUS.NOT) {
+        // dangerous khong co dinh kem file
+        console.log(shipmentFilePaths.dangerous);
+        if (!shipmentFilePaths.dangerous.length) {
+          isValidateFile = false;
+          $.modal.alertWarning(
+            "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file."
+          );
+        }
       }
-      if (shipmentFilePaths.oversize.length) {
-        saveFile(shipmentFilePaths.oversize, shipmentDetail.sztp);
+      if (data.oversize && data.oversize != "F") {
+        if (!shipmentFilePaths.oversize.length) {
+          isValidateFile = false;
+          $.modal.alertWarning(
+            "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file."
+          );
+        }
       }
 
-      parent.submitDataFromDetailModal(data);
-      onCloseModel();
+      if (data.temperature) {
+        if (!shipmentFilePaths.ice.length) {
+          isValidateFile = false;
+          $.modal.alertWarning(
+            "Chưa đính kèm tệp cho container lạnh. Vui lòng đính kèm file."
+          );
+        }
+      }
+
+      if (isValidateFile) {
+        if (shipmentFilePaths.dangerous.length) {
+          saveFile(shipmentFilePaths.dangerous, "");
+        }
+        if (shipmentFilePaths.oversize.length) {
+          saveFile(shipmentFilePaths.oversize, shipmentDetail.sztp);
+        }
+        if (shipmentFilePaths.ice.length) {
+          saveFile(shipmentFilePaths.ice, shipmentDetail.sztp);
+        }
+
+        parent.submitDataFromDetailModal(data);
+        onCloseModel();
+      }
     }
   }
 }
@@ -509,7 +545,7 @@ function isContOversize() {
  * @returns dangerous: T | not dangerous: F
  */
 function isContDangerous(dangerous) {
-  return !dangerous || dangerous !== "F";
+  return dangerous && dangerous !== "F";
 }
 
 /**
@@ -550,20 +586,22 @@ function initFileIsExist(previewClass, fileType) {
   if (shipmentFiles != null) {
     let htmlInit = "";
     shipmentFiles.forEach(function (element, index) {
-      shipmentFiles.push(element.id);
-      if (element.fileType == fileType) {
-        htmlInit =
-          `<div class="preview-block" style="width: 70px;float: left;">
-          <a href=${element.path} target="_blank"><img src="` +
-          ctx +
-          `img/document.png" alt="Tài liệu" style="max-width: 50px;"/></a>
-          <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` +
-          element.id +
-          `)">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>`;
-        $(`.${previewClass}`).append(htmlInit);
+      if (element) {
+        if (element.fileType == fileType) {
+          shipmentFilePaths[`${getKeyFormByKeyType(fileType)}`].push(element);
+          htmlInit =
+            `<div class="preview-block" style="width: 70px;float: left;">
+            <a href=${element.path} target="_blank"><img src="` +
+            ctx +
+            `img/document.png" alt="Tài liệu" style="max-width: 50px;"/></a>
+            <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` +
+            element.id +
+            `)">
+                      <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>`;
+          $(`.${previewClass}`).append(htmlInit);
+        }
       }
     });
   }
@@ -583,7 +621,7 @@ function removeImage(element, fileIndex) {
     shipmentFiles.forEach(function (value, index) {
       if (value.id == fileIndex) {
         $.ajax({
-          url: PREFIX + "/file",
+          url: PREFIX + "/cont-special/file",
           method: "DELETE",
           data: {
             id: value.id,
@@ -596,7 +634,7 @@ function removeImage(element, fileIndex) {
             if (result.code == 0) {
               $.modal.msgSuccess("Xóa tệp thành công.");
               $(element).parent("div.preview-block").remove();
-              shipmentFiles.splice(index, 1);
+              shipmentFilePaths[`${getKeyFormByKeyType(value.fileType)}`].splice(index, 1);
             } else {
               $.modal.alertWarning("Xóa tệp thất bại.");
             }
@@ -605,5 +643,17 @@ function removeImage(element, fileIndex) {
         return false;
       }
     });
+  }
+}
+
+function getKeyFormByKeyType(keyType) {
+  if (keyType == "D") {
+    return KEY_FORM.DANGEROUS;
+  } else if (keyType == "R") {
+    return KEY_FORM.ICE;
+  } else if (keyType == "P") {
+    return KEY_FORM.OVERSIZE;
+  } else {
+    return "";
   }
 }
