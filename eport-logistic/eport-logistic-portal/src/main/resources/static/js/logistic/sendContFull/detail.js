@@ -15,8 +15,9 @@ const SPECIAL_STATUS = {
 const KEY_FORM = {
   OVERSIZE: "oversize",
   DANGEROUS: "dangerous",
+  ICE: "ice",
 };
-var shipmentFilePaths = { oversize: [], dangerous: [] };
+var shipmentFilePaths = { oversize: [], dangerous: [], ice: [] };
 
 $("#form-detail-add").validate({
   onkeyup: false,
@@ -68,6 +69,7 @@ function initValueToElementHTML() {
       dangerousNameProduct,
       dangerousPacking,
     } = shipmentDetail;
+
     initElementHTMLInInformationCommonTab(
       vgmChk,
       vgmInspectionDepartment,
@@ -106,6 +108,12 @@ function initValueToElementHTML() {
       "attachButtonDangerous",
       KEY_FORM.DANGEROUS
     );
+    initDropzone(
+      "dropzoneIce",
+      "preview-container-ice",
+      "attachButtonIce",
+      KEY_FORM.ICE
+    );
   }
 }
 
@@ -114,29 +122,19 @@ function initValueToElementHTML() {
  * @description create another values on tab common if exist from server
  */
 function initElementHTMLInInformationCommonTab(
-  wgt,
   vgmChk,
   vgmInspectionDepartment,
   vgmMaxGross,
   temperature,
   daySetupTemperature
 ) {
-  $("#wgt").val(formatNumber(wgt));
-  $("#wgt").change(function () {
-    const valueNumber = reFormatNumber($(this).val());
-    $(this).val(formatNumber(valueNumber));
-  });
-  $("#wgt").focus(function () {
-    const valueNumber = reFormatNumber($(this).val());
-    $(this).val(valueNumber);
-  });
-
   $("#vgmChk")
     .prop("checked", vgmChk ? true : false)
     .change(function () {
       $("#inspectionDepartment").prop("disabled", !this.checked);
       $("#maxGross").prop("disabled", !this.checked);
     });
+
   $("#temperature")
     .val(temperature ? temperature : null)
     .prop("disabled", !isContIce() ? true : false);
@@ -165,6 +163,8 @@ function initElementHTMLInInformationCommonTab(
       const valueNumber = reFormatNumber($(this).val());
       $(this).val(valueNumber);
     });
+
+  initFileIsExist("preview-container-ice", "R");
 }
 
 /**
@@ -178,6 +178,7 @@ function initDropzone(
   idButtonAttach,
   keyForm
 ) {
+  console.log(keyForm);
   let previewTemplate = "<span data-dz-name></span>";
   myDropzone = new Dropzone(`#${idDropzone}`, {
     url: PREFIX + "/cont-special/file",
@@ -414,6 +415,9 @@ function submitHandler() {
       if (shipmentFilePaths.oversize.length) {
         saveFile(shipmentFilePaths.oversize, shipmentDetail.sztp);
       }
+      if (shipmentFilePaths.ice.length) {
+        saveFile(shipmentFilePaths.ice, shipmentDetail.sztp);
+      }
 
       parent.submitDataFromDetailModal(data);
       onCloseModel();
@@ -509,7 +513,7 @@ function isContOversize() {
  * @returns dangerous: T | not dangerous: F
  */
 function isContDangerous(dangerous) {
-  return !dangerous || dangerous !== "F";
+  return dangerous && dangerous !== "F";
 }
 
 /**
@@ -550,28 +554,28 @@ function initFileIsExist(previewClass, fileType) {
   if (shipmentFiles != null) {
     let htmlInit = "";
     shipmentFiles.forEach(function (element, index) {
-      shipmentFiles.push(element.id);
-      if (element.fileType == fileType) {
-        htmlInit =
-          `<div class="preview-block" style="width: 70px;float: left;">
-          <a href=${element.path} target="_blank"><img src="` +
-          ctx +
-          `img/document.png" alt="Tài liệu" style="max-width: 50px;"/></a>
-          <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` +
-          element.id +
-          `)">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>`;
-        $(`.${previewClass}`).append(htmlInit);
+      if (element) {
+        shipmentFiles.push(element.id);
+        if (element.fileType == fileType) {
+          htmlInit =
+            `<div class="preview-block" style="width: 70px;float: left;">
+            <a href=${element.path} target="_blank"><img src="` +
+            ctx +
+            `img/document.png" alt="Tài liệu" style="max-width: 50px;"/></a>
+            <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` +
+            element.id +
+            `)">
+                      <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>`;
+          $(`.${previewClass}`).append(htmlInit);
+        }
       }
     });
   }
 }
 
 function removeImage(element, fileIndex) {
-  console.log(element.id);
-
   if (
     shipmentDetail.dangerous == DANGEROUS_STATUS.pending ||
     shipmentDetail.dangerous == DANGEROUS_STATUS.approve ||

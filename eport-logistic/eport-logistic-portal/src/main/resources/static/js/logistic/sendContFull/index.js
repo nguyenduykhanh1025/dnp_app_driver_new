@@ -944,11 +944,11 @@ function getRequestConfigIcon(contSpecialStatus, dangerous) {
   let contSpecialStatusResult = "";
 
   if (
-    contSpecialStatus == SPECIAL_STATUS.yet ||
-    dangerous == DANGEROUS_STATUS.yet
+    contSpecialStatus == SPECIAL_STATUS.reject ||
+    dangerous == DANGEROUS_STATUS.reject
   ) {
     contSpecialStatusResult =
-      '<i id="verify" class="fa fa-user-circle-o" title="Có thể yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db"></i>';
+      '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
   } else if (
     contSpecialStatus == SPECIAL_STATUS.pending ||
     dangerous == DANGEROUS_STATUS.pending
@@ -964,13 +964,12 @@ function getRequestConfigIcon(contSpecialStatus, dangerous) {
     contSpecialStatusResult =
       '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhật đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
   } else if (
-    contSpecialStatus == SPECIAL_STATUS.reject ||
-    dangerous == DANGEROUS_STATUS.reject
+    contSpecialStatus == SPECIAL_STATUS.yet ||
+    dangerous == DANGEROUS_STATUS.yet
   ) {
     contSpecialStatusResult =
-      '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
+      '<i id="verify" class="fa fa-user-circle-o" title="Có thể yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db"></i>';
   }
-
   return contSpecialStatusResult;
 }
 
@@ -1602,7 +1601,7 @@ function configHandson() {
     },
     colWidths: [
       40,
-      100,
+      150,
       100,
       150,
       150,
@@ -2613,7 +2612,6 @@ function getDataFromTable(isValidate) {
     /**
      * add information detail of container special
      */
-    console.log(detailInformationForContainerSpecial.data[index], "co");
     if (detailInformationForContainerSpecial.data[index]) {
       shipmentDetail = {
         ...shipmentDetail,

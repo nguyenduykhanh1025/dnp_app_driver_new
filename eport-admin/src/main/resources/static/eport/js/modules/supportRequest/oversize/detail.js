@@ -16,8 +16,9 @@ const SPECIAL_STATUS = {
 const KEY_FORM = {
   OVERSIZE: "oversize",
   DANGEROUS: "dangerous",
+  ICE: "ice",
 };
-var shipmentFilePaths = { oversize: [], dangerous: [] };
+var shipmentFilePaths = { oversize: [], dangerous: [], ice: [] };
 
 $("#form-detail-add").validate({
   onkeyup: false,
@@ -32,7 +33,7 @@ $("#datetimepicker1").datetimepicker({
 
 $(document).ready(function () {
   initValueToElementHTML();
-  
+
   initOptionForSelectCargoTypeSelect();
   initOptionForSelectIMOSelect();
   initOptionForSelectUNNOSelect();
@@ -47,12 +48,9 @@ $(document).ready(function () {
  * @description create another values if exist from server
  */
 function initValueToElementHTML() {
-  
-  $("#containerNo").val(containerNo);
-  $("#sztp").val(sztp);
-
-  
   if (shipmentDetail) {
+    $("#containerNo").val(shipmentDetail.containerNo);
+    $("#sztp").val(shipmentDetail.sztp);
     const {
       vgmChk,
       vgmInspectionDepartment,
@@ -95,7 +93,6 @@ function initValueToElementHTML() {
       dangerousNameProduct,
       dangerousPacking
     );
-    
   }
 }
 
@@ -155,6 +152,7 @@ function initElementHTMLInInformationCommonTab(
       const valueNumber = reFormatNumber($(this).val());
       $(this).val(valueNumber);
     });
+  initFileIsExist("preview-container-ice", "R");
 }
 
 /**
@@ -488,17 +486,18 @@ function initFileIsExist(previewClass, fileType) {
   if (shipmentFiles != null) {
     let htmlInit = "";
     shipmentFiles.forEach(function (element, index) {
-      shipmentFiles.push(element.id);
-      if (element.fileType == fileType) {
-        htmlInit =
-          `<div class="preview-block" style="width: 70px;float: left;margin-top: 10px;">
+      if (element) {
+        shipmentFiles.push(element.id);
+        if (element.fileType == fileType) {
+          htmlInit =
+            `<div class="preview-block" style="width: 70px;float: left;margin-top: 10px;">
           <a href=${element.path} target="_blank"><img src="` +
-          ctx +
-          `img/document.png" alt="Tài liệu" style="max-width: 50px;"/></a>
+            ctx +
+            `img/document.png" alt="Tài liệu" style="max-width: 50px;"/></a>
                 </div>`;
-        $(`.${previewClass}`).append(htmlInit);
+          $(`.${previewClass}`).append(htmlInit);
+        }
       }
     });
   }
 }
-

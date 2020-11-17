@@ -525,6 +525,7 @@
             <if test="paymentStatus != null  and paymentStatus != ''">payment_status,</if>
             <if test="processStatus != null  and processStatus != ''">process_status,</if>
             <if test="doStatus != null  and doStatus != ''">do_status,</if>
+            <if test="contSpecialStatus != null  and contSpecialStatus != ''">cont_special_status,</if>
             <if test="doReceivedTime != null">do_received_time,</if>
             <if test="userVerifyStatus != null  and userVerifyStatus != ''">user_verify_status,</if>
             <if test="finishStatus != null  and finishStatus != ''">finish_status,</if>
@@ -615,6 +616,7 @@
             <if test="paymentStatus != null  and paymentStatus != ''">#{paymentStatus},</if>
             <if test="processStatus != null  and processStatus != ''">#{processStatus},</if>
             <if test="doStatus != null  and doStatus != ''">#{doStatus},</if>
+            <if test="contSpecialStatus != null  and contSpecialStatus != ''">#{contSpecialStatus},</if>
             <if test="doReceivedTime != null">#{doReceivedTime},</if>
             <if test="userVerifyStatus != null  and userVerifyStatus != ''">#{userVerifyStatus},</if>
             <if test="finishStatus != null  and finishStatus != ''">#{finishStatus},</if>

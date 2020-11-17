@@ -7,7 +7,7 @@
     <title>Khai báo chung</title>
     <th:block th:include="include :: header('Khai báo chung')" />
     <th:block th:include="include :: datetimepicker-css" />
-    
+
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
     <link rel="stylesheet" th:href="@{/css/logistic/detail.css}" />
   </head>
@@ -40,10 +40,7 @@
         </div>
         <div
           class="col-sm-12 text-black"
-          style="
-            height: 300px;
-            overflow-y: auto;
-          "
+          style="height: 300px; overflow-y: auto"
         >
           <section class="tabs">
             <input
@@ -62,7 +59,7 @@
               class="tab-selector-2"
             />
             <label for="tab-2" class="tab-label-2">Quá khổ</label>
-            
+
             <input
               id="tab-3"
               type="radio"
@@ -153,6 +150,22 @@
                       </span>
                     </div>
                   </div>
+                </div>
+
+                <div class="form-group col-sm-6" id="dropzoneIce">
+                  <!--  <span class="col-md-2 col-sm-3 col-xs-4"></span> -->
+                  <div class="col-sm-8 col-xs-6">
+                    <button
+                      type="button"
+                      id="attachButtonIce"
+                      class="btn btn-sm btn-default"
+                    >
+                      <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+                    </button>
+                  </div>
+                  <div
+                    class="preview-container-ice col-md-6 col-sm-6 col-xs-6"
+                  ></div>
                 </div>
               </div>
               <div class="content-2">
