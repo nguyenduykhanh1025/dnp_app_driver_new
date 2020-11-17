@@ -198,7 +198,6 @@ function initDropzone(
     success: function (file, response) {
       if (response.code == 0) {
         $.modal.msgSuccess("Đính kèm tệp thành công.");
-
         shipmentFilePaths[`${keyForm}`].push(response.file);
 
         let html =
@@ -411,10 +410,10 @@ function submitHandler() {
       //validate file
       let isValidateFile = true;
       
+      
       if (data.dangerous && data.dangerous != DANGEROUS_STATUS.NOT) {
-        console.log(data.dangerous);
-        console.log(shipmentFilePaths.dangerous);
         // dangerous khong co dinh kem file
+        console.log(shipmentFilePaths.dangerous);
         if (!shipmentFilePaths.dangerous.length) {
           isValidateFile = false;
           $.modal.alertWarning(
@@ -588,10 +587,8 @@ function initFileIsExist(previewClass, fileType) {
     let htmlInit = "";
     shipmentFiles.forEach(function (element, index) {
       if (element) {
-        // shipmentFiles.push(element.id);
-
-        shipmentFilePaths[`${getKeyFormByKeyType(fileType)}`].push(element);
         if (element.fileType == fileType) {
+          shipmentFilePaths[`${getKeyFormByKeyType(fileType)}`].push(element);
           htmlInit =
             `<div class="preview-block" style="width: 70px;float: left;">
             <a href=${element.path} target="_blank"><img src="` +
@@ -637,7 +634,7 @@ function removeImage(element, fileIndex) {
             if (result.code == 0) {
               $.modal.msgSuccess("Xóa tệp thành công.");
               $(element).parent("div.preview-block").remove();
-              shipmentFiles.splice(index, 1);
+              shipmentFilePaths[`${getKeyFormByKeyType(value.fileType)}`].splice(index, 1);
             } else {
               $.modal.alertWarning("Xóa tệp thất bại.");
             }

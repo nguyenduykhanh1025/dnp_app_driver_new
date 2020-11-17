@@ -100,23 +100,13 @@ function initValueToElementHTML() {
  * @description create another values on tab common if exist from server
  */
 function initElementHTMLInInformationCommonTab(
-  wgt,
+
   vgmChk,
   vgmInspectionDepartment,
   vgmMaxGross,
   temperature,
   daySetupTemperature
 ) {
-  $("#wgt").val(formatNumber(wgt));
-  $("#wgt").change(function () {
-    const valueNumber = reFormatNumber($(this).val());
-    $(this).val(formatNumber(valueNumber));
-  });
-  $("#wgt").focus(function () {
-    const valueNumber = reFormatNumber($(this).val());
-    $(this).val(valueNumber);
-  });
-
   $("#vgmChk")
     .prop("checked", vgmChk ? true : false)
     .change(function () {
