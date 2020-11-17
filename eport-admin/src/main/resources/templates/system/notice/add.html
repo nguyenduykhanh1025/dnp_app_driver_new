@@ -3,95 +3,56 @@
 <head>
 	<th:block th:include="include :: header('New notice announcement')" />
 	<th:block th:include="include :: summernote-css" />
+	<th:block th:include="include :: easyui-css" />
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-notice-add">
 			<div class="form-group">	
-				<label class="col-sm-2 control-label is-required" th:text="#{notification.add.title}"></label>
+				<label class="col-sm-2 control-label is-required">Tiêu đề: </label>
 				<div class="col-sm-10">
 					<input id="noticeTitle" name="noticeTitle" class="form-control" type="text" required>
 				</div>
 			</div>
+			<div class="form-group">	
+				<label class="col-sm-2 control-label">Nội dung: </label>
+				<div class="col-sm-10">
+				    <div class="summernote"></div>
+				</div>
+			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label" th:text="#{notification.add.type}"></label>
+				<label class="col-sm-2 control-label">Loại bản tin</label>
 				<div class="col-sm-10">
 					<select name="noticeType" class="form-control m-b" th:with="type=${@dict.getType('sys_notice_type')}">
 	                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 	                </select>
 				</div>
 			</div>
-			<div class="form-group">	
-				<label class="col-sm-2 control-label" th:text="#{notification.add.content}"></label>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Trạng thái: </label>
 				<div class="col-sm-10">
-				    <input id="noticeContent" name="noticeContent" type="hidden">
-				    <div class="summernote"></div>
+					<input type="radio" name="active" id="deactive" value="0" checked>
+					<label for="deactive">Nháp</label>
+					<input type="radio" name="active" id="active" value="1" style="margin-left: 30px;">
+					<label for="active">Phát hành</label>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label" th:text="#{notification.add.status}"></label>
+				<label class="col-sm-2 control-label">Ngày phát hành: </label>
 				<div class="col-sm-10">
-				    <div class="radio-box" th:each="dict : ${@dict.getType('sys_notice_status')}">
-						<input type="radio" th:id="${dict.dictCode}" name="status" th:value="${dict.dictValue}" th:checked="${dict.default}">
-						<label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
-					</div>
+					<input id="dateStart" class="easyui-datebox" style="width: 100px"
+						data-options="prompt:'dd/MM/yyyy', formatter:dateformatter, parser:dateparser" />
+					<label class="control-label" style="margin: 0 30px 0 30px;">Ngày kết thúc: </label>
+					<input id="dateFinish" class="easyui-datebox" style="width: 100px"
+						data-options="prompt:'dd/MM/yyyy', formatter:dateformatter, parser:dateparser" />
 				</div>
+			
 			</div>
 		</form>
 	</div>
     <th:block th:include="include :: footer" />
-    <th:block th:include="include :: summernote-js" />
-    <script type="text/javascript">
-        var prefix = ctx + "system/notice";
-
-	    $('.summernote').summernote({
-	    	placeholder: 'Please enter the announcement',
-			height : 192,
-			lang : 'zh-CN',
-			followingToolbar: false,
-			callbacks: {
-                onImageUpload: function (files) {
-                    sendFile(files[0], this);
-                }
-            }
-		});
-	    
-	    // 上传文件
-	    function sendFile(file, obj) {
-	        var data = new FormData();
-	        data.append("file", file);
-	        $.ajax({
-	            type: "POST",
-	            url: ctx + "common/upload",
-	            data: data,
-	            cache: false,
-	            contentType: false,
-	            processData: false,
-	            dataType: 'json',
-	            success: function(result) {
-	                if (result.code == web_status.SUCCESS) {
-	                	$(obj).summernote('editor.insertImage', result.url, result.fileName);
-					} else {
-						$.modal.alertError(result.msg);
-					}
-	            },
-	            error: function(error) {
-	                $.modal.alertWarning("Image upload failed。");
-	            }
-	        });
-	    }
-		
-		$("#form-notice-add").validate({
-			focusCleanup: true
-		});
-		
-		function submitHandler() {
-	        if ($.validate.form()) {
-	        	var sHTML = $('.summernote').summernote('code');
-				$("#noticeContent").val(sHTML);
-				$.operate.save(prefix + "/add", $('#form-notice-add').serialize());
-	        }
-	    }
-	</script>
+	<th:block th:include="include :: summernote-js" />
+	<th:block th:include="include :: easyui-js" />
+	<script th:src="@{/eport/js/modules/notice/add.js?v=20201115}"></script>
 </body>
 </html>

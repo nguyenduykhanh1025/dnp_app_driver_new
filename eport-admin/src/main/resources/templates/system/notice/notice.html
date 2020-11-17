@@ -2,116 +2,81 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
 	<th:block th:include="include :: header('Notification bulletin list')" />
+	<th:block th:include="include :: easyui-css" />
+	<link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
 </head>
-<body class="gray-bg">
-    <div class="container-div">
-		<div class="row">
-			<div class="col-sm-12 search-collapse">
-				<form id="notice-form">
-					<div class="select-list">
-						<ul>
-							<li>
-								[[#{notification.title}]]<input type="text" name="noticeTitle"/>
-							</li>
-							<li>
-								[[#{notification.operator}]]<input type="text" name="createBy"/>
-							</li>
-							<li>
-								[[#{notification.type}]]<select name="noticeType" th:with="type=${@dict.getType('sys_notice_type')}">
-									<option value="" th:text="#{notification.all}" ></option>
-									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-								</select>
-							</li>
-							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search" th:text="#{notification.search}"></i>&nbsp;</a>
-								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh" th:text="#{notification.reset}"></i>&nbsp;</a>
-							</li>
-						</ul>
+<body class="grey-background">
+	<span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+	<span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+	<div class="main-body">
+		<div class="main-body__search-wrapper mb-2">
+			<div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+				<div class="flex__left w-20">
+					<h3 class="mt-10">Quản Lý Bản Tin</h3>
+				</div>
+				<div class="flex__right w-80">
+					<div class="justify-content-around align-items-center" id="ff">
+						<div class="d-inline">
+							<input class="easyui-textbox" id="noticeTitle" data-options="prompt:'Tiêu đề'" />
+						</div>
+						<div class="d-inline">
+							<select id="active" class="easyui-combobox" panelHeight="auto" editable="false"
+								style="width: 130px">
+								<option value="" selected>Tất Cả</option>
+								<option value="0">Nháp</option>
+								<option value="1">Phát hành</option>
+							</select>
+						</div>
+						<div class="d-inline">
+							<input id="fromDate" class="easyui-datebox" style="width: 100px"
+								data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser" />
+						</div>
+						<div class="d-inline">
+							<input id="toDate" class="easyui-datebox" style="width: 100px"
+								data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser" />
+						</div>
+						<div class="d-inline">
+							<button class="btn btn-success btn-customs" onclick="search()" style="margin-bottom: 5px">Tìm
+								kiếm</button>
+						</div>
+						<div class="d-inline">
+							<button class="btn btn-success btn-outline btn-customs" onclick="clearInput()"
+								style="margin-bottom: 5px">Làm mới</button>
+						</div>
 					</div>
-				</form>
+				</div>
 			</div>
-			
-	        <div class="btn-group-sm" id="toolbar" role="group">
-		        <a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="system:notice:add">
-		            <i class="fa fa-plus" th:text="#{notification.add}"></i> 
-		        </a>
-		        <a class="btn btn-primary single disabled" onclick="$.operate.editFull()" shiro:hasPermission="system:notice:edit">
-		            <i class="fa fa-edit" th:text="#{notification.edit}"></i> 
-		        </a>
-		        <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:notice:remove">
-		            <i class="fa fa-remove" th:text="#{notification.delete}"></i> 
-		        </a>
-	        </div>
-	        
-	        <div class="col-sm-12 select-table table-striped">
-	            <table id="bootstrap-table"></table>
-	        </div>
-    	</div>
-    </div>
-    <th:block th:include="include :: footer" />
+		</div>
+		<div class="main-body__table-wrapper">
+			<div class="easyui-layout" id="main-layout" style="width: 100%">
+				<table id="dg" style="width: 100%" pageList="[20,50,100,150,200]" fitColumn="true">
+					<thead>
+						<tr>
+							<th field="ck" checkbox="true"></th>
+							<th data-options="field:'noticeTitle', align:'left', halign:'center', resizable:true, fixed:true"
+								width="300">Tiêu Đề</th>
+							<th data-options="field:'active', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatActive"
+								width="150">Trạng thái</th>
+							<th data-options="field:'dateStart', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate"
+								width="150" sortable="true">Ngày Bắt Đầu</th>
+							<th data-options="field:'dateFinish', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate"
+								width="150" sortable="true">Ngày Kết Thúc</th>
+							<th data-options="field:'createTime', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate"
+								width="150" sortable="true">Ngày Tạo</th>
+							<th data-options="field:'action', align:'center', halign:'center', resizable:true, formatter: formatActionBtn"
+								width="150">Hành Động</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: easyui-js" />
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('system:notice:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('system:notice:remove')}]];
-        var types = [[${@dict.getType('sys_notice_type')}]];
-        var datas = [[${@dict.getType('sys_notice_status')}]];
-        var prefix = ctx + "system/notice";
-
-        $(function() {
-            var options = {
-                url: prefix + "/list",
-                createUrl: prefix + "/add",
-                updateUrl: prefix + "/edit/{id}",
-                removeUrl: prefix + "/remove",
-                modalName: "Announcement",
-                columns: [{
-		            checkbox: true
-		        },
-				{
-					field : 'noticeId', 
-					title : /*[[#{notification.id }]]*/
-				},
-				{
-					field : 'noticeTitle', 
-					title : /*[[#{notification.title}]]*/
-				},
-				{
-		            field: 'noticeType',
-		            title: /*[[#{notification.type}]]*/,
-		            align: 'center',
-		            formatter: function(value, row, index) {
-		            	return $.table.selectDictLabel(types, value);
-		            }
-		        },
-				{
-		            field: 'status',
-		            title:  /*[[#{notification.status}]]*/,
-		            align: 'center',
-		            formatter: function(value, row, index) {
-		            	return $.table.selectDictLabel(datas, value);
-		            }
-		        },
-				{
-					field : 'createBy', 
-					title :  /*[[#{notification.creator}]]*/ 
-				},
-				{
-		            field: 'createTime',
-		            title:  /*[[#{notification.time}]]*/,
-		            sortable: true
-		        },
-		        {
-		            title:  /*[[#{notification.action}]]*/,
-		            align: 'center',
-		            formatter: function(value, row, index) {
-		            	var actions = [];
-		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editFull(\'' + row.noticeId + '\')"><i class="fa fa-edit"></i>Edit</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.noticeId + '\')"><i class="fa fa-remove"></i>Delete</a>');
-						return actions.join('');
-		            }
-		        }]
-            };
-            $.table.init(options);
-        });
-    </script>
+        $(".main-body").height($(document).height() - 10);
+      	$(".easyui-layout").height($('.main-body').height() - 40);
+	</script>
+	<script th:src="@{/eport/js/modules/notice/notice.js?v=20201113}"></script>
 </body>
 </html>
