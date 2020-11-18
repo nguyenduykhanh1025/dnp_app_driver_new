@@ -123,7 +123,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
         ShipmentImage shipmentImage = new ShipmentImage();
         shipmentImage.setShipmentId(id);
-        List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+        List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageListNotFileType(shipmentImage);
         mmap.put("shipmentFiles", shipmentImages);
         mmap.put("oprListBookingCheck", dictService.getListTag("opr_list_booking_check"));
         mmap.put("oprCodeList", oprCodeList);
@@ -359,7 +359,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
     @ResponseBody
     public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails,
             @PathVariable("shipmentId") Long shipmentId) {
-
+    	
         if (CollectionUtils.isNotEmpty(shipmentDetails)) {
             LogisticAccount user = getUser();
             if (shipmentId == null) {
@@ -380,6 +380,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
             boolean updateShipment = true; // if true => need to update status shipment from init to save
             for (ShipmentDetail inputDetail : shipmentDetails) {
 
+            	System.out.println("alooooooooooo: "+ inputDetail.getDaySetupTemperature());
                 if (inputDetail.getId() != null) {
                     // Case update
                     ShipmentDetail shipmentDetailReference = shipmentDetailService
@@ -993,7 +994,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
         if (verifyPermission(shipment.getLogisticGroupId())) {
             ShipmentImage shipmentImage = new ShipmentImage();
             shipmentImage.setShipmentId(shipmentId);
-            List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+            List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageListNotFileType(shipmentImage);
             for (ShipmentImage shipmentImage2 : shipmentImages) {
                 shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
             }

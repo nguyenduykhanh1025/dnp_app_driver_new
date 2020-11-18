@@ -30,6 +30,14 @@ public interface IShipmentImageService {
      * @return List<ShipmentImage
      */
     public List<ShipmentImage> selectShipmentImageList(ShipmentImage shipmentImage);
+
+    /**
+     * Select shipment image list not file type
+     * 
+     * @param shipmentImage
+     * @return List<ShipmentImage
+     */
+    public List<ShipmentImage> selectShipmentImageListNotFileType(ShipmentImage shipmentImage);
     
     /**
      * Select shipment image by id

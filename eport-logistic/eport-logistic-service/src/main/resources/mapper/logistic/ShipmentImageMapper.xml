@@ -35,6 +35,19 @@
         order by create_time desc
     </select>
 
+    <select id="selectShipmentImageListNotFileType" parameterType="ShipmentImage" resultMap="ShipmentImageResult">
+        <include refid="selectShipmentImageVo"/>
+        <where>  
+              FILE_TYPE is null
+            <if test="id != null "> and id = #{id}</if>
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="path != null and path != ''"> and path = #{path}</if>
+            <if test="shipmentDetailId != null and shipmentDetailId != ''"> and shipment_detail_id = #{shipmentDetailId}</if>
+        </where>
+         
+        order by create_time desc
+    </select>
+
     <select id="countShipmentImagesByShipmentId" parameterType="Long" resultType="int">
         select count(id)
         from shipment_image

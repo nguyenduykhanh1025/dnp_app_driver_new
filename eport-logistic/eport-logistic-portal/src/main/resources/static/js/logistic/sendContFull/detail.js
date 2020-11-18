@@ -25,7 +25,7 @@ $("#form-detail-add").validate({
 });
 
 $("#datetimepicker1").datetimepicker({
-  format: "dd/mm/yyyy",
+  format: "dd-mm-yyyy",
   language: "vi_VN",
   minView: "month",
 });
@@ -164,6 +164,8 @@ function initElementHTMLInInformationCommonTab(
       $(this).val(valueNumber);
     });
 
+  $("#attachButtonIce").prop("disabled", !isContIce());
+
   initFileIsExist("preview-container-ice", "R");
 }
 
@@ -201,7 +203,7 @@ function initDropzone(
         shipmentFilePaths[`${keyForm}`].push(response.file);
 
         let html =
-          `<div class="preview-block" style="width: 70px;float: left;">
+          `<div class="preview-block" style="width: 70px;float: left;margin: 5px;">
                 <img src="` +
           ctx +
           `img/document.png" alt="Tài liệu" style="max-width: 50px;"/>
@@ -247,6 +249,7 @@ function initElementHTMLInOversizeTab(
     $("#oversizeLeft").prop("disabled", isDisable);
     $("#oversizeFront").prop("disabled", isDisable);
     $("#oversizeBack").prop("disabled", isDisable);
+    $("#attachButtonOversize").prop("disabled", isDisable);
   });
 
   let isDisable = !isContOversize();
@@ -402,7 +405,7 @@ function submitHandler() {
         vgmInspectionDepartment: $("#vgmChk").prop("checked")
           ? $("#inspectionDepartment").val()
           : null,
-        daySetupTemperature: new Date(data.daySetupTemperature).getTime(),
+        daySetupTemperature: new Date(formatDateToSendServer(data.daySetupTemperature)).getTime(),
         dangerous:
           shipmentDetail.dangerous == data.dangerous
             ? shipmentDetail.dangerous
@@ -455,6 +458,15 @@ function submitHandler() {
       }
     }
   }
+}
+
+function formatDateToSendServer(data) {
+  let result = "";
+  let arrDate = data.split("/");
+  let temp = arrDate[0];
+  arrDate[0] = arrDate[1];
+  arrDate[1] = temp;
+  return arrDate.join("/");
 }
 
 function saveFile(filePaths, shipmentSztp) {

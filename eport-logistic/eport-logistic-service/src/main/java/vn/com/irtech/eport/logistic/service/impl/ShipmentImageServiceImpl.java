@@ -58,6 +58,17 @@ public class ShipmentImageServiceImpl implements IShipmentImageService {
     }
     
     /**
+     * Select shipment image list not file type
+     * 
+     * @param shipmentImage
+     * @return List<ShipmentImage
+     */
+    @Override
+    public List<ShipmentImage> selectShipmentImageListNotFileType(ShipmentImage shipmentImage) {
+    	return shipmentImageMapper.selectShipmentImageListNotFileType(shipmentImage);
+    }
+
+    /**
      * Select shipment image by id
      * 
      * @param shipmentImage

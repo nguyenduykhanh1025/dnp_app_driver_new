@@ -1207,7 +1207,8 @@ function temperatureRenderer(
     cellProperties.readOnly = "true";
     $(td).css("background-color", "rgb(232, 232, 232)");
   }
-  if (!value) {
+
+  if (value === null || value === "") {
     value = "";
   }
   $(td).html(
@@ -2594,7 +2595,8 @@ function getDataFromTable(isValidate) {
       sizeType[0] &&
       sizeType[0].length > 3 &&
       sizeType[0].substring(0, 4).includes("R") &&
-      !object["temperature"]
+      object["temperature"] != null &&
+      object["temperature"] != ""
     ) {
       $.modal.alertError(
         "Hàng " + (index + 1) + ": Vui lòng nhập nhiệt độ cho container lạnh!"
@@ -2618,7 +2620,6 @@ function getDataFromTable(isValidate) {
         ...detailInformationForContainerSpecial.data[index],
       };
     }
-
     if (berthplanList) {
       for (let i = 0; i < berthplanList.length; i++) {
         if (object["vslNm"] == berthplanList[i].vslAndVoy) {
@@ -2687,7 +2688,6 @@ function saveShipmentDetail() {
       ) {
         shipmentDetails[0].processStatus = conts;
         $.modal.loading("Đang xử lý...");
-
         $.ajax({
           url: prefix + "/" + shipmentSelected.id + "/shipment-detail",
           method: "post",
