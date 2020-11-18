@@ -46,7 +46,7 @@ public class RfidTruck extends BaseEntity
 
 	/** Disabled Status */
 	@Excel(name = "Disabled Status")
-    private Long disabled;
+	private Boolean disabled;
 
 	/** Loadable Weight */
 	@Excel(name = "Loadable Weight")
@@ -108,11 +108,11 @@ public class RfidTruck extends BaseEntity
         return logisticGroupId;
     }
 
-	public void setDisabled(Long disabled) {
+	public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
 
-	public Long getDisabled() {
+	public Boolean getDisabled() {
         return disabled;
     }
 
