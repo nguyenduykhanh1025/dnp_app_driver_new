@@ -1104,10 +1104,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update shipment_detail
         <trim prefix="SET" suffixOverrides=",">
             <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
+            <if test="deliveryAddress != null and deliveryAddress != ''">delivery_address = #{deliveryAddress},</if>
+            <if test="deliveryMobile != null and deliveryMobile != ''">delivery_mobile = #{deliveryMobile},</if>
+            <if test="deliveryRemark != null and deliveryRemark != ''">delivery_remark = #{deliveryRemark},</if>
             update_time = sysdate
         </trim>
         <where>
             <if test="blNo != null and blNo != ''">and bl_no = {blNo}</if>
+            <if test="shipmentId != null">and shipment_id = {shipmentId}</if>
             <if test="opeCode != null and opeCode !=''">and ope_code = #{opeCode}</if>
         </where>
     </update>
