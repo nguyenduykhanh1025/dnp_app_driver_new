@@ -129,6 +129,7 @@ $(document).ready(function () {
                 console.log("sssss" + response.file); 
                 //  them
                 shipmentFilePath.push(response.file); 
+                
                 shipmentDetailId.push(response.id); 
                 fileType.push(response.fileType);  
                 //fileType += response.fileType;
