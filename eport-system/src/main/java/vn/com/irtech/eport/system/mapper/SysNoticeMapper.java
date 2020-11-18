@@ -59,4 +59,12 @@ public interface SysNoticeMapper
      * @return result
      */
     public int deleteSysNoticeByIds(String[] noticeIds);
+
+	/**
+	 * Select bulletin list
+	 * 
+	 * @param sysNotice
+	 * @return List<SysNotice>
+	 */
+	public List<SysNotice> selectBulletinList(SysNotice sysNotice);
 }

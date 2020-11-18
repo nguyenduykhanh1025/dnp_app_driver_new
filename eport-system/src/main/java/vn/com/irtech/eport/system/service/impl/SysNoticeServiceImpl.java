@@ -96,4 +96,15 @@ public class SysNoticeServiceImpl implements ISysNoticeService
     {
         return sysNoticeMapper.deleteSysNoticeById(noticeId);
     }
+
+	/**
+	 * Select bulletin list
+	 * 
+	 * @param sysNotice
+	 * @return List<SysNotice>
+	 */
+	@Override
+	public List<SysNotice> selectBulletinList(SysNotice sysNotice) {
+		return sysNoticeMapper.selectBulletinList(sysNotice);
+	}
 }

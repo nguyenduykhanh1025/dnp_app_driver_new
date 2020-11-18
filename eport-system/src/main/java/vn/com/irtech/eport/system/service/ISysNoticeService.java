@@ -59,4 +59,12 @@ public interface ISysNoticeService
      * @return result
      */
     public int deleteSysNoticeById(Long noticeId);
+
+	/**
+	 * Select bulletin list
+	 * 
+	 * @param sysNotice
+	 * @return List<SysNotice>
+	 */
+	public List<SysNotice> selectBulletinList(SysNotice sysNotice);
 }

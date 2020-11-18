@@ -32,7 +32,7 @@ public class SysNotice extends BaseEntity
 
 	/** Active */
 	@Excel(name = "Active")
-    private Long active;
+	private Integer active;
 
 	/** Date Start */
 	@Excel(name = "Date Start", width = 30, dateFormat = "yyyy-MM-dd")
@@ -73,12 +73,13 @@ public class SysNotice extends BaseEntity
     {
         return noticeType;
     }
-    public void setActive(Long active) 
+
+	public void setActive(Integer active)
     {
         this.active = active;
     }
 
-    public Long getActive() 
+	public Integer getActive() 
     {
         return active;
     }
