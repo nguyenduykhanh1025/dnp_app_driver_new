@@ -217,6 +217,28 @@ public class ApplyReceiveControllerU extends AdminBaseController  {
 		ajaxResult.put("shipmentFiles", shipmentImages);
 		return ajaxResult;
 	}
+	
+	////////////////action
+	@GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail") 
+	public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
+	@PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
+	mmap.put("containerNo", containerNo);
+	mmap.put("sztp", sztp);
+	mmap.put("shipmentDetailId", shipmentDetailId); 
+	mmap.put("shipmentDetail",shipmentDetailService.selectShipmentDetailById( shipmentDetailId));//obj    
+	
+	//// nhat add
+	ShipmentImage shipmentImage = new ShipmentImage();
+	shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+	List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+	for (ShipmentImage shipmentImage2 : shipmentImages) {
+		shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+	}
+	mmap.put("shipmentFiles", shipmentImages);
+	
+	return PREFIX + "/detail";
+	}
+	
 }
 
 

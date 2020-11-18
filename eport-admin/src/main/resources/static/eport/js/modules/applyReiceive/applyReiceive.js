@@ -8,7 +8,7 @@ const PREFIX = ctx + "system/checkCont"; //om/booking
 const HIST_PREFIX = ctx + "om/controlling";
 
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
-var dogrid = document.getElementById("container-grid"), hot,isDestroy = false;;
+var dogrid = document.getElementById("container-grid"), hot,isDestroy = false;
 var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipmentDetailIds;
 var shipment = new Object();
 shipment.params = new Object();

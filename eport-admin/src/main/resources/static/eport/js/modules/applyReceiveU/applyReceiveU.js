@@ -8,7 +8,7 @@ const PREFIX = ctx + "system/checkContU"; //om/booking
 const HIST_PREFIX = ctx + "om/controlling";
 
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
-var dogrid = document.getElementById("container-grid"), hot;
+var dogrid = document.getElementById("container-grid"), hot,isDestroy = false;
 var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipmentDetailIds;
 var shipment = new Object();
 shipment.params = new Object();
@@ -538,32 +538,35 @@ function configHandson() {
         case 3:
           return "Trạng Thái";
         case 4:
-          return "Số Tham Chiếu";
+            return '<span class="required">Action</span>';
+          
         case 5:
-          return "Số Container";
+          return "Số Tham Chiếu";
         case 6:
-          return "Sztp";
+          return "Số Container";
         case 7:
-          return "Chủ Hàng";
+          return "Sztp";
         case 8:
-          return "Tàu - Chuyến";
+          return "Chủ Hàng";
         case 9:
-          return "Trọng Lượng";
+          return "Tàu - Chuyến";
         case 10:
-          return "Loại Hàng";
+          return "Trọng Lượng";
         case 11:
-          return 'Số Seal';
+          return "Loại Hàng";
         case 12:
-          return "Cảng Dỡ Hàng";
+          return 'Số Seal';
         case 13:
-          return "P.T.T.T";
+          return "Cảng Dỡ Hàng";
         case 14:
-          return "Payer";
+          return "P.T.T.T";
         case 15:
+          return "Payer";
+        case 16:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 150, 130, 100, 60, 200, 100, 100, 80, 80, 100, 100, 100, 100],
+    colWidths: [23, 21, 21, 150, 130, 100, 60, 200, 100, 100, 80, 80, 100, 100, 100, 100,100],
     filter: "true",
     columns: [
       {
@@ -586,6 +589,15 @@ function configHandson() {
         readOnly: true,
         renderer: statusIconsRenderer
       },
+      
+   // nhat
+      {
+          data: "btnInformationContainer",
+          strict: true,
+          readonly: true,
+          renderer: detailRenderer
+        },
+        
       {
         data: "orderNo",
         renderer: orderNoRenderer
@@ -688,10 +700,13 @@ function loadShipmentDetails(id) {
           }
           sourceData = res.shipmentDetails;
           hot.destroy();
+          
+          isDestroy = true;
           configHandson();
           hot = new Handsontable(dogrid, config);
           hot.loadData(sourceData);
           hot.render();
+          isDestroy = false;
         }
       },
       error: function (data) {
@@ -699,6 +714,35 @@ function loadShipmentDetails(id) {
       }
     });
   }
+}
+
+//nhatlv
+function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
+	    $(td).attr('id', 'wgt' + row).addClass("htMiddle").addClass("htCenter");
+	    let containerNo, sztp;
+	    if (!isDestroy) {
+	        containerNo = hot.getDataAtCell(row, 6);
+	        sztp = hot.getDataAtCell(row, 7);
+	    }
+	    
+	    if (sourceData && sourceData.length > 0) {
+	    	 
+	        if (sourceData.length > row && sourceData[row].id) { 
+	        		value = '<button class="btn btn-default btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
+	        	  
+	        } 
+	    }
+	    $(td).html(value);
+	    cellProperties.readOnly = 'true';
+	    return td;
+	}
+
+function openDetail(id, containerNo, sztp) {
+    if (!id) {
+        id = 0;
+    }
+    //debugger
+    $.modal.openCustomForm("Khai báo chi tiết", PREFIX + "/shipment-detail/" + id + "/cont/" + containerNo + "/sztp/" + sztp + "/detail", 800, 460);
 }
 
 // TRIGGER CHECK ALL SHIPMENT DETAIL

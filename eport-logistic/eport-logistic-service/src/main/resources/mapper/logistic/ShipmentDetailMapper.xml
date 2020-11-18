@@ -842,6 +842,8 @@
         <trim prefix="SET" suffixOverrides=",">
         
         	<if test="contSpecialStatus != null ">cont_special_status = #{contSpecialStatus},</if>
+        	
+        	<if test="dangerous != null ">dangerous = #{dangerous},</if>
         	 
             <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
             <if test="processOrderId != null">process_order_id = #{processOrderId},</if>

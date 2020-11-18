@@ -426,7 +426,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from shipment s left join shipment_detail sh on s.id = sh.shipment_id
 
         <where>  
-            s.id is not null  and sh.dangerous is not null
+            s.id is not null  and sh.dangerous is not null and DANGEROUS !='3'
             <if test="id != null "> and s.id = #{id}</if>
             
             <if test="sztp != null and sztp != ''"> and sztp like concat(concat('%', #{sztp}), '%')</if>
