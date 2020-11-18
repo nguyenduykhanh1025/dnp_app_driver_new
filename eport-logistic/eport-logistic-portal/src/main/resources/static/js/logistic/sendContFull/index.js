@@ -3467,7 +3467,6 @@ function openFormRemarkBeforeReqSpecialCancelOrder() {
 function submitDataFromDetailModal(data) {
   const { indexSelected } = detailInformationForContainerSpecial;
   detailInformationForContainerSpecial.data[indexSelected] = data;
-  console.log(data);
   saveShipmentDetail();
 }
 

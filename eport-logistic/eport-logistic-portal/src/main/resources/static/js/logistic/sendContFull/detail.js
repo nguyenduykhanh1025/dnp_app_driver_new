@@ -205,7 +205,9 @@ function initDropzone(
                 <img src="` +
           ctx +
           `img/document.png" alt="Tài liệu" style="max-width: 50px;"/>
-                <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` +
+                <button type="button" class="close ` +
+          keyForm +
+          `" aria-label="Close" onclick="removeImage(this, ` +
           response.shipmentFileId +
           `)" >
                 <span aria-hidden="true">&times;</span>
@@ -409,11 +411,9 @@ function submitHandler() {
 
       //validate file
       let isValidateFile = true;
-      
-      
+
       if (data.dangerous && data.dangerous != DANGEROUS_STATUS.NOT) {
         // dangerous khong co dinh kem file
-        console.log(shipmentFilePaths.dangerous);
         if (!shipmentFilePaths.dangerous.length) {
           isValidateFile = false;
           $.modal.alertWarning(
@@ -618,31 +618,43 @@ function removeImage(element, fileIndex) {
       "Container đang hoặc đã yêu cầu xác nhận, không thể xóa tệp đã đính kèm."
     );
   } else {
-    shipmentFiles.forEach(function (value, index) {
-      if (value.id == fileIndex) {
-        $.ajax({
-          url: PREFIX + "/cont-special/file",
-          method: "DELETE",
-          data: {
-            id: value.id,
-          },
-          beforeSend: function () {
-            $.modal.loading("Đang xử lý, vui lòng chờ...");
-          },
-          success: function (result) {
-            $.modal.closeLoading();
-            if (result.code == 0) {
-              $.modal.msgSuccess("Xóa tệp thành công.");
-              $(element).parent("div.preview-block").remove();
-              shipmentFilePaths[`${getKeyFormByKeyType(value.fileType)}`].splice(index, 1);
-            } else {
-              $.modal.alertWarning("Xóa tệp thất bại.");
-            }
-          },
-        });
-        return false;
-      }
-    });
+    if (!fileIndex) {
+      $.modal.msgSuccess("Xóa tệp thành công.");
+      $(element).parent("div.preview-block").remove();
+      let indexIsClick = $(".close").index(element);
+      shipmentFilePaths[`${element.className.split(" ")[1]}`].splice(
+        indexIsClick,
+        1
+      );
+    } else {
+      shipmentFiles.forEach(function (value, index) {
+        if (value.id == fileIndex) {
+          $.ajax({
+            url: PREFIX + "/cont-special/file",
+            method: "DELETE",
+            data: {
+              id: value.id,
+            },
+            beforeSend: function () {
+              $.modal.loading("Đang xử lý, vui lòng chờ...");
+            },
+            success: function (result) {
+              $.modal.closeLoading();
+              if (result.code == 0) {
+                $.modal.msgSuccess("Xóa tệp thành công.");
+                $(element).parent("div.preview-block").remove();
+                shipmentFilePaths[
+                  `${getKeyFormByKeyType(value.fileType)}`
+                ].splice(index, 1);
+              } else {
+                $.modal.alertWarning("Xóa tệp thất bại.");
+              }
+            },
+          });
+          return false;
+        }
+      });
+    }
   }
 }
 
