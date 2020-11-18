@@ -71,6 +71,7 @@ public class SyncQueueTask {
 
 		// Get list update expired dem
 		sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DEM);
+		sysSyncQueueParam.setParams(params);
 		List<SysSyncQueue> sysSyncQueuesDem = sysSyncQueueService
 				.selectSysSyncQueueWithDelayTimeList(sysSyncQueueParam);
 		if (CollectionUtils.isNotEmpty(sysSyncQueuesDem)) {
@@ -225,6 +226,7 @@ public class SyncQueueTask {
 
 		// Get list update det free time
 		sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DET);
+		sysSyncQueueParam.setParams(params);
 		List<SysSyncQueue> sysSyncQueuesDet = sysSyncQueueService
 				.selectSysSyncQueueWithDelayTimeList(sysSyncQueueParam);
 		if (CollectionUtils.isNotEmpty(sysSyncQueuesDet)) {

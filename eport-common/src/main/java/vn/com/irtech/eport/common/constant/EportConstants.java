@@ -309,4 +309,10 @@ public interface EportConstants {
 	public static final String PTNR_TYPE_TRUCKER = "TRK";
 	/** partner type forwarder */
 	public static final String PTNR_TYPE_FORWARDER = "FWD";
+
+	// Bulletin active status
+	/** Bulletin draft status */
+	public static final Integer BULLETIN_DRAFT = 0;
+	/** Bulletin release status */
+	public static final Integer BULLETIN_RELEASE = 1;
 }

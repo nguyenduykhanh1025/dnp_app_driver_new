@@ -194,16 +194,16 @@ public class LogisticTruckAssignController extends LogisticBaseController {
 		// List driver from return to client
 		List<DriverAccountForm> driversResult = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(driverList)) {
-			String assignedDriverIds = "";
+			List<Long> assignedDriverIds = new ArrayList<>();
 			for (DriverAccount driverAccount : driverAssignedList) {
-				assignedDriverIds += driverAccount.getId() + ",";
+				assignedDriverIds.add(driverAccount.getId());
 			}
 			// Set flg for driver has be
 			for (DriverAccount driverAccount : driverList) {
 				DriverAccountForm driverAccountForm = new DriverAccountForm();
 				BeanUtils.copyBeanProp(driverAccountForm, driverAccount);
 				driverAccountForm.setAssignedFlg(false);
-				if (assignedDriverIds.contains(driverAccount.getId() + ",")) {
+				if (assignedDriverIds.contains(driverAccount.getId())) {
 					driverAccountForm.setAssignedFlg(true);
 					driversResult.add(0, driverAccountForm);
 				} else {
@@ -264,21 +264,22 @@ public class LogisticTruckAssignController extends LogisticBaseController {
 		// Set null to shipment detail -> get driver assign by shipment (exclude driver
 		// assign by container)
 		params.put("nullShipmentDetail", true);
+		pickupAssignParam.setParams(params);
 		List<DriverAccount> driverAssignedList = driverAccountService.selectAssignedDriverList(pickupAssignParam);
 
 		// List driver from return to client
 		List<DriverAccountForm> driversResult = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(driverList)) {
-			String assignedDriverIds = "";
+			List<Long> assignedDriverIds = new ArrayList<>();
 			for (DriverAccount driverAccount : driverAssignedList) {
-				assignedDriverIds += driverAccount.getId() + ",";
+				assignedDriverIds.add(driverAccount.getId());
 			}
 			// Set flg for driver has be
 			for (DriverAccount driverAccount : driverList) {
 				DriverAccountForm driverAccountForm = new DriverAccountForm();
 				BeanUtils.copyBeanProp(driverAccountForm, driverAccount);
 				driverAccountForm.setAssignedFlg(false);
-				if (assignedDriverIds.contains(driverAccount.getId() + ",")) {
+				if (assignedDriverIds.contains(driverAccount.getId())) {
 					driverAccountForm.setAssignedFlg(true);
 					driversResult.add(0, driverAccountForm);
 				} else {
@@ -346,6 +347,7 @@ public class LogisticTruckAssignController extends LogisticBaseController {
 		// Set null to shipment detail -> get driver assign by shipment (exclude driver
 		// assign by container)
 		params.put("nullShipmentDetail", true);
+		pickupAssignParam.setParams(params);
 		List<DriverAccount> assignedDriverList = driverAccountService.selectAssignedDriverList(pickupAssignParam);
 		if (CollectionUtils.isEmpty(assignedDriverList)) {
 			assignedDriverList = new ArrayList<>();
@@ -373,6 +375,14 @@ public class LogisticTruckAssignController extends LogisticBaseController {
 			pickupAssignService
 					.deletePickupAssignByIds(delPickupAssignIds.substring(0, delPickupAssignIds.length() - 1));
 		}
+
+		// Update info delivery for shipment detail
+		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+		shipmentDetailParam.setDeliveryAddress(pickupAssignReq.getDeliveryAddress());
+		shipmentDetailParam.setDeliveryMobile(pickupAssignReq.getDeliveryMobileNumber());
+		shipmentDetailParam.setDeliveryRemark(pickupAssignReq.getDeliveryRemark());
+		shipmentDetailParam.setShipmentId(shipmentId);
+		shipmentDetailService.updateShipmentDetailByCondition(shipmentDetailParam);
 
 		// Insert new pickup assign
 		if (CollectionUtils.isNotEmpty(driverNeedAssignList)) {
@@ -501,6 +511,14 @@ public class LogisticTruckAssignController extends LogisticBaseController {
 			}
 		}
 
+		// Update delivery info for shipment detail
+		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
+		shipmentDetail.setId(shipmentDetailId);
+		shipmentDetail.setDeliveryAddress(pickupAssignReq.getDeliveryAddress());
+		shipmentDetail.setDeliveryMobile(pickupAssignReq.getDeliveryMobileNumber());
+		shipmentDetail.setDeliveryRemark(pickupAssignReq.getDeliveryRemark());
+		shipmentDetailService.updateShipmentDetail(shipmentDetailUpdate);
+
 		if (CollectionUtils.isNotEmpty(assignedDriverList)) {
 			// List pickup assign need to delete
 			String delPickupAssignIds = "";
@@ -575,4 +593,5 @@ public class LogisticTruckAssignController extends LogisticBaseController {
 		}
 		return success();
 	}
+
 }

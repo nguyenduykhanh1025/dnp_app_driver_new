@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.system.mapper.SysNoticeMapper">
+    
+    <resultMap type="SysNotice" id="SysNoticeResult">
+        <result property="noticeId"    column="notice_id"    />
+        <result property="noticeTitle"    column="notice_title"    />
+        <result property="noticeType"    column="notice_type"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="active"    column="active"    />
+        <result property="dateStart"    column="date_start"    />
+        <result property="dateFinish"    column="date_finish"    />
+        <result property="noticeContent"    column="notice_content"    />
+    </resultMap>
+
+    <sql id="selectSysNoticeVo">
+        select notice_id, notice_title, notice_type, create_by, create_time, update_by, update_time, remark, active, date_start, date_finish, notice_content from sys_notice
+    </sql>
+
+    <select id="selectSysNoticeList" parameterType="SysNotice" resultMap="SysNoticeResult">
+        <include refid="selectSysNoticeVo"/>
+        <where>  
+            <if test="noticeTitle != null and noticeTitle != ''"> and upper(notice_title) like concat('%', concat(upper(#{noticeTitle}), '%'))</if>
+            <if test="noticeType != null and noticeType != ''"> and notice_type = #{noticeType}</if>
+            <if test="active != null"> and active = #{active}</if>
+            <if test="dateStart != null"> and date_start = #{dateStart}</if>
+            <if test="dateFinish != null"> and date_finish = #{dateFinish}</if>
+            <if test="noticeContent != null"> and notice_content = #{noticeContent}</if>
+            <if test="params.fromDate != null"> and create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDate != null"> and create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
+        </where>
+    </select>
+    
+    <select id="selectSysNoticeById" parameterType="Long" resultMap="SysNoticeResult">
+        <include refid="selectSysNoticeVo"/>
+        where notice_id = #{noticeId}
+    </select>
+        
+    <insert id="insertSysNotice" parameterType="SysNotice">
+        <selectKey keyProperty="noticeId" resultType="long" order="BEFORE">
+            SELECT seq_sys_notice.NEXTVAL as noticeId FROM DUAL
+        </selectKey>
+        insert into sys_notice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="noticeId != null">notice_id,</if>
+            <if test="noticeTitle != null and noticeTitle != ''">notice_title,</if>
+            <if test="noticeType != null and noticeType != ''">notice_type,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            <if test="active != null">active,</if>
+            <if test="dateStart != null">date_start,</if>
+            <if test="dateFinish != null">date_finish,</if>
+            <if test="noticeContent != null">notice_content,</if>
+            create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="noticeId != null">#{noticeId},</if>
+            <if test="noticeTitle != null and noticeTitle != ''">#{noticeTitle},</if>
+            <if test="noticeType != null and noticeType != ''">#{noticeType},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="active != null">#{active},</if>
+            <if test="dateStart != null">#{dateStart},</if>
+            <if test="dateFinish != null">#{dateFinish},</if>
+            <if test="noticeContent != null">#{noticeContent},</if>
+            sysdate
+         </trim>
+    </insert>
+
+    <update id="updateSysNotice" parameterType="SysNotice">
+        update sys_notice
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="noticeTitle != null and noticeTitle != ''">notice_title = #{noticeTitle},</if>
+            <if test="noticeType != null and noticeType != ''">notice_type = #{noticeType},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="active != null">active = #{active},</if>
+            <if test="dateStart != null">date_start = #{dateStart},</if>
+            <if test="dateFinish != null">date_finish = #{dateFinish},</if>
+            <if test="noticeContent != null">notice_content = #{noticeContent},</if>
+            update_time = sysdate
+        </trim>
+        where notice_id = #{noticeId}
+    </update>
+
+    <delete id="deleteSysNoticeById" parameterType="Long">
+        delete from sys_notice where notice_id = #{noticeId}
+    </delete>
+
+    <delete id="deleteSysNoticeByIds" parameterType="String">
+        delete from sys_notice where notice_id in 
+        <foreach item="noticeId" collection="array" open="(" separator="," close=")">
+            #{noticeId}
+        </foreach>
+    </delete>
+
+    <select id="selectBulletinList" parameterType="SysNotice" resultMap="SysNoticeResult">
+        <include refid="selectSysNoticeVo"/>
+        <where>  
+            and date_finish &gt;= sysdate
+            and date_start &lt;= sysdate
+            <if test="noticeTitle != null and noticeTitle != ''"> and upper(notice_title) like concat('%', concat(upper(#{noticeTitle}), '%'))</if>
+            <if test="noticeType != null and noticeType != ''"> and notice_type = #{noticeType}</if>
+            <if test="active != null"> and active = #{active}</if>
+            <if test="dateStart != null"> and date_start = #{dateStart}</if>
+            <if test="dateFinish != null"> and date_finish = #{dateFinish}</if>
+            <if test="noticeContent != null"> and notice_content = #{noticeContent}</if>
+            <if test="params.fromDate != null"> and date_start &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDate != null"> and date_start &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
+        </where>
+        order by date_start desc, create_time desc
+    </select>
+</mapper>
