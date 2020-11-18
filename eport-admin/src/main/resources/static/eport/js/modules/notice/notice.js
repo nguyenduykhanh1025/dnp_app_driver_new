@@ -93,8 +93,6 @@ $( document ).ready(function () {
             }
         }
     });
-
-    loadTable();
 });
 
 function dateToString(date) {

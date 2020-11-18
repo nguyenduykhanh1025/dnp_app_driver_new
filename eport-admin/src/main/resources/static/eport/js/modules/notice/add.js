@@ -74,12 +74,18 @@ function submitHandler() {
             url: PREFIX + '/add',
             method: 'POST',
             contentType: "application/json",
+            beforeSend: function () {
+                $.modal.loading("Đang xử lý, vui lòng chờ...");
+                $.modal.disable();
+            },
             data: JSON.stringify(data),
             success: function(res) {
+                $.modal.closeLoading();
                 parent.reloadTable(res);
                 $.modal.close();
             },
             error: function(err) {
+                $.modal.closeLoading();
                 parent.reloadTable(err);
                 $.modal.close();
             }

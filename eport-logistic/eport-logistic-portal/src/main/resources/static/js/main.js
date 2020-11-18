@@ -103,19 +103,24 @@ function loadBulletins() {
                     let html = '';
                     if (res.code == 0) {
                         success(res.bulletins);
-                        res.bulletins.rows.forEach(notice => {
-                            html += `<div class="notice-box">
-                                <div class="notice-box-title">
-                                <b><span class="notice-date">` 
-                                + dateToString(new Date(notice.dateStart)) +
-                                `:</span></b>&nbsp;&nbsp;&nbsp;&nbsp;<span>`
-                                + notice.noticeTitle +
-                                `</span></div><div class="notice-box-content"><span>`
-                                + notice.noticeContent +
-                                `</span></div></div><hr style="margin: 0;">`;
-                        });
+                        if (res.bulletins.rows.length == 0) {
+                            html += '<div style="text-align: center; margin-top: 10px;"><span>Không có dữ liệu</span></div>';
+                        } else {
+                            res.bulletins.rows.forEach(notice => {
+                                html += `<div class="notice-box">
+                                    <div class="notice-box-title">
+                                    <b><span class="notice-date">` 
+                                    + dateToString(new Date(notice.dateStart)) +
+                                    `:</span></b>&nbsp;&nbsp;&nbsp;&nbsp;<span>`
+                                    + notice.noticeTitle +
+                                    `</span></div><div class="notice-box-content"><span>`
+                                    + notice.noticeContent +
+                                    `</span></div></div><hr style="margin: 0;">`;
+                            });
+                        }
                     } else {
                         success([]);
+                        html += '<div style="text-align: center; margin-top: 10px;"><span>Không có dữ liệu</span></div>';
                     }
                     $('.datagrid-body').html(html);
                 },

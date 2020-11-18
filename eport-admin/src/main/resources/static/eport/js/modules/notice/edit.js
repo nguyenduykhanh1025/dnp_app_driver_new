@@ -87,11 +87,17 @@ function submitHandler() {
             method: 'POST',
             contentType: "application/json",
             data: JSON.stringify(data),
+            beforeSend: function () {
+                $.modal.loading("Đang xử lý, vui lòng chờ...");
+                $.modal.disable();
+            },
             success: function(res) {
+                $.modal.closeLoading();
                 parent.reloadTable(res);
                 $.modal.close();
             },
             error: function(err) {
+                $.modal.closeLoading();
                 parent.reloadTable(err);
                 $.modal.close();
             }
