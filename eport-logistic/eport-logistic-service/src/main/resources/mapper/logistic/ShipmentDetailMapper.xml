@@ -661,7 +661,7 @@
             <if test="sztp != null  and sztp != ''">sztp,</if>
             <if test="sztpDefine != null  and sztpDefine != ''">sztp_define,</if>
             <if test="temperature != null ">temperature,</if>
-            <if test="daySetupTemperature != null ">day_setup_temperature,</if>
+            <if test="daySetupTemperature != null">day_setup_temperature,</if>
             <if test="fe != null  and fe != ''">fe,</if>
             <if test="bookingNo != null  and bookingNo != ''">booking_no,</if>
             <if test="blNo != null  and blNo != ''">bl_no,</if>
@@ -751,7 +751,7 @@
             <if test="sztp != null  and sztp != ''">#{sztp},</if>
             <if test="sztpDefine != null  and sztpDefine != ''">#{sztpDefine},</if>
             <if test="temperature != null ">#{temperature},</if>
-            <if test="daySetupTemperature != null ">#{daySetupTemperature},</if>
+            <if test="daySetupTemperature != null">#{daySetupTemperature},</if>
             <if test="fe != null  and fe != ''">#{fe},</if>
             <if test="bookingNo != null  and bookingNo != ''">trim(upper(#{bookingNo})),</if>
             <if test="blNo != null  and blNo != ''">trim(upper(#{blNo})),</if>
@@ -931,7 +931,7 @@
             <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
             <if test="sztpDefine != null  and sztpDefine != ''">sztp_define = #{sztpDefine},</if>
             <if test="temperature != null ">temperature = #{temperature},</if>
-            <if test="daySetupTemperature != null ">day_setup_temperature = #{daySetupTemperature},</if>
+            <if test="daySetupTemperature != null">day_setup_temperature = #{daySetupTemperature},</if>
             <if test="fe != null  and fe != ''">fe = #{fe},</if>
             <if test="bookingNo != null  and bookingNo != ''">booking_no = trim(upper(#{bookingNo})),</if>
             <if test="blNo != null  and blNo != ''">bl_no = trim(upper(#{blNo})),</if>

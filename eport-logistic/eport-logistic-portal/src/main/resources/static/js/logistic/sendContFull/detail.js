@@ -25,7 +25,7 @@ $("#form-detail-add").validate({
 });
 
 $("#datetimepicker1").datetimepicker({
-  format: "dd/mm/yyyy",
+  format: "dd-mm-yyyy",
   language: "vi_VN",
   minView: "month",
 });
@@ -164,6 +164,8 @@ function initElementHTMLInInformationCommonTab(
       $(this).val(valueNumber);
     });
 
+  $("#attachButtonIce").prop("disabled", !isContIce());
+
   initFileIsExist("preview-container-ice", "R");
 }
 
@@ -201,11 +203,13 @@ function initDropzone(
         shipmentFilePaths[`${keyForm}`].push(response.file);
 
         let html =
-          `<div class="preview-block" style="width: 70px;float: left;">
+          `<div class="preview-block" style="width: 70px;float: left;margin: 5px;">
                 <img src="` +
           ctx +
           `img/document.png" alt="Tài liệu" style="max-width: 50px;"/>
-                <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` +
+                <button type="button" class="close ` +
+          keyForm +
+          `" aria-label="Close" onclick="removeImage(this, ` +
           response.shipmentFileId +
           `)" >
                 <span aria-hidden="true">&times;</span>
@@ -245,6 +249,7 @@ function initElementHTMLInOversizeTab(
     $("#oversizeLeft").prop("disabled", isDisable);
     $("#oversizeFront").prop("disabled", isDisable);
     $("#oversizeBack").prop("disabled", isDisable);
+    $("#attachButtonOversize").prop("disabled", isDisable);
   });
 
   let isDisable = !isContOversize();
@@ -400,7 +405,7 @@ function submitHandler() {
         vgmInspectionDepartment: $("#vgmChk").prop("checked")
           ? $("#inspectionDepartment").val()
           : null,
-        daySetupTemperature: new Date(data.daySetupTemperature).getTime(),
+        daySetupTemperature: new Date(formatDateToSendServer(data.daySetupTemperature)).getTime(),
         dangerous:
           shipmentDetail.dangerous == data.dangerous
             ? shipmentDetail.dangerous
@@ -409,11 +414,9 @@ function submitHandler() {
 
       //validate file
       let isValidateFile = true;
-      
-      
+
       if (data.dangerous && data.dangerous != DANGEROUS_STATUS.NOT) {
         // dangerous khong co dinh kem file
-        console.log(shipmentFilePaths.dangerous);
         if (!shipmentFilePaths.dangerous.length) {
           isValidateFile = false;
           $.modal.alertWarning(
@@ -455,6 +458,15 @@ function submitHandler() {
       }
     }
   }
+}
+
+function formatDateToSendServer(data) {
+  let result = "";
+  let arrDate = data.split("/");
+  let temp = arrDate[0];
+  arrDate[0] = arrDate[1];
+  arrDate[1] = temp;
+  return arrDate.join("/");
 }
 
 function saveFile(filePaths, shipmentSztp) {
@@ -618,31 +630,43 @@ function removeImage(element, fileIndex) {
       "Container đang hoặc đã yêu cầu xác nhận, không thể xóa tệp đã đính kèm."
     );
   } else {
-    shipmentFiles.forEach(function (value, index) {
-      if (value.id == fileIndex) {
-        $.ajax({
-          url: PREFIX + "/cont-special/file",
-          method: "DELETE",
-          data: {
-            id: value.id,
-          },
-          beforeSend: function () {
-            $.modal.loading("Đang xử lý, vui lòng chờ...");
-          },
-          success: function (result) {
-            $.modal.closeLoading();
-            if (result.code == 0) {
-              $.modal.msgSuccess("Xóa tệp thành công.");
-              $(element).parent("div.preview-block").remove();
-              shipmentFilePaths[`${getKeyFormByKeyType(value.fileType)}`].splice(index, 1);
-            } else {
-              $.modal.alertWarning("Xóa tệp thất bại.");
-            }
-          },
-        });
-        return false;
-      }
-    });
+    if (!fileIndex) {
+      $.modal.msgSuccess("Xóa tệp thành công.");
+      $(element).parent("div.preview-block").remove();
+      let indexIsClick = $(".close").index(element);
+      shipmentFilePaths[`${element.className.split(" ")[1]}`].splice(
+        indexIsClick,
+        1
+      );
+    } else {
+      shipmentFiles.forEach(function (value, index) {
+        if (value.id == fileIndex) {
+          $.ajax({
+            url: PREFIX + "/cont-special/file",
+            method: "DELETE",
+            data: {
+              id: value.id,
+            },
+            beforeSend: function () {
+              $.modal.loading("Đang xử lý, vui lòng chờ...");
+            },
+            success: function (result) {
+              $.modal.closeLoading();
+              if (result.code == 0) {
+                $.modal.msgSuccess("Xóa tệp thành công.");
+                $(element).parent("div.preview-block").remove();
+                shipmentFilePaths[
+                  `${getKeyFormByKeyType(value.fileType)}`
+                ].splice(index, 1);
+              } else {
+                $.modal.alertWarning("Xóa tệp thất bại.");
+              }
+            },
+          });
+          return false;
+        }
+      });
+    }
   }
 }
 
