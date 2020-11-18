@@ -588,9 +588,9 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
 	}*/
 
 function getRequestConfigIcon(contSpecialStatus, dangerous) {
-	console.log("vao");
+	/*console.log("vao");
 	console.log("contSpecialStatus" +contSpecialStatus);
-	console.log("dangerous" +dangerous);
+	console.log("dangerous" +dangerous);*/
 	
 	  let contSpecialStatusResult = "";
 	  // nếu xác nhận lạnh = 3 và nguy hiểm từ chối thì => Yêu cầu xác nhận bị từ chối

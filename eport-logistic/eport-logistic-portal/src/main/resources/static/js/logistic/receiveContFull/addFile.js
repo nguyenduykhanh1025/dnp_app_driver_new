@@ -3,14 +3,17 @@ var shipmentFileIds = [];
 //var abc = [];
 var shipmentFilePath  = [];
 var shipmentDetailId =[];
-var shipmentId = []; 
+var shipmentId = [];
+
+var fileType = []; 
+
 
 $(document).ready(function () {
     let previewTemplate = '<span data-dz-name></span>';
     
 //////////////// cont lạnh/////
     myDropzone = new Dropzone("#dropzoneL", {
-        url: prefix + "/file",
+        url: prefix + "/file/file-type/R",
         method: "post",
         paramName: "file",
         maxFiles: 5,
@@ -30,11 +33,21 @@ $(document).ready(function () {
                 $.modal.msgSuccess("Đính kèm tệp thành công."); 
                 
                 shipmentFileIds.push(response.shipmentFileId);
-                console.log("IIIIIIII" + response); 
-                console.log("sssss" + response.file); 
+                
+                console.log("eeeeeeeeeeeeeeeeeeeee" + response);
+                 
                 //  them
                 shipmentFilePath.push(response.file); 
-                shipmentDetailId.push(response.id); 
+                shipmentDetailId.push(response.id);  
+                
+                console.log("aaaaaaaaaaaaaaaaa" + response.fileType); 
+                /*fileType += response.fileType;*/
+                fileType.push(response.fileType);  
+                console.log("bbbbbbbbbb" + fileType); 
+                
+                
+              
+                
                 //shipmentId.push(response.shipmentId); 
                 let html = `<div class="preview-block">
                     <img src="` + ctx + `img/document.png" alt="Tài liệu" />
@@ -50,7 +63,7 @@ $(document).ready(function () {
     });
 //////////////// cont quá khổ//////
     myDropzone = new Dropzone("#dropzoneQK", {
-        url: prefix + "/file",
+        url: prefix + "/file/file-type/O",
         method: "post",
         paramName: "file",
         maxFiles: 5,
@@ -72,6 +85,8 @@ $(document).ready(function () {
                 shipmentFileIds.push(response.shipmentFileId);
                 console.log("IIIIIIII" + response); 
                 console.log("sssss" + response.file); 
+                //fileType += response.fileType;
+                fileType.push(response.fileType);  
                 //  them
                 shipmentFilePath.push(response.file); 
                 shipmentDetailId.push(response.id); 
@@ -91,7 +106,7 @@ $(document).ready(function () {
     
 ///////// cont nguy hiểm//////////////////
     myDropzone = new Dropzone("#dropzoneNH", {
-        url: prefix + "/file",
+        url: prefix + "/file/file-type/D",
         method: "post",
         paramName: "file",
         maxFiles: 5,
@@ -116,6 +131,8 @@ $(document).ready(function () {
                 //  them
                 shipmentFilePath.push(response.file); 
                 shipmentDetailId.push(response.id); 
+                fileType.push(response.fileType);  
+                //fileType += response.fileType;
                 //shipmentId.push(response.shipmentId); 
                 let html = `<div class="preview-block">
                     <img src="` + ctx + `img/document.png" alt="Tài liệu" />

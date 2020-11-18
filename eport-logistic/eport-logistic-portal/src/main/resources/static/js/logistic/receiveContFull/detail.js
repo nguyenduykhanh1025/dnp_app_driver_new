@@ -3,12 +3,9 @@ const PREFIX = ctx + "logistic/receive-cont-full"
 var shipmentFileIds = [];// validate file
  
 $('#containerNo').val(containerNo);// container no
-$('#sztp').val(sztp);// 
-
-$('#abc').val(shipmentDetail.id);
-
-$('#numberContainer').val(shipmentDetail.containerNo);
-
+$('#sztp').val(sztp);//  
+$('#abc').val(shipmentDetail.id); 
+$('#numberContainer').val(shipmentDetail.containerNo); 
 $('#sizeCont').val(shipmentDetail.sztp);// kich thuoc
 $('#expiredDem').val(shipmentDetail.expiredDem); // han lenh
 $('#consignee').val(shipmentDetail.consignee); // Chu hang
@@ -38,28 +35,31 @@ $('#ovHeight').val(shipmentDetail.ovHeight);//
 $('#ovPort').val(shipmentDetail.ovPort);// 
 $('#ovStbd').val(shipmentDetail.ovStbd);//  
 
-console.log("1" + shipmentDetail.osHeight);
+/*console.log("1" + shipmentDetail.osHeight);
 console.log("2" + shipmentDetail.osPort);
 console.log("3" + shipmentDetail.osStbd);
 console.log("4" + shipmentDetail.ovAft);
 console.log("5" + shipmentDetail.ovFore);
 console.log("6" + shipmentDetail.ovHeight);
 console.log("7" + shipmentDetail.ovPort);
-console.log("8" + shipmentDetail.ovStbd);
+console.log("8" + shipmentDetail.ovStbd);*/
 
 // cont nguy hiểm 
 $('#dangerousImo').val(shipmentDetail.dangerousImo);// 
-$('#dangerousUnno').val(shipmentDetail.dangerousUnno);// 
-
+$('#dangerousUnno').val(shipmentDetail.dangerousUnno);//  
 $('#dangerous').val(shipmentDetail.dangerous);//
 
-console.log("shipmentDetail.dangerous" + shipmentDetail.dangerous);
+/*console.log("shipmentDetail.dangerous" + shipmentDetail.dangerous);*/
  
-$("#datetimepicker1").datetimepicker({
+/*$("#datetimepicker1").datetimepicker({
 	  format: "dd/mm/yyyy",
 	  language: "vi_VN",
 	  minView: "month",
-	});
+	});*/
+
+
+/*console.log(fileType);*/
+
  
 function confirm() {  
 	    $.ajax(
@@ -76,12 +76,14 @@ function confirm() {
 	    			oversizeRight : shipmentDetail.oversizeRight,
 	    			oversizeLeft : shipmentDetail.shipmentDetail,
 	    			oversizeFront : shipmentDetail.oversizeFront,
-	    			oversizeBack : shipmentDetail.oversizeBack
+	    			oversizeBack : shipmentDetail.oversizeBack, 
+	    			fileType : fileType
 	    			
 	    		},
 	    		success: function(result){
     			if (result.code == 0) {
                     $.modal.alertError(result.msg);
+                    $.modal.close();
                 } else {
                     $.modal.close();
                 } 

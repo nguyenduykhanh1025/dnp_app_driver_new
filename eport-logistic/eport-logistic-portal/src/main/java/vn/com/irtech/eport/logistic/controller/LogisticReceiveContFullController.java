@@ -1102,9 +1102,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	}
 	
 	// nhat
-	@PostMapping("/file")
+	@PostMapping("/file/file-type/{fileType}")
+	//@PostMapping("/file/file-type")
 	@ResponseBody
-	public AjaxResult saveFile(MultipartFile file) throws IOException, InvalidExtensionException {
+	public AjaxResult saveFile(MultipartFile file, @PathVariable("fileType") String fileType) throws IOException, InvalidExtensionException {
 		String basePath = String.format("%s/%s", Global.getUploadPath() + "/receiveContFull", getUser().getGroupId());
 		String now = DateUtils.dateTimeNow();
 		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
@@ -1113,7 +1114,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ShipmentImage shipmentImage = new ShipmentImage();
 		shipmentImage.setPath(filePath);
 		shipmentImage.setCreateTime(DateUtils.getNowDate());
-		shipmentImage.setCreateBy(getUser().getFullName()); 
+		shipmentImage.setCreateBy(getUser().getFullName());
+		shipmentImage.setFileType(fileType);
 		
 		//shipmentImage.setShipmentDetailId(shipmentDetailId);
 		
@@ -1124,6 +1126,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ajaxResult.put("shipmentFileId", shipmentImage.getId());
 		
 		ajaxResult.put("file", filePath); 
+		
+		ajaxResult.put("fileType", fileType);
+		
 		return ajaxResult;
 	}
 	
@@ -1131,6 +1136,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	//oversizeTop  oversizeRight oversizeLeft oversizeFront oversizeBack
 	public AjaxResult uploadFile(@RequestParam(value="filePaths[]") String[] filePaths, 
+							    @RequestParam(value="fileType[]") String[] fileType, 
 								String shipmentDetailId, Long shipmentId, 
 								String shipmentSztp,String shipmentDangerous,
 								String oversizeTop,String oversizeRight,
@@ -1138,28 +1144,26 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 								String oversizeBack) throws IOException, 
 								InvalidExtensionException {
 		
-		for (String i : filePaths) {
+		/*for (String i : filePaths) {
 			ShipmentImage shipmentImage = new ShipmentImage();
+			//shipmentImage.setId(null);
 			shipmentImage.setPath(i);
 			shipmentImage.setShipmentId(shipmentId);
-			shipmentImage.setShipmentDetailId(shipmentDetailId);  
-
-			if(!"".equalsIgnoreCase(shipmentDangerous) || shipmentDangerous != null){// cont nguy hiểm
-				shipmentImage.setFileType("D"); 
-			}
-			
-			if("R".equalsIgnoreCase(shipmentSztp.substring(2,3))){// cont lạnh  
-				shipmentImage.setFileType("R"); 
-			}
-			//oversizeTop  oversizeRight oversizeLeft oversizeFront oversizeBack
-			if(!"".equalsIgnoreCase(oversizeTop) || oversizeTop != null || !"".equalsIgnoreCase(oversizeRight) || oversizeRight != null
-			|| !"".equalsIgnoreCase(oversizeLeft) || oversizeLeft != null || !"".equalsIgnoreCase(oversizeFront) || oversizeFront != null
-			|| !"".equalsIgnoreCase(oversizeBack) || oversizeBack != null){// cont cont quá khổ
-				shipmentImage.setFileType("O");
-			}  
+			shipmentImage.setShipmentDetailId(shipmentDetailId); 
+			shipmentImage.setFileType(i);
 			shipmentImageService.insertShipmentImage(shipmentImage);// them detail 
-		}
-		return success();
+		}*/
+			for(int i = 0; i < filePaths.length; i++)
+			{ 
+				ShipmentImage shipmentImage = new ShipmentImage();
+				shipmentImage.setPath(filePaths[i]);
+				shipmentImage.setShipmentId(shipmentId);
+				shipmentImage.setShipmentDetailId(shipmentDetailId); 
+				shipmentImage.setFileType(fileType[i]);
+				shipmentImageService.insertShipmentImage(shipmentImage);// them detail
+			}
+		//return success();
+		return null;
 	} 
 	 
 	 
@@ -1171,7 +1175,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
 		String[] fileArr = shipmentImage.getPath().split("/");
 		File file = new File(
-				Global.getUploadPath() + "/booking/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
+				Global.getUploadPath() + "/receiveContFull/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
 		if (file.delete()) {
 			shipmentImageService.deleteShipmentImageById(id);
 		}
