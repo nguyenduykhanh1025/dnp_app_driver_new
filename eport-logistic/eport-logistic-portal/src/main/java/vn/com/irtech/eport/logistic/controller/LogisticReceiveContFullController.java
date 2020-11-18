@@ -1262,9 +1262,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					detail.setOvFore(catos.getOvFore());
 					detail.setOvHeight(catos.getOvHeight());
 					detail.setOvPort(catos.getOvPort());
-					detail.setOvStbd(catos.getOvStbd());
-					
-					
+					detail.setOvStbd(catos.getOvStbd()); 
 				}
 			}
 		}
@@ -1282,9 +1280,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		mmap.put("sztp", sztp);
 		mmap.put("shipmentDetailId", shipmentDetailId); 
 		mmap.put("shipmentDetail",shipmentDetailService.selectShipmentDetailById( shipmentDetailId));//obj
-		
-		
-		
 		 
 	//// nhat add
 			ShipmentImage shipmentImage = new ShipmentImage();
@@ -1294,12 +1289,13 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
 			}
 		mmap.put("shipmentFiles", shipmentImages);
-		
-		
-		//   
-			 
+		 
 		return PREFIX + "/detail";
 	}
+	
+ 
+	
+	
 }
 	
 

@@ -3,8 +3,7 @@ var shipmentFileIds = [];
 //var abc = [];
 var shipmentFilePath  = [];
 var shipmentDetailId =[];
-var shipmentId = [];
-
+var shipmentId = []; 
 var fileType = []; 
 
 
@@ -148,11 +147,12 @@ $(document).ready(function () {
     });
 });
 
-$("#form-add-shipment").validate({
+/*$("#form-add-shipment").validate({
     focusCleanup: true
-});
+});*/
 
 async function submitHandler() {
+	//alert("vao submitHandler");
     if ($.validate.form()) {
         if ($("#opeCode option:selected").text() == 'Chọn OPR') {
             $.modal.alertWarning("Quý khách chưa chọn mã OPR.");

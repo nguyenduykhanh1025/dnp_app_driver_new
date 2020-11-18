@@ -49,6 +49,11 @@ $('#dangerousImo').val(shipmentDetail.dangerousImo);//
 $('#dangerousUnno').val(shipmentDetail.dangerousUnno);//  
 $('#dangerous').val(shipmentDetail.dangerous);//
 
+$("#form-detail-add").validate({
+	  onkeyup: false,
+	  focusCleanup: true,
+	});
+
 /*console.log("shipmentDetail.dangerous" + shipmentDetail.dangerous);*/
  
 /*$("#datetimepicker1").datetimepicker({
@@ -60,8 +65,35 @@ $('#dangerous').val(shipmentDetail.dangerous);//
 
 /*console.log(fileType);*/
 
- 
+
+const DANGEROUS_STATUS = {
+	  yet: "T", // là cont dangerous
+	  pending: "2", // là cont danger đang chờ xét duyết
+	  approve: "3", // là cont danger đã đc xét duyết
+	  reject: "4", // là cont danger đã bị từ chối
+	  NOT: "F", // không phải là cont danger
+};
+const SPECIAL_STATUS = {
+	  yet: "1",
+	  pending: "2",
+	  approve: "3",
+	  reject: "4",
+};
+
+
+
 function confirm() {  
+	//console.log(shipmentFiles.length); 
+	//console.log(shipmentDetail.oversizeTop); 
+	if(shipmentFiles.length < 1){
+		 $.modal.alertWarning( "Chưa đính kèm tệp cho container. Vui lòng đính kèm file."); 
+	}
+	else{ 
+		saveFile(); 
+	} 
+}
+	   
+function saveFile() {  
 	    $.ajax(
 	    	{
 	    		url: prefix + "/uploadFile", 
@@ -77,8 +109,7 @@ function confirm() {
 	    			oversizeLeft : shipmentDetail.shipmentDetail,
 	    			oversizeFront : shipmentDetail.oversizeFront,
 	    			oversizeBack : shipmentDetail.oversizeBack, 
-	    			fileType : fileType
-	    			
+	    			fileType : fileType 
 	    		},
 	    		success: function(result){
     			if (result.code == 0) {
