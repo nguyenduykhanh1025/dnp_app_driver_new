@@ -80,7 +80,7 @@ $(document).ready(function () {
     hot.render();
   }, 200);
 
-  $("#doStatus").combobox({
+  $("#dangerous").combobox({
     panelHeight: "auto",
     valueField: "alias",
     editable: false,
@@ -90,22 +90,30 @@ $(document).ready(function () {
         alias: "",
         text: "Trạng thái",
       },
+
       {
-        alias: "N",
+        alias: DANGEROUS_STATUS.pending,
         text: "Chưa kiểm tra",
         selected: true,
       },
+
       {
-        alias: "Y",
+        alias: DANGEROUS_STATUS.approve,
         text: "Đã kiểm tra",
       },
+
+      {
+        alias: DANGEROUS_STATUS.reject,
+        text: "Đã từ chối kiểm tra",
+      },
     ],
-    onSelect: function (doStatus) {
-      if (doStatus.alias != "") {
-        shipment.params.doStatus = doStatus.alias;
+    onSelect: function (dangerous) {
+      if (dangerous.alias != "") {
+        shipment.params.dangerous = dangerous.alias;
       } else {
-        shipment.params.doStatus = null;
+        shipment.params.dangerous = null;
       }
+
       loadTable();
     },
   });
@@ -320,6 +328,7 @@ function historyEportRenderer(
     ')" class="fa fa-history easyui-tooltip" title="Lịch Sử Eport" aria-hidden="true" style="color: #3498db;"></a>';
   $(td).addClass("htCenter").addClass("htMiddle").html(historyIcon);
 }
+
 function statusIconsRenderer(
   instance,
   td,
@@ -338,25 +347,40 @@ function statusIconsRenderer(
     sourceData[row].dischargePort &&
     sourceData[row].processStatus &&
     sourceData[row].paymentStatus &&
+    sourceData[row].customStatus &&
     sourceData[row].finishStatus
   ) {
     // Command process status
     let process =
       '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
-    switch (sourceData[row].processStatus) {
-      case "E":
-        process =
-          '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
-        break;
-      case "Y":
-        process =
-          '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
-        break;
-      case "N":
-        process =
-          '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
-        break;
+
+    if (
+      (!sourceData[row].contSpecialStatus ||
+        sourceData[row].contSpecialStatus == SPECIAL_STATUS.approve) &&
+      (!sourceData[row].dangerous ||
+        sourceData[row].dangerous == DANGEROUS_STATUS.NOT ||
+        sourceData[row].dangerous == DANGEROUS_STATUS.approve)
+    ) {
+      switch (sourceData[row].processStatus) {
+        case "E":
+          process =
+            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
+          break;
+        case "Y":
+          process =
+            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+          break;
+        case "N":
+          process =
+            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+          break;
+        case "D":
+          process =
+            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
+          break;
+      }
     }
+
     // Payment status
     let payment =
       '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
@@ -376,28 +400,35 @@ function statusIconsRenderer(
         }
         break;
     }
-    // Do status
-    let doStatus = "";
-    if (sourceData[row].doStatus != null) {
-      doStatus =
-        '<i id="do" class="fa fa-file-text easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-      if (sourceData[row].doStatus == "Y") {
-        doStatus =
-          '<i id="do" class="fa fa-file-text easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-      }
+    // Customs Status
+    let customs =
+      '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+    switch (sourceData[row].customStatus) {
+      case "R":
+        customs =
+          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+      case "Y":
+        customs =
+          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #ed5565;"></i>';
+        break;
+      case "N":
+        customs =
+          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+        break;
     }
     // released status
     let released =
-      '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+      '<i id="finish" class="fa fa-ship easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
     switch (sourceData[row].finishStatus) {
       case "Y":
         released =
-          '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+          '<i id="finish" class="fa fa-ship easyui-tooltip" title="Đã Giao Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
         break;
       case "N":
         if (sourceData[row].paymentStatus == "Y") {
           released =
-            '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+            '<i id="finish" class="fa fa-ship easyui-tooltip" title="Có Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
         }
         break;
     }
@@ -409,8 +440,12 @@ function statusIconsRenderer(
       sourceData[row].dangerous
     );
 
-    content += process + payment + doStatus + released;
-    content += "</div>";
+    content += process + payment;
+    // Domestic cont: VN --> not show
+    if (sourceData[row].dischargePort.substring(0, 2) != "VN") {
+      content += customs;
+    }
+    content += released + "</div>";
     $(td).html(content);
   }
   return td;
@@ -482,33 +517,49 @@ function openDetail(id, containerNo, sztp, row) {
 }
 
 function getRequestConfigIcon(contSpecialStatus, dangerous) {
-  let contSpecialStatusResult = null;
-
+  let contSpecialStatusResult = "";
   if (
-    (!contSpecialStatus && !dangerous) ||
-    contSpecialStatus == SPECIAL_STATUS.yet
+    contSpecialStatus == SPECIAL_STATUS.reject ||
+    dangerous == DANGEROUS_STATUS.reject
   ) {
     contSpecialStatusResult =
-      '<i id="verify" class="fa fa-user-circle-o" title="Có thể yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db"></i>';
+      '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
   } else if (
     contSpecialStatus == SPECIAL_STATUS.pending ||
     dangerous == DANGEROUS_STATUS.pending
   ) {
-    contSpecialStatusResult =
-      '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>';
+    if (
+      contSpecialStatus == SPECIAL_STATUS.pending &&
+      dangerous == DANGEROUS_STATUS.approve
+    ) {
+      contSpecialStatusResult =
+        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận từ tổ đặc biệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #e6e600"></i>';
+    } else if (
+      contSpecialStatus == SPECIAL_STATUS.approve &&
+      dangerous == DANGEROUS_STATUS.pending
+    ) {
+      contSpecialStatusResult =
+        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận từ tổ nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #e6e600"></i>';
+    } else {
+      contSpecialStatusResult =
+        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>';
+    }
   } else if (
-    contSpecialStatus == SPECIAL_STATUS.approve &&
-    (!dangerous ||
-      dangerous == DANGEROUS_STATUS.NOT ||
-      dangerous == DANGEROUS_STATUS.approve)
+    (contSpecialStatus == SPECIAL_STATUS.approve &&
+      (!dangerous ||
+        dangerous == DANGEROUS_STATUS.NOT ||
+        dangerous == DANGEROUS_STATUS.approve)) ||
+    (!contSpecialStatus && dangerous == DANGEROUS_STATUS.approve)
   ) {
     contSpecialStatusResult =
       '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhật đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
-  } else if (SPECIAL_STATUS.reject || dangerous == DANGEROUS_STATUS.reject) {
+  } else if (
+    contSpecialStatus == SPECIAL_STATUS.yet ||
+    dangerous == DANGEROUS_STATUS.yet
+  ) {
     contSpecialStatusResult =
-      '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
+      '<i id="verify" class="fa fa-user-circle-o" title="Có thể yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db"></i>';
   }
-
   return contSpecialStatusResult;
 }
 
@@ -727,27 +778,27 @@ function configHandson() {
         case 5:
           return "Số Container";
         case 6:
-          return "Sztp";
-        case 7:
-          return "Chủ Hàng";
-        case 8:
-          return "Tàu - Chuyến";
-        case 9:
-          return "Trọng Lượng";
-        case 10:
-          return "Loại Hàng";
-        case 11:
-          return "Số Seal";
-        case 12:
-          return "Cảng Dỡ Hàng";
-        case 13:
-          return "P.T.T.T";
-        case 14:
-          return "Payer";
-        case 15:
-          return "Ghi Chú";
-        case 16:
           return '<span class="required">Chi Tiết</span>';
+        case 7:
+          return "Sztp";
+        case 8:
+          return "Chủ Hàng";
+        case 9:
+          return "Tàu - Chuyến";
+        case 10:
+          return "Trọng Lượng";
+        case 11:
+          return "Loại Hàng";
+        case 12:
+          return "Số Seal";
+        case 13:
+          return "Cảng Dỡ Hàng";
+        case 14:
+          return "P.T.T.T";
+        case 15:
+          return "Payer";
+        case 16:
+          return "Ghi Chú";
       }
     },
     colWidths: [
@@ -757,6 +808,7 @@ function configHandson() {
       120,
       130,
       100,
+      150,
       60,
       200,
       100,
@@ -767,7 +819,6 @@ function configHandson() {
       100,
       100,
       100,
-      150,
     ],
     filter: "true",
     columns: [
@@ -799,6 +850,10 @@ function configHandson() {
       {
         data: "containerNo",
         renderer: containerNoRenderer,
+      },
+      {
+        data: "btnInformationContainer",
+        renderer: btnDetailRenderer,
       },
       {
         data: "sztp",
@@ -841,10 +896,6 @@ function configHandson() {
         data: "remark",
         renderer: remarkRenderer,
       },
-      {
-        data: "btnInformationContainer",
-        renderer: btnDetailRenderer,
-      },
     ],
     beforeKeyDown: function (e) {
       let selected = hot.getSelected()[0];
@@ -886,7 +937,12 @@ function loadShipmentDetails(id) {
   if (id) {
     $.modal.loading("Đang xử lý ...");
     $.ajax({
-      url: PREFIX + "/shipment/" + id + "/shipmentDetails",
+      url:
+        PREFIX +
+        "/shipment/" +
+        id +
+        "/shipmentDetails/dangerous/" +
+        shipment.params.dangerous,
       method: "GET",
       success: function (res) {
         $.modal.closeLoading();
@@ -1309,4 +1365,19 @@ function handleLoadCommentFromModelReject(shipmentCommentId) {
  */
 function handleLoadTableFromModel() {
   loadTable();
+}
+
+function formatServiceType(value, row) {
+  switch (value) {
+    case 1:
+      return "Bốc Hàng";
+    case 2:
+      return "Hạ Rỗng";
+    case 3:
+      return "Bốc Rỗng";
+    case 4:
+      return "Hạ Hàng";
+    default:
+      return "";
+  }
 }

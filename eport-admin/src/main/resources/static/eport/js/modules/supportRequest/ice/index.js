@@ -80,7 +80,7 @@ $(document).ready(function () {
     hot.render();
   }, 200);
 
-  $("#doStatus").combobox({
+  $("#contSpecialStatus").combobox({
     panelHeight: "auto",
     valueField: "alias",
     editable: false,
@@ -90,21 +90,28 @@ $(document).ready(function () {
         alias: "",
         text: "Trạng thái",
       },
+
       {
-        alias: "N",
+        alias: SPECIAL_STATUS.pending,
         text: "Chưa kiểm tra",
         selected: true,
       },
+
       {
-        alias: "Y",
+        alias: SPECIAL_STATUS.approve,
         text: "Đã kiểm tra",
       },
+
+      {
+        alias: SPECIAL_STATUS.reject,
+        text: "Đã từ chối kiểm tra",
+      },
     ],
-    onSelect: function (doStatus) {
-      if (doStatus.alias != "") {
-        shipment.params.doStatus = doStatus.alias;
+    onSelect: function (contSpecialStatus) {
+      if (contSpecialStatus.alias != "") {
+        shipment.params.contSpecialStatus = contSpecialStatus.alias;
       } else {
-        shipment.params.doStatus = null;
+        shipment.params.contSpecialStatus = null;
       }
       loadTable();
     },
@@ -455,8 +462,22 @@ function getRequestConfigIcon(contSpecialStatus, dangerous) {
     contSpecialStatus == SPECIAL_STATUS.pending ||
     dangerous == DANGEROUS_STATUS.pending
   ) {
-    contSpecialStatusResult =
-      '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>';
+    if (
+      contSpecialStatus == SPECIAL_STATUS.pending &&
+      dangerous == DANGEROUS_STATUS.approve
+    ) {
+      contSpecialStatusResult =
+        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận từ tổ đặc biệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #e6e600"></i>';
+    } else if (
+      contSpecialStatus == SPECIAL_STATUS.approve &&
+      dangerous == DANGEROUS_STATUS.pending
+    ) {
+      contSpecialStatusResult =
+        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận từ tổ nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #e6e600"></i>';
+    } else {
+      contSpecialStatusResult =
+        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>';
+    }
   } else if (
     contSpecialStatus == SPECIAL_STATUS.approve &&
     (!dangerous ||
@@ -913,7 +934,12 @@ function loadShipmentDetails(id) {
   if (id) {
     $.modal.loading("Đang xử lý ...");
     $.ajax({
-      url: PREFIX + "/shipment/" + id + "/shipmentDetails",
+      url:
+        PREFIX +
+        "/shipment/" +
+        id +
+        "/shipmentDetails/constSpecialStatus/" +
+        shipment.params.contSpecialStatus,
       method: "GET",
       success: function (res) {
         $.modal.closeLoading();
@@ -1336,4 +1362,19 @@ function handleLoadCommentFromModelReject(shipmentCommentId) {
  */
 function handleLoadTableFromModel() {
   loadTable();
+}
+
+function formatServiceType(value, row) {
+  switch (value) {
+    case 1:
+      return "Bốc Hàng";
+    case 2:
+      return "Hạ Rỗng";
+    case 3:
+      return "Bốc Rỗng";
+    case 4:
+      return "Hạ Hàng";
+    default:
+      return "";
+  }
 }

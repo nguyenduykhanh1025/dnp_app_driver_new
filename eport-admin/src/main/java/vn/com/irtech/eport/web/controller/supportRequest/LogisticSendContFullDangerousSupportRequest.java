@@ -111,8 +111,8 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
             params = new HashMap<>();
         }
         // get cont is cont dangerous
-        params.put("dangerous", EportConstants.CONT_REQUEST_DANGEROUS_PENDING);
-        params.put("doStatus", "");
+        // params.put("dangerous", EportConstants.CONT_REQUEST_DANGEROUS_PENDING);
+        // params.put("doStatus", "");
 
         shipment.setParams(params);
 
@@ -122,13 +122,14 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
         return ajaxResult;
     }
 
-    @GetMapping("/shipment/{shipmentId}/shipmentDetails")
+    @GetMapping("/shipment/{shipmentId}/shipmentDetails/dangerous/{dangerous}")
     @ResponseBody
-    public AjaxResult getShipmentDetails(@PathVariable("shipmentId") Long shipmentId) {
+    public AjaxResult getShipmentDetails(@PathVariable("shipmentId") Long shipmentId,
+            @PathVariable("dangerous") String dangerous) {
         AjaxResult ajaxResult = AjaxResult.success();
         ShipmentDetail shipmentDetail = new ShipmentDetail();
         shipmentDetail.setShipmentId(shipmentId);
-        shipmentDetail.setDangerous(EportConstants.CONT_REQUEST_DANGEROUS_PENDING);
+        shipmentDetail.setDangerous(dangerous);
         List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
         ajaxResult.put("shipmentDetails", shipmentDetails);
         return ajaxResult;

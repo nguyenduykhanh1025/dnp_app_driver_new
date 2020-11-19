@@ -953,13 +953,28 @@ function getRequestConfigIcon(contSpecialStatus, dangerous) {
     contSpecialStatus == SPECIAL_STATUS.pending ||
     dangerous == DANGEROUS_STATUS.pending
   ) {
-    contSpecialStatusResult =
-      '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>';
+    if (
+      contSpecialStatus == SPECIAL_STATUS.pending &&
+      dangerous == DANGEROUS_STATUS.approve
+    ) {
+      contSpecialStatusResult =
+        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận từ tổ đặc biệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #e6e600"></i>';
+    } else if (
+      contSpecialStatus == SPECIAL_STATUS.approve &&
+      dangerous == DANGEROUS_STATUS.pending
+    ) {
+      contSpecialStatusResult =
+        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận từ tổ nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #e6e600"></i>';
+    } else {
+      contSpecialStatusResult =
+        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>';
+    }
   } else if (
-    contSpecialStatus == SPECIAL_STATUS.approve &&
-    (!dangerous ||
-      dangerous == DANGEROUS_STATUS.NOT ||
-      dangerous == DANGEROUS_STATUS.approve)
+    (contSpecialStatus == SPECIAL_STATUS.approve &&
+      (!dangerous ||
+        dangerous == DANGEROUS_STATUS.NOT ||
+        dangerous == DANGEROUS_STATUS.approve)) ||
+    (!contSpecialStatus && dangerous == DANGEROUS_STATUS.approve)
   ) {
     contSpecialStatusResult =
       '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhật đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
@@ -1106,6 +1121,7 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
     value = "";
   }
+
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
       value +
@@ -1605,6 +1621,7 @@ function configHandson() {
       150,
       100,
       150,
+
       150,
       200,
       100,
@@ -1645,6 +1662,7 @@ function configHandson() {
         strict: true,
         renderer: sizeRenderer,
       },
+
       {
         data: "consignee",
         strict: true,
@@ -1767,7 +1785,7 @@ function onChange(changes, source) {
   changes.forEach(function (change) {
     // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
     if (change[1] == "vslNm" && change[3] != null && change[3] != "") {
-      let vesselAndVoy = hot.getDataAtCell(change[0], 5);
+      let vesselAndVoy = hot.getDataAtCell(change[0], 6);
       //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
       if (vesselAndVoy) {
         if (currentVesselVoyage != vesselAndVoy) {
@@ -2595,8 +2613,7 @@ function getDataFromTable(isValidate) {
       sizeType[0] &&
       sizeType[0].length > 3 &&
       sizeType[0].substring(0, 4).includes("R") &&
-      object["temperature"] != null &&
-      object["temperature"] != ""
+      (object["temperature"] == null || object["temperature"] === "")
     ) {
       $.modal.alertError(
         "Hàng " + (index + 1) + ": Vui lòng nhập nhiệt độ cho container lạnh!"
