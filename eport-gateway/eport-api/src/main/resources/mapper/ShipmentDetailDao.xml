@@ -474,7 +474,7 @@
                     ELSE M.CNTR_STATE
                 END AS containerStatus,
 				REMARK AS containerRemark,
-				BLOCK || '-' || BAY || '-' || ROWW || '-' || TIER AS location
+				BLOCK || '-' || BAY || '-' || ROWW || '-' || TIER AS location,
 				M.IMDG AS dangerousImo,
 				M.UNNO AS dangerousUnno,
 				NULL AS ovHeight,

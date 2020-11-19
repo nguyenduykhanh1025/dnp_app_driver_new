@@ -3,8 +3,30 @@ var dateStart, dateFinish;
 
 $('.summernote').summernote({
     placeholder: 'Nhập vào nội dung bản tin',
-    height: 200
+    height: 200,
+    dialogsInBody: true,
+    callbacks: {
+        onImageUpload: function(files, editor, welEditable) {
+            let file = files[0];
+            getBase64(file).then(
+                url => {
+                    $('.summernote').summernote('insertImage', url, 'image');
+                }
+            );
+        }
+    }
 });
+
+function getBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
+  
+  
 
 $('#dateStart').datebox({
     onSelect: function (date) {

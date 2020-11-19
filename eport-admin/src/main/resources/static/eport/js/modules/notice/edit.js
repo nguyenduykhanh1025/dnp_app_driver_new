@@ -3,7 +3,18 @@ var dateStart, dateFinish;
 
 $('.summernote').summernote({
     placeholder: 'Nhập vào nội dung bản tin',
-    height: 200
+    height: 200,
+    dialogsInBody: true,
+    callbacks: {
+        onImageUpload: function(files, editor, welEditable) {
+            let file = files[0];
+            getBase64(file).then(
+                url => {
+                    $('.summernote').summernote('insertImage', url, 'image');
+                }
+            );
+        }
+    }
 });
 
 $('#dateStart').datebox({
