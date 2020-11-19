@@ -40,7 +40,8 @@ public class EdiServiceImpl implements IEdiService {
 	private ISysSyncQueueService sysSyncQueueService;
 
 	@Override
-	public void executeListEdi(List<EdiDataReq> ediDataReqs, String partnerCode, Long carrierGroupId, String transactionId) {
+	public void executeListEdi(List<EdiDataReq> ediDataReqs, String partnerCode, Long carrierGroupId,
+			String transactionId) {
 		for (EdiDataReq ediDataReq : ediDataReqs) {
 			if (ediDataReq.getMsgFunc() == null) {
 				continue;
@@ -97,15 +98,16 @@ public class EdiServiceImpl implements IEdiService {
 		edo.setBillOfLading(ediDataReq.getBillOfLading());
 		edo.setCarrierCode(partnerCode);
 		edo.setDelFlg(0);
-		Edo odlEdo = edoService.selectFirstEdo(edo);
+		Edo oldEdo = edoService.selectFirstEdo(edo);
 
-		if (odlEdo == null) {
+		if (oldEdo == null) {
 			throw new BusinessException(String.format("Edo to update is not exist (containerNo='%s', billOfLading=%s)",
 					ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
 		}
 
 		Edo edoUpdate = new Edo();
 		this.settingEdoData(edoUpdate, ediDataReq, partnerCode, transactionId);
+		edoUpdate.setId(oldEdo.getId());
 		edoUpdate.setUpdateBy(partnerCode);
 		edoUpdate.setCarrierId(carrierGroupId);
 		if (edoUpdate.getExpiredDem() != null) {
@@ -124,8 +126,8 @@ public class EdiServiceImpl implements IEdiService {
 		ContainerInfoDto cntrEmty = cntrMap.get(ediDataReq.getContainerNo() + "E");
 
 		// check if expired dem has update
-		if (edoUpdate.getExpiredDem() != null && odlEdo.getExpiredDem() != null
-				&& odlEdo.getExpiredDem().compareTo(edoUpdate.getExpiredDem()) != 0) {
+		if (edoUpdate.getExpiredDem() != null && oldEdo.getExpiredDem() != null
+				&& oldEdo.getExpiredDem().compareTo(edoUpdate.getExpiredDem()) != 0) {
 			if (cntrFull != null && StringUtils.isNotEmpty(cntrFull.getJobOdrNo2())) {
 				// Get old request if exist, update else insert new request
 				SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
@@ -146,8 +148,8 @@ public class EdiServiceImpl implements IEdiService {
 					SysSyncQueue sysSyncQueue = new SysSyncQueue();
 					sysSyncQueue.setSyncType(EportConstants.SYNC_QUEUE_DEM);
 					sysSyncQueue.setExpiredDem(edoUpdate.getExpiredDem());
-					sysSyncQueue.setBlNo(odlEdo.getBillOfLading());
-					sysSyncQueue.setCntrNo(odlEdo.getContainerNumber());
+					sysSyncQueue.setBlNo(oldEdo.getBillOfLading());
+					sysSyncQueue.setCntrNo(oldEdo.getContainerNumber());
 					sysSyncQueue.setJobOdrNo(cntrFull.getJobOdrNo2());
 					sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
 					sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
@@ -158,8 +160,8 @@ public class EdiServiceImpl implements IEdiService {
 		// check if det free time has update
 		// if true (old != new) check container condition to update (container has not
 		// dropped cont empty yet)
-		if (StringUtils.isNotEmpty(odlEdo.getDetFreeTime()) && StringUtils.isNotEmpty(edoUpdate.getDetFreeTime())
-				&& odlEdo.getDetFreeTime().equalsIgnoreCase(edoUpdate.getDetFreeTime())) {
+		if (StringUtils.isNotEmpty(oldEdo.getDetFreeTime()) && StringUtils.isNotEmpty(edoUpdate.getDetFreeTime())
+				&& oldEdo.getDetFreeTime().equalsIgnoreCase(edoUpdate.getDetFreeTime())) {
 			if (cntrEmty != null && StringUtils.isNotEmpty(cntrEmty.getJobOdrNo())) {
 				// Get old request if exist, update else insert new request
 				SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
@@ -196,7 +198,7 @@ public class EdiServiceImpl implements IEdiService {
 		// if true (old != new) => check contition to udpate (container has not dropped
 		// cont empty yet)
 		if (StringUtils.isNotEmpty(edoUpdate.getEmptyContainerDepot())
-				&& !edoUpdate.getEmptyContainerDepot().equalsIgnoreCase(odlEdo.getEmptyContainerDepot())) {
+				&& !edoUpdate.getEmptyContainerDepot().equalsIgnoreCase(oldEdo.getEmptyContainerDepot())) {
 			if (cntrEmty != null && StringUtils.isNotEmpty(cntrEmty.getJobOdrNo())) {
 				throw new BusinessException(String.format(
 						"Empty container has already been in Da Nang port (containerNo='%s', billOfLading=%s)",
