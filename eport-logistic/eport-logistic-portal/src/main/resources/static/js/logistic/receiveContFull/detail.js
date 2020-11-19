@@ -77,13 +77,14 @@ let typeO = false;// qua kho
 
 
 function confirm() { 
-	if ( shipmentDetail.dangerous == "1" ||
+	/*if ( shipmentDetail.dangerous == "1" ||
 		 shipmentDetail.dangerous == "3" ||
 		 shipmentDetail.contSpecialStatus == "1" ||
 		 shipmentDetail.contSpecialStatus == "3" ){
 	    $.modal.alertWarning( "Container đang hoặc đã yêu cầu xác nhận, không thể thêm tệp đã đính kèm.");
+	    
 	  }
-	else {
+	else {*/
 		// nếu 
 	if(fileType){ 
 		fileType.forEach(function (elementType, index) {
@@ -125,7 +126,7 @@ function confirm() {
 			saveFile();
 		} 
 	}
-  }
+  //}
 
 }
    

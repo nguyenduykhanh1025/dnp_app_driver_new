@@ -163,6 +163,13 @@ public class ShipmentServiceImpl implements IShipmentService {
 	}
 	
 	@Override
+    public List<Shipment> selectShipmentListByWithShipmentContR(Shipment shipment) {
+		return shipmentMapper.selectShipmentListByWithShipmentContR(shipment);
+	}
+	
+	
+	
+	@Override
     public List<Shipment> selectShipmentListByWithShipmentDetailDangerous(Shipment shipment) {
 		return shipmentMapper.selectShipmentListByWithShipmentDetailDangerous(shipment);
 	}

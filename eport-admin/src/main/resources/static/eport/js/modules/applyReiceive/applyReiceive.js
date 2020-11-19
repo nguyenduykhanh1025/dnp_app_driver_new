@@ -64,31 +64,31 @@ $(document).ready(function () {
     hot.render();
   }, 200);
 
- /* $("#doStatus").combobox({
+  $("#statusCont").combobox({
     panelHeight: 'auto',
     valueField: 'alias',
     editable: false,
     textField: 'text',
     data: [{
       "alias": '',
-      "text": "Trạng thái"
+      "text": "Tất cả trạng thái"
     }, {
-      "alias": 'N',
+      "alias": '1',
       "text": "Chưa kiểm tra",
       "selected": true
     }, {
-      "alias": 'Y',
+      "alias": '3',
       "text": "Đã kiểm tra"
     }],
-    onSelect: function (doStatus) {
-      if (doStatus.alias != '') {
-        shipment.params.doStatus = doStatus.alias;
+    onSelect: function (statusCont) {
+      if (statusCont.alias != '') {
+        shipment.params.statusCont = statusCont.alias;
       } else {
-        shipment.params.doStatus = null;
+        shipment.params.statusCont = null;
       }
       loadTable();
     }
-  });*/
+  });
 
   $("#logisticGroups").combobox({
     valueField: 'id',
@@ -761,11 +761,30 @@ function updateLayout() {
       if (checkList[i] != 1) {
         allChecked = false;
       }
-    }
+    }  
   }
   $('.checker').prop('checked', allChecked);
+  
+  setLayoutConfirmRequest();
 }
 
+function setLayoutConfirmRequest() {
+	  $("#acceptBtn").prop("disabled", isDisableBtnRequestConfirm());
+	  $("#rejectBtn").prop("disabled", isDisableBtnRequestConfirm());
+}
+
+function isDisableBtnRequestConfirm() {
+	  let result = false; // true: enable btn || false: disable btn
+
+	  for (let i = 0; i < sourceData.length; ++i) {
+	     if(sourceData[i].contSpecialStatus == "3"){ 
+	    	 result = true;
+	     } 
+	  }
+
+	  return result;
+	}
+ 
 // GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
 function getDataSelectedFromTable() {
   let myTableData = hot.getSourceData();
@@ -816,7 +835,7 @@ function search() {
 function clearInput() {
   $('#opr').combobox('select', 'Chọn OPR');
   $('#logisticGroups').combobox('select', '0');
-  $('#doStatus').combobox('select', '');
+  $('#statusCont').combobox('select', '');
   $("#containerNo").textbox('setText', '');
   $("#bookingNo").textbox('setText', '');
   shipment = new Object();

@@ -64,31 +64,32 @@ $(document).ready(function () {
     hot.render();
   }, 200);
 
- /* $("#doStatus").combobox({
-    panelHeight: 'auto',
-    valueField: 'alias',
-    editable: false,
-    textField: 'text',
-    data: [{
-      "alias": '',
-      "text": "Trạng thái"
-    }, {
-      "alias": 'N',
-      "text": "Chưa kiểm tra",
-      "selected": true
-    }, {
-      "alias": 'Y',
-      "text": "Đã kiểm tra"
-    }],
-    onSelect: function (doStatus) {
-      if (doStatus.alias != '') {
-        shipment.params.doStatus = doStatus.alias;
-      } else {
-        shipment.params.doStatus = null;
-      }
-      loadTable();
-    }
-  });*/
+  $("#statusCont").combobox({
+	    panelHeight: 'auto',
+	    valueField: 'alias',
+	    editable: false,
+	    textField: 'text',
+	    data: [{
+	      "alias": '',
+	      "text": "Tất cả trạng thái"
+	    }, {
+	      "alias": '1',
+	      "text": "Chưa kiểm tra",
+	      "selected": true
+	    }, {
+	      "alias": '3',
+	      "text": "Đã kiểm tra"
+	    }],
+	    onSelect: function (statusCont) {
+	      if (statusCont.alias != '') {
+	        shipment.params.statusCont = statusCont.alias;
+	      } else {
+	        shipment.params.statusCont = null;
+	      }
+	      loadTable();
+	    }
+	  });
+  
 
   $("#logisticGroups").combobox({
     valueField: 'id',
@@ -372,7 +373,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     let content = '<div>';
     
     if (!sourceData[row].sztp.includes("G")) {
-        content += getRequestConfigIcon(sourceData[row].contSpecialStatus);
+        content += getRequestConfigIcon(sourceData[row].dangerous);
       }
 
     content += process + payment + doStatus + released;
@@ -385,29 +386,29 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
   }
   return td;
 }
-
-function getRequestConfigIcon(contSpecialStatus) {
-	  let contSpecialStatusResult =
+ 
+function getRequestConfigIcon(dangerous) {
+	  let dangerousStatus =
 	    '<i id="verify" class="fa fa-user-circle-o" title="Chưa yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
-	  switch (contSpecialStatus) {
+	  switch (dangerous) {
 	    case SPECIAL_STATUS.yet:// 1
-	      contSpecialStatusResult =
+	    	dangerousStatus =
 	        '<i id="verify" class="fa fa-user-circle-o" title="Chờ xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
 	      break;
 	    case SPECIAL_STATUS.pending:// 2
-	      contSpecialStatusResult =
+	    	dangerousStatus =
 	        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ffff66"></i>';
 	      break;
 	    case SPECIAL_STATUS.approve:// 3
-	      contSpecialStatusResult =
+	    	dangerousStatus =
 	        '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
 	      break;
 	    case SPECIAL_STATUS.reject:// 4
-	      contSpecialStatusResult =
+	    	dangerousStatus =
 	        '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
 	      break;
 	  }
-	  return contSpecialStatusResult;
+	  return dangerousStatus;
 	}
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
@@ -792,7 +793,26 @@ function updateLayout() {
     }
   }
   $('.checker').prop('checked', allChecked);
+  
+  setLayoutConfirmRequest();
 }
+
+function setLayoutConfirmRequest() {
+	  $("#acceptBtn").prop("disabled", isDisableBtnRequestConfirm());
+	  $("#rejectBtn").prop("disabled", isDisableBtnRequestConfirm());
+}
+
+function isDisableBtnRequestConfirm() {
+	  let result = false; // true: enable btn || false: disable btn
+
+	  for (let i = 0; i < sourceData.length; ++i) {
+	     if(sourceData[i].dangerous == "3"){ 
+	    	 result = true;
+	     } 
+	  }
+
+	  return result;
+	}
 
 // GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
 function getDataSelectedFromTable() {

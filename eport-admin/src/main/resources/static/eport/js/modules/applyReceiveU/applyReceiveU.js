@@ -64,31 +64,31 @@ $(document).ready(function () {
     hot.render();
   }, 200);
 
- /* $("#doStatus").combobox({
-    panelHeight: 'auto',
-    valueField: 'alias',
-    editable: false,
-    textField: 'text',
-    data: [{
-      "alias": '',
-      "text": "Trạng thái"
-    }, {
-      "alias": 'N',
-      "text": "Chưa kiểm tra",
-      "selected": true
-    }, {
-      "alias": 'Y',
-      "text": "Đã kiểm tra"
-    }],
-    onSelect: function (doStatus) {
-      if (doStatus.alias != '') {
-        shipment.params.doStatus = doStatus.alias;
-      } else {
-        shipment.params.doStatus = null;
-      }
-      loadTable();
-    }
-  });*/
+  $("#statusCont").combobox({
+	    panelHeight: 'auto',
+	    valueField: 'alias',
+	    editable: false,
+	    textField: 'text',
+	    data: [{
+	      "alias": '',
+	      "text": "Tất cả trạng thái"
+	    }, {
+	      "alias": '1',
+	      "text": "Chưa kiểm tra",
+	      "selected": true
+	    }, {
+	      "alias": '3',
+	      "text": "Đã kiểm tra"
+	    }],
+	    onSelect: function (statusCont) {
+	      if (statusCont.alias != '') {
+	        shipment.params.statusCont = statusCont.alias;
+	      } else {
+	        shipment.params.statusCont = null;
+	      }
+	      loadTable();
+	    }
+	  });
 
   $("#logisticGroups").combobox({
     valueField: 'id',
@@ -792,6 +792,23 @@ function updateLayout() {
     }
   }
   $('.checker').prop('checked', allChecked);
+  setLayoutConfirmRequest();
+  
+}
+
+function setLayoutConfirmRequest() {
+	  $("#acceptBtn").prop("disabled", isDisableBtnRequestConfirm());
+	  $("#rejectBtn").prop("disabled", isDisableBtnRequestConfirm());
+}
+
+function isDisableBtnRequestConfirm() {
+	  let result = false; // true: enable btn || false: disable btn 
+	  for (let i = 0; i < sourceData.length; ++i) {
+	     if(sourceData[i].contSpecialStatus == "3"){ 
+	    	 result = true;
+	     } 
+	  } 
+	  return result;
 }
 
 // GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
@@ -844,7 +861,7 @@ function search() {
 function clearInput() {
   $('#opr').combobox('select', 'Chọn OPR');
   $('#logisticGroups').combobox('select', '0');
-  $('#doStatus').combobox('select', '');
+  $('#statusCont').combobox('select', '');
   $("#containerNo").textbox('setText', '');
   $("#bookingNo").textbox('setText', '');
   shipment = new Object();

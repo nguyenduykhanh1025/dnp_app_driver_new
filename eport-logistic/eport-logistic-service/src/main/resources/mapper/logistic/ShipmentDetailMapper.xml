@@ -182,7 +182,7 @@
         <include refid="selectShipmentDetailVo"/>
            
         <where>
-        	  cont_special_status != '3' and cont_special_status is not null and  
+        	 cont_special_status is not null and  
             (OVERSIZE_TOP is not  null OR   OVERSIZE_RIGHT is not null OR OVERSIZE_LEFT is not null
             OR OVERSIZE_FRONT is not null  OR OVERSIZE_BACK is not null)
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
@@ -302,7 +302,8 @@
         <include refid="selectShipmentDetailVo"/>
            
         <where>
-        	  cont_special_status != '3' and cont_special_status is not null
+        	  <!-- cont_special_status != '3' and --> 
+        	  cont_special_status is not null
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="processOrderId != null"> and process_order_id = #{processOrderId}</if>

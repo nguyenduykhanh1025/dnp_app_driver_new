@@ -248,13 +248,13 @@ function save(url) {
 }
 function removeImage(element, fileIndex) {
 	
-	if ( shipmentDetail.dangerous == DANGEROUS_STATUS.pending ||
+	/*if ( shipmentDetail.dangerous == DANGEROUS_STATUS.pending ||
 			 shipmentDetail.dangerous == DANGEROUS_STATUS.approve ||
 			 shipmentDetail.contSpecialStatus == SPECIAL_STATUS.yet ||
 			 shipmentDetail.contSpecialStatus == SPECIAL_STATUS.approve ){
 	    $.modal.alertWarning( "Container đang hoặc đã yêu cầu xác nhận, không thể xóa tệp đã đính kèm.");
 	  } 
-	else{
+	else{*/
 	if (!fileIndex) {
 	    $.modal.msgSuccess("Xóa tệp thành công.");
 	    $(element).parent("div.preview-block").remove();
@@ -290,7 +290,7 @@ function removeImage(element, fileIndex) {
 	      }
 	    });
 	  }
-	}
+	//}
 	
 }
 

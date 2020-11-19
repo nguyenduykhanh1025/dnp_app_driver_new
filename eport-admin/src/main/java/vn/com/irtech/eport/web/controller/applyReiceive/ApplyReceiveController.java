@@ -113,16 +113,13 @@ public class ApplyReceiveController extends AdminBaseController  {
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
 			params = new HashMap<>();
-		}
-		//params.put("processStatus", "Y");
-		
-		params.put("serviceType", "1");
+		} 
+		params.put("serviceType", "1"); 
 		//Integer[] serviceArray = { EportConstants.SERVICE_DROP_EMPTY, EportConstants.SERVICE_DROP_FULL };
 		//params.put("serviceArray", serviceArray);
-		shipment.setParams(params);
-		//List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
+		shipment.setParams(params); 
 		
-		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilterApply(shipment);
+		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentContR(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
 		return ajaxResult;
 	}
@@ -133,8 +130,7 @@ public class ApplyReceiveController extends AdminBaseController  {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setSztp("R");// cont lạnh (R)
-		//List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		shipmentDetail.setSztp("R");// cont lạnh (R) 
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailListCont(shipmentDetail);
 		
 		ajaxResult.put("shipmentDetails", shipmentDetails);

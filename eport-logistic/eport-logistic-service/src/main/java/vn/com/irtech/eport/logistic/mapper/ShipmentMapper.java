@@ -103,6 +103,10 @@ public interface ShipmentMapper
     
     public List<Shipment> selectShipmentListByWithShipmentDetailFilterApply(Shipment shipment);
     
+    public List<Shipment> selectShipmentListByWithShipmentContR(Shipment shipment);
+    
+    
+    
     public List<Shipment> selectShipmentListByWithShipmentDetailDangerous(Shipment shipment);
     
     public List<Shipment> selectShipmentListByWithShipmentOverSize(Shipment shipment);

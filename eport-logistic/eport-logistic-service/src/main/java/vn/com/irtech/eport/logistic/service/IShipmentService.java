@@ -102,6 +102,10 @@ public interface IShipmentService {
     
     public List<Shipment> selectShipmentListByWithShipmentDetailFilterApply(Shipment shipment);
     
+    
+    public List<Shipment> selectShipmentListByWithShipmentContR(Shipment shipment);
+    
+    
     // list dangerous
     public List<Shipment> selectShipmentListByWithShipmentDetailDangerous(Shipment shipment);
     
