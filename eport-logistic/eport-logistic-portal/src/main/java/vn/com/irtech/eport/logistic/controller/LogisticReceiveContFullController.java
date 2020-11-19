@@ -1101,71 +1101,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error("Yêu cầu hủy lệnh thất bại, quý khách vui lòng liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
 	}
 	
-	// nhat
-	@PostMapping("/file/file-type/{fileType}")
-	//@PostMapping("/file/file-type")
-	@ResponseBody
-	public AjaxResult saveFile(MultipartFile file, @PathVariable("fileType") String fileType) throws IOException, InvalidExtensionException {
-		String basePath = String.format("%s/%s", Global.getUploadPath() + "/receiveContFull", getUser().getGroupId());
-		String now = DateUtils.dateTimeNow();
-		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
-		String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
-        
-		ShipmentImage shipmentImage = new ShipmentImage();
-		shipmentImage.setPath(filePath);
-		shipmentImage.setCreateTime(DateUtils.getNowDate());
-		shipmentImage.setCreateBy(getUser().getFullName());
-		shipmentImage.setFileType(fileType);
-		
-		//shipmentImage.setShipmentDetailId(shipmentDetailId);
-		
-		// bam luu da moi thuc hien ham insert vì nếu insert thì sẽ vào insert lô
-		//shipmentImageService.insertShipmentImage(shipmentImage);
-
-		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("shipmentFileId", shipmentImage.getId());
-		
-		ajaxResult.put("file", filePath); 
-		
-		ajaxResult.put("fileType", fileType);
-		
-		return ajaxResult;
-	}
 	
-	@PostMapping("/uploadFile")
-	@ResponseBody
-	//oversizeTop  oversizeRight oversizeLeft oversizeFront oversizeBack
-	public AjaxResult uploadFile(@RequestParam(value="filePaths[]") String[] filePaths, 
-							    @RequestParam(value="fileType[]") String[] fileType, 
-								String shipmentDetailId, Long shipmentId, 
-								String shipmentSztp,String shipmentDangerous,
-								String oversizeTop,String oversizeRight,
-								String oversizeLeft,String oversizeFront,
-								String oversizeBack) throws IOException, 
-								InvalidExtensionException {
-		
-		/*for (String i : filePaths) {
-			ShipmentImage shipmentImage = new ShipmentImage();
-			//shipmentImage.setId(null);
-			shipmentImage.setPath(i);
-			shipmentImage.setShipmentId(shipmentId);
-			shipmentImage.setShipmentDetailId(shipmentDetailId); 
-			shipmentImage.setFileType(i);
-			shipmentImageService.insertShipmentImage(shipmentImage);// them detail 
-		}*/
-			for(int i = 0; i < filePaths.length; i++)
-			{ 
-				ShipmentImage shipmentImage = new ShipmentImage();
-				shipmentImage.setPath(filePaths[i]);
-				shipmentImage.setShipmentId(shipmentId);
-				shipmentImage.setShipmentDetailId(shipmentDetailId); 
-				shipmentImage.setFileType(fileType[i]);
-				shipmentImageService.insertShipmentImage(shipmentImage);// them detail
-			}
-		//return success();
-		return null;
-	} 
-	 
 	 
 	@DeleteMapping("/booking/file")
 	@ResponseBody
@@ -1271,7 +1207,36 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ajaxResult.put("shipmentDetails", shipmentDetails); 
 		return ajaxResult;
 	}
-	
+	// nhat
+		@PostMapping("/file/file-type/{fileType}")
+		//@PostMapping("/file/file-type")
+		@ResponseBody
+		public AjaxResult saveFile(MultipartFile file, @PathVariable("fileType") String fileType) throws IOException, InvalidExtensionException {
+			String basePath = String.format("%s/%s", Global.getUploadPath() + "/receiveContFull", getUser().getGroupId());
+			String now = DateUtils.dateTimeNow();
+			String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+			String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+	        
+			ShipmentImage shipmentImage = new ShipmentImage();
+			shipmentImage.setPath(filePath);
+			shipmentImage.setCreateTime(DateUtils.getNowDate());
+			shipmentImage.setCreateBy(getUser().getFullName());
+			shipmentImage.setFileType(fileType);
+			
+			//shipmentImage.setShipmentDetailId(shipmentDetailId);
+			
+			// bam luu da moi thuc hien ham insert vì nếu insert thì sẽ vào insert lô
+			//shipmentImageService.insertShipmentImage(shipmentImage);
+
+			AjaxResult ajaxResult = AjaxResult.success();
+			ajaxResult.put("shipmentFileId", shipmentImage.getId());
+			
+			ajaxResult.put("file", filePath); 
+			
+			ajaxResult.put("fileType", fileType);
+			
+			return ajaxResult;
+		}
 	// nhat
 	@GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail") 
 	public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
@@ -1292,6 +1257,31 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		 
 		return PREFIX + "/detail";
 	}
+	
+	@PostMapping("/uploadFile")
+	@ResponseBody
+	//oversizeTop  oversizeRight oversizeLeft oversizeFront oversizeBack
+	public AjaxResult uploadFile(@RequestParam(value="filePaths[]") String[] filePaths, 
+							    @RequestParam(value="fileType[]") String[] fileType, 
+								String shipmentDetailId, Long shipmentId, 
+								String shipmentSztp,String shipmentDangerous,
+								String oversizeTop,String oversizeRight,
+								String oversizeLeft,String oversizeFront,
+								String oversizeBack) throws IOException, 
+								InvalidExtensionException {
+	
+			for(int i = 0; i < filePaths.length; i++)
+			{ 
+				ShipmentImage shipmentImage = new ShipmentImage();
+				shipmentImage.setPath(filePaths[i]);
+				shipmentImage.setShipmentId(shipmentId);
+				shipmentImage.setShipmentDetailId(shipmentDetailId); 
+				shipmentImage.setFileType(fileType[i]);
+				shipmentImageService.insertShipmentImage(shipmentImage);// them detail
+			}
+		//return success();
+		return null;
+	} 
 	
  
 	

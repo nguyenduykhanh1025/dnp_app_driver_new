@@ -1,4 +1,5 @@
-const PREFIX = ctx + "logistic/receive-cont-full"
+const PREFIX = ctx + "logistic/receive-cont-full";
+ 
  
 var shipmentFileIds = [];// validate file
  
@@ -63,36 +64,71 @@ $("#form-detail-add").validate({
 	});*/
 
 
-/*console.log(fileType);*/
+/*console.log(fileType);*/ 
+
+ 
+let contD = false;// nguy hiem 
+let contR = false;// lanh
+let contO = false;// qua kho 
+
+let typeD = false;// nguy hiem 
+let typeR = false;// lanh
+let typeO = false;// qua kho
 
 
-const DANGEROUS_STATUS = {
-	  yet: "T", // là cont dangerous
-	  pending: "2", // là cont danger đang chờ xét duyết
-	  approve: "3", // là cont danger đã đc xét duyết
-	  reject: "4", // là cont danger đã bị từ chối
-	  NOT: "F", // không phải là cont danger
-};
-const SPECIAL_STATUS = {
-	  yet: "1",
-	  pending: "2",
-	  approve: "3",
-	  reject: "4",
-};
-
-
-
-function confirm() {  
-	//console.log(shipmentFiles.length); 
-	//console.log(shipmentDetail.oversizeTop); 
-	if(shipmentFiles.length < 1){
-		 $.modal.alertWarning( "Chưa đính kèm tệp cho container. Vui lòng đính kèm file."); 
+function confirm() { 
+	if ( shipmentDetail.dangerous == "1" ||
+		 shipmentDetail.dangerous == "3" ||
+		 shipmentDetail.contSpecialStatus == "1" ||
+		 shipmentDetail.contSpecialStatus == "3" ){
+	    $.modal.alertWarning( "Container đang hoặc đã yêu cầu xác nhận, không thể thêm tệp đã đính kèm.");
+	  }
+	else {
+		// nếu 
+	if(fileType){ 
+		fileType.forEach(function (elementType, index) {
+			//alert("vao for 1");  
+				if(elementType == "O"){// cont quá khổ oversize
+					typeO = true;
+				 }
+				if(elementType == "D"){// con nguy hiểm Dangerous
+					typeD = true;
+				 }
+				if(elementType == "R"){// cont lạnh SZTP = R
+					typeR = true;
+				 } 
+		});
+		
+		shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
+			//alert("vao for 2");
+			if(elementcont.fileType == "O"){// filetype quá khổ
+				 contO = true;
+			 }
+			if(elementcont.fileType == "D"){// filetype nguy hiểm
+				 contD = true;
+			 }
+			if(elementcont.fileType == "R"){// fileType lạnh
+				 contR = true;
+			 } 
+		});
+		
+		if(contD == false && typeD == false){ 
+			$.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
+		}
+		else if(contR == false && typeR == false){
+			$.modal.alertWarning( "Chưa đính kèm tệp cho container lạnh. Vui lòng đính kèm file.");
+		}
+		else if(contO == false && typeO == false){
+			$.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
+		}
+		else{ 
+			saveFile();
+		} 
 	}
-	else{ 
-		saveFile(); 
-	} 
+  }
+
 }
-	   
+   
 function saveFile() {  
 	    $.ajax(
 	    	{
@@ -113,8 +149,8 @@ function saveFile() {
 	    		},
 	    		success: function(result){
     			if (result.code == 0) {
-                    $.modal.alertError(result.msg);
-                    $.modal.close();
+                    //$.modal.alertError(result.msg);
+                    $.modal.close(); 
                 } else {
                     $.modal.close();
                 } 
@@ -125,15 +161,15 @@ function closeForm() {
     $.modal.close();
 }
 
-$( document ).ready(function() {
-	if (shipmentFiles != null) {
+$( document ).ready(function() { 
+	if (shipmentFiles != null) {// hiển thị hình ảnh
         let htmlInit = '';
-        shipmentFiles.forEach(function (element, index) { 
+        shipmentFiles.forEach(function (element, index) {  
         	shipmentFiles.push(element.id);
         	if(element.fileType == "R" || element.fileType == "r"){
         		htmlInit = `<div class="preview-block">
                 <a href=${element.path} target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" /></a>
-                <button type="button" class="close" aria-label="Close" onclick="removeImage1(this, ` + element.id + `)" >  
+                <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + element.id + `)" >  
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>`;
@@ -142,7 +178,7 @@ $( document ).ready(function() {
         	if(element.fileType == "D" || element.fileType == "d"){
         		htmlInit = `<div class="preview-block">
         		<a href=${element.path} target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" /></a>
-                <button type="button" class="close" aria-label="Close" onclick="removeImage1(this, ` + element.id + `)" >
+                <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + element.id + `)" >
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>`;
@@ -151,28 +187,23 @@ $( document ).ready(function() {
         	if(element.fileType == "O" || element.fileType == "o"){
         		htmlInit = `<div class="preview-block">
         		<a href=${element.path} target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" /></a>
-                <button type="button" class="close" aria-label="Close" onclick="removeImage1(this, ` + element.id + `)" >
+                <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + element.id + `)" >
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>`;
             	$('.preview-containerQK').append(htmlInit); 
         	}
-        	
-        	
-            
+        	 
         });
 
     }
 });
 
- 
-
-function removeImage1(element, fileIndex) {  
-$.modal.confirmShipment("Xác nhận xóa tệp đính kèm ?", function () {
-	shipmentFiles.forEach(function (value, index) {
+/*function removeImage(element, fileIndex) {
+    shipmentFileIds.forEach(function (value, index) {
         if (value == fileIndex) {
             $.ajax({
-                url: prefix + "/booking/file",
+            	url: prefix + "/booking/file",
                 method: "DELETE",
                 data: {
                     id: value
@@ -185,15 +216,16 @@ $.modal.confirmShipment("Xác nhận xóa tệp đính kèm ?", function () {
                     if (result.code == 0) {
                         $.modal.msgSuccess("Xóa tệp thành công.");
                         $(element).parent("div.preview-block").remove();
-                        shipmentFiles.splice(index, 1);
+                        shipmentFileIds.splice(index, 1);
                     } else {
-                        $.modal.msgError("Xóa tệp thất bại.");
+                        $.modal.alertWarning("Xóa tệp thất bại.");
                     }
                 }
             });
             return false;
         }
-    }); 
-});
-}
+    });
+
+}*/
+ 
 
