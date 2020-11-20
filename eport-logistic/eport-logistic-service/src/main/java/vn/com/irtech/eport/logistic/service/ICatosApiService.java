@@ -317,11 +317,10 @@ public interface ICatosApiService {
 	/**
 	 * Get partner info
 	 * 
-	 * @param partnerType
-	 * @param taxCode
+	 * @param PartnerInfoDto partnerInfoParam
 	 * @return PartnerInfoDto
 	 */
-	public PartnerInfoDto getPartnerInfo(String partnerType, String taxCode);
+	public PartnerInfoDto getPartnerInfo(PartnerInfoDto partnerInfoParam);
 
 	/**
 	 * Get container info from table reserve catos

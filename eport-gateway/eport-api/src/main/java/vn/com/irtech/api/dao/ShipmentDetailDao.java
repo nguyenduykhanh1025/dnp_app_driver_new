@@ -296,11 +296,10 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	/**
 	 * Get partner info
 	 * 
-	 * @param partnerType
-	 * @param taxCode
+	 * @param PartnerInfoDto partnerInfoDto
 	 * @return PartnerInfoDto
 	 */
-	public PartnerInfoDto getPartnerInfo(@Param("partnerType") String partnerType, @Param("taxCode") String taxCode);
+	public PartnerInfoDto getPartnerInfo(PartnerInfoDto partnerInfoDto);
 
 	/**
 	 * Select container info from table reserve

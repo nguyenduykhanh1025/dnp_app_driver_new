@@ -1120,10 +1120,11 @@
 	    	ADDR as address
 		FROM DNP_PROD.TB_PTNR
 		<where> 
-			TRIM(REG_NO) = #{taxCode}
 		    AND UNUSED_CHK = 'N' 
 		    AND ROWNUM = 1
 			<if test="partnerType != null and partnerType != ''"> AND PTNR_TYPE = #{partnerType}</if>
+			<if test="taxCode != null and taxCode != ''"> AND TRIM(REG_NO) = #{taxCode}</if>
+			<if test="ptnrCode != null and ptnrCode != ''"> AND TRIM(PTNR_CODE) = #{ptnrCode}</if>
 		</where>
 	</select>
 

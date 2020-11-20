@@ -44,6 +44,7 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 import vn.com.irtech.eport.system.service.ISysDictDataService;
 import vn.com.irtech.eport.system.service.ISysDictTypeService;
 
@@ -122,10 +123,15 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
 	private String getTruckCoName(String taxCode) {
 		String trucker = sysDictDataService.selectDictLabel("carrier_trucker_list", taxCode);
+		PartnerInfoDto partnerInfoDto = new PartnerInfoDto();
 		if (StringUtils.isNotEmpty(trucker)) {
-			return catosApiService.getPartnerInfo(EportConstants.PTNR_TYPE_SHIPPING_LINE, taxCode).getGroupName();
+			partnerInfoDto.setPtnrType(EportConstants.PTNR_TYPE_SHIPPING_LINE);
+			partnerInfoDto.setTaxCode(taxCode);
+			return catosApiService.getPartnerInfo(partnerInfoDto).getGroupName();
 		}
-		return catosApiService.getPartnerInfo(EportConstants.PTNR_TYPE_CONSIGNEE, taxCode).getGroupName();
+		partnerInfoDto.setPtnrCode(taxCode);
+		partnerInfoDto.setPtnrType(EportConstants.PTNR_TYPE_TRUCKER);
+		return catosApiService.getPartnerInfo(partnerInfoDto).getGroupName();
 	}
 
 	/**

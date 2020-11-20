@@ -353,10 +353,9 @@ public class ApiShipmentDetailController {
 		return shipmentDetailDao.selectContainerInfoByCntrInfo(containerInfoDto);
 	}
 
-	@GetMapping("/partner-info/partner-type/{partnerType}/tax-code/{taxCode}")
-	public PartnerInfoDto getPartnerInfo(@PathVariable("partnerType") String partnerType,
-			@PathVariable("taxCode") String taxCode) {
-		return shipmentDetailDao.getPartnerInfo(partnerType, taxCode);
+	@GetMapping("/partner-info/partner-type")
+	public PartnerInfoDto getPartnerInfo(PartnerInfoDto partnerInfoDto) {
+		return shipmentDetailDao.getPartnerInfo(partnerInfoDto);
 	}
 
 	@GetMapping("/reserve/cntr-info")
