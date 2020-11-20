@@ -406,7 +406,11 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					// search catos infor for specified container and replace infor
 					ctnrInfo = catosMap.get(shipmentDetail.getContainerNo());
 					if (ctnrInfo != null) {
-						shipmentDetail.setSztp(ctnrInfo.getSztp()); 
+						shipmentDetail.setSztp(ctnrInfo.getSztp());
+						
+						// nhatlv add status ban đầu
+						//shipmentDetail.setContSpecialStatus(EportConstants.WAIT);// w
+						
 						//check tường hợp insert với từng mã
 						
 						/*if(("P".equalsIgnoreCase(ctnrInfo.getSztp().substring(2,3)) 
@@ -507,6 +511,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						shipmentDetailReference.setUpdateTime(new Date());
 						
 						
+						// nhatlv add status ban đầu
+						//shipmentDetailReference.setContSpecialStatus(EportConstants.WAIT);// W
+						
+						/*if("R".equalsIgnoreCase(shipmentDetailReference.getSztp()))*/
 							
 							/*if(("P".equalsIgnoreCase(shipmentDetailReference.getSztp().substring(2,3)) 
 									|| "T".equalsIgnoreCase(shipmentDetailReference.getSztp().substring(2,3))
@@ -1131,24 +1139,18 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		
 	}
 	  
-	@Log(title = "Phê duyệt", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	//@PostMapping("/shipment/{shipmentId}")
+	// nhatlv start yêu cầu xác nhận cont
+	@Log(title = "Yêu cầu xác nhận", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC) 
 	@PostMapping("/shipment-detail/request-confirm") 
-	@ResponseBody
-	/*public AjaxResult CheckShipmentDetail(@PathVariable("shipmentDetailId") Long shipmentDetailId) {*/
-	public AjaxResult CheckShipmentDetail(String shipmentDetailIds ) {
-	//Shipment referenceShipment = shipmentService.selectShipmentById(shipmentDetailId);
-		// Validate permission 
-		
+	@ResponseBody 
+	public AjaxResult CheckShipmentDetail(String shipmentDetailIds ) {  
 		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
-		shipmentDetailUpdate.setContSpecialStatus("1"); 
-		//shipmentDetailUpdate.setShipmentId(shipmentDetailId); 
-		//shipmentDetailUpdate.setId(shipmentDetailId);   
-		//shipmentDetailService.updateShipmentDetail(shipmentDetailUpdate); 
-		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds,shipmentDetailUpdate);
-		
+		shipmentDetailUpdate.setContSpecialStatus("1");   
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds,shipmentDetailUpdate); 
 		return success("Yêu cầu xác nhận thành công");
 		} 
+	
+	// end yêu cầu xác nhận cont
 	
 	@GetMapping("/shipment/{shipmentId}/shipment-detail")
 	@ResponseBody
@@ -1270,7 +1272,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		 
 		return PREFIX + "/detail";
 	}
-	
+	// đỏi thành save file
 	@PostMapping("/uploadFile")
 	@ResponseBody
 	//oversizeTop  oversizeRight oversizeLeft oversizeFront oversizeBack

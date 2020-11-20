@@ -349,4 +349,17 @@ public interface EportConstants {
 	public static final String CONT_REQUEST_OVERSIZE_APPROVE = "3";
 	// Cont nguy hiểm bị từ chối xác nhận
 	public static final String CONT_REQUEST_OVERSIZE_REJECT = "4";
+	
+	// nhatlv add
+	 
+	
+	public static final String CONT_SPECIAL_STATUS_WAITING = "W";// lúc đầu lưu khai báo
+	/** Sync queue status progress */
+	public static final String CONT_SPECIAL_STATUS_PROGRESS = "P";// chờ xác nhận
+	/** Sync queue status success */
+	public static final String CONT_SPECIAL_STATUS_SUCCESS = "S";// đã xac nhận
+	/** Sync queue status error */
+	public static final String CONT_SPECIAL_STATUS_ERROR = "E";// từ chối xác nhận
+	
+	public static final String CONT_SPECIAL_STATUS_NULL = "N";// trạng thái null
 }

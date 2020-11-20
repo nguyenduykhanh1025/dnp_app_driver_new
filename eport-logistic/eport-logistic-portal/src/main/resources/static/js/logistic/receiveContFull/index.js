@@ -462,13 +462,13 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     let customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
     
    
- if (
+ /*if (
       (!sourceData[row].contSpecialStatus ||
         sourceData[row].contSpecialStatus == SPECIAL_STATUS.approve) &&
       (!sourceData[row].dangerous ||
         sourceData[row].dangerous == DANGEROUS_STATUS.NOT ||
         sourceData[row].dangerous == DANGEROUS_STATUS.approve)
-    ) {
+    ) {*/
     
     switch (sourceData[row].customStatus) {
       case 'R':
@@ -481,7 +481,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
         customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
         break;
     }
-}
+//}
     // Command process status
     let process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
    
@@ -2025,7 +2025,7 @@ function checkCustomStatus() {
 }
 
 
-// nhat
+// nhatlv yêu cầu xác nhận
 function CheckShipmentDetail() {
 if (getDataSelectedFromTable(true, false) && shipmentDetails.length > 0) { 
     $.modal.confirmShipment("Xác nhận yêu cầu xác nhận ?", function () {
