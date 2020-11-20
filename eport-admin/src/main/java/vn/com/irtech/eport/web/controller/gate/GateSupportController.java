@@ -1,6 +1,8 @@
 package vn.com.irtech.eport.web.controller.gate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -36,12 +38,14 @@ import vn.com.irtech.eport.logistic.service.IGateDetectionService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.web.dto.DetectionInfomation;
 import vn.com.irtech.eport.web.dto.GateInDataReq;
 import vn.com.irtech.eport.web.dto.GateInTestDataReq;
 import vn.com.irtech.eport.web.dto.GateNotificationCheckInReq;
 import vn.com.irtech.eport.web.dto.SensorResult;
+import vn.com.irtech.eport.web.mqtt.BusinessConsts;
 import vn.com.irtech.eport.web.mqtt.MqttService;
 
 @Controller
@@ -55,6 +59,10 @@ public class GateSupportController extends BaseController {
 	private static final String GATE_DETECTION_REQUEST = "eport/detection/gate/+/request";
 
 	private static final Integer DEFAULT_DEDUCT_TRUCK = 13000;
+
+	private static final Long TIME_OUT_WAIT_SEAL = 3000L;
+
+	private static final Integer RETRY_WAIT_SEAL = 40;
 
 	@Autowired
 	private WebSocketService webSocketService;
@@ -173,6 +181,143 @@ public class GateSupportController extends BaseController {
 		} catch (MqttException e) {
 			logger.error("Error when try sending notification request check in for gate: " + e);
 		}
+
+		new Thread() {
+			public void run() {
+				// Container is qualified to send gate order req
+				boolean cont1 = false; // Determine container 1 is qualified for directly make gate order
+				boolean cont2 = false; // Determine container 2 is qualified for directly make gate order
+
+				boolean cont1F = false; // Determine container 1 is container full => need check seal no
+				boolean cont2F = false; // Determine container 2 is container full => need check seal no
+
+				// Rule check container qualified
+				// - Have info in catos reserve and job order no
+				// - Is container empty, if full then need to have export seal no
+				// - Except container 2 if empty => default qualified (Case detect 1 container)
+
+				Map<String, ContainerInfoDto> cntrMap = getCntrMapFromCatos(detectionInfo);
+
+				// check cont 1 qualified
+				if (StringUtils.isNotEmpty(detectionInfo.getContainerNo1())) {
+					ContainerInfoDto container1 = cntrMap.get(detectionInfo.getContainerNo1());
+					if (container1 != null) {
+						if ("E".equalsIgnoreCase(container1.getFe())
+								&& StringUtils.isNotEmpty(container1.getJobOdrNo())) {
+							// Container 1 qualified
+							cont1 = true;
+						} else {
+							// Still not qualified, case container 1 is full => check seal no
+							cont1F = true;
+						}
+					}
+				}
+
+				// check cont 2 qualified
+				if (StringUtils.isNotEmpty(detectionInfo.getContainerNo2())) {
+					ContainerInfoDto container2 = cntrMap.get(detectionInfo.getContainerNo2());
+					if (container2 != null) {
+						if ("E".equalsIgnoreCase(container2.getFe())
+								&& StringUtils.isNotEmpty(container2.getJobOdrNo())) {
+							// Container 2 qualified
+							cont2 = true;
+						} else {
+							// Still not qualified, case container 2 is full => check seal no
+							cont2F = true;
+						}
+					}
+				} else {
+					// Container 2 empty => default qualified
+					cont2 = true;
+				}
+
+				// Repeat check catos database in 2 minute
+				// Stop when time exceed 2 minutes or seal no is input
+				// Check when container 1 or container 2 is full
+				if (cont1F || cont2F) {
+					for (int i = 1; i <= RETRY_WAIT_SEAL; i++) {
+						// Get info from catos
+						cntrMap = getCntrMapFromCatos(detectionInfo);
+
+						// If container 1 is full
+						if (cont1F) {
+							// Get info container 1
+							ContainerInfoDto container1 = cntrMap.get(detectionInfo.getContainerNo1());
+							// check if container 1 has job and seal no 3 (export seal no)
+							// => qualified
+							if (container1 != null) {
+								if (StringUtils.isNotEmpty(container1.getJobOdrNo())
+										&& StringUtils.isNotEmpty(container1.getSealNo3())) {
+									cont1 = true;
+								}
+							}
+						}
+
+						// If container is full
+						if (cont2F) {
+							// Get info container 2
+							ContainerInfoDto container2 = cntrMap.get(detectionInfo.getContainerNo2());
+							// check if container 2 has job and seal no 3 (export seal no)
+							// => qualified
+							if (container2 != null) {
+								if (StringUtils.isNotEmpty(container2.getJobOdrNo())
+										&& StringUtils.isNotEmpty(container2.getSealNo3())) {
+									cont2 = true;
+								}
+							}
+						}
+
+						if (cont1 && cont2) {
+							break;
+						}
+
+						logger.debug("Wait " + TIME_OUT_WAIT_SEAL + " miliseconds");
+						try {
+							Thread.sleep(TIME_OUT_WAIT_SEAL);
+						} catch (InterruptedException e) {
+							logger.error("Error sleep to wait SEAL info: " + e);
+						}
+
+					}
+				}
+
+				if (cont1 && cont2) {
+					// Send req make gate order directly
+					mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK,
+							"Xác nhận data chính xác, trực tiếp làm lênh.", detectionInfo.getGateNo());
+				}
+			}
+		}.start();
+	}
+
+	/**
+	 * Get list container info from catos by string containers (container no
+	 * separated by comma)
+	 * 
+	 * @param gateDetection
+	 * @return
+	 */
+	private Map<String, ContainerInfoDto> getCntrMapFromCatos(GateDetection gateDetection) {
+		String containers = "";
+		if (StringUtils.isNotEmpty(gateDetection.getContainerNo1())) {
+			containers += gateDetection.getContainerNo1();
+		}
+		if (StringUtils.isNotEmpty(gateDetection.getContainerNo2())) {
+			containers += "," + gateDetection.getContainerNo2();
+		}
+		Map<String, ContainerInfoDto> cntrMap = new HashMap<>();
+		if (StringUtils.isNotEmpty(containers)) {
+			List<ContainerInfoDto> cntrInfoDtos = catosApiService.getContainerInfoReserve(containers);
+			if (CollectionUtils.isNotEmpty(cntrInfoDtos)) {
+				for (ContainerInfoDto cntr : cntrInfoDtos) {
+					if (!EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(cntr.getCntrState())
+							&& !EportConstants.CATOS_CONT_STACKING.equalsIgnoreCase(cntr.getCntrState())) {
+						cntrMap.put(cntr.getCntrNo(), cntr);
+					}
+				}
+			}
+		}
+		return cntrMap;
 	}
 
 	@PostMapping("/logistics")

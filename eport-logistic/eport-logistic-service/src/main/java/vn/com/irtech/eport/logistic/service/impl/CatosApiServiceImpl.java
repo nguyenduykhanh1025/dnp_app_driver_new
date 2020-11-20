@@ -1180,4 +1180,30 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+
+	/**
+	 * Get container info from table reserve catos
+	 * 
+	 * @param String containerNos
+	 * @return List<ContainerInfoDto>
+	 */
+	@Override
+	public List<ContainerInfoDto> getContainerInfoReserve(String containerNos) {
+		try {
+			String url = Global.getApiUrl() + "/reserve/cntr-info";
+			logger.debug("Call CATOS API get container info :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			Map<String, Object> map = new HashMap<>();
+			map.put("containerNos", containerNos);
+			HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<Map<String, Object>>(map);
+			ResponseEntity<List<ContainerInfoDto>> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+					new ParameterizedTypeReference<List<ContainerInfoDto>>() {
+					});
+			List<ContainerInfoDto> containerInfoDtos = response.getBody();
+			return containerInfoDtos;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api get container info from reserve table", e);
+			return null;
+		}
+	}
 }
