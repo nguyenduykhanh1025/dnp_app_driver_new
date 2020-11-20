@@ -95,7 +95,6 @@
       <if test="containerNumber != null  and containerNumber != ''">or upper(e.container_number) like concat(concat('%',#{containerNumber}), '%'))</if>
       <if test="houseBillId != null">and e.house_bill_id = #{houseBillId}</if>
     </where>
-    ORDER BY e.create_time DESC
   </select>
 
    <select id="selectEdoListForReport" parameterType="Edo" resultMap="EdoResult">
