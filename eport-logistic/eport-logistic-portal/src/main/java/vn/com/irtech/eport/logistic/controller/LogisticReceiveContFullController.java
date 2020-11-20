@@ -409,6 +409,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						shipmentDetail.setSztp(ctnrInfo.getSztp());
 						
 						// nhatlv add status ban đầu
+						
+						//if
 						//shipmentDetail.setContSpecialStatus(EportConstants.WAIT);// w
 						
 						//check tường hợp insert với từng mã
