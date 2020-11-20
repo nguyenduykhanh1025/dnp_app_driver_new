@@ -1274,65 +1274,6 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 // CONFIGURATE HANDSONTABLE
 function configHandson() {
-  // console.log(consigneeList);
-  // config = {
-  //   stretchH: "all",
-  //   height: $("#right-side__main-table").height() - 35,
-  //   minRows: rowAmount,
-  //   maxRows: rowAmount,
-  //   width: "100%",
-  //   minSpareRows: 0,
-  //   rowHeights: 30,
-  //   fixedColumnsLeft: 3,
-  //   trimDropdown: false,
-  //   manualColumnResize: true,
-  //   manualRowResize: true,
-  //   renderAllRows: true,
-  //   rowHeaders: true,
-  //   comments: true,
-  //   className: "htMiddle htCenter",
-  //   colHeaders: [...dataTableHandson.map((item) => item.colHeaders)],
-  //   colWidths: [...dataTableHandson.map((item) => item.colWidths)],
-  //   filter: "true",
-  //   columns: [...dataTableHandson.map((item) => item.columns)],
-  //   beforeKeyDown: function (e) {
-  //     let selected;
-  //     switch (e.keyCode) {
-  //       // Arrow Left
-  //       case 37:
-  //         selected = hot.getSelected()[0];
-  //         if (selected[3] == 0) {
-  //           e.stopImmediatePropagation();
-  //         }
-  //         break;
-  //       // Arrow Up
-  //       case 38:
-  //         selected = hot.getSelected()[0];
-  //         if (selected[2] == 0) {
-  //           e.stopImmediatePropagation();
-  //         }
-  //         break;
-  //       // Arrow Right
-  //       case 39:
-  //         selected = hot.getSelected()[0];
-  //         if (selected[3] == 16) {
-  //           e.stopImmediatePropagation();
-  //         }
-  //         break;
-  //       // Arrow Down
-  //       case 40:
-  //         selected = hot.getSelected()[0];
-  //         if (selected[2] == rowAmount - 1) {
-  //           e.stopImmediatePropagation();
-  //         }
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   },
-  //   afterChange: onChange,
-  // };
-
   config = {
     stretchH: "all",
     height: $("#right-side__main-table").height() - 35,

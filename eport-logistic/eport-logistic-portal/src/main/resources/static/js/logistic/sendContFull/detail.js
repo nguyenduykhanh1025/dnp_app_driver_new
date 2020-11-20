@@ -205,7 +205,7 @@ function initDropzone(
         shipmentFilePaths[`${keyForm}`].push(response.file);
 
         let html =
-          `<div class="preview-block" style="width: 70px;float: left;margin: 5px;">
+          `<div class="preview-block" style="width: 70px;float: left;">
           <a href=${ctx}${response.file} target="_blank"><img src="` +
           ctx +
           `img/document.png" alt="Tài liệu" style="max-width: 50px;"/></a>
@@ -428,7 +428,7 @@ function submitHandler() {
     }
   }
 
-  if (data.temperature) {
+  if (data.temperature != null) {
     if (!shipmentFilePaths.ice.length) {
       isValidateFile = false;
       $.modal.alertWarning(
@@ -459,11 +459,9 @@ function submitHandler() {
     $.modal.alertWarning(
       "Container đang hoặc đã được yêu cầu. Chỉ được thay đổi file."
     );
-  } else {
-    if ($.validate.form()) {
-      parent.submitDataFromDetailModal(data);
-      onCloseModel();
-    }
+  } else if (isValidateFile && $.validate.form()) {
+    parent.submitDataFromDetailModal(data);
+    onCloseModel();
   }
 }
 
