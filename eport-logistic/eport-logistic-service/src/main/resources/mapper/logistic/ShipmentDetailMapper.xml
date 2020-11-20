@@ -694,7 +694,7 @@
             </if>
             <if test="vgmMaxGross != null and vgmMaxGross != ''">vgm_max_gross = #{vgmMaxGross},</if>
 
-            <if test="oversize != null">oversize = #{oversize},</if>
+            <if test="oversize != null and oversize != ''">oversize = #{oversize},</if>
             <if test="oversizeType != null and oversizeType != ''">oversize_type = #{oversizeType},</if>
             <if test="oversizeTop != null and oversizeTop != ''">oversize_top = #{oversizeTop},</if>
             <if test="oversizeRight != null and oversizeRight != ''">oversize_right = #{oversizeRight},</if>
@@ -717,7 +717,7 @@
             <if test="customStatus != null  and customStatus != ''">custom_status = #{customStatus},</if>
             <if test="paymentStatus != null  and paymentStatus != ''">payment_status = #{paymentStatus},</if>
             <if test="processStatus != null  and processStatus != ''">process_status = #{processStatus},</if>
-            <if test="contSpecialStatus != null and contSpecialStatus != ''">cont_special_status = #{contSpecialStatus},</if>
+            <if test="contSpecialStatus != null">cont_special_status = #{contSpecialStatus},</if>
             
             <if test="doStatus != null  and doStatus != ''">do_status = #{doStatus},</if>
             <if test="doReceivedTime != null">do_received_time = #{doReceivedTime},</if>

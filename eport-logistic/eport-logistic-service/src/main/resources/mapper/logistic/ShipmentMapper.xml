@@ -448,6 +448,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="params.contSpecialStatus != null and params.contSpecialStatus != ''">and sh.cont_special_status = #{params.contSpecialStatus}</if>
             <if test="params.dangerous != null and params.dangerous != ''">and sh.dangerous = #{params.dangerous}</if>
             <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
+            <if test="params.oversize != null and params.oversize != ''">and sh.oversize = #{params.oversize}</if>
             <if test="params.serviceArray != null">
                 and s.service_type in
                 <foreach item="service" collection="params.serviceArray" open="(" separator="," close=")">
