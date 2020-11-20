@@ -200,6 +200,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
         shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
         List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
         mmap.put("shipmentFiles", shipmentImages);
+        
         return PREFIX + "/detail";
 
     }
@@ -359,7 +360,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
     @ResponseBody
     public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails,
             @PathVariable("shipmentId") Long shipmentId) {
-    	
+
         if (CollectionUtils.isNotEmpty(shipmentDetails)) {
             LogisticAccount user = getUser();
             if (shipmentId == null) {
@@ -380,7 +381,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
             boolean updateShipment = true; // if true => need to update status shipment from init to save
             for (ShipmentDetail inputDetail : shipmentDetails) {
 
-            	System.out.println("alooooooooooo: "+ inputDetail.getDaySetupTemperature());
                 if (inputDetail.getId() != null) {
                     // Case update
                     ShipmentDetail shipmentDetailReference = shipmentDetailService
@@ -413,6 +413,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
                     shipmentDetailReference.setVgmMaxGross(inputDetail.getVgmMaxGross());
                     shipmentDetailReference.setVgmInspectionDepartment(inputDetail.getVgmInspectionDepartment());
 
+                    shipmentDetailReference.setOversize(inputDetail.getOversize());
                     shipmentDetailReference.setOversizeBack(inputDetail.getOversizeBack());
                     shipmentDetailReference.setOversizeFront(inputDetail.getOversizeFront());
                     shipmentDetailReference.setOversizeLeft(inputDetail.getOversizeLeft());
@@ -429,6 +430,20 @@ public class LogisticSendContFullController extends LogisticBaseController {
                     shipmentDetailReference.setTemperature(inputDetail.getTemperature());
                     shipmentDetailReference.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
 
+                    System.out.println(inputDetail.getSztp().substring(2, 3).indexOf("P"));
+                    System.out.println(inputDetail.getSztp().substring(2, 3).indexOf("R"));
+                    System.out.println(inputDetail.getDangerous());
+                    System.out.println(inputDetail.getOversize());
+
+                    if (inputDetail.getSztp().substring(2, 3).indexOf("P") != -1
+                            || inputDetail.getSztp().substring(2, 3).indexOf("R") != -1
+                            || (inputDetail.getDangerous() != null && inputDetail.getDangerous().equals("T"))
+                            || (inputDetail.getOversize() != null && inputDetail.getOversize().equals("T"))) {
+                        shipmentDetailReference.setContSpecialStatus(EportConstants.CONT_REQUEST_SPECIAL_YET);
+                    } else {
+                        shipmentDetailReference.setContSpecialStatus("");
+                    }
+                    System.out.println(shipmentDetailReference.getContSpecialStatus());
                     shipmentDetailReference.setRemark(inputDetail.getRemark());
                     if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
                         return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
@@ -484,6 +499,8 @@ public class LogisticSendContFullController extends LogisticBaseController {
                         shipmentDetail.setContSpecialStatus(null);
                     }
 
+                    if (inputDetail.getSztp().substring(2, 3).indexOf("P") != -1) {
+                    }
                     shipmentDetail.setDangerousImo(inputDetail.getDangerousImo());
                     shipmentDetail.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
                     shipmentDetail.setDangerousPacking(inputDetail.getDangerousPacking());
@@ -934,58 +951,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
         return containerInfoMap;
     }
 
-    @PostMapping("/cont-special/file")
-    @ResponseBody
-    public AjaxResult saveContSpecialeFile(MultipartFile file) throws IOException, InvalidExtensionException {
-        String basePath = String.format("%s/%s", Global.getUploadPath() + "/contSpecial", getUser().getGroupId());
-        String now = DateUtils.dateTimeNow();
-        String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
-        String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
-
-        ShipmentImage shipmentImage = new ShipmentImage();
-        shipmentImage.setPath(filePath);
-        shipmentImage.setCreateTime(DateUtils.getNowDate());
-        shipmentImage.setCreateBy(getUser().getFullName());
-
-        AjaxResult ajaxResult = AjaxResult.success();
-        ajaxResult.put("shipmentFileId", shipmentImage.getId());
-
-        ajaxResult.put("file", filePath);
-        return ajaxResult;
-    }
-
-    @DeleteMapping("/cont-special/file")
-    @ResponseBody
-    public AjaxResult deleteSendContFullFile(Long id) throws IOException {
-        ShipmentImage shipmentImageParam = new ShipmentImage();
-        shipmentImageParam.setId(id);
-        ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
-        String[] fileArr = shipmentImage.getPath().split("/");
-        File file = new File(
-                Global.getUploadPath() + "/contSpecial/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
-
-        if (file.delete()) {
-            shipmentImageService.deleteShipmentImageById(id);
-        }
-
-        return success();
-    }
-
-    @DeleteMapping("/booking/file")
-    @ResponseBody
-    public AjaxResult deleteFile(Long id) throws IOException {
-        ShipmentImage shipmentImageParam = new ShipmentImage();
-        shipmentImageParam.setId(id);
-        ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
-        String[] fileArr = shipmentImage.getPath().split("/");
-        File file = new File(
-                Global.getUploadPath() + "/booking/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
-        if (file.delete()) {
-            shipmentImageService.deleteShipmentImageById(id);
-        }
-        return success();
-    }
-
     @GetMapping("/shipments/{shipmentId}/shipment-images")
     @ResponseBody
     public AjaxResult getShipmentImages(@PathVariable("shipmentId") Long shipmentId) {
@@ -1343,6 +1308,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
                 if ("R".equalsIgnoreCase(shipmentSztp.substring(2, 3))) {
                     shipmentImage.setFileType("R");
                 }
+                if ("O".equalsIgnoreCase(shipmentSztp)) {
+                    shipmentImage.setFileType("O");
+                }
             }
 
             shipmentImageService.insertShipmentImage(shipmentImage);// them detail
@@ -1367,6 +1335,69 @@ public class LogisticSendContFullController extends LogisticBaseController {
         AjaxResult ajaxResult = AjaxResult.success();
         ajaxResult.put("shipmentFileId", shipmentImage.getId());
         return ajaxResult;
+    }
+
+    @PostMapping("/cont-special/file")
+    @ResponseBody
+    public AjaxResult saveContSpecialeFile(MultipartFile file) throws IOException, InvalidExtensionException {
+        String basePath = String.format("%s/%s", Global.getUploadPath() + "/contSpecial", getUser().getGroupId());
+        String now = DateUtils.dateTimeNow();
+        String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+        String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+
+        ShipmentImage shipmentImage = new ShipmentImage();
+        shipmentImage.setPath(filePath);
+        shipmentImage.setCreateTime(DateUtils.getNowDate());
+        shipmentImage.setCreateBy(getUser().getFullName());
+
+        AjaxResult ajaxResult = AjaxResult.success();
+        ajaxResult.put("shipmentFileId", shipmentImage.getId());
+
+        ajaxResult.put("file", filePath);
+        return ajaxResult;
+    }
+
+    @DeleteMapping("/cont-special/file")
+    @ResponseBody
+    public AjaxResult deleteSendContFullFile(String path, Long id) throws IOException {
+        if (id != 0) {
+            ShipmentImage shipmentImageParam = new ShipmentImage();
+            shipmentImageParam.setId(id);
+            ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+            String[] fileArr = shipmentImage.getPath().split("/");
+            File file = new File(Global.getUploadPath() + "/contSpecial/" + getUser().getGroupId() + "/"
+                    + fileArr[fileArr.length - 1]);
+            if (file.delete()) {
+                shipmentImageService.deleteShipmentImageById(id);
+            }
+            return success();
+        } else {
+            String[] fileArr = path.split("/");
+            File file = new File(Global.getUploadPath() + "/contSpecial/" + getUser().getGroupId() + "/"
+                    + fileArr[fileArr.length - 1]);
+
+            if (file.delete()) {
+                return success();
+
+            }
+            return error("Lỗi Xóa File");
+        }
+
+    }
+
+    @DeleteMapping("/booking/file")
+    @ResponseBody
+    public AjaxResult deleteFile(Long id) throws IOException {
+        ShipmentImage shipmentImageParam = new ShipmentImage();
+        shipmentImageParam.setId(id);
+        ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+        String[] fileArr = shipmentImage.getPath().split("/");
+        File file = new File(
+                Global.getUploadPath() + "/booking/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
+        if (file.delete()) {
+            shipmentImageService.deleteShipmentImageById(id);
+        }
+        return success();
     }
 
 }

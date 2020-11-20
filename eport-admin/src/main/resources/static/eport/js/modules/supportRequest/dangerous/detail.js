@@ -120,11 +120,12 @@ function initElementHTMLInInformationCommonTab(
     .css("pointer-events", !isContIce() ? "none" : "")
     .prop("disabled", !isContIce() ? true : false);
 
-  $("#datetimepicker1 input").val(
-    daySetupTemperature
-      ? new Date(daySetupTemperature).toLocaleDateString()
-      : null
-  );
+    let daySetup = new Date(daySetupTemperature);
+    $("#datetimepicker1 input").val(
+      daySetupTemperature
+        ? `${daySetup.getDate()}/${daySetup.getMonth() + 1}/${daySetup.getFullYear()}`
+        : null
+    );
 
   $("#inspectionDepartment")
     .prop("disabled", vgmChk ? false : true)

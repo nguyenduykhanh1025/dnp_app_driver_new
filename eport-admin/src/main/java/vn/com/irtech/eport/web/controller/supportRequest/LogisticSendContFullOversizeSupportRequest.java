@@ -106,8 +106,8 @@ public class LogisticSendContFullOversizeSupportRequest extends AdminBaseControl
 			params = new HashMap<>();
 		}
 
-		params.put("sztp", KEY_OVERSIDE);
-
+//		params.put("sztp", KEY_OVERSIDE);
+		params.put("oversize", "T");
 		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 
@@ -122,7 +122,7 @@ public class LogisticSendContFullOversizeSupportRequest extends AdminBaseControl
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setSztp(KEY_OVERSIDE);
+		shipmentDetail.setOversize("T");
 		shipmentDetail.setContSpecialStatus(constSpecialStatus);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);

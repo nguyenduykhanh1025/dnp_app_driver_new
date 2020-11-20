@@ -748,27 +748,27 @@ function configHandson() {
         case 5:
           return "Số Container";
         case 6:
-          return "Sztp";
-        case 7:
-          return "Chủ Hàng";
-        case 8:
-          return "Tàu - Chuyến";
-        case 9:
-          return "Trọng Lượng";
-        case 10:
-          return "Loại Hàng";
-        case 11:
-          return "Số Seal";
-        case 12:
-          return "Cảng Dỡ Hàng";
-        case 13:
-          return "P.T.T.T";
-        case 14:
-          return "Payer";
-        case 15:
-          return "Ghi Chú";
-        case 16:
           return '<span class="required">Chi Tiết</span>';
+        case 7:
+          return "Sztp";
+        case 8:
+          return "Chủ Hàng";
+        case 9:
+          return "Tàu - Chuyến";
+        case 10:
+          return "Trọng Lượng";
+        case 11:
+          return "Loại Hàng";
+        case 12:
+          return "Số Seal";
+        case 13:
+          return "Cảng Dỡ Hàng";
+        case 14:
+          return "P.T.T.T";
+        case 15:
+          return "Payer";
+        case 16:
+          return "Ghi Chú";
       }
     },
     colWidths: [
@@ -778,6 +778,7 @@ function configHandson() {
       120,
       130,
       100,
+      150,
       60,
       200,
       100,
@@ -788,7 +789,6 @@ function configHandson() {
       100,
       100,
       100,
-      150,
     ],
     filter: "true",
     columns: [
@@ -820,6 +820,10 @@ function configHandson() {
       {
         data: "containerNo",
         renderer: containerNoRenderer,
+      },
+      {
+        data: "btnInformationContainer",
+        renderer: btnDetailRenderer,
       },
       {
         data: "sztp",
@@ -861,10 +865,6 @@ function configHandson() {
       {
         data: "remark",
         renderer: remarkRenderer,
-      },
-      {
-        data: "btnInformationContainer",
-        renderer: btnDetailRenderer,
       },
     ],
     beforeKeyDown: function (e) {

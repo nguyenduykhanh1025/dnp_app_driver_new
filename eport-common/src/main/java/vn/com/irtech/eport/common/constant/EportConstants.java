@@ -335,4 +335,18 @@ public interface EportConstants {
 	public static final String CONT_REQUEST_DANGEROUS_APPROVE = "3";
 	// Cont nguy hiểm bị từ chối xác nhận
 	public static final String CONT_REQUEST_DANGEROUS_REJECT = "4";
+
+	/**
+	 * Tình trạng yêu cầu các cont quá khổ
+	 */
+	// Không phải cont nguy hiểm
+	public static final String CONT_REQUEST_OVERSIZE_FALSE = "F";
+	// Cont chưa yêu cầu xác nhận || là cont nguy hiểm
+	public static final String CONT_REQUEST_OVERSIZE_YET = "T";
+	// Cont nguy hiểm đang chờ xác nhận
+	public static final String CONT_REQUEST_OVERSIZE_PENDING = "2";
+	// Cont nguy hiểm đã được xác nhận
+	public static final String CONT_REQUEST_OVERSIZE_APPROVE = "3";
+	// Cont nguy hiểm bị từ chối xác nhận
+	public static final String CONT_REQUEST_OVERSIZE_REJECT = "4";
 }

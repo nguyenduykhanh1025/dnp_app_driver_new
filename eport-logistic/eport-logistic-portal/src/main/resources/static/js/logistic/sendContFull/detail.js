@@ -144,7 +144,9 @@ function initElementHTMLInInformationCommonTab(
   let daySetup = new Date(daySetupTemperature);
   $("#datetimepicker1 input").val(
     daySetupTemperature
-      ? `${daySetup.getDate()}/${daySetup.getMonth() + 1}/${daySetup.getFullYear()}`
+      ? `${daySetup.getDate()}/${
+          daySetup.getMonth() + 1
+        }/${daySetup.getFullYear()}`
       : null
   );
 
@@ -203,15 +205,13 @@ function initDropzone(
         shipmentFilePaths[`${keyForm}`].push(response.file);
 
         let html =
-          `<div class="preview-block" style="width: 70px;float: left;margin: 5px;">
-                <img src="` +
+          `<div class="preview-block" style="width: 70px;float: left;">
+          <a href=${ctx}${response.file} target="_blank"><img src="` +
           ctx +
-          `img/document.png" alt="Tài liệu" style="max-width: 50px;"/>
+          `img/document.png" alt="Tài liệu" style="max-width: 50px;"/></a>
                 <button type="button" class="close ` +
           keyForm +
-          `" aria-label="Close" onclick="removeImage(this, ` +
-          response.shipmentFileId +
-          `)" >
+          `" aria-label="Close" onclick="removeImage(this,'${response.file}')" >
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>`;
@@ -235,6 +235,11 @@ function initElementHTMLInOversizeTab(
   oversizeFront,
   oversizeBack
 ) {
+  if (isContIce()) {
+    $(".content-2").css({ display: "none " });
+    $("#tab-2").css({ display: "none" });
+    $(".tab-label-2").css({ display: "none" });
+  }
   $('input:radio[name="oversize"]')
     .filter('[value="T"]')
     .attr("checked", isContOversize());
@@ -382,6 +387,69 @@ function initSelect(idSelect, data, valueChecked) {
  * @description handle click submit form-detail-add
  */
 function submitHandler() {
+  var data = $("#form-detail-add").serializeArray();
+  data = covertSerializeArrayToObject(data);
+  data = {
+    ...data,
+    oversizeType: formatValuesCategoryOversize(),
+    vgmMaxGross: $("#vgmChk").prop("checked")
+      ? reFormatNumber($("#maxGross").val())
+      : null,
+    vgmInspectionDepartment: $("#vgmChk").prop("checked")
+      ? $("#inspectionDepartment").val()
+      : null,
+    daySetupTemperature: new Date(
+      formatDateToSendServer(data.daySetupTemperature)
+    ).getTime(),
+    dangerous:
+      shipmentDetail.dangerous == data.dangerous
+        ? shipmentDetail.dangerous
+        : data.dangerous,
+  };
+
+  //validate file
+  let isValidateFile = true;
+
+  if (data.dangerous && data.dangerous != DANGEROUS_STATUS.NOT) {
+    // dangerous khong co dinh kem file
+    if (!shipmentFilePaths.dangerous.length) {
+      isValidateFile = false;
+      $.modal.alertWarning(
+        "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file."
+      );
+    }
+  }
+  if (data.oversize && data.oversize != "F") {
+    if (!shipmentFilePaths.oversize.length) {
+      isValidateFile = false;
+      $.modal.alertWarning(
+        "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file."
+      );
+    }
+  }
+
+  if (data.temperature != null) {
+    if (!shipmentFilePaths.ice.length) {
+      isValidateFile = false;
+      $.modal.alertWarning(
+        "Chưa đính kèm tệp cho container lạnh. Vui lòng đính kèm file."
+      );
+    }
+  }
+
+  if (isValidateFile) {
+    if (shipmentFilePaths.dangerous.length) {
+      saveFile(shipmentFilePaths.dangerous, "");
+    }
+    if (shipmentFilePaths.oversize.length || shipmentDetail.oversize == "T") {
+      let tempSize = "xxPx";
+      saveFile(shipmentFilePaths.oversize, tempSize);
+    }
+    if (shipmentFilePaths.ice.length) {
+      saveFile(shipmentFilePaths.ice, shipmentDetail.sztp);
+    }
+  }
+
   if (
     shipmentDetail.dangerous == DANGEROUS_STATUS.pending ||
     shipmentDetail.dangerous == DANGEROUS_STATUS.approve ||
@@ -389,85 +457,24 @@ function submitHandler() {
     shipmentDetail.contSpecialStatus == SPECIAL_STATUS.approve
   ) {
     $.modal.alertWarning(
-      "Container đang hoặc đã được yêu cầu xác nhận, không thể chinh sửa thông tin"
+      "Container đang hoặc đã được yêu cầu. Chỉ được thay đổi file."
     );
-  } else {
-    if ($.validate.form()) {
-      var data = $("#form-detail-add").serializeArray();
-      data = covertSerializeArrayToObject(data);
-      data = {
-        ...data,
-        oversizeType: formatValuesCategoryOversize(),
-        vgmMaxGross: $("#vgmChk").prop("checked")
-          ? reFormatNumber($("#maxGross").val())
-          : null,
-        vgmInspectionDepartment: $("#vgmChk").prop("checked")
-          ? $("#inspectionDepartment").val()
-          : null,
-        daySetupTemperature: new Date(
-          formatDateToSendServer(data.daySetupTemperature)
-        ).getTime(),
-        dangerous:
-          shipmentDetail.dangerous == data.dangerous
-            ? shipmentDetail.dangerous
-            : data.dangerous,
-      };
-
-      //validate file
-      let isValidateFile = true;
-
-      if (data.dangerous && data.dangerous != DANGEROUS_STATUS.NOT) {
-        // dangerous khong co dinh kem file
-        if (!shipmentFilePaths.dangerous.length) {
-          isValidateFile = false;
-          $.modal.alertWarning(
-            "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file."
-          );
-        }
-      }
-      if (data.oversize && data.oversize != "F") {
-        if (!shipmentFilePaths.oversize.length) {
-          isValidateFile = false;
-          $.modal.alertWarning(
-            "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file."
-          );
-        }
-      }
-
-      if (data.temperature) {
-        if (!shipmentFilePaths.ice.length) {
-          isValidateFile = false;
-          $.modal.alertWarning(
-            "Chưa đính kèm tệp cho container lạnh. Vui lòng đính kèm file."
-          );
-        }
-      }
-
-      if (isValidateFile) {
-        if (shipmentFilePaths.dangerous.length) {
-          saveFile(shipmentFilePaths.dangerous, "");
-        }
-        if (shipmentFilePaths.oversize.length) {
-          saveFile(shipmentFilePaths.oversize, shipmentDetail.sztp);
-        }
-        if (shipmentFilePaths.ice.length) {
-          saveFile(shipmentFilePaths.ice, shipmentDetail.sztp);
-        }
-
-        parent.submitDataFromDetailModal(data);
-        onCloseModel();
-      }
-    }
+  } else if (isValidateFile && $.validate.form()) {
+    parent.submitDataFromDetailModal(data);
+    onCloseModel();
   }
 }
 
 function formatDateToSendServer(data) {
-  let result = "";
-  let arrDate = data.toString().split("/");
-  let temp = arrDate[0];
-  arrDate[0] = arrDate[1];
-  arrDate[1] = temp;
-  return arrDate.join("/");
+  if (data) {
+    let result = "";
+    let arrDate = data.toString().split("/");
+    let temp = arrDate[0];
+    arrDate[0] = arrDate[1];
+    arrDate[1] = temp;
+    return arrDate.join("/");
+  }
+  return "";
 }
 
 function saveFile(filePaths, shipmentSztp) {
@@ -548,7 +555,9 @@ function isContIce() {
  * @returns oversize: true | not oversize: false
  */
 function isContOversize() {
-  return shipmentDetail.sztp.includes("P") ? true : false;
+  return shipmentDetail.sztp.includes("P") || shipmentDetail.oversize == "T"
+    ? true
+    : false;
 }
 
 /**
@@ -604,7 +613,7 @@ function initFileIsExist(previewClass, fileType) {
           shipmentFilePaths[`${getKeyFormByKeyType(fileType)}`].push(element);
           htmlInit =
             `<div class="preview-block" style="width: 70px;float: left;">
-            <a href=${element.path} target="_blank"><img src="` +
+            <a href=${ctx}${element.path} target="_blank"><img src="` +
             ctx +
             `img/document.png" alt="Tài liệu" style="max-width: 50px;"/></a>
             <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` +
@@ -631,14 +640,32 @@ function removeImage(element, fileIndex) {
       "Container đang hoặc đã yêu cầu xác nhận, không thể xóa tệp đã đính kèm."
     );
   } else {
-    if (!fileIndex) {
-      $.modal.msgSuccess("Xóa tệp thành công.");
-      $(element).parent("div.preview-block").remove();
-      let indexIsClick = $(".close").index(element);
-      shipmentFilePaths[`${element.className.split(" ")[1]}`].splice(
-        indexIsClick,
-        1
-      );
+    if (typeof fileIndex != "number") {
+      $.ajax({
+        url: PREFIX + "/cont-special/file",
+        method: "DELETE",
+        data: {
+          id: 0,
+          path: fileIndex,
+        },
+        beforeSend: function () {
+          $.modal.loading("Đang xử lý, vui lòng chờ...");
+        },
+        success: function (result) {
+          $.modal.closeLoading();
+          if (result.code == 0) {
+            $.modal.msgSuccess("Xóa tệp thành công.");
+            $(element).parent("div.preview-block").remove();
+            let indexIsClick = $(".close").index(element);
+            shipmentFilePaths[`${element.className.split(" ")[1]}`].splice(
+              indexIsClick,
+              1
+            );
+          } else {
+            $.modal.alertWarning("Xóa tệp thất bại.");
+          }
+        },
+      });
     } else {
       shipmentFiles.forEach(function (value, index) {
         if (value.id == fileIndex) {
@@ -647,6 +674,7 @@ function removeImage(element, fileIndex) {
             method: "DELETE",
             data: {
               id: value.id,
+              path: "",
             },
             beforeSend: function () {
               $.modal.loading("Đang xử lý, vui lòng chờ...");

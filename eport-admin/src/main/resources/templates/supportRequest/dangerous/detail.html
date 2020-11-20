@@ -43,7 +43,7 @@
           style="height: 500px; overflow-y: auto"
         >
           <section class="tabs">
-            <input
+            <!-- <input
               id="tab-1"
               type="radio"
               name="radio-set"
@@ -58,13 +58,14 @@
               name="radio-set"
               class="tab-selector-2"
             />
-            <label for="tab-2" class="tab-label-2">Quá khổ</label>
+            <label for="tab-2" class="tab-label-2">Quá khổ</label> -->
 
             <input
               id="tab-3"
               type="radio"
               name="radio-set"
               class="tab-selector-3"
+              checked="checked"
             />
             <label for="tab-3" class="tab-label-3">Nguy hiểm</label>
 
@@ -74,11 +75,7 @@
               <div class="content-1">
                 <div
                   class="form-horizontal mt10 row"
-                  style="
-                    border-bottom: 1px dashed #ccc;
-                    height: 40px;
-                    margin-bottom: 5px;
-                  "
+                  style="border-bottom: 1px dashed #ccc; height: 40px"
                 >
                   <div class="form-group col-sm-4 row">
                     <label class="control-label col-sm-4 col-xs-6"
@@ -111,7 +108,7 @@
                     </div>
                     <span
                       class="control-label col-sm-4 col-xs-6 mt5"
-                      style="text-align: left"
+                      style="text-align: left; margin: 5px 0px"
                       ><b class="text-black">Max Gross (kg):</b></span
                     >
                     <div class="col-sm-8 col-xs-6 mt5">
@@ -120,12 +117,16 @@
                         class="form-control"
                         name="vgmMaxGross"
                         id="maxGross"
+                        style="margin: 5px 0px"
                       />
                     </div>
                   </div>
                 </div>
-                <div class="form-horizontal mt10 row">
-                  <div class="form-group col-sm-12 row">
+                <div
+                  class="form-horizontal mt10 row"
+                  style="border-bottom: 1px dashed #ccc; height: 40px"
+                >
+                  <div class="form-group col-sm-12 row" style="margin: 5px 0px">
                     <label class="control-label col-sm-3 col-xs-3"
                       ><b class="text-black">Nhiệt độ (độ C):</b></label
                     >
@@ -155,9 +156,9 @@
                     </div>
                   </div>
                 </div>
-                <div class="form-group col-sm-6" id="dropzoneIce">
+                <div class="form-group col-sm-12" id="dropzoneIce">
                   <div
-                    class="preview-container-ice col-md-6 col-sm-6 col-xs-6"
+                    class="preview-container-ice col-md-12 col-sm-12 col-xs-12"
                   ></div>
                 </div>
               </div>
