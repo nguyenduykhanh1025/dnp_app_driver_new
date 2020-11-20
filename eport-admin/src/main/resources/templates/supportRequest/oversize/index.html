@@ -23,7 +23,7 @@
           class="main-body__search-wrapper--container justify-content-between align-items-center w-100"
         >
           <div class="flex__left w-20">
-            <h3 class="mt-10">Kiểm Soát Bốc Hàng</h3>
+            <h3 class="mt-10">Quản Lí Container Quá Khổ</h3>
           </div>
           <div class="flex__right w-80">
             <div class="justify-content-around align-items-center" id="ff">
@@ -48,7 +48,7 @@
                 <input id="opr" class="easyui-combobox" />
               </div>
               <div class="d-inline">
-                <input id="doStatus" class="easyui-combobox" />
+                <input id="contSpecialStatus" class="easyui-combobox" />
               </div>
               <div class="d-inline">
                 <button class="btn btn-success" onclick="search()">
@@ -114,6 +114,12 @@
                     width="100"
                   >
                     Logistics
+                  </th>
+                  <th
+                    data-options="field:'serviceType', resizable:true, align:'center', fixed:true, formatter: formatServiceType"
+                    width="120"
+                  >
+                    Dịch vụ
                   </th>
                   <th
                     data-options="field:'createTime', resizable:true, align:'right', fixed:true"
@@ -231,7 +237,7 @@
                                   class="btn btn-sm btn-danger"
                                 >
                                   <i class="fa fa-refresh text-primary"></i>
-                                  Từ chối Yêu Cầu
+                                  Xác Nhận Từ Chối Yêu Cầu
                                 </button>
                               </span>
                             </span>

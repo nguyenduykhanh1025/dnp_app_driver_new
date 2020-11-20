@@ -25,7 +25,7 @@ $("#form-detail-add").validate({
 });
 
 $("#datetimepicker1").datetimepicker({
-  format: "dd-mm-yyyy",
+  format: "dd/mm/yyyy",
   language: "vi_VN",
   minView: "month",
 });
@@ -46,10 +46,9 @@ $(document).ready(function () {
  * @description create another values if exist from server
  */
 function initValueToElementHTML() {
-  $("#containerNo").val(containerNo);
-  $("#sztp").val(sztp);
-
   if (shipmentDetail) {
+    $("#containerNo").val(shipmentDetail.containerNo);
+    $("#sztp").val(shipmentDetail.sztp);
     const {
       vgmChk,
       vgmInspectionDepartment,
@@ -142,9 +141,10 @@ function initElementHTMLInInformationCommonTab(
     .css("pointer-events", !isContIce() ? "none" : "")
     .prop("disabled", !isContIce() ? true : false);
 
+  let daySetup = new Date(daySetupTemperature);
   $("#datetimepicker1 input").val(
     daySetupTemperature
-      ? new Date(daySetupTemperature).toLocaleDateString()
+      ? `${daySetup.getDate()}/${daySetup.getMonth() + 1}/${daySetup.getFullYear()}`
       : null
   );
 
@@ -395,7 +395,6 @@ function submitHandler() {
     if ($.validate.form()) {
       var data = $("#form-detail-add").serializeArray();
       data = covertSerializeArrayToObject(data);
-
       data = {
         ...data,
         oversizeType: formatValuesCategoryOversize(),
@@ -405,7 +404,9 @@ function submitHandler() {
         vgmInspectionDepartment: $("#vgmChk").prop("checked")
           ? $("#inspectionDepartment").val()
           : null,
-        daySetupTemperature: new Date(formatDateToSendServer(data.daySetupTemperature)).getTime(),
+        daySetupTemperature: new Date(
+          formatDateToSendServer(data.daySetupTemperature)
+        ).getTime(),
         dangerous:
           shipmentDetail.dangerous == data.dangerous
             ? shipmentDetail.dangerous
@@ -462,7 +463,7 @@ function submitHandler() {
 
 function formatDateToSendServer(data) {
   let result = "";
-  let arrDate = data.split("/");
+  let arrDate = data.toString().split("/");
   let temp = arrDate[0];
   arrDate[0] = arrDate[1];
   arrDate[1] = temp;
@@ -537,7 +538,7 @@ function reFormatNumber(value) {
  * @returns ice: true | not ice: false
  */
 function isContIce() {
-  return sztp.includes("R") ? true : false;
+  return shipmentDetail.sztp.includes("R") ? true : false;
 }
 
 /**
@@ -547,7 +548,7 @@ function isContIce() {
  * @returns oversize: true | not oversize: false
  */
 function isContOversize() {
-  return sztp.includes("P") ? true : false;
+  return shipmentDetail.sztp.includes("P") ? true : false;
 }
 
 /**
