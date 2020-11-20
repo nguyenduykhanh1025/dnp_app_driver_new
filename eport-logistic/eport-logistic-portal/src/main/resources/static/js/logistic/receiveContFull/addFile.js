@@ -66,7 +66,7 @@ $(document).ready(function () {
                 //shipmentId.push(response.shipmentId); 
                 let html = `<div class="preview-block">
                     <img src="` + ctx + `img/document.png" alt="Tài liệu" />
-                    <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + response.shipmentFileId + `)" >
+                    <button type="button" class="close" aria-label="Close" onclick="removeImage1(this, '${response.file}')" >
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>`
@@ -108,7 +108,7 @@ $(document).ready(function () {
                 //shipmentId.push(response.shipmentId); 
                 let html = `<div class="preview-block">
                     <img src="` + ctx + `img/document.png" alt="Tài liệu" />
-                    <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + response.shipmentFileId + `)" >
+                    <button type="button" class="close" aria-label="Close" onclick="removeImage1(this, '${response.file}')" >
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>`
@@ -152,7 +152,7 @@ $(document).ready(function () {
                 //shipmentId.push(response.shipmentId); 
                 let html = `<div class="preview-block">
                     <img src="` + ctx + `img/document.png" alt="Tài liệu" />
-                    <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + response.shipmentFileId + `)" >
+                    <button type="button" class="close" aria-label="Close" onclick="removeImage1(this, '${response.file}')" >
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>`
@@ -246,15 +246,15 @@ function save(url) {
         }
     })
 }
-function removeImage(element, fileIndex) {
+/*function removeImage(element, fileIndex) {
 	
-	/*if ( shipmentDetail.dangerous == DANGEROUS_STATUS.pending ||
+	if ( shipmentDetail.dangerous == DANGEROUS_STATUS.pending ||
 			 shipmentDetail.dangerous == DANGEROUS_STATUS.approve ||
 			 shipmentDetail.contSpecialStatus == SPECIAL_STATUS.yet ||
 			 shipmentDetail.contSpecialStatus == SPECIAL_STATUS.approve ){
 	    $.modal.alertWarning( "Container đang hoặc đã yêu cầu xác nhận, không thể xóa tệp đã đính kèm.");
 	  } 
-	else{*/
+	else{
 	if (!fileIndex) {
 	    $.modal.msgSuccess("Xóa tệp thành công.");
 	    $(element).parent("div.preview-block").remove();
@@ -292,41 +292,45 @@ function removeImage(element, fileIndex) {
 	  }
 	//}
 	
-}
-
-
-
-
-
-
-
-/*function removeImage(element, fileIndex) {
-        shipmentFileIds.forEach(function (value, index) {
-            if (value == fileIndex) {
-                $.ajax({
-                	url: prefix + "/booking/file",
-                    method: "DELETE",
-                    data: {
-                        id: value
-                    },
-                    beforeSend: function () {
-                        $.modal.loading("Đang xử lý, vui lòng chờ...");
-                    },
-                    success: function (result) {
-                        $.modal.closeLoading();
-                        if (result.code == 0) {
-                            $.modal.msgSuccess("Xóa tệp thành công.");
-                            $(element).parent("div.preview-block").remove();
-                            shipmentFileIds.splice(index, 1);
-                        } else {
-                            $.modal.alertWarning("Xóa tệp thất bại.");
-                        }
-                    }
-                });
-                return false;
-            }
-        });
-   
 }*/
+
+
+
+
+
+
+// xóa khi chưa lưu, chưa có id. lấy filepath xóa trong lưu tạm
+function removeImage1(element, fileIndex) {
+	 
+	shipmentFilePath.forEach(function (value, index) {
+	 
+		
+        if (value == fileIndex) { 
+            $.ajax({
+            	url: prefix + "/booking/file",
+                method: "DELETE",
+                data: {
+                    id: index,
+                    filePath: fileIndex
+                },
+                beforeSend: function () {
+                    $.modal.loading("Đang xử lý, vui lòng chờ...");
+                },
+                success: function (result) {
+                    $.modal.closeLoading();
+                    if (result.code == 0) {
+                        $.modal.msgSuccess("Xóa tệp thành công.");
+                        $(element).parent("div.preview-block").remove();
+                        shipmentFilePath.splice(index, 1);
+                    } else {
+                        $.modal.alertWarning("Xóa tệp thất bại.");
+                    }
+                }
+            });
+            return false;
+        }
+    });
+   
+}
 
  

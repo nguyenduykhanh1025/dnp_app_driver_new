@@ -1105,17 +1105,30 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	 
 	@DeleteMapping("/booking/file")
 	@ResponseBody
-	public AjaxResult deleteFile(Long id) throws IOException {
-		ShipmentImage shipmentImageParam = new ShipmentImage();
-		shipmentImageParam.setId(id);
-		ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
-		String[] fileArr = shipmentImage.getPath().split("/");
-		File file = new File(
-				Global.getUploadPath() + "/receiveContFull/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
-		if (file.delete()) {
-			shipmentImageService.deleteShipmentImageById(id);
+	public AjaxResult deleteFile(Long id,String filePath) throws IOException {
+		if(id !=0){
+			ShipmentImage shipmentImageParam = new ShipmentImage();
+			shipmentImageParam.setId(id);
+			ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+			String[] fileArr = shipmentImage.getPath().split("/");
+			File file = new File(
+					Global.getUploadPath() + "/receiveContFull/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
+			if (file.delete()) {
+				shipmentImageService.deleteShipmentImageById(id);
+			}
+			return success();
+		}else{
+			String[] fileArr = filePath.split("/");
+            File file = new File(Global.getUploadPath() + "/receiveContFull/" + getUser().getGroupId() + "/"
+                    + fileArr[fileArr.length - 1]);
+
+            if (file.delete()) {
+                return success();
+
+            }
+            return error("Lỗi Xóa File");
 		}
-		return success();
+		
 	}
 	  
 	@Log(title = "Phê duyệt", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)

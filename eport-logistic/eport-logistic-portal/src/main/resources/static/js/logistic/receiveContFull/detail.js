@@ -1,7 +1,7 @@
 const PREFIX = ctx + "logistic/receive-cont-full";
  
  
-var shipmentFileIds = [];// validate file
+//var shipmentFileIds = [];// validate file
  
 $('#containerNo').val(containerNo);// container no
 $('#sztp').val(sztp);//  
@@ -163,6 +163,8 @@ function closeForm() {
 }
 
 $( document ).ready(function() { 
+	console.log(shipmentFiles);
+	
 	if (shipmentFiles != null) {// hiển thị hình ảnh
         let htmlInit = '';
         shipmentFiles.forEach(function (element, index) {  
@@ -199,9 +201,10 @@ $( document ).ready(function() {
 
     }
 });
+// xóa khi đã lưu có id 
+function removeImage(element, fileIndex) {
 
-/*function removeImage(element, fileIndex) {
-    shipmentFileIds.forEach(function (value, index) {
+	shipmentFiles.forEach(function (value, index) {
         if (value == fileIndex) {
             $.ajax({
             	url: prefix + "/booking/file",
@@ -227,6 +230,6 @@ $( document ).ready(function() {
         }
     });
 
-}*/
+}
  
 
