@@ -240,4 +240,15 @@ public class SupportCancelOrderController extends AdminBaseController  {
 		ajaxResult.put("shipmentFiles", shipmentImages);
 		return ajaxResult;
 	}
+
+	@Log(title = "Huỷ yêu cầu xóa container", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
+	@PostMapping("/request/cancel")
+	@ResponseBody
+	public AjaxResult cancelDeleteShipmentDetailRequest(String shipmentDetailIds) {
+		logger.debug("Cancel request delete shipment detail");
+		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
+		shipmentDetailUpdate.setProcessStatus(EportConstants.PROCESS_STATUS_SHIPMENT_DETAIL_YES);
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
+		return success();
+	}
 }

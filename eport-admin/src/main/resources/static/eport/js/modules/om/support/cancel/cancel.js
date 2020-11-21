@@ -1311,3 +1311,36 @@ function cancelShipmentDetail() {
     });
   }
 }
+
+function cancelRequest() {
+  if (getDataSelectedFromTable()) {
+    layer.confirm("Xác nhận hủy yêu cầu hủy lệnh.", {
+      icon: 3,
+      title: "Xác Nhận",
+      btn: ['Xác Nhận', 'Hủy Bỏ']
+    }, function () {
+      $.ajax({
+        url: PREFIX + "/request/cancel",
+        method: "POST",
+        data: {
+          shipmentDetailIds: shipmentDetailIds,
+        },
+        success: function (result) {
+          if (result.code == 0) {
+            $.modal.alertSuccess(result.msg);
+            reloadShipmentDetail();
+          } else {
+            $.modal.alertError(result.msg);
+          }
+          $.modal.closeLoading();
+        },
+        error: function (result) {
+          $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, xin vui lòng thử lại.");
+          $.modal.closeLoading();
+        },
+      });
+      layer.close(layer.index);
+    }, function () {
+    });
+  }
+}
