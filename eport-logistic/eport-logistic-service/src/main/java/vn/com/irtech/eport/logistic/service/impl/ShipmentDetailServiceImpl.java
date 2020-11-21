@@ -44,6 +44,7 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 import vn.com.irtech.eport.system.service.ISysDictDataService;
 import vn.com.irtech.eport.system.service.ISysDictTypeService;
 
@@ -121,11 +122,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	}
 
 	private String getTruckCoName(String taxCode) {
-		String trucker = sysDictDataService.selectDictLabel("carrier_trucker_list", taxCode);
-		if (StringUtils.isNotEmpty(trucker)) {
-			return catosApiService.getPartnerInfo(EportConstants.PTNR_TYPE_SHIPPING_LINE, taxCode).getGroupName();
-		}
-		return catosApiService.getPartnerInfo(EportConstants.PTNR_TYPE_CONSIGNEE, taxCode).getGroupName();
+		PartnerInfoDto partnerInfoDto = new PartnerInfoDto();
+		partnerInfoDto.setPtnrCode(taxCode);
+		partnerInfoDto.setPtnrType(EportConstants.PTNR_TYPE_TRUCKER);
+		return catosApiService.getPartnerInfo(partnerInfoDto).getGroupName();
 	}
 
 	/**
@@ -507,9 +507,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		processOrder.setConsignee(detail.getConsignee());
 		processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
 		try {
-			processOrder.setTruckCo(
-					getTruckerFromRegNoCatos(taxCode) + " : "
-							+ getTruckCoName(taxCode));
+			String trucker = getTruckerFromRegNoCatos(taxCode);
+			processOrder.setTruckCo(trucker + " : " + getTruckCoName(trucker));
 		} catch (Exception e) {
 			logger.error("Error when get company name with tax code: " + e);
 		}
@@ -607,9 +606,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		processOrder.setConsignee(detail.getConsignee());
 		processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
 		try {
-			processOrder.setTruckCo(
-					getTruckerFromRegNoCatos(taxCode) + " : "
-							+ getTruckCoName(taxCode));
+			String trucker = getTruckerFromRegNoCatos(taxCode);
+			processOrder.setTruckCo(trucker + " : " + getTruckCoName(trucker));
 		} catch (Exception e) {
 			logger.error("Error when get company name with tax code: " + e);
 		}

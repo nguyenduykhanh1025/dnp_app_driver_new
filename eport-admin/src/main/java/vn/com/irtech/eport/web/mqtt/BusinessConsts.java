@@ -12,6 +12,8 @@ public class BusinessConsts {
 	
 	public static final String IN_PROGRESS = "PROCESSING";
 	
+	public static final String DATA_QUALIFIED = "QUALIFIED";
+
 	public static final String PASS = "PASS";
 	
 	public static final Long LOGISTIC_USER_TYPE = 1L;

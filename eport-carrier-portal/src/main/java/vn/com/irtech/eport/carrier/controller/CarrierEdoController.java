@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
-import vn.com.irtech.eport.carrier.listener.MqttService;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
@@ -37,7 +36,6 @@ import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
-import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.domain.SysSyncQueue;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
@@ -68,13 +66,7 @@ public class CarrierEdoController extends CarrierBaseController {
 	private ICatosApiService catosApiService;
 
 	@Autowired
-	private IShipmentDetailService shipmentDetailService;
-
-	@Autowired
 	private ISysSyncQueueService sysSyncQueueService;
-
-	@Autowired
-	private MqttService mqttService;
 
 	@GetMapping("/index")
 	public String EquipmentDo() {

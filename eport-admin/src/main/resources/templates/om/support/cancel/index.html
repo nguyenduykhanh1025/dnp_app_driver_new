@@ -137,6 +137,18 @@
                                                 </a>
                                             </td>
                                             <td>
+                                                <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group=""
+                                                    id="">
+                                                    <span class="l-btn-left"><span class="l-btn-text">
+                                                            <button id="cancelRequestBtn" onclick="cancelRequest()"
+                                                                class="btn btn-sm btn-warning">
+                                                                <i class="fa fa-refresh text-primary"></i> Hủy Yêu Cầu
+                                                            </button>
+                                                        </span>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                            <td>
                                                 <span style="margin-left: 20px; font-weight: bold;"
                                                     id="shipment-info"></span>
                                             </td>
@@ -163,7 +175,7 @@
         var sId = /*[[${sId}]]*/;
         var domain = /*[[${domain}]]*/;
     </script>
-    <script th:src="@{/eport/js/modules/om/support/cancel/cancel.js}"></script>
+    <script th:src="@{/eport/js/modules/om/support/cancel/cancel.js?v=20201121}"></script>
 </body>
 
 </html>
