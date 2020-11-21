@@ -122,13 +122,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	}
 
 	private String getTruckCoName(String taxCode) {
-		String trucker = sysDictDataService.selectDictLabel("carrier_trucker_list", taxCode);
 		PartnerInfoDto partnerInfoDto = new PartnerInfoDto();
-		if (StringUtils.isNotEmpty(trucker)) {
-			partnerInfoDto.setPtnrType(EportConstants.PTNR_TYPE_SHIPPING_LINE);
-			partnerInfoDto.setTaxCode(taxCode);
-			return catosApiService.getPartnerInfo(partnerInfoDto).getGroupName();
-		}
 		partnerInfoDto.setPtnrCode(taxCode);
 		partnerInfoDto.setPtnrType(EportConstants.PTNR_TYPE_TRUCKER);
 		return catosApiService.getPartnerInfo(partnerInfoDto).getGroupName();
@@ -513,9 +507,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		processOrder.setConsignee(detail.getConsignee());
 		processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
 		try {
-			processOrder.setTruckCo(
-					getTruckerFromRegNoCatos(taxCode) + " : "
-							+ getTruckCoName(taxCode));
+			String trucker = getTruckerFromRegNoCatos(taxCode);
+			processOrder.setTruckCo(trucker + " : " + getTruckCoName(trucker));
 		} catch (Exception e) {
 			logger.error("Error when get company name with tax code: " + e);
 		}
@@ -613,9 +606,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		processOrder.setConsignee(detail.getConsignee());
 		processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
 		try {
-			processOrder.setTruckCo(
-					getTruckerFromRegNoCatos(taxCode) + " : "
-							+ getTruckCoName(taxCode));
+			String trucker = getTruckerFromRegNoCatos(taxCode);
+			processOrder.setTruckCo(trucker + " : " + getTruckCoName(trucker));
 		} catch (Exception e) {
 			logger.error("Error when get company name with tax code: " + e);
 		}

@@ -353,8 +353,8 @@ public class ApiShipmentDetailController {
 		return shipmentDetailDao.selectContainerInfoByCntrInfo(containerInfoDto);
 	}
 
-	@GetMapping("/partner-info/partner-type")
-	public PartnerInfoDto getPartnerInfo(PartnerInfoDto partnerInfoDto) {
+	@PostMapping("/partner-info")
+	public PartnerInfoDto getPartnerInfo(@RequestBody PartnerInfoDto partnerInfoDto) {
 		return shipmentDetailDao.getPartnerInfo(partnerInfoDto);
 	}
 

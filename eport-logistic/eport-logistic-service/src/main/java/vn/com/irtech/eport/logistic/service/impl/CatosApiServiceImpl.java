@@ -1168,7 +1168,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	@Override
 	public PartnerInfoDto getPartnerInfo(PartnerInfoDto partnerInfoParam) {
 		try {
-			String url = Global.getApiUrl() + "/partner-info/partner-type/";
+			String url = Global.getApiUrl() + "/partner-info";
 			logger.debug("Call CATOS API get partner info :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<PartnerInfoDto> response = restTemplate.postForEntity(url, partnerInfoParam,
