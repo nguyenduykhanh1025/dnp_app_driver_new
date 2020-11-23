@@ -62,7 +62,11 @@ public class GateSupportController extends BaseController {
 
 	private static final Long TIME_OUT_WAIT_SEAL = 3000L;
 
-	private static final Integer RETRY_WAIT_SEAL = 40;
+	private static final Long TIME_OUT_WAIT_WGT = 3000L;
+
+	private static final Integer RETRY_WAIT_SEAL = 100;
+
+	private static final Integer RETRY_WAIT_WGT = 3;
 
 	@Autowired
 	private WebSocketService webSocketService;
@@ -119,9 +123,24 @@ public class GateSupportController extends BaseController {
 		if (StringUtils.isNotEmpty(chassisNo)) {
 			dt.setChassisNo(chassisNo.replace("-", ""));
 		}
-		CacheUtils.put(dt.getGateNo() + "_" + EportConstants.CACHE_GATE_DETECTION_KEY, dt);
+
+		// Check sensor result
+		// 0 0 0, 1 0 1 => no truck at gate
+		// no need to save gate detection
+
+		Object sensorObj = CacheUtils.get("sensorInfo_" + detection.getGateId());
+		@SuppressWarnings("unchecked")
+		List<Integer> sensorRes = (List<Integer>) sensorObj;
+		if (CollectionUtils.isNotEmpty(sensorRes) && sensorRes.size() >= 3) {
+			if ((sensorRes.get(0) == 0 && sensorRes.get(1) == 0 && sensorRes.get(2) == 0)
+					|| (sensorRes.get(0) == 1 && sensorRes.get(1) == 0 && sensorRes.get(2) == 1)) {
+				return success();
+			}
+		}
 
 		senDetectionInfoToGate(dt);
+
+		CacheUtils.put(dt.getGateNo() + "_" + EportConstants.CACHE_GATE_DETECTION_KEY, dt);
 
 		// Send to monitor
 		webSocketService.sendMessage("/gate/detection/monitor", detection);
@@ -138,9 +157,26 @@ public class GateSupportController extends BaseController {
 		// Check if truck on gate
 		List<Integer> sensorValue = sensorResult.getSensors();
 		if (sensorValue.size() >= 3) {
-			if (sensorValue.get(0) == 0 && sensorValue.get(1) == 0 && sensorValue.get(2) == 0) {
+			if ((sensorValue.get(0) == 0 && sensorValue.get(1) == 0 && sensorValue.get(2) == 0)
+					|| (sensorValue.get(0) == 1 && sensorValue.get(1) == 0 && sensorValue.get(2) == 1)) {
+				// Clear gate detection data
 				CacheUtils.remove(sensorResult.getGateId() + "_" + EportConstants.CACHE_GATE_DETECTION_KEY);
+
+				// Clear scale result at gate
+				CacheUtils.remove("wgt_" + sensorResult.getGateId());
 			}
+
+			// Indicate truck move in right position
+			String indicateMsg = "";
+			if (sensorValue.get(0) == 0 && sensorValue.get(1) == 1 && sensorValue.get(2) == 1) {
+				indicateMsg = "Vui lòng di chuyển xe về phía trước.";
+			} else if (sensorValue.get(0) == 1 && sensorValue.get(1) == 1 && sensorValue.get(2) == 0) {
+				indicateMsg = "Vui lòng di chuyển xe về phía sau.";
+			} else if (sensorValue.get(0) == 0 && sensorValue.get(1) == 1 && sensorValue.get(2) == 0) {
+				indicateMsg = "Xe đã vào đúng vị trí.";
+			}
+
+			// TODO : Send msg to web socket
 		}
 		return success();
 	}
@@ -184,12 +220,14 @@ public class GateSupportController extends BaseController {
 
 		new Thread() {
 			public void run() {
-				// Container is qualified to send gate order req
+				// Container is qualified to send gate order request
 				boolean cont1 = false; // Determine container 1 is qualified for directly make gate order
 				boolean cont2 = false; // Determine container 2 is qualified for directly make gate order
 
 				boolean cont1F = false; // Determine container 1 is container full => need check seal no
 				boolean cont2F = false; // Determine container 2 is container full => need check seal no
+
+				boolean wgtQualified = false; // Determine weight is accurate
 
 				// Rule check container qualified
 				// - Have info in catos reserve and job order no
@@ -198,7 +236,7 @@ public class GateSupportController extends BaseController {
 
 				Map<String, ContainerInfoDto> cntrMap = getCntrMapFromCatos(detectionInfo);
 
-				// check cont 1 qualified
+				// check container 1 qualified
 				if (StringUtils.isNotEmpty(detectionInfo.getContainerNo1())) {
 					ContainerInfoDto container1 = cntrMap.get(detectionInfo.getContainerNo1());
 					if (container1 != null) {
@@ -213,7 +251,7 @@ public class GateSupportController extends BaseController {
 					}
 				}
 
-				// check cont 2 qualified
+				// check container 2 qualified
 				if (StringUtils.isNotEmpty(detectionInfo.getContainerNo2())) {
 					ContainerInfoDto container2 = cntrMap.get(detectionInfo.getContainerNo2());
 					if (container2 != null) {
@@ -231,11 +269,34 @@ public class GateSupportController extends BaseController {
 					cont2 = true;
 				}
 
+				// Check if weight is qualified
+				Integer oldWgt = getCurrentWgt(detectionInfo.getGateNo());
+				for (int i = 1; i <= RETRY_WAIT_WGT; i++) {
+
+					logger.debug("Wait " + TIME_OUT_WAIT_WGT + " miliseconds");
+					try {
+						Thread.sleep(TIME_OUT_WAIT_WGT);
+					} catch (InterruptedException e) {
+						logger.error("Error sleep to wait weight info: " + e);
+					}
+					Integer wgt = getCurrentWgt(detectionInfo.getGateNo());
+					if (oldWgt == wgt) {
+						wgtQualified = true;
+						break;
+					} else {
+						oldWgt = wgt;
+					}
+				}
+
 				// Repeat check catos database in 2 minute
 				// Stop when time exceed 2 minutes or seal no is input
 				// Check when container 1 or container 2 is full
 				if (cont1F || cont2F) {
 					for (int i = 1; i <= RETRY_WAIT_SEAL; i++) {
+						// Get sensor result from cache
+						// 0 0 0, 1 0 1 => no truck at gate
+						// Clear detection data in cache
+
 						// Get info from catos
 						cntrMap = getCntrMapFromCatos(detectionInfo);
 
@@ -281,14 +342,31 @@ public class GateSupportController extends BaseController {
 					}
 				}
 
-				if (cont1 && cont2) {
-					// Send req make gate order directly
-					mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK,
+				if (cont1 && cont2 && wgtQualified) {
+					// Send request make gate order directly
+					mqttService.sendProgressToGate(BusinessConsts.DATA_QUALIFIED, BusinessConsts.BLANK,
 							"Xác nhận data chính xác, trực tiếp làm lênh.", detectionInfo.getGateNo());
 				}
 			}
 		}.start();
 	}
+
+	/**
+	 * Get current weight in cache mapping with gate id
+	 * 
+	 * @param gateId
+	 * @return
+	 */
+	private Integer getCurrentWgt(String gateId) {
+		Object wgtObj = CacheUtils.get("wgt_" + gateId);
+		if (wgtObj == null) {
+			return 0;
+		}
+		Integer wgt = (Integer) wgtObj;
+		return wgt;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Get list container info from catos by string containers (container no
