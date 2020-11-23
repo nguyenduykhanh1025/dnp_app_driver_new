@@ -43,6 +43,7 @@ import vn.com.irtech.eport.web.mqtt.listener.AutoGateCheckInHandler;
 import vn.com.irtech.eport.web.mqtt.listener.AutoGatePassHandler;
 import vn.com.irtech.eport.web.mqtt.listener.MCRequestHandler;
 import vn.com.irtech.eport.web.mqtt.listener.RobotResponseHandler;
+import vn.com.irtech.eport.web.mqtt.listener.ScaleResultHandler;
 
 @Component
 public class MqttService implements MqttCallback {
@@ -57,16 +58,25 @@ public class MqttService implements MqttCallback {
 	private static final String NOTIFICATION_CONT_TOPIC = BASE + "/notification/cont";
 	private static final String ROBOT_CONNECTION_REQUEST = ROBOT_BASE + "/connection/+/request";
 	private static final String ROBOT_CONNECTION_RESPONSE = ROBOT_BASE + "/connection/+/response";
+	/** Topic receive result accept or reject request gate in */
 	private static final String GATE_DETECTION_RESPONSE = BASE + "/detection/gate/+/response";
+	/** Topic send detection result from camera to gate app */
 	private static final String GATE_DETECTION_ROBOT_RESPONSE = ROBOT_BASE + "/detection/gate/+/response";
+	/** Topic send request gate in order to robot */
 	private static final String GATE_ROBOT_REQ_TOPIC = BASE + "/robot/gate/+/request";
-	public static final String NOTIFICATION_GATE_PROGRESS = "eport/notification/gate/+/progress";
+	/** Topic to send status or result when gate order is in progress */
+	private static final String NOTIFICATION_GATE_PROGRESS = "eport/notification/gate/+/progress";
+	/** Topic to receive result of scale at gate */
+	private static final String SCALE_RESULT_TOPIC = BASE + "/gate/+/scale/result";
 
 	@Autowired
 	private MqttAsyncClient mqttClient;
 	@Autowired
 	private MqttConfig config;
 	private Object connectLock = new Object();
+
+	@Autowired
+	private ScaleResultHandler scaleResultResult;
 
 	@Autowired
 	private MCRequestHandler mcRequestHandler;
@@ -147,6 +157,7 @@ public class MqttService implements MqttCallback {
 		tokens.add(mqttClient.subscribe(ROBOT_CONNECTION_RESPONSE, 1, robotResponseHandler));
 		tokens.add(mqttClient.subscribe(GATE_DETECTION_RESPONSE, 1, autoGateCheckInHandler));
 		tokens.add(mqttClient.subscribe(GATE_DETECTION_ROBOT_RESPONSE, 1, autoGatePassHandler));
+		tokens.add(mqttClient.subscribe(SCALE_RESULT_TOPIC, 1, scaleResultResult));
 		// subscribe default topics when connect
 //		tokens.add(mqttClient.subscribe(BASE, 0, robotUpdateStatusHandler));
 		// Wait for subscribe complete

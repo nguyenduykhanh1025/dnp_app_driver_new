@@ -15,6 +15,7 @@ import vn.com.irtech.eport.api.form.RfidTruckInfoRes;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.exception.BusinessException;
+import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.GateDetection;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
@@ -130,6 +131,10 @@ public class AdminOmController extends BaseController {
 
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("truckInfo", rfidTruckInfoRes);
+
+		// Put in cache
+		CacheUtils.put("rfidTruckInfo", rfidTruckInfoRes);
+
 		return ajaxResult;
 	}
 

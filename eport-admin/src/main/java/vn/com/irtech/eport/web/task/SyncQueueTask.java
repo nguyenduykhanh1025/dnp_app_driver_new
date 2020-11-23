@@ -263,7 +263,7 @@ public class SyncQueueTask {
 
 		// Create process order
 		ProcessOrder processOrder = new ProcessOrder();
-		processOrder.setRemark(syncReference.getRemark());
+		processOrder.setRemark(syncReference.getNewRemark());
 		processOrder.setServiceType(EportConstants.SERVICE_EXTEND_DET);
 		processOrder.setOrderNo(syncReference.getJobOdrNo());
 		processOrder.setContNumber(sysSyncQueues.size());
@@ -274,7 +274,7 @@ public class SyncQueueTask {
 		for (SysSyncQueue syncQueue : sysSyncQueues) {
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setContainerNo(syncQueue.getCntrNo());
-			shipmentDetail.setRemark(syncQueue.getRemark());
+			shipmentDetail.setRemark(syncQueue.getNewRemark());
 			shipmentDetails.add(shipmentDetail);
 			containers += syncQueue.getCntrNo() + ",";
 			syncQueueIds += syncQueue.getId() + ",";

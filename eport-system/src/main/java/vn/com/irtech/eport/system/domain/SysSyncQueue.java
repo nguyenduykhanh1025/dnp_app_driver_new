@@ -58,6 +58,12 @@ public class SysSyncQueue extends BaseEntity
 	@Excel(name = "Det free time")
 	private String detFreeTime;
 
+	/** Old remark */
+	private String oldRemark;
+
+	/** New remark */
+	private String newRemark;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -148,6 +154,22 @@ public class SysSyncQueue extends BaseEntity
 		this.detFreeTime = detFreeTime;
 	}
 
+	public String getOldRemark() {
+		return oldRemark;
+	}
+
+	public void setOldRemark(String oldRemark) {
+		this.oldRemark = oldRemark;
+	}
+
+	public String getNewRemark() {
+		return newRemark;
+	}
+
+	public void setNewRemark(String newRemark) {
+		this.newRemark = newRemark;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -157,7 +179,7 @@ public class SysSyncQueue extends BaseEntity
 				.append("retryTimes", getRetryTimes()).append("createTime", getCreateTime())
 				.append("createTime", getCreateTime()).append("createTime", getCreateTime())
 				.append("expiredDem", getExpiredDem()).append("detFreeTime", getDetFreeTime())
-				.append("remark", getRemark()).append("params", getParams())
+				.append("oldRemark", getOldRemark()).append("newRemark", getNewRemark()).append("params", getParams())
             .toString();
     }
 }
