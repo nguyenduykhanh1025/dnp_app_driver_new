@@ -445,8 +445,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="params.vslNm != null and params.vslNm != ''">and sh.vsl_nm = #{params.vslNm}</if>
             <if test="params.voyNo != null and params.voyNo != ''">and sh.voy_no = #{params.voyNo}</if>
             <if test="params.doStatus != null and params.doStatus != ''">and sh.do_status = #{params.doStatus}</if>
-            <if test="params.contSpecialStatus != null and params.contSpecialStatus != ''">and sh.cont_special_status = #{params.contSpecialStatus}</if>
+           
             <if test="params.dangerous != null and params.dangerous != ''">and sh.dangerous = #{params.dangerous}</if>
+			<if test="params.frozenStatus != null and params.frozenStatus != ''">and sh.frozen_status = #{params.frozenStatus}</if>
+ 
             <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
             <if test="params.oversize != null and params.oversize != ''">and sh.oversize = #{params.oversize}</if>
             <if test="params.serviceArray != null">

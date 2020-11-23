@@ -12,19 +12,11 @@ var shipmentSelected,
 var shipment = new Object();
 shipment.params = new Object();
 
-const SPECIAL_STATUS = {
-  yet: "1",
-  pending: "2",
-  approve: "3",
-  reject: "4",
-};
-
-const DANGEROUS_STATUS = {
-  yet: "T", // là cont dangerous
-  pending: "2", // là cont danger đang chờ xét duyết
-  approve: "3", // là cont danger đã đc xét duyết
-  reject: "4", // là cont danger đã bị từ chối
-  NOT: "F", // không phải là cont danger
+const CONT_SPECIAL_STATUS = {
+  INIT: "I", // cont đã được lưu
+  REQ: "R", // cont đã được yêu cầu xác nhận
+  YES: "Y", // cont đã được phê duyệt yêu cầu xác nhận
+  CANCEL: "C", // cont đã bị từ chối yêu cầu xác nhận
 };
 
 var detailInformationForContainerSpecial = {
@@ -32,6 +24,10 @@ var detailInformationForContainerSpecial = {
   indexSelected: -1,
 };
 
+const SERVICE_TYPE = {
+  pickupFull: 1,
+  dropFull: 4,
+};
 $(document).ready(function () {
   $(".main-body").layout();
 
@@ -92,18 +88,18 @@ $(document).ready(function () {
       },
 
       {
-        alias: DANGEROUS_STATUS.pending,
+        alias: CONT_SPECIAL_STATUS.REQ,
         text: "Chưa kiểm tra",
         selected: true,
       },
 
       {
-        alias: DANGEROUS_STATUS.approve,
+        alias: CONT_SPECIAL_STATUS.YES,
         text: "Đã kiểm tra",
       },
 
       {
-        alias: DANGEROUS_STATUS.reject,
+        alias: CONT_SPECIAL_STATUS.CANCEL,
         text: "Đã từ chối kiểm tra",
       },
     ],
@@ -114,6 +110,39 @@ $(document).ready(function () {
         shipment.params.dangerous = null;
       }
 
+      loadTable();
+    },
+  });
+
+  $("#serviceArray").combobox({
+    panelHeight: "auto",
+    valueField: "alias",
+    editable: false,
+    textField: "text",
+    data: [
+      {
+        alias: "All",
+        text: "Tất cả",
+        selected: true,
+      },
+      {
+        alias: SERVICE_TYPE.pickupFull,
+        text: "Nhận cont hàng từ cảng",
+      },
+
+      {
+        alias: SERVICE_TYPE.dropFull,
+        text: "Giao cont hàng cho cảng",
+      },
+    ],
+    onSelect: function (serviceArray) {
+      if (serviceArray.alias !== "All") {
+        let arrayResult = [];
+        arrayResult.push(serviceArray.alias);
+        shipment.params.serviceArray = arrayResult;
+      } else {
+        shipment.params.serviceArray = [1, 4];
+      }
       loadTable();
     },
   });
@@ -338,117 +367,123 @@ function statusIconsRenderer(
   value,
   cellProperties
 ) {
-  $(td)
-    .attr("id", "statusIcon" + row)
-    .addClass("htCenter")
-    .addClass("htMiddle");
-  if (
-    sourceData[row] &&
-    sourceData[row].dischargePort &&
-    sourceData[row].processStatus &&
-    sourceData[row].paymentStatus &&
-    sourceData[row].customStatus &&
-    sourceData[row].finishStatus
-  ) {
-    // Command process status
-    let process =
-      '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
+  return shipmentSelected.serviceType == SERVICE_TYPE.dropFull
+    ? renderIconsFollowServiceTypeDropFull(
+        instance,
+        td,
+        row,
+        col,
+        prop,
+        value,
+        cellProperties
+      )
+    : renderIconsStatusServiceTypePickupFull(
+        instance,
+        td,
+        row,
+        col,
+        prop,
+        value,
+        cellProperties
+      );
+}
 
-    if (
-      (!sourceData[row].contSpecialStatus ||
-        sourceData[row].contSpecialStatus == SPECIAL_STATUS.approve) &&
-      (!sourceData[row].dangerous ||
-        sourceData[row].dangerous == DANGEROUS_STATUS.NOT ||
-        sourceData[row].dangerous == DANGEROUS_STATUS.approve)
-    ) {
-      switch (sourceData[row].processStatus) {
-        case "E":
-          process =
-            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
-          break;
-        case "Y":
-          process =
-            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
-          break;
-        case "N":
-          process =
-            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
-          break;
-        case "D":
-          process =
-            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
-          break;
-      }
-    }
+function getRequestConfigIcon(row) {
+  const statusResult = getStatusContFollowIndex(row);
 
-    // Payment status
-    let payment =
-      '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
-    switch (sourceData[row].paymentStatus) {
-      case "E":
-        payment =
-          '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Lỗi Thanh Toán" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
-        break;
-      case "Y":
-        payment =
-          '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-        break;
-      case "N":
-        if (value > 1) {
-          payment =
-            '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        }
-        break;
-    }
-    // Customs Status
-    let customs =
-      '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
-    switch (sourceData[row].customStatus) {
-      case "R":
-        customs =
-          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-        break;
-      case "Y":
-        customs =
-          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #ed5565;"></i>';
-        break;
-      case "N":
-        customs =
-          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        break;
-    }
-    // released status
-    let released =
-      '<i id="finish" class="fa fa-ship easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
-    switch (sourceData[row].finishStatus) {
-      case "Y":
-        released =
-          '<i id="finish" class="fa fa-ship easyui-tooltip" title="Đã Giao Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-        break;
-      case "N":
-        if (sourceData[row].paymentStatus == "Y") {
-          released =
-            '<i id="finish" class="fa fa-ship easyui-tooltip" title="Có Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        }
-        break;
-    }
-    // Return the content
-    let content = "<div>";
-
-    content += getRequestConfigIcon(
-      sourceData[row].contSpecialStatus,
-      sourceData[row].dangerous
-    );
-
-    content += process + payment;
-    // Domestic cont: VN --> not show
-    if (sourceData[row].dischargePort.substring(0, 2) != "VN") {
-      content += customs;
-    }
-    content += released + "</div>";
-    $(td).html(content);
+  if (!statusResult) {
+    return "";
+  } else if (statusResult == CONT_SPECIAL_STATUS.YES) {
+    return '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhật đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
+  } else if (statusResult == CONT_SPECIAL_STATUS.CANCEL) {
+    return getRequestConfigIconIsCancel(row);
+  } else if (statusResult == CONT_SPECIAL_STATUS.REQ) {
+    return getRequestConfigIconIsRequest(row);
+  } else if (statusResult == CONT_SPECIAL_STATUS.INIT) {
+    return '<i id="verify" class="fa fa-user-circle-o" title="Có thể yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db"></i>';
   }
-  return td;
+}
+
+/**
+ * @author Khanh
+ * @description Ket qua tra ve hien cont dang cho yeu cau request cua to nao?
+ * @returns {String}
+ */
+function getRequestConfigIconIsRequest(row) {
+  let statusResult = " ";
+  if (
+    sourceData[row].dangerous &&
+    sourceData[row].dangerous === CONT_SPECIAL_STATUS.REQ &&
+    sourceData[row].oversize &&
+    sourceData[row].oversize === CONT_SPECIAL_STATUS.REQ &&
+    sourceData[row].frozenStatus &&
+    sourceData[row].frozenStatus === CONT_SPECIAL_STATUS.REQ
+  ) {
+    return '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>';
+  }
+  if (
+    sourceData[row].dangerous &&
+    sourceData[row].dangerous == CONT_SPECIAL_STATUS.REQ
+  ) {
+    statusResult += "Tổ Nguy Hiểm, ";
+  }
+  if (
+    sourceData[row].oversize &&
+    sourceData[row].oversize == CONT_SPECIAL_STATUS.REQ
+  ) {
+    statusResult += "Tổ Quá Khổ, ";
+  }
+  if (
+    sourceData[row].frozenStatus &&
+    sourceData[row].frozenStatus == CONT_SPECIAL_STATUS.REQ
+  ) {
+    statusResult += "Tổ Lạnh, ";
+  }
+  return `<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận từ ${statusResult.slice(
+    0,
+    statusResult.length - 2
+  )}" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>`;
+}
+
+/**
+ * @author Khanh
+ * @description Ket qua tra ve hien cont đã bị từ chối bởi to nao?
+ * @returns {String}
+ */
+function getRequestConfigIconIsCancel(row) {
+  let statusResult = " ";
+  if (
+    sourceData[row].dangerous &&
+    sourceData[row].dangerous === CONT_SPECIAL_STATUS.CANCEL &&
+    sourceData[row].oversize &&
+    sourceData[row].oversize === CONT_SPECIAL_STATUS.CANCEL &&
+    sourceData[row].frozenStatus &&
+    sourceData[row].frozenStatus === CONT_SPECIAL_STATUS.CANCEL
+  ) {
+    return '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
+  }
+  if (
+    sourceData[row].dangerous &&
+    sourceData[row].dangerous == CONT_SPECIAL_STATUS.CANCEL
+  ) {
+    statusResult += "Tổ Nguy Hiểm, ";
+  }
+  if (
+    sourceData[row].oversize &&
+    sourceData[row].oversize == CONT_SPECIAL_STATUS.CANCEL
+  ) {
+    statusResult += "Tổ Quá Khổ, ";
+  }
+  if (
+    sourceData[row].frozenStatus &&
+    sourceData[row].frozenStatus == CONT_SPECIAL_STATUS.CANCEL
+  ) {
+    statusResult += "Tổ Lạnh, ";
+  }
+  return `<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối từ ${statusResult.slice(
+    0,
+    statusResult.length - 2
+  )}" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>`;
 }
 
 /**
@@ -514,53 +549,6 @@ function openDetail(id, containerNo, sztp, row) {
     800,
     460
   );
-}
-
-function getRequestConfigIcon(contSpecialStatus, dangerous) {
-  let contSpecialStatusResult = "";
-  if (
-    contSpecialStatus == SPECIAL_STATUS.reject ||
-    dangerous == DANGEROUS_STATUS.reject
-  ) {
-    contSpecialStatusResult =
-      '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
-  } else if (
-    contSpecialStatus == SPECIAL_STATUS.pending ||
-    dangerous == DANGEROUS_STATUS.pending
-  ) {
-    if (
-      contSpecialStatus == SPECIAL_STATUS.pending &&
-      dangerous == DANGEROUS_STATUS.approve
-    ) {
-      contSpecialStatusResult =
-        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận từ tổ đặc biệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #e6e600"></i>';
-    } else if (
-      contSpecialStatus == SPECIAL_STATUS.approve &&
-      dangerous == DANGEROUS_STATUS.pending
-    ) {
-      contSpecialStatusResult =
-        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận từ tổ nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #e6e600"></i>';
-    } else {
-      contSpecialStatusResult =
-        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>';
-    }
-  } else if (
-    (contSpecialStatus == SPECIAL_STATUS.approve &&
-      (!dangerous ||
-        dangerous == DANGEROUS_STATUS.NOT ||
-        dangerous == DANGEROUS_STATUS.approve)) ||
-    (!contSpecialStatus && dangerous == DANGEROUS_STATUS.approve)
-  ) {
-    contSpecialStatusResult =
-      '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhật đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
-  } else if (
-    contSpecialStatus == SPECIAL_STATUS.yet ||
-    dangerous == DANGEROUS_STATUS.yet
-  ) {
-    contSpecialStatusResult =
-      '<i id="verify" class="fa fa-user-circle-o" title="Có thể yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db"></i>';
-  }
-  return contSpecialStatusResult;
 }
 
 function containerNoRenderer(
@@ -941,7 +929,7 @@ function loadShipmentDetails(id) {
         PREFIX +
         "/shipment/" +
         id +
-        "/shipmentDetails/dangerous/" +
+        "/shipmentDetails/constSpecialStatus/" +
         shipment.params.dangerous,
       method: "GET",
       success: function (res) {
@@ -1127,19 +1115,7 @@ function confirmRequestDocument() {
 
 function rejectRequestDocument() {
   if (getDataSelectedFromTable()) {
-    layer.confirm(
-      "Từ chối kiểm tra thông tin đúng.",
-      {
-        icon: 3,
-        title: "Xác Nhận",
-        btn: ["Đồng Ý", "Hủy Bỏ"],
-      },
-      function () {
-        layer.close(layer.index);
-        openReject();
-      },
-      function () {}
-    );
+    openReject();
   }
 }
 
@@ -1341,9 +1317,10 @@ function openHistoryFormEport(row) {
  * @author Khanh
  */
 function openReject() {
+  const containerNoCheckeds = getListContainerNoFromCheked().join(", ");
   $.modal.openCustomForm(
     "Khai báo lí do từ chối",
-    `${PREFIX}/reject/shipment/${shipmentSelected.id}/logistic-group/${shipmentSelected.logisticGroupId}/shipment-detail/${shipmentDetailIds}`,
+    `${PREFIX}/reject/shipment/${shipmentSelected.id}/logistic-group/${shipmentSelected.logisticGroupId}/shipment-detail/${shipmentDetailIds}/containerNos/${containerNoCheckeds}/serviceType/${shipmentSelected.serviceType}`,
     800,
     260
   );
@@ -1380,4 +1357,293 @@ function formatServiceType(value, row) {
     default:
       return "";
   }
+}
+
+function getStatusContFollowIndex(index) {
+  if (
+    !sourceData[index].oversize &&
+    !sourceData[index].dangerous &&
+    !sourceData[index].frozenStatus
+  ) {
+    return null;
+  } else if (sourceData[index].dangerous == CONT_SPECIAL_STATUS.REQ) {
+    // là cont đang chờ xác nhận
+    return CONT_SPECIAL_STATUS.REQ;
+  } else if (sourceData[index].dangerous == CONT_SPECIAL_STATUS.CANCEL) {
+    // là cont bị từ chối
+    return CONT_SPECIAL_STATUS.CANCEL;
+  } else if (sourceData[index].dangerous == CONT_SPECIAL_STATUS.INIT) {
+    // là cont đã được xét duyệt
+    return CONT_SPECIAL_STATUS.INIT;
+  } else {
+    // là cont chỉ mới được tạo
+    return CONT_SPECIAL_STATUS.YES;
+  }
+}
+
+function getListContainerNoFromCheked() {
+  let result = [];
+  for (let i = 0; i < sourceData.length; ++i) {
+    if (checkList[i] == 1) {
+      result.push(sourceData[i].containerNo);
+    }
+  }
+  return result;
+}
+
+function renderIconsFollowServiceTypeDropFull(
+  instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties
+) {
+  $(td)
+    .attr("id", "statusIcon" + row)
+    .addClass("htCenter")
+    .addClass("htMiddle");
+  if (
+    sourceData[row] &&
+    sourceData[row].dischargePort &&
+    sourceData[row].processStatus &&
+    sourceData[row].paymentStatus &&
+    sourceData[row].customStatus &&
+    sourceData[row].finishStatus
+  ) {
+    // Command process status
+    let process =
+      '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
+
+    if (
+      !getStatusContFollowIndex(row) ||
+      getStatusContFollowIndex(row) == CONT_SPECIAL_STATUS.YES
+    ) {
+      switch (sourceData[row].processStatus) {
+        case "E":
+          process =
+            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
+          break;
+        case "Y":
+          process =
+            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+          break;
+        case "N":
+          process =
+            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+          break;
+        case "D":
+          process =
+            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
+          break;
+      }
+    }
+
+    // Payment status
+    let payment =
+      '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
+    switch (sourceData[row].paymentStatus) {
+      case "E":
+        payment =
+          '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Lỗi Thanh Toán" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
+        break;
+      case "Y":
+        payment =
+          '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+      case "N":
+        if (value > 1) {
+          payment =
+            '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+        }
+        break;
+    }
+    // Customs Status
+    let customs =
+      '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+    switch (sourceData[row].customStatus) {
+      case "R":
+        customs =
+          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+      case "Y":
+        customs =
+          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #ed5565;"></i>';
+        break;
+      case "N":
+        customs =
+          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+        break;
+    }
+    // released status
+    let released =
+      '<i id="finish" class="fa fa-ship easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+    switch (sourceData[row].finishStatus) {
+      case "Y":
+        released =
+          '<i id="finish" class="fa fa-ship easyui-tooltip" title="Đã Giao Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+      case "N":
+        if (sourceData[row].paymentStatus == "Y") {
+          released =
+            '<i id="finish" class="fa fa-ship easyui-tooltip" title="Có Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+        }
+        break;
+    }
+    // Return the content
+    let content = "<div>";
+
+    content += getRequestConfigIcon(row);
+
+    content += process + payment;
+    // Domestic cont: VN --> not show
+    if (sourceData[row].dischargePort.substring(0, 2) != "VN") {
+      content += customs;
+    }
+    content += released + "</div>";
+    $(td).html(content);
+  }
+  return td;
+}
+
+function renderIconsStatusServiceTypePickupFull(
+  instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties
+) {
+  $(td)
+    .attr("id", "statusIcon" + row)
+    .addClass("htCenter")
+    .addClass("htMiddle");
+  if (
+    sourceData[row] &&
+    sourceData[row].dischargePort &&
+    sourceData[row].processStatus &&
+    sourceData[row].paymentStatus &&
+    sourceData[row].customStatus &&
+    sourceData[row].finishStatus
+  ) {
+    // Customs Status
+    let customs =
+      '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+
+    switch (sourceData[row].customStatus) {
+      case "R":
+        customs =
+          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+      case "Y":
+        customs =
+          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #ed5565;"></i>';
+        break;
+      case "N":
+        customs =
+          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+        break;
+    }
+    // Command process status
+    let process =
+      '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
+    if (
+      !getStatusContFollowIndex(row) ||
+      getStatusContFollowIndex(row) == CONT_SPECIAL_STATUS.YES
+    ) {
+      switch (sourceData[row].processStatus) {
+        case "E":
+          process =
+            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
+          break;
+        case "Y":
+          process =
+            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+          break;
+        case "N":
+          process =
+            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+          break;
+      }
+    }
+    // Payment status
+    let payment =
+      '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
+    switch (sourceData[row].paymentStatus) {
+      case "E":
+        payment =
+          '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Lỗi Thanh Toán" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
+        break;
+      case "Y":
+        payment =
+          '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+      case "N":
+        if (value > 1) {
+          payment =
+            '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+        }
+        break;
+    }
+    // Do status
+    let doStatus =
+      '<i id="do" class="fa fa-file-text easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+    if (sourceData[row].doStatus == "Y") {
+      doStatus =
+        '<i id="do" class="fa fa-file-text easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+    }
+    // released status
+    let released = "";
+    // Drop full
+    if (shipmentSelected.serviceType == 4) {
+      released =
+        '<i id="finish" class="fa fa-ship easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+      switch (sourceData[row].finishStatus) {
+        case "Y":
+          released =
+            '<i id="finish" class="fa fa-ship easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+          break;
+        case "N":
+          if (sourceData[row].paymentStatus == "Y") {
+            released =
+              '<i id="finish" class="fa fa-ship easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+          }
+          break;
+      }
+    } else {
+      // Drop empty
+      released =
+        '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+      switch (sourceData[row].finishStatus) {
+        case "Y":
+          released =
+            '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+          break;
+        case "N":
+          if (sourceData[row].paymentStatus == "Y") {
+            released =
+              '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+          }
+          break;
+      }
+    }
+
+    // Return the content
+    let content = "<div>";
+
+    // if (!sourceData[row].sztp.includes("G")) {
+    //   content += getRequestConfigIcon(sourceData[row].frozenStatus);
+    // }
+    content += getRequestConfigIcon(row);
+    content += process + payment + doStatus + released;
+    // Domestic cont: VN --> not show
+    if (sourceData[row].dischargePort.substring(0, 2) != "VN") {
+      content += customs;
+    }
+    content += "</div>";
+    $(td).html(content);
+  }
+  return td;
 }

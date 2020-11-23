@@ -195,7 +195,7 @@ function initElementHTMLInOversizeTab(
   $("#oversizeBack").prop("disabled", isDisable).val(oversizeBack);
   $("#attachButtonOversize").prop("disabled", isDisable);
 
-  initFileIsExist("preview-container-oversize", "P");
+  initFileIsExist("preview-container-oversize", "O");
 }
 
 /**

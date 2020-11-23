@@ -2,141 +2,157 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="vn.com.irtech.eport.logistic.mapper.ShipmentImageMapper">
+<mapper
+	namespace="vn.com.irtech.eport.logistic.mapper.ShipmentImageMapper">
 
-    <resultMap type="ShipmentImage" id="ShipmentImageResult">
-        <result property="id" column="id"/>
-        <result property="shipmentId" column="shipment_id"/>
-        <result property="path" column="path"/>
-        <result property="createBy" column="create_by"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateBy" column="update_by"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="shipmentDetailId" column="shipment_detail_id"/>
-        
-        <result property="fileType" column="file_type"/>
-        
-        
-        
-    </resultMap>
+	<resultMap type="ShipmentImage" id="ShipmentImageResult">
+		<result property="id" column="id" />
+		<result property="shipmentId" column="shipment_id" />
+		<result property="path" column="path" />
+		<result property="createBy" column="create_by" />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="updateTime" column="update_time" />
+		<result property="shipmentDetailId" column="shipment_detail_id" />
 
-    <sql id="selectShipmentImageVo">
-        select id, shipment_id, path, create_by, create_time, update_by, update_time,shipment_detail_id, file_type from shipment_image
-    </sql>
+		<result property="fileType" column="file_type" />
 
-    <select id="selectShipmentImageList" parameterType="ShipmentImage" resultMap="ShipmentImageResult">
-        <include refid="selectShipmentImageVo"/>
-        <where>  
-            <if test="id != null "> and id = #{id}</if>
-            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
-            <if test="path != null and path != ''"> and path = #{path}</if>
-            <if test="shipmentDetailId != null and shipmentDetailId != ''"> and shipment_detail_id = #{shipmentDetailId}</if>
-        </where>
-        order by create_time desc
-    </select>
 
-    <select id="selectShipmentImageListNotFileType" parameterType="ShipmentImage" resultMap="ShipmentImageResult">
-        <include refid="selectShipmentImageVo"/>
-        <where>  
-              FILE_TYPE is null
-            <if test="id != null "> and id = #{id}</if>
-            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
-            <if test="path != null and path != ''"> and path = #{path}</if>
-            <if test="shipmentDetailId != null and shipmentDetailId != ''"> and shipment_detail_id = #{shipmentDetailId}</if>
-        </where>
-         
-        order by create_time desc
-    </select>
 
-    <select id="countShipmentImagesByShipmentId" parameterType="Long" resultType="int">
-        select count(id)
-        from shipment_image
-        <where>
-            shipment_id = #{shipmentId}
-        </where>
-        order by create_time desc
-    </select>
+	</resultMap>
 
-    <select id="selectShipmentImagesByShipmentId" parameterType="Long" resultMap="ShipmentImageResult">
-        select id, shipment_id, path, create_by, create_time, update_by, update_time
-        from shipment_image
-        <where>
-            shipment_id = #{shipmentId}
-        </where>
-        order by create_time desc
-    </select>
-    
-    <select id="selectShipmentImagesByShipmentDetailId" parameterType="Long" resultMap="ShipmentImageResult">
-        select id, shipment_id, path, create_by, create_time, update_by, update_time, shipment_detail_id
-        from shipment_image
-        <where>
-            shipment_detail_id = #{shipmentId}
-        </where>
-        order by create_time desc
-    </select>
-    
-    
+	<sql id="selectShipmentImageVo">
+		select id, shipment_id, path, create_by, create_time, update_by,
+		update_time,shipment_detail_id, file_type from shipment_image
+	</sql>
 
-    <insert id="insertShipmentImage" parameterType="ShipmentImage" useGeneratedKeys="true" keyProperty="id">
-        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
-            select seq_shipment_image.nextval as id from DUAL
-        </selectKey>
-        insert into shipment_image
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null and id != 0">id,</if>
-            <if test="shipmentId != null ">shipment_id,</if>
-            <if test="path != null  and path != ''">path,</if>
-            <if test="createBy != null  and createBy != ''">create_by,</if> 
-            <if test="shipmentDetailId != null  and shipmentDetailId != ''">shipment_detail_id,</if>
-            
-            <if test="fileType != null  and fileType != ''">file_type,</if>
-            
-            create_time
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
- 			<if test="id != null">#{id},</if>
-            <if test="shipmentId != null ">#{shipmentId},</if>
-            <if test="path != null  and path != ''">#{path},</if>
-            <if test="createBy != null  and createBy != ''">#{createBy},</if> 
-            <if test="shipmentDetailId != null  and shipmentDetailId != ''">#{shipmentDetailId},</if>
-            
-            <if test="fileType != null  and fileType != ''">#{fileType},</if>
-            sysdate
-        </trim>
-    </insert>
+	<select id="selectShipmentImageList"
+		parameterType="ShipmentImage" resultMap="ShipmentImageResult">
+		<include refid="selectShipmentImageVo" />
+		<where>
+			<if test="id != null "> and id = #{id}</if>
+			<if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+			<if test="path != null and path != ''"> and path = #{path}</if>
+			<if test="shipmentDetailId != null and shipmentDetailId != ''"> and shipment_detail_id = #{shipmentDetailId}</if>
+		</where>
+		order by create_time desc
+	</select>
 
-    <update id="updateShipmentImageByIds" parameterType="ShipmentImage">
-        update shipment_image
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
-            <if test="path != null  and path != ''">path = #{path},</if>
-            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            update_time = sysdate
-        </trim>
-        where id in
-        <foreach item="id" collection="params.ids" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-    </update>
+	<select id="selectShipmentImageListNotFileType"
+		parameterType="ShipmentImage" resultMap="ShipmentImageResult">
+		<include refid="selectShipmentImageVo" />
+		<where>
+			FILE_TYPE is null
+			<if test="id != null "> and id = #{id}</if>
+			<if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+			<if test="path != null and path != ''"> and path = #{path}</if>
+			<if test="shipmentDetailId != null and shipmentDetailId != ''"> and shipment_detail_id = #{shipmentDetailId}</if>
+		</where>
 
-    <select id="selectShipmentImageById" parameterType="ShipmentImage" resultMap="ShipmentImageResult">
-        <include refid="selectShipmentImageVo"/>
-        <where>  
-            <if test="id != null "> and id = #{id}</if>
-            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
-            <if test="path != null and path != ''"> and path = #{path}</if>
-        </where>
-        fetch next 1 rows only
-    </select>
+		order by create_time desc
+	</select>
 
-    <delete id="deleteShipmentImageById" parameterType="Long">
-        delete from shipment_image where id = #{id}
-    </delete>
+	<select id="countShipmentImagesByShipmentId"
+		parameterType="Long" resultType="int">
+		select count(id)
+		from shipment_image
+		<where>
+			shipment_id = #{shipmentId}
+		</where>
+		order by create_time desc
+	</select>
 
-    <delete id="deleteShipmentImageByIds" parameterType="String">
-        delete from shipment_image where id in 
-        <foreach item="id" collection="array" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-    </delete>
+	<select id="selectShipmentImagesByShipmentId"
+		parameterType="Long" resultMap="ShipmentImageResult">
+		select id, shipment_id, path, create_by, create_time, update_by,
+		update_time
+		from shipment_image
+		<where>
+			shipment_id = #{shipmentId}
+		</where>
+		order by create_time desc
+	</select>
+
+	<select id="selectShipmentImagesByShipmentDetailId"
+		parameterType="Long" resultMap="ShipmentImageResult">
+		select id, shipment_id, path, create_by, create_time, update_by,
+		update_time, shipment_detail_id
+		from shipment_image
+		<where>
+			shipment_detail_id = #{shipmentId}
+		</where>
+		order by create_time desc
+	</select>
+
+
+
+	<insert id="insertShipmentImage" parameterType="ShipmentImage"
+		useGeneratedKeys="true" keyProperty="id">
+		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_shipment_image.nextval as id from DUAL
+		</selectKey>
+		insert into shipment_image
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null and id != 0">id,</if>
+			<if test="shipmentId != null ">shipment_id,</if>
+			<if test="path != null  and path != ''">path,</if>
+			<if test="createBy != null  and createBy != ''">create_by,</if>
+			<if test="shipmentDetailId != null  and shipmentDetailId != ''">shipment_detail_id,</if>
+
+			<if test="fileType != null  and fileType != ''">file_type,</if>
+
+			create_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">#{id},</if>
+			<if test="shipmentId != null ">#{shipmentId},</if>
+			<if test="path != null  and path != ''">#{path},</if>
+			<if test="createBy != null  and createBy != ''">#{createBy},</if>
+			<if test="shipmentDetailId != null  and shipmentDetailId != ''">#{shipmentDetailId},</if>
+
+			<if test="fileType != null  and fileType != ''">#{fileType},</if>
+			sysdate
+		</trim>
+	</insert>
+
+	<update id="updateShipmentImageByIds"
+		parameterType="ShipmentImage">
+		update shipment_image
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
+			<if test="path != null  and path != ''">path = #{path},</if>
+			<if test="shipmentDetailId != null  and shipmentDetailId != ''">shipment_detail_id = #{shipmentDetailId},</if>
+			<if test="fileType != null  and fileType != ''">file_type = #{fileType},</if>
+			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+			update_time = sysdate
+		</trim>
+		where id in
+		<foreach item="id" collection="params.ids" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+	<select id="selectShipmentImageById"
+		parameterType="ShipmentImage" resultMap="ShipmentImageResult">
+		<include refid="selectShipmentImageVo" />
+		<where>
+			<if test="id != null "> and id = #{id}</if>
+			<if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+			<if test="path != null and path != ''"> and path = #{path}</if>
+		</where>
+		fetch next 1 rows only
+	</select>
+
+	<delete id="deleteShipmentImageById" parameterType="Long">
+		delete from shipment_image where id = #{id}
+	</delete>
+
+	<delete id="deleteShipmentImageByIds" parameterType="String">
+		delete from shipment_image where id in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</delete>
 </mapper>

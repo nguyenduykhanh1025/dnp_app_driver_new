@@ -8,7 +8,6 @@ var PREFIX = ctx + "support-request/dangerous";
 function submitHandler() {
   $.modal.loading("Đang xử lý ...");
   layer.close(layer.index);
-  console.log(shipmentDetailIds);
   $.ajax({
     url: PREFIX + "/reject",
     method: "POST",
@@ -46,12 +45,12 @@ function onCloseModel() {
  */
 function sendComment() {
   let req = {
-    topic: "Lí do từ chối xác nhận yêu cầu",
+    topic: "Lí do từ chối xác nhận yêu cầu container " + containerNos,
     content: $("#content").val(),
     shipmentId: `${shipmentId}`,
     logisticGroupId: `${logisticGroupId}`,
+    serviceType: `${serviceType}`,
   };
-
   $.ajax({
     url: PREFIX + "/shipment/comment",
     type: "post",
@@ -77,7 +76,3 @@ function sendComment() {
     },
   });
 }
-
-
-
-

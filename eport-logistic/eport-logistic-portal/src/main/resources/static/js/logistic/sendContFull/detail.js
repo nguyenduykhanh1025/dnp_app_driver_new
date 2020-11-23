@@ -17,6 +17,14 @@ const KEY_FORM = {
   DANGEROUS: "dangerous",
   ICE: "ice",
 };
+
+const CONT_SPECIAL_STATUS = {
+  INIT: "I", // cont đã được lưu
+  REQ: "R", // cont đã được yêu cầu xác nhận
+  YES: "Y", // cont đã được phê duyệt yêu cầu xác nhận
+  CANCEL: "C", // cont đã bị từ chối yêu cầu xác nhận
+};
+
 var shipmentFilePaths = { oversize: [], dangerous: [], ice: [] };
 
 $("#form-detail-add").validate({
@@ -202,7 +210,7 @@ function initDropzone(
     success: function (file, response) {
       if (response.code == 0) {
         $.modal.msgSuccess("Đính kèm tệp thành công.");
-        shipmentFilePaths[`${keyForm}`].push(response.file);
+        shipmentFilePaths[`${keyForm}`].push(response.shipmentFileId);
 
         let html =
           `<div class="preview-block" style="width: 70px;float: left;">
@@ -211,7 +219,7 @@ function initDropzone(
           `img/document.png" alt="Tài liệu" style="max-width: 50px;"/></a>
                 <button type="button" class="close ` +
           keyForm +
-          `" aria-label="Close" onclick="removeImage(this,'${response.file}')" >
+          `" aria-label="Close" onclick="removeImage(this,'${response.shipmentFileId}')" >
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>`;
@@ -235,16 +243,12 @@ function initElementHTMLInOversizeTab(
   oversizeFront,
   oversizeBack
 ) {
-  if (isContIce()) {
-    $(".content-2").css({ display: "none " });
-    $("#tab-2").css({ display: "none" });
-    $(".tab-label-2").css({ display: "none" });
-  }
   $('input:radio[name="oversize"]')
     .filter('[value="T"]')
     .attr("checked", isContOversize());
   $('input:radio[name="oversize"]')
     .filter('[value="F"]')
+    .prop("disabled", shipmentDetail.sztp.includes("P"))
     .attr("checked", !isContOversize());
   $('input:radio[name="oversize"]').change(function () {
     let isDisable = $(this).val() == "T" ? false : true;
@@ -278,7 +282,7 @@ function initElementHTMLInOversizeTab(
   $("#oversizeBack").prop("disabled", isDisable).val(oversizeBack);
   $("#attachButtonOversize").prop("disabled", isDisable);
 
-  initFileIsExist("preview-container-oversize", "P");
+  initFileIsExist("preview-container-oversize", "O");
 }
 
 /**
@@ -401,16 +405,14 @@ function submitHandler() {
     daySetupTemperature: new Date(
       formatDateToSendServer(data.daySetupTemperature)
     ).getTime(),
-    dangerous:
-      shipmentDetail.dangerous == data.dangerous
-        ? shipmentDetail.dangerous
-        : data.dangerous,
+    dangerous: data.dangerous == "T" ? "T" : "",
+    oversize: data.oversize == "T" ? "T" : "",
   };
 
   //validate file
   let isValidateFile = true;
 
-  if (data.dangerous && data.dangerous != DANGEROUS_STATUS.NOT) {
+  if (data.dangerous) {
     // dangerous khong co dinh kem file
     if (!shipmentFilePaths.dangerous.length) {
       isValidateFile = false;
@@ -419,7 +421,7 @@ function submitHandler() {
       );
     }
   }
-  if (data.oversize && data.oversize != "F") {
+  if (data.oversize) {
     if (!shipmentFilePaths.oversize.length) {
       isValidateFile = false;
       $.modal.alertWarning(
@@ -428,40 +430,28 @@ function submitHandler() {
     }
   }
 
-  if (data.temperature != null) {
-    if (!shipmentFilePaths.ice.length) {
-      isValidateFile = false;
-      $.modal.alertWarning(
-        "Chưa đính kèm tệp cho container lạnh. Vui lòng đính kèm file."
-      );
-    }
-  }
-
   if (isValidateFile) {
     if (shipmentFilePaths.dangerous.length) {
-      saveFile(shipmentFilePaths.dangerous, "");
+      saveFile(shipmentFilePaths.dangerous, KEY_FORM.DANGEROUS);
     }
     if (shipmentFilePaths.oversize.length || shipmentDetail.oversize == "T") {
-      let tempSize = "xxPx";
-      saveFile(shipmentFilePaths.oversize, tempSize);
+      saveFile(shipmentFilePaths.oversize, KEY_FORM.OVERSIZE);
     }
     if (shipmentFilePaths.ice.length) {
-      saveFile(shipmentFilePaths.ice, shipmentDetail.sztp);
+      saveFile(shipmentFilePaths.ice, KEY_FORM.ICE);
     }
   }
 
   if (
-    shipmentDetail.dangerous == DANGEROUS_STATUS.pending ||
-    shipmentDetail.dangerous == DANGEROUS_STATUS.approve ||
-    shipmentDetail.contSpecialStatus == SPECIAL_STATUS.pending ||
-    shipmentDetail.contSpecialStatus == SPECIAL_STATUS.approve
+    !(
+      getStatusContFollowIndex() == CONT_SPECIAL_STATUS.REQ ||
+      getStatusContFollowIndex() == CONT_SPECIAL_STATUS.YES
+    )
   ) {
-    $.modal.alertWarning(
-      "Container đang hoặc đã được yêu cầu. Chỉ được thay đổi file."
-    );
-  } else if (isValidateFile && $.validate.form()) {
-    parent.submitDataFromDetailModal(data);
-    onCloseModel();
+    if (isValidateFile && $.validate.form()) {
+      parent.submitDataFromDetailModal(data);
+      onCloseModel();
+    }
   }
 }
 
@@ -477,19 +467,19 @@ function formatDateToSendServer(data) {
   return "";
 }
 
-function saveFile(filePaths, shipmentSztp) {
+function saveFile(fileIds, keyStatus) {
   $.ajax({
     url: PREFIX + "/uploadFile",
     method: "POST",
     data: {
-      filePaths: filePaths,
+      fileIds: fileIds,
       shipmentDetailId: shipmentDetail.id,
       shipmentId: shipmentDetail.shipmentId,
-      shipmentSztp: shipmentSztp,
+      keyStatus: keyStatus,
     },
     success: function (result) {
       if (result.code == 0) {
-        $.modal.alertError(result.msg);
+        $.modal.close();
       } else {
         $.modal.close();
       }
@@ -555,7 +545,7 @@ function isContIce() {
  * @returns oversize: true | not oversize: false
  */
 function isContOversize() {
-  return shipmentDetail.sztp.includes("P") || shipmentDetail.oversize == "T"
+  return shipmentDetail.sztp.includes("P") || shipmentDetail.oversize
     ? true
     : false;
 }
@@ -610,7 +600,9 @@ function initFileIsExist(previewClass, fileType) {
     shipmentFiles.forEach(function (element, index) {
       if (element) {
         if (element.fileType == fileType) {
-          shipmentFilePaths[`${getKeyFormByKeyType(fileType)}`].push(element);
+          shipmentFilePaths[`${getKeyFormByKeyType(fileType)}`].push(
+            element.id
+          );
           htmlInit =
             `<div class="preview-block" style="width: 70px;float: left;">
             <a href=${ctx}${element.path} target="_blank"><img src="` +
@@ -630,72 +622,33 @@ function initFileIsExist(previewClass, fileType) {
 }
 
 function removeImage(element, fileIndex) {
-  if (
-    shipmentDetail.dangerous == DANGEROUS_STATUS.pending ||
-    shipmentDetail.dangerous == DANGEROUS_STATUS.approve ||
-    shipmentDetail.contSpecialStatus == SPECIAL_STATUS.pending ||
-    shipmentDetail.contSpecialStatus == SPECIAL_STATUS.approve
-  ) {
+  const status = getStatusContFollowIndex();
+  if (status == CONT_SPECIAL_STATUS.REQ || status == CONT_SPECIAL_STATUS.YES) {
     $.modal.alertWarning(
       "Container đang hoặc đã yêu cầu xác nhận, không thể xóa tệp đã đính kèm."
     );
   } else {
-    if (typeof fileIndex != "number") {
-      $.ajax({
-        url: PREFIX + "/cont-special/file",
-        method: "DELETE",
-        data: {
-          id: 0,
-          path: fileIndex,
-        },
-        beforeSend: function () {
-          $.modal.loading("Đang xử lý, vui lòng chờ...");
-        },
-        success: function (result) {
-          $.modal.closeLoading();
-          if (result.code == 0) {
-            $.modal.msgSuccess("Xóa tệp thành công.");
-            $(element).parent("div.preview-block").remove();
-            let indexIsClick = $(".close").index(element);
-            shipmentFilePaths[`${element.className.split(" ")[1]}`].splice(
-              indexIsClick,
-              1
-            );
-          } else {
-            $.modal.alertWarning("Xóa tệp thất bại.");
-          }
-        },
-      });
-    } else {
-      shipmentFiles.forEach(function (value, index) {
-        if (value.id == fileIndex) {
-          $.ajax({
-            url: PREFIX + "/cont-special/file",
-            method: "DELETE",
-            data: {
-              id: value.id,
-              path: "",
-            },
-            beforeSend: function () {
-              $.modal.loading("Đang xử lý, vui lòng chờ...");
-            },
-            success: function (result) {
-              $.modal.closeLoading();
-              if (result.code == 0) {
-                $.modal.msgSuccess("Xóa tệp thành công.");
-                $(element).parent("div.preview-block").remove();
-                shipmentFilePaths[
-                  `${getKeyFormByKeyType(value.fileType)}`
-                ].splice(index, 1);
-              } else {
-                $.modal.alertWarning("Xóa tệp thất bại.");
-              }
-            },
-          });
-          return false;
+    $.ajax({
+      url: PREFIX + "/cont-special/file/" + fileIndex,
+      method: "DELETE",
+      beforeSend: function () {
+        $.modal.loading("Đang xử lý, vui lòng chờ...");
+      },
+      success: function (result) {
+        $.modal.closeLoading();
+        if (result.code == 0) {
+          $.modal.msgSuccess("Xóa tệp thành công.");
+          $(element).parent("div.preview-block").remove();
+          let indexIsClick = $(".close").index(element);
+          shipmentFilePaths[`${element.className.split(" ")[1]}`].splice(
+            indexIsClick,
+            1
+          );
+        } else {
+          $.modal.alertWarning("Xóa tệp thất bại.");
         }
-      });
-    }
+      },
+    });
   }
 }
 
@@ -704,9 +657,43 @@ function getKeyFormByKeyType(keyType) {
     return KEY_FORM.DANGEROUS;
   } else if (keyType == "R") {
     return KEY_FORM.ICE;
-  } else if (keyType == "P") {
+  } else if (keyType == "O") {
     return KEY_FORM.OVERSIZE;
   } else {
     return "";
+  }
+}
+
+function getStatusContFollowIndex() {
+  if (
+    !shipmentDetail.oversize &&
+    !shipmentDetail.dangerous &&
+    !shipmentDetail.frozenStatus
+  ) {
+    return null;
+  } else if (
+    shipmentDetail.dangerous == CONT_SPECIAL_STATUS.CANCEL ||
+    shipmentDetail.oversize == CONT_SPECIAL_STATUS.CANCEL ||
+    shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.CANCEL
+  ) {
+    // là cont bị từ chối
+    return CONT_SPECIAL_STATUS.CANCEL;
+  } else if (
+    shipmentDetail.dangerous == CONT_SPECIAL_STATUS.REQ ||
+    shipmentDetail.oversize == CONT_SPECIAL_STATUS.REQ ||
+    shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ
+  ) {
+    // là cont đang chờ xác nhận
+    return CONT_SPECIAL_STATUS.REQ;
+  } else if (
+    shipmentDetail.dangerous == CONT_SPECIAL_STATUS.INIT ||
+    shipmentDetail.oversize == CONT_SPECIAL_STATUS.INIT ||
+    shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.INIT
+  ) {
+    // là cont đã được xét duyệt
+    return CONT_SPECIAL_STATUS.INIT;
+  } else {
+    // là cont chỉ mới được tạo
+    return CONT_SPECIAL_STATUS.YES;
   }
 }

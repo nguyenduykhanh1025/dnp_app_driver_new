@@ -462,7 +462,8 @@ public class ShipmentDetail extends BaseEntity {
     private String oversizeBack;
 
     /**
-     * T : là cont dangerous | F: ko là cont dangerous | 2 : là cont dangerous chờ xét duyệt | 3 :  la cont dangerous đã được xét duyệt | 4 từ chối
+     * T : là cont dangerous | F: ko là cont dangerous | 2 : là cont dangerous chờ
+     * xét duyệt | 3 : la cont dangerous đã được xét duyệt | 4 từ chối
      */
     private String dangerous;
 
@@ -485,6 +486,8 @@ public class ShipmentDetail extends BaseEntity {
      * Quy cách đóng gói cont nguy hiểm
      */
     private String dangerousPacking;
+
+    private String frozenStatus;
 
     public String getContSpecialStatus() {
         return contSpecialStatus;
@@ -958,7 +961,6 @@ public class ShipmentDetail extends BaseEntity {
         return serviceType;
     }
 
-
     public String getYear() {
         return year;
     }
@@ -1243,98 +1245,56 @@ public class ShipmentDetail extends BaseEntity {
         this.dangerousPacking = dangerousPacking;
     }
 
+    public String getFrozenStatus() {
+        return frozenStatus;
+    }
+
+    public void setFrozenStatus(String frozenStatus) {
+        this.frozenStatus = frozenStatus;
+    }
+
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-                .append("id", getId())
-                .append("shipmentId", getShipmentId())
-                .append("logisticGroupId", getLogisticGroupId())
-                .append("processOrderId", getProcessOrderId())
-                .append("registerNo", getRegisterNo())
-                .append("containerNo", getContainerNo())
-                .append("containerStatus", getContainerStatus())
-                .append("sztp", getSztp())
-                .append("sztpDefine", getSztpDefine())
-                .append("temperature", getTemperature())
-                .append("fe", getFe())
-                .append("bookingNo", getBookingNo())
-                .append("blNo", getBlNo())
-                .append("sealNo", getSealNo())
-                .append("consignee", getConsignee())
-                .append("expiredDem", getExpiredDem())
-                .append("detFreeTime", getDetFreeTime())
-                .append("wgt", getWgt())
-                .append("vslName", getVslName())
-                .append("vslNm", getVslNm())
-                .append("voyNo", getVoyNo())
-                .append("voyCarrier", getVoyCarrier())
-                .append("opeCode", getOpeCode())
-                .append("carrierName", getCarrierName())
-                .append("loadingPort", getLoadingPort())
-                .append("dischargePort", getDischargePort())
-                .append("transportType", getTransportType())
-                .append("emptyDepot", getEmptyDepot())
-                .append("cargoType", getCargoType())
-                .append("commodity", getCommodity())
-                .append("vgmChk", getVgmChk())
-                .append("vgm", getVgm())
-                .append("vgmPersonInfo", getVgmPersonInfo())
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
+                .append("shipmentId", getShipmentId()).append("logisticGroupId", getLogisticGroupId())
+                .append("processOrderId", getProcessOrderId()).append("registerNo", getRegisterNo())
+                .append("containerNo", getContainerNo()).append("containerStatus", getContainerStatus())
+                .append("sztp", getSztp()).append("sztpDefine", getSztpDefine()).append("temperature", getTemperature())
+                .append("fe", getFe()).append("bookingNo", getBookingNo()).append("blNo", getBlNo())
+                .append("sealNo", getSealNo()).append("consignee", getConsignee()).append("expiredDem", getExpiredDem())
+                .append("detFreeTime", getDetFreeTime()).append("wgt", getWgt()).append("vslName", getVslName())
+                .append("vslNm", getVslNm()).append("voyNo", getVoyNo()).append("voyCarrier", getVoyCarrier())
+                .append("opeCode", getOpeCode()).append("carrierName", getCarrierName())
+                .append("loadingPort", getLoadingPort()).append("dischargePort", getDischargePort())
+                .append("transportType", getTransportType()).append("emptyDepot", getEmptyDepot())
+                .append("cargoType", getCargoType()).append("commodity", getCommodity()).append("vgmChk", getVgmChk())
+                .append("vgm", getVgm()).append("vgmPersonInfo", getVgmPersonInfo())
                 .append("preorderPickup", getPreorderPickup())
-                .append("prePickupPaymentStatus", getPrePickupPaymentStatus())
-                .append("customStatus", getCustomStatus())
-                .append("paymentStatus", getPaymentStatus())
-                .append("processStatus", getProcessStatus())
-                .append("doStatus", getDoStatus())
-                .append("doReceivedTime", getDoReceivedTime())
-                .append("userVerifyStatus", getUserVerifyStatus())
-                .append("finishStatus", getFinishStatus())
-                .append("status", getStatus())
-                .append("orderNo", getOrderNo())
-                .append("remark", getRemark())
-                .append("createBy", getCreateBy())
-                .append("createTime", getCreateTime())
-                .append("updateBy", getUpdateBy())
-                .append("updateTime", getUpdateTime())
-                .append("block", getBlock())
-                .append("bay", getBay())
-                .append("roww", getRow())
-                .append("tier", getTier())
-                .append("driverAmount", getDriverAmount())
-                .append("payType", getPayType())
-                .append("assignNumber", getAssignNumber())
-                .append("serviceType", getServiceType())
-                .append("year", getYear())
-                .append("vslAndVoy", getVslAndVoy())
-                .append("invoiceNo", getInvoiceNo())
-                .append("vatAfterFee", getVatAfterFee())
-                .append("taxCode", getTaxCode())
-                .append("consigneeByTaxCode", getConsigneeByTaxCode())
-                .append("customsNo", getCustomsNo())
-                .append("contSupplyStatus", getContSupplyStatus())
-                .append("planningDate", getPlanningDate())
-                .append("qualityRequirement", getQualityRequirement())
-                .append("contSupplyRemark", getContSupplyRemark())
-                .append("customScanTime", getCustomScanTime())
-                .append("eta", getEta())
-                .append("etd", getEtd())
-                .append("location", getLocation())
-                .append("containerRemark", getContainerRemark())
-                .append("vgmInspectionDepartment", getVgmInspectionDepartment())
-                .append("vgmMaxGross", getVgmMaxGross())
-                .append("daySetupTemperature", getDaySetupTemperature())
-                .append("oversize", getOversize())
-                .append("oversizeType", getOversizeType())
-                .append("oversizeTop", getOversizeTop())
-                .append("oversizeRight", getOversizeRight())
-                .append("oversizeLeft", getOversizeLeft())
-                .append("oversizeFront", getOversizeFront())
-                .append("oversizeBack", getOversizeBack())
-                .append("dangerous", getDangerous())
-                .append("dangerousImo", getDangerousImo())
-                .append("dangerousUnno", getDangerousUnno())
-                .append("dangerousNameProduct", getDangerousNameProduct())
-                .append("dangerousPacking", getDangerousPacking())
-                .append("contSpecialStatus", getContSpecialStatus())
-                .toString();
+                .append("prePickupPaymentStatus", getPrePickupPaymentStatus()).append("customStatus", getCustomStatus())
+                .append("paymentStatus", getPaymentStatus()).append("processStatus", getProcessStatus())
+                .append("doStatus", getDoStatus()).append("doReceivedTime", getDoReceivedTime())
+                .append("userVerifyStatus", getUserVerifyStatus()).append("finishStatus", getFinishStatus())
+                .append("status", getStatus()).append("orderNo", getOrderNo()).append("remark", getRemark())
+                .append("createBy", getCreateBy()).append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("block", getBlock())
+                .append("bay", getBay()).append("roww", getRow()).append("tier", getTier())
+                .append("driverAmount", getDriverAmount()).append("payType", getPayType())
+                .append("assignNumber", getAssignNumber()).append("serviceType", getServiceType())
+                .append("year", getYear()).append("vslAndVoy", getVslAndVoy()).append("invoiceNo", getInvoiceNo())
+                .append("vatAfterFee", getVatAfterFee()).append("taxCode", getTaxCode())
+                .append("consigneeByTaxCode", getConsigneeByTaxCode()).append("customsNo", getCustomsNo())
+                .append("contSupplyStatus", getContSupplyStatus()).append("planningDate", getPlanningDate())
+                .append("qualityRequirement", getQualityRequirement()).append("contSupplyRemark", getContSupplyRemark())
+                .append("customScanTime", getCustomScanTime()).append("eta", getEta()).append("etd", getEtd())
+                .append("location", getLocation()).append("containerRemark", getContainerRemark())
+                .append("vgmInspectionDepartment", getVgmInspectionDepartment()).append("vgmMaxGross", getVgmMaxGross())
+                .append("daySetupTemperature", getDaySetupTemperature()).append("oversize", getOversize())
+                .append("oversizeType", getOversizeType()).append("oversizeTop", getOversizeTop())
+                .append("oversizeRight", getOversizeRight()).append("oversizeLeft", getOversizeLeft())
+                .append("oversizeFront", getOversizeFront()).append("oversizeBack", getOversizeBack())
+                .append("dangerous", getDangerous()).append("dangerousImo", getDangerousImo())
+                .append("dangerousUnno", getDangerousUnno()).append("dangerousNameProduct", getDangerousNameProduct())
+                .append("dangerousPacking", getDangerousPacking()).append("contSpecialStatus", getContSpecialStatus())
+                .append("frozenStatus", getFrozenStatus()).toString();
     }
 }
