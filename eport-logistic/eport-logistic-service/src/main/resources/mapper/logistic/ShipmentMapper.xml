@@ -498,7 +498,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              
             <if test="params.serviceType != null and params.serviceType != ''">and s.service_type = #{params.serviceType}</if>
             
-             <if test="params.statusCont != null and params.statusCont != ''">and sh.cont_special_status = #{params.statusCont}</if>
+             <if test="params.statusCont != null and params.statusCont != ''">and sh.oversize = #{params.statusCont}</if>
             
             <if test="blNo != null and blNo != ''"> and upper(s.bl_no) like concat(concat('%', #{blNo}), '%')</if>
             <if test="bookingNo != null and bookingNo != ''"> and upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
@@ -546,7 +546,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from shipment s left join shipment_detail sh on s.id = sh.shipment_id
 
         <where>  
-            s.id is not null and sh.cont_special_status is not null and  sh.sztp like concat(concat('%', 'R'), '%') 
+            s.id is not null  and  sh.sztp like concat(concat('%', 'R'), '%') 
             and  s.service_type = '1'
             <if test="id != null "> and s.id = #{id}</if>
             
@@ -557,7 +557,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              
             <if test="params.serviceType != null and params.serviceType != ''">and s.service_type = #{params.serviceType}</if>
             
-            <if test="params.statusCont != null and params.statusCont != ''">and sh.cont_special_status = #{params.statusCont}</if>
+            <if test="params.statusCont != null and params.statusCont != ''">and sh.frozen_status = #{params.statusCont}</if>
             
             <if test="blNo != null and blNo != ''"> and upper(s.bl_no) like concat(concat('%', #{blNo}), '%')</if>
             <if test="bookingNo != null and bookingNo != ''"> and upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>

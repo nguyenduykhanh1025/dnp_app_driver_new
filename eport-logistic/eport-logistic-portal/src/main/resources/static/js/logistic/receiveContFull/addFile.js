@@ -304,13 +304,18 @@ function removeImage1(element, fileIndex) {
 	 
 	shipmentFilePath.forEach(function (value, index) {
 	 
+		console.log("fileeee");
 		
+		console.log(value);
+		console.log(index);
         if (value == fileIndex) { 
             $.ajax({
-            	url: prefix + "/booking/file",
+            	//url: prefix + "/booking/file",
+            	url: prefix + "/delete_file",
+            	
                 method: "DELETE",
                 data: {
-                    id: index,
+                    id: "",
                     filePath: fileIndex
                 },
                 beforeSend: function () {

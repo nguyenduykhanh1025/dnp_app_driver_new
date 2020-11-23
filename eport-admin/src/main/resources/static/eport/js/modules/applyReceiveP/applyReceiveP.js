@@ -20,6 +20,13 @@ const SPECIAL_STATUS = {
 		  reject: "4",// từ chối
 		};
 
+const CONT_SPECIAL_STATUS = {
+		  INIT: "I", // cont đã được lưu
+		  REQ: "R", // cont đã được yêu cầu xác nhận
+		  YES: "Y", // cont đã được phê duyệt yêu cầu xác nhận
+		  CANCEL: "C", // cont đã bị từ chối yêu cầu xác nhận
+	};
+
 $(document).ready(function () {
   $(".main-body").layout();
 
@@ -73,12 +80,16 @@ $(document).ready(function () {
 	      "alias": '',
 	      "text": "Tất cả trạng thái"
 	    }, {
-	      "alias": '1',
-	      "text": "Chưa kiểm tra",
+	      "alias": 'R',
+	      "text": "Chờ xác nhận",
 	      "selected": true
 	    }, {
-	      "alias": '3',
-	      "text": "Đã kiểm tra"
+	      "alias": 'Y',
+	      "text": "Đã xác nhận"
+	    },
+	     {
+	      "alias": 'C',
+	      "text": "Từ chối"
 	    }],
 	    onSelect: function (statusCont) {
 	      if (statusCont.alias != '') {
@@ -386,30 +397,30 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
   }
   return td;
 }
- 
+  
 function getRequestConfigIcon(dangerous) {
 	  let dangerousStatus =
 	    '<i id="verify" class="fa fa-user-circle-o" title="Chưa yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
 	  switch (dangerous) {
-	    case SPECIAL_STATUS.yet:// 1
+	    
+	    case CONT_SPECIAL_STATUS.REQ:// R
 	    	dangerousStatus =
-	        '<i id="verify" class="fa fa-user-circle-o" title="Chờ xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
+	    	  '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>';
 	      break;
-	    case SPECIAL_STATUS.pending:// 2
+	    case CONT_SPECIAL_STATUS.YES:// Y
 	    	dangerousStatus =
-	        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ffff66"></i>';
+	    	  '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhật đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
 	      break;
-	    case SPECIAL_STATUS.approve:// 3
+	    case CONT_SPECIAL_STATUS.CANCEL:// C
 	    	dangerousStatus =
-	        '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
-	      break;
-	    case SPECIAL_STATUS.reject:// 4
-	    	dangerousStatus =
-	        '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
+	    	  '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
 	      break;
 	  }
 	  return dangerousStatus;
 	}
+
+
+
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (!value) {
@@ -568,7 +579,7 @@ function configHandson() {
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 150, 130, 100, 60, 200, 100, 100, 80, 80, 100, 100, 100, 100,100],
+    colWidths: [23, 21, 21, 150, 130, 100, 150, 100, 100, 100, 80, 80, 100, 100, 100, 100,100],
     filter: "true",
     columns: [
       {
@@ -743,7 +754,7 @@ function openDetail(id, containerNo, sztp) {
         id = 0;
     }
     //debugger
-    $.modal.openCustomForm("Khai báo chi tiết", PREFIX + "/shipment-detail/" + id + "/cont/" + containerNo + "/sztp/" + sztp + "/detail", 800, 460);
+    $.modal.openCustomForm("Khai báo chi tiết", PREFIX + "/shipment-detail/" + id + "/cont/" + containerNo + "/sztp/" + sztp + "/detail", 800, 260);
 }
 
 // TRIGGER CHECK ALL SHIPMENT DETAIL
@@ -806,7 +817,7 @@ function isDisableBtnRequestConfirm() {
 	  let result = false; // true: enable btn || false: disable btn
 
 	  for (let i = 0; i < sourceData.length; ++i) {
-	     if(sourceData[i].dangerous == "3"){ 
+	     if(sourceData[i].dangerous == CONT_SPECIAL_STATUS.YES){ 
 	    	 result = true;
 	     } 
 	  }

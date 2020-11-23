@@ -131,6 +131,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public ShipmentDetail selectShipmentDetailById(Long id) {
 		return shipmentDetailMapper.selectShipmentDetailById(id);
 	}
+	
+	@Override
+	public ShipmentDetail selectShipmentDetailByDetailId(String shipmentDetailIds) {
+		return shipmentDetailMapper.selectShipmentDetailByDetailId(shipmentDetailIds);
+	}
+	
+	
+	 
 
 	/**
 	 * Get Shipment Details List

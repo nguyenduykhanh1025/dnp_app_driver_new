@@ -98,6 +98,12 @@
         <result property="containerRemark" column="container_remark"/>
 
         <result property="contSpecialStatus" column="cont_special_status"/>
+        
+        <result property="frozenStatus" column="frozen_status"/> 
+        
+        <result property="powerDrawDate" column="power_draw_date"/> 
+        
+        
     </resultMap>
 
     <!-- <resultMap type="ShipmentDetailExtend" id="ShipmentDetailResult" extends="ShipmentDetail">
@@ -119,7 +125,7 @@
         planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, remark, pay_type, payer, payer_name,
         customs_no,
         custom_scan_time, delivery_address, delivery_mobile, delivery_remark, eta, etd, container_remark, det_free_time,
-        create_by, create_time, update_by, update_time,cont_special_status from shipment_detail
+        create_by, create_time, update_by, update_time,cont_special_status,power_draw_date,frozen_status from shipment_detail
     </sql>
     <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail
@@ -181,8 +187,7 @@
     <select id="selectShipmentDetailListContOverSize" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
         <include refid="selectShipmentDetailVo"/>
            
-        <where>
-        	 cont_special_status is not null and  
+        <where>  
             (OVERSIZE_TOP is not  null OR   OVERSIZE_RIGHT is not null OR OVERSIZE_LEFT is not null
             OR OVERSIZE_FRONT is not null  OR OVERSIZE_BACK is not null)
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
@@ -303,7 +308,7 @@
            
         <where>
         	  <!-- cont_special_status != '3' and --> 
-        	  cont_special_status is not null
+        	 
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="processOrderId != null"> and process_order_id = #{processOrderId}</if>
@@ -506,7 +511,7 @@
         custom_status, customs_no, custom_scan_time, payment_status, process_status, do_status, do_received_time,
         user_verify_status, finish_status,
         pay_type, payer, payer_name, delivery_address, delivery_mobile, delivery_remark, cont_supplier_name, eta, etd,
-        status, remark, create_by, create_time, update_by, update_time,dangerous
+        status, remark, create_by, create_time, update_by, update_time,dangerous,oversize,frozen_status
         from shipment_detail
         <where>
             <if test="shipmentId != null ">and shipment_id = #{shipmentId}</if>
@@ -645,6 +650,14 @@
         <include refid="selectShipmentDetailVo"/>
         where id = #{id}
     </select>
+    
+    <select id="selectShipmentDetailByDetailId" parameterType="String" resultMap="ShipmentDetailResult">
+        <include refid="selectShipmentDetailVo"/>
+        where id = #{shipmentDetailIds}
+    </select>
+    
+    
+    
 
     <insert id="insertShipmentDetail" parameterType="ShipmentDetail" useGeneratedKeys="true" keyProperty="id">
         <selectKey keyProperty="id" order="BEFORE" resultType="Long">
@@ -844,6 +857,10 @@
         
         	<if test="contSpecialStatus != null ">cont_special_status = #{contSpecialStatus},</if>
         	
+        	<if test="frozenStatus != null ">frozen_status = #{frozenStatus},</if> 
+        	
+        	<if test="oversize != null ">oversize = #{oversize},</if> 
+        	
         	<if test="dangerous != null ">dangerous = #{dangerous},</if>
         	 
             <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
@@ -924,6 +941,9 @@
         <!-- <update id="updateShipmentDetail" parameterType="ShipmentDetailExtend"> -->
         update shipment_detail
         <trim prefix="SET" suffixOverrides=",">
+        
+        
+            <if test="frozenStatus != null ">frozen_status = #{frozenStatus},</if>
             <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
             <if test="processOrderId != null">process_order_id = #{processOrderId},</if>
             <if test="registerNo != null  and registerNo != ''">register_no = #{registerNo},</if>
@@ -1505,7 +1525,8 @@
        
     <update id="updateShipmentDetailByIds">
         update shipment_detail
-        <trim prefix="SET" suffixOverrides=",">
+        <trim prefix="SET" suffixOverrides=","> 
+        
             <if test="shipmentDetail.processOrderId != null">process_order_id = #{shipmentDetail.processOrderId},</if>
             <if test="shipmentDetail.registerNo != null  and shipmentDetail.registerNo != ''">register_no =
                 #{shipmentDetail.registerNo},
@@ -1662,6 +1683,18 @@
             <if test="shipmentDetail.dangerous != null and shipmentDetail.dangerous != ''">dangerous =
                 #{shipmentDetail.dangerous},
             </if>
+            
+            <if test="shipmentDetail.frozenStatus != null and shipmentDetail.frozenStatus != ''">frozen_status =
+                #{shipmentDetail.frozenStatus},
+            </if>  
+            <if test="shipmentDetail.oversize != null and shipmentDetail.oversize != ''">oversize =
+                #{shipmentDetail.oversize},
+            </if> 
+            
+            <if test="shipmentDetail.powerDrawDate != null and shipmentDetail.powerDrawDate != ''">power_draw_date =
+                #{shipmentDetail.powerDrawDate},
+            </if> 
+            
             update_time = sysdate
         </trim>
         <where>

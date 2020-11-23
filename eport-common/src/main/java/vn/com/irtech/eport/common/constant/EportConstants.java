@@ -1,5 +1,7 @@
 package vn.com.irtech.eport.common.constant;
 
+import vn.com.irtech.eport.common.utils.StringUtils;
+
 /**
  * Constants for the ePort system
  * 
@@ -351,10 +353,10 @@ public interface EportConstants {
 	public static final String CONT_REQUEST_OVERSIZE_REJECT = "4";
 	
 	// nhatlv add 
-	public static final String CONT_SPECIAL_STATUS_YES = "Y";// Lưu khai báo 
-	public static final String CONT_SPECIAL_STATUS_WAITING = "W";// chờ xác nhận  
-	public static final String CONT_SPECIAL_STATUS_SUCCESS = "S";// đã xac nhận 
-	public static final String CONT_SPECIAL_STATUS_ERROR = "E";// từ chối xác nhận 
-	public static final String CONT_SPECIAL_STATUS_NULL = "N";// trạng thái null
+	public static final String CONT_SPECIAL_STATUS_INIT = "I";// Lưu khai báo 
+	public static final String CONT_SPECIAL_STATUS_REQ = "R";// chờ xác nhận  
+	public static final String CONT_SPECIAL_STATUS_YES = "Y";// đã xac nhận 
+	public static final String CONT_SPECIAL_STATUS_CANCEL = "C";// từ chối xác nhận
+	//public static final String CONT_SPECIAL_STATUS_NULL = "N";// trạng thái null
 	// end 
 }

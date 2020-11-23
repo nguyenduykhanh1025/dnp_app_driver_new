@@ -34,15 +34,17 @@ const DANGEROUS_STATUS = {
 		  NOT: "F", // không phải là cont danger
 		};
 
-const SPECIAL_STATUS = {
-		  yet: "1",//g gần như null
-		  pending: "2",// chờ pd
-		  approve: "3",// accept
-		  reject: "4",// reject
-		  /*ice_pending: "I",
-		  dangerous_pending: "G",
-		  oversize_pending: "O",*/
-		};
+/*public static final String CONT_SPECIAL_STATUS_INIT = "I";// Lưu khai báo 
+public static final String CONT_SPECIAL_STATUS_REQ = "R";// chờ xác nhận  
+public static final String CONT_SPECIAL_STATUS_YES = "Y";// đã xac nhận 
+public static final String CONT_SPECIAL_STATUS_CANCEL = "C";// từ chối xác nhận;*/
+const CONT_SPECIAL_STATUS = {
+		  INIT: "I", // cont đã được lưu
+		  REQ: "R", // cont đã được yêu cầu xác nhận
+		  YES: "Y", // cont đã được phê duyệt yêu cầu xác nhận
+		  CANCEL: "C", // cont đã bị từ chối yêu cầu xác nhận
+	};
+ 
 
 
  
@@ -537,17 +539,11 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     } 
       
     // Return the content
-    let content = '<div>'; 
+    let content = '<div>';  
     
-    /*if (!sourceData[row].sztp.includes("G")) {
-        content += getRequestConfigIcon(sourceData[row].contSpecialStatus);
-      }*/
+    content += getRequestConfigIcon(row);
     
-    content += getRequestConfigIcon(
-    	      sourceData[row].contSpecialStatus,
-    	      sourceData[row].dangerous
-    	    );
-    
+   
     if (sourceData[row].loadingPort.substring(0, 2) != 'VN') {
       content += customs;
     }
@@ -563,54 +559,70 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
   return td;
 }
 
-/*function getRequestConfigIcon(contSpecialStatus) {
-	  let contSpecialStatusResult =
-	    '<i id="verify" class="fa fa-user-circle-o" title="Chưa yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
-	  switch (contSpecialStatus) {
-	    case SPECIAL_STATUS.yet: // 1
-	      contSpecialStatusResult =    
-	        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
-	      break;
-	    case SPECIAL_STATUS.pending:// 2
-	      contSpecialStatusResult =
-	        '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ffff66"></i>';
-	      break;
-	    case SPECIAL_STATUS.approve:// 3
-	      contSpecialStatusResult =
-	        '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
-	      break;
-	    case SPECIAL_STATUS.reject:// 4
-	      contSpecialStatusResult =
-	        '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
-	      break;
-	  }
-	  return contSpecialStatusResult;
-	}*/
+function getRequestConfigIcon(row) {
+	  const statusResult = getStatusContFollowIndex(row);
 
-function getRequestConfigIcon(contSpecialStatus, dangerous) {
-	/*console.log("vao");
-	console.log("contSpecialStatus" +contSpecialStatus);
-	console.log("dangerous" +dangerous);*/
-	
-	  let contSpecialStatusResult = "";
-	  // nếu xác nhận lạnh = 3 và nguy hiểm từ chối thì => Yêu cầu xác nhận bị từ chối
-	  if(contSpecialStatus == "4" || dangerous == "4"){
-		  contSpecialStatusResult =
-		      '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối bởi tổ nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
+	  if (!statusResult) {
+	    return "";
+	  } else if (statusResult == CONT_SPECIAL_STATUS.YES) {
+	    return '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhật đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
+	  } else if (statusResult == CONT_SPECIAL_STATUS.CANCEL) {
+	    return '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
+	  } else if (statusResult == CONT_SPECIAL_STATUS.REQ) {
+	    return '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>';
+	  } else if (statusResult == CONT_SPECIAL_STATUS.INIT) {
+	    return '<i id="verify" class="fa fa-user-circle-o" title="Có thể yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db"></i>';
 	  }
-	  
-	  if(contSpecialStatus == "1" || dangerous == "1"){
-		  contSpecialStatusResult =
-			  '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>';
-	  }
-	  if(contSpecialStatus == "3" && dangerous == "3"){
-		  contSpecialStatusResult =
-			  '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhật đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
-	  }
-	   
-	  
-	  return contSpecialStatusResult;
 	}
+
+  
+
+function getStatusContFollowIndex(index) {
+/*	
+	console.log("Status");
+	console.log("1"+ sourceData[index].oversize);
+	console.log("2"+ sourceData[index].dangerous);
+	console.log("3"+ sourceData[index].frozenStatus);*/
+	 
+	 
+	 
+	  if (
+	    !sourceData[index].oversize &&
+	    !sourceData[index].dangerous &&
+	    !sourceData[index].frozenStatus
+	  ) {
+	    return null;
+	  } else if (
+	    sourceData[index].dangerous == CONT_SPECIAL_STATUS.CANCEL ||
+	    sourceData[index].oversize == CONT_SPECIAL_STATUS.CANCEL ||
+	    sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.CANCEL
+	  ) {
+	    // là cont bị từ chối
+	    return CONT_SPECIAL_STATUS.CANCEL;
+	  } else if (
+	    sourceData[index].dangerous == CONT_SPECIAL_STATUS.REQ ||
+	    sourceData[index].oversize == CONT_SPECIAL_STATUS.REQ ||
+	    sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.REQ
+	  ) {
+	    // là cont đang chờ xác nhận
+	    return CONT_SPECIAL_STATUS.REQ;
+	  } else if (
+	    sourceData[index].dangerous == CONT_SPECIAL_STATUS.INIT || // I
+	    sourceData[index].oversize == CONT_SPECIAL_STATUS.INIT ||
+	    sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.INIT
+	  ) {
+	    // là cont đã được xét duyệt
+		  return CONT_SPECIAL_STATUS.INIT;
+		 
+	    
+	  } else {
+	    // là cont chỉ mới được tạo
+		  return CONT_SPECIAL_STATUS.YES;
+	  }
+	}
+
+ 
+ 
   
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value != null && value != '') {
@@ -771,9 +783,13 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
 	    } 
 	    if (sourceData && sourceData.length > 0) { 
 	        if (sourceData.length > row && sourceData[row].id) { 
-	        	if("G" != sourceData[row].sztp.substring(2,3)){ 
+	        	
+	        	if("G" != sourceData[row].sztp.substring(2,3)){  
 	        		value = '<button class="btn btn-default btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
 	        	} 
+	        	else{ 
+	        		value = '<button class="btn btn-default btn-xs showHide" disabled ><i class="fa fa-check-circle"></i>Chi tiết</button>';
+	        	}
 	        } 
 	    }
 	    $(td).html(value);
@@ -923,7 +939,7 @@ function configHandson() {
           return '<span class="required">Container No</span>';
           
         case 3:
-            return '<span class="required">Action</span>';
+            return '<span class="required">Chi tiết</span>';
             
         case 4:
           return '<span class="required">Hạn Lệnh</span>';
@@ -1256,28 +1272,7 @@ function updateLayout() {
         if (cellStatus == 2 && 'Y' == sourceData[i].userVerifyStatus) {
           verify = true;
         }
-        
-     // neu bang G thì hiện nút khai hải quan lên
-     // chưa check được trường hợp check all của nút khai hải quan vì có trường hợp bằng G vào
-  	  /*if("G" == sourceData[i].sztp.substring(2,3)){
-  		  $("#customBtn").prop("disabled", false);
-  		  
-  	  }
-  	  // nếu khác G và contSpecialStatus == 3 thì hiện nút khai hải quan ra
-  	  if("G" != sourceData[i].sztp.substring(2,3) &&  "3" == sourceData[i].contSpecialStatus){
-  		  
-  		  $("#customBtn").prop("disabled", false);// khai hải quan enable
-  	  }
-  	  	 
-  	  // nếu khác G và contSpecialStatus != 3 thì ẩn nút khai hải quan đi
-  	  		
-  	  if("G" != sourceData[i].sztp.substring(2,3) &&  "3" != sourceData[i].contSpecialStatus){
-		  
-		  $("#customBtn").prop("disabled", true);// khai hải quan enable
-	  }	*/
-  	  		
-  	  // end
-  	  
+    
         check = true;
         if (cellStatus > 2) {
           disposable = false;
@@ -1331,7 +1326,7 @@ function updateLayout() {
       break;
   }
   ///////
-  setLayoutConfirmRequestContSpecial();
+  setLayoutConfirmRequestContSpecial(); 
   
   setLayoutCustomBTN();
   
@@ -1343,48 +1338,91 @@ function setLayoutConfirmRequestContSpecial() {
 // ẩn hiện nút khai hải quan
 function setLayoutCustomBTN() {
 	  $("#customBtn").prop("disabled", isDisableCustomBTN());
-	}
+}
   
-////// yêu cầu xác nhận
-function isOnlyHaveContSpecialInListChecked() {
-	  let result = true; // true: enable btn || false: disable btn
-	  let listSizeCategoryCont = [];
-
+function isDisableBtnRequestConfirm() {
+	  let result = false; // true: enable btn || false: disable btn
 	  for (let i = 0; i < checkList.length; ++i) {
-	    let dataColunmSizeCont = getCodeSizeContFromDataTableHandsonFollowIndex(i);
-	    // status is checked
 	    if (checkList[i] == 1) {
-	      var markCounSpecial = getMarkSizeContSpecial(
-	        dataColunmSizeCont.split("")
-	      ); 
+	      const statusResult = getStatusContFollowIndex(i);
 	      if (
-	        (markCounSpecial &&
-	          isContNeedRequestConfirmFollowContSpecialStatus(i)) ||
-	        isContNeedRequestConfirmFollowContDangerousStatus(i)
+	        !statusResult ||
+	        statusResult == CONT_SPECIAL_STATUS.REQ ||
+	        statusResult == CONT_SPECIAL_STATUS.YES
 	      ) {
-	        listSizeCategoryCont.push(markCounSpecial);
-	      } else {
-	        listSizeCategoryCont.push("G");
+	        result = true;
 	      }
 	    }
 	  }
 
-	  if (!listSizeCategoryCont || !listSizeCategoryCont.length) {
-	    result = false;
-	  } else {
-	    if (getMarkSizeContSpecial(listSizeCategoryCont)) {
-	      if (listSizeCategoryCont.includes("G")) {
+	  return result;
+	}
+////////////////
+// khai hải quan
+function isDisableCustomBTN() {
+	  let result = true; // true: enable btn || false: disable btn
+	  for (let i = 0; i < checkList.length; ++i) {
+	    if (checkList[i] == 1) {
+	      const statusResult = getStatusContFollowIndexBTN(i);
+	      if (
+	        !statusResult || 
+	        statusResult == CONT_SPECIAL_STATUS.YES
+	      ) {
 	        result = false;
 	      }
-	    } else {
-	      result = false;
 	    }
 	  }
+
 	  return result;
 	}
 
-////////////////
 
+function getStatusContFollowIndexBTN(index) {
+	/*	
+		console.log("Status");
+		console.log("1"+ sourceData[index].oversize);
+		console.log("2"+ sourceData[index].dangerous);
+		console.log("3"+ sourceData[index].frozenStatus);*/
+		 
+		 
+		 
+		  if (
+		    !sourceData[index].oversize &&
+		    !sourceData[index].dangerous &&
+		    !sourceData[index].frozenStatus
+		  ) {
+		    return null;
+		  } else if (
+		    sourceData[index].dangerous == CONT_SPECIAL_STATUS.CANCEL ||
+		    sourceData[index].oversize == CONT_SPECIAL_STATUS.CANCEL ||
+		    sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.CANCEL
+		  ) {
+		    // là cont bị từ chối
+		    return CONT_SPECIAL_STATUS.CANCEL;
+		  } else if (
+		    sourceData[index].dangerous == CONT_SPECIAL_STATUS.REQ ||
+		    sourceData[index].oversize == CONT_SPECIAL_STATUS.REQ ||
+		    sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.REQ
+		  ) {
+		    // là cont đang chờ xác nhận
+		    return CONT_SPECIAL_STATUS.REQ;
+		  } else if (
+		    sourceData[index].dangerous == CONT_SPECIAL_STATUS.INIT || // I
+		    sourceData[index].oversize == CONT_SPECIAL_STATUS.INIT ||
+		    sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.INIT
+		  ) {
+		    // là cont đã được xét duyệt
+			  return CONT_SPECIAL_STATUS.INIT;
+			 
+		    
+		  } else {
+		    // là cont chỉ mới được tạo
+			  return CONT_SPECIAL_STATUS.YES;
+		  }
+		}
+
+
+/////////
 function isCantVerify() {
 	  return !isDisableBtnRequestConfirm();
 	}
@@ -1393,7 +1431,7 @@ function isCantVerify() {
 
 // disable/ enable khai hải quan
 // nấu getMarkSizeContSpecialBTN khai báo từ danh sách bằng G hoặc status = 3 thì enable nút lên
-function isDisableCustomBTN() {
+/*function isDisableCustomBTN() {
 	let result = false; // true: enable btn || false: disable btn
 
 	  for (let i = 0; i < checkList.length; ++i) {
@@ -1418,34 +1456,10 @@ function isDisableCustomBTN() {
 	  }
 
 	  return result;
-	}
+}*/
 
 ////
-function isDisableBtnRequestConfirm() {
-	  let result = false; // true: enable btn || false: disable btn
-
-	  for (let i = 0; i < checkList.length; ++i) {
-	    let dataColunmSizeCont = getCodeSizeContFromDataTableHandsonFollowIndex(i);
-	    // status is checked
-	    if (checkList[i] == 1) {
-	      var markCounSpecial = getMarkSizeContSpecial(
-	        dataColunmSizeCont.split("")// P,R,T,U
-	      );
-	      if (
-	        (markCounSpecial &&
-	          isContNeedRequestConfirmFollowContSpecialStatus(i)) ||
-	        isContNeedRequestConfirmFollowContDangerousStatus(i)
-	      ) {
-	      } else {
-	        result = true;
-	      }
-	    }
-	  }
-
-	  return result;
-	}
-	
-	
+ 	
 ///////
 function isHaveContSpecialNotYetRequestConfirm() {
 	  let result = false;
@@ -1472,26 +1486,26 @@ function isHaveContSpecialNotYetRequestConfirm() {
 
 
 ///////////
-function getCodeSizeContFromDataTableHandsonFollowIndex(index) {
+/*function getCodeSizeContFromDataTableHandsonFollowIndex(index) {
 	  if (hot && hot.getDataAtCell(index, 8)) {
 	    return hot.getDataAtCell(index, 8).substring(0, 4);
 	  }
 	  return "";
-	}
+	}*/
 
 /////
-function isContNeedRequestConfirmFollowContSpecialStatus(index) {
+/*function isContNeedRequestConfirmFollowContSpecialStatus(index) {
 	  return ( ////// ở đây
 	    sourceData[index].contSpecialStatus == SPECIAL_STATUS.yet ||
 	    sourceData[index].contSpecialStatus == SPECIAL_STATUS.reject ||
 	    !sourceData[index].contSpecialStatus
 	  );
-	}
-
+	}*/
+ 
 /////
 function isContContSpecialStatus(index) {// khai hai quan
 	  return ( ////// ở đây
-	    sourceData[index].contSpecialStatus == SPECIAL_STATUS.approve 
+	    sourceData[index].contSpecialStatus == CONT_SPECIAL_STATUS.YES 
 	    //|| !sourceData[index].contSpecialStatus
 	  );
 	}
@@ -1566,7 +1580,7 @@ function getMarkSizeContSpecial(data) {
  
 
 //////
-function getMarkSizeContSpecialBTN(data) {// khai hải quan
+/*function getMarkSizeContSpecialBTN(data) {// khai hải quan
 	  const listMarkContSpecial = ["P", "R", "T", "U","G"];
 	  var result = "";
 
@@ -1577,7 +1591,7 @@ function getMarkSizeContSpecialBTN(data) {// khai hải quan
 	    }
 	  }
 	  return result;
-	}
+	}*/
 
 
 
@@ -1609,9 +1623,9 @@ function isHaveContSpecialNotYetRequestConfirm() {
 
 
 // LOAD SHIPMENT DETAIL LIST
-function loadShipmentDetail(id) {
+function loadShipmentDetail(id) { 
   $.modal.loading("Đang xử lý ...");
-  $.ajax({
+  $.ajax({ 
     url: prefix + "/shipment/" + id + "/shipment-detail",
     method: "GET",
     success: function (data) {
@@ -1627,8 +1641,9 @@ function loadShipmentDetail(id) {
         containerRemarkArr = Array(rowAmount).fill('');
         locations = Array(rowAmount).fill('');
         sourceData.forEach(function iterate(shipmentDetail, index) {
-        	
-        	
+        	// nhatlv
+        	console.log("ds sourceData");
+        	console.log(sourceData);
         	
           if (shipmentDetail.id == null) {
             saved = false;

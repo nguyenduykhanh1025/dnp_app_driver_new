@@ -381,6 +381,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			ShipmentDetail shipmentDetail = null;
 			for (ShipmentDetail inputDetail : shipmentDetails) {
 				shipmentDetail = new ShipmentDetail();
+				// search catos infor for specified container and replace infor
+				ctnrInfo = catosMap.get(inputDetail.getContainerNo());
 				// New record
 				if (inputDetail.getId() == null) {
 					// Setting from input screen
@@ -403,27 +405,39 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					}
 					shipmentDetail.setPreorderPickup("N");
 					shipmentDetail.setFinishStatus("N");
-					// search catos infor for specified container and replace infor
-					ctnrInfo = catosMap.get(shipmentDetail.getContainerNo());
+					
 					if (ctnrInfo != null) {
 						shipmentDetail.setSztp(ctnrInfo.getSztp());
 						
 						// nhatlv add status ban đầu
 						
-						//if
-						//shipmentDetail.setContSpecialStatus(EportConstants.WAIT);// w
+						if("R".equalsIgnoreCase(ctnrInfo.getSztp().substring(2, 3))){ // cont lạnh
+							shipmentDetail.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_INIT); // I
+						} 
+						// set dangerous info
+						shipmentDetail.setDangerousImo(ctnrInfo.getImdg());
+						shipmentDetail.setDangerousUnno(ctnrInfo.getUnno());
+						// Check is dangerous
+						if (StringUtils.isNotEmpty(shipmentDetail.getDangerousImo()) 
+								|| StringUtils.isNotEmpty(shipmentDetail.getDangerousUnno())) {
+							shipmentDetail.setDangerous(EportConstants.CONT_SPECIAL_STATUS_INIT);// I
+						} 
+						// Set oversize info
+						shipmentDetail.setOversizeTop(ctnrInfo.getOvHeight());
+						shipmentDetail.setOversizeFront(ctnrInfo.getOvFore());
+						shipmentDetail.setOversizeBack(ctnrInfo.getOvAft());
+						//frozen_status
+						shipmentDetail.setOversizeLeft(ctnrInfo.getOvPort());
+						shipmentDetail.setOversizeRight(ctnrInfo.getOvStbd());
 						
-						//check tường hợp insert với từng mã
-						
-						/*if(("P".equalsIgnoreCase(ctnrInfo.getSztp().substring(2,3)) 
-						|| "T".equalsIgnoreCase(ctnrInfo.getSztp().substring(2,3))
-						|| "U".equalsIgnoreCase(ctnrInfo.getSztp().substring(2,3)))
-						&& (!"R".equalsIgnoreCase(shipmentDetail.getContSpecialStatus()) ||
-								!"C".equalsIgnoreCase(shipmentDetail.getContSpecialStatus()) ||
-								!"D".equalsIgnoreCase(shipmentDetail.getContSpecialStatus()))
-						){   
-							shipmentDetail.setContSpecialStatus("S"); 
-						} */
+						// Check is oversize
+						 if(StringUtils.isNotEmpty(shipmentDetail.getOvHeight()) || StringUtils.isNotEmpty(shipmentDetail.getOvFore())
+							|| StringUtils.isNotEmpty(shipmentDetail.getOvAft()) || StringUtils.isNotEmpty(shipmentDetail.getOvPort())
+							|| StringUtils.isNotEmpty(shipmentDetail.getOvStbd()))
+							{
+							 shipmentDetail.setOversize(EportConstants.CONT_SPECIAL_STATUS_INIT);// I
+						 }
+						 
 						// shipmentDetail.setSztpDefine(catos.getSztpDefine()); // TODO
 						shipmentDetail.setCarrierName(ctnrInfo.getPtnrName());
 						shipmentDetail.setVslName(ctnrInfo.getVslNm());
@@ -494,6 +508,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						return error("Không tìm thấy thông tin, vui lòng kiểm tra lại");
 					}
 					// Update khi nguoi dung chua lam lenh.
+					// chưa làm được trường hợp nếu lô đó vừa lạnh, vừa nguy hiểm vì 3 trường khác nhau nên vào 1 if đầu
 					if ("N".equals(shipmentDetailReference.getUserVerifyStatus())) {
 						updateShipment = false;
 						shipmentDetailReference.setUpdateBy(user.getFullName());
@@ -510,10 +525,50 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 							shipmentDetailReference.setExpiredDem(inputDetail.getExpiredDem());
 							shipmentDetailReference.setDetFreeTime(inputDetail.getDetFreeTime());
 						}
-						shipmentDetailReference.setUpdateTime(new Date());
+						shipmentDetailReference.setUpdateTime(new Date()); 
+						// nhatlv add status ban đầu  khi update 
+						// cont lạnh
+			// nếu sztp = R và (frozenStatus !R (chờ phê duyệt) hoặc frozenStatus !=Y(đã phê duyệt) hoặc frozenStatus !=C(từ chối))
+						if("R".equalsIgnoreCase(shipmentDetailReference.getSztp().substring(2, 3))){  
+							if(!"R".equalsIgnoreCase(shipmentDetailReference.getFrozenStatus())
+							&& !"Y".equalsIgnoreCase(shipmentDetailReference.getFrozenStatus())	
+							&& !"C".equalsIgnoreCase(shipmentDetailReference.getFrozenStatus()))
+							{
+								shipmentDetailReference.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_INIT); // I
+							} 
+						}
+						 // cont nguy hiểm
+						if(StringUtils.isNotEmpty(shipmentDetailReference.getDangerousImo())|| StringUtils.isNotEmpty(shipmentDetailReference.getDangerousUnno()))
+						{ 
+							if(!"R".equalsIgnoreCase(shipmentDetailReference.getDangerous())
+								&& !"Y".equalsIgnoreCase(shipmentDetailReference.getDangerous())	
+								&& !"C".equalsIgnoreCase(shipmentDetailReference.getDangerous()))
+								{
+									shipmentDetailReference.setDangerous(EportConstants.CONT_SPECIAL_STATUS_INIT);// I 
+								} 
+						}
+						
+						/*shipmentDetailReference.setOversizeTop(ctnrInfo.getOvHeight());
+						shipmentDetailReference.setOversizeFront(ctnrInfo.getOvFore());
+						shipmentDetailReference.setOversizeBack(ctnrInfo.getOvAft());
+						//frozen_status
+						shipmentDetailReference.setOversizeLeft(ctnrInfo.getOvPort());
+						shipmentDetailReference.setOversizeRight(ctnrInfo.getOvStbd());*/
+						 
+						if(StringUtils.isNotEmpty(shipmentDetailReference.getOversizeBack()) || StringUtils.isNotEmpty(shipmentDetailReference.getOversizeFront())
+								|| StringUtils.isNotEmpty(shipmentDetailReference.getOversizeLeft()) || StringUtils.isNotEmpty(shipmentDetailReference.getOversizeRight())
+								|| StringUtils.isNotEmpty(shipmentDetailReference.getOversizeTop()))
+							{ 
+							if(!"R".equalsIgnoreCase(shipmentDetailReference.getOversize()) 
+									&& !"Y".equalsIgnoreCase(shipmentDetailReference.getOversize())	
+									&& !"C".equalsIgnoreCase(shipmentDetailReference.getOversize()))
+									{
+										shipmentDetailReference.setOversize(EportConstants.CONT_SPECIAL_STATUS_INIT);// I
+									} 
+							}
+						// end
 						
 						
-						// nhatlv add status ban đầu
 						//shipmentDetailReference.setContSpecialStatus(EportConstants.WAIT);// W
 						
 						/*if("R".equalsIgnoreCase(shipmentDetailReference.getSztp()))*/
@@ -1112,11 +1167,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	}
 	
 	
-	 
-	@DeleteMapping("/booking/file")
+	// delete file
+	//@DeleteMapping("/booking/file")
+	@DeleteMapping("/delete_file") 
 	@ResponseBody
 	public AjaxResult deleteFile(Long id,String filePath) throws IOException {
-		if(id !=0){
+		if(id != null){
 			ShipmentImage shipmentImageParam = new ShipmentImage();
 			shipmentImageParam.setId(id);
 			ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
@@ -1146,8 +1202,26 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@PostMapping("/shipment-detail/request-confirm") 
 	@ResponseBody 
 	public AjaxResult CheckShipmentDetail(String shipmentDetailIds ) {  
-		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
-		shipmentDetailUpdate.setContSpecialStatus("1");   
+		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail(); 
+        ShipmentDetail shipmentDetail =  shipmentDetailService.selectShipmentDetailByDetailId(shipmentDetailIds);//obj
+        //shipmentDetail.getSztp();
+        //shipmentDetail.getOversize();
+        // cont lạnh
+        if("R".equalsIgnoreCase(shipmentDetail.getSztp().substring(2,3))){
+        	shipmentDetailUpdate.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_REQ); // R
+        }
+         // cont quá khổ
+        if(StringUtils.isNotEmpty(shipmentDetail.getOversizeBack()) || StringUtils.isNotEmpty(shipmentDetail.getOversizeFront())
+		|| StringUtils.isNotEmpty(shipmentDetail.getOversizeLeft()) || StringUtils.isNotEmpty(shipmentDetail.getOversizeRight())
+		|| StringUtils.isNotEmpty(shipmentDetail.getOversizeTop())){
+        	shipmentDetailUpdate.setOversize(EportConstants.CONT_SPECIAL_STATUS_REQ);// R
+        }
+        // cont nguy hiểm
+        if (StringUtils.isNotEmpty(shipmentDetail.getDangerousImo()) 
+				|| StringUtils.isNotEmpty(shipmentDetail.getDangerousUnno())) {
+        	shipmentDetailUpdate.setDangerous(EportConstants.CONT_SPECIAL_STATUS_REQ);// R
+		} 
+         
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds,shipmentDetailUpdate); 
 		return success("Yêu cầu xác nhận thành công");
 		} 
@@ -1196,21 +1270,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					detail.setSealNo(catos.getSealNo1());
 					detail.setWgt(catos.getWgt());
 					detail.setLoadingPort(catos.getPol()); // overwrite from CATOS
-					detail.setDischargePort(catos.getPod()); // overwrite from CATOS
-					
-					// cont lạnh thì theo sztp = R
-					// cont nguy hiểm : khác null. or khác rỗng
+					detail.setDischargePort(catos.getPod()); // overwrite from CATOS 
 					detail.setDangerousImo(catos.getImdg()); // overwrite from catos IMDG
-					detail.setDangerousUnno(catos.getUnno()); // 
-					 
-					// cont quá khổ: 
-					// thêm entiti để hiểu được: Nếu các trường có ký hiệu đầu là os hoặc ov thì nó là quá khổ.
-					// os 
+					detail.setDangerousUnno(catos.getUnno()); //  
 					detail.setOvHeight(catos.getOsHeight()); 
 					detail.setOsPort(catos.getOsPort()); 
-					detail.setOsStbd(catos.getOsStbd());
-					  
-					// ov 
+					detail.setOsStbd(catos.getOsStbd()); 
 					detail.setOvAft(catos.getOvAft());  
 					detail.setOvFore(catos.getOvFore());
 					detail.setOvHeight(catos.getOvHeight());
@@ -1218,8 +1283,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					detail.setOvStbd(catos.getOvStbd()); 
 				}
 			}
-		}
-
+		} 
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentDetails", shipmentDetails); 
 		return ajaxResult;
@@ -1232,77 +1296,71 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			String basePath = String.format("%s/%s", Global.getUploadPath() + "/receiveContFull", getUser().getGroupId());
 			String now = DateUtils.dateTimeNow();
 			String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
-			String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
-	        
+			String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION); 
 			ShipmentImage shipmentImage = new ShipmentImage();
 			shipmentImage.setPath(filePath);
 			shipmentImage.setCreateTime(DateUtils.getNowDate());
 			shipmentImage.setCreateBy(getUser().getFullName());
-			shipmentImage.setFileType(fileType);
-			
-			//shipmentImage.setShipmentDetailId(shipmentDetailId);
-			
-			// bam luu da moi thuc hien ham insert vì nếu insert thì sẽ vào insert lô
-			//shipmentImageService.insertShipmentImage(shipmentImage);
-
+			shipmentImage.setFileType(fileType); 
+			//shipmentImageService.insertShipmentImage(shipmentImage); 
 			AjaxResult ajaxResult = AjaxResult.success();
-			ajaxResult.put("shipmentFileId", shipmentImage.getId());
-			
-			ajaxResult.put("file", filePath); 
-			
-			ajaxResult.put("fileType", fileType);
-			
+			ajaxResult.put("shipmentFileId", shipmentImage.getId()); 
+			ajaxResult.put("file", filePath);  
+			ajaxResult.put("fileType", fileType); 
 			return ajaxResult;
 		}
-	// nhat
+    // nhat
+	// details when pressing detail
 	@GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail") 
 	public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
 			@PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
 		mmap.put("containerNo", containerNo);
 		mmap.put("sztp", sztp);
 		mmap.put("shipmentDetailId", shipmentDetailId); 
-		mmap.put("shipmentDetail",shipmentDetailService.selectShipmentDetailById( shipmentDetailId));//obj
-		 
-	//// nhat add
+		mmap.put("shipmentDetail",shipmentDetailService.selectShipmentDetailById( shipmentDetailId));//obj 
 			ShipmentImage shipmentImage = new ShipmentImage();
 			shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
 			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
 			for (ShipmentImage shipmentImage2 : shipmentImages) {
 				shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
 			}
-		mmap.put("shipmentFiles", shipmentImages);
-		 
+		mmap.put("shipmentFiles", shipmentImages); 
 		return PREFIX + "/detail";
 	}
-	// đỏi thành save file
-	@PostMapping("/uploadFile")
+	// save file in detail 
+	@PostMapping("/saveFileImage") 
 	@ResponseBody
 	//oversizeTop  oversizeRight oversizeLeft oversizeFront oversizeBack
-	public AjaxResult uploadFile(@RequestParam(value="filePaths[]") String[] filePaths, 
-							    @RequestParam(value="fileType[]") String[] fileType, 
-								String shipmentDetailId, Long shipmentId, 
-								String shipmentSztp,String shipmentDangerous,
-								String oversizeTop,String oversizeRight,
-								String oversizeLeft,String oversizeFront,
-								String oversizeBack) throws IOException, 
+	public AjaxResult uploadFile(@RequestParam(value="filePaths[]") String[] filePaths,@RequestParam(value="fileType[]") String[] fileType, 
+								String shipmentDetailId, Long shipmentId, String shipmentSztp,String shipmentDangerous) throws IOException, 
 								InvalidExtensionException {
-	
 			for(int i = 0; i < filePaths.length; i++)
-			{ 
+			{  
 				ShipmentImage shipmentImage = new ShipmentImage();
 				shipmentImage.setPath(filePaths[i]);
 				shipmentImage.setShipmentId(shipmentId);
 				shipmentImage.setShipmentDetailId(shipmentDetailId); 
-				shipmentImage.setFileType(fileType[i]);
+				shipmentImage.setFileType(fileType[i]);  
 				shipmentImageService.insertShipmentImage(shipmentImage);// them detail
 			}
+		  
 		//return success();
 		return null;
 	} 
 	
- 
-	
-	
+	// insert powerDrawDate
+	@PostMapping("/saveDate") 
+	@ResponseBody
+	public AjaxResult saveDate( String shipmentDetailId, Long shipmentId,  String shipmentSztp, String powerDrawDate) 
+			throws IOException,InvalidExtensionException {  
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		if("R".equalsIgnoreCase(shipmentSztp.substring(2,3))){
+			shipmentDetail.setPowerDrawDate(powerDrawDate); 
+			shipmentDetailService.updateShipmentDetailByIds(shipmentDetailId,shipmentDetail); 
+		}  
+		return success(); 
+	}
+	 
 }
 	
 

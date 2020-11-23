@@ -494,10 +494,28 @@ public class ShipmentDetail extends BaseEntity {
     private String ovHeight;
     private String ovPort;
     private String ovStbd; 
+    // cont lạnh
+    private String frozenStatus; 
     
+    private String powerDrawDate; 
       
+    public String getPowerDrawDate() {
+		return powerDrawDate;
+	}
 
-    public String getOsHeight() {
+	public void setPowerDrawDate(String powerDrawDate) {
+		this.powerDrawDate = powerDrawDate;
+	}
+
+	public String getFrozenStatus() {
+		return frozenStatus;
+	}
+
+	public void setFrozenStatus(String frozenStatus) {
+		this.frozenStatus = frozenStatus;
+	}
+
+	public String getOsHeight() {
 		return osHeight;
 	}
 

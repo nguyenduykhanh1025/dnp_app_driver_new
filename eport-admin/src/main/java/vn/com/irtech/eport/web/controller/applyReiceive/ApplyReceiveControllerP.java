@@ -158,7 +158,7 @@ public class ApplyReceiveControllerP extends AdminBaseController  {
     public AjaxResult rejectRequestContIce(String shipmentDetailIds) {
         ShipmentDetail shipmentDetail = new ShipmentDetail();
 
-        shipmentDetail.setDangerous(EportConstants.CONT_REQUEST_DANGEROUS_REJECT); // 4
+        shipmentDetail.setDangerous(EportConstants.CONT_SPECIAL_STATUS_CANCEL); // 4
         shipmentDetail.setUpdateBy(getUser().getLoginName());
 
         shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
@@ -177,7 +177,7 @@ public class ApplyReceiveControllerP extends AdminBaseController  {
 			//shipmentDetail.setDoStatus("Y");
 			//shipmentDetail.setContSpecialStatus("3");
 			
-			shipmentDetail.setDangerous(EportConstants.CONT_REQUEST_DANGEROUS_APPROVE);// 3
+			shipmentDetail.setDangerous(EportConstants.CONT_SPECIAL_STATUS_YES);// 3
 			
 			shipmentDetail.setUpdateBy(getUser().getLoginName());
 			shipmentDetailService.updateShipmentDetailApply(shipmentDetail);

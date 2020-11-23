@@ -28,6 +28,11 @@ public interface IShipmentDetailService {
 	 * @return Shipment Details
 	 */
 	public ShipmentDetail selectShipmentDetailById(Long id);
+	
+	
+	public ShipmentDetail selectShipmentDetailByDetailId(String shipmentDetailIds);
+	
+	
 
 	/**
 	 * Get Shipment Details List

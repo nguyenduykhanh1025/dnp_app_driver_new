@@ -52,68 +52,11 @@
             </div>
             <div class="col-sm-12 text-black"> 
             <!-- checked="checked" -->
-               <section class="tabs">
-                  <input id="tab-1" type="radio" name="radio-set" class="tab-selector-1"/> 
-                     <label for="tab-1" class="tab-label-1">Cont lạnh</label> 
+               <section class="tabs"> 
                   <input id="tab-2" type="radio" name="radio-set" class="tab-selector-2" />
-                  	  <label for="tab-2" class="tab-label-2">Cont quá khổ</label> 
-                  <input id="tab-3" type="radio" name="radio-set" class="tab-selector-3" />
-                       <label for="tab-3" class="tab-label-3">Cont nguy hiểm</label>
+                  	  <label for="tab-2" class="tab-label-2">Cont quá khổ</label>  
                   <div class="clear"></div>
-                  <div class="content">
-                  
-  <!--////////////// start cont lạnh ///////////////start cont lạnh-->
-  
-                     <div class="content-1">
-                        <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-                           <div class="form-group col-sm-5 row">
-                              <span class="control-label col-sm-6 col-xs-6"
-                                 style="text-align: left"><b
-                                 class="text-black">SealNo:</b></span>
-                              <div class="col-sm-6 col-xs-6">
-                                 <input type="text" class="form-control" id="sealNo" name="sealNo" readonly />
-                              </div>
-                           </div>
-                           <div class="form-group col-sm-5 row">
-                              <span class="control-label col-sm-6 col-xs-6"
-                                 style="text-align: left"><b
-                                 class="text-black">Trọng lượng (kg):</b></span>
-                              <div class="col-sm-6 col-xs-6">
-                                 <input type="text" class="form-control" id="wgt" name="wgt" readonly />
-                              </div>
-                           </div>
-                        </div> 
-                        <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-                           <div class="form-group col-sm-5 row">
-                              <span class="control-label col-sm-6 col-xs-6"
-                                 style="text-align: left"><b
-                                 class="text-black">Nhiệt đô (độ C):</b></span>
-                              <div class="col-sm-6 col-xs-6">
-                                 <input type="text" class="form-control" id="temperature" name="temperature" readonly />
-                              </div>
-                           </div>
-                           <!-- <div class="form-group col-sm-5 row">   
-			                    <span class="control-label col-sm-6 col-xs-6" style="text-align: left">
-			                    	<b class="text-black">Ngày rút điện:</b>
-			                    </span>
-			                    <div class="input-group date col-sm-6 col-xs-6" id="datetimepicker1" >
-			                      <input type="text" class="form-control" name="Powerdrawdate" readonly/>
-			                      <span class="input-group-addon">
-			                        <span class="glyphicon glyphicon-calendar"></span>
-			                      </span>
-			                    </div>
-		                  </div>  -->
-                        </div> 
-                        
-        <!-- //////////// add tệp cont lạnh///////-->
-			           <div class="form-group col-sm-12" id="dropzoneL">
-				       <!--  <span class="col-md-2 col-sm-3 col-xs-4"></span> -->
-				        <div class="col-sm-12 col-xs-12">
-				        Các tệp đính kèm 
-				        </div>
-				        <div class="preview-containerL col-md-12 col-sm-12 col-xs-12"></div>
-				      </div>  
-                     </div> 
+                  <div class="content"> 
  <!--////////////////start cont quá khổ --> 
                      <div class="content-2">
                         <div class="form-horizontal mt10 row">
@@ -197,76 +140,6 @@
 					         Các tệp đính kèm 
 					        </div>
 					        <div class="preview-containerQK col-md-12 col-sm-12 col-xs-12"></div>
-					      </div> 
-                        </div>
-                     </div>
-                     
-   <!--////////////// start cont nguy hiểm -->
-   
-                     <div class="content-3">
-                        <div class="form-horizontal mt10 row"> 
-                        	<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-		                           <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">SealNo:</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="sealNoNH" name="sealNoNH" readonly />
-		                              </div>
-		                           </div>
-		                           <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">Trọng lượng (kg):</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="wgtNH" name="wgtNH" readonly />
-		                              </div>
-		                           </div>
-		                     </div> 
-		                      
-		                     <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-		                           <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">IMO:</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="dangerousImo" name="dangerousImo" readonly />
-		                              </div>
-		                           </div>
-		                           <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">UNNO:</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="dangerousUnno" name="dangerousUnno" readonly />
-		                              </div>
-		                           </div>
-		                     </div> 
-		                     
-		                      <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-		                           <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">Tên hàng hóa:</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="dangerousNameProduct" name="dangerousNameProduct" readonly />
-		                              </div>
-		                           </div>
-		                           <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">Quy cách đóng gói:</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="dangerousPacking" name="dangerousPacking" readonly />
-		                              </div>
-		                           </div>
-		                     </div> 
-		    <!-- //////////// add tệp cont nguy hiểm ///////-->
-		                      <div class="form-group col-sm-12" id="dropzoneNH"> 
-					        <div class="col-sm-12 col-xs-12">
-					        Các tệp đính kèm 
-					        </div>
-					        <div class="preview-containerNH col-md-12 col-sm-12 col-xs-12"></div>
 					      </div> 
                         </div>
                      </div> 

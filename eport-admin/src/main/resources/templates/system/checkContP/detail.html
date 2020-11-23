@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="vi">
    <head>
       <meta charset="utf-8" />
@@ -52,155 +52,11 @@
             </div>
             <div class="col-sm-12 text-black"> 
             <!-- checked="checked" -->
-               <section class="tabs">
-                  <input id="tab-1" type="radio" name="radio-set" class="tab-selector-1"/> 
-                     <label for="tab-1" class="tab-label-1">Cont lạnh</label> 
-                  <input id="tab-2" type="radio" name="radio-set" class="tab-selector-2" />
-                  	  <label for="tab-2" class="tab-label-2">Cont quá khổ</label> 
+               <section class="tabs"> 
                   <input id="tab-3" type="radio" name="radio-set" class="tab-selector-3" />
                        <label for="tab-3" class="tab-label-3">Cont nguy hiểm</label>
                   <div class="clear"></div>
-                  <div class="content">
-                  
-  <!--////////////// start cont lạnh ///////////////start cont lạnh-->
-  
-                     <div class="content-1">
-                        <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-                           <div class="form-group col-sm-5 row">
-                              <span class="control-label col-sm-6 col-xs-6"
-                                 style="text-align: left"><b
-                                 class="text-black">SealNo:</b></span>
-                              <div class="col-sm-6 col-xs-6">
-                                 <input type="text" class="form-control" id="sealNo" name="sealNo" readonly />
-                              </div>
-                           </div>
-                           <div class="form-group col-sm-5 row">
-                              <span class="control-label col-sm-6 col-xs-6"
-                                 style="text-align: left"><b
-                                 class="text-black">Trọng lượng (kg):</b></span>
-                              <div class="col-sm-6 col-xs-6">
-                                 <input type="text" class="form-control" id="wgt" name="wgt" readonly />
-                              </div>
-                           </div>
-                        </div> 
-                        <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-                           <div class="form-group col-sm-5 row">
-                              <span class="control-label col-sm-6 col-xs-6"
-                                 style="text-align: left"><b
-                                 class="text-black">Nhiệt đô (độ C):</b></span>
-                              <div class="col-sm-6 col-xs-6">
-                                 <input type="text" class="form-control" id="temperature" name="temperature" readonly />
-                              </div>
-                           </div>
-                           <!-- <div class="form-group col-sm-5 row">   
-			                    <span class="control-label col-sm-6 col-xs-6" style="text-align: left">
-			                    	<b class="text-black">Ngày rút điện:</b>
-			                    </span>
-			                    <div class="input-group date col-sm-6 col-xs-6" id="datetimepicker1" >
-			                      <input type="text" class="form-control" name="Powerdrawdate" readonly/>
-			                      <span class="input-group-addon">
-			                        <span class="glyphicon glyphicon-calendar"></span>
-			                      </span>
-			                    </div>
-		                  </div>  -->
-                        </div> 
-                        
-        <!-- //////////// add tệp cont lạnh///////-->
-			           <div class="form-group col-sm-12" id="dropzoneL">
-				       <!--  <span class="col-md-2 col-sm-3 col-xs-4"></span> -->
-				        <div class="col-sm-12 col-xs-12">
-				        Các tệp đính kèm 
-				        </div>
-				        <div class="preview-containerL col-md-12 col-sm-12 col-xs-12"></div>
-				      </div>  
-                     </div> 
- <!--////////////////start cont quá khổ --> 
-                     <div class="content-2">
-                        <div class="form-horizontal mt10 row">
-                          
-		                       <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-		                           <!-- <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">sealNo:</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="sealNoQK" name="sealNoQK" readonly />
-		                              </div>
-		                           </div> -->
-		                           <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">Phía sau (cm):</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="oversizeBack" name="oversizeBack" readonly />
-		                              </div>
-		                           </div>
-		                           <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">Trọng lượng (kg):</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="wgtQK" name="wgtQK" readonly />
-		                              </div>
-		                           </div>
-		                       </div>
-		                       <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-		                           <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">Bên trên (cm):</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="oversizeTop" name="oversizeTop" readonly />
-		                              </div>
-		                           </div>
-		                           <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">Bên phải (cm):</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="oversizeRight" name="oversizeRight" readonly />
-		                              </div>
-		                           </div>
-		                       </div>
-		                       
-		                       <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-		                           <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">Bên trái (cm):</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="oversizeLeft" name="oversizeLeft" readonly />
-		                              </div>
-		                           </div>
-		                           <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">Phía trước (cm):</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="oversizeFront" name="oversizeFront" readonly />
-		                              </div>
-		                           </div>
-		                       </div>
-		                       <!-- <div class="form-horizontal mt10 row" >
-		                           <div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">Phía sau (cm):</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="oversizeBack" name="oversizeBack" readonly />
-		                              </div>
-		                           </div> 
-		                       </div>  -->
-        <!-- //////////// add tệp cont quá khổ///////-->
-				           <div class="form-group col-sm-12" id="dropzoneQK"> 
-					        <div class="col-sm-12 col-xs-12">
-					         Các tệp đính kèm 
-					        </div>
-					        <div class="preview-containerQK col-md-12 col-sm-12 col-xs-12"></div>
-					      </div> 
-                        </div>
-                     </div>
-                     
+                  <div class="content"> 
    <!--////////////// start cont nguy hiểm -->
    
                      <div class="content-3">
@@ -295,18 +151,10 @@
          var shipmentDetail = [[${shipmentDetail}]];  
          var shipmentImage = [[${shipmentImage}]]; 
          var shipmentFiles = [[${shipmentFiles}]]; 
-      </script> 
-      <script th:src="@{/eport/js/modules/applyReceiveP/detail.js?v=092012345}"></script>
+      </script>  
+      <script th:src="@{/eport/js/modules/applyReceiveP/detail.js?v=0920123453}"></script>
        
-	<script type="text/javascript">  
-		/*  var contsztp  = $('#sizeCont').val();// lấy sztp 
-		  var cont = contsztp.substring(2,3);// lấy mã cont cắt ra 
-		  if(cont == 'R'){// nếu cont lạnh thì show table
-			  document.getElementById("tab-1").checked = true; // checked vào cont lạnh
-			  document.getElementById("tab-2").disabled = true;// disabled check cont khổ đi
-			  document.getElementById("tab-3").disabled = true;// disabled check cont nguy hiểm 
-		  }  */
-		  
+	<script type="text/javascript">   
 		  $(document).ready(function() { 
 		      var dangerous = shipmentDetail.dangerous;
 		      var contsztp = shipmentDetail.sztp;
@@ -320,8 +168,7 @@
 		      $("#tab-2").prop('disabled', true); // disabled check cont quá khổ
 		      $("#tab-3").prop('disabled', true); // disabled check cont nguy hiểm  
 		      
-			  if(dangerous) {
-				  console.log(dangerous);
+			  if(dangerous) { 
 				  $("#tab-3").prop('disabled', false); //  check cont nguy hiểm
 				  $("#tab-3").prop('checked', true); // disabled check cont nguy hiểm 
 			  }

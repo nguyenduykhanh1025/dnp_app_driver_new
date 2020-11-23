@@ -98,17 +98,17 @@ content-2 { height: 10px !important;}
                                  <input type="text" class="form-control" id="temperature" name="temperature" readonly />
                               </div>
                            </div>
-                           <!-- <div class="form-group col-sm-5 row">   
+                           <div class="form-group col-sm-5 row">   
 			                    <span class="control-label col-sm-6 col-xs-6" style="text-align: left">
 			                    	<b class="text-black">Ngày rút điện:</b>
 			                    </span>
 			                    <div class="input-group date col-sm-6 col-xs-6" id="datetimepicker1" >
-			                      <input type="text" class="form-control" name="Powerdrawdate" />
-			                      <span class="input-group-addon">
+			                      <input type="text" class="form-control" name="powerDrawDate" id ="powerDrawDate" />
+			                     <span class="input-group-addon">
 			                        <span class="glyphicon glyphicon-calendar"></span>
-			                      </span>
+			                      </span> 
 			                    </div>
-		                  </div>  -->
+		                  </div>
                         </div> 
                         
         <!-- //////////// add tệp cont lạnh///////-->
@@ -315,14 +315,18 @@ content-2 { height: 10px !important;}
        
          
       </script>
-      <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=12345678987654321}"></script>
-      <script th:src="@{/js/logistic/receiveContFull/detail.js?v=1234567898}"></script>
+      <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=1234}"></script>
+      <script th:src="@{/js/logistic/receiveContFull/detail.js?v=1234}"></script>
       
       
 	<script type="text/javascript">  
 		// cont lạnh
 		  $(document).ready(function() { 
-		      var dangerous = shipmentDetail.dangerous;
+		      var dangerous = shipmentDetail.dangerous; 
+		      var dangerousIMO = shipmentDetail.dangerousImo; 
+		      var dangerousUNNO = shipmentDetail.dangerousUnno;
+		      
+		      
 		      var contsztp = shipmentDetail.sztp;
 		      var cont = contsztp.substring(2,3);// lấy mã cont cắt ra 
 		      var oversizeTop = shipmentDetail.oversizeTop;  
@@ -334,7 +338,7 @@ content-2 { height: 10px !important;}
 		      $("#tab-2").prop('disabled', true); // disabled check cont quá khổ
 		      $("#tab-3").prop('disabled', true); // disabled check cont nguy hiểm  
 		      
-			  if(dangerous) {
+			  if(dangerous || dangerousUNNO || dangerousIMO) {
 				  console.log(dangerous);
 				  $("#tab-3").prop('disabled', false); //  check cont nguy hiểm
 				  $("#tab-3").prop('checked', true); // disabled check cont nguy hiểm 

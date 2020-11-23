@@ -25,7 +25,17 @@ $('#oversizeTop').val(shipmentDetail.oversizeTop);//
 $('#oversizeRight').val(shipmentDetail.oversizeRight);//  
 $('#oversizeLeft').val(shipmentDetail.oversizeLeft);//  
 $('#oversizeFront').val(shipmentDetail.oversizeFront);//  
-$('#oversizeBack').val(shipmentDetail.oversizeBack);//   
+$('#oversizeBack').val(shipmentDetail.oversizeBack);// 
+
+$('#powerDrawDate').val(shipmentDetail.powerDrawDate);// 
+
+
+/*$("#datetimepicker1").datetimepicker({
+	  format: "dd/mm/yyyy",
+	  language: "vi_VN",
+	  minView: "month",
+	  autoclose: true
+});*/
  
 function closeForm() {
     $.modal.close();

@@ -157,8 +157,8 @@ public class ApplyReceiveControllerU extends AdminBaseController  {
     @Transactional
     public AjaxResult rejectRequestContIce(String shipmentDetailIds) {
         ShipmentDetail shipmentDetail = new ShipmentDetail();
-
-        shipmentDetail.setContSpecialStatus("4");
+ 
+        shipmentDetail.setOversize(EportConstants.CONT_SPECIAL_STATUS_CANCEL);
         shipmentDetail.setUpdateBy(getUser().getLoginName());
 
         shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
@@ -175,7 +175,8 @@ public class ApplyReceiveControllerU extends AdminBaseController  {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, logisticGroupId);
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			//shipmentDetail.setDoStatus("Y");
-			shipmentDetail.setContSpecialStatus("3");
+			  
+			 shipmentDetail.setOversize(EportConstants.CONT_SPECIAL_STATUS_YES);
 			shipmentDetail.setUpdateBy(getUser().getLoginName());
 			shipmentDetailService.updateShipmentDetailApply(shipmentDetail);
 			

@@ -153,9 +153,10 @@ public class ApplyReceiveController extends AdminBaseController  {
     public AjaxResult rejectRequestContIce(String shipmentDetailIds) {
         ShipmentDetail shipmentDetail = new ShipmentDetail();
 
-        shipmentDetail.setSztp("R");
+        //shipmentDetail.setSztp("R");
         
-        shipmentDetail.setContSpecialStatus("4");
+        //shipmentDetail.setContSpecialStatus("4");
+        shipmentDetail.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_CANCEL);
         shipmentDetail.setUpdateBy(getUser().getLoginName());
 
         shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
@@ -173,7 +174,8 @@ public class ApplyReceiveController extends AdminBaseController  {
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			//shipmentDetail.setDoStatus("Y");
 			//lạnh
-			shipmentDetail.setContSpecialStatus("3");
+			//shipmentDetail.setContSpecialStatus("3");
+			shipmentDetail.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_YES);
 			shipmentDetail.setUpdateBy(getUser().getLoginName());
 			shipmentDetailService.updateShipmentDetailApply(shipmentDetail);
 			

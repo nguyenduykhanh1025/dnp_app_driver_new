@@ -34,16 +34,13 @@ $('#ovAft').val(shipmentDetail.ovAft);//
 $('#ovFore').val(shipmentDetail.ovFore);// 
 $('#ovHeight').val(shipmentDetail.ovHeight);//
 $('#ovPort').val(shipmentDetail.ovPort);// 
-$('#ovStbd').val(shipmentDetail.ovStbd);//  
+$('#ovStbd').val(shipmentDetail.ovStbd);// 
 
-/*console.log("1" + shipmentDetail.osHeight);
-console.log("2" + shipmentDetail.osPort);
-console.log("3" + shipmentDetail.osStbd);
-console.log("4" + shipmentDetail.ovAft);
-console.log("5" + shipmentDetail.ovFore);
-console.log("6" + shipmentDetail.ovHeight);
-console.log("7" + shipmentDetail.ovPort);
-console.log("8" + shipmentDetail.ovStbd);*/
+$('#powerDrawDate').val(shipmentDetail.powerDrawDate);//  
+
+
+
+
 
 // cont nguy hiểm 
 $('#dangerousImo').val(shipmentDetail.dangerousImo);// 
@@ -57,83 +54,92 @@ $("#form-detail-add").validate({
 
 /*console.log("shipmentDetail.dangerous" + shipmentDetail.dangerous);*/
  
-/*$("#datetimepicker1").datetimepicker({
+
+$("#datetimepicker1").datetimepicker({
 	  format: "dd/mm/yyyy",
 	  language: "vi_VN",
 	  minView: "month",
-	});*/
+	  autoclose: true
+});
 
 
-/*console.log(fileType);*/ 
 
- 
-let contD = false;// nguy hiem 
-let contR = false;// lanh
-let contO = false;// qua kho 
-
-let typeD = false;// nguy hiem 
-let typeR = false;// lanh
-let typeO = false;// qua kho
-
-
-function confirm() { 
-	/*if ( shipmentDetail.dangerous == "1" ||
-		 shipmentDetail.dangerous == "3" ||
-		 shipmentDetail.contSpecialStatus == "1" ||
-		 shipmentDetail.contSpecialStatus == "3" ){
-	    $.modal.alertWarning( "Container đang hoặc đã yêu cầu xác nhận, không thể thêm tệp đã đính kèm.");
-	    
+/*function formatDate(data) {
+	  if (data) {
+	    let result = "";
+	    let arrDate = data.toString().split("/");
+	    let temp = arrDate[0];
+	    arrDate[0] = arrDate[1];
+	    arrDate[1] = temp;
+	    return arrDate.join("/");
 	  }
-	else {*/
-		// nếu 
-	if(fileType){ 
-		fileType.forEach(function (elementType, index) {
-			//alert("vao for 1");  
-				if(elementType == "O"){// cont quá khổ oversize
-					typeO = true;
-				 }
-				if(elementType == "D"){// con nguy hiểm Dangerous
-					typeD = true;
-				 }
-				if(elementType == "R"){// cont lạnh SZTP = R
-					typeR = true;
-				 } 
-		});
-		
-		shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
-			//alert("vao for 2");
-			if(elementcont.fileType == "O"){// filetype quá khổ
-				 contO = true;
-			 }
-			if(elementcont.fileType == "D"){// filetype nguy hiểm
-				 contD = true;
-			 }
-			if(elementcont.fileType == "R"){// fileType lạnh
-				 contR = true;
-			 } 
-		});
-		
-		if(contD == false && typeD == false){ 
-			$.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
-		}
-		else if(contR == false && typeR == false){
-			$.modal.alertWarning( "Chưa đính kèm tệp cho container lạnh. Vui lòng đính kèm file.");
-		}
-		else if(contO == false && typeO == false){
-			$.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
-		}
-		else{ 
-			saveFile();
-		} 
-	}
-  //}
+	  return "";
+}*/
+ 
+var dangerousIMO = shipmentDetail.dangerousImo; 
+var dangerousUNNO = shipmentDetail.dangerousUnno; 
+var contsztp = shipmentDetail.sztp;
+var cont = contsztp.substring(2,3);// lấy mã cont cắt ra 
+var oversizeTop = shipmentDetail.oversizeTop;  
+var oversizeRight = shipmentDetail.oversizeRight;  
+var oversizeLeft = shipmentDetail.oversizeLeft;
+var oversizeFront = shipmentDetail.oversizeFront;
+var oversizeBack = shipmentDetail.oversizeBack; 
 
+var frozenStatus = shipmentDetail.frozenStatus; 
+var oversize = shipmentDetail.oversize;
+var dangerous = shipmentDetail.dangerous;
+
+  
+let contD = true;// nguy hiem 
+let contR = true;// lanh
+let contO = true;// qua kho  
+let typeD = true;// nguy hiem 
+let typeR = true;// lanh
+let typeO = true;// qua kho
+
+console.log("fileType");// khi lưu tạm thời
+console.log(fileType);
+console.log("shipmentFiles");// file đã insert vào
+console.log(shipmentFiles);
+
+
+var shipmentFileTotal  = [];
+
+shipmentFileTotal.push(fileType); 
+shipmentFileTotal.push(shipmentFiles); 
+console.log("shipmentFileTotal");
+console.log(shipmentFileTotal);
+ 
+// confirm
+function confirm() {
+	 $.ajax( 
+		    	{
+		    		url: prefix + "/saveDate", 
+		    		method: "POST",
+		    		data: { 
+		    			shipmentDetailId : shipmentDetail.id,
+		    			shipmentId: shipmentDetail.shipmentId,
+		    			shipmentSztp : shipmentDetail.sztp, 
+		    			powerDrawDate : $("#powerDrawDate").val()
+		    		},
+		    		success: function(result){
+	    			if (result.code == 0) {
+	                    //$.modal.alertError(result.msg);
+	    				insertDate();  
+	                } else {
+	                    $.modal.close();
+	                } 
+		    }}); 
 }
-   
-function saveFile() {  
-	    $.ajax(
+ 
+
+//confirm
+function insertDate() {  
+	//console.log("powerdrawdate" + $("#powerDrawDate").val());
+	    $.ajax( 
 	    	{
-	    		url: prefix + "/uploadFile", 
+	    		url: prefix + "/saveFileImage", 
 	    		method: "POST",
 	    		data: {
 	    			filePaths: shipmentFilePath,
@@ -141,22 +147,20 @@ function saveFile() {
 	    			shipmentId: shipmentDetail.shipmentId,
 	    			shipmentSztp : shipmentDetail.sztp,
 	    			shipmentDangerous : shipmentDetail.dangerous,  
-	    			oversizeTop : shipmentDetail.oversizeTop,
-	    			oversizeRight : shipmentDetail.oversizeRight,
-	    			oversizeLeft : shipmentDetail.shipmentDetail,
-	    			oversizeFront : shipmentDetail.oversizeFront,
-	    			oversizeBack : shipmentDetail.oversizeBack, 
-	    			fileType : fileType 
+	    			fileType : fileType, 
+	    		
 	    		},
 	    		success: function(result){
     			if (result.code == 0) {
                     //$.modal.alertError(result.msg);
                     $.modal.close(); 
+    				 
                 } else {
                     $.modal.close();
                 } 
 	    }});  
 }
+ 
 
 function closeForm() {
     $.modal.close();
@@ -207,7 +211,8 @@ function removeImage(element, fileIndex) {
 	shipmentFiles.forEach(function (value, index) {
         if (value == fileIndex) {
             $.ajax({
-            	url: prefix + "/booking/file",
+            	//url: prefix + "/booking/file",
+            	url: prefix + "/delete_file",
                 method: "DELETE",
                 data: {
                     id: value
@@ -230,6 +235,150 @@ function removeImage(element, fileIndex) {
         }
     });
 
+}
+
+
+
+function abc() {
+	// cont nguy hiểm: trường dangerous khác null
+	// cont quá khổ: trường oversize khác null
+	
+	//if(oversize && dangerous) bắt cả 2 đều có file
+	//if(oversize) bắt oversize có file
+	//if(dangerous)bắt dangerous có file
+	
+	
+	
+/*if(oversize && dangerous){
+	if(fileType){ 
+		fileType.forEach(function (elementType, index) { 
+				if(elementType == "O"){// cont quá khổ oversize
+					typeO = true;
+				 }
+				if(elementType == "D"){// con nguy hiểm Dangerous
+					typeD = true;
+				 } 
+		});
+		
+		shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
+			//alert("vao for 2");
+			if(elementcont.fileType == "O"){// filetype quá khổ
+				 contO = true;
+			 }
+			if(elementcont.fileType == "D"){// filetype nguy hiểm
+				 contD = true;
+			 } 
+		});
+		
+		if(contD == false && typeD == false){ 
+			$.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
+		} 
+		else if(contO == false && typeO == false){
+			$.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
+		}
+		else{ 
+			saveFile();
+		} 
+	} 
+		
+}*/
+	
+	 
+ if(oversize && dangerous){
+	 if(fileType){ 
+			fileType.forEach(function (elementType, index) { 
+					if(elementType == "O"){// cont quá khổ oversize
+						typeO = true;
+					 }
+					if(elementType == "D"){// con nguy hiểm Dangerous
+						typeD = true;
+					 } 
+			});
+			
+			shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
+				//alert("vao for 2");
+				if(elementcont.fileType == "O"){// filetype quá khổ
+					 contO = true;
+				 }
+				if(elementcont.fileType == "D"){// filetype nguy hiểm
+					 contD = true;
+				 } 
+			});
+			
+			if(contD == false && typeD == false){ 
+				$.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
+			} 
+			else if(contO == false && typeO == false){
+				$.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
+			}
+			else{
+				checkSave(); 
+				//saveFile();
+			} 
+		}
+	 
+ }
+ 
+ if(oversize){
+	 if(fileType){ 
+			fileType.forEach(function (elementType, index) { 
+					if(elementType == "O"){// cont quá khổ oversize
+						typeO = true;
+					 }  
+			});
+			
+			shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
+				//alert("vao for 2");
+				if(elementcont.fileType == "O"){// filetype quá khổ
+					 contO = true;
+				 }
+				 
+			});
+			
+			 if(contO == false && typeO == false){
+				$.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
+			}
+			else{
+				checkSave(); 
+				//saveFile();
+			} 
+		}
+	 
+ }
+ 
+ if(dangerous){
+	 if(fileType){ 
+			fileType.forEach(function (elementType, index) { 
+					if(elementType == "D"){// cont quá khổ oversize
+						typeD = true;
+					 }  
+			});
+			
+			shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
+				//alert("vao for 2");
+				if(elementcont.fileType == "D"){// filetype quá khổ
+					 contD = true;
+				 }
+				 
+			});
+			
+			 if(contD == false && typeD == false){
+				$.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
+			}
+			else{
+				checkSave(); 
+				//saveFile();
+			} 
+		}
+	 
+ }  	 
+}
+
+function checkSave(){
+	let result = false;
+	
+	 
+	
 }
  
 
