@@ -544,7 +544,7 @@ function configHandson() {
         case 3:
           return "Trạng Thái";
         case 4:
-            return '<span class="required">Action</span>';
+            return '<span class="required">Chi tiết</span>';
           
         case 5:
           return "Số Tham Chiếu";
