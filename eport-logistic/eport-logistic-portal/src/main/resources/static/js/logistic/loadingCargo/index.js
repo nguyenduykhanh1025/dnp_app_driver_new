@@ -160,7 +160,6 @@ $(document).ready(function () {
         paramName: "file",
         maxFiles: 5,
         maxFilesize: 10, //MB
-        // autoProcessQueue: false,
         previewTemplate: previewTemplate,
         previewsContainer: "#previews", // Define the container to display the previews
         clickable: "#attachButton", // Define the element that should be used as click trigger to select files.
@@ -552,6 +551,19 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
+
+function houseBillBtnRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'houseBillBtn' + row).addClass("htMiddle").addClass("htCenter");
+    let shipmentDetailId;
+    if (sourceData && sourceData.length > 0) {
+        shipmentDetailId = sourceData[row].id;
+    }
+    value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(\'' + shipmentDetailId + '\')"><i class="fa fa-check-circle"></i>Khai báo</button>';
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    return td;
+}
+
 function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'expiredDem' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
@@ -1859,4 +1871,12 @@ function requestCancelSupplyContainer() {
 
 function requestExchangeContainer() {
 
+}
+
+function openHouseBillForm(shipmentDetailId) {
+    console.log(shipmentDetailId);
+    if (shipmentDetailId == 0) {
+        $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
+    }
+    
 }
