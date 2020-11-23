@@ -1108,6 +1108,12 @@ function openDetail(id, containerNo, sztp) {
     $.modal.openCustomForm("Khai báo chi tiết", PREFIX + "/shipment-detail/" + id + "/cont/" + containerNo + "/sztp/" + sztp + "/detail", 800, 460);
 }
 
+function handleLoadTableFromModel() {
+	  loadTable();
+	}
+
+
+
 
 
 

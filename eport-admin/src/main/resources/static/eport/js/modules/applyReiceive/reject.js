@@ -1,4 +1,7 @@
-var PREFIX = ctx + "system/checkCont"; 
+/*var PREFIX = ctx + "system/checkCont"; */
+
+const PREFIX = ctx + "system/checkCont";
+const HIST_PREFIX = ctx + "om/controlling";
 
 function submitHandler() {
   $.modal.loading("Đang xử lý ...");
@@ -12,12 +15,13 @@ function submitHandler() {
     },
     success: function (res) {
       sendComment();
-      //parent.handleLoadTableFromModel();
+      parent.handleLoadTableFromModel();
       if (res.code == 0) {
         $.modal.alertSuccess(res.msg);
-        //onCloseModel();
+        onCloseModel();
+       
+        
         $.modal.close();
-        loadTable();
       } else {
         $.modal.alertError(res.msg);
       }
@@ -145,54 +149,6 @@ function sendComment() {
   });
 }
 
-function loadTable() {
-	  $("#dg").datagrid({
-	    url: PREFIX + "/shipments",
-	    height:
-	      $(document).height() - $(".main-body__search-wrapper").height() - 70,
-	    method: "POST",
-	    singleSelect: true,
-	    collapsible: true,
-	    clientPaging: false,
-	    pagination: true,
-	    rownumbers: true,
-	    onBeforeSelect: function (index, row) {
-	      getSelected(index, row);
-	    },
-	    pageSize: 50,
-	    nowrap: true,
-	    striped: true,
-	    loadMsg: " Đang xử lý...",
-	    loader: function (param, success, error) {
-	      var opts = $(this).datagrid("options");
-	      if (!opts.url) return false;
-	      $.ajax({
-	        type: opts.method,
-	        url: opts.url,
-	        contentType: "application/json",
-	        data: JSON.stringify({
-	          pageNum: param.page,
-	          pageSize: param.rows,
-	          orderByColumn: param.sort,
-	          isAsc: param.order,
-	          data: shipment,
-	        }),
-	        success: function (res) {
-	          if (res.code == 0) {
-	            success(res.shipments);
-	            $("#dg").datagrid("selectRow", 0);
-	          } else {
-	            success([]);
-	            loadShipmentDetails(null);
-	          }
-	        },
-	        error: function () {
-	          error.apply(this, arguments);
-	        },
-	      });
-	    },
-	  });
-	}
 
 function handleLoadTableFromModel() {
 	  loadTable();
