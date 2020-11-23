@@ -49,8 +49,8 @@
                 <li><a class="menuItem" id="sendF" th:href="@{/logistic/send-cont-full}">Giao Cont Hàng Cho Cảng</a>
                 </li>
                 <div style="background-color: #3c8dbc; height: 1px;"></div>
-                <li><a class="menuItem">Đóng Hàng Từ Cont Tại Cảng</a></li>
-                <li><a class="menuItem">Rút Hàng Từ Cont Tại Cảng</a></li>
+                <li><a class="menuItem" id="loadingCargo" th:href="@{/logistic/loading-cargo}">Đóng Hàng Vào Cont Tại Cảng</a></li>
+                <li><a class="menuItem" id="unloadingCargo" th:href="@{/logistic/unloading-cargo}">Rút Hàng Từ Cont Tại Cảng</a></li>
               </ul>
             </li>
             <li class="dropdown user-menu" shiro:hasPermission="logistic:transport" id="assignTruck">
