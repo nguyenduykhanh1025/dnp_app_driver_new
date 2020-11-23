@@ -16,11 +16,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="expiredDem"    column="expired_dem"    />
         <result property="detFreeTime"    column="det_free_time"    />
-        <result property="remark"    column="remark"    />
+        <result property="oldRemark"    column="old_remark"    />
+        <result property="newRemark"    column="new_remark"    />
     </resultMap>
 
     <sql id="selectSysSyncQueueVo">
-        select id, sync_type, bl_no, cntr_no, job_odr_no, process_order_id, status, retry_times, expired_dem, det_free_time, remark, create_time from sys_sync_queue
+        select id, sync_type, bl_no, cntr_no, job_odr_no, process_order_id, status, retry_times, expired_dem, det_free_time, old_remark, new_remark, create_time from sys_sync_queue
     </sql>
 
     <select id="selectSysSyncQueueList" parameterType="SysSyncQueue" resultMap="SysSyncQueueResult">
@@ -35,7 +36,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="retryTimes != null "> and retry_times = #{retryTimes}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="detFreeTime != null and detFreeTime != ''"> and det_free_time = #{detFreeTime}</if>
-            <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+            <if test="oldRemark != null and oldRemark != ''"> and old_remark = #{oldRemark}</if>
+            <if test="newRemark != null and newRemark != ''"> and new_remark = #{newRemark}</if>
         </where>
     </select>
     
@@ -60,7 +62,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="retryTimes != null">retry_times,</if>
             <if test="expiredDem != null ">expired_dem,</if>
             <if test="detFreeTime != null and detFreeTime != ''">det_free_time,</if>
-            <if test="remark != null and remark != ''">remark,</if>
+            <if test="oldRemark != null and oldRemark != ''">old_remark,</if>
+            <if test="newRemark != null and newRemark != ''">new_remark,</if>
             create_time,
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -74,7 +77,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="retryTimes != null">#{retryTimes},</if>
             <if test="expiredDem != null ">#{expiredDem},</if>
             <if test="detFreeTime != null and detFreeTime != ''">#{detFreeTime},</if>
-            <if test="remark != null and remark != ''">#{remark},</if>
+            <if test="oldRemark != null and oldRemark != ''">#{oldRemark},</if>
+            <if test="newRemark != null and newRemark != ''">#{newRemark},</if>
             sysdate,
          </trim>
     </insert>
@@ -91,7 +95,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="retryTimes != null">retry_times = #{retryTimes},</if>
             <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
             <if test="detFreeTime != null and detFreeTime != ''">det_free_time = #{detFreeTime},</if>
-            <if test="remark != null and remark != ''">remark = #{remark},</if>
+            <if test="oldRemark != null and oldRemark != ''">old_remark = #{oldRemark},</if>
+            <if test="newRemark != null and newRemark != ''">new_remark = #{newRemark},</if>
             <if test="params.waitingOrError != null"> and (status = 'W' or status = 'E')</if>
             create_time = sysdate,
         </trim>
@@ -121,7 +126,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="retryTimes != null"> and retry_times &lt;= #{retryTimes}</if>
             <if test="expiredDem != null"> and expired_dem = #{expiredDem}</if>
             <if test="detFreeTime != null and detFreeTime != ''"> and det_free_time = #{detFreeTime}</if>
-            <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+            <if test="oldRemark != null and oldRemark != ''"> and old_remark = #{oldRemark}</if>
+            <if test="newRemark != null and newRemark != ''"> and new_remark = #{newRemark}</if>
             <if test="createTime != null"> and create_time &lt;= #{createTime}</if>
             <if test="params.waitingOrError != null"> and (status = 'W' or status = 'E')</if>
         </where>
@@ -139,7 +145,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="retryTimes != null">retry_times = #{retryTimes},</if>
             <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
             <if test="detFreeTime != null and detFreeTime != ''">det_free_time = #{detFreeTime},</if>
-            <if test="remark != null and remark != ''">remark = #{remark},</if>
+            <if test="oldRemark != null and oldRemark != ''">old_remark = #{oldRemark},</if>
+            <if test="newRemark != null and newRemark != ''">new_remark = #{newRemark},</if>
             create_time = sysdate,
         </trim>
         <where>
