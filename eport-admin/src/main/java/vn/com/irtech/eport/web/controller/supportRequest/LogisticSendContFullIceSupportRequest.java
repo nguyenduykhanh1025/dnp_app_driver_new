@@ -94,22 +94,45 @@ public class LogisticSendContFullIceSupportRequest extends AdminBaseController {
 	@PostMapping("/shipments")
 	@ResponseBody
 	public AjaxResult getShipments(@RequestBody PageAble<Shipment> param) {
+//		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+//		AjaxResult ajaxResult = AjaxResult.success();
+//		Shipment shipment = param.getData();
+//		if (shipment == null) {
+//			shipment = new Shipment();
+//		}
+//		
+//
+//		Map<String, Object> params = shipment.getParams();
+//		if (params == null) {
+//			params = new HashMap<>();
+//		}
+//		params.put("sztp", KEY_ICE);
+//
+//		shipment.setParams(params);
+//
+//		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
+//
+//		shipment.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
+//
+//		shipments.addAll(shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment));
+//
+//		ajaxResult.put("shipments", getDataTable(shipments));
+//		return ajaxResult;
+
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		AjaxResult ajaxResult = AjaxResult.success();
 		Shipment shipment = param.getData();
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
-		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
 			params = new HashMap<>();
 		}
 		params.put("sztp", KEY_ICE);
-
 		shipment.setParams(params);
-		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 
+		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
 		return ajaxResult;
 	}
@@ -122,19 +145,23 @@ public class LogisticSendContFullIceSupportRequest extends AdminBaseController {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
 		shipmentDetail.setSztp(KEY_ICE);
-		shipmentDetail.setContSpecialStatus(constSpecialStatus);
+		shipmentDetail.setFrozenStatus(constSpecialStatus);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;
 	}
 
-	@GetMapping("/reject/shipment/{shipmentId}/logistic-group/{logisticGroupId}/shipment-detail/{shipmentDetailIds}")
+	@GetMapping("/reject/shipment/{shipmentId}/logistic-group/{logisticGroupId}/shipment-detail/{shipmentDetailIds}/containerNos/{containerNos}/serviceType/{serviceType}")
 	public String openRejectComment(@PathVariable("shipmentId") String shipmentId,
 			@PathVariable("shipmentDetailIds") String shipmentDetailIds,
-			@PathVariable("logisticGroupId") String logisticGroupId, ModelMap mmap) {
+			@PathVariable("logisticGroupId") String logisticGroupId, @PathVariable("containerNos") String containerNos,
+			@PathVariable("serviceType") String serviceType, ModelMap mmap) {
 		mmap.put("shipmentId", shipmentId);
 		mmap.put("logisticGroupId", logisticGroupId);
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
+		mmap.put("containerNos", containerNos);
+		mmap.put("serviceType", serviceType);
+
 		return PREFIX + "/reject";
 	}
 
@@ -143,7 +170,7 @@ public class LogisticSendContFullIceSupportRequest extends AdminBaseController {
 	@Transactional
 	public AjaxResult acceptRequestContIce(String shipmentDetailIds, Long logisticGroupId) {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setContSpecialStatus(EportConstants.CONT_REQUEST_SPECIAL_APPROVE);
+		shipmentDetail.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_YES);
 		shipmentDetail.setUpdateBy(getUser().getLoginName());
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
 
@@ -156,7 +183,7 @@ public class LogisticSendContFullIceSupportRequest extends AdminBaseController {
 	public AjaxResult rejectRequestContIce(String shipmentDetailIds) {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 
-		shipmentDetail.setContSpecialStatus(EportConstants.CONT_REQUEST_SPECIAL_REJECT);
+		shipmentDetail.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_CANCEL);
 		shipmentDetail.setUpdateBy(getUser().getLoginName());
 
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
@@ -173,7 +200,6 @@ public class LogisticSendContFullIceSupportRequest extends AdminBaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);

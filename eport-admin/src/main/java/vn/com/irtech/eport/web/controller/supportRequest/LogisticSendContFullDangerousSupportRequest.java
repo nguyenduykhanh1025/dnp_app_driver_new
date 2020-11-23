@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.EportConstants;
@@ -38,180 +39,176 @@ import java.util.*;
 @Controller
 @RequestMapping("/support-request/dangerous")
 public class LogisticSendContFullDangerousSupportRequest extends AdminBaseController {
-    private static final Logger logger = LoggerFactory.getLogger(LogisticSendContFullDangerousSupportRequest.class);
+	private static final Logger logger = LoggerFactory.getLogger(LogisticSendContFullDangerousSupportRequest.class);
 
-    private String PREFIX = "/supportRequest/dangerous";
+	private String PREFIX = "/supportRequest/dangerous";
 
-    @Autowired
-    private IShipmentService shipmentService;
+	@Autowired
+	private IShipmentService shipmentService;
 
-    @Autowired
-    private ILogisticGroupService logisticGroupService;
+	@Autowired
+	private ILogisticGroupService logisticGroupService;
 
-    @Autowired
-    private IShipmentDetailService shipmentDetailService;
+	@Autowired
+	private IShipmentDetailService shipmentDetailService;
 
-    @Autowired
-    private IShipmentCommentService shipmentCommentService;
+	@Autowired
+	private IShipmentCommentService shipmentCommentService;
 
-    @Autowired
-    private DictService dictService;
+	@Autowired
+	private DictService dictService;
 
-    @Autowired
-    private ServerConfig serverConfig;
+	@Autowired
+	private ServerConfig serverConfig;
 
-    @Autowired
-    private DictService dictDataService;
+	@Autowired
+	private DictService dictDataService;
 
-    @Autowired
-    private IShipmentImageService shipmentImageService;
+	@Autowired
+	private IShipmentImageService shipmentImageService;
 
-    @GetMapping
-    public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
+	@GetMapping
+	public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
 
-        if (sId != null) {
-            mmap.put("sId", sId);
-        }
-        mmap.put("domain", serverConfig.getUrl());
-        // Get list logistic group
-        LogisticGroup logisticGroup = new LogisticGroup();
-        logisticGroup.setGroupName("Chọn đơn vị Logistics");
-        logisticGroup.setId(0L);
-        LogisticGroup logisticGroupParam = new LogisticGroup();
-        logisticGroupParam.setDelFlag("0");
-        List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
-        logisticGroups.add(0, logisticGroup);
-        mmap.put("logisticGroups", logisticGroups);
+		if (sId != null) {
+			mmap.put("sId", sId);
+		}
+		mmap.put("domain", serverConfig.getUrl());
+		// Get list logistic group
+		LogisticGroup logisticGroup = new LogisticGroup();
+		logisticGroup.setGroupName("Chọn đơn vị Logistics");
+		logisticGroup.setId(0L);
+		LogisticGroup logisticGroupParam = new LogisticGroup();
+		logisticGroupParam.setDelFlag("0");
+		List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
+		logisticGroups.add(0, logisticGroup);
+		mmap.put("logisticGroups", logisticGroups);
 
-        List<SysDictData> dictDatas = dictService.getType("opr_list_booking_check");
-        if (CollectionUtils.isEmpty(dictDatas)) {
-            dictDatas = new ArrayList<>();
-        }
-        SysDictData sysDictData = new SysDictData();
-        sysDictData.setDictLabel("Chọn OPR");
-        sysDictData.setDictValue("Chọn OPR");
-        dictDatas.add(0, sysDictData);
-        mmap.put("oprList", dictDatas);
+		List<SysDictData> dictDatas = dictService.getType("opr_list_booking_check");
+		if (CollectionUtils.isEmpty(dictDatas)) {
+			dictDatas = new ArrayList<>();
+		}
+		SysDictData sysDictData = new SysDictData();
+		sysDictData.setDictLabel("Chọn OPR");
+		sysDictData.setDictValue("Chọn OPR");
+		dictDatas.add(0, sysDictData);
+		mmap.put("oprList", dictDatas);
 
-        return PREFIX + "/index";
-    }
+		return PREFIX + "/index";
+	}
 
-    @PostMapping("/shipments")
-    @ResponseBody
-    public AjaxResult getShipments(@RequestBody PageAble<Shipment> param) {
-        startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
-        AjaxResult ajaxResult = AjaxResult.success();
-        Shipment shipment = param.getData();
-        if (shipment == null) {
-            shipment = new Shipment();
-        }
-        shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
-        Map<String, Object> params = shipment.getParams();
-        if (params == null) {
-            params = new HashMap<>();
-        }
-        // get cont is cont dangerous
-        // params.put("dangerous", EportConstants.CONT_REQUEST_DANGEROUS_PENDING);
-        // params.put("doStatus", "");
+	@PostMapping("/shipments")
+	@ResponseBody
+	public AjaxResult getShipments(@RequestBody PageAble<Shipment> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		AjaxResult ajaxResult = AjaxResult.success();
+		Shipment shipment = param.getData();
+		if (shipment == null) {
+			shipment = new Shipment();
+		}
+		Map<String, Object> params = shipment.getParams();
+		if (params == null) {
+			params = new HashMap<>();
+		}
+		shipment.setParams(params);
+		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
+		ajaxResult.put("shipments", getDataTable(shipments));
+		return ajaxResult;
+	}
 
-        shipment.setParams(params);
+	@GetMapping("/shipment/{shipmentId}/shipmentDetails/constSpecialStatus/{constSpecialStatus}")
+	@ResponseBody
+	public AjaxResult getShipmentDetails(@PathVariable("shipmentId") Long shipmentId,
+			@PathVariable("constSpecialStatus") String constSpecialStatus) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setShipmentId(shipmentId);
+		shipmentDetail.setDangerous(constSpecialStatus);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		ajaxResult.put("shipmentDetails", shipmentDetails);
+		return ajaxResult;
+	}
 
-        List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
+	@PostMapping("/confirmation")
+	@ResponseBody
+	@Transactional
+	public AjaxResult acceptRequestContIce(String shipmentDetailIds, Long logisticGroupId) {
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setDangerous(EportConstants.CONT_SPECIAL_STATUS_YES);
+		shipmentDetail.setUpdateBy(getUser().getLoginName());
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
 
-        ajaxResult.put("shipments", getDataTable(shipments));
-        return ajaxResult;
-    }
+		return success("Xác nhận thành công.");
+	}
 
-    @GetMapping("/shipment/{shipmentId}/shipmentDetails/dangerous/{dangerous}")
-    @ResponseBody
-    public AjaxResult getShipmentDetails(@PathVariable("shipmentId") Long shipmentId,
-            @PathVariable("dangerous") String dangerous) {
-        AjaxResult ajaxResult = AjaxResult.success();
-        ShipmentDetail shipmentDetail = new ShipmentDetail();
-        shipmentDetail.setShipmentId(shipmentId);
-        shipmentDetail.setDangerous(dangerous);
-        List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-        ajaxResult.put("shipmentDetails", shipmentDetails);
-        return ajaxResult;
-    }
+	@PostMapping("/reject")
+	@ResponseBody
+	@Transactional
+	public AjaxResult rejectRequestContIce(String shipmentDetailIds) {
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
 
-    @GetMapping("/reject/shipment/{shipmentId}/logistic-group/{logisticGroupId}/shipment-detail/{shipmentDetailIds}")
-    public String openRejectComment(@PathVariable("shipmentId") String shipmentId,
-            @PathVariable("shipmentDetailIds") String shipmentDetailIds,
-            @PathVariable("logisticGroupId") String logisticGroupId, ModelMap mmap) {
-        mmap.put("shipmentId", shipmentId);
-        mmap.put("logisticGroupId", logisticGroupId);
-        mmap.put("shipmentDetailIds", shipmentDetailIds);
-        return PREFIX + "/reject";
-    }
+		shipmentDetail.setDangerous(EportConstants.CONT_SPECIAL_STATUS_CANCEL);
+		shipmentDetail.setUpdateBy(getUser().getLoginName());
 
-    @PostMapping("/confirmation")
-    @ResponseBody
-    @Transactional
-    public AjaxResult acceptRequestContIce(String shipmentDetailIds, Long logisticGroupId) {
-        ShipmentDetail shipmentDetail = new ShipmentDetail();
-        shipmentDetail.setDangerous(EportConstants.CONT_REQUEST_DANGEROUS_APPROVE);
-        shipmentDetail.setUpdateBy(getUser().getLoginName());
-        shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
 
-        return success("Xác nhận thành công.");
-    }
+		return success("Đã từ chối yêu cầu.");
+	}
 
-    @PostMapping("/reject")
-    @ResponseBody
-    @Transactional
-    public AjaxResult rejectRequestContIce(String shipmentDetailIds) {
-        ShipmentDetail shipmentDetail = new ShipmentDetail();
+	@GetMapping("/reject/shipment/{shipmentId}/logistic-group/{logisticGroupId}/shipment-detail/{shipmentDetailIds}/containerNos/{containerNos}/serviceType/{serviceType}")
+	public String openRejectComment(@PathVariable("shipmentId") String shipmentId,
+			@PathVariable("shipmentDetailIds") String shipmentDetailIds,
+			@PathVariable("logisticGroupId") String logisticGroupId, @PathVariable("containerNos") String containerNos,
+			@PathVariable("serviceType") String serviceType, ModelMap mmap) {
+		mmap.put("shipmentId", shipmentId);
+		mmap.put("logisticGroupId", logisticGroupId);
+		mmap.put("shipmentDetailIds", shipmentDetailIds);
+		mmap.put("containerNos", containerNos);
+		mmap.put("serviceType", serviceType);
 
-        shipmentDetail.setDangerous(EportConstants.CONT_REQUEST_DANGEROUS_REJECT);
-        shipmentDetail.setUpdateBy(getUser().getLoginName());
+		return PREFIX + "/reject";
+	}
 
-        shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
+	@PostMapping("/shipment/comment")
+	@ResponseBody
+	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
+		SysUser user = getUser();
+		shipmentComment.setCreateBy(user.getUserName());
+		shipmentComment.setUserId(user.getUserId());
+		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+		shipmentComment.setUserAlias(user.getDept().getDeptName());
+		shipmentComment.setUserName(user.getUserName());
+		shipmentComment.setCommentTime(new Date());
+		shipmentComment.setResolvedFlg(true);
+		shipmentCommentService.insertShipmentComment(shipmentComment);
 
-        return success("Đã từ chối yêu cầu.");
-    }
+		// Add id to make background grey (different from other comment)
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
+		return ajaxResult;
+	}
 
-    @PostMapping("/shipment/comment")
-    @ResponseBody
-    public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
-        SysUser user = getUser();
-        shipmentComment.setCreateBy(user.getUserName());
-        shipmentComment.setUserId(user.getUserId());
-        shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
-        shipmentComment.setUserAlias(user.getDept().getDeptName());
-        shipmentComment.setUserName(user.getUserName());
-        shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
-        shipmentComment.setCommentTime(new Date());
-        shipmentComment.setResolvedFlg(true);
-        shipmentCommentService.insertShipmentComment(shipmentComment);
+	@GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail")
+	public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
+			@PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
+		mmap.put("containerNo", containerNo);
+		mmap.put("sztp", sztp);
+		mmap.put("shipmentDetailId", shipmentDetailId);
 
-        // Add id to make background grey (different from other comment)
-        AjaxResult ajaxResult = AjaxResult.success();
-        ajaxResult.put("shipmentCommentId", shipmentComment.getId());
-        return ajaxResult;
-    }
+		mmap.put("contCargoTypes", dictDataService.getType("cont_cargo_type"));
+		mmap.put("contDangerousImos", dictDataService.getType("cont_dangerous_imo"));
+		mmap.put("contDangerousUnnos", dictDataService.getType("cont_dangerous_unno"));
 
-    @GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail")
-    public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
-            @PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
-        mmap.put("containerNo", containerNo);
-        mmap.put("sztp", sztp);
-        mmap.put("shipmentDetailId", shipmentDetailId);
+		mmap.put("shipmentDetail", this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId));
 
-        mmap.put("contCargoTypes", dictDataService.getType("cont_cargo_type"));
-        mmap.put("contDangerousImos", dictDataService.getType("cont_dangerous_imo"));
-        mmap.put("contDangerousUnnos", dictDataService.getType("cont_dangerous_unno"));
-
-        mmap.put("shipmentDetail", this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId));
-
-        ShipmentImage shipmentImage = new ShipmentImage();
-        shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
-        List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
-        for (ShipmentImage shipmentImage2 : shipmentImages) {
-            shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
-        }
-        mmap.put("shipmentFiles", shipmentImages);
-        return PREFIX + "/detail";
-    }
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+		for (ShipmentImage shipmentImage2 : shipmentImages) {
+			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+		}
+		mmap.put("shipmentFiles", shipmentImages);
+		return PREFIX + "/detail";
+	}
 
 }

@@ -46,10 +46,11 @@ function onCloseModel() {
  */
 function sendComment() {
   let req = {
-    topic: "Lí do từ chối xác nhận yêu cầu",
+    topic: "Lí do từ chối xác nhận yêu cầu " + containerNos,
     content: $("#content").val(),
     shipmentId: `${shipmentId}`,
     logisticGroupId: `${logisticGroupId}`,
+    serviceType: `${serviceType}`,
   };
 
   $.ajax({
@@ -77,7 +78,3 @@ function sendComment() {
     },
   });
 }
-
-
-
-

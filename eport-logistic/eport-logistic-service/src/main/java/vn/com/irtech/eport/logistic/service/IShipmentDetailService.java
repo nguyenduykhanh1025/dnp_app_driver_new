@@ -350,4 +350,20 @@ public interface IShipmentDetailService {
 	 * @return int
 	 */
 	public int updateShipmentDetailByCondition(ShipmentDetail shipmentDetail);
+
+	/**
+	 * Check cont have request status for cont special
+	 * 
+	 * @param shipmentDetail
+	 * @return boolean
+	 */
+	public Boolean isHaveContSpacialRequest(ShipmentDetail shipmentDetail);
+
+	/**
+	 * Check cont have done status for cont special
+	 * 
+	 * @param shipmentDetail
+	 * @return boolean
+	 */
+	public Boolean isHaveContSpacialYes(ShipmentDetail shipmentDetail);
 }

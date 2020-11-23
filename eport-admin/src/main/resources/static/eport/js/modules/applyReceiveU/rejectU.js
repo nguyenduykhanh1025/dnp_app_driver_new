@@ -12,12 +12,12 @@ function submitHandler() {
     },
     success: function (res) {
       sendComment();
-      //parent.handleLoadTableFromModel();
+      parent.handleLoadTableFromModel();
       if (res.code == 0) {
         $.modal.alertSuccess(res.msg);
         //onCloseModel();
         $.modal.close();
-        loadTable();
+        //loadTable();
       } else {
         $.modal.alertError(res.msg);
       }

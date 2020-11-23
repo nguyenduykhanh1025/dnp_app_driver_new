@@ -578,11 +578,11 @@ function getRequestConfigIcon(row) {
   
 
 function getStatusContFollowIndex(index) {
-/*	
+	
 	console.log("Status");
 	console.log("1"+ sourceData[index].oversize);
 	console.log("2"+ sourceData[index].dangerous);
-	console.log("3"+ sourceData[index].frozenStatus);*/
+	console.log("3"+ sourceData[index].frozenStatus);
 	 
 	 
 	 
