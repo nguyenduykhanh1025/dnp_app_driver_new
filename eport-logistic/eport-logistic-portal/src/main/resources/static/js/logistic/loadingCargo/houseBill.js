@@ -1,4 +1,6 @@
 const PREFIX = ctx + "logistic/loading-cargo";
+var onlyDigitReg = /^[0-9]*$/gm;
+var onlyFloatReg = /^[+-]?([0-9]*[.|,])?[0-9]+$/gm;
 var dogrid = document.getElementById("container-grid"), hot;
 var minRowAmount = 1, sourceData;
 var allChecked, checkList, cfsHouseBillList, cfsHouseBillIds;
@@ -149,6 +151,42 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
     return td;
 }
+function quantityRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value != null) {
+        if (!onlyDigitReg.test(value)) {
+            $(td).css("background-color", "rgb(239 0 25)");
+            $(td).css("color", "black");
+        }
+    } else {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function weightRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value != null) {
+        if (!onlyFloatReg.test(value)) {
+            $(td).css("background-color", "rgb(239 0 25)");
+            $(td).css("color", "black");
+        }
+    } else {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function cubicMeterRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value != null) {
+        if (!onlyFloatReg.test(value)) {
+            $(td).css("background-color", "rgb(239 0 25)");
+            $(td).css("color", "black");
+        }
+    } else {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
 
 // CONFIGURATE HANDSONTABLE
 function configHandson() {
@@ -201,15 +239,17 @@ function configHandson() {
             },
             {
                 data: "houseBill",
-                className: "htCenter",
+                className: "htCenter"
             },
             {
                 data: "forwarder",
                 className: "htCenter",
+                renderer: quantityRenderer
             },
             {
                 data: "quantity",
                 className: "htCenter",
+                renderer: quantityRenderer
             },
             {
                 data: "packagingType",
@@ -218,18 +258,22 @@ function configHandson() {
             {
                 data: "weight",
                 className: "htCenter",
+                renderer: weightRenderer
             },
             {
                 data: "cubicMeter",
                 className: "htCenter",
+                renderer: cubicMeterRenderer
             },
             {
                 data: "marks",
                 className: "htCenter",
+                renderer: marksRenderer
             },
             {
                 data: "forwarderRemark",
                 className: "htCenter",
+                renderer: forwarderRemarkRenderer
             }
         ],
         beforeKeyDown: function (e) {
@@ -252,7 +296,7 @@ function configHandson() {
                 // Arrow Right
                 case 39:
                     selected = hot.getSelected()[0];
-                    if (selected[3] == 16) {
+                    if (selected[3] == 8) {
                         e.stopImmediatePropagation();
                     }
                     break
