@@ -363,7 +363,7 @@ public interface IShipmentDetailService {
 	 * @return boolean
 	 */
 	public Boolean isHaveContSpacialYes(ShipmentDetail shipmentDetail);
-	 * Make order loading cargo
+	 /* Make order loading cargo
 	 * 
 	 * @param shipmentDetails
 	 * @param shipment

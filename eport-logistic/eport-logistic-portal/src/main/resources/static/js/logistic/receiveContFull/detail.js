@@ -167,7 +167,7 @@ function closeForm() {
 }
 
 $( document ).ready(function() { 
-	console.log(shipmentFiles);
+	//console.log(shipmentFiles);
 	
 	if (shipmentFiles != null) {// hiển thị hình ảnh
         let htmlInit = '';
@@ -239,7 +239,7 @@ function removeImage(element, fileIndex) {
 
 
 
-function abc() {
+/*function abc() {*/
 	// cont nguy hiểm: trường dangerous khác null
 	// cont quá khổ: trường oversize khác null
 	
@@ -284,7 +284,7 @@ function abc() {
 }*/
 	
 	 
- if(oversize && dangerous){
+ /*if(oversize && dangerous){
 	 if(fileType){ 
 			fileType.forEach(function (elementType, index) { 
 					if(elementType == "O"){// cont quá khổ oversize
@@ -379,6 +379,6 @@ function checkSave(){
 	
 	 
 	
-}
+}*/
  
 

@@ -1418,7 +1418,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	}
 
 	/**
-<<<<<<< HEAD
 	 * Check cont have request status for cont special
 	 * 
 	 * @param shipmentDetail
@@ -1464,8 +1463,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			result = true;
 		}
 		return result;
-=======
-	 * Make order loading cargo
+	}
+	 /* Make order loading cargo
 	 * 
 	 * @param shipmentDetails
 	 * @param shipment
@@ -1565,6 +1564,5 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 		}
 		return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
->>>>>>> be144a380a6421493f12997e5b31605a13be36cc
 	}
 }

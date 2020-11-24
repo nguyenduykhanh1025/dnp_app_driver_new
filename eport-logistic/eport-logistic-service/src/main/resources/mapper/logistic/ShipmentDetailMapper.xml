@@ -553,6 +553,15 @@
 		<include refid="selectShipmentDetailVo" />
 		where id = #{id}
 	</select>
+	
+	<select id="selectShipmentDetailByDetailId" parameterType="ShipmentDetail"
+		resultMap="ShipmentDetailResult">
+		<include refid="selectShipmentDetailVo" />
+		where id = #{shipmentDetailIds}
+	</select>
+	
+	
+	
 
 	<insert id="insertShipmentDetail" parameterType="ShipmentDetail"
 		useGeneratedKeys="true" keyProperty="id">
@@ -1686,8 +1695,12 @@
 				test="shipmentDetail.oversize != null and shipmentDetail.oversize != ''">oversize =
 				#{shipmentDetail.oversize},
 			</if>
+			
+			<if
+				test="shipmentDetail.powerDrawDate != null and shipmentDetail.powerDrawDate != ''">power_draw_date =
+				#{shipmentDetail.powerDrawDate},
+			</if>
 
-<<<<<<< HEAD
 			update_time = sysdate
 		</trim>
 		<where>
@@ -1698,21 +1711,8 @@
 			</foreach>
 		</where>
 	</update>
-
-	<update id="updateShipmentDetailByCondition"
-		parameterType="ShipmentDetail">
-		update shipment_detail
-		<trim prefix="SET" suffixOverrides=",">
-			<if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
-			update_time = sysdate
-		</trim>
-		<where>
-			<if test="blNo != null and blNo != ''">and bl_no = {blNo}</if>
-			<if test="opeCode != null and opeCode !=''">and ope_code = #{opeCode}</if>
-		</where>
-	</update>
-=======
-    <update id="updateShipmentDetailByCondition" parameterType="ShipmentDetail">
+ 
+	<update id="updateShipmentDetailByCondition" parameterType="ShipmentDetail">
         update shipment_detail
         <trim prefix="SET" suffixOverrides=",">
             <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
@@ -1727,5 +1727,4 @@
             <if test="opeCode != null and opeCode !=''">and ope_code = #{opeCode}</if>
         </where>
     </update>
->>>>>>> be144a380a6421493f12997e5b31605a13be36cc
 </mapper>
