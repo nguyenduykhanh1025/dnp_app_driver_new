@@ -50,9 +50,6 @@ $(document).ready(function () {
 
 // LOAD SHIPMENT DETAIL LIST
 function loadHouseBill() {
-    let rowAmount = $('#houseBillNumber').val() + 1;
-    checkList = Array(rowAmount).fill(0);
-    allChecked = false;
     $.modal.loading("Đang xử lý ...");
     $.ajax({
         url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bills",
@@ -70,6 +67,8 @@ function loadHouseBill() {
                         $('#houseBillNumber').val(minRowAmount);
                     }
                 }
+                checkList = Array(minRowAmount).fill(0);
+                allChecked = false;
                 hot.destroy();
                 configHandson();
                 hot = new Handsontable(dogrid, config);
@@ -151,7 +150,43 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
     return td;
 }
-function quantityRenderer(instance, td, row, col, prop, value, cellProperties) {
+function statusIconRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).html('');
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
+    // status
+    let status = '<i id="status" class="fa fa-lock fa-flip-horizontal easyui-tooltip" title="Container chưa bị khóa có thể chỉnh sửa" aria-hidden="true" style="color: #1ab394;"></i>';
+    if (value && value == 'L') {
+        status = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Container đã bị khóa không thể chỉnh sửa" aria-hidden="true" style="color: #f8ac59;"></i>';
+    }
+    // Return the content
+    let content = '<div style="font-size: 25px">' + status + '</div>';
+    if (sourceData && sourceData.length >= (row + 1) && sourceData[row].id) {
+        $(td).html(content);
+    }
+    value = '';
+    return td;
+}
+function houseBillRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value == null) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
+    if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+        }
+    } else {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function forwarderRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value == null) {
         value = '';
     }
@@ -159,22 +194,31 @@ function quantityRenderer(instance, td, row, col, prop, value, cellProperties) {
     return td;
 }
 function quantityRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null) {
+    if (value != null && value != '') {
         if (!onlyDigitReg.test(value)) {
-            $(td).css("background-color", "rgb(239 0 25)");
-            $(td).css("color", "black");
+            // $.modal.msgError("Lỗi cú pháp khi nhập số lượng.")
+            // $(td).css("background-color", "rgb(239 0 25)");
+            // $(td).css("color", "black");
         }
     } else {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function packagingTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value == null) {
         value = '';
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function weightRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null) {
+    if (value != null && value != '') {
         if (!onlyFloatReg.test(value)) {
-            $(td).css("background-color", "rgb(239 0 25)");
-            $(td).css("color", "black");
+            // $.modal.msgError("Lỗi cú pháp khi nhập trọng lượng.")
+            // $(td).css("background-color", "rgb(239 0 25)");
+            // $(td).css("color", "black");
         }
     } else {
         value = '';
@@ -183,22 +227,11 @@ function weightRenderer(instance, td, row, col, prop, value, cellProperties) {
     return td;
 }
 function cubicMeterRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null) {
+    if (value != null && value != '') {
         if (!onlyFloatReg.test(value)) {
-            $(td).css("background-color", "rgb(239 0 25)");
-            $(td).css("color", "black");
-        }
-    } else {
-        value = '';
-    }
-    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-    return td;
-}
-function cubicMeterRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null) {
-        if (!onlyFloatReg.test(value)) {
-            $(td).css("background-color", "rgb(239 0 25)");
-            $(td).css("color", "black");
+            // $.modal.msgError("Lỗi cú pháp khi nhập số khối.")
+            // $(td).css("background-color", "rgb(239 0 25)");
+            // $(td).css("color", "black");
         }
     } else {
         value = '';
@@ -245,24 +278,28 @@ function configHandson() {
                     txt += ">";
                     return txt;
                 case 1:
-                    return "House Bill";
+                    return "Trạng Thái";
                 case 2:
-                    return "Forwarder";
+                    return "House Bill";
                 case 3:
-                    return "Số Lượng";
+                    return "Ngày Đóng Hàng";
                 case 4:
-                    return "Loại Bao Bì";
+                    return "Forwarder";
                 case 5:
-                    return "Trọng Lượng";
+                    return "Số Lượng";
                 case 6:
-                    return "Số Khối";
+                    return "Loại Bao Bì";
                 case 7:
-                    return "Nhãn/Ký hiệu";
+                    return "Trọng Lượng";
                 case 8:
+                    return "Số Khối";
+                case 9:
+                    return "Nhãn/Ký hiệu";
+                case 10:
                     return "Ghi chú";
             }
         },
-        colWidths: [40, 100, 150, 80, 90, 90, 90, 100, 200],
+        colWidths: [40, 80, 100, 120, 150, 80, 90, 90, 90, 100, 200],
         columns: [
             {
                 data: "active",
@@ -271,13 +308,27 @@ function configHandson() {
                 renderer: checkBoxRenderer
             },
             {
+                data: "status",
+                readOnly: true,
+                renderer: statusIconRenderer
+            },
+            {
                 data: "houseBill",
-                className: "htCenter"
+                className: "htCenter",
+                renderer: houseBillRenderer
+            },
+            {
+                data: "dateReceipt",
+                type: "date",
+                dateFormat: "DD/MM/YYYY",
+                correctFormat: true,
+                defaultDate: new Date(),
+                renderer: dateReceiptRenderer
             },
             {
                 data: "forwarder",
                 className: "htCenter",
-                renderer: quantityRenderer
+                renderer: forwarderRenderer
             },
             {
                 data: "quantity",
@@ -287,6 +338,7 @@ function configHandson() {
             {
                 data: "packagingType",
                 className: "htCenter",
+                renderer: packagingTypeRenderer
             },
             {
                 data: "weight",
@@ -349,20 +401,16 @@ function configHandson() {
 
 // TRIGGER CHECK ALL SHIPMENT DETAIL
 function checkAll() {
-    let rowAmount = $('#houseBillNumber').val();
     if (!allChecked) {
         allChecked = true
-        checkList = Array(rowAmount).fill(0);
+        checkList = Array(minRowAmount).fill(0);
         for (let i = 0; i < checkList.length; i++) {
-            if (hot.getDataAtCell(i, 1) == null) {
-                break;
-            }
             checkList[i] = 1;
             $('#check' + i).prop('checked', true);
         }
     } else {
         allChecked = false;
-        checkList = Array(rowAmount).fill(0);
+        checkList = Array(minRowAmount).fill(0);
         for (let i = 0; i < checkList.length; i++) {
             $('#check' + i).prop('checked', false);
         }
@@ -389,7 +437,7 @@ function check(id) {
 function updateLayout() {
     allChecked = true;
     for (let i = 0; i < checkList.length; i++) {
-        let cellStatus = hot.getDataAtCell(i, 1);
+        let cellStatus = sourceData[i].id;
         if (cellStatus != null) {
             if (checkList[i] != 1) {
                 allChecked = false;
@@ -455,14 +503,19 @@ function getDataFromTable(isValidate) {
         if (Object.keys(myTableData[i]).length > 0) {
             if (myTableData[i].houseBill || myTableData[i].forwarder || myTableData[i].quantity ||
                 myTableData[i].packagingType || myTableData[i].weight || myTableData[i].cubicMeter ||
-                myTableData[i].marks || myTableData[i].forwarderRemark) {
+                myTableData[i].marks || myTableData[i].forwarderRemark || myTableData[i].dateReceipt) {
                 cleanedGridData.push(myTableData[i]);
             }
         }
     }
     cfsHouseBillList = [];
+    console.log(myTableData);
     $.each(cleanedGridData, function (index, object) {
         let cfsHouseBill = new Object();
+        if (object["dateReceipt"] && object["dateReceipt"].length >= 10) {
+            let dateReceipt = new Date(object["dateReceipt"].substring(6, 10) + "/" + object["dateReceipt"].substring(3, 5) + "/" + object["dateReceipt"].substring(0, 2));
+            cfsHouseBill.dateReceipt = dateReceipt.getTime();
+        }
         cfsHouseBill.houseBill = object["houseBill"];
         cfsHouseBill.forwarder = object["forwarder"];
         cfsHouseBill.quantity = object["quantity"];
