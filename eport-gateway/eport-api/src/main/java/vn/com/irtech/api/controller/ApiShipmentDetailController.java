@@ -352,4 +352,14 @@ public class ApiShipmentDetailController {
 	public List<ContainerInfoDto> getContainerInfoByContainerInfoDto(@RequestBody ContainerInfoDto containerInfoDto) {
 		return shipmentDetailDao.selectContainerInfoByCntrInfo(containerInfoDto);
 	}
+
+	@PostMapping("/partner-info")
+	public PartnerInfoDto getPartnerInfo(@RequestBody PartnerInfoDto partnerInfoDto) {
+		return shipmentDetailDao.getPartnerInfo(partnerInfoDto);
+	}
+
+	@GetMapping("/reserve/cntr-info")
+	public List<ContainerInfoDto> getListCntrInfoFromReserve(String containerNos) {
+		return shipmentDetailDao.selectContainerInfoFromReserve(Convert.toStrArray(containerNos));
+	}
 }

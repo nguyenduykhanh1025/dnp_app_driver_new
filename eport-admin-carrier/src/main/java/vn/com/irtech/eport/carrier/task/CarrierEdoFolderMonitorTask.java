@@ -44,6 +44,7 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.system.domain.SysSyncQueue;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
+import vn.com.irtech.eport.system.service.ISysDictDataService;
 import vn.com.irtech.eport.system.service.ISysSyncQueueService;
 
 @Service
@@ -71,6 +72,9 @@ public class CarrierEdoFolderMonitorTask {
 
 	@Autowired
 	private ISysSyncQueueService sysSyncQueueService;
+
+	@Autowired
+	private ISysDictDataService dictDataService;
 
 	@Autowired
 	@Qualifier("threadPoolTaskExecutor")
@@ -260,8 +264,9 @@ public class CarrierEdoFolderMonitorTask {
 					edoUpdate.setEmptyContainerDepot(edo.getEmptyContainerDepot());
 					edoUpdate.setTaxCode(edo.getTaxCode());
 					edoUpdate.setExpiredDem(edo.getExpiredDem());
+					edoUpdate.setCarrierCode(edoCheck.getCarrierCode());
 					// Validate edo field can update
-					if (cntrFull == null || StringUtils.isNotEmpty(cntrFull.getJobOdrNo2())) {
+					if (cntrFull == null || StringUtils.isEmpty(cntrFull.getJobOdrNo2())) {
 						// Case container don't has job order no in catos
 						// => can update
 						edoUpdate.setCarrierCode(edo.getCarrierCode());
@@ -311,41 +316,49 @@ public class CarrierEdoFolderMonitorTask {
 						}
 					}
 
-					// Check det free time is updated
-					if (edoUpdate.getDetFreeTime() != null && edoCheck.getDetFreeTime() != null
-							&& edoCheck.getDetFreeTime().compareTo(edoUpdate.getDetFreeTime()) != 0) {
-						if (cntrEmty == null || StringUtils.isEmpty(cntrEmty.getJobOdrNo())) {
-							// Get old request if exist, update else insert new request
-							SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
-							sysSyncQueueParam.setBlNo(edoUpdate.getBillOfLading());
-							sysSyncQueueParam.setCntrNo(edoUpdate.getContainerNumber());
-							sysSyncQueueParam.setJobOdrNo(cntrEmty.getJobOdrNo());
-							sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DET);
-							sysSyncQueueParam.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
-							List<SysSyncQueue> sysSyncQueues = sysSyncQueueService
-									.selectSysSyncQueueList(sysSyncQueueParam);
-							if (CollectionUtils.isNotEmpty(sysSyncQueues)) {
-								// Case update request in queue
-								SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
-								sysSyncQueueUpdate.setId(sysSyncQueues.get(0).getId());
-								sysSyncQueueUpdate.setDetFreeTime(edoUpdate.getDetFreeTime());
-								sysSyncQueueUpdate.setRemark(
-										getRemarkAfterUpdateDet(edoUpdate.getDetFreeTime(), cntrEmty.getRemark()));
-								sysSyncQueueService.updateSysSyncQueue(sysSyncQueueUpdate);
-							} else {
-								// Case insert new request in queue
-								SysSyncQueue sysSyncQueue = new SysSyncQueue();
-								sysSyncQueue.setSyncType(EportConstants.SYNC_QUEUE_DET);
-								sysSyncQueue.setDetFreeTime(edoUpdate.getDetFreeTime());
-								sysSyncQueue.setRemark(
-										getRemarkAfterUpdateDet(edoUpdate.getDetFreeTime(), cntrEmty.getRemark()));
-								sysSyncQueue.setBlNo(edoUpdate.getBillOfLading());
-								sysSyncQueue.setCntrNo(edoUpdate.getContainerNumber());
-								sysSyncQueue.setJobOdrNo(cntrEmty.getJobOdrNo());
-								sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
-								sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
+					// Check if carrier need update det free time
+					if (dictDataService.selectDictLabel("carrier_code_update_detention",
+							edo.getCarrierCode()) != null) {
+						// Carrier need update det free time
+						// Check det free time is updated
+						if (edoUpdate.getDetFreeTime() != null && edoCheck.getDetFreeTime() != null
+								&& edoCheck.getDetFreeTime().compareTo(edoUpdate.getDetFreeTime()) != 0) {
+							if (cntrEmty == null || StringUtils.isEmpty(cntrEmty.getJobOdrNo())) {
+								// Get old request if exist, update else insert new request
+								SysSyncQueue sysSyncQueueParam = new SysSyncQueue();
+								sysSyncQueueParam.setBlNo(edoUpdate.getBillOfLading());
+								sysSyncQueueParam.setCntrNo(edoUpdate.getContainerNumber());
+								sysSyncQueueParam.setJobOdrNo(cntrEmty.getJobOdrNo());
+								sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DET);
+								sysSyncQueueParam.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+								List<SysSyncQueue> sysSyncQueues = sysSyncQueueService
+										.selectSysSyncQueueList(sysSyncQueueParam);
+								if (CollectionUtils.isNotEmpty(sysSyncQueues)) {
+									// Case update request in queue
+									SysSyncQueue sysSyncQueueUpdate = new SysSyncQueue();
+									sysSyncQueueUpdate.setId(sysSyncQueues.get(0).getId());
+									sysSyncQueueUpdate.setDetFreeTime(edoUpdate.getDetFreeTime());
+									sysSyncQueueUpdate.setOldRemark(cntrEmty.getRemark());
+									sysSyncQueueUpdate.setNewRemark(
+											getRemarkAfterUpdateDet(edoUpdate.getDetFreeTime(), cntrEmty.getRemark()));
+									sysSyncQueueService.updateSysSyncQueue(sysSyncQueueUpdate);
+								} else {
+									// Case insert new request in queue
+									SysSyncQueue sysSyncQueue = new SysSyncQueue();
+									sysSyncQueue.setSyncType(EportConstants.SYNC_QUEUE_DET);
+									sysSyncQueue.setDetFreeTime(edoUpdate.getDetFreeTime());
+									sysSyncQueue.setOldRemark(cntrEmty.getRemark());
+									sysSyncQueue.setNewRemark(
+											getRemarkAfterUpdateDet(edoUpdate.getDetFreeTime(), cntrEmty.getRemark()));
+									sysSyncQueue.setBlNo(edoUpdate.getBillOfLading());
+									sysSyncQueue.setCntrNo(edoUpdate.getContainerNumber());
+									sysSyncQueue.setJobOdrNo(cntrEmty.getJobOdrNo());
+									sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
+									sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
+								}
 							}
 						}
+
 					}
 
 					// Container has not been ordered to drop to danang port yet
@@ -472,33 +485,66 @@ public class CarrierEdoFolderMonitorTask {
 	}
 
 	/**
-	 * Replace det free time remark in catos if has remark or append new remark
+	 * Update new remark Remove and append new detention info with 2 format number
+	 * and date
 	 * 
 	 * @param detFreeTime
 	 * @param currentRemark
 	 * @return
 	 */
 	private String getRemarkAfterUpdateDet(String detFreeTime, String currentRemark) {
-		boolean isAppend = true;
-		if (StringUtils.isNotEmpty(currentRemark)) {
-			String[] arrStr = currentRemark.split(" ");
-			for (int i = 0; i < arrStr.length; i++) {
-				// format remark free xxx days
-				// current word is free => next will be det free time
-				// change next word
-				if (arrStr[i].equalsIgnoreCase("free")) {
-					arrStr[i + 1] = detFreeTime;
-					isAppend = false;
-					currentRemark = String.join(" ", arrStr);
-					break;
+		String newRemark = "";
+		boolean detIsNumber = false;
+		try {
+			Integer.parseInt(detFreeTime);
+			detIsNumber = true;
+			logger.debug("Detention format is number");
+		} catch (Exception e) {
+			logger.debug("Detention format is date");
+		}
+		if (detIsNumber) {
+			if (StringUtils.isNotEmpty(currentRemark)) {
+				String[] arrStr = currentRemark.split(" ");
+				for (int i = 0; i < arrStr.length; i++) {
+					// format remark: free xxx days
+					if (arrStr[i].equalsIgnoreCase("free")) {
+						i = i + 2; // Ignore next word (xxx days)
+						continue;
+					}
+					// format remark: han dd/mm/yyyy
+					if (arrStr[i].equalsIgnoreCase("han")) {
+						i++; // Ignore next word (han dd/mm/yyyy)
+						continue;
+					}
+					newRemark += arrStr[i] + " ";
 				}
 			}
+			if (StringUtils.isNotEmpty(newRemark)) {
+				newRemark += ", ";
+			}
+			newRemark += StringUtils.format("free {} days", detFreeTime);
 		} else {
-			currentRemark = "";
+			if (StringUtils.isNotEmpty(currentRemark)) {
+				String[] arrStr = currentRemark.split(" ");
+				for (int i = 0; i < arrStr.length; i++) {
+					// format remark: free xxx days
+					if (arrStr[i].equalsIgnoreCase("free")) {
+						i = i + 2; // Ignore next word (xxx days)
+						continue;
+					}
+					// format remark: han dd/mm/yyyy
+					if (arrStr[i].equalsIgnoreCase("han")) {
+						i++; // Ignore next word (han dd/mm/yyyy)
+						continue;
+					}
+					newRemark += arrStr[i] + " ";
+				}
+			}
+			if (StringUtils.isNotEmpty(newRemark)) {
+				newRemark += ", ";
+			}
+			newRemark += StringUtils.format("han {}", detFreeTime);
 		}
-		if (isAppend) {
-			currentRemark += StringUtils.format(", free {} days", detFreeTime);
-		}
-		return currentRemark;
+		return newRemark;
 	}
 }

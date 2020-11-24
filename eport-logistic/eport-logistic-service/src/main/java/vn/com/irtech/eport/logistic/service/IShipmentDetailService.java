@@ -12,7 +12,6 @@ import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
-import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 
 /**
  * Shipment DetailsService Interface
@@ -118,8 +117,6 @@ public interface IShipmentDetailService {
 
 	public void updateProcessStatus(List<ShipmentDetail> shipmentDetail, String status, String invoiceNo,
 			ProcessOrder processOrder);
-
-	public PartnerInfoDto getGroupNameByTaxCode(String taxCode) throws Exception;
 
 	public ProcessOrder getYearBeforeAfter(String vessel, String voyage);
 
@@ -366,4 +363,14 @@ public interface IShipmentDetailService {
 	 * @return boolean
 	 */
 	public Boolean isHaveContSpacialYes(ShipmentDetail shipmentDetail);
+	 * Make order loading cargo
+	 * 
+	 * @param shipmentDetails
+	 * @param shipment
+	 * @param taxCode
+	 * @param creditFlag
+	 * @return List<ServiceSendFullRobotReq>
+	 */
+	public List<ServiceSendFullRobotReq> makeOrderLoadingCargo(List<ShipmentDetail> shipmentDetails, Shipment shipment,
+			String taxCode, boolean creditFlag);
 }

@@ -122,23 +122,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		return PREFIX + "/index";
 	}
 
-//    // VIEW RECEIVE CONT EMPTY ATTACH IMAGE
-//    @GetMapping("/shipments/{shipmentId}/shipment-images")
-//    public String receiveContEmptyAttachImage(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
-//        Shipment shipment = shipmentService.selectShipmentById(shipmentId);
-//        if (!verifyPermission(shipment.getLogisticGroupId())) {
-//            return PREFIX + "/shipmentImage";
-//        }
-//
-//        List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImagesByShipmentId(shipment.getId());
-//        if (!CollectionUtils.isEmpty(shipmentImages)) {
-//            shipmentImages.forEach(image -> image.setPath(serverConfig.getUrl() + image.getPath()));
-//            mmap.put("shipmentImages", shipmentImages);
-//        }
-//
-//        return PREFIX + "/shipmentImage";
-//    }
-	//logistic/receive-cont-empty/shipments/{shipmentId}/shipment-images
 	@GetMapping("/shipments/{shipmentId}/shipment-images")
 	@ResponseBody
 	public AjaxResult getShipmentImages(@PathVariable("shipmentId") Long shipmentId) {

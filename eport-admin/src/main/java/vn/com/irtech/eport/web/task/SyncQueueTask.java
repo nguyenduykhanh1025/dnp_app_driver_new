@@ -71,6 +71,7 @@ public class SyncQueueTask {
 
 		// Get list update expired dem
 		sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DEM);
+		sysSyncQueueParam.setParams(params);
 		List<SysSyncQueue> sysSyncQueuesDem = sysSyncQueueService
 				.selectSysSyncQueueWithDelayTimeList(sysSyncQueueParam);
 		if (CollectionUtils.isNotEmpty(sysSyncQueuesDem)) {
@@ -225,6 +226,7 @@ public class SyncQueueTask {
 
 		// Get list update det free time
 		sysSyncQueueParam.setSyncType(EportConstants.SYNC_QUEUE_DET);
+		sysSyncQueueParam.setParams(params);
 		List<SysSyncQueue> sysSyncQueuesDet = sysSyncQueueService
 				.selectSysSyncQueueWithDelayTimeList(sysSyncQueueParam);
 		if (CollectionUtils.isNotEmpty(sysSyncQueuesDet)) {
@@ -261,7 +263,7 @@ public class SyncQueueTask {
 
 		// Create process order
 		ProcessOrder processOrder = new ProcessOrder();
-		processOrder.setRemark(syncReference.getRemark());
+		processOrder.setRemark(syncReference.getNewRemark());
 		processOrder.setServiceType(EportConstants.SERVICE_EXTEND_DET);
 		processOrder.setOrderNo(syncReference.getJobOdrNo());
 		processOrder.setContNumber(sysSyncQueues.size());
@@ -272,7 +274,7 @@ public class SyncQueueTask {
 		for (SysSyncQueue syncQueue : sysSyncQueues) {
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setContainerNo(syncQueue.getCntrNo());
-			shipmentDetail.setRemark(syncQueue.getRemark());
+			shipmentDetail.setRemark(syncQueue.getNewRemark());
 			shipmentDetails.add(shipmentDetail);
 			containers += syncQueue.getCntrNo() + ",";
 			syncQueueIds += syncQueue.getId() + ",";

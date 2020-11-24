@@ -292,4 +292,20 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return List<ContainerInfoDto>
 	 */
 	public List<ContainerInfoDto> selectContainerInfoByCntrInfo(ContainerInfoDto cntrInfo);
+
+	/**
+	 * Get partner info
+	 * 
+	 * @param PartnerInfoDto partnerInfoDto
+	 * @return PartnerInfoDto
+	 */
+	public PartnerInfoDto getPartnerInfo(PartnerInfoDto partnerInfoDto);
+
+	/**
+	 * Select container info from table reserve
+	 * 
+	 * @param containerNos
+	 * @return List<ContainerInfoDto>
+	 */
+	public List<ContainerInfoDto> selectContainerInfoFromReserve(String[] containerNos);
 }

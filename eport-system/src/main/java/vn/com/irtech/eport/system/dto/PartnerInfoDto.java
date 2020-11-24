@@ -13,6 +13,8 @@ public class PartnerInfoDto implements Serializable {
 	private String taxCode;
 	private String groupName;
 	private String address;
+	private String ptnrCode;
+	private String ptnrType;
 
 	public String getTaxCode() {
 		return taxCode;
@@ -36,6 +38,22 @@ public class PartnerInfoDto implements Serializable {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getPtnrCode() {
+		return ptnrCode;
+	}
+
+	public void setPtnrCode(String ptnrCode) {
+		this.ptnrCode = ptnrCode;
+	}
+
+	public String getPtnrType() {
+		return ptnrType;
+	}
+
+	public void setPtnrType(String ptnrType) {
+		this.ptnrType = ptnrType;
 	}
 
 }

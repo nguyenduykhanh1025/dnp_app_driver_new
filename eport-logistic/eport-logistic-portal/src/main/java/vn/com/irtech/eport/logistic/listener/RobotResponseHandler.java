@@ -571,7 +571,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 				sendExportReceiptToRobot(reqProcessOrder, robot.getUuId());
 				break;
 			case EportConstants.SERVICE_EXTEND_DET:
-				sendExtendDateOrderToRobot(reqProcessOrder, robot.getUuId());
+				sendExtendDetOrderToRobot(reqProcessOrder, robot.getUuId());
 				break;
 			}
 			return "1";
@@ -734,7 +734,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 		// Update SysSyncQueue
 		SysSyncQueue syncQueueUpdate = new SysSyncQueue();
-		syncQueueUpdate.setProcessOrderId(processOrderId);
+		Map<String, Object> params = new HashMap<>();
+		params.put("processOrderId", processOrderId);
+		syncQueueUpdate.setParams(params);
 		if ("success".equalsIgnoreCase(result)) {
 			processOrder.setStatus(2); // FINISH
 			processOrder.setResult("S"); // RESULT SUCESS
@@ -784,7 +786,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 		// Update SysSyncQueue
 		SysSyncQueue syncQueueUpdate = new SysSyncQueue();
-		syncQueueUpdate.setProcessOrderId(processOrderId);
+		syncQueueUpdate.setSyncType(EportConstants.SYNC_QUEUE_DET);
+		Map<String, Object> params = new HashMap<>();
+		params.put("processOrderId", processOrderId);
 		if ("success".equalsIgnoreCase(result)) {
 			processOrder.setStatus(2); // FINISH
 			processOrder.setResult("S"); // RESULT SUCESS

@@ -474,7 +474,7 @@
                     ELSE M.CNTR_STATE
                 END AS containerStatus,
 				REMARK AS containerRemark,
-				BLOCK || '-' || BAY || '-' || ROWW || '-' || TIER AS location
+				BLOCK || '-' || BAY || '-' || ROWW || '-' || TIER AS location,
 				M.IMDG AS dangerousImo,
 				M.UNNO AS dangerousUnno,
 				NULL AS ovHeight,
@@ -1113,4 +1113,29 @@
 		ORDER BY t.vsl_cd ASC
 		FETCH NEXT 1 ROWS ONLY
 	</select>
+
+	<select id="getPartnerInfo" resultType="vn.com.irtech.api.dto.PartnerInfoDto">
+		SELECT
+	    	ENG_SNM as groupName,
+	    	ADDR as address
+		FROM DNP_PROD.TB_PTNR
+		<where> 
+		    AND UNUSED_CHK = 'N' 
+		    AND ROWNUM = 1
+			<if test="ptnrType != null and ptnrType != ''"> AND PTNR_TYPE = #{ptnrType}</if>
+			<if test="taxCode != null and taxCode != ''"> AND TRIM(REG_NO) = #{taxCode}</if>
+			<if test="ptnrCode != null and ptnrCode != ''"> AND TRIM(PTNR_CODE) = #{ptnrCode}</if>
+		</where>
+	</select>
+
+	<select id="selectContainerInfoFromReserve" parameterType="String" resultType="vn.com.irtech.api.dto.ContainerInfoDto">
+        <include refid="selectContainerDetailVo"/>
+            FROM DNP_PROD.TB_RESERVE M
+        <where>
+            AND M.CNTR_NO in
+			<foreach item="containerNo" collection="array" open="(" separator="," close=")">
+				#{containerNo}
+			</foreach>
+        </where>
+    </select>
 </mapper>

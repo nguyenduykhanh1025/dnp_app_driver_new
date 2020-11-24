@@ -150,6 +150,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		Boolean isExportReceipt = "1"
 				.equals(map.get("isExportReceipt") == null ? null : map.get("isExportReceipt").toString());
 
+		Boolean isExtensionDetOrder = "1"
+				.equals(map.get("isExtensionDetOrder") == null ? null : map.get("isExtensionDetOrder").toString());
+
 		// Check Service robot support anh make into a string split by comma for query db
 		String serviceTypes = "";
 		if (isReceiveContFullOrder) {
@@ -191,6 +194,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		if (isExportReceipt) {
 			serviceTypes += EportConstants.SERVICE_EXPORT_RECEIPT + ",";
 		}
+		if (isExtensionDetOrder) {
+			serviceTypes += EportConstants.SERVICE_EXTEND_DET + ",";
+		}
 		
 		if (serviceTypes.length() > 0) {
 			serviceTypes = serviceTypes.substring(0, serviceTypes.length()-1);
@@ -216,6 +222,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		sysRobot.setIsCancelSendContFullOrder(isCancelSendContFullOrder);
 		sysRobot.setIsCancelReceiveContEmptyOrder(isCancelReceiveContEmptyOrder);
 		sysRobot.setIsExportReceipt(isExportReceipt);
+		sysRobot.setIsExtensionDetOrder(isExtensionDetOrder);
 
 		// check if robot is exists but be disabled then just update robot infor but not validate or assign new order to robot
 		SysRobot robotExist = robotService.selectRobotByUuId(uuId);

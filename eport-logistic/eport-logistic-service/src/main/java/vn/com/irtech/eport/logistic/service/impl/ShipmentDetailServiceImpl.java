@@ -121,6 +121,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		return taxCode;
 	}
 
+	private String getTruckCoName(String taxCode) {
+		PartnerInfoDto partnerInfoDto = new PartnerInfoDto();
+		partnerInfoDto.setPtnrCode(taxCode);
+		partnerInfoDto.setPtnrType(EportConstants.PTNR_TYPE_TRUCKER);
+		return catosApiService.getPartnerInfo(partnerInfoDto).getGroupName();
+	}
+
 	/**
 	 * Get Shipment Details
 	 * 
@@ -536,8 +543,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		processOrder.setConsignee(detail.getConsignee());
 		processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
 		try {
-			processOrder.setTruckCo(
-					getTruckerFromRegNoCatos(taxCode) + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
+			String trucker = getTruckerFromRegNoCatos(taxCode);
+			processOrder.setTruckCo(trucker + " : " + getTruckCoName(trucker));
 		} catch (Exception e) {
 			logger.error("Error when get company name with tax code: " + e);
 		}
@@ -569,7 +576,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		String payerName = "";
 		try {
 			logger.debug("Get payer name for shipment detail by tax code: " + taxCode);
-			payerName = getGroupNameByTaxCode(taxCode).getGroupName();
+			payerName = catosApiService.getGroupNameByTaxCode(taxCode).getGroupName();
 		} catch (Exception e) {
 			logger.error("Error when get payer name for " + payer + ": " + e);
 		}
@@ -635,8 +642,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		processOrder.setConsignee(detail.getConsignee());
 		processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
 		try {
-			processOrder.setTruckCo(
-					getTruckerFromRegNoCatos(taxCode) + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
+			String trucker = getTruckerFromRegNoCatos(taxCode);
+			processOrder.setTruckCo(trucker + " : " + getTruckCoName(trucker));
 		} catch (Exception e) {
 			logger.error("Error when get company name with tax code: " + e);
 		}
@@ -674,7 +681,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		String payerName = "";
 		try {
 			logger.debug("Get payer name for shipment detail by tax code: " + taxCode);
-			payerName = getGroupNameByTaxCode(taxCode).getGroupName();
+			payerName = catosApiService.getGroupNameByTaxCode(taxCode).getGroupName();
 		} catch (Exception e) {
 			logger.error("Error when get payer name for " + payer + ": " + e);
 		}
@@ -739,7 +746,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		String payerName = "";
 		try {
 			logger.debug("Get payer name for shipment detail by tax code: " + taxCode);
-			payerName = getGroupNameByTaxCode(taxCode).getGroupName();
+			payerName = catosApiService.getGroupNameByTaxCode(taxCode).getGroupName();
 		} catch (Exception e) {
 			logger.error("Error when get payer name for " + payer + ": " + e);
 		}
@@ -800,44 +807,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			}
 			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 		}
-	}
-
-	@Override
-	public PartnerInfoDto getGroupNameByTaxCode(String taxCode) throws Exception {
-		// String apiUrl = "https://thongtindoanhnghiep.co/api/company/";
-		// String methodName = "GET";
-		// String readLine = null;
-		// HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl + "/" +
-		// taxCode).openConnection();
-		// connection.setRequestMethod(methodName);
-		// connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1;
-		// WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95
-		// Safari/537.11");
-		//
-		// int responseCode = connection.getResponseCode();
-		// StringBuffer response = new StringBuffer();
-		// if (responseCode == HttpURLConnection.HTTP_OK) {
-		// BufferedReader in = new BufferedReader(new
-		// InputStreamReader(connection.getInputStream()));
-		// while ((readLine = in.readLine()) != null) {
-		// response.append(readLine);
-		// };
-		// in.close();
-		// } else {
-		// String error = responseCode + " : " + methodName + " NOT WORKED";
-		// return error;
-		// }
-		// String str = response.toString();
-		// JsonObject convertedObject = new Gson().fromJson(str, JsonObject.class);
-		// if(convertedObject.get("Title").toString().equals("null"))
-		// {
-		// return null;
-		// }
-		// return convertedObject.get("Title").toString().replace("\"", "");
-		String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/" + taxCode;
-		RestTemplate restTemplate = new RestTemplate();
-		PartnerInfoDto partnerInfoDto = restTemplate.getForObject(url, PartnerInfoDto.class);
-		return partnerInfoDto;
 	}
 
 	@Override
@@ -1449,6 +1418,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Check cont have request status for cont special
 	 * 
 	 * @param shipmentDetail
@@ -1494,5 +1464,107 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			result = true;
 		}
 		return result;
+=======
+	 * Make order loading cargo
+	 * 
+	 * @param shipmentDetails
+	 * @param shipment
+	 * @param taxCode
+	 * @param creditFlag
+	 * @return List<ServiceSendFullRobotReq>
+	 */
+	@Override
+	public List<ServiceSendFullRobotReq> makeOrderLoadingCargo(List<ShipmentDetail> shipmentDetails, Shipment shipment,
+			String taxCode, boolean creditFlag) {
+		if (shipmentDetails.size() > 0) {
+			List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
+			Collections.sort(shipmentDetails, new SztpComparator());
+			String sztp = shipmentDetails.get(0).getSztp();
+			List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				if (!sztp.equals(shipmentDetail.getSztp())) {
+					serviceRobotReq.add(groupShipmentDetailByLoadingCargoOrder(shipmentDetails.get(0).getId(),
+							shipmentOrderList, shipment, taxCode, creditFlag));
+					sztp = shipmentDetail.getSztp();
+					shipmentOrderList = new ArrayList<>();
+				}
+				shipmentOrderList.add(shipmentDetail);
+			}
+			serviceRobotReq.add(groupShipmentDetailByLoadingCargoOrder(shipmentDetails.get(0).getId(),
+					shipmentOrderList, shipment, taxCode, creditFlag));
+			return serviceRobotReq;
+		}
+		return null;
+	}
+
+	@Transactional
+	private ServiceSendFullRobotReq groupShipmentDetailByLoadingCargoOrder(Long registerNo,
+			List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag) {
+		ShipmentDetail detail = shipmentDetails.get(0);
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setModee("Pickup By Booking");
+		processOrder.setConsignee(detail.getConsignee());
+		processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
+		try {
+			String trucker = getTruckerFromRegNoCatos(taxCode);
+			processOrder.setTruckCo(trucker + " : " + getTruckCoName(trucker));
+		} catch (Exception e) {
+			logger.error("Error when get company name with tax code: " + e);
+		}
+		processOrder.setTaxCode(taxCode);
+		if (creditFlag) {
+			processOrder.setPayType("Credit");
+		} else {
+			processOrder.setPayType("Cash");
+		}
+		ProcessOrder tempProcessOrder = getYearBeforeAfter(detail.getVslNm(), detail.getVoyNo());
+		if (tempProcessOrder != null) {
+			processOrder.setYear(tempProcessOrder.getYear());
+			processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
+		} else {
+			processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
+			processOrder.setBeforeAfter("Before");
+		}
+		processOrder.setTrucker(getTruckerFromRegNoCatos(taxCode));
+		// Set booking no with booking removed all non word character
+		processOrder.setBookingNo(detail.getBookingNo().replaceAll("\\W", ""));
+		processOrder.setPickupDate(detail.getExpiredDem());
+		processOrder.setVessel(detail.getVslNm());
+		processOrder.setVoyage(detail.getVoyNo());
+		processOrder.setSztp(detail.getSztp());
+		processOrder.setContNumber(shipmentDetails.size());
+		processOrder.setShipmentId(shipment.getId());
+		processOrder.setCargoType("MT");
+		processOrder.setPod(detail.getDischargePort());
+		processOrder.setOpr(detail.getOpeCode());
+		processOrder.setPol("VNDAD");
+		processOrder.setRunnable(false);
+		processOrder.setStatus(1); // on progress
+		processOrder.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		processOrderService.insertProcessOrder(processOrder);
+		String payer = taxCode;
+		String payerName = "";
+		try {
+			logger.debug("Get payer name for shipment detail by tax code: " + taxCode);
+			payerName = catosApiService.getGroupNameByTaxCode(taxCode).getGroupName();
+		} catch (Exception e) {
+			logger.error("Error when get payer name for " + payer + ": " + e);
+		}
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			shipmentDetail.setProcessOrderId(processOrder.getId());
+			shipmentDetail.setRegisterNo(registerNo.toString());
+			shipmentDetail.setPayer(payer);
+			shipmentDetail.setPayerName(payerName);
+			if (creditFlag) {
+				shipmentDetail.setPayType("Credit");
+			} else {
+				shipmentDetail.setPayType("Cash");
+			}
+			shipmentDetail.setUserVerifyStatus("Y");
+			shipmentDetail.setProcessStatus("W");
+			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+		}
+		return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+>>>>>>> be144a380a6421493f12997e5b31605a13be36cc
 	}
 }

@@ -314,4 +314,19 @@ public interface ICatosApiService {
 	 */
 	public List<ContainerInfoDto> getContainerInfoListByCondition(ContainerInfoDto containerInfoDto);
 
+	/**
+	 * Get partner info
+	 * 
+	 * @param PartnerInfoDto partnerInfoParam
+	 * @return PartnerInfoDto
+	 */
+	public PartnerInfoDto getPartnerInfo(PartnerInfoDto partnerInfoParam);
+
+	/**
+	 * Get container info from table reserve catos
+	 * 
+	 * @param String containerNos
+	 * @return List<ContainerInfoDto>
+	 */
+	public List<ContainerInfoDto> getContainerInfoReserve(String containerNos);
 }
