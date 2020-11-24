@@ -1643,14 +1643,13 @@ function renderIconsStatusServiceTypePickupFull(
     console.log("dischargePort");
     console.log(sourceData[row].dischargePort);
     
+ // Domestic cont: VN --> not show
     if (sourceData[row].dischargePort.substring(0, 2) != "VN") {
         content += customs;
       }
     
     content += process + payment + doStatus + released;
-    // Domestic cont: VN --> not show
-    
-    
+     
     /*if (sourceData[row].dischargePort.substring(0, 2) != "VN") {
         content += customs;
       }*/

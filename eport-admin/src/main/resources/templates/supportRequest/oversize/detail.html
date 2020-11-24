@@ -1,448 +1,192 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Khai báo chung</title>
-    <th:block th:include="include :: header('Khai báo chung')" />
-    <th:block th:include="include :: datetimepicker-css" />
-    <th:block th:include="include :: dropzone-css" />
-    <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
-    <link rel="stylesheet" th:href="@{/eport/css/supportRequest/detail.css}" />
-  </head>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Khai báo chung</title>
+<th:block th:include="include :: header('Khai báo chung')" />
+<th:block th:include="include :: datetimepicker-css" />
+<th:block th:include="include :: dropzone-css" />
+<link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
+<link rel="stylesheet" th:href="@{/eport/css/supportRequest/detail.css}" />
+</head>
 
-  <body>
-    <div class="container-fluid">
-      <form id="form-detail-add" class="form-horizontal">
-        <div class="form-horizontal mt10">
-          <div class="form-group col-sm-6">
-            <label class="control-label col-sm-4 col-xs-6" for="cont"
-              ><b class="text-black">Số container:</b></label
-            >
-            <div class="col-sm-8 col-xs-6">
-              <input
-                type="text"
-                class="form-control"
-                id="containerNo"
-                readonly
-              />
-            </div>
-          </div>
-          <div class="form-group col-sm-6">
-            <label class="control-label col-sm-4 col-xs-6" for="size"
-              ><b class="text-black">Kích thước:</b></label
-            >
-            <div class="col-sm-8 col-xs-6">
-              <input type="text" class="form-control" id="sztp" readonly />
-            </div>
-          </div>
-        </div>
-        <div
-          class="col-sm-12 text-black"
-          style="height: 500px; overflow-y: auto"
-        >
-          <section class="tabs">
-            <!-- <input
-              id="tab-1"
-              type="radio"
-              name="radio-set"
-              class="tab-selector-1"
-              checked="checked"
-            />
-            <label for="tab-1" class="tab-label-1">Thông tin chung</label> -->
+<body>
+	<div class="container-fluid">
+		<form id="form-detail-add" class="form-horizontal">
+			<div class="form-horizontal mt10">
+				<div class="form-group col-sm-6">
+					<label class="control-label col-sm-4 col-xs-6" for="cont"><b class="text-black">Số container:</b></label>
+					<div class="col-sm-8 col-xs-6">
+						<input type="text" class="form-control" id="containerNo" readonly />
+					</div>
+				</div>
+				<div class="form-group col-sm-6">
+					<label class="control-label col-sm-4 col-xs-6" for="size"><b class="text-black">Kích thước:</b></label>
+					<div class="col-sm-8 col-xs-6">
+						<input type="text" class="form-control" id="sztp" readonly />
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-12 text-black" style="height: 500px; overflow-y: auto">
+				<section class="tabs"> 
+					<input id="tab-2" type="radio" name="radio-set" class="tab-selector-2" checked="checked" /> 
+						<label for="tab-2" class="tab-label-2">Quá khổ</label>
+ 
+					<div class="clear"></div>
 
-            <input
-              id="tab-2"
-              type="radio"
-              name="radio-set"
-              class="tab-selector-2"
-              checked="checked"
-            />
-            <label for="tab-2" class="tab-label-2">Quá khổ</label>
+					<div class="content">
+						<div class="content-1">
+							<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc; height: 40px; margin-bottom: 5px;">
+								<div class="form-group col-sm-4 row">
+									<label class="control-label col-sm-4 col-xs-6"><b class="text-black">VGM:</b></label>
+									<div class="col-sm-8 col-xs-6">
+										<input type="hidden" value="false" name="vgmChk" /> <input type="checkbox" style="margin-top: 8px" id="vgmChk" value="true" name="vgmChk" />
+									</div>
+								</div>
+								<div class="form-group col-sm-8 row">
+									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Đơn vị kiểm định:</b></span>
+									<div class="col-sm-8 col-xs-6">
+										<input type="text" class="form-control" name="vgmInspectionDepartment" id="inspectionDepartment" />
+									</div>
+									<span class="control-label col-sm-4 col-xs-6 mt5" style="text-align: left"><b class="text-black">Max Gross (kg):</b></span>
+									<div class="col-sm-8 col-xs-6 mt5">
+										<input type="text" class="form-control" name="vgmMaxGross" id="maxGross" />
+									</div>
+								</div>
+							</div>
+							<div class="form-horizontal mt10 row">
+								<div class="form-group col-sm-12 row">
+									<label class="control-label col-sm-3 col-xs-3"><b class="text-black">Nhiệt độ (độ C):</b></label>
+									<div class="col-sm-3 col-xs-3">
+										<input type="text" class="form-control" id="temperature" name="temperature" />
+									</div>
+									<label class="control-label col-sm-3 col-xs-3"><b class="text-black">Ngày cài nhiệt độ:</b></label>
+									<div class="input-group date col-sm-3 col-xs-3" id="datetimepicker1">
+										<input type="text" class="form-control" name="daySetupTemperature" /> 
+											<span class="input-group-addon"> 
+												<span class="glyphicon glyphicon-calendar"></span>
+											</span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group col-sm-12" id="dropzoneIce">
+								<div class="preview-container-ice col-md-12 col-sm-12 col-xs-12"></div>
+							</div>
+						</div>
+						<div class="content-2">
+							<div class="form-horizontal mt10 row">
+								<div class="col-xs-12 p5" style="border-bottom: 1px dashed #ccc; height: 40px; margin-bottom: 5px;">
+									<label class="control-label col-sm-2 col-xs-2 pt0"><b class="text-black">Quá khổ:</b></label>
+									<div class="col-sm-3 col-xs-2">
+										<input type="radio" name="oversize" id="rdOversize" value="F" />&nbsp;Không quá khổ
+									</div>
+									<div class="col-sm-2 col-xs-2">
+										<input type="radio" name="oversize" id="rdOversize" value="T" />&nbsp;Quá khổ
+									</div>
+									<div class="col-sm-5 col-xs-4">(22G0 - dài: 112.5, rộng: 113.2, cao: 223.5 )</div>
+								</div>
+								<span>
+									<div class="col-xs-12 p5" id="categoryOversizeCheckboxes" style="border-bottom: 1px dashed #ccc; height: 40px; margin-bottom: 5px;">
+										<label class="control-label col-sm-2 col-xs-2 pt0"><b class="text-black">Loại:</b></label>
+										<div class="col-sm-2 col-xs-2">
+											<input type="checkbox" class="ipCategoryOversize" name="oversizeCategory" value="OW" />&nbsp;OW
+										</div>
+										<div class="col-sm-2 col-xs-2">
+											<input type="checkbox" name="oversizeCategory" value="OH" class="ipCategoryOversize" />&nbsp;OH
+										</div>
+										<div class="col-sm-2 col-xs-2">
+											<input type="checkbox" name="oversizeCategory" value="OL" class="ipCategoryOversize" />&nbsp;OL
+										</div>
+									</div>
+									<div class="col-xs-12 p5">
+										<label class="control-label col-sm-2 col-xs-2 pt0"><b class="text-black">Bên trên (cm):</b></label>
+										<div class="col-sm-2 col-xs-2">
+											<input name="oversizeTop" id="oversizeTop" type="text" class="form-control" />
+										</div>
+										<label class="control-label col-sm-2 col-xs-2 pt0"><b class="text-black">Bên phải (cm):</b></label>
+										<div class="col-sm-2 col-xs-2">
+											<input name="oversizeRight" id="oversizeRight" type="text" class="form-control" />
+										</div>
+										<label class="control-label col-sm-2 col-xs-2 pt0"><b class="text-black">Bên trái (cm):</b></label>
+										<div class="col-sm-2 col-xs-2">
+											<input name="oversizeLeft" id="oversizeLeft" type="text" class="form-control" />
+										</div>
+										<label class="control-label col-sm-2 col-xs-2 pt5 pl0"><b class="text-black">Phía trước (cm):</b></label>
+										<div class="col-sm-2 col-xs-2 pt5">
+											<input name="oversizeFront" id="oversizeFront" type="text" class="form-control" />
+										</div>
+										<label class="control-label col-sm-2 col-xs-2 pt5"><b class="text-black">Phía sau (cm):</b></label>
+										<div class="col-sm-2 col-xs-2 pt5">
+											<input name="oversizeBack" id="oversizeBack" type="text" class="form-control" />
+										</div> 
+										<div class="form-group col-sm-12" id="dropzoneOversize">
+											<div class="preview-container-oversize col-md-12 col-sm-12 col-xs-12"></div>
+										</div>
+									</div>
+								</span>
+							</div>
+						</div>
+						<div class="content-3">
+							<div class="form-horizontal mt10 row">
+								<div class="col-xs-12 p5" style="border-bottom: 1px dashed #ccc; height: 40px; margin-bottom: 5px;">
+									<label class="control-label col-sm-3 col-xs-3 pt0"><b class="text-black">Cont nguy hiểm:</b></label>
+									<div class="col-sm-3 col-xs-2">
+										<input type="radio" name="dangerous" value="F" />&nbsp;Cont bình thường
+									</div>
+									<div class="col-sm-3 col-xs-3">
+										<input type="radio" name="dangerous" id="rdDangerous" value="T" />&nbsp;Cont nguy hiểm
+									</div>
+								</div>
+								<span id="dangerousFormContainer">
+									<div class="col-xs-12 p5" style="border-bottom: 1px dashed #ccc; height: 40px; margin-bottom: 5px;">
+										<label class="control-label col-sm-3 col-xs-3 pt0 asterisk"><b class="text-black">IMO:</b></label>
+										<div class="col-sm-6 col-xs-6">
+											<select class="form-control" id="dgIMO" name="dangerousImo" required>
+												<option selected></option>
+											</select>
+										</div>
+									</div>
+									<div class="col-xs-12 p5" style="border-bottom: 1px dashed #ccc; height: 40px; margin-bottom: 5px;">
+										<label class="control-label col-sm-3 col-xs-3 pt0 asterisk"><b class="text-black">UNNO:</b></label>
+										<div class="col-sm-6 col-xs-6">
+											<select class="form-control" id="dgUNNO" name="dangerousUnno" required>
+												<option selected></option>
+											</select>
+										</div>
+									</div>
+									<div class="col-xs-12 p5" style="border-bottom: 1px dashed #ccc; height: 40px; margin-bottom: 5px;">
+										<label class="control-label col-sm-3 col-xs-3 pt0"><b class="text-black">Tên hàng hóa:</b></label>
+										<div class="col-sm-6 col-xs-6">
+											<input type="text" class="form-control" id="dgNameProduct" name="dangerousNameProduct" />
+										</div>
+									</div>
+									<div class="col-xs-12 p5">
+										<label class="control-label col-sm-3 col-xs-3 pt0"><b class="text-black">Quy cách đóng gói:</b></label>
+										<div class="col-sm-6 col-xs-6">
+											<input type="text" class="form-control" id="dgPacking" name="dangerousPacking" />
+										</div>
+									</div>
 
-            <!-- <input
-              id="tab-3"
-              type="radio"
-              name="radio-set"
-              class="tab-selector-3"
-            />
-            <label for="tab-3" class="tab-label-3">Nguy hiểm</label> -->
-
-            <div class="clear"></div>
-
-            <div class="content">
-              <div class="content-1">
-                <div
-                  class="form-horizontal mt10 row"
-                  style="
-                    border-bottom: 1px dashed #ccc;
-                    height: 40px;
-                    margin-bottom: 5px;
-                  "
-                >
-                  <div class="form-group col-sm-4 row">
-                    <label class="control-label col-sm-4 col-xs-6"
-                      ><b class="text-black">VGM:</b></label
-                    >
-                    <div class="col-sm-8 col-xs-6">
-                      <input type="hidden" value="false" name="vgmChk" />
-                      <input
-                        type="checkbox"
-                        style="margin-top: 8px"
-                        id="vgmChk"
-                        value="true"
-                        name="vgmChk"
-                      />
-                    </div>
-                  </div>
-                  <div class="form-group col-sm-8 row">
-                    <span
-                      class="control-label col-sm-4 col-xs-6"
-                      style="text-align: left"
-                      ><b class="text-black">Đơn vị kiểm định:</b></span
-                    >
-                    <div class="col-sm-8 col-xs-6">
-                      <input
-                        type="text"
-                        class="form-control"
-                        name="vgmInspectionDepartment"
-                        id="inspectionDepartment"
-                      />
-                    </div>
-                    <span
-                      class="control-label col-sm-4 col-xs-6 mt5"
-                      style="text-align: left"
-                      ><b class="text-black">Max Gross (kg):</b></span
-                    >
-                    <div class="col-sm-8 col-xs-6 mt5">
-                      <input
-                        type="text"
-                        class="form-control"
-                        name="vgmMaxGross"
-                        id="maxGross"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="form-horizontal mt10 row">
-                  <div class="form-group col-sm-12 row">
-                    <label class="control-label col-sm-3 col-xs-3"
-                      ><b class="text-black">Nhiệt độ (độ C):</b></label
-                    >
-                    <div class="col-sm-3 col-xs-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="temperature"
-                        name="temperature"
-                      />
-                    </div>
-                    <label class="control-label col-sm-3 col-xs-3"
-                      ><b class="text-black">Ngày cài nhiệt độ:</b></label
-                    >
-                    <div
-                      class="input-group date col-sm-3 col-xs-3"
-                      id="datetimepicker1"
-                    >
-                      <input
-                        type="text"
-                        class="form-control"
-                        name="daySetupTemperature"
-                      />
-                      <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group col-sm-12" id="dropzoneIce">
-                  <div
-                    class="preview-container-ice col-md-12 col-sm-12 col-xs-12"
-                  ></div>
-                </div>
-              </div>
-              <div class="content-2">
-                <div class="form-horizontal mt10 row">
-                  <div
-                    class="col-xs-12 p5"
-                    style="
-                      border-bottom: 1px dashed #ccc;
-                      height: 40px;
-                      margin-bottom: 5px;
-                    "
-                  >
-                    <label class="control-label col-sm-2 col-xs-2 pt0"
-                      ><b class="text-black">Quá khổ:</b></label
-                    >
-                    <div class="col-sm-3 col-xs-2">
-                      <input
-                        type="radio"
-                        name="oversize"
-                        id="rdOversize"
-                        value="F"
-                      />&nbsp;Không quá khổ
-                    </div>
-                    <div class="col-sm-2 col-xs-2">
-                      <input
-                        type="radio"
-                        name="oversize"
-                        id="rdOversize"
-                        value="T"
-                      />&nbsp;Quá khổ
-                    </div>
-                    <div class="col-sm-5 col-xs-4">
-                      (22G0 - dài: 112.5, rộng: 113.2, cao: 223.5 )
-                    </div>
-                  </div>
-                  <span>
-                    <div
-                      class="col-xs-12 p5"
-                      id="categoryOversizeCheckboxes"
-                      style="
-                        border-bottom: 1px dashed #ccc;
-                        height: 40px;
-                        margin-bottom: 5px;
-                      "
-                    >
-                      <label class="control-label col-sm-2 col-xs-2 pt0"
-                        ><b class="text-black">Loại:</b></label
-                      >
-                      <div class="col-sm-2 col-xs-2">
-                        <input
-                          type="checkbox"
-                          class="ipCategoryOversize"
-                          name="oversizeCategory"
-                          value="OW"
-                        />&nbsp;OW
-                      </div>
-                      <div class="col-sm-2 col-xs-2">
-                        <input
-                          type="checkbox"
-                          name="oversizeCategory"
-                          value="OH"
-                          class="ipCategoryOversize"
-                        />&nbsp;OH
-                      </div>
-                      <div class="col-sm-2 col-xs-2">
-                        <input
-                          type="checkbox"
-                          name="oversizeCategory"
-                          value="OL"
-                          class="ipCategoryOversize"
-                        />&nbsp;OL
-                      </div>
-                    </div>
-                    <div class="col-xs-12 p5">
-                      <label class="control-label col-sm-2 col-xs-2 pt0"
-                        ><b class="text-black">Bên trên (cm):</b></label
-                      >
-                      <div class="col-sm-2 col-xs-2">
-                        <input
-                          name="oversizeTop"
-                          id="oversizeTop"
-                          type="text"
-                          class="form-control"
-                        />
-                      </div>
-                      <label class="control-label col-sm-2 col-xs-2 pt0"
-                        ><b class="text-black">Bên phải (cm):</b></label
-                      >
-                      <div class="col-sm-2 col-xs-2">
-                        <input
-                          name="oversizeRight"
-                          id="oversizeRight"
-                          type="text"
-                          class="form-control"
-                        />
-                      </div>
-                      <label class="control-label col-sm-2 col-xs-2 pt0"
-                        ><b class="text-black">Bên trái (cm):</b></label
-                      >
-                      <div class="col-sm-2 col-xs-2">
-                        <input
-                          name="oversizeLeft"
-                          id="oversizeLeft"
-                          type="text"
-                          class="form-control"
-                        />
-                      </div>
-                      <label class="control-label col-sm-2 col-xs-2 pt5 pl0"
-                        ><b class="text-black">Phía trước (cm):</b></label
-                      >
-                      <div class="col-sm-2 col-xs-2 pt5">
-                        <input
-                          name="oversizeFront"
-                          id="oversizeFront"
-                          type="text"
-                          class="form-control"
-                        />
-                      </div>
-                      <label class="control-label col-sm-2 col-xs-2 pt5"
-                        ><b class="text-black">Phía sau (cm):</b></label
-                      >
-                      <div class="col-sm-2 col-xs-2 pt5">
-                        <input
-                          name="oversizeBack"
-                          id="oversizeBack"
-                          type="text"
-                          class="form-control"
-                        />
-                      </div>
-
-                      <div class="form-group col-sm-12" id="dropzoneOversize">
-                        <div
-                          class="preview-container-oversize col-md-12 col-sm-12 col-xs-12"
-                        ></div>
-                      </div>
-                    </div>
-                  </span>
-                </div>
-              </div>
-              <div class="content-3">
-                <div class="form-horizontal mt10 row">
-                  <div
-                    class="col-xs-12 p5"
-                    style="
-                      border-bottom: 1px dashed #ccc;
-                      height: 40px;
-                      margin-bottom: 5px;
-                    "
-                  >
-                    <label class="control-label col-sm-3 col-xs-3 pt0"
-                      ><b class="text-black">Cont nguy hiểm:</b></label
-                    >
-                    <div class="col-sm-3 col-xs-2">
-                      <input
-                        type="radio"
-                        name="dangerous"
-                        value="F"
-                      />&nbsp;Cont bình thường
-                    </div>
-                    <div class="col-sm-3 col-xs-3">
-                      <input
-                        type="radio"
-                        name="dangerous"
-                        id="rdDangerous"
-                        value="T"
-                      />&nbsp;Cont nguy hiểm
-                    </div>
-                  </div>
-                  <span id="dangerousFormContainer">
-                    <div
-                      class="col-xs-12 p5"
-                      style="
-                        border-bottom: 1px dashed #ccc;
-                        height: 40px;
-                        margin-bottom: 5px;
-                      "
-                    >
-                      <label
-                        class="control-label col-sm-3 col-xs-3 pt0 asterisk"
-                        ><b class="text-black">IMO:</b></label
-                      >
-                      <div class="col-sm-6 col-xs-6">
-                        <select
-                          class="form-control"
-                          id="dgIMO"
-                          name="dangerousImo"
-                          required
-                        >
-                          <option selected></option>
-                        </select>
-                      </div>
-                    </div>
-                    <div
-                      class="col-xs-12 p5"
-                      style="
-                        border-bottom: 1px dashed #ccc;
-                        height: 40px;
-                        margin-bottom: 5px;
-                      "
-                    >
-                      <label
-                        class="control-label col-sm-3 col-xs-3 pt0 asterisk"
-                        ><b class="text-black">UNNO:</b></label
-                      >
-                      <div class="col-sm-6 col-xs-6">
-                        <select
-                          class="form-control"
-                          id="dgUNNO"
-                          name="dangerousUnno"
-                          required
-                        >
-                          <option selected></option>
-                        </select>
-                      </div>
-                    </div>
-                    <div
-                      class="col-xs-12 p5"
-                      style="
-                        border-bottom: 1px dashed #ccc;
-                        height: 40px;
-                        margin-bottom: 5px;
-                      "
-                    >
-                      <label class="control-label col-sm-3 col-xs-3 pt0"
-                        ><b class="text-black">Tên hàng hóa:</b></label
-                      >
-                      <div class="col-sm-6 col-xs-6">
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="dgNameProduct"
-                          name="dangerousNameProduct"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-xs-12 p5">
-                      <label class="control-label col-sm-3 col-xs-3 pt0"
-                        ><b class="text-black">Quy cách đóng gói:</b></label
-                      >
-                      <div class="col-sm-6 col-xs-6">
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="dgPacking"
-                          name="dangerousPacking"
-                        />
-                      </div>
-                    </div>
-
-                    <div class="form-group col-sm-12" id="dropzoneDangerous">
-                      <div
-                        class="preview-container-dangerous col-md-12 col-sm-12 col-xs-12"
-                      ></div>
-                    </div>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-        <div
-          class="layui-layer-btn"
-          style="
-            float: right;
-            z-index: 999 !important;
-            position: fixed;
-            right: 0;
-            bottom: 0;
-            text-align: right;
-            padding: 10px 15px 12px;
-            background: #f0f4f7;
-            border-top: 1px #c7c7c7 solid;
-            width: 100%;
-          "
-        >
-          <a class="layui-layer-btn0" onclick="onCloseModel()">Đóng</a>
-        </div>
-      </form>
-    </div>
-    <th:block th:include="include :: footer" />
-    <th:block th:include="include :: datetimepicker-js" />
-    <th:block th:include="include :: dropzone-js" />
-    <script type="text/javascript" th:inline="javascript">
+									<div class="form-group col-sm-12" id="dropzoneDangerous">
+										<div class="preview-container-dangerous col-md-12 col-sm-12 col-xs-12"></div>
+									</div>
+								</span>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+			<div class="layui-layer-btn" style="float: right; z-index: 999 !important; position: fixed; right: 0; bottom: 0; text-align: right; padding: 10px 15px 12px; background: #f0f4f7; border-top: 1px #c7c7c7 solid; width: 100%;">
+				<a class="layui-layer-btn0" onclick="onCloseModel()">Đóng</a>
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: datetimepicker-js" />
+	<th:block th:include="include :: dropzone-js" />
+	<script type="text/javascript" th:inline="javascript">
       /**
        * Data load from server
       */
@@ -457,8 +201,7 @@
       var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
       var shipmentFiles = [[${shipmentFiles}]];
     </script>
-    <script
-      th:src="@{/eport/js/modules/supportRequest/oversize/detail.js?v=20201029}"
-    ></script>
-  </body>
+	<script
+		th:src="@{/eport/js/modules/supportRequest/oversize/detail.js?v=20201029}"></script>
+</body>
 </html>

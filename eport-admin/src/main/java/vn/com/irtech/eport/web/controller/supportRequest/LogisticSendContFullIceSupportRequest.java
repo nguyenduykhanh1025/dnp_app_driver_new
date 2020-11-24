@@ -94,31 +94,7 @@ public class LogisticSendContFullIceSupportRequest extends AdminBaseController {
 	@PostMapping("/shipments")
 	@ResponseBody
 	public AjaxResult getShipments(@RequestBody PageAble<Shipment> param) {
-//		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
-//		AjaxResult ajaxResult = AjaxResult.success();
-//		Shipment shipment = param.getData();
-//		if (shipment == null) {
-//			shipment = new Shipment();
-//		}
-//		
-//
-//		Map<String, Object> params = shipment.getParams();
-//		if (params == null) {
-//			params = new HashMap<>();
-//		}
-//		params.put("sztp", KEY_ICE);
-//
-//		shipment.setParams(params);
-//
-//		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
-//
-//		shipment.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
-//
-//		shipments.addAll(shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment));
-//
-//		ajaxResult.put("shipments", getDataTable(shipments));
-//		return ajaxResult;
-
+ 
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		AjaxResult ajaxResult = AjaxResult.success();
 		Shipment shipment = param.getData();

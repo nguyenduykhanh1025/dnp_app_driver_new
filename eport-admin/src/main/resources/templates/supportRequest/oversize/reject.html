@@ -1,37 +1,35 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <th:block th:include="include :: header('EDO Order Management')" />
-    <th:block th:include="include :: easyui-css" />
-    <th:block th:include="include :: handsontable-css" />
-    <th:block th:include="include :: summernote-css" />
-    <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
-  </head>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<th:block th:include="include :: header('EDO Order Management')" />
+<th:block th:include="include :: easyui-css" />
+<th:block th:include="include :: handsontable-css" />
+<th:block th:include="include :: summernote-css" />
+<link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+</head>
 
-  <body>
-    <div class="container-fluid">
-      <form id="form-detail-add" class="form-horizontal">
-        <div class="form-group col-sm-12">
-          <label class="control-label col-sm-12 col-xs-12" for="size"
-            ><b class="text-black" style="float: left">Lí do từ chối:</b></label
-          >
-          <div class="col-sm-12 col-xs-12">
-            <textarea class="form-control" rows="5" id="content"></textarea>
-          </div>
-        </div>
-        <div class="col-sm-12 layui-layer-btn footer">
-          <a class="layui-layer-btn0" onclick="submitHandler()">Gửi</a>
-        </div>
-      </form>
-    </div>
-    <th:block th:include="include :: footer" />
-    <th:block th:include="include :: easyui-js" />
-    <th:block th:include="include :: summernote-js" />
-    <th:block th:include="include :: handsontable-js" />
+<body>
+	<div class="container-fluid">
+		<form id="form-detail-add" class="form-horizontal">
+			<div class="form-group col-sm-12">
+				<label class="control-label col-sm-12 col-xs-12" for="size"><b class="text-black" style="float: left">Lí do từ chối:</b></label>
+				<div class="col-sm-12 col-xs-12">
+					<textarea class="form-control" rows="5" id="content"></textarea>
+				</div>
+			</div>
+			<div class="col-sm-12 layui-layer-btn footer">
+				<a class="layui-layer-btn0" onclick="submitHandler()">Gửi</a>
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: easyui-js" />
+	<th:block th:include="include :: summernote-js" />
+	<th:block th:include="include :: handsontable-js" />
 
-    <script type="text/javascript" th:inline="javascript">
+	<script type="text/javascript" th:inline="javascript">
       /**
        * Data load from server
       */
@@ -41,8 +39,7 @@
       var containerNos = [[${containerNos}]]
       var serviceType = [[${serviceType}]]
     </script>
-    <script
-      th:src="@{/eport/js/modules/supportRequest/oversize/reject.js?v=20201029}"
-    ></script>
-  </body>
+	<script
+		th:src="@{/eport/js/modules/supportRequest/oversize/reject.js?v=20201029}"></script>
+</body>
 </html>
