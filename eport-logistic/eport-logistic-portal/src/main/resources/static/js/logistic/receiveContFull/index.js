@@ -565,13 +565,13 @@ function getRequestConfigIcon(row) {
 	  if (!statusResult) {
 	    return "";
 	  } else if (statusResult == CONT_SPECIAL_STATUS.YES) {
-	    return '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhật đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
+	    return '<i id="verify" class="fa fa-check easyui-tooltip" title="Yêu cầu xác nhật đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
 	  } else if (statusResult == CONT_SPECIAL_STATUS.CANCEL) {
-	    return '<i id="verify" class="fa fa-user-circle-o" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
+	    return '<i id="verify" class="fa fa-check easyui-tooltip" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>';
 	  } else if (statusResult == CONT_SPECIAL_STATUS.REQ) {
-	    return '<i id="verify" class="fa fa-user-circle-o" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>';
+	    return '<i id="verify" class="fa fa-check easyui-tooltip" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>';
 	  } else if (statusResult == CONT_SPECIAL_STATUS.INIT) {
-	    return '<i id="verify" class="fa fa-user-circle-o" title="Có thể yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db"></i>';
+	    return '<i id="verify" class="fa fa-check easyui-tooltip" title="Có thể yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db"></i>';
 	  }
 	}
 
@@ -579,13 +579,11 @@ function getRequestConfigIcon(row) {
 
 function getStatusContFollowIndex(index) {
 	
-	console.log("Status");
+	/*console.log("Status");
 	console.log("1"+ sourceData[index].oversize);
 	console.log("2"+ sourceData[index].dangerous);
-	console.log("3"+ sourceData[index].frozenStatus);
-	 
-	 
-	 
+	console.log("3"+ sourceData[index].frozenStatus);*/
+	  
 	  if (
 	    !sourceData[index].oversize &&
 	    !sourceData[index].dangerous &&

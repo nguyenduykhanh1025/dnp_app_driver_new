@@ -90,7 +90,7 @@ public class ShipmentDetailEntity extends BaseEntity
     private String emptyDepot;
 
     /** VGM Check */
-    private Long vgmChk;
+    private String vgmChk;
 
     /** VGM */
     private String vgm;
@@ -444,16 +444,16 @@ public class ShipmentDetailEntity extends BaseEntity
     {
         return emptyDepot;
     }
-    public void setVgmChk(Long vgmChk) 
-    {
-        this.vgmChk = vgmChk;
-    }
+    
+    public String getVgmChk() {
+		return vgmChk;
+	}
 
-    public Long getVgmChk() 
-    {
-        return vgmChk;
-    }
-    public void setVgm(String vgm) 
+	public void setVgmChk(String vgmChk) {
+		this.vgmChk = vgmChk;
+	}
+
+	public void setVgm(String vgm) 
     {
         this.vgm = vgm;
     }

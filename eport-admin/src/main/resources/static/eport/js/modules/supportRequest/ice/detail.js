@@ -50,6 +50,7 @@ function initValueToElementHTML() {
   if (shipmentDetail) {
     $("#containerNo").val(shipmentDetail.containerNo);
     $("#sztp").val(shipmentDetail.sztp);
+    $("#powerDrawDate").val(shipmentDetail.powerDrawDate); 
     const {
       vgmChk,
       vgmInspectionDepartment,

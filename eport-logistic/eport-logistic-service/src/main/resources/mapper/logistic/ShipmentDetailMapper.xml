@@ -152,7 +152,7 @@
 		delivery_address, delivery_mobile, delivery_remark, eta, etd,
 		container_remark, det_free_time,
 		create_by, create_time, update_by,
-		update_time from
+		update_time,power_draw_date from
 		shipment_detail
 	</sql>
 	<select id="countShipmentDetailList"
