@@ -332,4 +332,16 @@ public interface IShipmentDetailService {
 	 * @return int
 	 */
 	public int updateShipmentDetailByCondition(ShipmentDetail shipmentDetail);
+
+	/**
+	 * Make order loading cargo
+	 * 
+	 * @param shipmentDetails
+	 * @param shipment
+	 * @param taxCode
+	 * @param creditFlag
+	 * @return List<ServiceSendFullRobotReq>
+	 */
+	public List<ServiceSendFullRobotReq> makeOrderLoadingCargo(List<ShipmentDetail> shipmentDetails, Shipment shipment,
+			String taxCode, boolean creditFlag);
 }

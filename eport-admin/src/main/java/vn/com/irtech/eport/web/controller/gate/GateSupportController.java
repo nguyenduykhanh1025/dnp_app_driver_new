@@ -129,11 +129,11 @@ public class GateSupportController extends BaseController {
 		// no need to save gate detection
 
 		Object sensorObj = CacheUtils.get("sensorInfo_" + detection.getGateId());
-		@SuppressWarnings("unchecked")
-		List<Integer> sensorRes = (List<Integer>) sensorObj;
-		if (CollectionUtils.isNotEmpty(sensorRes) && sensorRes.size() >= 3) {
-			if ((sensorRes.get(0) == 0 && sensorRes.get(1) == 0 && sensorRes.get(2) == 0)
-					|| (sensorRes.get(0) == 1 && sensorRes.get(1) == 0 && sensorRes.get(2) == 1)) {
+		SensorResult sensorRes = (SensorResult) sensorObj;
+		List<Integer> sensorList = sensorRes.getSensors();
+		if (CollectionUtils.isNotEmpty(sensorList) && sensorList.size() >= 3) {
+			if ((sensorList.get(0) == 0 && sensorList.get(1) == 0 && sensorList.get(2) == 0)
+					|| (sensorList.get(0) == 1 && sensorList.get(1) == 0 && sensorList.get(2) == 1)) {
 				return success();
 			}
 		}

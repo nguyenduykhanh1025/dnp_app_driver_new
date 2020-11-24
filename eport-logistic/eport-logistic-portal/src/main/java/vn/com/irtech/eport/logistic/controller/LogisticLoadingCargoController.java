@@ -45,22 +45,20 @@ import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
+import vn.com.irtech.eport.logistic.domain.CfsHouseBill;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
-import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.dto.BerthPlanInfo;
-import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
 import vn.com.irtech.eport.logistic.listener.MqttService;
-import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.ICfsHouseBillService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
-import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
@@ -69,12 +67,12 @@ import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Controller
 @RequiresPermissions("logistic:order")
-@RequestMapping("/logistic/receive-cont-empty")
-public class LogisticReceiveContEmptyController extends LogisticBaseController {
+@RequestMapping("/logistic/loading-cargo")
+public class LogisticLoadingCargoController extends LogisticBaseController {
 
-	private static final Logger logger = LoggerFactory.getLogger(LogisticReceiveContEmptyController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LogisticLoadingCargoController.class);
 
-	private final String PREFIX = "logistic/receiveContEmpty";
+	private final String PREFIX = "logistic/loadingCargo";
 
 	@Autowired
 	private ServerConfig serverConfig;
@@ -89,19 +87,10 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	private IShipmentDetailService shipmentDetailService;
 
 	@Autowired
-	private IOtpCodeService otpCodeService;
-
-	@Autowired
 	private MqttService mqttService;
 
 	@Autowired
 	private ICatosApiService catosApiService;
-
-//	@Autowired
-//	private ICarrierGroupService carrierService;
-
-	@Autowired
-	private IProcessBillService processBillService;
 
 	@Autowired
 	private ConfigService configService;
@@ -110,7 +99,13 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	private DictService dictService;
 
 	@Autowired
+	private IOtpCodeService otpCodeService;
+
+	@Autowired
 	private IShipmentCommentService shipmentCommentService;
+
+	@Autowired
+	private ICfsHouseBillService cfsHouseBillService;
 
 	// VIEW RECEIVE CONT EMPTY
 	@GetMapping()
@@ -169,6 +164,16 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		return PREFIX + "/edit";
 	}
 
+	@GetMapping("/req/supply/confirmation")
+	public String getSupplyConfirmationForm() {
+		return PREFIX + "/confirmRequestCont";
+	}
+
+	@GetMapping("/req/cancel/confirmation")
+	public String getCancelConfirmationForm() {
+		return PREFIX + "/confirmRequestCancel";
+	}
+
 	// FORM CONFIRM LIST CONT TO VERIFY OTP
 	@GetMapping("/otp/cont-list/confirmation/{shipmentDetailIds}")
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds,
@@ -181,6 +186,17 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			mmap.put("shipmentDetails", shipmentDetails);
 		}
 		return PREFIX + "/checkContListBeforeVerify";
+	}
+
+	@GetMapping("/shipment-detail/{shipmentDetailId}/house-bill")
+	public String getCfsHouseBill(@PathVariable("shipmentDetailId") Long shipmentDetailId, ModelMap mmap) {
+		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		if (shipmentDetail != null && getUser().getGroupId().equals(shipmentDetail.getLogisticGroupId())) {
+			mmap.put("masterBill", shipmentDetail.getBookingNo());
+			mmap.put("containerNo", shipmentDetail.getContainerNo());
+			mmap.put("shipmentDetailId", shipmentDetailId);
+		}
+		return PREFIX + "/houseBill";
 	}
 
 	// FORM TO VERIFY OTP
@@ -197,32 +213,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		return PREFIX + "/verifyOtp";
 	}
 
-	// FORM SHOW BILL TO PAY
-	@GetMapping("/payment/{processOrderIds}")
-	public String paymentForm(@PathVariable("processOrderIds") String processOrderIds, ModelMap mmap) {
-		String shipmentDetailIds = "";
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderIds);
-		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			shipmentDetailIds += shipmentDetail.getId() + ",";
-		}
-		if (!"".equalsIgnoreCase(shipmentDetailIds)) {
-			shipmentDetailIds.substring(0, shipmentDetailIds.length() - 1);
-		}
-		mmap.put("shipmentDetailIds", shipmentDetailIds);
-		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
-		return PREFIX + "/paymentForm";
-	}
-
-	@GetMapping("/req/supply/confirmation")
-	public String getSupplyConfirmationForm() {
-		return PREFIX + "/confirmRequestCont";
-	}
-
-	@GetMapping("/req/cancel/confirmation")
-	public String getCancelConfirmationForm() {
-		return PREFIX + "/confirmRequestCancel";
-	}
-
 	// CHECK BOOKING NO IS UNIQUE
 	@PostMapping("/unique/booking-no")
 	@ResponseBody
@@ -235,9 +225,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBookingNo(bookingNo);
 		shipment.setServiceType(Constants.RECEIVE_CONT_EMPTY);
-//		if(catosApiService.checkBookingNoForSendFReceiveE(bookingNo , "E").intValue() == 0) {
-//			return error("Booking No này chưa có trong hệ thống. Vui lòng liên hệ OM để tạo !");
-//		}
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
 			return success();
 		}
@@ -245,7 +232,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	}
 
 	// ADD SHIPMENT
-	@Log(title = "Thêm Lô Bốc Rỗng", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
+	@Log(title = "Thêm Lô Đóng hàng", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment")
 	@ResponseBody
 	public AjaxResult addShipment(@RequestBody Shipment shipment) {
@@ -260,7 +247,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		newShipment.setLogisticAccountId(user.getId());
 		newShipment.setLogisticGroupId(user.getGroupId());
 		newShipment.setCreateBy(user.getFullName());
-		newShipment.setServiceType(Constants.RECEIVE_CONT_EMPTY);
+		newShipment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
 		newShipment.setStatus("1");
 		newShipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
 		// Update booking
@@ -552,139 +539,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
-	// VALIDATE OTP IS CORRECT THEN MAKE ORDER TO ROBOT
-	@Log(title = "Xác Nhận OTP", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/otp/{otp}/verification")
-	@ResponseBody
-	@RepeatSubmit
-	public AjaxResult verifyOtp(@PathVariable("otp") String otp, String shipmentDetailIds, String taxCode,
-			boolean creditFlag) {
-		try {
-			Long.parseLong(otp);
-		} catch (Exception e) {
-			return error("Mã OTP nhập vào không hợp lệ!");
-		}
-		// TODO Un-support cash
-		if(!creditFlag) {
-			return error("Lỗi! Chưa hỗ trợ thanh toán trả trước (cash).");
-		}
-		OtpCode otpCode = new OtpCode();
-		otpCode.setTransactionId(shipmentDetailIds);
-		Date now = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(now);
-		cal.add(Calendar.MINUTE, -5);
-		otpCode.setCreateTime(cal.getTime());
-		otpCode.setOtpCode(otp);
-		if (otpCodeService.verifyOtpCodeAvailable(otpCode) != 1) {
-			return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
-		}
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
-				getUser().getGroupId());
-		AjaxResult validateResult = validateShipmentDetailList(shipmentDetails);
-		Integer code = (Integer) validateResult.get("code");
-		if (code != 0) {
-			return validateResult;
-		}
-		if (!CollectionUtils.isEmpty(shipmentDetails)) {
-			AjaxResult ajaxResult = null;
-			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-			// Neu khong phai status la "Dang lam lenh" thi update thanh dang lam lenh
-			if (!EportConstants.SHIPMENT_STATUS_PROCESSING.equals(shipment.getStatus())) {
-				shipment.setStatus(EportConstants.SHIPMENT_STATUS_PROCESSING);
-				shipment.setUpdateTime(new Date());
-				shipment.setUpdateBy(getUser().getFullName());
-				shipmentService.updateShipment(shipment);
-			}
-			// Đổi opeCode operateCode -> groupCode. VD Hang tau CMA: CMA,CNC,APL.. -> CMA
-			String oprParent = dictService.getLabel("carrier_parent_child_list", shipmentDetails.get(0).getOpeCode());
-			if (StringUtils.isNotEmpty(oprParent)) {
-				for (ShipmentDetail shpDtl : shipmentDetails) {
-					shpDtl.setOpeCode(oprParent);
-					shpDtl.setUpdateBy(getUser().getUserName());
-				}
-			}
-
-			// Create list req for order receive cont empty
-			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService
-					.makeOrderReceiveContEmpty(shipmentDetails, shipment, taxCode, creditFlag);
-
-			// Check and create list process order create booking from list req receive
-			// empty
-			List<ProcessOrder> processOrders = shipmentDetailService.createBookingIfNeed(serviceRobotReqs);
-
-			List<Long> processIds = new ArrayList<>();
-			boolean robotBusy = false;
-			// MAKE ORDER RECEIVE CONT EMPTY
-			try {
-
-				for (ProcessOrder processOrder : processOrders) {
-					mqttService.publishBookingOrderToRobot(processOrder, EServiceRobot.CREATE_BOOKING);
-				}
-
-				for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
-					processIds.add(serviceRobotReq.processOrder.getId());
-					if (serviceRobotReq.processOrder.getRunnable()) {
-						if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.RECEIVE_CONT_EMPTY)) {
-							robotBusy = true;
-						}
-					}
-				}
-				if (robotBusy) {
-					ajaxResult = AjaxResult.warn("Yêu cầu đang được chờ xử lý, quý khách vui lòng đợi trong giây lát.");
-					ajaxResult.put("processIds", processIds);
-					ajaxResult.put("orderNumber", serviceRobotReqs.size());
-					return ajaxResult;
-				}
-			} catch (Exception e) {
-				return error("Có lỗi xảy ra trong quá trình xác thực!");
-			}
-			ajaxResult = AjaxResult
-					.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
-			ajaxResult.put("processIds", processIds);
-			ajaxResult.put("orderNumber", serviceRobotReqs.size());
-			return ajaxResult;
-		}
-		return error("Có lỗi xảy ra trong quá trình xác thực!");
-	}
-
-	// PAYMENT AFTER SHOW BILL
-	@Log(title = "Thanh Toán Bốc Rỗng Napas", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/payment")
-	@ResponseBody
-	public AjaxResult payment(String shipmentDetailIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
-				getUser().getGroupId());
-		if (!CollectionUtils.isEmpty(shipmentDetails)) {
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				shipmentDetail.setStatus(4);
-				shipmentDetail.setPaymentStatus("Y");
-				shipmentDetailService.updateShipmentDetail(shipmentDetail);
-			}
-			return success("Thanh toán thành công");
-		}
-		return error("Có lỗi xảy ra trong quá trình thanh toán.");
-	}
-
-//    private void insertShipmentImages(Shipment shipment) throws IOException, InvalidExtensionException {
-//        Long shipmentId = shipment.getId();
-//        String timeNow = DateUtils.dateTimeNow();
-//        String basePath = String.format("%s/%s/%s", Global.getUploadPath(), shipment.getLogisticGroupId(), shipmentId);
-//        int imageIndex = 0;
-//
-//        for (MultipartFile image : shipment.getImages()) {
-//            String imageName = String.format("img%d_%s.%s", ++imageIndex, timeNow, FileUploadUtils.getExtension(image));
-//            String imagePath = FileUploadUtils.upload(basePath, imageName, image, MimeTypeUtils.IMAGE_EXTENSION);
-//
-//            ShipmentImage shipmentImage = new ShipmentImage();
-//            shipmentImage.setShipmentId(shipmentId);
-//            shipmentImage.setPath(imagePath);
-//            shipmentImage.setCreateTime(DateUtils.getNowDate());
-//            shipmentImage.setCreateBy(getUser().getFullName());
-//            shipmentImageService.insertShipmentImage(shipmentImage);
-//        }
-//    }
-
 	@GetMapping("/berthplan/ope-code/list")
 	@ResponseBody
 	public AjaxResult getOpeCodeList() {
@@ -896,15 +750,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 				return error("Tên chủ hàng không được khác nhau!");
 
 			}
-			/*
-			if (!shipmentDetailReference.getVslNm().equals(shipmentDetails.get(i).getVslNm())) {
-				return error("Tàu và Chuyến không được khác nhau!");
-
-			}
-			if (!shipmentDetailReference.getVoyNo().equals(shipmentDetails.get(i).getVoyNo())) {
-				return error("Tàu và Chuyến không được khác nhau!");
-
-			} */
 			if (!shipmentDetailReference.getDischargePort().equals(shipmentDetails.get(i).getDischargePort())) {
 				return error("Cảng dỡ hàng không được khác nhau!");
 			}
@@ -1060,5 +905,110 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			}
 		}
 		return containerInfoMap;
+	}
+
+	// VALIDATE OTP IS CORRECT THEN MAKE ORDER TO ROBOT
+	@Log(title = "Xác Nhận OTP", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
+	@PostMapping("/otp/{otp}/verification")
+	@ResponseBody
+	@RepeatSubmit
+	public AjaxResult verifyOtp(@PathVariable("otp") String otp, String shipmentDetailIds, String taxCode,
+			boolean creditFlag) {
+		try {
+			Long.parseLong(otp);
+		} catch (Exception e) {
+			return error("Mã OTP nhập vào không hợp lệ!");
+		}
+		OtpCode otpCode = new OtpCode();
+		otpCode.setTransactionId(shipmentDetailIds);
+		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		cal.add(Calendar.MINUTE, -5);
+		otpCode.setCreateTime(cal.getTime());
+		otpCode.setOtpCode(otp);
+		if (otpCodeService.verifyOtpCodeAvailable(otpCode) != 1) {
+			return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
+		}
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
+				getUser().getGroupId());
+		AjaxResult validateResult = validateShipmentDetailList(shipmentDetails);
+		Integer code = (Integer) validateResult.get("code");
+		if (code != 0) {
+			return validateResult;
+		}
+		if (!CollectionUtils.isEmpty(shipmentDetails)) {
+			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+			// Neu khong phai status la "Dang lam lenh" thi update thanh dang lam lenh
+			if (!EportConstants.SHIPMENT_STATUS_PROCESSING.equals(shipment.getStatus())) {
+				shipment.setStatus(EportConstants.SHIPMENT_STATUS_PROCESSING);
+				shipment.setUpdateTime(new Date());
+				shipment.setUpdateBy(getUser().getFullName());
+				shipmentService.updateShipment(shipment);
+			}
+			// Đổi opeCode operateCode -> groupCode. VD Hang tau CMA: CMA,CNC,APL.. -> CMA
+			String oprParent = dictService.getLabel("carrier_parent_child_list", shipmentDetails.get(0).getOpeCode());
+			if (StringUtils.isNotEmpty(oprParent)) {
+				for (ShipmentDetail shpDtl : shipmentDetails) {
+					shpDtl.setOpeCode(oprParent);
+					shpDtl.setUpdateBy(getUser().getUserName());
+				}
+			}
+
+			// Create list req for order receive cont empty
+			shipmentDetailService.makeOrderLoadingCargo(shipmentDetails, shipment, taxCode, creditFlag);
+			return success();
+		}
+		return error("Có lỗi xảy ra trong quá trình xác thực!");
+	}
+
+	@GetMapping("shipment-detail/{shipmentDetailId}/house-bills")
+	@ResponseBody
+	public AjaxResult getHouseBillList(@PathVariable("shipmentDetailId") Long shipmentDetailId) {
+		CfsHouseBill cfsHouseBillParam = new CfsHouseBill();
+		cfsHouseBillParam.setShipmentDetailId(shipmentDetailId);
+		cfsHouseBillParam.setLogisticGroupId(getUser().getGroupId());
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("cfsHouseBills", cfsHouseBillService.selectCfsHouseBillList(cfsHouseBillParam));
+		return ajaxResult;
+	}
+
+	// SAVE OR EDIT SHIPMENT DETAIL
+	@Log(title = "Lưu Khai Báo House Bill", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
+	@PostMapping("/shipment-detail/{shipmentDetailId}/house-bills")
+	@Transactional
+	@ResponseBody
+	public AjaxResult saveHouseBill(@RequestBody List<CfsHouseBill> cfsHouseBills,
+			@PathVariable("shipmentDetailId") Long shipmentDetailId) {
+		if (CollectionUtils.isNotEmpty(cfsHouseBills)) {
+			LogisticAccount user = getUser();
+			for (CfsHouseBill inputHouseBill : cfsHouseBills) {
+				if (inputHouseBill.getId() != null) {
+					inputHouseBill.setShipmentDetailId(shipmentDetailId);
+					inputHouseBill.setUpdateBy(user.getUserName());
+					cfsHouseBillService.updateCfsHouseBill(inputHouseBill);
+				} else {
+					inputHouseBill.setLogisticGroupId(user.getGroupId());
+					inputHouseBill.setShipmentDetailId(shipmentDetailId);
+					inputHouseBill.setCreateBy(user.getUserName());
+					cfsHouseBillService.insertCfsHouseBill(inputHouseBill);
+				}
+			}
+			return success("Lưu khai báo thành công");
+		}
+		return error("Lưu khai báo thất bại");
+	}
+
+	// DELETE SHIPMENT DETAIL
+	@Log(title = "Xóa Khai Báo House Bill", businessType = BusinessType.DELETE, operatorType = OperatorType.LOGISTIC)
+	@DeleteMapping("/house-bills")
+	@Transactional
+	@ResponseBody
+	public AjaxResult deleteHouseBills(String houseBillIds) {
+		if (houseBillIds != null) {
+			cfsHouseBillService.deleteCfsHouseBillByIds(houseBillIds);
+			return success("Lưu khai báo thành công");
+		}
+		return error("Lưu khai báo thất bại");
 	}
 }
