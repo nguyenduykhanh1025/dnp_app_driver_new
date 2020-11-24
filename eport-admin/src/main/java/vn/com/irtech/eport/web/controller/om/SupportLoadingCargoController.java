@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.config.ServerConfig;
@@ -179,20 +178,7 @@ public class SupportLoadingCargoController extends OmBaseController{
 		} else {
 			processBillService.saveProcessBillWithCredit(shipmentDetails, processOrder);
 		}
-		// UPDATE STATUS OF SHIPMENT DETAIL AFTER MAKE ORDER SUCCESS
-		if (processOrder.getServiceType() != EportConstants.SERVICE_SHIFTING) {
-			shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo, processOrder);
-			Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
-			if (processOrder.getServiceType() == EportConstants.SERVICE_PICKUP_FULL && "1".equals(shipment.getEdoFlg())) {
-				for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
-					Edo edo = new Edo();
-					edo.setBillOfLading(shipment.getBlNo());
-					edo.setContainerNumber(shipmentDetail2.getContainerNo());
-					edo.setStatus("2"); // status process order has been made for this edo
-					edoService.updateEdoByBlCont(edo);
-				}
-			}
-		}
+
 		//notify msg to Logistic
 		if(content != null && content != "") {
 			ShipmentComment shipmentComment = new ShipmentComment();
