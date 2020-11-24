@@ -45,6 +45,7 @@ import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
+import vn.com.irtech.eport.logistic.domain.CfsHouseBill;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
@@ -56,6 +57,7 @@ import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
 import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.ICfsHouseBillService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -101,6 +103,9 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 
 	@Autowired
 	private IShipmentCommentService shipmentCommentService;
+
+	@Autowired
+	private ICfsHouseBillService cfsHouseBillService;
 
 	// VIEW RECEIVE CONT EMPTY
 	@GetMapping()
@@ -181,6 +186,17 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 			mmap.put("shipmentDetails", shipmentDetails);
 		}
 		return PREFIX + "/checkContListBeforeVerify";
+	}
+
+	@GetMapping("/shipment-detail/{shipmentDetailId}/house-bill")
+	public String getCfsHouseBill(@PathVariable("shipmentDetailId") Long shipmentDetailId, ModelMap mmap) {
+		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		if (shipmentDetail != null && getUser().getGroupId().equals(shipmentDetail.getLogisticGroupId())) {
+			mmap.put("masterBill", shipmentDetail.getBookingNo());
+			mmap.put("containerNo", shipmentDetail.getContainerNo());
+			mmap.put("shipmentDetailId", shipmentDetailId);
+		}
+		return PREFIX + "/houseBill";
 	}
 
 	// FORM TO VERIFY OTP
@@ -903,10 +919,6 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 		} catch (Exception e) {
 			return error("Mã OTP nhập vào không hợp lệ!");
 		}
-		// TODO Un-support cash
-		if (!creditFlag) {
-			return error("Lỗi! Chưa hỗ trợ thanh toán trả trước (cash).");
-		}
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();
@@ -948,5 +960,55 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 			return success();
 		}
 		return error("Có lỗi xảy ra trong quá trình xác thực!");
+	}
+
+	@GetMapping("shipment-detail/{shipmentDetailId}/house-bills")
+	@ResponseBody
+	public AjaxResult getHouseBillList(@PathVariable("shipmentDetailId") Long shipmentDetailId) {
+		CfsHouseBill cfsHouseBillParam = new CfsHouseBill();
+		cfsHouseBillParam.setShipmentDetailId(shipmentDetailId);
+		cfsHouseBillParam.setLogisticGroupId(getUser().getGroupId());
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("cfsHouseBills", cfsHouseBillService.selectCfsHouseBillList(cfsHouseBillParam));
+		return ajaxResult;
+	}
+
+	// SAVE OR EDIT SHIPMENT DETAIL
+	@Log(title = "Lưu Khai Báo House Bill", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
+	@PostMapping("/shipment-detail/{shipmentDetailId}/house-bills")
+	@Transactional
+	@ResponseBody
+	public AjaxResult saveHouseBill(@RequestBody List<CfsHouseBill> cfsHouseBills,
+			@PathVariable("shipmentDetailId") Long shipmentDetailId) {
+		if (CollectionUtils.isNotEmpty(cfsHouseBills)) {
+			LogisticAccount user = getUser();
+			for (CfsHouseBill inputHouseBill : cfsHouseBills) {
+				if (inputHouseBill.getId() != null) {
+					inputHouseBill.setShipmentDetailId(shipmentDetailId);
+					inputHouseBill.setUpdateBy(user.getUserName());
+					cfsHouseBillService.updateCfsHouseBill(inputHouseBill);
+				} else {
+					inputHouseBill.setLogisticGroupId(user.getGroupId());
+					inputHouseBill.setShipmentDetailId(shipmentDetailId);
+					inputHouseBill.setCreateBy(user.getUserName());
+					cfsHouseBillService.insertCfsHouseBill(inputHouseBill);
+				}
+			}
+			return success("Lưu khai báo thành công");
+		}
+		return error("Lưu khai báo thất bại");
+	}
+
+	// DELETE SHIPMENT DETAIL
+	@Log(title = "Xóa Khai Báo House Bill", businessType = BusinessType.DELETE, operatorType = OperatorType.LOGISTIC)
+	@DeleteMapping("/house-bills")
+	@Transactional
+	@ResponseBody
+	public AjaxResult deleteHouseBills(String houseBillIds) {
+		if (houseBillIds != null) {
+			cfsHouseBillService.deleteCfsHouseBillByIds(houseBillIds);
+			return success("Lưu khai báo thành công");
+		}
+		return error("Lưu khai báo thất bại");
 	}
 }

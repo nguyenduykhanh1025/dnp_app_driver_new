@@ -524,7 +524,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 }
                 break;
         }
-        
+
         // Return the content
         let content = '<div>' + contSupply + process + payment + '</div>';
         $(td).html(content);
@@ -555,10 +555,10 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
 function houseBillBtnRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'houseBillBtn' + row).addClass("htMiddle").addClass("htCenter");
     let shipmentDetailId;
-    if (sourceData && sourceData.length > 0) {
+    if (sourceData && sourceData.length > row) {
         shipmentDetailId = sourceData[row].id;
     }
-    value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(\'' + shipmentDetailId + '\')"><i class="fa fa-check-circle"></i>Khai báo</button>';
+    value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>Khai báo</button>';
     $(td).html(value);
     cellProperties.readOnly = 'true';
     return td;
@@ -778,36 +778,38 @@ function configHandson() {
                 case 2:
                     return "Container No";
                 case 3:
-                    return '<span class="required">Kích Thước</span>';
+                    return "House Bill";
                 case 4:
-                    return '<span class="required">Hạn Lệnh</span>';
+                    return '<span class="required">Kích Thước</span>';
                 case 5:
-                    return '<span class="required">Chủ Hàng</span>';
+                    return '<span class="required">Hạn Lệnh</span>';
                 case 6:
-                    return '<span class="required">Ngày Dự <br>Kiến Bốc</span>';
+                    return '<span class="required">Chủ Hàng</span>';
                 case 7:
-                    return '<span class="required">Loại Hàng</span>';
+                    return '<span class="required">Ngày Dự <br>Kiến Bốc</span>';
                 case 8:
-                    return 'Yêu Cầu <br>Chất Lượng';
+                    return '<span class="required">Loại Hàng</span>';
                 case 9:
-                    return '<span class="required">Tàu và Chuyến</span>';
+                    return 'Yêu Cầu <br>Chất Lượng';
                 case 10:
-                    return "Ngày tàu đến";
+                    return '<span class="required">Tàu và Chuyến</span>';
                 case 11:
-                    return '<span class="required">Cảng Dỡ Hàng</span>';
+                    return "Ngày tàu đến";
                 case 12:
-                    return 'Cấp Container <br>Ghi Chú';
+                    return '<span class="required">Cảng Dỡ Hàng</span>';
                 case 13:
-                    return 'PTTT';
+                    return 'Cấp Container <br>Ghi Chú';
                 case 14:
-                    return 'Mã Số Thuế';
+                    return 'PTTT';
                 case 15:
-                    return 'Người Thanh Toán';
+                    return 'Mã Số Thuế';
                 case 16:
+                    return 'Người Thanh Toán';
+                case 17:
                     return "Ghi Chú";
             }
         },
-        colWidths: [40, 100, 100, 150, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200],
+        colWidths: [40, 100, 100, 100, 150, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200],
         filter: "true",
         columns: [
             {
@@ -824,6 +826,10 @@ function configHandson() {
             {
                 data: "containerNo",
                 renderer: containerNoRenderer
+            },
+            {
+                data: "housebilBtn",
+                renderer: houseBillBtnRenderer
             },
             {
                 data: "sztp",
@@ -1874,9 +1880,9 @@ function requestExchangeContainer() {
 }
 
 function openHouseBillForm(shipmentDetailId) {
-    console.log(shipmentDetailId);
-    if (shipmentDetailId == 0) {
+    if (shipmentDetailId == null) {
         $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
+        return;
     }
-    
+    $.modal.openCustomForm("Khai báo house bill", prefix + "/shipment-detail/" + shipmentDetailId + "/house-bill");
 }
