@@ -152,6 +152,13 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
     return td;
 }
 function quantityRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value == null) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function quantityRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value != null) {
         if (!onlyDigitReg.test(value)) {
             $(td).css("background-color", "rgb(239 0 25)");
@@ -182,6 +189,32 @@ function cubicMeterRenderer(instance, td, row, col, prop, value, cellProperties)
             $(td).css("color", "black");
         }
     } else {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function cubicMeterRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value != null) {
+        if (!onlyFloatReg.test(value)) {
+            $(td).css("background-color", "rgb(239 0 25)");
+            $(td).css("color", "black");
+        }
+    } else {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function marksRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value == null) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function forwarderRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value == null) {
         value = '';
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
