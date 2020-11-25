@@ -124,17 +124,8 @@ public class LogisticSendContFullOversizeSupportRequest extends AdminBaseControl
 		return ajaxResult;
 	}
 
-	@GetMapping("/reject/shipment/{shipmentId}/logistic-group/{logisticGroupId}/shipment-detail/{shipmentDetailIds}/containerNos/{containerNos}/serviceType/{serviceType}")
-	public String openRejectComment(@PathVariable("shipmentId") String shipmentId,
-			@PathVariable("shipmentDetailIds") String shipmentDetailIds,
-			@PathVariable("logisticGroupId") String logisticGroupId, @PathVariable("containerNos") String containerNos,
-			@PathVariable("serviceType") String serviceType, ModelMap mmap) {
-		mmap.put("shipmentId", shipmentId);
-		mmap.put("logisticGroupId", logisticGroupId);
-		mmap.put("shipmentDetailIds", shipmentDetailIds);
-		mmap.put("containerNos", containerNos);
-		mmap.put("serviceType", serviceType);
-
+	@GetMapping("/reject")
+	public String openRejectModel() {
 		return PREFIX + "/reject";
 	}
 

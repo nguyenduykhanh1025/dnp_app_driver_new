@@ -16,11 +16,8 @@
 			<div class="form-group col-sm-12">
 				<label class="control-label col-sm-12 col-xs-12" for="size"><b class="text-black" style="float: left">Lí do từ chối:</b></label>
 				<div class="col-sm-12 col-xs-12">
-					<textarea class="form-control" rows="5" id="content"></textarea>
+					<textarea class="form-control" rows="7" id="contentReject"></textarea>
 				</div>
-			</div>
-			<div class="layui-layer-btn" style="float: right; z-index: 999 !important; position: fixed; right: 0; bottom: 0; text-align: right; padding: 10px 15px 12px; background: #f0f4f7; border-top: 1px #c7c7c7 solid; width: 100%;">
-				<a class="layui-layer-btn0" onclick="submitHandler()">Gửi</a>
 			</div>
 		</form>
 	</div>
@@ -28,18 +25,5 @@
 	<th:block th:include="include :: easyui-js" />
 	<th:block th:include="include :: summernote-js" />
 	<th:block th:include="include :: handsontable-js" />
-
-	<script type="text/javascript" th:inline="javascript">
-      /**
-       * Data load from server
-      */
-      var shipmentId = [[${shipmentId}]];
-      var logisticGroupId = [[${logisticGroupId}]];
-      var shipmentDetailIds = [[${shipmentDetailIds}]];
-      var containerNos = [[${containerNos}]]
-      var serviceType = [[${serviceType}]]
-    </script>
-	<script
-		th:src="@{/eport/js/modules/supportRequest/dangerous/reject.js?v=20201029}"></script>
 </body>
 </html>
