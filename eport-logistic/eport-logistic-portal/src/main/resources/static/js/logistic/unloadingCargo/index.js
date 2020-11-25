@@ -32,6 +32,13 @@ var fromDate, toDate;
 var myDropzone;
 var containerRemarkArr = []; // array container remark get from catos mapping with row in handsontable by index of element in array
 var locations = [];
+
+const DATE_RECEIPT_STATUS = {
+  NO: "W",
+  PROGRESS: "P",
+  SUCCESS: "S",
+  ERROR: "E"
+}
 //dictionary sizeList
 $.ajax({
   type: "GET",
@@ -1448,7 +1455,8 @@ function updateLayout() {
     status = 1,
     diff = false,
     check = false,
-    verify = false;
+    verify = false,
+    done = false;
   allChecked = true;
   for (let i = 0; i < checkList.length; i++) {
     let cellStatus = hot.getDataAtCell(i, 1);
@@ -1460,6 +1468,9 @@ function updateLayout() {
         check = true;
         if (cellStatus > 2) {
           disposable = false;
+          if (sourceData[i].dateReceiptStatus == DATE_RECEIPT_STATUS.SUCCESS) {
+            done = true;
+          }
         }
         if (status != 1 && status != cellStatus) {
           diff = true;
@@ -1479,6 +1490,8 @@ function updateLayout() {
   }
   if (diff) {
     status = 1;
+  } else if (done) {
+    status = 5;
   } else {
     status++;
   }
@@ -2159,6 +2172,7 @@ function setLayoutPaymentStatus() {
 }
 
 function setLayoutFinishStatus() {
+  console.log('lo');
   $("#registerStatus").removeClass("active disable").addClass("label-primary");
   $("#verifyStatus").removeClass("active disable").addClass("label-primary");
   $("#dateReceiptStatus").removeClass("active disable").addClass("label-primary");
