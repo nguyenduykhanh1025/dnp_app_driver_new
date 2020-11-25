@@ -2031,10 +2031,24 @@ function deleteShipmentDetail() {
 
 // Handling logic
 function checkCustomStatus() {
-  getDataSelectedFromTable(true, false);
-  if (shipmentDetails.length > 0) {
-    $.modal.openCustomForm("Khai báo hải quan", prefix + "/custom-status/" + shipmentDetailIds, 720, 500);
+  getDataSelectedFromTable(true, false);  
+  let isCanVerify = true;
+  for (let i = 0; i < checkList.length; ++i) {
+    if (checkList[i] == 1) {
+      if (getStatusContFollowIndex(i) != null && getStatusContFollowIndex(i) != CONT_SPECIAL_STATUS.YES) {
+        isCanVerify = false;
+      }
+    }
   }
+  if (!isCanVerify) {
+      $.modal.alertWarning(
+        "Chú ý: những Cont đặc biệt (cont lạnh, cont quá khổ, cont nguy hiểm) cần phải được yêu cầu xác nhận trước khi làm lệnh"
+      );
+    }
+  else{
+	  $.modal.openCustomForm("Khai báo hải quan", prefix + "/custom-status/" + shipmentDetailIds, 720, 500); 
+  }
+   
 }
 
 
@@ -2071,7 +2085,7 @@ if (getDataSelectedFromTable(true, false) && shipmentDetails.length > 0) {
 
 function verify() {
   $.modal.loading("Đang xử lý...");
-  getDataSelectedFromTable(true, true);
+  getDataSelectedFromTable(true, true); 
   $.ajax({
     url: prefix + "/shipment/" + shipmentSelected.id + "/delegate/permission",
     method: "GET",
@@ -2112,7 +2126,7 @@ function verify() {
       $.modal.closeLoading();
       $.modal.alertError("Có lỗi xảy ra, xin vui lòng thử lại sau.");
     }
-  });
+  }); 
 }
 
 function verifyOtp(shipmentDtIds, taxCode, creditFlag, isSendContEmpty) {

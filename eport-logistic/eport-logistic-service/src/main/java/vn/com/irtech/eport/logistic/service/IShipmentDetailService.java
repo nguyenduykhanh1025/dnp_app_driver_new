@@ -89,6 +89,11 @@ public interface IShipmentDetailService {
 	 * @return
 	 */
 	public List<ShipmentDetail> selectShipmentDetailByIds(String ids, Long logisticGroupId);
+	
+	public List<ShipmentDetail> selectConfirmShipmentDetailByIds(String shipmentDetailIds);
+	
+	 
+	
 
 	public long countShipmentDetailList(ShipmentDetail shipmentDetail);
 

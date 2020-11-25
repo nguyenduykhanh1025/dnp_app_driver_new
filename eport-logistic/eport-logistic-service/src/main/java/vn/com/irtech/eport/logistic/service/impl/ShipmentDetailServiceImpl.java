@@ -237,6 +237,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public List<ShipmentDetail> selectShipmentDetailByIds(String ids, Long logisticGroupId) {
 		return shipmentDetailMapper.selectShipmentDetailByIds(Convert.toStrArray(ids), logisticGroupId);
 	}
+	
+	@Override
+	public List<ShipmentDetail> selectConfirmShipmentDetailByIds(String shipmentDetailIds) { 
+		return shipmentDetailMapper.selectConfirmShipmentDetailByIds(Convert.toStrArray(shipmentDetailIds));
+	}
+ 
+	
+	
 
 	public long countShipmentDetailList(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.countShipmentDetailList(shipmentDetail);

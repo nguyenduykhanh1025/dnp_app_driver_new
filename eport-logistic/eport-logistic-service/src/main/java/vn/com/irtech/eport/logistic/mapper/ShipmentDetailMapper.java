@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
@@ -85,6 +86,10 @@ public interface ShipmentDetailMapper {
 
 	public List<ShipmentDetail> selectShipmentDetailByIds(@Param("shipmentDetailIds") String[] ids,
 			@Param("logisticGroupId") Long logisticGroupId);
+	
+	
+	public List<ShipmentDetail> selectConfirmShipmentDetailByIds(String[] shipmentDetailIds);
+	 
 
 	public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
 

@@ -142,8 +142,7 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
 	}
 
 	@PostMapping("/confirmation")
-	@ResponseBody
-	@Transactional
+	@ResponseBody 
 	public AjaxResult acceptRequestContDangerous(String shipmentDetailIds, Long logisticGroupId) {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setDangerous(EportConstants.CONT_SPECIAL_STATUS_YES);
