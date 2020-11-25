@@ -73,15 +73,15 @@ public class CustomCheckServiceImpl implements ICustomCheckService {
 				String msgRecvContent = data.getStr("msgRecvContent");
 				if(msgRecvContent != null) {
 					//search customsStatus&gt;
-					if(StringUtils.isBlank(resultDto.getCustomsStatus())) {
-						int statusIdx = msgRecvContent.indexOf("customsStatus&gt;");
-						// Search status again
-						if(statusIdx > 0) {
-							String statusStr = msgRecvContent.substring(statusIdx + "customsStatus&gt;".length());
-							String status = statusStr.substring(0, statusStr.indexOf("&lt;/customsStatus&gt;"));
-							resultDto.setCustomsStatus(status);
-						}
-					}
+//					if(StringUtils.isBlank(resultDto.getCustomsStatus())) {
+//						int statusIdx = msgRecvContent.indexOf("customsStatus&gt;");
+//						// Search status again
+//						if(statusIdx > 0) {
+//							String statusStr = msgRecvContent.substring(statusIdx + "customsStatus&gt;".length());
+//							String status = statusStr.substring(0, statusStr.indexOf("&lt;/customsStatus&gt;"));
+//							resultDto.setCustomsStatus(status);
+//						}
+//					}
 					if(StringUtils.isBlank(resultDto.getTaxCode())) {
 						int mstIdx = msgRecvContent.indexOf("enterpriseIdentity&gt;");
 						// Search status again
