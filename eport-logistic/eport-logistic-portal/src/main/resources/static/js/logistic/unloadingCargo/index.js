@@ -544,29 +544,29 @@ function statusIconsRenderer(
     }
     // Payment status
     let payment =
-      '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
+      '<i id="payment" class="fa fa-clock-o easyui-tooltip" title="Chưa Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
     switch (sourceData[row].dateReceiptStatus) {
       case "E":
         payment =
-          '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Lỗi Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
+          '<i id="payment" class="fa fa-clock-o easyui-tooltip" title="Lỗi Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
         break;
       case "S":
         payment =
-          '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+          '<i id="payment" class="fa fa-clock-o easyui-tooltip" title="Đã Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
         break;
       case "P":
         payment =
-          '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #f8ac59;"></i>';
+          '<i id="payment" class="fa fa-clock-o easyui-tooltip" title="Chờ Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #f8ac59;"></i>';
         break;
 
       case null:
         if (value > 2) {
-          payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Có thể Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+          payment = '<i id="payment" class="fa fa-clock-o easyui-tooltip" title="Có thể Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
         }
         break;
       case "W":
         if (value > 2) {
-          payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Có thể Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+          payment = '<i id="payment" class="fa fa-clock-o easyui-tooltip" title="Có thể Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
         }
         break;
     }
@@ -893,6 +893,7 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
   );
   return td;
 }
+
 function loadingPortRenderer(
   instance,
   td,
@@ -1897,7 +1898,7 @@ function saveShipmentDetail() {
           shipmentDetails.length > 0 &&
           shipmentDetails.length <= shipmentSelected.containerAmount
         ) {
-          console.log(shipmentDetails);
+         
           if (dnDepot) {
             layer.confirm(
               "Quý khách đã chọn nơi hạ container ở Cảng Tiên Sa, hệ thống sẽ tự động tạo lô và thông tin giao container rỗng.",

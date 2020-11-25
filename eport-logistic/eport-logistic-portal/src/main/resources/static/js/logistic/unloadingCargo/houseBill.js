@@ -229,11 +229,9 @@ function configHandson() {
           return "Nhãn/Ký hiệu";
         case 8:
           return "Ghi chú";
-        case 9:
-          return "Đăng kí ngày rút hàng";
       }
     },
-    colWidths: [40, 100, 150, 80, 90, 90, 90, 100, 200, 200],
+    colWidths: [40, 100, 150, 80, 90, 90, 90, 100, 200],
     columns: [
       {
         data: "active",
@@ -272,14 +270,6 @@ function configHandson() {
       {
         data: "forwarderRemark",
         className: "htCenter",
-      },
-      {
-        data: "dateReceipt",
-        type: "date",
-        dateFormat: "DD/MM/YYYY",
-        correctFormat: true,
-        defaultDate: new Date(),
-        renderer: dateReceiptRenderer
       },
     ],
     beforeKeyDown: function (e) {
