@@ -488,7 +488,6 @@ function statusIconsRenderer(
     .attr("id", "statusIcon" + row)
     .addClass("htCenter")
     .addClass("htMiddle");
-  console.log(sourceData[row].dateReceiptStatus);
   if (
     sourceData[row] &&
     sourceData[row].id &&
@@ -704,6 +703,19 @@ function consigneeRenderer(
   );
   return td;
 }
+function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'receiptDem' + row).addClass("htMiddle").addClass("htCenter");
+  if (value != null && value != '') {
+    if (value.substring(2, 3) != "/") {
+      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+    }
+  } else {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+
 function emptyDepotRenderer(
   instance,
   td,
@@ -1086,30 +1098,32 @@ function configHandson() {
         case 6:
           return '<span class="required">Chủ Hàng</span>';
         case 7:
-          return '<span class="required">Nơi Hạ Vỏ</span>';
+          return 'Ngày Rút Hàng';
         case 8:
-          return "Kích Thước";
+          return '<span class="required">Nơi Hạ Vỏ</span>';
         case 9:
-          return '<span class="required">Hãng Tàu</span>';
+          return "Kích Thước";
         case 10:
-          return '<span class="required">Tàu</span>';
+          return '<span class="required">Hãng Tàu</span>';
         case 11:
-          return '<span class="required">Chuyến</span>';
+          return '<span class="required">Tàu</span>';
         case 12:
-          return "Seal No";
+          return '<span class="required">Chuyến</span>';
         case 13:
-          return "Trọng Lượng (kg)";
+          return "Seal No";
         case 14:
-          return '<span class="required">Cảng Xếp Hàng</span>';
+          return "Trọng Lượng (kg)";
         case 15:
-          return "Cảng Dỡ Hàng";
+          return '<span class="required">Cảng Xếp Hàng</span>';
         case 16:
-          return "PTTT";
+          return "Cảng Dỡ Hàng";
         case 17:
-          return "Mã Số Thuế";
+          return "PTTT";
         case 18:
-          return "Người Thanh Toán";
+          return "Mã Số Thuế";
         case 19:
+          return "Người Thanh Toán";
+        case 20:
           return "Ghi Chú";
       }
     },
@@ -1121,6 +1135,7 @@ function configHandson() {
       100,
       80,
       150,
+      100,
       100,
       80,
       100,
@@ -1175,6 +1190,14 @@ function configHandson() {
         source: consigneeList,
         strict: true,
         renderer: consigneeRenderer,
+      },
+      {
+        data: "dateReceipt",
+        type: "date",
+        dateFormat: "DD/MM/YYYY",
+        correctFormat: true,
+        defaultDate: new Date(),
+        renderer: dateReceiptRenderer,
       },
       {
         data: "emptyDepot",
@@ -1790,6 +1813,8 @@ function getDataFromTable(isValidate) {
     shipmentDetail.processStatus = shipmentSelected.taxCode;
     shipmentDetail.customStatus = shipmentSelected.groupName;
     shipmentDetail.tier = shipmentSelected.containerAmount;
+    
+    shipmentDetail.dateReceipt = formatDateToSendServer(object["dateReceipt"]);
     shipmentDetails.push(shipmentDetail);
     if (object["id"] != null) {
       isSaved = true;
@@ -1853,10 +1878,12 @@ function saveShipmentDetail() {
     hot.deselectCell();
     setTimeout(() => {
       if (getDataFromTable(true)) {
+
         if (
           shipmentDetails.length > 0 &&
           shipmentDetails.length <= shipmentSelected.containerAmount
         ) {
+          console.log(shipmentDetails);
           if (dnDepot) {
             layer.confirm(
               "Quý khách đã chọn nơi hạ container ở Cảng Tiên Sa, hệ thống sẽ tự động tạo lô và thông tin giao container rỗng.",
@@ -1967,7 +1994,7 @@ function checkCustomStatus() {
 function verify() {
   $.modal.loading("Đang xử lý...");
   getDataSelectedFromTable(true, true);
-
+  
   $.ajax({
     url: prefix + "/shipment/" + shipmentSelected.id + "/delegate/permission",
     method: "GET",
@@ -2590,7 +2617,6 @@ function registerDateReceipt() {
   $.modal.loading("Đang xử lý...");
   getDataSelectedFromTable(true, true);
 
-console.log(shipmentDetailIds);
   $.ajax({
     url: prefix + "/shipment-detail/validation",
     method: "POST",
@@ -2641,4 +2667,12 @@ console.log(shipmentDetailIds);
       );
     },
   });
+}
+function formatDateToSendServer(date) {
+  if (date) {
+    let expiredDem = new Date(date.substring(6, 10) + "/" + date.substring(3, 5) + "/" + date.substring(0, 2));
+    expiredDem.setHours(23, 59, 59);
+    return expiredDem.getTime();
+  }
+  return null;
 }

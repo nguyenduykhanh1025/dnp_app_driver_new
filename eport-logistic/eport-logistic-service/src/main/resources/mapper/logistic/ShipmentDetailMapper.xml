@@ -675,6 +675,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="location != null and location != ''">location = #{location},</if>
 			<if test="containerRemark != null and containerRemark != ''">container_remark = #{containerRemark},</if>
 			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">date_receipt_status = #{dateReceiptStatus},</if>
+			<if test="dateReceipt != null and dateReceipt != ''">date_receipt = #{dateReceipt},</if>
 			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
 			update_time = sysdate
 		</trim>
