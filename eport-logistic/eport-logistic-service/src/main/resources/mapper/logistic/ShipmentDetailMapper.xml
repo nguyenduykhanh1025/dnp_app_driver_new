@@ -82,26 +82,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="etd" column="etd" />
 		<result property="location" column="location" />
 		<result property="containerRemark" column="container_remark" />
-		<result property="dateReceiptStatus" column="date_receipt_status" />
+		<result property="dateReceiptStatus"
+			column="date_receipt_status" />
 		<result property="dateReceipt" column="date_receipt" />
 	</resultMap>
 
 	<sql id="selectShipmentDetailVo">
-		select id, shipment_id, logistic_group_id, process_order_id, register_no,
+		select id, shipment_id, logistic_group_id,
+		process_order_id, register_no,
 		container_no, container_status, sztp,
-		sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem,
+		sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee,
+		expired_dem,
 		empty_expired_dem, wgt,
-		vsl_name, vsl_nm, voy_no, voy_carrier, ope_code, carrier_name, loading_port,
-		discharge_port, transport_type,
-		empty_depot, empty_depot_location, cargo_type, vgm_chk, vgm, vgm_person_info,
+		vsl_name, vsl_nm, voy_no,
+		voy_carrier, ope_code, carrier_name, loading_port,
+		discharge_port,
+		transport_type,
+		empty_depot, empty_depot_location, cargo_type, vgm_chk,
+		vgm, vgm_person_info,
 		preorder_pickup,
-		pre_pickup_payment_status, custom_status, payment_status, process_status, do_status,
+		pre_pickup_payment_status,
+		custom_status, payment_status, process_status, do_status,
 		do_received_time,
-		user_verify_status, finish_status, status, order_no, tax_code, consignee_by_tax_code,
+		user_verify_status, finish_status, status, order_no,
+		tax_code, consignee_by_tax_code,
 		cont_supply_status,
-		planning_date, quality_requirement, cont_supply_remark, cont_supplier_name, remark,
+		planning_date,
+		quality_requirement, cont_supply_remark, cont_supplier_name, remark,
 		pay_type, payer, payer_name, customs_no,
-		custom_scan_time, delivery_address, delivery_mobile, delivery_remark, eta, etd,
+		custom_scan_time,
+		delivery_address, delivery_mobile, delivery_remark, eta, etd,
 		container_remark, date_receipt_status, date_receipt, det_free_time,
 		create_by, create_time, update_by, update_time from shipment_detail
 	</sql>
@@ -145,7 +155,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
 			<if test="preorderPickup != null  and preorderPickup != ''"> and preorder_pickup = #{preorderPickup}</if>
 			<if test="prePickupPaymentStatus != null"> and pre_pickup_payment_status =
-				#{prePickupPaymentStatus}</if>
+				#{prePickupPaymentStatus}
+			</if>
 			<if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
 			<if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
 			<if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
@@ -197,7 +208,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
 			<if test="preorderPickup != null  and preorderPickup != ''"> and preorder_pickup = #{preorderPickup}</if>
 			<if test="prePickupPaymentStatus != null"> and pre_pickup_payment_status =
-				#{prePickupPaymentStatus}</if>
+				#{prePickupPaymentStatus}
+			</if>
 			<if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
 			<if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
 			<if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
@@ -265,7 +277,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
 			<if test="preorderPickup != null  and preorderPickup != ''"> and preorder_pickup = #{preorderPickup}</if>
 			<if test="prePickupPaymentStatus != null"> and pre_pickup_payment_status =
-				#{prePickupPaymentStatus}</if>
+				#{prePickupPaymentStatus}
+			</if>
 			<if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
 			<if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
 			<if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
@@ -275,9 +288,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="finishStatus != null  and finishStatus != ''"> and finish_status = #{finishStatus}</if>
 			<if test="status != null "> and status = #{status}</if>
 			<if test="params.fromDate != null"> and s.create_time &gt;=
-				to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+				to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')
+			</if>
 			<if test="params.toDate != null"> and s.create_time &lt;=
-				to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
+				to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')
+			</if>
 			<if test="bookingNo != null  and bookingNo != ''">and (upper(booking_no) like concat(concat('%',
 				#{bookingNo}),
 				'%')
@@ -299,15 +314,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		bl_no, seal_no, consignee, expired_dem, det_free_time, wgt, vsl_name,
 		vsl_nm || ': '|| vsl_name as vsl_nm,
 		voy_no, voy_carrier,
-		ope_code || ': ' || carrier_name as ope_code,
-		carrier_name, loading_port, discharge_port, transport_type,
-		empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup,
+		ope_code || ':
+		' || carrier_name as ope_code,
+		carrier_name, loading_port,
+		discharge_port, transport_type,
+		empty_depot, cargo_type, vgm_chk, vgm,
+		vgm_person_info, preorder_pickup,
 		pre_pickup_payment_status,
-		custom_status, customs_no, custom_scan_time, payment_status, process_status,
-		do_status, do_received_time, user_verify_status, finish_status,
-		pay_type, payer, payer_name, delivery_address, delivery_mobile,
-		delivery_remark, cont_supplier_name, eta, etd, status, remark,
-		create_by, create_time, update_by, update_time
+		custom_status, customs_no, custom_scan_time, payment_status,
+		process_status,
+		do_status, do_received_time, user_verify_status,
+		finish_status,
+		pay_type, payer, payer_name, delivery_address,
+		delivery_mobile,
+		delivery_remark, cont_supplier_name, eta, etd, status,
+		date_receipt_status, date_receipt, remark,
+		create_by, create_time,
+		update_by, update_time
 		from shipment_detail
 		<where>
 			<if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
@@ -346,7 +369,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
 			<if test="preorderPickup != null  and preorderPickup != ''"> and preorder_pickup = #{preorderPickup}</if>
 			<if test="prePickupPaymentStatus != null"> and pre_pickup_payment_status =
-				#{prePickupPaymentStatus}</if>
+				#{prePickupPaymentStatus}
+			</if>
 			<if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
 			<if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
 			<if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
@@ -363,20 +387,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		register_no, container_no, empty_expired_dem, empty_depot_location,
 		container_status,
 		sztp || ': ' || sztp_define as sztp,
-		sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem,
+		sztp_define,
+		temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem,
 		det_free_time, wgt, vsl_name, voy_no, voy_carrier,
-		vsl_nm || ' - ' || vsl_name|| ' - ' || voy_carrier as vsl_nm,
-		ope_code || ': ' || carrier_name as ope_code,
-		carrier_name, loading_port, discharge_port, transport_type,
-		empty_depot, cargo_type, commodity, vgm_chk, vgm, vgm_person_info,
+		vsl_nm || ' - ' ||
+		vsl_name|| ' - ' || voy_carrier as vsl_nm,
+		ope_code || ': ' ||
+		carrier_name as ope_code,
+		carrier_name, loading_port, discharge_port,
+		transport_type,
+		empty_depot, cargo_type, commodity, vgm_chk, vgm,
+		vgm_person_info,
 		preorder_pickup, pre_pickup_payment_status,
-		custom_status, payment_status, process_status, do_status, do_received_time,
+		custom_status, payment_status, process_status, do_status,
+		do_received_time,
 		user_verify_status, finish_status,
-		cont_supply_status, planning_date, quality_requirement, cont_supply_remark,
-		cont_supplier_name, pay_type, payer, payer_name, customs_no,
+		cont_supply_status, planning_date, quality_requirement,
+		cont_supply_remark,
+		cont_supplier_name, pay_type, payer, payer_name,
+		customs_no,
 		custom_scan_time,
-		delivery_address, delivery_mobile, delivery_remark, eta, etd, status, remark,
-		create_by, create_time, update_by, update_time
+		delivery_address, delivery_mobile,
+		delivery_remark, eta, etd, status, remark,
+		create_by, create_time,
+		update_by, update_time
 		from shipment_detail
 		<where>
 			<if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
@@ -416,7 +450,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
 			<if test="preorderPickup != null  and preorderPickup != ''"> and preorder_pickup = #{preorderPickup}</if>
 			<if test="prePickupPaymentStatus != null"> and pre_pickup_payment_status =
-				#{prePickupPaymentStatus}</if>
+				#{prePickupPaymentStatus}
+			</if>
 			<if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
 			<if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
 			<if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
@@ -675,7 +710,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="location != null and location != ''">location = #{location},</if>
 			<if test="containerRemark != null and containerRemark != ''">container_remark = #{containerRemark},</if>
 			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">date_receipt_status = #{dateReceiptStatus},</if>
-			<if test="dateReceipt != null and dateReceipt != ''">date_receipt = #{dateReceipt},</if>
+			<if test="dateReceipt != null">date_receipt = #{dateReceipt},</if>
 			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
 			update_time = sysdate
 		</trim>
@@ -746,19 +781,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 
 	<update id="resetCustomStatus" parameterType="Long">
-		UPDATE shipment_detail
+		UPDATE
+		shipment_detail
 		SET custom_status ='N'
 		WHERE shipment_id = #{shipmentId}
 		AND custom_status = 'Y'
 	</update>
 	<delete id="deleteShipmentDetailById" parameterType="Long">
-		delete from shipment_detail where id = #{id}
+		delete from
+		shipment_detail where id = #{id}
 	</delete>
 
 	<delete id="deleteShipmentDetailByIds" parameterType="String">
 		delete from shipment_detail
 		where shipment_id = #{shipmentId}
-		AND logistic_group_id = #{logisticGroupId}
+		AND
+		logistic_group_id = #{logisticGroupId}
 		AND id in
 		<foreach item="id" collection="shipmentDetailIds" open="("
 			separator="," close=")">
@@ -771,7 +809,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		delete from shipment_detail
 		<where>
 			and logistic_group_id = #{logisticGroupId}
-			and shipment_id = #{shipmentId}
+			and shipment_id =
+			#{shipmentId}
 		</where>
 	</delete>
 
@@ -800,7 +839,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		resultType="java.lang.Long">
 		select id
 		from shipment_detail
-		where shipment_id=#{shipmentId} and process_status=#{processStatus}
+		where
+		shipment_id=#{shipmentId} and process_status=#{processStatus}
 	</select>
 
 	<select id="selectListShipmentWaitExec"
@@ -811,9 +851,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		process_status
 		FROM
 		shipment_detail
-		WHERE user_verify_status = "Y"
+		WHERE user_verify_status
+		= "Y"
 		AND (process_status = "E" or process_status = "N")
-		ORDER BY process_status
+		ORDER BY
+		process_status
 	</select>
 
 	<select id="selectShipmentDetailByProcessIds"
@@ -834,11 +876,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		parameterType="ShipmentDetail" resultType="ShipmentDetail">
 		select id,
 		shipment_id as shipmentId,
-		logistic_group_id as logisticGroupId,
+		logistic_group_id as
+		logisticGroupId,
 		process_order_id as processOrderId,
-		register_no as registerNo,
+		register_no as
+		registerNo,
 		container_no as containerNo,
-		container_status as containerNo,
+		container_status as
+		containerNo,
 		sztp,
 		sztp_define,
 		temperature,
@@ -854,7 +899,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		vsl_name as vslName,
 		vsl_nm as vslNm,
 		voy_no as voyNo,
-		voy_carrier as voyCarrier,
+		voy_carrier as
+		voyCarrier,
 		ope_code as opeCode,
 		carrier_name as carrierName,
 		loading_port as loadingPort,
@@ -868,25 +914,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		vgm,
 		vgm_person_info as vgmPersonInfo,
 		preorder_pickup as preorderPickup,
-		pre_pickup_payment_status as prePickupPaymentStatus,
+		pre_pickup_payment_status as
+		prePickupPaymentStatus,
 		custom_status as customStatus,
-		payment_status as paymentStatus,
+		payment_status as
+		paymentStatus,
 		process_status as processStatus,
 		do_status as doStatus,
 		do_received_time as doReceivedTime,
-		user_verify_status as userVerifyStatus,
+		user_verify_status as
+		userVerifyStatus,
 		status,
-		delivery_address as deliveryAddress, delivery_mobile as deliveryMobile,
+		delivery_address as deliveryAddress,
+		delivery_mobile as deliveryMobile,
 		delivery_remark as deliveryRemark,
-		(select remark from pickup_assign where shipment_detail_id = s.id and rownum
+		(select remark from pickup_assign where shipment_detail_id = s.id and
+		rownum
 		= 1) as remark,
 		create_by as createBy,
 		create_time as createTime,
 		update_by as updateBy,
 		update_time as updateTime,
-		(select count(*) from pickup_assign p where p.shipment_detail_id = s.id)as
+		(select count(*) from
+		pickup_assign p where p.shipment_detail_id = s.id)as
 		driverAmount
-		from shipment_detail s
+		from
+		shipment_detail s
 		<where>
 			<if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
 			<if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
@@ -924,7 +977,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
 			<if test="preorderPickup != null  and preorderPickup != ''"> and preorder_pickup = #{preorderPickup}</if>
 			<if test="prePickupPaymentStatus != null"> and pre_pickup_payment_status =
-				#{prePickupPaymentStatus}</if>
+				#{prePickupPaymentStatus}
+			</if>
 			<if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
 			<if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
 			<if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
@@ -941,10 +995,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		s.vsl_nm, s.voy_no, s.voy_carrier, s.container_no, s.do_status, s.fe,
 		s.payment_status, s.pay_type, s.payer, s.payer_name, p.service_type as
 		service_type,
-		s.create_time, count(a.shipment_detail_id) as assign_number
+		s.create_time, count(a.shipment_detail_id) as
+		assign_number
 		from shipment_detail s
-		left join process_order p on s.process_order_id = p.id
-		left join pickup_assign a on s.id = a.shipment_detail_id
+		left join process_order p on
+		s.process_order_id = p.id
+		left join pickup_assign a on s.id =
+		a.shipment_detail_id
 		<where>
 			<if test="logisticGroupId != null "> and s.logistic_group_id = #{logisticGroupId}</if>
 			<if test="customStatus != null and customStatus != ''"> and s.custom_status = #{customStatus}</if>
@@ -955,9 +1012,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="serviceType != null"> and p.service_type = #{serviceType}</if>
 			<if test="payType != null  and payType != ''"> and p.pay_type = #{payType}</if>
 			<if test="params.fromDate != null"> and s.create_time &gt;=
-				to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+				to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')
+			</if>
 			<if test="params.toDate != null"> and s.create_time &lt;=
-				to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
+				to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')
+			</if>
 			<if test="containerNo != null  and containerNo != ''"> and (upper(s.container_no) like concat(concat('%',
 				#{containerNo}), '%')</if>
 			<if test="sztp != null  and sztp != ''"> or upper(s.sztp) like concat(concat('%', #{sztp}), '%')
@@ -985,7 +1044,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<select id="countNumberOfLegalCont" resultType="Integer">
 		select count(*) from shipment_detail
-		where logistic_group_id = #{logisticGroupId}
+		where logistic_group_id =
+		#{logisticGroupId}
 		and status > 2
 		and id in
 		<foreach item="shipmentDetail" collection="shipmentDetails"
@@ -1007,45 +1067,67 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		parameterType="ShipmentDetail" resultType="ShipmentDetail">
 		select id, shipment_id as shipmentId, logistic_group_id as
 		logisticGroupId,
-		register_no as registerNo, container_no as containerNo, container_status as
-		containerStatus, sztp, sztp_define as sztpDefine, container_remark as
+		register_no as registerNo, container_no as
+		containerNo, container_status as
+		containerStatus, sztp, sztp_define as
+		sztpDefine, container_remark as
 		containerRemark,
-		temperature, fe, booking_no as bookingNo, bl_no as blNo, seal_no as sealNo,
-		consignee, expired_dem as expiredDem, empty_expired_dem as
+		temperature, fe,
+		booking_no as bookingNo, bl_no as blNo, seal_no as sealNo,
+		consignee,
+		expired_dem as expiredDem, empty_expired_dem as
 		emptyExpiredDem,
 		wgt,location, payer_name as payerName,
-		(vsl_name || ' - ' || voy_carrier) as vslName,
-		vsl_nm as vslNm, voy_no as voyNo, voy_carrier as voyCarrier, ope_code as
+		(vsl_name || ' - ' ||
+		voy_carrier) as vslName,
+		vsl_nm as vslNm, voy_no as voyNo, voy_carrier
+		as voyCarrier, ope_code as
 		opeCode, carrier_name as carrierName,
-		loading_port as loadingPort, discharge_port as dischargePort, transport_type as
-		transportType, empty_depot as emptyDepot, empty_depot_location as
+		loading_port as loadingPort, discharge_port as dischargePort,
+		transport_type as
+		transportType, empty_depot as emptyDepot,
+		empty_depot_location as
 		emptyDepotLocation,
 		CASE
-		WHEN cargo_type = 'AK' THEN 'Over Dimension'
+		WHEN cargo_type = 'AK'
+		THEN 'Over Dimension'
 		WHEN cargo_type = 'BB' THEN 'Break Bulk'
-		WHEN cargo_type = 'BN' THEN 'Bundle'
+		WHEN
+		cargo_type = 'BN' THEN 'Bundle'
 		WHEN cargo_type = 'DG' THEN 'Dangerous'
 		WHEN cargo_type = 'DR' THEN 'Reefer and DG'
-		WHEN cargo_type = 'DE' THEN 'Dangerous Empty'
+		WHEN cargo_type = 'DE' THEN
+		'Dangerous Empty'
 		WHEN cargo_type = 'FR' THEN 'Fragile'
-		WHEN cargo_type = 'GP' THEN 'General'
+		WHEN cargo_type
+		= 'GP' THEN 'General'
 		WHEN cargo_type = 'MT' THEN 'Empty'
-		WHEN cargo_type = 'RF' THEN 'Reefer'
+		WHEN
+		cargo_type = 'RF' THEN 'Reefer'
 		ELSE cargo_type
-		END AS cargoType, commodity,
-		vgm_chk as vgmChk, vgm, vgm_person_info as vgmPersonInfo, preorder_pickup as
-		preorderPickup, pre_pickup_payment_status as prePickupPaymentStatus,
-		custom_status as customStatus, payment_status as paymenStatus,
-		process_status as processStatus, do_status as doStatus,
+		END AS cargoType,
+		commodity,
+		vgm_chk as vgmChk, vgm, vgm_person_info as vgmPersonInfo,
+		preorder_pickup as
+		preorderPickup, pre_pickup_payment_status as
+		prePickupPaymentStatus,
+		custom_status as customStatus, payment_status
+		as paymenStatus,
+		process_status as processStatus, do_status as
+		doStatus,
 		do_received_time as doReceivedTime,
-		user_verify_status as userVerifyStatus, finish_status as finishStatus, status, remark,
+		user_verify_status as
+		userVerifyStatus, finish_status as finishStatus, status, remark,
 		create_by as createBy, create_time as createTime,
-		delivery_address, delivery_mobile, delivery_remark,
-		update_by as updateBy, update_time as updateTime, process_order_id as
+		delivery_address,
+		delivery_mobile, delivery_remark,
+		update_by as updateBy, update_time as
+		updateTime, process_order_id as
 		processOrderId, order_no as orderNo,
 		(select p.invoice_no from process_bill p where s.PROCESS_ORDER_ID =
 		p.process_order_id group by p.invoice_no) as invoiceNo,
-		(select p.vat_after_fee from process_bill p where s.PROCESS_ORDER_ID =
+		(select
+		p.vat_after_fee from process_bill p where s.PROCESS_ORDER_ID =
 		p.process_order_id group by p.vat_after_fee) as vatAfterFee
 		from
 		shipment_detail s
@@ -1086,7 +1168,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
 			<if test="preorderPickup != null  and preorderPickup != ''"> and preorder_pickup = #{preorderPickup}</if>
 			<if test="prePickupPaymentStatus != null"> and pre_pickup_payment_status =
-				#{prePickupPaymentStatus}</if>
+				#{prePickupPaymentStatus}
+			</if>
 			<if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
 			<if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
 			<if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
@@ -1099,18 +1182,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<select id="selectShipmentDetailForDriverShipmentAssign"
 		resultType="vn.com.irtech.eport.logistic.form.PickupAssignForm">
-		select sh.id as shipmentDetailId, sh.container_no as containerNo, sh.wgt as
+		select sh.id as shipmentDetailId, sh.container_no as
+		containerNo, sh.wgt as
 		wgt, sh.sztp as sztp, a.id as pickupAssignId,
 		sh.cargo_type as cargoType
 		from shipment_detail sh
-		left join pickup_assign a on sh.shipment_id = a.shipment_id
-		left join pickup_history p on sh.id = p.shipment_detail_id
+		left join
+		pickup_assign a on sh.shipment_id = a.shipment_id
+		left join
+		pickup_history p on sh.id = p.shipment_detail_id
 		where
 		a.shipment_detail_id is null
 		and a.driver_id = #{driverId}
-		and sh.shipment_id = #{shipmentId}
+		and
+		sh.shipment_id = #{shipmentId}
 		and p.shipment_detail_id is null
-		and sh.finish_status = 'N'
+		and
+		sh.finish_status = 'N'
 		and sh.payment_status = 'Y'
 		and a.id is not null
 		group by sh.id, sh.container_no, sh.wgt, sh.sztp, sh.cargo_type, a.id,
@@ -1127,25 +1215,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<select id="selectEdoListByBlNo" parameterType="String"
 		resultMap="ShipmentDetailResult">
-		select container_number as container_no, expired_dem, det_free_time,
-		empty_container_depot as empty_depot, carrier_code as ope_code,
-		concat(vessel_no, concat(': ', vessel)) as vsl_nm, vessel as vsl_name,
+		select container_number as container_no, expired_dem,
+		det_free_time,
+		empty_container_depot as empty_depot, carrier_code as
+		ope_code,
+		concat(vessel_no, concat(': ', vessel)) as vsl_nm, vessel as
+		vsl_name,
 		voy_no as voy_carrier, sztp, pol as loading_port, pod as
 		discharge_port,
 		tax_code, consignee_by_tax_code
 		from edo
-		where bill_of_lading = #{blNo} and house_bill_id is null
+		where
+		bill_of_lading = #{blNo} and house_bill_id is null
 	</select>
 
 	<select id="selectHouseBillForShipment" parameterType="String"
 		resultMap="ShipmentDetailResult">
-		select e.container_number as container_no, d.expired_dem, d.det_free_time,
+		select e.container_number as container_no, d.expired_dem,
+		d.det_free_time,
 		d.empty_container_depot as empty_depot,
-		d.carrier_code as ope_code, concat(d.vessel_no, concat(': ', d.vessel)) as vsl_nm,
+		d.carrier_code
+		as ope_code, concat(d.vessel_no, concat(': ', d.vessel)) as vsl_nm,
 		d.vessel as vsl_name, d.voy_no as voy_carrier,
-		d.sztp, d.pol as loading_port, d.pod as discharge_port, e.consignee2_tax_code
-		as tax_code, e.consignee2 as consignee_by_tax_code,
-		e.consignee2 as consignee
+		d.sztp, d.pol as
+		loading_port, d.pod as discharge_port, e.consignee2_tax_code
+		as
+		tax_code, e.consignee2 as consignee_by_tax_code,
+		e.consignee2 as
+		consignee
 		from edo_house_bill e left join edo d on e.edo_id = d.id
 		where e.house_bill_no2 is null and e.house_bill_no = #{blNo}
 	</select>
@@ -1155,14 +1252,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		resultType="vn.com.irtech.eport.logistic.form.PickupAssignForm">
 		select sh.id as shipmentDetailId, sh.container_no as containerNo,
 		sh.wgt as wgt, sh.sztp as sztp, sh.id as pickupAssignId,
-		sh.cargo_type as cargoType, sh.consignee as consignee
+		sh.cargo_type
+		as cargoType, sh.consignee as consignee
 		from shipment_detail sh
-		left join pickup_history p on sh.id = p.shipment_detail_id
-		left join shipment s on sh.shipment_id = s.id
+		left
+		join pickup_history p on sh.id = p.shipment_detail_id
+		left join
+		shipment s on sh.shipment_id = s.id
 		<where>
 			and p.shipment_detail_id is null
 			and sh.payment_status = 'Y'
-			and sh.finish_status = 'N'
+			and
+			sh.finish_status = 'N'
 			<if test="serviceType != null">and s.service_type = #{serviceType}</if>
 			<if test="logisticGroupId != null "> and sh.logistic_group_id = #{logisticGroupId}</if>
 			<if test="pickUp.containerNo != null and pickUp.containerNo != ''"> and sh.container_no like concat(concat('%',
@@ -1239,7 +1340,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if
 				test="shipmentDetail.preorderPickup != null  and shipmentDetail.preorderPickup != ''">preorder_pickup = #{shipmentDetail.preorderPickup},</if>
 			<if test="shipmentDetail.prePickupPaymentStatus != null">pre_pickup_payment_status =
-				#{shipmentDetail.prePickupPaymentStatus},</if>
+				#{shipmentDetail.prePickupPaymentStatus},
+			</if>
 			<if
 				test="shipmentDetail.customStatus != null  and shipmentDetail.customStatus != ''">custom_status = #{shipmentDetail.customStatus},</if>
 			<if

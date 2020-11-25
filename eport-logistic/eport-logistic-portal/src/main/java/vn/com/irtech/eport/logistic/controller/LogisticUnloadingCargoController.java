@@ -342,6 +342,7 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 	@Transactional
 	@ResponseBody
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
+
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			String dnPortName = configService.selectConfigByKey("danang.port.name");
 			LogisticAccount user = getUser();
@@ -517,8 +518,7 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 						shipmentDetailReference.setUpdateBy(user.getFullName());
 						shipmentDetailReference.setConsignee(inputDetail.getConsignee());
 						shipmentDetailReference.setEmptyDepot(inputDetail.getEmptyDepot());
-						
-						System.out.println(inputDetail.getDateReceipt());
+
 						shipmentDetailReference.setDateReceipt(inputDetail.getDateReceipt());
 
 						// T/h la container domestic, update taxcode, consignee theo thong tin nguoi
@@ -533,7 +533,8 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 							shipmentDetailReference.setDetFreeTime(inputDetail.getDetFreeTime());
 						}
 						shipmentDetailReference.setUpdateTime(new Date());
-
+						System.out.println("ssssssssssssssssssssssss");
+						System.out.println(shipmentDetailReference.getDateReceipt());
 						if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
 							return error("Lưu khai báo thất bại từ container: " + inputDetail.getContainerNo());
 						}
@@ -1179,7 +1180,18 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 
 	@PostMapping("/shipment-detail/register-date-receipt")
 	@ResponseBody
-	public AjaxResult registerDateReceiptShipmentDetail(String shipmentDetailIds) {
+	public AjaxResult registerDateReceiptShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
+		System.out.println("ssssssssssssssssss " + shipmentDetails.get(0).getDateReceipt());
+		for (ShipmentDetail detail : shipmentDetails) {
+			if (detail.getDateReceipt() == null) {
+				return error("Bạn chưa nhập ngày rút hàng.");
+			} else {
+				ShipmentDetail shipmentDetailSave = shipmentDetailService.selectShipmentDetailById(detail.getId());
+				shipmentDetailSave.setDateReceipt(detail.getDateReceipt());
+				shipmentDetailSave.setDateReceiptStatus(EportConstants.DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_PROGRESS);
+				shipmentDetailService.updateShipmentDetail(shipmentDetailSave);
+			}
+		}
 
 		return success("Đăng kí ngày rút hàng thành công.");
 	}

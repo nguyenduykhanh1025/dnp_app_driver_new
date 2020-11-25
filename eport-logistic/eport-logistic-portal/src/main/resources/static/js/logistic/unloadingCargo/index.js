@@ -1619,6 +1619,7 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
     shipmentDetail.status = object["status"];
     shipmentDetail.shipmentId = shipmentSelected.id;
     shipmentDetail.id = object["id"];
+    shipmentDetail.dateReceipt = formatDateToSendServer(object["dateReceipt"]);
     shipmentDetails.push(shipmentDetail);
     if (
       object["registerNo"] != null &&
@@ -1813,7 +1814,7 @@ function getDataFromTable(isValidate) {
     shipmentDetail.processStatus = shipmentSelected.taxCode;
     shipmentDetail.customStatus = shipmentSelected.groupName;
     shipmentDetail.tier = shipmentSelected.containerAmount;
-    
+
     shipmentDetail.dateReceipt = formatDateToSendServer(object["dateReceipt"]);
     shipmentDetails.push(shipmentDetail);
     if (object["id"] != null) {
@@ -1994,7 +1995,7 @@ function checkCustomStatus() {
 function verify() {
   $.modal.loading("Đang xử lý...");
   getDataSelectedFromTable(true, true);
-  
+
   $.ajax({
     url: prefix + "/shipment/" + shipmentSelected.id + "/delegate/permission",
     method: "GET",
@@ -2143,6 +2144,7 @@ function setLayoutVerifyUserStatus() {
 }
 
 function setLayoutPaymentStatus() {
+  console.log('lo');
   $("#registerStatus").removeClass("active disable").addClass("label-primary");
   $("#customStatus").removeClass("active disable").addClass("label-primary");
   $("#verifyStatus").removeClass("active disable").addClass("label-primary");
@@ -2613,10 +2615,8 @@ function openHouseBillForm(shipmentDetailId) {
 }
 
 function registerDateReceipt() {
-
   $.modal.loading("Đang xử lý...");
   getDataSelectedFromTable(true, true);
-
   $.ajax({
     url: prefix + "/shipment-detail/validation",
     method: "POST",
@@ -2630,13 +2630,11 @@ function registerDateReceipt() {
       } else {
         getDataSelectedFromTable(true, true);
         if (shipmentDetails.length > 0) {
-
           $.ajax({
             url: prefix + "/shipment-detail/register-date-receipt",
-            method: "POST",
-            data: {
-              shipmentDetailIds: shipmentDetailIds,
-            },
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify(shipmentDetails),
             success: function (res) {
               $.modal.closeLoading();
               if (res.code != 0) {
@@ -2657,6 +2655,7 @@ function registerDateReceipt() {
           });
 
         }
+
       }
     },
     error: function (err) {
@@ -2669,10 +2668,15 @@ function registerDateReceipt() {
   });
 }
 function formatDateToSendServer(date) {
+  if (new Date(date).getTime()) {
+    return new Date(date).getTime();
+  }
+  let result;
   if (date) {
     let expiredDem = new Date(date.substring(6, 10) + "/" + date.substring(3, 5) + "/" + date.substring(0, 2));
+
     expiredDem.setHours(23, 59, 59);
-    return expiredDem.getTime();
+    result = expiredDem.getTime();
   }
-  return null;
+  return result;
 }
