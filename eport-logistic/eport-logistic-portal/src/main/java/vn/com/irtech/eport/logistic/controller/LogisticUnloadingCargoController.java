@@ -1181,7 +1181,6 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 	@PostMapping("/shipment-detail/register-date-receipt")
 	@ResponseBody
 	public AjaxResult registerDateReceiptShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
-		System.out.println("ssssssssssssssssss " + shipmentDetails.get(0).getDateReceipt());
 		for (ShipmentDetail detail : shipmentDetails) {
 			if (detail.getDateReceipt() == null) {
 				return error("Bạn chưa nhập ngày rút hàng.");
