@@ -315,53 +315,12 @@ public interface EportConstants {
 	public static final String PTNR_TYPE_TRUCKER = "TRK";
 	/** partner type forwarder */
 	public static final String PTNR_TYPE_FORWARDER = "FWD";
-
-	/**
-	 * Tình trạng yêu cầu các cont đặc biệt
-	 */
-	// Cont chưa yêu cầu xác nhận
-	public static final String CONT_REQUEST_SPECIAL_YET = "1";
-	// Cont đang chờ xác nhận
-	public static final String CONT_REQUEST_SPECIAL_PENDING = "2";
-	// Cont đã được xác nhận
-	public static final String CONT_REQUEST_SPECIAL_APPROVE = "3";
-	// Cont bị từ chối xác nhận
-	public static final String CONT_REQUEST_SPECIAL_REJECT = "4";
-
-	/**
-	 * Tình trạng yêu cầu các cont nguy hiểm
-	 */
-	// Không phải cont nguy hiểm
-	public static final String CONT_REQUEST_DANGEROUS_FALSE = "F";
-	// Cont chưa yêu cầu xác nhận || là cont nguy hiểm
-	public static final String CONT_REQUEST_DANGEROUS_YET = "T";
-	// Cont nguy hiểm đang chờ xác nhận
-	public static final String CONT_REQUEST_DANGEROUS_PENDING = "2";
-	// Cont nguy hiểm đã được xác nhận
-	public static final String CONT_REQUEST_DANGEROUS_APPROVE = "3";
-	// Cont nguy hiểm bị từ chối xác nhận
-	public static final String CONT_REQUEST_DANGEROUS_REJECT = "4";
-
-	/**
-	 * Tình trạng yêu cầu các cont quá khổ
-	 */
-	// Không phải cont nguy hiểm
-	public static final String CONT_REQUEST_OVERSIZE_FALSE = "F";
-	// Cont chưa yêu cầu xác nhận || là cont nguy hiểm
-	public static final String CONT_REQUEST_OVERSIZE_YET = "T";
-	// Cont nguy hiểm đang chờ xác nhận
-	public static final String CONT_REQUEST_OVERSIZE_PENDING = "2";
-	// Cont nguy hiểm đã được xác nhận
-	public static final String CONT_REQUEST_OVERSIZE_APPROVE = "3";
-	// Cont nguy hiểm bị từ chối xác nhận
-	public static final String CONT_REQUEST_OVERSIZE_REJECT = "4";
-	 
+ 
 	public static final String CONT_SPECIAL_STATUS_INIT = "I";// Lưu khai báo 
 	public static final String CONT_SPECIAL_STATUS_REQ = "R";// chờ xác nhận  
 	public static final String CONT_SPECIAL_STATUS_YES = "Y";// đã xac nhận 
-	public static final String CONT_SPECIAL_STATUS_CANCEL = "C";// từ chối xác nhận 
-	 
-	// Bulletin active status
+	public static final String CONT_SPECIAL_STATUS_CANCEL = "C";// từ chối xác nhận  
+	
 	/** Bulletin draft status */
 	public static final Integer BULLETIN_DRAFT = 0;
 	/** Bulletin release status */
