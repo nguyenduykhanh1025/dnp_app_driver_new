@@ -36,6 +36,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * @author Nhatlv
+ *
+ */
+/**
+ * @author Nhatlv
+ *
+ */
+/**
+ * @author Nhatlv
+ *
+ */
 @Controller
 @RequestMapping("/support-request/dangerous")
 public class LogisticSendContFullDangerousSupportRequest extends AdminBaseController {
@@ -132,7 +144,7 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
 	@PostMapping("/confirmation")
 	@ResponseBody
 	@Transactional
-	public AjaxResult acceptRequestContIce(String shipmentDetailIds, Long logisticGroupId) {
+	public AjaxResult acceptRequestContDangerous(String shipmentDetailIds, Long logisticGroupId) {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setDangerous(EportConstants.CONT_SPECIAL_STATUS_YES);
 		shipmentDetail.setUpdateBy(getUser().getLoginName());
@@ -144,7 +156,7 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
 	@PostMapping("/reject")
 	@ResponseBody
 	@Transactional
-	public AjaxResult rejectRequestContIce(String shipmentDetailIds) {
+	public AjaxResult rejectRequestContDangerous(String shipmentDetailIds) {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 
 		shipmentDetail.setDangerous(EportConstants.CONT_SPECIAL_STATUS_CANCEL);
@@ -154,11 +166,22 @@ public class LogisticSendContFullDangerousSupportRequest extends AdminBaseContro
 
 		return success("Đã từ chối yêu cầu.");
 	}
-
+	
+ 
+	/**
+	 * @param shipmentId
+	 * @param shipmentDetailIds
+	 * @param logisticGroupId
+	 * @param containerNos
+	 * @param serviceType
+	 * @param mmap
+	 * @return
+	 */
 	@GetMapping("/reject/shipment/{shipmentId}/logistic-group/{logisticGroupId}/shipment-detail/{shipmentDetailIds}/containerNos/{containerNos}/serviceType/{serviceType}")
 	public String openRejectComment(@PathVariable("shipmentId") String shipmentId,
 			@PathVariable("shipmentDetailIds") String shipmentDetailIds,
-			@PathVariable("logisticGroupId") String logisticGroupId, @PathVariable("containerNos") String containerNos,
+			@PathVariable("logisticGroupId") String logisticGroupId, 
+			@PathVariable("containerNos") String containerNos,
 			@PathVariable("serviceType") String serviceType, ModelMap mmap) {
 		mmap.put("shipmentId", shipmentId);
 		mmap.put("logisticGroupId", logisticGroupId);

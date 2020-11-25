@@ -30,11 +30,11 @@ import vn.com.irtech.eport.web.controller.AdminBaseController;
 import java.util.*;
 
 @Controller
-@RequestMapping("/support-request/ice")
-public class LogisticSendContFullIceSupportRequest extends AdminBaseController {
-	private static final Logger logger = LoggerFactory.getLogger(LogisticSendContFullIceSupportRequest.class);
+@RequestMapping("/support-request/reefer")
+public class LogisticSendContFullReeferSupportRequest extends AdminBaseController {
+	private static final Logger logger = LoggerFactory.getLogger(LogisticSendContFullReeferSupportRequest.class);
 
-	private String PREFIX = "/supportRequest/ice";
+	private String PREFIX = "/supportRequest/reefer";
 
 	private final String KEY_ICE = "R";
 

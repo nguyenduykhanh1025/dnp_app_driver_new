@@ -1,4 +1,4 @@
-const PREFIX = ctx + "support-request/ice";
+const PREFIX = ctx + "support-request/reefer";
 const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var dogrid = document.getElementById("container-grid"),
