@@ -369,23 +369,23 @@ function statusIconsRenderer(
 ) {
   return shipmentSelected.serviceType == SERVICE_TYPE.dropFull
     ? renderIconsFollowServiceTypeDropFull(
-        instance,
-        td,
-        row,
-        col,
-        prop,
-        value,
-        cellProperties
-      )
+      instance,
+      td,
+      row,
+      col,
+      prop,
+      value,
+      cellProperties
+    )
     : renderIconsStatusServiceTypePickupFull(
-        instance,
-        td,
-        row,
-        col,
-        prop,
-        value,
-        cellProperties
-      );
+      instance,
+      td,
+      row,
+      col,
+      prop,
+      value,
+      cellProperties
+    );
 }
 
 function getRequestConfigIcon(row) {
@@ -566,8 +566,8 @@ function containerNoRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -578,11 +578,12 @@ function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
+
 function consigneeRenderer(
   instance,
   td,
@@ -598,8 +599,8 @@ function consigneeRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -611,10 +612,10 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (sourceData[row] && sourceData[row].vslNm && sourceData[row].voyNo) {
     $(td).html(
       '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-        sourceData[row].vslNm +
-        " - " +
-        sourceData[row].voyNo +
-        "</div>"
+      sourceData[row].vslNm +
+      " - " +
+      sourceData[row].voyNo +
+      "</div>"
     );
   }
   return td;
@@ -626,8 +627,8 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -646,8 +647,8 @@ function cargoTypeRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -658,8 +659,8 @@ function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -678,8 +679,8 @@ function dischargePortRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -690,8 +691,8 @@ function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -702,8 +703,8 @@ function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -714,8 +715,8 @@ function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -726,8 +727,8 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -1317,13 +1318,89 @@ function openHistoryFormEport(row) {
  * @author Khanh
  */
 function openReject() {
+  layer.open({
+    type: 2,
+    area: [600 + 'px', 300 + 'px'],
+    fix: true,
+    maxmin: true,
+    shade: 0.3,
+    title: 'Khai báo lí do từ chối',
+    content: PREFIX + "/reject",
+    btn: ["Xác Nhận Từ Chối", "Hủy"],
+    shadeClose: false,
+    yes: function (index, layero) {
+      confirmReject(index, layero);
+    },
+    cancel: function (index) {
+      return true;
+    }
+  });
+}
+
+function confirmReject(index, layero) {
+  let childLayer = layero.find("iframe")[0].contentWindow.document;
   const containerNoCheckeds = getListContainerNoFromCheked().join(", ");
-  $.modal.openCustomForm(
-    "Khai báo lí do từ chối",
-    `${PREFIX}/reject/shipment/${shipmentSelected.id}/logistic-group/${shipmentSelected.logisticGroupId}/shipment-detail/${shipmentDetailIds}/containerNos/${containerNoCheckeds}/serviceType/${shipmentSelected.serviceType}`,
-    800,
-    260
-  );
+
+  $.modal.loading("Đang xử lý ...");
+  layer.close(layer.index);
+  $.ajax({
+    url: PREFIX + "/reject",
+    method: "POST",
+    data: {
+      shipmentDetailIds: shipmentDetailIds,
+    },
+    success: function (res) {
+      const contentReject = $(childLayer).find("#contentReject").val();
+      sendComment(contentReject, shipmentSelected.id, shipmentSelected.logisticGroupId, shipmentSelected.serviceType, containerNoCheckeds);
+      if (res.code == 0) {
+        $.modal.alertSuccess(res.msg);
+        handleLoadTableFromModel();
+      } else {
+        $.modal.alertError(res.msg);
+      }
+    },
+    error: function (data) {
+      onCloseModel();
+    },
+  });
+}
+
+/**
+ * @param {}
+ * @description Call api to add comment to server
+ * @author Khanh
+ */
+function sendComment(contentReject, shipmentId, logisticGroupId, serviceType, containerNos) {
+  let req = {
+    topic: "Lí do từ chối xác nhận yêu cầu container " + containerNos,
+    content: contentReject,
+    shipmentId: `${shipmentId}`,
+    logisticGroupId: `${logisticGroupId}`,
+    serviceType: `${serviceType}`,
+  };
+  $.ajax({
+    url: PREFIX + "/shipment/comment",
+    type: "post",
+    contentType: "application/json",
+    data: JSON.stringify(req),
+    beforeSend: function () {
+      $.modal.loading("Đang xử lý, vui lòng chờ...");
+    },
+    success: function (result) {
+      $.modal.closeLoading();
+      if (result.code == 0) {
+        $.modal.msgSuccess("Gửi thành công.");
+        $("#topic").textbox("setText", "");
+        $(".summernote").summernote("code", "");
+      } else {
+        $.modal.msgError("Gửi thất bại.");
+      }
+    },
+    error: function (error) {
+      $.modal.closeLoading();
+      $.modal.msgError("Gửi thất bại.");
+    },
+  });
 }
 
 /**
