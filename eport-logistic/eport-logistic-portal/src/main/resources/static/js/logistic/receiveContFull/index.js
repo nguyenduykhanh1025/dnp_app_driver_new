@@ -18,13 +18,7 @@ var voyCarrier;
 var onChangeFlg = false, currentIndexRow, rejectChange = false;
 var fromDate, toDate;
 var myDropzone;
-
-/*const SPECIAL_STATUS = {
-		  start: "1",//  1: Chưa xác nhận 
-		  pending: "2",// Đã xác nhận
-		  approve: "3",// Chờ xác nhận
-		  reject: "4",// Từ chối
-		};*/
+ 
 
 const DANGEROUS_STATUS = {
 		  yet: "T", // là cont dangerous
@@ -1374,16 +1368,7 @@ function isDisableCustomBTN() {
 	  return result;
 	}
 
-
 function getStatusContFollowIndexBTN(index) {
-	/*	
-		console.log("Status");
-		console.log("1"+ sourceData[index].oversize);
-		console.log("2"+ sourceData[index].dangerous);
-		console.log("3"+ sourceData[index].frozenStatus);*/
-		 
-		 
-		 
 		  if (
 		    !sourceData[index].oversize &&
 		    !sourceData[index].dangerous &&
@@ -1419,209 +1404,14 @@ function getStatusContFollowIndexBTN(index) {
 		  }
 		}
 
-
-/////////
 function isCantVerify() {
 	  return !isDisableBtnRequestConfirm();
 	}
 
-///////
-
-// disable/ enable khai hải quan
-// nấu getMarkSizeContSpecialBTN khai báo từ danh sách bằng G hoặc status = 3 thì enable nút lên
-/*function isDisableCustomBTN() {
-	let result = false; // true: enable btn || false: disable btn
-
-	  for (let i = 0; i < checkList.length; ++i) {
-	    let dataColunmSizeCont = getCodeSizeContFromDataTableHandsonFollowIndex(i);
-	    // status is checked
-	    if (checkList[i] == 1) {
-	      var markCounSpecial = getMarkSizeContSpecialBTN(
-	        dataColunmSizeCont.split("")
-	      );
-	      if (   //markCounSpecial == "" trường hợp nó bằng P,R,T,U nhưng trạng thái nó đã được duyệt chưa check 
-	    	//markCounSpecial  == 'U'
-	        (markCounSpecial == "G" || 
-	        isContContSpecialStatus(i)
-	        ) 
-	        //|| isContNeedRequestConfirmFollowContDangerousStatus(i)
-	        
-	      ) {
-	      } else {
-	        result = true;
-	      }
-	    }
-	  }
-
-	  return result;
-}*/
-
-////
- 	
-///////
-function isHaveContSpecialNotYetRequestConfirm() {
-	  let result = false;
-	  for (let i = 0; i < checkList.length; ++i) {
-	    let dataColunmSizeCont = getCodeSizeContFromDataTableHandsonFollowIndex(i);
-	    // status is checked
-	    if (checkList[i] == 1) {
-	      var markCounSpecial = getMarkSizeContSpecial(
-	        dataColunmSizeCont.split("")
-	      );
-	      if (markCounSpecial) {
-	        if (
-	          !sourceData[i].contSpecialStatus ||
-	          sourceData[i].contSpecialStatus == SPECIAL_STATUS.yet ||
-	          sourceData[i].contSpecialStatus == SPECIAL_STATUS.pending
-	        ) {
-	          result = true;
-	        }
-	      }
-	    }
-	  }
-	  return result;
-	}
-
-
-///////////
-/*function getCodeSizeContFromDataTableHandsonFollowIndex(index) {
-	  if (hot && hot.getDataAtCell(index, 8)) {
-	    return hot.getDataAtCell(index, 8).substring(0, 4);
-	  }
-	  return "";
-	}*/
-
-/////
-/*function isContNeedRequestConfirmFollowContSpecialStatus(index) {
-	  return ( ////// ở đây
-	    sourceData[index].contSpecialStatus == SPECIAL_STATUS.yet ||
-	    sourceData[index].contSpecialStatus == SPECIAL_STATUS.reject ||
-	    !sourceData[index].contSpecialStatus
-	  );
-	}*/
- 
-/////
-function isContContSpecialStatus(index) {// khai hai quan
-	  return ( ////// ở đây
-	    sourceData[index].contSpecialStatus == CONT_SPECIAL_STATUS.YES 
-	    //|| !sourceData[index].contSpecialStatus
-	  );
-	}
-
-
-/////
-function statusCont(index){
-	if(sourceData[index].sztp == '3'){
-		return false;
-	}
-	 return true;	
-	}
-/////
-function isContNeedRequestConfirmFollowContDangerousStatus(index) {
-	console.log("dangerous");
-	console.log(sourceData[index].dangerous);
-	
-	  return (
-	    sourceData[index].dangerous == DANGEROUS_STATUS.yet ||
-	    sourceData[index].dangerous == DANGEROUS_STATUS.reject
-	  );
-	}
-//////
-/**
- * @param {number} index 
- * @returns {String} "true" | "false"
- */
-function isCantVerifyFollowDangerousStatus(index) {
-	  if (
-	    !sourceData[index].dangerous ||
-	    sourceData[index].dangerous == DANGEROUS_STATUS.NOT
-	  ) {
-	    return true;
-	  }
-	  if (
-	    sourceData[index].dangerous &&
-	    sourceData[index].dangerous == DANGEROUS_STATUS.approve
-	  ) {
-	    return true;
-	  }
-	  return false;
-	}
-
- 
-/////// 
-/**
- * @param {number} index
- * @returns {String} "true" | "false"
- */
-function isCantVerifyFollowSpecialStatus(index) {
-	  if (!sourceData[index].contSpecialStatus) {
-	    return true;
-	  }
-	  if (sourceData[index].contSpecialStatus == SPECIAL_STATUS.approve) {
-	    return true;
-	  }
-	  return false;
-	}
-//////
-function getMarkSizeContSpecial(data) {
-	  const listMarkContSpecial = ["P", "R", "T", "U"];
-	  var result = "";
-
-	  for (let i = 0; i < listMarkContSpecial.length; ++i) {
-	    if (data.includes(listMarkContSpecial[i])) {
-	      result = listMarkContSpecial[i];
-	      break;
-	    }
-	  }
-	  return result;
-	}
- 
-
-//////
-/*function getMarkSizeContSpecialBTN(data) {// khai hải quan
-	  const listMarkContSpecial = ["P", "R", "T", "U","G"];
-	  var result = "";
-
-	  for (let i = 0; i < listMarkContSpecial.length; ++i) {
-	    if (data.includes(listMarkContSpecial[i])) {
-	      result = listMarkContSpecial[i];
-	      break;
-	    }
-	  }
-	  return result;
-	}*/
-
-
-
-
- 
-///////////  
-function isHaveContSpecialNotYetRequestConfirm() {
-	  let result = false;
-	  for (let i = 0; i < checkList.length; ++i) {
-	    let dataColunmSizeCont = getCodeSizeContFromDataTableHandsonFollowIndex(i);
-	    // status is checked
-	    if (checkList[i] == 1) {
-	      var markCounSpecial = getMarkSizeContSpecial( dataColunmSizeCont.split(""));
-	      if (markCounSpecial) {
-	        if (
-	          !sourceData[i].contSpecialStatus ||
-	          sourceData[i].contSpecialStatus == SPECIAL_STATUS.yet ||
-	          sourceData[i].contSpecialStatus == SPECIAL_STATUS.pending
-	        ) {
-	          result = true;
-	        }
-	      }
-	    }
-	  }
-	  return result;
-	}
-
-
-
 
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) { 
+	
   $.modal.loading("Đang xử lý ...");
   $.ajax({ 
     url: prefix + "/shipment/" + id + "/shipment-detail",
@@ -1639,10 +1429,7 @@ function loadShipmentDetail(id) {
         containerRemarkArr = Array(rowAmount).fill('');
         locations = Array(rowAmount).fill('');
         sourceData.forEach(function iterate(shipmentDetail, index) {
-        	// nhatlv
-        	console.log("ds sourceData");
-        	console.log(sourceData);
-        	
+        	  
           if (shipmentDetail.id == null) {
             saved = false;
           }
@@ -1695,9 +1482,7 @@ function reloadShipmentDetail() {
     $('#check' + i).prop('checked', false);
   }
   $("#deleteBtn").prop("disabled", true);
-  $("#customBtn").prop("disabled", true);
-  
-  
+  $("#customBtn").prop("disabled", true); 
   //$("#acceptBtn").prop("disabled", true);
   
   $("#verifyBtn").prop("disabled", true);
@@ -1708,8 +1493,7 @@ function reloadShipmentDetail() {
   loadShipmentDetail(shipmentSelected.id);
    
 }
- 
-
+  
 // GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
 function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
   let myTableData = hot.getSourceData();
@@ -2080,9 +1864,7 @@ if (getDataSelectedFromTable(true, false) && shipmentDetails.length > 0) {
     });
   }
 }
-
-  
-
+ 
 function verify() {
   $.modal.loading("Đang xử lý...");
   getDataSelectedFromTable(true, true); 
@@ -2158,48 +1940,20 @@ function exportBill() {
 
 // Handling UI STATUS
 function setLayoutRegisterStatus() {
-  $("#registerStatus").removeClass("label-primary disable").addClass("active");
-  
-  /*$("#acceptStatus").removeClass("label-primary active").addClass("disable");*/
-  
-  
+  $("#registerStatus").removeClass("label-primary disable").addClass("active"); 
+  /*$("#acceptStatus").removeClass("label-primary active").addClass("disable");*/ 
   $("#customStatus").removeClass("label-primary active").addClass("disable");
   $("#verifyStatus").removeClass("label-primary active").addClass("disable");
   $("#paymentStatus").removeClass("label-primary active").addClass("disable");
   $("#finishStatus").removeClass("label-primary active").addClass("disable");
-  $("#customBtn").prop("disabled", true);
-  
-  //$("#acceptBtn").prop("disabled", true);
-  
-  
+  $("#customBtn").prop("disabled", true); 
+  //$("#acceptBtn").prop("disabled", true); 
   $("#verifyBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", true);
   $("#exportReceiptBtn").prop("disabled", true);
 }
- 
-
-/*function setLayoutCustomStatus() {
-  $("#registerStatus").removeClass("active disable").addClass("label-primary");
-  $("#customStatus").removeClass("label-primary disable").addClass("active");
-  $("#verifyStatus").removeClass("label-primary active").addClass("disable");
-  $("#paymentStatus").removeClass("label-primary active").addClass("disable");
-  $("#finishStatus").removeClass("label-primary active").addClass("disable");
   
-  
-  
-  $("#customBtn").prop("disabled", false); 
-  
-  //$("#customBtn").prop("disabled", true);
-  
-  
-  $("#verifyBtn").prop("disabled", true);
-  $("#payBtn").prop("disabled", true);
-  $("#exportBillBtn").prop("disabled", false);
-  $("#exportReceiptBtn").prop("disabled", false);
-}*/
-
-
 function setLayoutCustomStatus() {
 	  $("#registerStatus").removeClass("active disable").addClass("label-primary");
 	  $("#verifyStatus").removeClass("active disable").addClass("label-primary");
@@ -2208,16 +1962,13 @@ function setLayoutCustomStatus() {
 	  $("#finishStatus").removeClass("label-primary active").addClass("disable");
 	  $("#verifyBtn").prop("disabled", true);
 	  $("#deleteBtn").prop("disabled", true);
-	  $("#payBtn").prop("disabled", true);
-	  
+	  $("#payBtn").prop("disabled", true); 
 	  //$("#customBtn").prop("disabled", false);
 	  $("#exportBillBtn").prop("disabled", false);
 	  $("#exportReceiptBtn").prop("disabled", false);
 	  $("#exportPackingListBtn").prop("disabled", false);
 	}
-
-
-
+ 
 function setLayoutVerifyUserStatus() {
   $("#registerStatus").removeClass("active disable").addClass("label-primary");
   $("#customStatus").removeClass("active disable").addClass("label-primary");
@@ -2486,9 +2237,9 @@ function loadListComment(shipmentCommentId) {
         let commentTitle = '<span>Hỗ Trợ<span>';
         let commentNumber = 0;
         if (data.shipmentComments != null) {
-          console.log(data.shipmentComments);
+          
           data.shipmentComments.forEach(function (element, index) {
-            console.log(element);
+            
             let createTime = element.createTime;
             let date = '';
             let time = '';

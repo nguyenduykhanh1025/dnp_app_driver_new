@@ -1,8 +1,5 @@
 const PREFIX = ctx + "logistic/receive-cont-full";
- 
- 
-//var shipmentFileIds = [];// validate file
- 
+  
 $('#containerNo').val(containerNo);// container no
 $('#sztp').val(sztp);//  
 $('#abc').val(shipmentDetail.id); 
@@ -34,48 +31,24 @@ $('#ovAft').val(shipmentDetail.ovAft);//
 $('#ovFore').val(shipmentDetail.ovFore);// 
 $('#ovHeight').val(shipmentDetail.ovHeight);//
 $('#ovPort').val(shipmentDetail.ovPort);// 
-$('#ovStbd').val(shipmentDetail.ovStbd);// 
-
-$('#powerDrawDate').val(shipmentDetail.powerDrawDate);//  
-
-
-
-
-
+$('#ovStbd').val(shipmentDetail.ovStbd);//  
+$('#powerDrawDate').val(shipmentDetail.powerDrawDate);//   
 // cont nguy hiểm 
 $('#dangerousImo').val(shipmentDetail.dangerousImo);// 
 $('#dangerousUnno').val(shipmentDetail.dangerousUnno);//  
-$('#dangerous').val(shipmentDetail.dangerous);//
-
+$('#dangerous').val(shipmentDetail.dangerous);// 
 $("#form-detail-add").validate({
 	  onkeyup: false,
 	  focusCleanup: true,
-	});
-
-/*console.log("shipmentDetail.dangerous" + shipmentDetail.dangerous);*/
- 
-
+});
+  
 $("#datetimepicker1").datetimepicker({
 	  format: "dd/mm/yyyy",
 	  language: "vi_VN",
 	  minView: "month",
 	  autoclose: true
 });
-
-
-
-/*function formatDate(data) {
-	  if (data) {
-	    let result = "";
-	    let arrDate = data.toString().split("/");
-	    let temp = arrDate[0];
-	    arrDate[0] = arrDate[1];
-	    arrDate[1] = temp;
-	    return arrDate.join("/");
-	  }
-	  return "";
-}*/
- 
+  
 var dangerousIMO = shipmentDetail.dangerousImo; 
 var dangerousUNNO = shipmentDetail.dangerousUnno; 
 var contsztp = shipmentDetail.sztp;
@@ -84,8 +57,7 @@ var oversizeTop = shipmentDetail.oversizeTop;
 var oversizeRight = shipmentDetail.oversizeRight;  
 var oversizeLeft = shipmentDetail.oversizeLeft;
 var oversizeFront = shipmentDetail.oversizeFront;
-var oversizeBack = shipmentDetail.oversizeBack; 
-
+var oversizeBack = shipmentDetail.oversizeBack;  
 var frozenStatus = shipmentDetail.frozenStatus; 
 var oversize = shipmentDetail.oversize;
 var dangerous = shipmentDetail.dangerous;
@@ -97,20 +69,7 @@ let contO = true;// qua kho
 let typeD = true;// nguy hiem 
 let typeR = true;// lanh
 let typeO = true;// qua kho
-
-console.log("fileType");// khi lưu tạm thời
-console.log(fileType);
-console.log("shipmentFiles");// file đã insert vào
-console.log(shipmentFiles);
-
-
-var shipmentFileTotal  = [];
-
-shipmentFileTotal.push(fileType); 
-shipmentFileTotal.push(shipmentFiles); 
-console.log("shipmentFileTotal");
-console.log(shipmentFileTotal);
- 
+   
 // confirm
 function confirm() {
 	 $.ajax( 
@@ -132,11 +91,9 @@ function confirm() {
 	                } 
 		    }}); 
 }
- 
-
+  
 //confirm
-function insertDate() {  
-	//console.log("powerdrawdate" + $("#powerDrawDate").val());
+function insertDate() {   
 	    $.ajax( 
 	    	{
 	    		url: prefix + "/saveFileImage", 
@@ -160,15 +117,12 @@ function insertDate() {
                 } 
 	    }});  
 }
- 
-
+  
 function closeForm() {
     $.modal.close();
 }
 
-$( document ).ready(function() { 
-	//console.log(shipmentFiles);
-	
+$( document ).ready(function() {  
 	if (shipmentFiles != null) {// hiển thị hình ảnh
         let htmlInit = '';
         shipmentFiles.forEach(function (element, index) {  
@@ -199,10 +153,8 @@ $( document ).ready(function() {
                 </button>
             </div>`;
             	$('.preview-containerQK').append(htmlInit); 
-        	}
-        	 
-        });
-
+        	} 
+        }); 
     }
 });
 // xóa khi đã lưu có id 
@@ -210,8 +162,7 @@ function removeImage(element, fileIndex) {
 
 	shipmentFiles.forEach(function (value, index) {
         if (value == fileIndex) {
-            $.ajax({
-            	//url: prefix + "/booking/file",
+            $.ajax({ 
             	url: prefix + "/delete_file",
                 method: "DELETE",
                 data: {
@@ -236,9 +187,7 @@ function removeImage(element, fileIndex) {
     });
 
 }
-
-
-
+ 
 /*function abc() {*/
 	// cont nguy hiểm: trường dangerous khác null
 	// cont quá khổ: trường oversize khác null

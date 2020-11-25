@@ -6,27 +6,15 @@ var shipmentDetailId =[];
 var shipmentId = []; 
 var fileType = []; 
 
-const DANGEROUS_STATUS = {
-		  yet: "T", // là cont dangerous
-		  pending: "1", // là cont danger đang chờ xét duyết
-		  approve: "3", // là cont danger đã đc xét duyết
-		  reject: "4", // là cont danger đã bị từ chối
-		  NOT: "F", // không phải là cont danger
-	};
-	const SPECIAL_STATUS = {
-		  yet: "1",
-		  pending: "2",
-		  approve: "3",
-		  reject: "4",
-	};
-
-
-$(document).ready(function () {
-  
-	
-    let previewTemplate = '<span data-dz-name></span>';
-    
-//////////////// cont lạnh/////
+const SPECIAL_STATUS = {
+	  yet: "1",
+	  pending: "2",
+	  approve: "3",
+	  reject: "4",
+}; 
+$(document).ready(function () { 
+    let previewTemplate = '<span data-dz-name></span>'; 
+//////////////// frozen/////
     myDropzone = new Dropzone("#dropzoneL", {
         url: prefix + "/file/file-type/R",
         method: "post",
@@ -45,25 +33,11 @@ $(document).ready(function () {
         },
         success: function (file, response) {
             if (response.code == 0) { 
-                $.modal.msgSuccess("Đính kèm tệp thành công."); 
-                
-                shipmentFileIds.push(response.shipmentFileId);
-                
-                console.log("eeeeeeeeeeeeeeeeeeeee" + response);
-                 
-                //  them
+                $.modal.msgSuccess("Đính kèm tệp thành công.");  
+                shipmentFileIds.push(response.shipmentFileId); 
                 shipmentFilePath.push(response.file); 
                 shipmentDetailId.push(response.id);  
-                
-                console.log("aaaaaaaaaaaaaaaaa" + response.fileType); 
-                /*fileType += response.fileType;*/
-                fileType.push(response.fileType);  
-                console.log("bbbbbbbbbb" + fileType); 
-                
-                
-              
-                
-                //shipmentId.push(response.shipmentId); 
+                fileType.push(response.fileType);     
                 let html = `<div class="preview-block">
                     <img src="` + ctx + `img/document.png" alt="Tài liệu" />
                     <button type="button" class="close" aria-label="Close" onclick="removeImage1(this, '${response.file}')" >
@@ -76,7 +50,7 @@ $(document).ready(function () {
             }
         }
     });
-//////////////// cont quá khổ//////
+//////////////// oversize//////
     myDropzone = new Dropzone("#dropzoneQK", {
         url: prefix + "/file/file-type/O",
         method: "post",
@@ -95,17 +69,11 @@ $(document).ready(function () {
         },
         success: function (file, response) {
             if (response.code == 0) { 
-                $.modal.msgSuccess("Đính kèm tệp thành công."); 
-                
-                shipmentFileIds.push(response.shipmentFileId);
-                console.log("IIIIIIII" + response); 
-                console.log("sssss" + response.file); 
-                //fileType += response.fileType;
-                fileType.push(response.fileType);  
-                //  them
+                $.modal.msgSuccess("Đính kèm tệp thành công.");  
+                shipmentFileIds.push(response.shipmentFileId);  
+                fileType.push(response.fileType);   
                 shipmentFilePath.push(response.file); 
-                shipmentDetailId.push(response.id); 
-                //shipmentId.push(response.shipmentId); 
+                shipmentDetailId.push(response.id);   
                 let html = `<div class="preview-block">
                     <img src="` + ctx + `img/document.png" alt="Tài liệu" />
                     <button type="button" class="close" aria-label="Close" onclick="removeImage1(this, '${response.file}')" >
@@ -119,7 +87,7 @@ $(document).ready(function () {
         }
     });
     
-///////// cont nguy hiểm//////////////////
+///////// dangerous//////////////////
     myDropzone = new Dropzone("#dropzoneNH", {
         url: prefix + "/file/file-type/D",
         method: "post",
@@ -138,18 +106,11 @@ $(document).ready(function () {
         },
         success: function (file, response) {
             if (response.code == 0) { 
-                $.modal.msgSuccess("Đính kèm tệp thành công."); 
-                
-                shipmentFileIds.push(response.shipmentFileId);
-                console.log("IIIIIIII" + response); 
-                console.log("sssss" + response.file); 
-                //  them
-                shipmentFilePath.push(response.file); 
-                
+                $.modal.msgSuccess("Đính kèm tệp thành công.");  
+                shipmentFileIds.push(response.shipmentFileId);  
+                shipmentFilePath.push(response.file);  
                 shipmentDetailId.push(response.id); 
-                fileType.push(response.fileType);  
-                //fileType += response.fileType;
-                //shipmentId.push(response.shipmentId); 
+                fileType.push(response.fileType);   
                 let html = `<div class="preview-block">
                     <img src="` + ctx + `img/document.png" alt="Tài liệu" />
                     <button type="button" class="close" aria-label="Close" onclick="removeImage1(this, '${response.file}')" >
@@ -162,14 +123,9 @@ $(document).ready(function () {
             }
         }
     });
-});
+}); 
 
-/*$("#form-add-shipment").validate({
-    focusCleanup: true
-});*/
-
-async function submitHandler() {
-	//alert("vao submitHandler");
+async function submitHandler() { 
     if ($.validate.form()) {
         if ($("#opeCode option:selected").text() == 'Chọn OPR') {
             $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
@@ -246,73 +202,13 @@ function save(url) {
         }
     })
 }
-/*function removeImage(element, fileIndex) {
-	
-	if ( shipmentDetail.dangerous == DANGEROUS_STATUS.pending ||
-			 shipmentDetail.dangerous == DANGEROUS_STATUS.approve ||
-			 shipmentDetail.contSpecialStatus == SPECIAL_STATUS.yet ||
-			 shipmentDetail.contSpecialStatus == SPECIAL_STATUS.approve ){
-	    $.modal.alertWarning( "Container đang hoặc đã yêu cầu xác nhận, không thể xóa tệp đã đính kèm.");
-	  } 
-	else{
-	if (!fileIndex) {
-	    $.modal.msgSuccess("Xóa tệp thành công.");
-	    $(element).parent("div.preview-block").remove();
-	    let indexIsClick = $(".close").index(element);
-	    shipmentFileIds.splice(indexIsClick, 1);
-	    //shipmentFilePaths[`${element.className.split(" ")[1]}`].splice(indexIsClick, 1 );
-	  } else {
-		  shipmentFileIds.forEach(function (value, index) {
-	      if (value.id == fileIndex) {
-	        $.ajax({
-	          url: prefix + "/booking/file",
-	          method: "DELETE",
-	          data: {
-	            id: value,
-	          },
-	          beforeSend: function () {
-	            $.modal.loading("Đang xử lý, vui lòng chờ...");
-	          },
-	          success: function (result) {
-	            $.modal.closeLoading();
-	            if (result.code == 0) {
-	              $.modal.msgSuccess("Xóa tệp thành công.");
-	              $(element).parent("div.preview-block").remove();
-	              shipmentFileIds.splice(index, 1);
-	              //shipmentFilePaths[ `${getKeyFormByKeyType(value.fileType)}`
-	              //].splice(index, 1);
-	            } else {
-	              $.modal.alertWarning("Xóa tệp thất bại.");
-	            }
-	          },
-	        });
-	        return false;
-	      }
-	    });
-	  }
-	//}
-	
-}*/
-
-
-
-
-
-
+  
 // xóa khi chưa lưu, chưa có id. lấy filepath xóa trong lưu tạm
-function removeImage1(element, fileIndex) {
-	 
-	shipmentFilePath.forEach(function (value, index) {
-	 
-		console.log("fileeee");
-		
-		console.log(value);
-		console.log(index);
+function removeImage1(element, fileIndex) { 
+	shipmentFilePath.forEach(function (value, index) {   
         if (value == fileIndex) { 
-            $.ajax({
-            	//url: prefix + "/booking/file",
-            	url: prefix + "/delete_file",
-            	
+            $.ajax({ 
+            	url: prefix + "/delete_file", 
                 method: "DELETE",
                 data: {
                     id: "",
@@ -334,8 +230,7 @@ function removeImage1(element, fileIndex) {
             });
             return false;
         }
-    });
-   
+    }); 
 }
 
  

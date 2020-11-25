@@ -1,17 +1,5 @@
 const PREFIX = ctx + "logistic/send-cont-full";
-const DANGEROUS_STATUS = {
-  yet: "T", // là cont dangerous
-  pending: "2", // là cont danger đang chờ xét duyết
-  approve: "3", // là cont danger đã đc xét duyết
-  reject: "4", // là cont danger đã bị từ chối
-  NOT: "F", // không phải là cont danger
-};
-const SPECIAL_STATUS = {
-  yet: "1",
-  pending: "2",
-  approve: "3",
-  reject: "4",
-};
+
 const KEY_FORM = {
   OVERSIZE: "oversize",
   DANGEROUS: "dangerous",
