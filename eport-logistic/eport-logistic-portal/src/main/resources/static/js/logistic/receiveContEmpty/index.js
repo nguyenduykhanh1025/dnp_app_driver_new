@@ -1682,7 +1682,7 @@ function setLayoutPaymentStatus() {
     $("#registerStatus").removeClass("active disable").addClass("label-primary");
     $("#contSupplyStatus").removeClass("active disable").addClass("label-primary");
     $("#verifyStatus").removeClass("active disable").addClass("label-primary");
-    $("#paymentStatus").removeClass("label-primary disable").addClass("active");
+    $("#dateReceiptStatus").removeClass("label-primary disable").addClass("active");
     $("#finishStatus").removeClass("active label-primary").addClass("disable");
     $("#contSupplyBtn").prop("disabled", true);
     $("#deleteBtn").prop("disabled", true);
