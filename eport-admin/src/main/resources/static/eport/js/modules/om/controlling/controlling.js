@@ -1,5 +1,6 @@
 const PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
+const containerCol = 7;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipmentDetailIds, processOrderIds;
 var shipmentDetails;
@@ -902,7 +903,8 @@ function configHandsonBilling() {
           break;
       }
     },
-    afterChange: onChange
+    afterChange: onChange,
+    beforeCopy: beforeCopy
   };
 }
 
@@ -1122,12 +1124,23 @@ function configHandsonBooking() {
           break;
       }
     },
-    afterChange: onChange
+    afterChange: onChange,
+    beforeCopy: beforeCopy
   };
 }
 
 configHandsonBilling();
 hot = new Handsontable(dogrid, config);
+
+function beforeCopy(data, coords) {
+  if (coords[0].startCol == containerCol && coords[0].endCol == containerCol) {
+    if (data.length > 1) {
+      for (let i=0; i<data.length-1; i++) {
+        data[i][0] = data[i][0] + ',';
+      }
+    }
+  }
+}
 
 function onChange(changes, source) {
   if (!changes) {
