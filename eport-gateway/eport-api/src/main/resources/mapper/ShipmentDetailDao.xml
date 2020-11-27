@@ -423,7 +423,6 @@
 			<if test="containerNo != null and containerNo != ''"> AND CNTR_NO = #{containerNo}</if>
 			<if test="blNo != null and blNo != ''">
 				AND BL_NO = #{blNo}
-				AND OPR_EXPIRE_DATE IS NULL
 				AND JOB_ODR_NO2 IS NULL
 				AND IX_CD = 'I'
 			</if>
