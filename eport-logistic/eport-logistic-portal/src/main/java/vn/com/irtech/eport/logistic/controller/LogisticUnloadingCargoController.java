@@ -245,7 +245,6 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 		shipment.setCreateBy(user.getFullName());
 		shipment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
 		shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
-		System.out.println(shipment.toString());
 		if (shipmentService.insertShipment(shipment) == 1) {
 			return success("Thêm lô thành công");
 		}
@@ -533,8 +532,6 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 							shipmentDetailReference.setDetFreeTime(inputDetail.getDetFreeTime());
 						}
 						shipmentDetailReference.setUpdateTime(new Date());
-						System.out.println("ssssssssssssssssssssssss");
-						System.out.println(shipmentDetailReference.getDateReceipt());
 						if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
 							return error("Lưu khai báo thất bại từ container: " + inputDetail.getContainerNo());
 						}
@@ -604,27 +601,12 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 					getUser().getGroupId());
 			// flag mapping custom No
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-				// boolean customsNoMappingFlg =
-				// "1".equals(configService.selectConfigByKey(SystemConstants.ACCIS_CUSTOM_MAPPING_FLG_KEY));
 				for (ShipmentDetail shipmentDetail : shipmentDetails) {
 					// Save declareNoList to shipment detail
 					shipmentDetail.setCustomsNo(declareNoList);
 					shipmentDetail.setCustomScanTime(new Date());
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
-					// Neu bat buoc check to khai thi phai goi lai acciss
-					// if (!customsNoMappingFlg &&
-					// catosApiService.checkCustomStatus(shipmentDetail.getContainerNo(),
-					// shipmentDetail.getVoyNo())) {
-					// if (shipmentDetail.getStatus() == 1) {
-					// shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
-					// }
-					// shipmentDetail.setCustomStatus("R");
-					// shipmentDetailService.updateShipmentDetail(shipmentDetail);
-					// AjaxResult ajaxResult = AjaxResult.success();
-					// ajaxResult.put("shipmentDetail", shipmentDetail);
-					// webSocketService.sendMessage("/" + shipmentDetail.getContainerNo() +
-					// "/response", ajaxResult);
-					// } else {
+
 					customQueueService.offerShipmentDetail(shipmentDetail);
 					// }
 				}
@@ -638,16 +620,12 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 	@PostMapping("/otp/{otp}/verification")
 	@ResponseBody
 	@RepeatSubmit
-	public AjaxResult verifyOtp(String shipmentDetailIds, @PathVariable("otp") String otp, String taxCode,
-			boolean creditFlag, boolean isSendContEmpty) {
+	public AjaxResult verifyOtp(@PathVariable("otp") String otp, String shipmentDetailIds, String taxCode,
+			boolean creditFlag) {
 		try {
 			Long.parseLong(otp);
 		} catch (Exception e) {
 			return error("Mã OTP nhập vào không hợp lệ!");
-		}
-		// TODO Un-support cash
-		if (!creditFlag) {
-			return error("Lỗi! Chưa hỗ trợ thanh toán trả trước (cash).");
 		}
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
@@ -662,80 +640,34 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 		}
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
 				getUser().getGroupId());
-		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			AjaxResult ajaxResult = null;
+		AjaxResult validateResult = validateShipmentDetailList(shipmentDetails);
+		Integer code = (Integer) validateResult.get("code");
+		if (code != 0) {
+			return validateResult;
+		}
+		if (!CollectionUtils.isEmpty(shipmentDetails)) {
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-			// update shipment for lock update
-			if (!"3".equals(shipment.getStatus())) {
-				shipment.setStatus("3");
+			// Neu khong phai status la "Dang lam lenh" thi update thanh dang lam lenh
+			if (!EportConstants.SHIPMENT_STATUS_PROCESSING.equals(shipment.getStatus())) {
+				shipment.setStatus(EportConstants.SHIPMENT_STATUS_PROCESSING);
 				shipment.setUpdateTime(new Date());
 				shipment.setUpdateBy(getUser().getFullName());
 				shipmentService.updateShipment(shipment);
 			}
-			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService
-					.makeOrderReceiveContFull(shipmentDetails, shipment, taxCode, creditFlag);
-			AjaxResult validateResult = validateShipmentDetailList(shipmentDetails);
-			Integer code = (Integer) validateResult.get("code");
-			if (code != 0) {
-				return validateResult;
-			}
-			if (serviceRobotReqs != null) {
-				List<Long> processIds = new ArrayList<>();
-				boolean robotBusy = false;
-
-				// MAKE ORDER SEND CONT EMPTY
-				// if (isSendContEmpty) {
-				// shipment.setId(null);
-				// List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
-				// if (shipments != null && shipments.size() > 0) {
-				// String conts = "";
-				// for (ShipmentDetail shipmentDt: shipmentDetails) {
-				// conts += shipmentDt.getContainerNo() + ",";
-				// }
-				// conts = conts.substring(0, conts.length()-1);
-				// List<ShipmentDetail> shipmentDetails2 =
-				// shipmentDetailService.selectSendEmptyShipmentDetailByListCont(conts,
-				// shipments.get(0).getId());
-				// ProcessOrder processOrder =
-				// shipmentDetailService.makeOrderSendCont(shipmentDetails2, shipments.get(0),
-				// creditFlag);
-				// ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder,
-				// shipmentDetails2);
-				// try {
-				// mqttService.publishMessageToRobot(serviceRobotReq,
-				// EServiceRobot.SEND_CONT_EMPTY);
-				// } catch (Exception e) {
-				// e.printStackTrace();
-				// }
-				// }
-				// }
-
-				// MAKE ORDER RECEIVE CONT FULL
-				try {
-					for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
-						processIds.add(serviceRobotReq.processOrder.getId());
-						if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.RECEIVE_CONT_FULL)) {
-							robotBusy = true;
-						}
-					}
-					if (robotBusy) {
-						ajaxResult = AjaxResult
-								.warn("Yêu cầu đang được chờ xử lý, quý khách vui lòng đợi trong giây lát.");
-						ajaxResult.put("processIds", processIds);
-						ajaxResult.put("orderNumber", serviceRobotReqs.size());
-						return ajaxResult;
-					}
-				} catch (Exception e) {
-					logger.warn(e.getMessage());
-					return error("Có lỗi xảy ra trong quá trình xác thực!");
+			// Đổi opeCode operateCode -> groupCode. VD Hang tau CMA: CMA,CNC,APL.. -> CMA
+			String oprParent = dictService.getLabel("carrier_parent_child_list", shipmentDetails.get(0).getOpeCode());
+			if (StringUtils.isNotEmpty(oprParent)) {
+				for (ShipmentDetail shpDtl : shipmentDetails) {
+					shpDtl.setOpeCode(oprParent);
+					shpDtl.setUpdateBy(getUser().getUserName());
 				}
-				ajaxResult = AjaxResult
-						.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
-				ajaxResult.put("processIds", processIds);
-				ajaxResult.put("orderNumber", serviceRobotReqs.size());
-				return ajaxResult;
 			}
+
+			// Create list req for order receive cont empty
+			shipmentDetailService.makeOrderUnloadingCargo(shipmentDetails, shipment, taxCode, creditFlag);
+			return success();
 		}
+
 		return error("Có lỗi xảy ra trong quá trình xác thực!");
 	}
 

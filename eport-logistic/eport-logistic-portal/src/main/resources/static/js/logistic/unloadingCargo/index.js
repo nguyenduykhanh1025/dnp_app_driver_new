@@ -32,13 +32,25 @@ var fromDate, toDate;
 var myDropzone;
 var containerRemarkArr = []; // array container remark get from catos mapping with row in handsontable by index of element in array
 var locations = [];
+var consigneeList, opeCodeList, dischargePortList, vslNmList;
 
 const DATE_RECEIPT_STATUS = {
-  NO: "W",
+  NO: "N",
   PROGRESS: "P",
   SUCCESS: "S",
   ERROR: "E"
 }
+
+$.ajax({
+  url: ctx + "logistic/source/taxCode/consignee",
+  method: "GET",
+  success: function (data) {
+    if (data.code == 0) {
+      consigneeList = data.consigneeList;
+    }
+  },
+});
+
 //dictionary sizeList
 $.ajax({
   type: "GET",
@@ -51,7 +63,7 @@ $.ajax({
     }
   },
 });
-var consigneeList, opeCodeList, dischargePortList, vslNmList;
+
 $.ajax({
   url: ctx + "logistic/source/option",
   method: "GET",
@@ -64,45 +76,32 @@ $.ajax({
   },
 });
 
-$.ajax({
-  url: ctx + "logistic/source/taxCode/consignee",
-  method: "GET",
-  success: function (data) {
-    if (data.code == 0) {
-      consigneeList = data.consigneeList;
-    }
-  },
-});
 
-var toolbar = [
-  {
-    text:
-      '<button class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Thêm</button>',
-    handler: function () {
-      $.operate.addShipment();
-    },
+
+var toolbar = [{
+  text: '<button class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Thêm</button>',
+  handler: function () {
+    $.operate.addShipment();
   },
-  {
-    text:
-      '<button class="btn btn-sm btn-default" ><i class="fa fa-edit text-warning"></i> Sửa</button>',
-    handler: function () {
-      $.operate.editShipment();
-    },
+},
+{
+  text: '<button class="btn btn-sm btn-default" ><i class="fa fa-edit text-warning"></i> Sửa</button>',
+  handler: function () {
+    $.operate.editShipment();
   },
-  {
-    text:
-      '<button class="btn btn-sm btn-default"><i class="fa fa-remove text-danger"></i> Xóa</button>',
-    handler: function () {
-      removeShipment();
-    },
+},
+{
+  text: '<button class="btn btn-sm btn-default"><i class="fa fa-remove text-danger"></i> Xóa</button>',
+  handler: function () {
+    removeShipment();
   },
-  {
-    text:
-      '<button class="btn btn-sm btn-default"><i class="fa fa-refresh text-success"></i></button>',
-    handler: function () {
-      handleRefresh();
-    },
+},
+{
+  text: '<button class="btn btn-sm btn-default"><i class="fa fa-refresh text-success"></i></button>',
+  handler: function () {
+    handleRefresh();
   },
+},
 ];
 
 // HANDLE COLLAPSE SHIPMENT LIST
@@ -154,7 +153,9 @@ $(document).ready(function () {
 
   $("#right-layout").layout("collapse", "south");
   setTimeout(() => {
-    hot.updateSettings({ height: $("#right-side__main-table").height() - 35 });
+    hot.updateSettings({
+      height: $("#right-side__main-table").height() - 35
+    });
     hot.render();
   }, 200);
 
@@ -253,6 +254,7 @@ function dateformatter(date) {
   var d = date.getDate();
   return (d < 10 ? "0" + d : d) + "/" + (m < 10 ? "0" + m : m) + "/" + y;
 }
+
 function dateparser(s) {
   var ss = s.split(".");
   var d = parseInt(ss[0], 10);
@@ -362,12 +364,11 @@ function getSelected(index, row) {
   } else {
     if (onChangeFlg && currentIndexRow != index) {
       layer.confirm(
-        "Thông tin khái báo chưa được lưu, quý khách có muốn di chuyển qua trang khác?",
-        {
-          icon: 3,
-          title: "Xác Nhận",
-          btn: ["Đồng Ý", "Hủy Bỏ"],
-        },
+        "Thông tin khái báo chưa được lưu, quý khách có muốn di chuyển qua trang khác?", {
+        icon: 3,
+        title: "Xác Nhận",
+        btn: ["Đồng Ý", "Hủy Bỏ"],
+      },
         function () {
           layer.close(layer.index);
           currentIndexRow = index;
@@ -482,6 +483,7 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
     .html(content);
   return td;
 }
+
 function statusIconsRenderer(
   instance,
   td,
@@ -523,7 +525,7 @@ function statusIconsRenderer(
     let process =
       '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
     switch (sourceData[row].processStatus) {
-      case "E":
+      case "W":
         process =
           '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
         break;
@@ -540,6 +542,10 @@ function statusIconsRenderer(
       case "D":
         process =
           '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
+        break;
+      case "E":
+        payment =
+          '<i id="verify" class="fa fa-windows easyui-tooltip" title="Lỗi làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ed5565;"></i>';
         break;
     }
     // Payment status
@@ -583,6 +589,7 @@ function statusIconsRenderer(
   }
   return td;
 }
+
 function containerNoRenderer(
   instance,
   td,
@@ -612,6 +619,7 @@ function containerNoRenderer(
   );
   return td;
 }
+
 function houseBillBtnRenderer(
   instance,
   td,
@@ -682,6 +690,7 @@ function expiredDemRenderer(
   }
   return td;
 }
+
 function consigneeRenderer(
   instance,
   td,
@@ -710,6 +719,7 @@ function consigneeRenderer(
   );
   return td;
 }
+
 function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'receiptDem' + row).addClass("htMiddle").addClass("htCenter");
   if (value != null && value != '') {
@@ -751,6 +761,7 @@ function emptyDepotRenderer(
   );
   return td;
 }
+
 function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
     value = "";
@@ -774,6 +785,7 @@ function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
   );
   return td;
 }
+
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
     value = "";
@@ -797,6 +809,7 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
   );
   return td;
 }
+
 function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
     value = "";
@@ -821,6 +834,7 @@ function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   );
   return td;
 }
+
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
     value = "";
@@ -845,6 +859,7 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
   );
   return td;
 }
+
 function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
     value = "";
@@ -869,6 +884,7 @@ function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   );
   return td;
 }
+
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
     value = "";
@@ -926,6 +942,7 @@ function loadingPortRenderer(
   );
   return td;
 }
+
 function dischargePortRenderer(
   instance,
   td,
@@ -1159,124 +1176,123 @@ function configHandson() {
       200,
     ],
     filter: "true",
-    columns: [
-      {
-        data: "active",
-        type: "checkbox",
-        className: "htCenter",
-        renderer: checkBoxRenderer,
-      },
-      {
-        data: "status",
-        readOnly: true,
-        renderer: statusIconsRenderer,
-      },
-      {
-        data: "containerNo",
-        strict: true,
-        renderer: containerNoRenderer,
-      },
-      {
-        data: "housebilBtn",
-        renderer: houseBillBtnRenderer,
-      },
-      {
-        data: "expiredDem",
-        type: "date",
-        dateFormat: "YYYY-MM-DD",
-        defaultDate: new Date(),
-        renderer: expiredDemRenderer,
-      },
-      {
-        data: "detFreeTime",
-        type: "numeric",
-        renderer: detFreeTimeRenderer,
-      },
-      {
-        data: "consignee",
-        type: "autocomplete",
-        source: consigneeList,
-        strict: true,
-        renderer: consigneeRenderer,
-      },
-      {
-        data: "dateReceipt",
-        type: "date",
-        dateFormat: "DD/MM/YYYY",
-        correctFormat: true,
-        defaultDate: new Date(),
-        renderer: dateReceiptRenderer,
-      },
-      {
-        data: "emptyDepot",
-        type: "autocomplete",
-        source: emptyDepots,
-        strict: true,
-        renderer: emptyDepotRenderer,
-      },
-      {
-        data: "sztp",
-        type: "autocomplete",
-        source: sizeList,
-        strict: true,
-        renderer: sizeRenderer,
-      },
-      {
-        data: "opeCode",
-        type: "autocomplete",
-        source: opeCodeList,
-        strict: true,
-        renderer: opeCodeRenderer,
-      },
-      {
-        data: "vslNm",
-        type: "autocomplete",
-        source: vslNmList,
-        strict: true,
-        renderer: vslNmRenderer,
-      },
-      {
-        data: "voyNo",
-        type: "autocomplete",
-        strict: true,
-        renderer: voyNoRenderer,
-      },
-      {
-        data: "sealNo",
-        renderer: sealNoRenderer,
-      },
-      {
-        data: "wgt",
-        renderer: wgtRenderer,
-      },
-      {
-        data: "loadingPort",
-        type: "autocomplete",
-        source: dischargePortList,
-        renderer: loadingPortRenderer,
-      },
-      {
-        data: "dischargePort",
-        type: "autocomplete",
-        source: dischargePortList,
-        renderer: dischargePortRenderer,
-      },
-      {
-        data: "payType",
-        renderer: payTypeRenderer,
-      },
-      {
-        data: "payer",
-        renderer: payerRenderer,
-      },
-      {
-        data: "payerName",
-        renderer: payerNameRenderer,
-      },
-      {
-        data: "remark",
-        renderer: remarkRenderer,
-      },
+    columns: [{
+      data: "active",
+      type: "checkbox",
+      className: "htCenter",
+      renderer: checkBoxRenderer,
+    },
+    {
+      data: "status",
+      readOnly: true,
+      renderer: statusIconsRenderer,
+    },
+    {
+      data: "containerNo",
+      strict: true,
+      renderer: containerNoRenderer,
+    },
+    {
+      data: "housebilBtn",
+      renderer: houseBillBtnRenderer,
+    },
+    {
+      data: "expiredDem",
+      type: "date",
+      dateFormat: "YYYY-MM-DD",
+      defaultDate: new Date(),
+      renderer: expiredDemRenderer,
+    },
+    {
+      data: "detFreeTime",
+      type: "numeric",
+      renderer: detFreeTimeRenderer,
+    },
+    {
+      data: "consignee",
+      type: "autocomplete",
+      source: consigneeList,
+      strict: true,
+      renderer: consigneeRenderer,
+    },
+    {
+      data: "dateReceipt",
+      type: "date",
+      dateFormat: "DD/MM/YYYY",
+      correctFormat: true,
+      defaultDate: new Date(),
+      renderer: dateReceiptRenderer,
+    },
+    {
+      data: "emptyDepot",
+      type: "autocomplete",
+      source: emptyDepots,
+      strict: true,
+      renderer: emptyDepotRenderer,
+    },
+    {
+      data: "sztp",
+      type: "autocomplete",
+      source: sizeList,
+      strict: true,
+      renderer: sizeRenderer,
+    },
+    {
+      data: "opeCode",
+      type: "autocomplete",
+      source: opeCodeList,
+      strict: true,
+      renderer: opeCodeRenderer,
+    },
+    {
+      data: "vslNm",
+      type: "autocomplete",
+      source: vslNmList,
+      strict: true,
+      renderer: vslNmRenderer,
+    },
+    {
+      data: "voyNo",
+      type: "autocomplete",
+      strict: true,
+      renderer: voyNoRenderer,
+    },
+    {
+      data: "sealNo",
+      renderer: sealNoRenderer,
+    },
+    {
+      data: "wgt",
+      renderer: wgtRenderer,
+    },
+    {
+      data: "loadingPort",
+      type: "autocomplete",
+      source: dischargePortList,
+      renderer: loadingPortRenderer,
+    },
+    {
+      data: "dischargePort",
+      type: "autocomplete",
+      source: dischargePortList,
+      renderer: dischargePortRenderer,
+    },
+    {
+      data: "payType",
+      renderer: payTypeRenderer,
+    },
+    {
+      data: "payer",
+      renderer: payerRenderer,
+    },
+    {
+      data: "payerName",
+      renderer: payerNameRenderer,
+    },
+    {
+      data: "remark",
+      renderer: remarkRenderer,
+    },
     ],
     afterChange: function (changes, src) {
       //Get data change in cell to render another column
@@ -1438,6 +1454,7 @@ function checkAll() {
   allChecked = tempCheck;
   $(".checker").prop("checked", allChecked);
 }
+
 function check(id) {
   if (sourceData[id].id != null) {
     if (checkList[id] == 0) {
@@ -1451,13 +1468,15 @@ function check(id) {
     updateLayout();
   }
 }
+
 function updateLayout() {
   let disposable = true,
     status = 1,
     diff = false,
     check = false,
     verify = false,
-    done = false;
+    dateReceiptStatus = false;
+  done = false;
   allChecked = true;
   for (let i = 0; i < checkList.length; i++) {
     let cellStatus = hot.getDataAtCell(i, 1);
@@ -1477,6 +1496,10 @@ function updateLayout() {
           diff = true;
         } else {
           status = cellStatus;
+        }
+
+        if (sourceData[i].dateReceiptStatus == DATE_RECEIPT_STATUS.PROGRESS || sourceData[i].dateReceiptStatus == DATE_RECEIPT_STATUS.SUCCESS) {
+          dateReceiptStatus = true;
         }
       } else {
         allChecked = false;
@@ -1516,6 +1539,9 @@ function updateLayout() {
       break;
     case 4:
       setLayoutPaymentStatus();
+      if (dateReceiptStatus) {
+        $("#dateReceiptBtn").prop("disabled", true);
+      }
       break;
     case 5:
       setLayoutFinishStatus();
@@ -1898,15 +1924,14 @@ function saveShipmentDetail() {
           shipmentDetails.length > 0 &&
           shipmentDetails.length <= shipmentSelected.containerAmount
         ) {
-         
+
           if (dnDepot) {
             layer.confirm(
-              "Quý khách đã chọn nơi hạ container ở Cảng Tiên Sa, hệ thống sẽ tự động tạo lô và thông tin giao container rỗng.",
-              {
-                icon: 3,
-                title: "Xác Nhận",
-                btn: ["Đồng Ý", "Hủy Bỏ"],
-              },
+              "Quý khách đã chọn nơi hạ container ở Cảng Tiên Sa, hệ thống sẽ tự động tạo lô và thông tin giao container rỗng.", {
+              icon: 3,
+              title: "Xác Nhận",
+              btn: ["Đồng Ý", "Hủy Bỏ"],
+            },
               function () {
                 save(true);
                 layer.close(layer.index);
@@ -1929,6 +1954,7 @@ function saveShipmentDetail() {
     }, 100);
   }
 }
+
 function save(isSendEmpty) {
   if (shipmentDetails.length > 0) {
     shipmentDetails[0].vgmChk = isSendEmpty;
@@ -1966,8 +1992,7 @@ function deleteShipmentDetail() {
     $.modal.confirmShipment("Xác nhận xóa khai báo container ?", function () {
       $.modal.loading("Đang xử lý...");
       $.ajax({
-        url:
-          prefix +
+        url: prefix +
           "/shipment/" +
           shipmentSelected.id +
           "/shipment-detail/" +
@@ -2009,7 +2034,6 @@ function checkCustomStatus() {
 function verify() {
   $.modal.loading("Đang xử lý...");
   getDataSelectedFromTable(true, true);
-
   $.ajax({
     url: prefix + "/shipment/" + shipmentSelected.id + "/delegate/permission",
     method: "GET",
@@ -2158,7 +2182,6 @@ function setLayoutVerifyUserStatus() {
 }
 
 function setLayoutPaymentStatus() {
-  console.log('lo');
   $("#registerStatus").removeClass("active disable").addClass("label-primary");
   $("#customStatus").removeClass("active disable").addClass("label-primary");
   $("#verifyStatus").removeClass("active disable").addClass("label-primary");
@@ -2173,7 +2196,6 @@ function setLayoutPaymentStatus() {
 }
 
 function setLayoutFinishStatus() {
-  console.log('lo');
   $("#registerStatus").removeClass("active disable").addClass("label-primary");
   $("#verifyStatus").removeClass("active disable").addClass("label-primary");
   $("#dateReceiptStatus").removeClass("active disable").addClass("label-primary");
@@ -2336,6 +2358,7 @@ function hideProgress() {
   $(".percent-text").text("0%");
   setProgressPercent(0);
 }
+
 function exportReceipt() {
   if (!shipmentSelected) {
     $.modal.alertError("Bạn chưa chọn Lô!");
@@ -2422,7 +2445,7 @@ function clearInput() {
 
 function loadListComment(shipmentCommentId) {
   let req = {
-    serviceType: 1,
+    serviceType: 16,
     shipmentId: shipmentSelected.id,
   };
   $.ajax({
@@ -2438,6 +2461,7 @@ function loadListComment(shipmentCommentId) {
         let commentNumber = 0;
         if (data.shipmentComments != null) {
           data.shipmentComments.forEach(function (element, index) {
+            console.log(element);
             let createTime = element.createTime;
             let date = "";
             let time = "";
@@ -2478,10 +2502,14 @@ function loadListComment(shipmentCommentId) {
               element.topic +
               "</span></div>";
             // Content comment
-            html +=
-              "<div><span>" +
-              element.content.replaceAll("#{domain}", domain) +
-              "</span></div>";
+            if (element.content) {
+              console.log('alo', element.content);
+              html +=
+                "<div><span>" +
+                element.content.replaceAll("#{domain}", domain) +
+                "</span></div>";
+            }
+
             html += "</div>";
             html += "<hr>";
           });
@@ -2644,6 +2672,7 @@ function registerDateReceipt() {
         $.modal.alertWarning(res.msg);
       } else {
         getDataSelectedFromTable(true, true);
+
         if (shipmentDetails.length > 0) {
           $.ajax({
             url: prefix + "/shipment-detail/register-date-receipt",
@@ -2652,14 +2681,8 @@ function registerDateReceipt() {
             data: JSON.stringify(shipmentDetails),
             success: function (res) {
               $.modal.closeLoading();
-              if (res.code != 0) {
-                $.modal.alertWarning(res.msg);
-              } else {
-                getDataSelectedFromTable(true, true);
-                if (shipmentDetails.length > 0) {
-
-                }
-              }
+              $.modal.alertWarning(res.msg);
+              loadTable();
             },
             error: function (err) {
               $.modal.closeLoading();
@@ -2682,6 +2705,7 @@ function registerDateReceipt() {
     },
   });
 }
+
 function formatDateToSendServer(date) {
   if (new Date(date).getTime()) {
     return new Date(date).getTime();

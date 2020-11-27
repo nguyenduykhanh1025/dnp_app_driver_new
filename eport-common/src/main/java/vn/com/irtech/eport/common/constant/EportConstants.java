@@ -321,7 +321,7 @@ public interface EportConstants {
 	public static final Integer BULLETIN_RELEASE = 1;
 
 	/** date receipt status waiting */
-	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_NO = "W";
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_NO = "N";
 	/** date receipt status progress */
 	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_PROGRESS = "P";
 	/** date receipt status success */

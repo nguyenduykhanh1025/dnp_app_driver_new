@@ -236,6 +236,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					#{containerNo}
 				</foreach>
 			</if>
+			<if test="dateReceiptStatus != null and dateReceiptStatus != ''"> and date_receipt_status = #{dateReceiptStatus}</if>
 		</where>
 
 	</select>
@@ -1394,6 +1395,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="shipmentDetail.etd != null">etd = #{shipmentDetail.etd},</if>
 			<if
 				test="shipmentDetail.updateBy != null and shipmentDetail.updateBy != ''">update_by = #{shipmentDetail.updateBy},</if>
+			<if
+				test="shipmentDetail.dateReceiptStatus != null and shipmentDetail.dateReceiptStatus != ''">date_receipt_status = #{shipmentDetail.dateReceiptStatus},</if>
 			update_time = sysdate
 		</trim>
 		<where>
