@@ -64,29 +64,30 @@ import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 @Controller
 @RequestMapping("/logistic")
 public class LogisticCommonController extends LogisticBaseController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(LogisticCommonController.class);
-    
-    private final String PREFIX = "logistic";
-	
+
+	private final String PREFIX = "logistic";
+
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
 
-	@Autowired ICatosApiService catosApiService;
-	
+	@Autowired
+	ICatosApiService catosApiService;
+
 	@Autowired
 	private IShipmentService shipmentService;
-	
-	@Autowired 
+
+	@Autowired
 	private IOtpCodeService otpCodeService;
-	
+
 	@Autowired
 	private ConfigService configService;
-	
+
 	@Autowired
 	private IProcessBillService processBillService;
-	
-	@Autowired 
+
+	@Autowired
 	private INapasApiService napasApiService;
 
 	@Autowired
@@ -94,13 +95,13 @@ public class LogisticCommonController extends LogisticBaseController {
 
 	@Autowired
 	private IPaymentHistoryService paymentHistoryService;
-	
+
 	@Autowired
 	private IShipmentCommentService shipmentCommentService;
-	
+
 	@Autowired
-    private ServerConfig serverConfig;
-	
+	private ServerConfig serverConfig;
+
 	@Autowired
 	private DictService dictDataService;
 
@@ -124,7 +125,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		}
 		return ajaxResult;
 	}
-	
+
 	@PostMapping("/shipments")
 	@ResponseBody
 	public TableDataInfo listShipment(@RequestBody PageAble<Shipment> param) {
@@ -143,8 +144,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		Shipment shipment = shipmentService.selectShipmentById(id);
 		LogisticAccount user = getUser();
 		if (shipment != null && shipment.getLogisticGroupId().equals(user.getGroupId())) {
-			if(shipment.getStatus() != null && Integer.parseInt(shipment.getStatus()) < Integer
-						.parseInt(EportConstants.SHIPMENT_STATUS_PROCESSING)) {
+			if (shipment.getStatus() != null && Integer.parseInt(shipment.getStatus()) < Integer.parseInt(EportConstants.SHIPMENT_STATUS_PROCESSING)) {
 				// Delete shipment detail by shipment id
 				ShipmentDetail shipmentDetailParam = new ShipmentDetail();
 				shipmentDetailParam.setShipmentId(id);
@@ -157,13 +157,14 @@ public class LogisticCommonController extends LogisticBaseController {
 		}
 		return error();
 	}
+
 	@GetMapping("/otp/{shipmentDetailIds}")
 	@ResponseBody
 	public AjaxResult sendOTP(@PathVariable String shipmentDetailIds) {
-//		LogisticGroup lGroup = getGroup();
+		// LogisticGroup lGroup = getGroup();
 		OtpCode otpCode = new OtpCode();
 		Random rd = new Random();
-		long rD = rd.nextInt(900000)+100000;
+		long rD = rd.nextInt(900000) + 100000;
 		String tDCode = Long.toString(rD);
 		otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
 
@@ -178,23 +179,24 @@ public class LogisticCommonController extends LogisticBaseController {
 		cal.add(Calendar.MINUTE, +5);
 		otpCode.setExpiredTime(cal.getTime());
 		otpCodeService.insertSysOtp(otpCode);
-		// FIXME Get message template from SysConfigService, using String.format to replace place holders
+		// FIXME Get message template from SysConfigService, using String.format
+		// to replace place holders
 		String[] shipmentDetailIdArr = shipmentDetailIds.split(",");
 		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(Long.parseLong(shipmentDetailIdArr[0]));
 		String content = configService.getKey("otp.format");
 		content = content.replace("{shipmentId}", shipmentDetail.getShipmentId().toString()).replace("{otp}", tDCode);
 		String response = "";
-		 try {
-		 	response = otpCodeService.postOtpMessage(getUser().getMobile(), content);
-		 	System.out.println(response);
-		 	logger.debug("OTP Send Response: " + response);
-		 } catch (IOException ex) {
-		 	// process the exception
-			 logger.error(ex.getMessage());
-		 }
+		try {
+			response = otpCodeService.postOtpMessage(getUser().getMobile(), content);
+			System.out.println(response);
+			logger.debug("OTP Send Response: " + response);
+		} catch (IOException ex) {
+			// process the exception
+			logger.error(ex.getMessage());
+		}
 		return AjaxResult.success();
 	}
-	
+
 	@GetMapping("/source/taxCode/consignee")
 	@ResponseBody
 	public AjaxResult getConsigneeList() {
@@ -203,7 +205,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		ajaxResult.put("consigneeList", listConsignee);
 		return ajaxResult;
 	}
-	
+
 	@GetMapping("/source/consignee")
 	@ResponseBody
 	public AjaxResult getConsigneeListWithoutTaxCode() {
@@ -212,18 +214,18 @@ public class LogisticCommonController extends LogisticBaseController {
 		ajaxResult.put("consigneeList", listConsignee);
 		return ajaxResult;
 	}
-	
+
 	@GetMapping("/source/option")
 	@ResponseBody
 	public AjaxResult getField() {
 		AjaxResult ajaxResult = success();
-		
+
 		List<String> listVessel = shipmentDetailService.getVesselCodeList();
-		List<String> opeCodeList =  shipmentDetailService.getOpeCodeList();
+		List<String> opeCodeList = shipmentDetailService.getOpeCodeList();
 
 		ajaxResult.put("vslNmList", listVessel);
 		ajaxResult.put("opeCodeList", opeCodeList);
-		
+
 		return ajaxResult;
 	}
 
@@ -235,13 +237,14 @@ public class LogisticCommonController extends LogisticBaseController {
 		ajaxResult.put("voyages", voyages);
 		return ajaxResult;
 	}
-	
+
 	@GetMapping("/payment/napas/{processOrderIds}")
 	public String napasPaymentForm(@PathVariable String processOrderIds, ModelMap mmap) {
 		String[] processOrderIdsArr = processOrderIds.split(",");
 
 		// return error when logistic didn't own process order
-		if (processOrderIdsArr.length != processOrderService.checkLogisticOwnedProcessOrder(getUser().getGroupId(), processOrderIdsArr)) {
+		if (processOrderIdsArr.length != processOrderService.checkLogisticOwnedProcessOrder(getUser().getGroupId(),
+				processOrderIdsArr)) {
 			return "error/unauth";
 		}
 
@@ -267,7 +270,8 @@ public class LogisticCommonController extends LogisticBaseController {
 			paymentHistory = new PaymentHistory();
 			paymentHistory.setUserId(getUserId());
 			paymentHistory.setProccessOrderIds(processOrderIds);
-			paymentHistory.setShipmentId(processOrderService.getShipmentIdByProcessOrderId(Long.valueOf(processOrderIdsArr[0])));
+			paymentHistory.setShipmentId(
+					processOrderService.getShipmentIdByProcessOrderId(Long.valueOf(processOrderIdsArr[0])));
 			paymentHistory.setAmount(total);
 			paymentHistory.setStatus("0");
 			paymentHistory.setOrderId(orderId);
@@ -281,30 +285,31 @@ public class LogisticCommonController extends LogisticBaseController {
 		mmap.put("resultUrl", configService.getKey("napas.payment.result"));
 		mmap.put("referenceOrder", "Thanh toan " + orderId);
 		mmap.put("clientIp", getUserIp());
-		mmap.put("data", napasApiService.getDataKey(getUserIp(), "deviceId", orderId, total, napasApiService.getAccessToken()));
+		mmap.put("data",
+				napasApiService.getDataKey(getUserIp(), "deviceId", orderId, total, napasApiService.getAccessToken()));
 
 		return PREFIX + "/napas/napasPaymentForm";
 	}
 
 	@Log(title = "Thanh Toán Napas", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
-	@RequestMapping(value="/payment/result", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+	@RequestMapping(value = "/payment/result", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
 	@Transactional
 	public String getPaymentResult(@RequestParam("napasResult") String result, ModelMap mmap) {
 		JSONObject json = JSONObject.parseObject(result);
 		String dataBase64 = json.getString("data");
-		
+
 		boolean isError = true;
-		
-		//checksum
-		String  checksumString = json.getString("checksum");
-		if (checksumString.equalsIgnoreCase(DigestUtils.sha256Hex(dataBase64+configService.getKey("napas.client.secret")))) {
-			
-			//decode base
+
+		// checksum
+		String checksumString = json.getString("checksum");
+		if (checksumString.equalsIgnoreCase(DigestUtils.sha256Hex(dataBase64 + configService.getKey("napas.client.secret")))) {
+
+			// decode base
 			JSONObject decodeData = JSONObject.parseObject(new String(Base64.getDecoder().decode(dataBase64)));
-			
+
 			// result (Success or Failed)
 			String resultStatus = decodeData.getJSONObject("paymentResult").getString("result");
-			
+
 			if ("SUCCESS".equalsIgnoreCase(resultStatus)) {
 				// order id
 				String orderId = decodeData.getJSONObject("paymentResult").getJSONObject("order").getString("id");
@@ -323,12 +328,13 @@ public class LogisticCommonController extends LogisticBaseController {
 					List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(paymentHistory.getProcessOrderIds());
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
 						shipmentDetail.setPaymentStatus("Y");
-						shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
-						if (shipmentDetail.getCustomStatus() != null && "N".equals(shipmentDetail.getCustomStatus()) && 
-						shipmentDetail.getDischargePort() != null && shipmentDetail.getDischargePort().length() > 2 && 
-						"VN".equals(shipmentDetail.getDischargePort().substring(0, 2))) {
+						shipmentDetail.setStatus(shipmentDetail.getStatus() + 1);
+						if (shipmentDetail.getCustomStatus() != null && "N".equals(shipmentDetail.getCustomStatus())
+								&& shipmentDetail.getDischargePort() != null
+								&& shipmentDetail.getDischargePort().length() > 2
+								&& "VN".equals(shipmentDetail.getDischargePort().substring(0, 2))) {
 							shipmentDetail.setCustomStatus("R");
-							shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+							shipmentDetail.setStatus(shipmentDetail.getStatus() + 1);
 						}
 						shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					}
@@ -349,24 +355,20 @@ public class LogisticCommonController extends LogisticBaseController {
 	}
 
 	@Log(title = "Thanh Toán Napas", businessType = BusinessType.INSERT, operatorType = OperatorType.MOBILE)
-	@RequestMapping(value="/payment/mobile/result", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+	@RequestMapping(value = "/payment/mobile/result", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
 	@Transactional
 	public String getPaymentMobileResult(@RequestParam("napasResult") String result, ModelMap mmap) {
 		JSONObject json = JSONObject.parseObject(result);
-		String dataBase64 = json.getString("data");
-
-		boolean isError = true;
-		
-		//checksum
-		String  checksumString = json.getString("checksum");
-		if (checksumString.equalsIgnoreCase(DigestUtils.sha256Hex(dataBase64+configService.getKey("napas.client.secret")))) {
-			
-			//decode base
-			JSONObject decodeData = JSONObject.parseObject(new String(Base64.getDecoder().decode(dataBase64)));
-			
+		String dataBase64 = json.getString("data"); 
+		boolean isError = true; 
+		// checksum
+		String checksumString = json.getString("checksum");
+		if (checksumString.equalsIgnoreCase(DigestUtils.sha256Hex(dataBase64 + configService.getKey("napas.client.secret")))) { 
+			// decode base
+			JSONObject decodeData = JSONObject.parseObject(new String(Base64.getDecoder().decode(dataBase64))); 
 			// result (Success or Failed)
 			String resultStatus = decodeData.getJSONObject("paymentResult").getString("result");
-			
+
 			if ("SUCCESS".equalsIgnoreCase(resultStatus)) {
 				// order id
 				String orderId = decodeData.getJSONObject("paymentResult").getJSONObject("order").getString("id");
@@ -374,27 +376,25 @@ public class LogisticCommonController extends LogisticBaseController {
 				paymentHistoryParam.setOrderId(orderId);
 				List<PaymentHistory> paymentHistories = paymentHistoryService.selectPaymentHistoryList(paymentHistoryParam);
 				if (!paymentHistories.isEmpty()) {
-					PaymentHistory paymentHistory = paymentHistories.get(0);
-
+					PaymentHistory paymentHistory = paymentHistories.get(0); 
 					// Update payment history
 					paymentHistory.setUpdateBy(getUser().getFullName());
 					paymentHistory.setStatus("1");
-					paymentHistoryService.updatePaymentHistory(paymentHistory);
-
+					paymentHistoryService.updatePaymentHistory(paymentHistory); 
 					// Update shipment detail
 					List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(paymentHistory.getProcessOrderIds());
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
 						shipmentDetail.setPaymentStatus("Y");
-						shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
-						if (shipmentDetail.getCustomStatus() != null && "N".equals(shipmentDetail.getCustomStatus()) && 
-						shipmentDetail.getDischargePort() != null && shipmentDetail.getDischargePort().length() > 2 && 
-						"VN".equals(shipmentDetail.getDischargePort().substring(0, 2))) {
+						shipmentDetail.setStatus(shipmentDetail.getStatus() + 1);
+						if (shipmentDetail.getCustomStatus() != null && "N".equals(shipmentDetail.getCustomStatus())
+								&& shipmentDetail.getDischargePort() != null
+								&& shipmentDetail.getDischargePort().length() > 2
+								&& "VN".equals(shipmentDetail.getDischargePort().substring(0, 2))) {
 							shipmentDetail.setCustomStatus("R");
-							shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+							shipmentDetail.setStatus(shipmentDetail.getStatus() + 1);
 						}
 						shipmentDetailService.updateShipmentDetail(shipmentDetail);
-					}
-
+					} 
 					// Update bill
 					processBillService.updateBillListByProcessOrderIds(paymentHistory.getProcessOrderIds());
 
@@ -409,35 +409,36 @@ public class LogisticCommonController extends LogisticBaseController {
 		}
 		return PREFIX + "/napas/resultMobiletForm";
 	}
-	
+
 	@PostMapping("/pods")
 	@ResponseBody
-	public AjaxResult getPODs(@RequestBody ShipmentDetail shipmentDetail){
+	public AjaxResult getPODs(@RequestBody ShipmentDetail shipmentDetail) {
 		AjaxResult ajaxResult = success();
 		List<String> listPOD = new ArrayList<String>();
-		if(shipmentDetail != null){
-//			String year = catosApiService.getYearByVslCodeAndVoyNo(shipmentDetail.getVslNm(), shipmentDetail.getVoyNo());
-//			if(year != null) {
-//				shipmentDetail.setYear(year);
-//			}
+		if (shipmentDetail != null) {
+			// String year =
+			// catosApiService.getYearByVslCodeAndVoyNo(shipmentDetail.getVslNm(),
+			// shipmentDetail.getVoyNo());
+			// if(year != null) {
+			// shipmentDetail.setYear(year);
+			// }
 			listPOD = catosApiService.getPODList(shipmentDetail);
 			ajaxResult.put("dischargePorts", listPOD);
 			return ajaxResult;
 		}
 		return error();
 	}
-	
+
 	@GetMapping("/size/container/list")
 	@ResponseBody
-	public AjaxResult getSztps()
-	{
+	public AjaxResult getSztps() {
 		return AjaxResult.success(dictDataService.getType("sys_size_container_eport"));
 	}
 
 	@GetMapping("/shipment/{shipmentId}/napas")
 	public String napasShiftingPaymentForm(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
 
-		List<ProcessBill> processBills = processBillService.getBillShiftingContByShipmentId(shipmentId, getUser().getGroupId());
+		List<ProcessBill> processBills = processBillService.getBillShiftingContByShipmentId(shipmentId,getUser().getGroupId());
 
 		if (processBills.isEmpty()) {
 			return "error/500";
@@ -456,7 +457,7 @@ public class LogisticCommonController extends LogisticBaseController {
 			}
 		}
 		orderId = orderId + "-" + DateUtils.dateTimeNow();
-		processOrderIds.substring(0, processOrderIds.length()-1);
+		processOrderIds.substring(0, processOrderIds.length() - 1);
 
 		// check if process order is on payment transaction
 		PaymentHistory paymentHistoryParam = new PaymentHistory();
@@ -476,29 +477,27 @@ public class LogisticCommonController extends LogisticBaseController {
 		mmap.put("resultUrl", configService.getKey("napas.payment.shifting.result"));
 		mmap.put("referenceOrder", "Thanh toan " + orderId);
 		mmap.put("clientIp", getUserIp());
-		mmap.put("data", napasApiService.getDataKey(getUserIp(), "deviceId", orderId, total, napasApiService.getAccessToken()));
+		mmap.put("data",
+				napasApiService.getDataKey(getUserIp(), "deviceId", orderId, total, napasApiService.getAccessToken()));
 
 		return PREFIX + "/napas/napasPaymentForm";
 	}
 
-	@RequestMapping(value="/payment/shifting/result", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+	@RequestMapping(value = "/payment/shifting/result", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
 	@Transactional
 	public String getPaymentShiftingResult(@RequestParam("napasResult") String result, ModelMap mmap) {
 		JSONObject json = JSONObject.parseObject(result);
 		String dataBase64 = json.getString("data");
 
 		boolean isError = true;
-		
-		//checksum
-		String  checksumString = json.getString("checksum");
-		if (checksumString.equalsIgnoreCase(DigestUtils.sha256Hex(dataBase64+configService.getKey("napas.client.secret")))) {
-			
-			//decode base
-			JSONObject decodeData = JSONObject.parseObject(new String(Base64.getDecoder().decode(dataBase64)));
-			
+
+		// checksum
+		String checksumString = json.getString("checksum");
+		if (checksumString.equalsIgnoreCase(DigestUtils.sha256Hex(dataBase64 + configService.getKey("napas.client.secret")))) { 
+			// decode base
+			JSONObject decodeData = JSONObject.parseObject(new String(Base64.getDecoder().decode(dataBase64))); 
 			// result (Success or Failed)
-			String resultStatus = decodeData.getJSONObject("paymentResult").getString("result");
-			
+			String resultStatus = decodeData.getJSONObject("paymentResult").getString("result"); 
 			if ("SUCCESS".equalsIgnoreCase(resultStatus)) {
 				// order id
 				String orderId = decodeData.getJSONObject("paymentResult").getJSONObject("order").getString("id");
@@ -521,8 +520,7 @@ public class LogisticCommonController extends LogisticBaseController {
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
 						shipmentDetail.setPrePickupPaymentStatus("Y");
 						shipmentDetailService.updateShipmentDetail(shipmentDetail);
-					}
-
+					} 
 					// Update bill
 					processBillService.updateBillListByProcessOrderIds(paymentHistory.getProcessOrderIds());
 
@@ -537,31 +535,32 @@ public class LogisticCommonController extends LogisticBaseController {
 		}
 		return PREFIX + "/napas/resultForm";
 	}
-	
+
 	@GetMapping("/ope-code/{opeCode}/vessel-code/list")
 	@ResponseBody
 	public AjaxResult getVesselBerthPlanByOpeCode(@PathVariable String opeCode) {
 		AjaxResult ajaxResult = success();
 		List<String> vesselList = catosApiService.selectVesselCodeBerthPlan(opeCode);
-		if(vesselList.size() > 0) {
+		if (vesselList.size() > 0) {
 			ajaxResult.put("vessels", vesselList);
 			return ajaxResult;
 		}
 		return error();
 	}
-	
+
 	@GetMapping("/taxCode/{taxCode}/delegate/payment/permission")
 	@ResponseBody
 	public AjaxResult checkDelegatePermission(@PathVariable("taxCode") String taxCode) {
 		if (taxCode.equalsIgnoreCase(getGroup().getMst())) {
 			return success();
 		}
-		if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst(), EportConstants.DELEGATE_PERMISSION_PAYMENT) > 0) {
+		if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst(),
+				EportConstants.DELEGATE_PERMISSION_PAYMENT) > 0) {
 			return success();
 		}
 		return error();
 	}
-	
+
 	@PostMapping("/comment/list")
 	@ResponseBody
 	public AjaxResult getCommentList(@RequestBody ShipmentComment shipmentComment) {
@@ -574,14 +573,14 @@ public class LogisticCommonController extends LogisticBaseController {
 		ajaxResult.put("shipmentComments", shipmentComments);
 		return ajaxResult;
 	}
-	
+
 	@PostMapping("/comment/update")
 	@ResponseBody
 	public AjaxResult updateCommentSeenFlg(@RequestBody ShipmentComment shipmentComment) {
 		if (shipmentComment == null || shipmentComment.getShipmentId() == null) {
 			return error("Invalid input!");
 		}
-		
+
 		ShipmentComment shipmentCommentParam = new ShipmentComment();
 		shipmentCommentParam.setShipmentId(shipmentComment.getShipmentId());
 		shipmentCommentParam.setLogisticGroupId(getUser().getGroupId());
@@ -589,7 +588,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		shipmentCommentService.updateFlgShipmentComment(shipmentCommentParam);
 		return success();
 	}
-	
+
 	@GetMapping("/comment/amount")
 	@ResponseBody
 	public AjaxResult getNumberOfComment() {
@@ -601,7 +600,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		ajaxResult.put("shipmentCommentAmount", shipmentCommentService.selectCountCommentListUnSeen(shipmentComment));
 		return ajaxResult;
 	}
-	
+
 	@GetMapping("/comment/notifications")
 	@ResponseBody
 	public AjaxResult getListCommentShipmentForGeneral() {
@@ -616,7 +615,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		ajaxResult.put("total", total);
 		return ajaxResult;
 	}
-	
+
 	@GetMapping("/comment/notification/all")
 	@ResponseBody
 	public AjaxResult getFullListShipmentComment() {
@@ -628,16 +627,17 @@ public class LogisticCommonController extends LogisticBaseController {
 		ajaxResult.put("shipmentComments", shipmentComments);
 		return ajaxResult;
 	}
-	
+
 	@PostMapping("/shipment/{shipmentId}/file/attach")
 	@ResponseBody
-	public AjaxResult postAttachFile(MultipartFile file, @PathVariable("shipmentId") Long shipmentId) throws IOException, InvalidExtensionException {
+	public AjaxResult postAttachFile(MultipartFile file, @PathVariable("shipmentId") Long shipmentId)
+			throws IOException, InvalidExtensionException {
 		String basePath = String.format("%s/%s", Global.getUploadPath() + "/comment", shipmentId);
 		String now = DateUtils.dateTimeNow();
 		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
-        String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
-        AjaxResult ajaxResult = AjaxResult.success();
-        ajaxResult.put("fileLink", serverConfig.getUrl() + filePath);
+		String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("fileLink", serverConfig.getUrl() + filePath);
 		return ajaxResult;
 	}
 }

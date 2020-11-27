@@ -8,6 +8,10 @@ import vn.com.irtech.eport.common.core.domain.BaseEntity;
  * @author ThanhD
  * @date 2020-07-28
  */
+/**
+ * @author KunlezIsme
+ *
+ */
 public class ShipmentImage extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
@@ -16,8 +20,20 @@ public class ShipmentImage extends BaseEntity {
     private Long shipmentId;
 
     private String path;
+    
+    private String shipmentDetailId;
+    
+    private String fileType;
+     
+    public String getFileType() {
+		return fileType;
+	}
 
-    public Long getId() {
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -41,7 +57,15 @@ public class ShipmentImage extends BaseEntity {
         this.path = path;
     }
 
-    @Override
+    public String getShipmentDetailId() {
+		return shipmentDetailId;
+	}
+
+	public void setShipmentDetailId(String shipmentDetailId) {
+		this.shipmentDetailId = shipmentDetailId;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("id", getId())
@@ -51,6 +75,7 @@ public class ShipmentImage extends BaseEntity {
                 .append("createTime", getCreateTime())
                 .append("updateBy", getUpdateBy())
                 .append("updateTime", getUpdateTime())
+                .append("shipmentDetailId", getShipmentDetailId())
                 .toString();
     }
 }

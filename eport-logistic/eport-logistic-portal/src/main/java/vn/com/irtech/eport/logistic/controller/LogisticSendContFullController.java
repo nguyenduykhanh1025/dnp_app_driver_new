@@ -1,14 +1,5 @@
 package vn.com.irtech.eport.logistic.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -18,16 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.annotation.RepeatSubmit;
 import vn.com.irtech.eport.common.config.Global;
@@ -45,27 +28,19 @@ import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
-import vn.com.irtech.eport.logistic.domain.LogisticAccount;
-import vn.com.irtech.eport.logistic.domain.OtpCode;
-import vn.com.irtech.eport.logistic.domain.ProcessOrder;
-import vn.com.irtech.eport.logistic.domain.Shipment;
-import vn.com.irtech.eport.logistic.domain.ShipmentComment;
-import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.domain.ShipmentImage;
+import vn.com.irtech.eport.logistic.domain.*;
 import vn.com.irtech.eport.logistic.dto.BerthPlanInfo;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
 import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
-import vn.com.irtech.eport.logistic.service.ICatosApiService;
-import vn.com.irtech.eport.logistic.service.IOtpCodeService;
-import vn.com.irtech.eport.logistic.service.IProcessBillService;
-import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
-import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
-import vn.com.irtech.eport.logistic.service.IShipmentImageService;
-import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.logistic.service.*;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 @Controller
 @RequiresPermissions("logistic:order")
@@ -112,6 +87,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@Autowired
 	private ConfigService configService;
 
+	@Autowired
+	private DictService dictDataService;
+
 	@GetMapping()
 	public String sendContFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
 		if (sId != null) {
@@ -145,7 +123,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 		ShipmentImage shipmentImage = new ShipmentImage();
 		shipmentImage.setShipmentId(id);
-		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageListNotFileType(shipmentImage);
 		mmap.put("shipmentFiles", shipmentImages);
 		mmap.put("oprListBookingCheck", dictService.getListTag("opr_list_booking_check"));
 		mmap.put("oprCodeList", oprCodeList);
@@ -211,7 +189,20 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		mmap.put("containerNo", containerNo);
 		mmap.put("sztp", sztp);
 		mmap.put("shipmentDetailId", shipmentDetailId);
+
+		mmap.put("contCargoTypes", dictDataService.getType("cont_cargo_type"));
+		mmap.put("contDangerousImos", dictDataService.getType("cont_dangerous_imo"));
+		mmap.put("contDangerousUnnos", dictDataService.getType("cont_dangerous_unno"));
+
+		mmap.put("shipmentDetail", this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId));
+
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+		mmap.put("shipmentFiles", shipmentImages);
+
 		return PREFIX + "/detail";
+
 	}
 
 	@GetMapping("/req/cancel/confirmation")
@@ -269,9 +260,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBookingNo(bookingNo);
 		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
-//		if(catosApiService.checkBookingNoForSendFReceiveE(bookingNo, "F").intValue() == 0) {
-//			return error("Booking No này chưa có trong hệ thống. Vui lòng liên hệ OM để tạo !");
-//		}
+		// if(catosApiService.checkBookingNoForSendFReceiveE(bookingNo, "F").intValue()
+		// == 0) {
+		// return error("Booking No này chưa có trong hệ thống. Vui lòng liên hệ OM để
+		// tạo !");
+		// }
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
 			return success();
 		}
@@ -373,7 +366,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			if (shipmentId == null) {
 				return error("Không tìm thấy lô cần thêm chi tiết.");
 			}
-
 			Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 			if (shipment == null || !verifyPermission(shipment.getLogisticGroupId())) {
 				return error("Không tìm thấy lô, vui lòng kiểm tra lại thông tin.");
@@ -388,7 +380,15 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 			boolean updateShipment = true; // if true => need to update status shipment from init to save
 			for (ShipmentDetail inputDetail : shipmentDetails) {
+
+				// validate if cont have status cont special REQUEST | DONE
+				if (shipmentDetailService.isHaveContSpacialRequest(inputDetail)
+				|| shipmentDetailService.isHaveContSpacialYes(inputDetail)) {
+					return error("Không thể thay đổi thông tin các container đang chờ hoặc đã được yêu cầu xét duyệt.");
+				}
+
 				if (inputDetail.getId() != null) {
+
 					// Case update
 					ShipmentDetail shipmentDetailReference = shipmentDetailService
 							.selectShipmentDetailById(inputDetail.getId());
@@ -399,25 +399,74 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					}
 
 					updateShipment = false;
-					if ("N".equalsIgnoreCase(shipmentDetailReference.getUserVerifyStatus())) {
-						shipmentDetailReference.setContainerNo(inputDetail.getContainerNo());
-						shipmentDetailReference.setSztp(inputDetail.getSztp());
-						shipmentDetailReference.setSztpDefine(inputDetail.getSztpDefine());
-						shipmentDetailReference.setConsignee(inputDetail.getConsignee());
-						shipmentDetailReference.setVslNm(inputDetail.getVslNm());
-						shipmentDetailReference.setVoyNo(inputDetail.getVoyNo());
-						shipmentDetailReference.setYear(inputDetail.getYear());
-						shipmentDetailReference.setVslName(inputDetail.getVslName());
-						shipmentDetailReference.setVoyCarrier(inputDetail.getVoyCarrier());
-						shipmentDetailReference.setEta(inputDetail.getEta());
-						shipmentDetailReference.setEtd(inputDetail.getEtd());
-						shipmentDetailReference.setDischargePort(inputDetail.getDischargePort());
-						shipmentDetailReference.setWgt(inputDetail.getWgt());
-						shipmentDetailReference.setCargoType(inputDetail.getCargoType());
-						shipmentDetailReference.setCommodity(inputDetail.getCommodity());
-						shipmentDetailReference.setSealNo(inputDetail.getSealNo());
-					}
+
+					shipmentDetailReference.setContainerNo(inputDetail.getContainerNo());
+					shipmentDetailReference.setSztp(inputDetail.getSztp());
+					shipmentDetailReference.setSztpDefine(inputDetail.getSztpDefine());
+					shipmentDetailReference.setConsignee(inputDetail.getConsignee());
+					shipmentDetailReference.setVslNm(inputDetail.getVslNm());
+					shipmentDetailReference.setVoyNo(inputDetail.getVoyNo());
+					shipmentDetailReference.setYear(inputDetail.getYear());
+					shipmentDetailReference.setVslName(inputDetail.getVslName());
+					shipmentDetailReference.setVoyCarrier(inputDetail.getVoyCarrier());
+					shipmentDetailReference.setEta(inputDetail.getEta());
+					shipmentDetailReference.setEtd(inputDetail.getEtd());
+					shipmentDetailReference.setDischargePort(inputDetail.getDischargePort());
+					shipmentDetailReference.setWgt(inputDetail.getWgt());
+					shipmentDetailReference.setCargoType(inputDetail.getCargoType());
+					shipmentDetailReference.setCommodity(inputDetail.getCommodity());
+					shipmentDetailReference.setSealNo(inputDetail.getSealNo());
+
+					shipmentDetailReference.setVgmChk(inputDetail.getVgmChk());
+					shipmentDetailReference.setVgmMaxGross(inputDetail.getVgmMaxGross());
+					shipmentDetailReference.setVgmInspectionDepartment(inputDetail.getVgmInspectionDepartment());
+
+					shipmentDetailReference.setOversizeBack(inputDetail.getOversizeBack());
+					shipmentDetailReference.setOversizeFront(inputDetail.getOversizeFront());
+					shipmentDetailReference.setOversizeLeft(inputDetail.getOversizeLeft());
+					shipmentDetailReference.setOversizeRight(inputDetail.getOversizeRight());
+					shipmentDetailReference.setOversizeTop(inputDetail.getOversizeTop());
+					shipmentDetailReference.setOversizeType(inputDetail.getOversizeType());
+
+					shipmentDetailReference.setDangerousImo(inputDetail.getDangerousImo());
+					shipmentDetailReference.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
+					shipmentDetailReference.setDangerousPacking(inputDetail.getDangerousPacking());
+					shipmentDetailReference.setDangerousUnno(inputDetail.getDangerousUnno());
+
+					shipmentDetailReference.setTemperature(inputDetail.getTemperature());
+					shipmentDetailReference.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
+
 					shipmentDetailReference.setRemark(inputDetail.getRemark());
+
+					// Lưu nếu là cont đặc biệt
+					String sztp = inputDetail.getSztp().substring(2, 3);
+
+					if (sztp.equals("R")) {
+						if (StringUtils.isEmpty(inputDetail.getFrozenStatus())) {
+							shipmentDetailReference.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_INIT);
+						} else if (!(inputDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
+								|| inputDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
+							shipmentDetailReference.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_INIT);
+						}
+
+					} else {
+						shipmentDetailReference.setFrozenStatus("");
+					}
+
+					if (StringUtils.isEmpty(inputDetail.getOversize())) {
+						shipmentDetailReference.setOversize("");
+					} else if (!(inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
+							|| inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
+						shipmentDetailReference.setOversize(EportConstants.CONT_SPECIAL_STATUS_INIT);
+					}
+
+					if (StringUtils.isEmpty(inputDetail.getDangerous())) {
+						shipmentDetailReference.setDangerous("");
+					} else if (!(inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
+							|| inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
+						shipmentDetailReference.setDangerous(EportConstants.CONT_SPECIAL_STATUS_INIT);
+					}
+
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
 					}
@@ -452,6 +501,37 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipmentDetail.setCustomStatus("N");
 					shipmentDetail.setFinishStatus("N");
 					shipmentDetail.setFe("F");
+
+					shipmentDetail.setVgmChk(inputDetail.getVgmChk());
+					shipmentDetail.setVgmMaxGross(inputDetail.getVgmMaxGross());
+					shipmentDetail.setVgmInspectionDepartment(inputDetail.getVgmInspectionDepartment());
+
+					shipmentDetail.setOversizeBack(inputDetail.getOversizeBack());
+					shipmentDetail.setOversizeFront(inputDetail.getOversizeFront());
+					shipmentDetail.setOversizeLeft(inputDetail.getOversizeLeft());
+					shipmentDetail.setOversizeRight(inputDetail.getOversizeRight());
+					shipmentDetail.setOversizeTop(inputDetail.getOversizeTop());
+					shipmentDetail.setOversizeType(inputDetail.getOversizeType());
+
+					shipmentDetail.setDangerousImo(inputDetail.getDangerousImo());
+					shipmentDetail.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
+					shipmentDetail.setDangerousPacking(inputDetail.getDangerousPacking());
+					shipmentDetail.setDangerousUnno(inputDetail.getDangerousUnno());
+
+					shipmentDetail.setTemperature(inputDetail.getTemperature());
+					shipmentDetail.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
+
+					// Lưu nếu là cont đặc biệt
+					String sztp = inputDetail.getSztp().substring(2, 3);
+					if (sztp.equals("R")) {
+						// là cont lạnh
+						shipmentDetail.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_INIT);
+					}
+					if (sztp.equals("P")) {
+						// la cont qua kho
+						shipmentDetail.setOversize(EportConstants.CONT_SPECIAL_STATUS_INIT);
+					}
+
 					if (attachBooking) {
 						shipmentDetail.setDoStatus("N");
 					}
@@ -467,7 +547,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			}
 			return success("Lưu khai báo thành công");
 		}
-		return error("Lưu khai báo thất bại");
+		return
+
+		error("Lưu khai báo thất bại");
 	}
 
 	@Log(title = "Xóa Khai Báo Cont", businessType = BusinessType.DELETE, operatorType = OperatorType.LOGISTIC)
@@ -525,7 +607,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			return error("Mã OTP nhập vào không hợp lệ!");
 		}
 		// TODO Un-support cash
-		if(!creditFlag) {
+		if (!creditFlag) {
 			return error("Lỗi! Chưa hỗ trợ thanh toán trả trước (cash).");
 		}
 		OtpCode otpCode = new OtpCode();
@@ -763,20 +845,23 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			}
 			// TODO Cần confirm lại với OM 1 số booking có làm được cho nhiều tàu-chuyến ko
 			/*
-			if (!shipmentDetailReference.getVslNm().equals(shipmentDetails.get(i).getVslNm())) {
-				return error("Tàu và Chuyến không được khác nhau!");
-
-			}
-			if (!shipmentDetailReference.getVoyNo().equals(shipmentDetails.get(i).getVoyNo())) {
-				return error("Tàu và Chuyến không được khác nhau!");
-
-			} */
+			 * if
+			 * (!shipmentDetailReference.getVslNm().equals(shipmentDetails.get(i).getVslNm()
+			 * )) { return error("Tàu và Chuyến không được khác nhau!");
+			 * 
+			 * } if
+			 * (!shipmentDetailReference.getVoyNo().equals(shipmentDetails.get(i).getVoyNo()
+			 * )) { return error("Tàu và Chuyến không được khác nhau!");
+			 * 
+			 * }
+			 */
 			if (!shipmentDetailReference.getDischargePort().equals(shipmentDetails.get(i).getDischargePort())) {
 				return error("Cảng dỡ hàng không được khác nhau!");
 			}
 			// Validate sztp
 			if (!sztps.contains(shipmentDetails.get(i).getSztp())) {
-				return error("Kích thước " + shipmentDetails.get(i).getSztp() + " chưa được hỗ trợ làm lệnh trên ePort.");
+				return error(
+						"Kích thước " + shipmentDetails.get(i).getSztp() + " chưa được hỗ trợ làm lệnh trên ePort.");
 			}
 			// Validate dangrous cont
 			containerNos += shipmentDetails.get(i).getContainerNo() + ",";
@@ -796,31 +881,36 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			return error("Tên chủ hàng không đúng, vui lòng chọn chủ hàng từ danh sách.");
 		}
 
-//		// validate pod exist in catos
-//		if (catosApiService.checkPodExistIncatos(shipmentDetailReference.getDischargePort()) == 0) {
-//			return error(String.format("Cảng dỡ '%s' không đúng, vui lòng chọn trong danh sách gợi ý.", shipmentDetailReference.getDischargePort()));
-//		}
-		//validate POD in catos (POD: POD_NM)
+		// // validate pod exist in catos
+		// if
+		// (catosApiService.checkPodExistIncatos(shipmentDetailReference.getDischargePort())
+		// == 0) {
+		// return error(String.format("Cảng dỡ '%s' không đúng, vui lòng chọn trong danh
+		// sách gợi ý.", shipmentDetailReference.getDischargePort()));
+		// }
+		// validate POD in catos (POD: POD_NM)
 		List<String> pods = catosApiService.getPODList(shipmentDetailReference);
 		boolean podValidFlg = false;
-		for(String pod : pods) {
-			if(pod.startsWith(shipmentDetailReference.getDischargePort())) {
+		for (String pod : pods) {
+			if (pod.startsWith(shipmentDetailReference.getDischargePort())) {
 				podValidFlg = true;
 				break;
 			}
 		}
 		if (!podValidFlg) {
-			return error(String.format("Cảng dỡ '%s' không đúng cho tàu chuyến '%s-%s', vui lòng chọn cảng từ danh sách.",
+			return error(
+					String.format("Cảng dỡ '%s' không đúng cho tàu chuyến '%s-%s', vui lòng chọn cảng từ danh sách.",
 							shipmentDetailReference.getDischargePort(), shipmentDetailReference.getVslName(),
 							shipmentDetailReference.getVoyCarrier()));
 		}
-		
+
 		// Validate OPR in catos
 		List<String> oprs = catosApiService.getOPRList(shipmentDetailReference);
 		if (oprs != null && oprs.size() > 0 && !oprs.contains(shipmentDetailReference.getOpeCode())) {
-			return error(String.format("OPR '%s' không đúng cho tàu chuyến:<br/>'%s-%s'. Vui lòng kiểm tra lại booking.",
-					shipmentDetailReference.getOpeCode(), shipmentDetailReference.getVslName(),
-					shipmentDetailReference.getVoyCarrier()));
+			return error(
+					String.format("OPR '%s' không đúng cho tàu chuyến:<br/>'%s-%s'. Vui lòng kiểm tra lại booking.",
+							shipmentDetailReference.getOpeCode(), shipmentDetailReference.getVslName(),
+							shipmentDetailReference.getVoyCarrier()));
 		}
 
 		// Validate container has job order no
@@ -871,7 +961,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	/**
 	 * Get container info from catos
-	 * 
+	 *
 	 * @param containerNos
 	 * @return Map string object with key is container no and value is containerInfo
 	 */
@@ -886,40 +976,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return containerInfoMap;
 	}
 
-	@PostMapping("/file")
-	@ResponseBody
-	public AjaxResult saveFile(MultipartFile file) throws IOException, InvalidExtensionException {
-		String basePath = String.format("%s/%s", Global.getUploadPath() + "/booking", getUser().getGroupId());
-		String now = DateUtils.dateTimeNow();
-		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
-		String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
-
-		ShipmentImage shipmentImage = new ShipmentImage();
-		shipmentImage.setPath(filePath);
-		shipmentImage.setCreateTime(DateUtils.getNowDate());
-		shipmentImage.setCreateBy(getUser().getFullName());
-		shipmentImageService.insertShipmentImage(shipmentImage);
-
-		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("shipmentFileId", shipmentImage.getId());
-		return ajaxResult;
-	}
-
-	@DeleteMapping("/booking/file")
-	@ResponseBody
-	public AjaxResult deleteFile(Long id) throws IOException {
-		ShipmentImage shipmentImageParam = new ShipmentImage();
-		shipmentImageParam.setId(id);
-		ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
-		String[] fileArr = shipmentImage.getPath().split("/");
-		File file = new File(
-				Global.getUploadPath() + "/booking/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
-		if (file.delete()) {
-			shipmentImageService.deleteShipmentImageById(id);
-		}
-		return success();
-	}
-
 	@GetMapping("/shipments/{shipmentId}/shipment-images")
 	@ResponseBody
 	public AjaxResult getShipmentImages(@PathVariable("shipmentId") Long shipmentId) {
@@ -928,7 +984,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			ShipmentImage shipmentImage = new ShipmentImage();
 			shipmentImage.setShipmentId(shipmentId);
-			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageListNotFileType(shipmentImage);
 			for (ShipmentImage shipmentImage2 : shipmentImages) {
 				shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
 			}
@@ -993,6 +1049,70 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Yêu cầu hủy lệnh thất bại, quý khách vui lòng liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
 	}
 
+	@PostMapping("/request-special-cancel/shipment-detail")
+	@ResponseBody
+	public AjaxResult reqCancelRequestContSpecialContainer(String shipmentDetailIds, String contReqRemark) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
+				getUser().getGroupId());
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+
+			// Update status req cancel order
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+
+				if (!StringUtils.isEmpty(shipmentDetail.getFrozenStatus())
+						&& shipmentDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)) {
+					shipmentDetail.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_INIT);
+				}
+
+				if (!StringUtils.isEmpty(shipmentDetail.getOversize())
+						&& shipmentDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)) {
+					shipmentDetail.setOversize(EportConstants.CONT_SPECIAL_STATUS_INIT);
+				}
+
+				if (!StringUtils.isEmpty(shipmentDetail.getDangerous())
+						&& shipmentDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)) {
+					shipmentDetail.setDangerous(EportConstants.CONT_SPECIAL_STATUS_INIT);
+				}
+
+				shipmentDetail.setUpdateBy(getUser().getUserName());
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+
+			ShipmentDetail shipmentDetail = shipmentDetails.get(0);
+			// Write comment for topic supply container
+			if (StringUtils.isNotEmpty(contReqRemark)) {
+				ShipmentComment shipmentComment = new ShipmentComment();
+				shipmentComment.setLogisticGroupId(getUser().getGroupId());
+				shipmentComment.setShipmentId(shipmentDetail.getShipmentId());
+				shipmentComment.setUserId(getUserId());
+				shipmentComment.setUserType(EportConstants.COMMENTOR_LOGISTIC);
+				shipmentComment.setUserAlias(getGroup().getGroupName());
+				shipmentComment.setCommentTime(new Date());
+				shipmentComment.setContent(contReqRemark);
+				shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CANCEL_DROP_FULL);
+				shipmentComment.setServiceType(shipmentDetail.getServiceType());
+				shipmentCommentService.insertShipmentComment(shipmentComment);
+			}
+
+			// Set up data to send app notificaton
+			String title = "ePort: Yêu cầu huỷ yêu cầu xác nhận container đặc biệt.";
+			String msg = "Có yêu cầu huỷ yêu cầu xác nhận container hàng cho Booking: " + shipmentDetail.getBookingNo()
+					+ ", Hãng tàu: " + shipmentDetail.getOpeCode() + ", Trucker: " + getGroup().getGroupName()
+					+ ", Chủ hàng: " + shipmentDetails.get(0).getConsignee();
+			try {
+				mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg,
+						configService.getKey("domain.admin.name") + EportConstants.URL_CANCEL_ORDER_SUPPORT,
+						EportConstants.NOTIFICATION_PRIORITY_LOW);
+			} catch (MqttException e) {
+				logger.error("Error when push request cancel order drop full: " + e);
+			}
+			return success("Đã yêu cầu hủy yêu cầu xác nhận, quý khách vui lòng đợi bộ phận thủ tục xử lý.");
+		}
+
+		return error(
+				"Yêu cầu hủy yêu cầu xác nhận thất bại, quý khách vui lòng liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
+	}
+
 	@GetMapping("/shipment/{shipmentId}/custom/notification")
 	@ResponseBody
 	public AjaxResult sendNotificationCustomError(@PathVariable("shipmentId") String shipmentId) {
@@ -1004,4 +1124,274 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		}
 		return success();
 	}
+
+	@Log(title = "Khai Báo Cont", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
+	@PostMapping("/{shipmentId}/shipment-detail/request-confirm")
+	@ResponseBody
+	public AjaxResult requestConfirmShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails,
+			@PathVariable("shipmentId") Long shipmentId) {
+
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			LogisticAccount user = getUser();
+			if (shipmentId == null) {
+				return error("Không tìm thấy lô cần thêm chi tiết.");
+			}
+			Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+			if (shipment == null || !verifyPermission(shipment.getLogisticGroupId())) {
+				return error("Không tìm thấy lô, vui lòng kiểm tra lại thông tin.");
+			}
+
+			boolean attachBooking = false;
+			// List opr need to attach booking (domestic container)
+			List<String> oprList = dictService.getListTag("opr_list_booking_check");
+			if (oprList.contains(shipment.getOpeCode())) {
+				attachBooking = true;
+			}
+
+			boolean updateShipment = true; // if true => need to update status shipment from init to save
+			for (ShipmentDetail inputDetail : shipmentDetails) {
+
+				if (inputDetail.getId() != null) {
+					// Case update
+					ShipmentDetail shipmentDetailReference = shipmentDetailService
+							.selectShipmentDetailById(inputDetail.getId());
+
+					// Check permission
+					if (!shipmentDetailReference.getLogisticGroupId().equals(user.getGroupId())) {
+						return error("Không tìm thấy thông tin, vui lòng kiểm tra lại");
+					}
+
+					updateShipment = false;
+					if ("N".equalsIgnoreCase(shipmentDetailReference.getUserVerifyStatus())) {
+						shipmentDetailReference.setContainerNo(inputDetail.getContainerNo());
+						shipmentDetailReference.setSztp(inputDetail.getSztp());
+						shipmentDetailReference.setSztpDefine(inputDetail.getSztpDefine());
+						shipmentDetailReference.setConsignee(inputDetail.getConsignee());
+						shipmentDetailReference.setVslNm(inputDetail.getVslNm());
+						shipmentDetailReference.setVoyNo(inputDetail.getVoyNo());
+						shipmentDetailReference.setYear(inputDetail.getYear());
+						shipmentDetailReference.setVslName(inputDetail.getVslName());
+						shipmentDetailReference.setVoyCarrier(inputDetail.getVoyCarrier());
+						shipmentDetailReference.setEta(inputDetail.getEta());
+						shipmentDetailReference.setEtd(inputDetail.getEtd());
+						shipmentDetailReference.setDischargePort(inputDetail.getDischargePort());
+						shipmentDetailReference.setWgt(inputDetail.getWgt());
+						shipmentDetailReference.setCargoType(inputDetail.getCargoType());
+						shipmentDetailReference.setCommodity(inputDetail.getCommodity());
+						shipmentDetailReference.setSealNo(inputDetail.getSealNo());
+
+						shipmentDetailReference.setVgmChk(inputDetail.getVgmChk());
+						shipmentDetailReference.setVgmMaxGross(inputDetail.getVgmMaxGross());
+						shipmentDetailReference.setVgmInspectionDepartment(inputDetail.getVgmInspectionDepartment());
+
+						shipmentDetailReference.setOversizeBack(inputDetail.getOversizeBack());
+						shipmentDetailReference.setOversizeFront(inputDetail.getOversizeFront());
+						shipmentDetailReference.setOversizeLeft(inputDetail.getOversizeLeft());
+						shipmentDetailReference.setOversizeRight(inputDetail.getOversizeRight());
+						shipmentDetailReference.setOversizeTop(inputDetail.getOversizeTop());
+						shipmentDetailReference.setOversizeType(inputDetail.getOversizeType());
+
+						shipmentDetailReference.setDangerousImo(inputDetail.getDangerousImo());
+						shipmentDetailReference.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
+						shipmentDetailReference.setDangerousPacking(inputDetail.getDangerousPacking());
+						shipmentDetailReference.setDangerousUnno(inputDetail.getDangerousUnno());
+
+						shipmentDetailReference.setTemperature(inputDetail.getTemperature());
+						shipmentDetailReference.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
+
+						String sztp = inputDetail.getSztp().substring(2, 3);
+
+						if (!StringUtils.isEmpty(inputDetail.getDangerous())
+								&& !inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_YES)) {
+							shipmentDetailReference.setDangerous(EportConstants.CONTAINER_SUPPLY_STATUS_REQ);
+						}
+
+						if (!StringUtils.isEmpty(inputDetail.getOversize())
+								&& !inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_YES)) {
+							shipmentDetailReference.setOversize(EportConstants.CONT_SPECIAL_STATUS_REQ);
+						}
+
+						if (sztp.equals("R") && (StringUtils.isEmpty(inputDetail.getFrozenStatus())
+								|| (!StringUtils.isEmpty(inputDetail.getFrozenStatus()) && !inputDetail
+										.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_YES)))) {
+							shipmentDetailReference.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_REQ);
+						}
+
+					}
+					shipmentDetailReference.setRemark(inputDetail.getRemark());
+					if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
+						return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
+					}
+				} else {
+					// Case insertShipmentDetail shipmentDetail = new ShipmentDetail();
+					ShipmentDetail shipmentDetail = new ShipmentDetail();
+					shipmentDetail.setContainerNo(inputDetail.getContainerNo());
+					shipmentDetail.setSztp(inputDetail.getSztp());
+					shipmentDetail.setSztpDefine(inputDetail.getSztpDefine());
+					shipmentDetail.setConsignee(inputDetail.getConsignee());
+					shipmentDetail.setVslNm(inputDetail.getVslNm());
+					shipmentDetail.setVoyNo(inputDetail.getVoyNo());
+					shipmentDetail.setYear(inputDetail.getYear());
+					shipmentDetail.setVslName(inputDetail.getVslName());
+					shipmentDetail.setVoyCarrier(inputDetail.getVoyCarrier());
+					shipmentDetail.setEta(inputDetail.getEta());
+					shipmentDetail.setEtd(inputDetail.getEtd());
+					shipmentDetail.setDischargePort(inputDetail.getDischargePort());
+					shipmentDetail.setWgt(inputDetail.getWgt());
+					shipmentDetail.setCargoType(inputDetail.getCargoType());
+					shipmentDetail.setCommodity(inputDetail.getCommodity());
+					shipmentDetail.setSealNo(inputDetail.getSealNo());
+					shipmentDetail.setOpeCode(shipment.getOpeCode());
+					shipmentDetail.setBookingNo(shipment.getBookingNo());
+					shipmentDetail.setLogisticGroupId(user.getGroupId());
+					shipmentDetail.setCreateBy(user.getFullName());
+					shipmentDetail.setShipmentId(shipmentId);
+					shipmentDetail.setStatus(1);
+					shipmentDetail.setPaymentStatus("N");
+					shipmentDetail.setUserVerifyStatus("N");
+					shipmentDetail.setProcessStatus("N");
+					shipmentDetail.setCustomStatus("N");
+					shipmentDetail.setFinishStatus("N");
+					shipmentDetail.setFe("F");
+
+					shipmentDetail.setVgmChk(inputDetail.getVgmChk());
+					shipmentDetail.setVgmMaxGross(inputDetail.getVgmMaxGross());
+					shipmentDetail.setVgmInspectionDepartment(inputDetail.getVgmInspectionDepartment());
+
+					shipmentDetail.setOversizeBack(inputDetail.getOversizeBack());
+					shipmentDetail.setOversizeFront(inputDetail.getOversizeFront());
+					shipmentDetail.setOversizeLeft(inputDetail.getOversizeLeft());
+					shipmentDetail.setOversizeRight(inputDetail.getOversizeRight());
+					shipmentDetail.setOversizeTop(inputDetail.getOversizeTop());
+					shipmentDetail.setOversizeType(inputDetail.getOversizeType());
+
+					shipmentDetail.setDangerousImo(inputDetail.getDangerousImo());
+					shipmentDetail.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
+					shipmentDetail.setDangerousPacking(inputDetail.getDangerousPacking());
+					shipmentDetail.setDangerousUnno(inputDetail.getDangerousUnno());
+
+					shipmentDetail.setTemperature(inputDetail.getTemperature());
+					shipmentDetail.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
+
+					if (attachBooking) {
+						shipmentDetail.setDoStatus("N");
+					}
+					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
+						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
+					}
+				}
+			}
+			if (updateShipment) {
+				shipment.setUpdateBy(getUser().getFullName());
+				shipment.setStatus(EportConstants.SHIPMENT_STATUS_SAVE);
+				shipmentService.updateShipment(shipment);
+			}
+			return success("Yêu cầu xác nhận thành công");
+		}
+		return error("Yêu cầu xác nhận thất bại");
+	}
+
+	@PostMapping("/uploadFile")
+	@ResponseBody
+	public AjaxResult uploadFile(@RequestParam(value = "fileIds[]") String[] fileIds, String shipmentDetailId,
+			Long shipmentId, String keyStatus) throws IOException, InvalidExtensionException {
+		String KEY_STATUS_OVERSIZE = "oversize";
+		String KEY_STATUS_DANGEROUS = "dangerous";
+		String KEY_STATUS_ICE = "ice";
+
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setShipmentId(shipmentId);
+		shipmentImage.setShipmentDetailId(shipmentDetailId);
+
+		// TODO: hỏi thống nhất status
+		if (keyStatus.equals(KEY_STATUS_OVERSIZE)) {
+			shipmentImage.setFileType("O");
+		}
+		if (keyStatus.equals(KEY_STATUS_DANGEROUS)) {
+			shipmentImage.setFileType("D");
+		}
+		if (keyStatus.equals(KEY_STATUS_ICE)) {
+			shipmentImage.setFileType("R");
+		}
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("ids", fileIds);
+		shipmentImage.setParams(map);
+		shipmentImageService.updateShipmentImageByIds(shipmentImage);// them detail
+		return success();
+	}
+
+	@PostMapping("/file")
+	@ResponseBody
+	public AjaxResult saveFile(MultipartFile file) throws IOException, InvalidExtensionException {
+		String basePath = String.format("%s/%s", Global.getUploadPath() + "/booking", getUser().getGroupId());
+		String now = DateUtils.dateTimeNow();
+		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+		String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setPath(filePath);
+		shipmentImage.setCreateTime(DateUtils.getNowDate());
+		shipmentImage.setCreateBy(getUser().getFullName());
+		shipmentImageService.insertShipmentImage(shipmentImage);
+
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentFileId", shipmentImage.getId());
+		return ajaxResult;
+	}
+
+	@PostMapping("/cont-special/file")
+	@ResponseBody
+	public AjaxResult saveContSpecialeFile(MultipartFile file) throws IOException, InvalidExtensionException {
+		String basePath = String.format("%s/%s", Global.getUploadPath() + "/contSpecial", getUser().getGroupId());
+		String now = DateUtils.dateTimeNow();
+		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+		String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setPath(filePath);
+		shipmentImage.setCreateTime(DateUtils.getNowDate());
+		shipmentImage.setCreateBy(getUser().getFullName());
+		shipmentImageService.insertShipmentImage(shipmentImage);
+
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentFileId", shipmentImage.getId());
+
+		ajaxResult.put("file", filePath);
+		return ajaxResult;
+	}
+
+	@DeleteMapping("/cont-special/file/{id}")
+	@ResponseBody
+	public AjaxResult deleteSendContFullFile(@PathVariable("id") Long id) throws IOException {
+		if (id != 0) {
+			ShipmentImage shipmentImageParam = new ShipmentImage();
+			shipmentImageParam.setId(id);
+			ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+			String[] fileArr = shipmentImage.getPath().split("/");
+			File file = new File(Global.getUploadPath() + "/contSpecial/" + getUser().getGroupId() + "/"
+					+ fileArr[fileArr.length - 1]);
+			if (file.delete()) {
+				shipmentImageService.deleteShipmentImageById(id);
+			}
+			return success();
+		}
+		return error();
+	}
+
+	@DeleteMapping("/booking/file")
+	@ResponseBody
+	public AjaxResult deleteFile(Long id) throws IOException {
+		ShipmentImage shipmentImageParam = new ShipmentImage();
+		shipmentImageParam.setId(id);
+		ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+		String[] fileArr = shipmentImage.getPath().split("/");
+		File file = new File(
+				Global.getUploadPath() + "/booking/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
+		if (file.delete()) {
+			shipmentImageService.deleteShipmentImageById(id);
+		}
+		return success();
+	}
+
 }

@@ -1,5 +1,7 @@
 package vn.com.irtech.eport.common.constant;
 
+import vn.com.irtech.eport.common.utils.StringUtils;
+
 /**
  * Constants for the ePort system
  * 
@@ -103,11 +105,11 @@ public interface EportConstants {
 	/** Container status process order */
 	public static final Integer CONTAINER_STATUS_PROCESSING = 2;
 	/** Container status process order */
-//	public static final Integer CONTAINER_STATUS_PAYMENT = 3;
-//	/** Container status process order */
-//	public static final Integer CONTAINER_STATUS_CUSTOM = 4;
-//	/** Container status process order */
-//	public static final Integer CONTAINER_STATUS_FINISH = 5;
+	// public static final Integer CONTAINER_STATUS_PAYMENT = 3;
+	// /** Container status process order */
+	// public static final Integer CONTAINER_STATUS_CUSTOM = 4;
+	// /** Container status process order */
+	// public static final Integer CONTAINER_STATUS_FINISH = 5;
 
 	// Container supply status
 	/** Container supply status init */
@@ -282,7 +284,7 @@ public interface EportConstants {
 	/** Key name for gate detection info saved in cache */
 	public static final String CACHE_GATE_DETECTION_KEY = "gateDetectionInfo";
 
-	// Synchronize queue type
+// Synchronize queue type
 	/** Sync queue type expired dem */
 	public static final String SYNC_QUEUE_DEM = "DEM";
 	/** Sync queue type det free time */
@@ -313,8 +315,12 @@ public interface EportConstants {
 	public static final String PTNR_TYPE_TRUCKER = "TRK";
 	/** partner type forwarder */
 	public static final String PTNR_TYPE_FORWARDER = "FWD";
-
-	// Bulletin active status
+ 
+	public static final String CONT_SPECIAL_STATUS_INIT = "I";// Lưu khai báo 
+	public static final String CONT_SPECIAL_STATUS_REQ = "R";// chờ xác nhận  
+	public static final String CONT_SPECIAL_STATUS_YES = "Y";// đã xac nhận 
+	public static final String CONT_SPECIAL_STATUS_CANCEL = "C";// từ chối xác nhận  
+	
 	/** Bulletin draft status */
 	public static final Integer BULLETIN_DRAFT = 0;
 	/** Bulletin release status */

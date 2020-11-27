@@ -35,6 +35,11 @@ public class ShipmentImageServiceImpl implements IShipmentImageService {
         return shipmentImageMapper.selectShipmentImagesByShipmentId(shipmentId);
     }
     
+    @Override
+    public List<ShipmentImage> selectShipmentImagesByShipmentDetailId(final Long shipmentId) {
+        return shipmentImageMapper.selectShipmentImagesByShipmentDetailId(shipmentId);
+    }
+     
     /**
      * Update shipment image that in ids array 
      * 
@@ -57,6 +62,17 @@ public class ShipmentImageServiceImpl implements IShipmentImageService {
     	return shipmentImageMapper.selectShipmentImageList(shipmentImage);
     }
     
+    /**
+     * Select shipment image list not file type
+     * 
+     * @param shipmentImage
+     * @return List<ShipmentImage
+     */
+    @Override
+    public List<ShipmentImage> selectShipmentImageListNotFileType(ShipmentImage shipmentImage) {
+    	return shipmentImageMapper.selectShipmentImageListNotFileType(shipmentImage);
+    }
+
     /**
      * Select shipment image by id
      * 

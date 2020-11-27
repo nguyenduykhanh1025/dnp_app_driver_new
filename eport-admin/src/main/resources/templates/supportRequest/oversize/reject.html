@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<th:block th:include="include :: header('Từ chối cont quá khổ')" />
+<th:block th:include="include :: easyui-css" />
+<th:block th:include="include :: handsontable-css" />
+<th:block th:include="include :: summernote-css" />
+<link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+</head>
+
+<body>
+	<div class="container-fluid">
+		<form id="form-detail-add" class="form-horizontal">
+			<div class="form-group col-sm-12">
+				<label class="control-label col-sm-12 col-xs-12" for="size"><b class="text-black" style="float: left">Lí do từ chối:</b></label>
+				<div class="col-sm-12 col-xs-12">
+					<textarea class="form-control" rows="7" id="contentReject"></textarea>
+				</div>
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: easyui-js" />
+	<th:block th:include="include :: summernote-js" />
+	<th:block th:include="include :: handsontable-js" />
+</body>
+</html>

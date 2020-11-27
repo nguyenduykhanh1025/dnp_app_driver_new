@@ -261,7 +261,9 @@ function gateIn() {
   $.ajax({
     cache: true,
     type: "POST",
-    url: "http://192.168.1.70:7073/api/gate/detection",
+    //url: "http://192.168.1.70:7073/api/gate/detection",
+    url: "http://127.0.0.1:7073/api/gate/detection",
+    
     contentType: "application/json",
     data: JSON.stringify(reqData),
     async: false,

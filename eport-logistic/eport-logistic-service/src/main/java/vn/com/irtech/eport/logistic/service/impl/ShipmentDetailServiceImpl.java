@@ -74,8 +74,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	@Autowired
 	private ISysDictDataService sysDictDataService;
 
-//    @Autowired
-//    private IShipmentService shipmentService;
+	// @Autowired
+	// private IShipmentService shipmentService;
 
 	class BayComparator implements Comparator<ShipmentDetail> {
 		public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
@@ -138,6 +138,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public ShipmentDetail selectShipmentDetailById(Long id) {
 		return shipmentDetailMapper.selectShipmentDetailById(id);
 	}
+	
+	@Override
+	public ShipmentDetail selectShipmentDetailByDetailId(String shipmentDetailIds) {
+		return shipmentDetailMapper.selectShipmentDetailByDetailId(shipmentDetailIds);
+	}
+	
+	
+	 
 
 	/**
 	 * Get Shipment Details List
@@ -149,6 +157,26 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.selectShipmentDetailList(shipmentDetail);
 	}
+	
+	@Override
+	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.selectShipmentDetailListCont(shipmentDetail);
+	}
+	
+	@Override
+	public List<ShipmentDetail> selectShipmentDetailDangerous(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.selectShipmentDetailDangerous(shipmentDetail);
+	}
+	
+	@Override
+	public List<ShipmentDetail> selectShipmentDetailListContOverSize(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.selectShipmentDetailListContOverSize(shipmentDetail);
+	}
+	
+	
+	
+	
+	
 
 	/**
 	 * Add Shipment Details
@@ -173,6 +201,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		shipmentDetail.setUpdateTime(DateUtils.getNowDate());
 		return shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 	}
+	
+	@Override
+	public int updateShipmentDetailApply(ShipmentDetail shipmentDetail) {
+		shipmentDetail.setUpdateTime(DateUtils.getNowDate());
+		return shipmentDetailMapper.updateShipmentDetailApply(shipmentDetail);
+	}
+	
+	
 
 	/**
 	 * Delete Shipment Details By ID
@@ -201,6 +237,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public List<ShipmentDetail> selectShipmentDetailByIds(String ids, Long logisticGroupId) {
 		return shipmentDetailMapper.selectShipmentDetailByIds(Convert.toStrArray(ids), logisticGroupId);
 	}
+	
+	@Override
+	public List<ShipmentDetail> selectConfirmShipmentDetailByIds(String shipmentDetailIds) { 
+		return shipmentDetailMapper.selectConfirmShipmentDetailByIds(Convert.toStrArray(shipmentDetailIds));
+	}
+ 
+	
+	
 
 	public long countShipmentDetailList(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.countShipmentDetailList(shipmentDetail);
@@ -816,16 +860,17 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
 	@Override
 	public List<String> getConsigneeList() {
-//		List<String> consignees = (List<String>) CacheUtils.get("consigneeListTaxCode");
-//		if (consignees == null) {
+		// List<String> consignees = (List<String>)
+		// CacheUtils.get("consigneeListTaxCode");
+		// if (consignees == null) {
 		String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
 				new ParameterizedTypeReference<List<String>>() {
 				});
 		List<String> consignees = response.getBody();
-//			CacheUtils.put("consigneeListTaxCode", consignees);
-//		}
+		// CacheUtils.put("consigneeListTaxCode", consignees);
+		// }
 		return consignees;
 	}
 
@@ -941,97 +986,100 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		return shipmentDetailMapper.getShipmentDetailForPrint(shipmentDetail);
 	}
 
-//    /**
-//     * Get container with yard position
-//     * 
-//     * @param shipmentId
-//     * @return ShipmentDetail
-//     */
-//    @Override
-//    public ShipmentDetail getContainerWithYardPosition(Long shipmentId) {
-//        // Get Shipment
-////        Shipment shipment = shipmentService.selectShipmentById(shipmentId);
-//
-//        // Get shipment detail by shipment id
-//        ShipmentDetail shipmentDetail = new ShipmentDetail();
-//        shipmentDetail.setShipmentId(shipmentId);
-//        List<ShipmentDetail> shipmentDetails = shipmentDetailMapper.selectShipmentDetailList(shipmentDetail);
-//
-//        // Get coordinate by bill
-//        List<ShipmentDetail> coordinateList = catosApiService.getCoordinateOfContainers(shipmentDetails.get(0).getBlNo());
-//        List<ShipmentDetail[][]> bayList = new ArrayList<>();
-//        bayList = getContPosition(coordinateList, shipmentDetails);
-//
-//        // Get container from top to bottom
-//        for (int b = 0; b < bayList.size(); b++) {
-//        	int rowMax = bayList.get(b)[0].length;
-//        	int rowTemp = 0;
-//        	if (rowMax%2 == 1) {
-//        		rowMax++;
-//        		rowTemp++;
-//        	}
-//            for (int row = 0; row < rowMax/2; row++) {
-//                boolean stack1 = false;
-//                boolean stack2 = false;
-//                for (int tier = 4; tier >= 0; tier--) {
-//                    ShipmentDetail shipmentDetail1 = bayList.get(b)[tier][row];
-//                    // validate
-//                    if (shipmentDetail1 != null) {
-//                    	if (validateAutoPickupCont(shipmentDetail1, stack1)) {
-//                            return shipmentDetail1;
-//                        }
-//                    	stack1 = true;
-//                    }
-//                    
-//                    ShipmentDetail shipmentDetail2 = bayList.get(b)[tier][rowMax-row-1-rowTemp];
-//                    if (shipmentDetail2 != null) {
-//                    	if (validateAutoPickupCont(shipmentDetail2, stack2)) {
-//                            return shipmentDetail2;
-//                        }
-//                    	stack2 = true;
-//                    }
-//                }
-//            }
-//        }
-//        return null;
-//    }
+	// /**
+	// * Get container with yard position
+	// *
+	// * @param shipmentId
+	// * @return ShipmentDetail
+	// */
+	// @Override
+	// public ShipmentDetail getContainerWithYardPosition(Long shipmentId) {
+	// // Get Shipment
+	//// Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+	//
+	// // Get shipment detail by shipment id
+	// ShipmentDetail shipmentDetail = new ShipmentDetail();
+	// shipmentDetail.setShipmentId(shipmentId);
+	// List<ShipmentDetail> shipmentDetails =
+	// shipmentDetailMapper.selectShipmentDetailList(shipmentDetail);
+	//
+	// // Get coordinate by bill
+	// List<ShipmentDetail> coordinateList =
+	// catosApiService.getCoordinateOfContainers(shipmentDetails.get(0).getBlNo());
+	// List<ShipmentDetail[][]> bayList = new ArrayList<>();
+	// bayList = getContPosition(coordinateList, shipmentDetails);
+	//
+	// // Get container from top to bottom
+	// for (int b = 0; b < bayList.size(); b++) {
+	// int rowMax = bayList.get(b)[0].length;
+	// int rowTemp = 0;
+	// if (rowMax%2 == 1) {
+	// rowMax++;
+	// rowTemp++;
+	// }
+	// for (int row = 0; row < rowMax/2; row++) {
+	// boolean stack1 = false;
+	// boolean stack2 = false;
+	// for (int tier = 4; tier >= 0; tier--) {
+	// ShipmentDetail shipmentDetail1 = bayList.get(b)[tier][row];
+	// // validate
+	// if (shipmentDetail1 != null) {
+	// if (validateAutoPickupCont(shipmentDetail1, stack1)) {
+	// return shipmentDetail1;
+	// }
+	// stack1 = true;
+	// }
+	//
+	// ShipmentDetail shipmentDetail2 = bayList.get(b)[tier][rowMax-row-1-rowTemp];
+	// if (shipmentDetail2 != null) {
+	// if (validateAutoPickupCont(shipmentDetail2, stack2)) {
+	// return shipmentDetail2;
+	// }
+	// stack2 = true;
+	// }
+	// }
+	// }
+	// }
+	// return null;
+	// }
 
-//    private Boolean validateAutoPickupCont (ShipmentDetail shipmentDetail, boolean stack) {	
-//        if (shipmentDetail.getId() == null) {
-//            return false;
-//        } 
-//
-//        // Not received DO
-//        if (!"Y".equals(shipmentDetail.getDoStatus())) {
-//            return false;
-//        }
-//        
-//        // Exceed expired dem
-//        Date now = new Date();
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(now);
-//        calendar.set(Calendar.HOUR_OF_DAY, 0);
-//        calendar.set(Calendar.MINUTE, 0);
-//        calendar.set(Calendar.SECOND, 0);
-//        calendar.set(Calendar.MILLISECOND, 0);
-//        if (shipmentDetail.getExpiredDem().compareTo(now) < 0) {
-//            return false;
-//        }
-//
-//        if ("N".equals(shipmentDetail.getPaymentStatus())) {
-//            return false;
-//        }
-//
-//        if (stack && "N".equals(shipmentDetail.getPrePickupPaymentStatus())) {
-//            return false;
-//        }
-//        
-//        if (!"N".equals(shipmentDetail.getFinishStatus())) {
-//        	return false;
-//        }
-//
-//        return true;
-//    }
+	// private Boolean validateAutoPickupCont (ShipmentDetail shipmentDetail,
+	// boolean stack) {
+	// if (shipmentDetail.getId() == null) {
+	// return false;
+	// }
+	//
+	// // Not received DO
+	// if (!"Y".equals(shipmentDetail.getDoStatus())) {
+	// return false;
+	// }
+	//
+	// // Exceed expired dem
+	// Date now = new Date();
+	// Calendar calendar = Calendar.getInstance();
+	// calendar.setTime(now);
+	// calendar.set(Calendar.HOUR_OF_DAY, 0);
+	// calendar.set(Calendar.MINUTE, 0);
+	// calendar.set(Calendar.SECOND, 0);
+	// calendar.set(Calendar.MILLISECOND, 0);
+	// if (shipmentDetail.getExpiredDem().compareTo(now) < 0) {
+	// return false;
+	// }
+	//
+	// if ("N".equals(shipmentDetail.getPaymentStatus())) {
+	// return false;
+	// }
+	//
+	// if (stack && "N".equals(shipmentDetail.getPrePickupPaymentStatus())) {
+	// return false;
+	// }
+	//
+	// if (!"N".equals(shipmentDetail.getFinishStatus())) {
+	// return false;
+	// }
+	//
+	// return true;
+	// }
 
 	/**
 	 * Select shipment detail for driver shipment assign
@@ -1236,21 +1284,26 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 						processOrderService.insertProcessOrder(bookingOrder);
 						processOrders.add(bookingOrder);
 
-//						// Check if sztp has enough quantity for order receive empty
-//						// If not then update booking with extra amount for the number lacking of sztp
-//						// first check if used booking quantity is null then set to 0 to make it calculatable
-//						if (bookingInfo.getUsedQty() == null) bookingInfo.setUsedQty(0);
-//						
-//						// Calculate booking quantity need exclude the booking available currently
-//						// If bookingQuantityNeed > 0 then need more booking to make order, need to update
-//						Integer bookingQuantityNeed = processOrder.getContNumber() - (bookingInfo.getBookQty() - bookingInfo.getUsedQty());
-//						if (bookingQuantityNeed > 0) {
-//							
-//						} else {
-//							// No need to update booking, current booking has enought quantity to make order
-//							processOrder.setRunnable(true);
-//							processOrderService.updateProcessOrder(processOrder);
-//						}
+						// // Check if sztp has enough quantity for order receive empty
+						// // If not then update booking with extra amount for the number lacking of
+						// sztp
+						// // first check if used booking quantity is null then set to 0 to make it
+						// calculatable
+						// if (bookingInfo.getUsedQty() == null) bookingInfo.setUsedQty(0);
+						//
+						// // Calculate booking quantity need exclude the booking available currently
+						// // If bookingQuantityNeed > 0 then need more booking to make order, need to
+						// update
+						// Integer bookingQuantityNeed = processOrder.getContNumber() -
+						// (bookingInfo.getBookQty() - bookingInfo.getUsedQty());
+						// if (bookingQuantityNeed > 0) {
+						//
+						// } else {
+						// // No need to update booking, current booking has enought quantity to make
+						// order
+						// processOrder.setRunnable(true);
+						// processOrderService.updateProcessOrder(processOrder);
+						// }
 					}
 				}
 			}
@@ -1342,7 +1395,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	@Override
 	public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.updateShipmentDetailByIds(Convert.toStrArray(shipmentDetailIds), shipmentDetail);
-	}
+	} 
+	
 
 	@Override
 	public void resetCustomStatus(Long shipmentId) {
@@ -1372,7 +1426,53 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	}
 
 	/**
-	 * Make order loading cargo
+	 * Check cont have request status for cont special
+	 * 
+	 * @param shipmentDetail
+	 * @return boolean
+	 */
+	@Override
+	public Boolean isHaveContSpacialRequest(ShipmentDetail shipmentDetail) {
+		Boolean result = false;
+		if (!StringUtils.isEmpty(shipmentDetail.getFrozenStatus())
+				&& shipmentDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)) {
+			result = true;
+		}
+		if (!StringUtils.isEmpty(shipmentDetail.getDangerous())
+				&& shipmentDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)) {
+			result = true;
+		}
+		if (!StringUtils.isEmpty(shipmentDetail.getOversize())
+				&& shipmentDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)) {
+			result = true;
+		}
+		return result;
+	}
+
+	/**
+	 * Check cont have done status for cont special
+	 * 
+	 * @param shipmentDetail
+	 * @return boolean
+	 */
+	@Override
+	public Boolean isHaveContSpacialYes(ShipmentDetail shipmentDetail) {
+		Boolean result = false;
+		if (!StringUtils.isEmpty(shipmentDetail.getFrozenStatus())
+				&& shipmentDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_YES)) {
+			result = true;
+		}
+		if (!StringUtils.isEmpty(shipmentDetail.getDangerous())
+				&& shipmentDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_YES)) {
+			result = true;
+		}
+		if (!StringUtils.isEmpty(shipmentDetail.getOversize())
+				&& shipmentDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_YES)) {
+			result = true;
+		}
+		return result;
+	}
+	 /* Make order loading cargo
 	 * 
 	 * @param shipmentDetails
 	 * @param shipment

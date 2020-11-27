@@ -30,6 +30,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="amountBill"    column="amount_bill"    />
         <result property="sendContEmptyType"    column="send_cont_empty_type"    />
         <result property="consignee"    column="consignee"    />
+        <result property="sztp"    column="sztp"    />
+        
     </resultMap>
     <sql id="selectShipmentVo">
         select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, container_amount, edo_flg, specific_cont_flg, cont_supply_status,  status, remark, order_number, house_bill, send_cont_empty_type, create_by, create_time, update_by, update_time from shipment
@@ -414,6 +416,241 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 s.send_cont_empty_type)
         order by update_time desc
     </select>
+     
+     <select id="selectShipmentListByWithShipmentDetailDangerous" parameterType="Shipment" resultMap="ShipmentResult">
+        select sh.cont_special_status,s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, s.ope_code, 
+        s.container_amount,s.edo_flg, s.specific_cont_flg, s.cont_supply_status, s.status, s.remark, s.order_number, 
+        s.house_bill, s.create_by, s.create_time, s.update_by, s.update_time,sh.sztp,
+        (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as "logistic_name"
+
+        from shipment s left join shipment_detail sh on s.id = sh.shipment_id
+
+        <where>  
+            s.id is not null  and sh.dangerous is not null
+            <if test="id != null "> and s.id = #{id}</if>
+            
+            <if test="sztp != null and sztp != ''"> and sztp like concat(concat('%', #{sztp}), '%')</if>
+            
+            <if test="logisticAccountId != null "> and s.logistic_account_id = #{logisticAccountId}</if>
+            <if test="logisticGroupId != null "> and s.logistic_group_id = #{logisticGroupId}</if>
+             
+            <if test="params.serviceType != null and params.serviceType != ''">and s.service_type = #{params.serviceType}</if>
+            
+            <if test="params.statusCont != null and params.statusCont != ''">and sh.dangerous = #{params.statusCont}</if>
+            
+            <if test="blNo != null and blNo != ''"> and upper(s.bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> and upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+            <if test="opeCode != null  and opeCode != ''"> and s.ope_code = #{opeCode}</if>
+            <if test="containerAmount != null "> and s.container_amount = #{containerAmount}</if>
+            <if test="edoFlg != null  and edoFlg != ''"> and s.edo_flg = #{edoFlg}</if>
+            <if test="specificContFlg != null"> and s.specific_cont_flg = #{specificContFlg}</if>
+            <if test="contSupplyStatus != null"> and s.cont_supply_status = #{contSupplyStatus}</if>
+            <if test="status != null  and status != ''"> and s.status = #{status}</if>
+            <if test="remark != null  and remark != ''"> and s.remark = #{remark}</if>
+            <if test="params.fromDate != null">and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDate != null">and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.containerNo != null and params.containerNo != ''">and sh.container_no like concat(concat('%', #{params.containerNo}), '%')</if>
+            <if test="params.vslNm != null and params.vslNm != ''">and sh.vsl_nm = #{params.vslNm}</if>
+            <if test="params.voyNo != null and params.voyNo != ''">and sh.voy_no = #{params.voyNo}</if>
+            <if test="params.doStatus != null and params.doStatus != ''">and sh.do_status = #{params.doStatus}</if>
+            <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
+            <if test="params.serviceArray != null">
+                and s.service_type in
+                <foreach item="service" collection="params.serviceArray" open="(" separator="," close=")">
+                    #{service}
+                </foreach>
+            </if>
+            <if test="params.blOrBooking != null and params.blOrBooking != ''">
+                and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
+            </if>
+        </where>
+
+        group by sh.cont_special_status,s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, 
+        s.ope_code, s.container_amount, s.edo_flg, s.specific_cont_flg, 
+        s.cont_supply_status, s.status, s.remark, s.order_number, s.house_bill, s.create_by, 
+        s.create_time, s.update_by, s.update_time,sh.sztp
+
+        order by create_time desc
+    </select>
+    
+    
+    
+    
+    
+     <select id="selectShipmentListByWithShipmentOverSize" parameterType="Shipment" resultMap="ShipmentResult">
+        select sh.cont_special_status,s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, s.ope_code, 
+        s.container_amount,s.edo_flg, s.specific_cont_flg, s.cont_supply_status, s.status, s.remark, s.order_number, 
+        s.house_bill, s.create_by, s.create_time, s.update_by, s.update_time,sh.sztp,
+        (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as "logistic_name"
+
+        from shipment s left join shipment_detail sh on s.id = sh.shipment_id
+
+        <where>  
+            s.id is not null and  s.service_type = '1' and
+            (sh.OVERSIZE_TOP is not  null OR   sh.OVERSIZE_RIGHT is not null OR sh.OVERSIZE_LEFT is not null
+            OR sh.OVERSIZE_FRONT is not null  OR sh.OVERSIZE_BACK is not null)
+            <if test="id != null "> and s.id = #{id}</if>
+            
+            <if test="sztp != null and sztp != ''"> and sztp like concat(concat('%', #{sztp}), '%')</if>
+            
+            <if test="logisticAccountId != null "> and s.logistic_account_id = #{logisticAccountId}</if>
+            <if test="logisticGroupId != null "> and s.logistic_group_id = #{logisticGroupId}</if>
+             
+            <if test="params.serviceType != null and params.serviceType != ''">and s.service_type = #{params.serviceType}</if>
+            
+             <if test="params.statusCont != null and params.statusCont != ''">and sh.oversize = #{params.statusCont}</if>
+            
+            <if test="blNo != null and blNo != ''"> and upper(s.bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> and upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+            <if test="opeCode != null  and opeCode != ''"> and s.ope_code = #{opeCode}</if>
+            <if test="containerAmount != null "> and s.container_amount = #{containerAmount}</if>
+            <if test="edoFlg != null  and edoFlg != ''"> and s.edo_flg = #{edoFlg}</if>
+            <if test="specificContFlg != null"> and s.specific_cont_flg = #{specificContFlg}</if>
+            <if test="contSupplyStatus != null"> and s.cont_supply_status = #{contSupplyStatus}</if>
+            <if test="status != null  and status != ''"> and s.status = #{status}</if>
+            <if test="remark != null  and remark != ''"> and s.remark = #{remark}</if>
+            <if test="params.fromDate != null">and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDate != null">and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.containerNo != null and params.containerNo != ''">and sh.container_no like concat(concat('%', #{params.containerNo}), '%')</if>
+            <if test="params.vslNm != null and params.vslNm != ''">and sh.vsl_nm = #{params.vslNm}</if>
+            <if test="params.voyNo != null and params.voyNo != ''">and sh.voy_no = #{params.voyNo}</if>
+            <if test="params.doStatus != null and params.doStatus != ''">and sh.do_status = #{params.doStatus}</if>
+            <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
+            <if test="params.serviceArray != null">
+                and s.service_type in
+                <foreach item="service" collection="params.serviceArray" open="(" separator="," close=")">
+                    #{service}
+                </foreach>
+            </if>
+            <if test="params.blOrBooking != null and params.blOrBooking != ''">
+                and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
+            </if>
+        </where>
+
+        group by sh.cont_special_status,s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, 
+        s.ope_code, s.container_amount, s.edo_flg, s.specific_cont_flg, 
+        s.cont_supply_status, s.status, s.remark, s.order_number, s.house_bill, s.create_by, 
+        s.create_time, s.update_by, s.update_time,sh.sztp
+
+        order by create_time desc
+    </select>
+    
+    
+    
+    <select id="selectShipmentListByWithShipmentContR" parameterType="Shipment" resultMap="ShipmentResult">
+        select sh.cont_special_status,s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, s.ope_code, 
+        s.container_amount,s.edo_flg, s.specific_cont_flg, s.cont_supply_status, s.status, s.remark, s.order_number, 
+        s.house_bill, s.create_by, s.create_time, s.update_by, s.update_time,sh.sztp,
+        (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as "logistic_name"
+
+        from shipment s left join shipment_detail sh on s.id = sh.shipment_id
+
+        <where>  
+            s.id is not null  and  sh.sztp like concat(concat('%', 'R'), '%') 
+            and  s.service_type = '1'
+            <if test="id != null "> and s.id = #{id}</if>
+            
+            <if test="sztp != null and sztp != ''"> and sztp like concat(concat('%', #{sztp}), '%')</if>
+            
+            <if test="logisticAccountId != null "> and s.logistic_account_id = #{logisticAccountId}</if>
+            <if test="logisticGroupId != null "> and s.logistic_group_id = #{logisticGroupId}</if>
+             
+            <if test="params.serviceType != null and params.serviceType != ''">and s.service_type = #{params.serviceType}</if>
+            
+            <if test="params.statusCont != null and params.statusCont != ''">and sh.frozen_status = #{params.statusCont}</if>
+            
+            <if test="blNo != null and blNo != ''"> and upper(s.bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> and upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+            <if test="opeCode != null  and opeCode != ''"> and s.ope_code = #{opeCode}</if>
+            <if test="containerAmount != null "> and s.container_amount = #{containerAmount}</if>
+            <if test="edoFlg != null  and edoFlg != ''"> and s.edo_flg = #{edoFlg}</if>
+            <if test="specificContFlg != null"> and s.specific_cont_flg = #{specificContFlg}</if>
+            <if test="contSupplyStatus != null"> and s.cont_supply_status = #{contSupplyStatus}</if>
+            <if test="status != null  and status != ''"> and s.status = #{status}</if>
+            <if test="remark != null  and remark != ''"> and s.remark = #{remark}</if>
+            <if test="params.fromDate != null">and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDate != null">and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.containerNo != null and params.containerNo != ''">and sh.container_no like concat(concat('%', #{params.containerNo}), '%')</if>
+            <if test="params.vslNm != null and params.vslNm != ''">and sh.vsl_nm = #{params.vslNm}</if>
+            <if test="params.voyNo != null and params.voyNo != ''">and sh.voy_no = #{params.voyNo}</if>
+            <if test="params.doStatus != null and params.doStatus != ''">and sh.do_status = #{params.doStatus}</if>
+            <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
+            <if test="params.serviceArray != null">
+                and s.service_type in
+                <foreach item="service" collection="params.serviceArray" open="(" separator="," close=")">
+                    #{service}
+                </foreach>
+            </if>
+            <if test="params.blOrBooking != null and params.blOrBooking != ''">
+                and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
+            </if>
+        </where>
+
+        group by sh.cont_special_status,s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, 
+        s.ope_code, s.container_amount, s.edo_flg, s.specific_cont_flg, 
+        s.cont_supply_status, s.status, s.remark, s.order_number, s.house_bill, s.create_by, 
+        s.create_time, s.update_by, s.update_time,sh.sztp
+
+        order by create_time desc
+    </select>
+     
+     
+     <select id="selectShipmentListByWithShipmentDetailFilterApply" parameterType="Shipment" resultMap="ShipmentResult">
+        select sh.cont_special_status,s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, s.ope_code, 
+        s.container_amount,s.edo_flg, s.specific_cont_flg, s.cont_supply_status, s.status, s.remark, s.order_number, 
+        s.house_bill, s.create_by, s.create_time, s.update_by, s.update_time,sh.sztp,
+        (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as "logistic_name"
+
+        from shipment s left join shipment_detail sh on s.id = sh.shipment_id
+
+        <where>  
+            s.id is not null and sh.cont_special_status is not null
+            <if test="id != null "> and s.id = #{id}</if>
+            
+            <if test="sztp != null and sztp != ''"> and sztp like concat(concat('%', #{sztp}), '%')</if>
+            
+            <if test="logisticAccountId != null "> and s.logistic_account_id = #{logisticAccountId}</if>
+            <if test="logisticGroupId != null "> and s.logistic_group_id = #{logisticGroupId}</if>
+             
+            <if test="params.serviceType != null and params.serviceType != ''">and s.service_type = #{params.serviceType}</if>
+            
+            <if test="params.statusCont != null and params.statusCont != ''">and sh.cont_special_status = #{params.statusCont}</if>
+            
+            <if test="blNo != null and blNo != ''"> and upper(s.bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> and upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+            <if test="opeCode != null  and opeCode != ''"> and s.ope_code = #{opeCode}</if>
+            <if test="containerAmount != null "> and s.container_amount = #{containerAmount}</if>
+            <if test="edoFlg != null  and edoFlg != ''"> and s.edo_flg = #{edoFlg}</if>
+            <if test="specificContFlg != null"> and s.specific_cont_flg = #{specificContFlg}</if>
+            <if test="contSupplyStatus != null"> and s.cont_supply_status = #{contSupplyStatus}</if>
+            <if test="status != null  and status != ''"> and s.status = #{status}</if>
+            <if test="remark != null  and remark != ''"> and s.remark = #{remark}</if>
+            <if test="params.fromDate != null">and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDate != null">and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.containerNo != null and params.containerNo != ''">and sh.container_no like concat(concat('%', #{params.containerNo}), '%')</if>
+            <if test="params.vslNm != null and params.vslNm != ''">and sh.vsl_nm = #{params.vslNm}</if>
+            <if test="params.voyNo != null and params.voyNo != ''">and sh.voy_no = #{params.voyNo}</if>
+            <if test="params.doStatus != null and params.doStatus != ''">and sh.do_status = #{params.doStatus}</if>
+            <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
+            <if test="params.serviceArray != null">
+                and s.service_type in
+                <foreach item="service" collection="params.serviceArray" open="(" separator="," close=")">
+                    #{service}
+                </foreach>
+            </if>
+            <if test="params.blOrBooking != null and params.blOrBooking != ''">
+                and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
+            </if>
+        </where>
+
+        group by sh.cont_special_status,s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, 
+        s.ope_code, s.container_amount, s.edo_flg, s.specific_cont_flg, 
+        s.cont_supply_status, s.status, s.remark, s.order_number, s.house_bill, s.create_by, 
+        s.create_time, s.update_by, s.update_time,sh.sztp
+
+        order by create_time desc
+    </select>
+    
 
     <select id="selectShipmentListByWithShipmentDetailFilter" parameterType="Shipment" resultMap="ShipmentResult">
         select s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, s.ope_code, 
@@ -441,10 +678,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="params.fromDate != null">and s.create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
             <if test="params.toDate != null">and s.create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
             <if test="params.containerNo != null and params.containerNo != ''">and sh.container_no like concat(concat('%', #{params.containerNo}), '%')</if>
+            <if test="params.sztp != null and params.sztp != ''">and sh.sztp like concat(concat('%', #{params.sztp}), '%')</if>
             <if test="params.vslNm != null and params.vslNm != ''">and sh.vsl_nm = #{params.vslNm}</if>
             <if test="params.voyNo != null and params.voyNo != ''">and sh.voy_no = #{params.voyNo}</if>
             <if test="params.doStatus != null and params.doStatus != ''">and sh.do_status = #{params.doStatus}</if>
+           
+            <if test="params.dangerous != null and params.dangerous != ''">and sh.dangerous = #{params.dangerous}</if>
+			<if test="params.frozenStatus != null and params.frozenStatus != ''">and sh.frozen_status = #{params.frozenStatus}</if>
+ 
             <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
+            <if test="params.oversize != null and params.oversize != ''">and sh.oversize = #{params.oversize}</if>
             <if test="params.serviceArray != null">
                 and s.service_type in
                 <foreach item="service" collection="params.serviceArray" open="(" separator="," close=")">
