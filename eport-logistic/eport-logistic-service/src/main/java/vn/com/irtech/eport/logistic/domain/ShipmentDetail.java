@@ -672,49 +672,49 @@ public class ShipmentDetail extends BaseEntity {
         this.fe = fe;
     }
 
-    public String getFe() {
-        return fe;
-    }
+	public String getFe() {
+		return fe;
+	}
 
-    public void setBookingNo(String bookingNo) {
-        this.bookingNo = bookingNo;
-    }
+	public void setBookingNo(String bookingNo) {
+		this.bookingNo = bookingNo;
+	}
 
-    public String getBookingNo() {
-        return bookingNo;
-    }
+	public String getBookingNo() {
+		return bookingNo;
+	}
 
-    public void setBlNo(String blNo) {
-        this.blNo = blNo;
-    }
+	public void setBlNo(String blNo) {
+		this.blNo = blNo;
+	}
 
-    public String getBlNo() {
-        return blNo;
-    }
+	public String getBlNo() {
+		return blNo;
+	}
 
-    public void setSealNo(String sealNo) {
-        this.sealNo = sealNo;
-    }
+	public void setSealNo(String sealNo) {
+		this.sealNo = sealNo;
+	}
 
-    public String getSealNo() {
-        return sealNo;
-    }
+	public String getSealNo() {
+		return sealNo;
+	}
 
-    public void setConsignee(String consignee) {
-        this.consignee = consignee;
-    }
+	public void setConsignee(String consignee) {
+		this.consignee = consignee;
+	}
 
-    public String getConsignee() {
-        return consignee;
-    }
+	public String getConsignee() {
+		return consignee;
+	}
 
-    public void setExpiredDem(Date expiredDem) {
-        this.expiredDem = expiredDem;
-    }
+	public void setExpiredDem(Date expiredDem) {
+		this.expiredDem = expiredDem;
+	}
 
-    public Date getExpiredDem() {
-        return expiredDem;
-    }
+	public Date getExpiredDem() {
+		return expiredDem;
+	}
 
     public Integer getDetFreeTime() {
         return detFreeTime;
@@ -744,17 +744,17 @@ public class ShipmentDetail extends BaseEntity {
         this.vslNm = vslNm;
     }
 
-    public String getVslNm() {
-        return vslNm;
-    }
+	public String getVslNm() {
+		return vslNm;
+	}
 
-    public void setVoyNo(String voyNo) {
-        this.voyNo = voyNo;
-    }
+	public void setVoyNo(String voyNo) {
+		this.voyNo = voyNo;
+	}
 
-    public String getVoyNo() {
-        return voyNo;
-    }
+	public String getVoyNo() {
+		return voyNo;
+	}
 
     public String getVoyCarrier() {
         return voyCarrier;
@@ -784,33 +784,33 @@ public class ShipmentDetail extends BaseEntity {
         this.loadingPort = loadingPort;
     }
 
-    public String getLoadingPort() {
-        return loadingPort;
-    }
+	public String getLoadingPort() {
+		return loadingPort;
+	}
 
-    public void setDischargePort(String dischargePort) {
-        this.dischargePort = dischargePort;
-    }
+	public void setDischargePort(String dischargePort) {
+		this.dischargePort = dischargePort;
+	}
 
-    public String getDischargePort() {
-        return dischargePort;
-    }
+	public String getDischargePort() {
+		return dischargePort;
+	}
 
-    public void setTransportType(String transportType) {
-        this.transportType = transportType;
-    }
+	public void setTransportType(String transportType) {
+		this.transportType = transportType;
+	}
 
-    public String getTransportType() {
-        return transportType;
-    }
+	public String getTransportType() {
+		return transportType;
+	}
 
-    public void setEmptyDepot(String emptyDepot) {
-        this.emptyDepot = emptyDepot;
-    }
+	public void setEmptyDepot(String emptyDepot) {
+		this.emptyDepot = emptyDepot;
+	}
 
-    public String getEmptyDepot() {
-        return emptyDepot;
-    }
+	public String getEmptyDepot() {
+		return emptyDepot;
+	}
 
     public Date getEmptyExpiredDem() {
         return emptyExpiredDem;
@@ -828,77 +828,101 @@ public class ShipmentDetail extends BaseEntity {
         this.emptyDepotLocation = emptyDepotLocation;
     }
 
-    public void setCargoType(String cargoType) {
-        this.cargoType = cargoType;
-    }
+	public void setCargoType(String cargoType) {
+		this.cargoType = cargoType;
+	}
 
-    public String getCargoType() {
-        return cargoType;
-    }
+	public String getCargoType() {
+		return cargoType;
+	}
 
-    public void setVgmChk(Boolean vgmChk) {
-        this.vgmChk = vgmChk;
-    }
+	public void setVgmChk(Boolean vgmChk) {
+		this.vgmChk = vgmChk;
+	}
 
-    public Boolean getVgmChk() {
-        return vgmChk;
-    }
+	public Boolean getVgmChk() {
+		return vgmChk;
+	}
 
-    public void setVgm(String vgm) {
-        this.vgm = vgm;
-    }
+	public void setVgm(String vgm) {
+		this.vgm = vgm;
+	}
 
-    public String getVgm() {
-        return vgm;
-    }
+	public String getVgm() {
+		return vgm;
+	}
 
-    public void setVgmPersonInfo(String vgmPersonInfo) {
-        this.vgmPersonInfo = vgmPersonInfo;
-    }
+	public void setVgmPersonInfo(String vgmPersonInfo) {
+		this.vgmPersonInfo = vgmPersonInfo;
+	}
 
-    public String getVgmPersonInfo() {
-        return vgmPersonInfo;
-    }
+	public String getVgmPersonInfo() {
+		return vgmPersonInfo;
+	}
 
-    public void setPreorderPickup(String preorderPickup) {
-        this.preorderPickup = preorderPickup;
-    }
+	public void setPreorderPickup(String preorderPickup) {
+		this.preorderPickup = preorderPickup;
+	}
 
-    public String getPreorderPickup() {
-        return preorderPickup;
-    }
+	public String getPreorderPickup() {
+		return preorderPickup;
+	}
 
-    public void setPrePickupPaymentStatus(String prePickupPaymentStatus) {
-        this.prePickupPaymentStatus = prePickupPaymentStatus;
-    }
+	public void setPrePickupPaymentStatus(String prePickupPaymentStatus) {
+		this.prePickupPaymentStatus = prePickupPaymentStatus;
+	}
 
-    public String getPrePickupPaymentStatus() {
-        return prePickupPaymentStatus;
-    }
+	public String getPrePickupPaymentStatus() {
+		return prePickupPaymentStatus;
+	}
 
-    public void setCustomStatus(String customStatus) {
-        this.customStatus = customStatus;
-    }
+	public void setCustomStatus(String customStatus) {
+		this.customStatus = customStatus;
+	}
 
-    public String getCustomStatus() {
-        return customStatus;
-    }
+	public String getCustomStatus() {
+		return customStatus;
+	}
 
-    public void setPaymentStatus(String paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
 
-    public String getPaymentStatus() {
-        return paymentStatus;
-    }
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
 
-    public void setProcessStatus(String processStatus) {
-        this.processStatus = processStatus;
-    }
+	public void setProcessStatus(String processStatus) {
+		this.processStatus = processStatus;
+	}
 
-    public String getProcessStatus() {
-        return processStatus;
-    }
+	public String getProcessStatus() {
+		return processStatus;
+	}
+
+	public void setDoStatus(String doStatus) {
+		this.doStatus = doStatus;
+	}
+
+	public String getDoStatus() {
+		return doStatus;
+	}
+
+	public void setDoReceivedTime(Date doReceivedTime) {
+		this.doReceivedTime = doReceivedTime;
+	}
+
+	public Date getDoReceivedTime() {
+		return doReceivedTime;
+	}
+
+	public void setUserVerifyStatus(String userVerifyStatus) {
+		this.userVerifyStatus = userVerifyStatus;
+	}
+
+	public String getUserVerifyStatus() {
+		return userVerifyStatus;
+	}
 
     public void setDoStatus(String doStatus) {
         this.doStatus = doStatus;
@@ -912,17 +936,17 @@ public class ShipmentDetail extends BaseEntity {
         this.doReceivedTime = doReceivedTime;
     }
 
-    public Date getDoReceivedTime() {
-        return doReceivedTime;
-    }
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
-    public void setUserVerifyStatus(String userVerifyStatus) {
-        this.userVerifyStatus = userVerifyStatus;
-    }
+	public Integer getStatus() {
+		return status;
+	}
 
-    public String getUserVerifyStatus() {
-        return userVerifyStatus;
-    }
+	public String getOrderNo() {
+		return this.orderNo;
+	}
 
     public String getFinishStatus() {
         return this.finishStatus;
@@ -960,21 +984,21 @@ public class ShipmentDetail extends BaseEntity {
         this.bay = bay;
     }
 
-    public String getBay() {
-        return bay;
-    }
+	public void setRow(int roww) {
+		this.roww = roww;
+	}
 
-    public void setRow(int roww) {
-        this.roww = roww;
-    }
+	public int getRow() {
+		return roww;
+	}
 
-    public int getRow() {
-        return roww;
-    }
+	public void setTier(int tier) {
+		this.tier = tier;
+	}
 
-    public void setTier(int tier) {
-        this.tier = tier;
-    }
+	public int getTier() {
+		return tier;
+	}
 
     public int getTier() {
         return tier;
@@ -984,17 +1008,17 @@ public class ShipmentDetail extends BaseEntity {
         return driverAmount;
     }
 
-    public void setDriverAmount(Integer driverAmount) {
-        this.driverAmount = driverAmount;
-    }
+	public void setDriverAmount(Integer driverAmount) {
+		this.driverAmount = driverAmount;
+	}
 
     public void setPayType(String payType) {
         this.payType = payType;
     }
 
-    public String getPayType() {
-        return payType;
-    }
+	public String getPayType() {
+		return payType;
+	}
 
     public String getPayer() {
         return payer;
@@ -1040,13 +1064,13 @@ public class ShipmentDetail extends BaseEntity {
         this.assignNumber = assignNumber;
     }
 
-    public Integer getAssignNumber() {
-        return assignNumber;
-    }
+	public Integer getAssignNumber() {
+		return assignNumber;
+	}
 
-    public void setServiceType(Integer serviceType) {
-        this.serviceType = serviceType;
-    }
+	public void setServiceType(Integer serviceType) {
+		this.serviceType = serviceType;
+	}
 
     public Integer getServiceType() {
         return serviceType;
@@ -1072,9 +1096,9 @@ public class ShipmentDetail extends BaseEntity {
         return this.index;
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
-    }
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
 
     public String getInvoiceNo() {
         return invoiceNo;

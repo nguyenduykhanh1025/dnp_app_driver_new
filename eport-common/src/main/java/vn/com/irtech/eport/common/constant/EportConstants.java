@@ -325,4 +325,13 @@ public interface EportConstants {
 	public static final Integer BULLETIN_DRAFT = 0;
 	/** Bulletin release status */
 	public static final Integer BULLETIN_RELEASE = 1;
+
+	/** date receipt status waiting */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_NO = "N";
+	/** date receipt status progress */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_PROGRESS = "P";
+	/** date receipt status success */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_SUCCESS = "S";
+	/** date receipt status error */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_ERROR = "E";
 }
