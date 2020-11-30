@@ -171,17 +171,9 @@ function houseBillRenderer(instance, td, row, col, prop, value, cellProperties) 
     if (value == null) {
         value = '';
     }
-    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-    return td;
-}
-function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
-    if (value != null && value != '') {
-        if (value.substring(2, 3) != "/") {
-            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-        }
-    } else {
-        value = '';
+    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
@@ -189,6 +181,10 @@ function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties
 function forwarderRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value == null) {
         value = '';
+    }
+    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
@@ -203,12 +199,20 @@ function quantityRenderer(instance, td, row, col, prop, value, cellProperties) {
     } else {
         value = '';
     }
+    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function packagingTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value == null) {
         value = '';
+    }
+    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
@@ -223,6 +227,10 @@ function weightRenderer(instance, td, row, col, prop, value, cellProperties) {
     } else {
         value = '';
     }
+    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
@@ -236,6 +244,10 @@ function cubicMeterRenderer(instance, td, row, col, prop, value, cellProperties)
     } else {
         value = '';
     }
+    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
@@ -243,12 +255,20 @@ function marksRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value == null) {
         value = '';
     }
+    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function forwarderRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value == null) {
         value = '';
+    }
+    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
