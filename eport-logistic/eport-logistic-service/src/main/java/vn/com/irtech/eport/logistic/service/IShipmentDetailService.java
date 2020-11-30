@@ -328,8 +328,8 @@ public interface IShipmentDetailService {
 	 */
 	public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail); 
 	
+	public int updateShipmentDetailByProcessOderIds(String shipmentDetailIds, ShipmentDetail shipmentDetail); 
 	
-
 	/**
 	 * Reset custom status to null for shipmentId
 	 * 

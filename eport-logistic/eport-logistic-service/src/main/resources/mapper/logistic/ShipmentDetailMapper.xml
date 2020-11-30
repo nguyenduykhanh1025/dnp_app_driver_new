@@ -1017,7 +1017,7 @@
 	
 	
 	
-	<select id="selectConfirmShipmentDetailByIds"
+	<!-- <select id="selectConfirmShipmentDetailByIds"
 		resultMap="ShipmentDetailResult">
 		<include refid="selectShipmentDetailVo" />
 		where id in
@@ -1026,7 +1026,22 @@
 			#{shipmentDetailIds}
 		</foreach>
 		  
-	</select>
+	</select> -->
+	
+	<!-- start yêu cầu xác nhận Nhatlv -->
+	<select id="selectConfirmShipmentDetailByIds"
+		resultMap="ShipmentDetailResult">
+		<include refid="selectShipmentDetailVo" />
+		where id in
+		<foreach item="id" collection="array" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+		  
+	</select> 
+	<!-- end yêu cầu xác nhận Nhatlv -->
+	
+	
 	
 	 
 
@@ -1737,6 +1752,241 @@
 			</foreach>
 		</where>
 	</update>
+	
+	<!-- Nhatlv add  -->
+	
+		<update id="updateShipmentDetailByProcessOderIds">
+		update shipment_detail
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="shipmentDetail.processOrderId != null">process_order_id = #{shipmentDetail.processOrderId},</if>
+			<if
+				test="shipmentDetail.registerNo != null  and shipmentDetail.registerNo != ''">register_no =
+				#{shipmentDetail.registerNo},
+			</if>
+			<if
+				test="shipmentDetail.containerNo != null  and shipmentDetail.containerNo != ''">container_no =
+				#{shipmentDetail.containerNo},
+			</if>
+			<if
+				test="shipmentDetail.containerStatus != null  and shipmentDetail.containerStatus != ''">container_status
+				= #{shipmentDetail.containerStatus},
+			</if>
+			<if
+				test="shipmentDetail.sztp != null and shipmentDetail.sztp != ''">sztp = #{shipmentDetail.sztp},</if>
+			<if
+				test="shipmentDetail.sztpDefine != null and shipmentDetail.sztpDefine != ''">sztp_define =
+				#{shipmentDetail.sztpDefine},
+			</if>
+			<if test="shipmentDetail.temperature != null ">temperature = #{shipmentDetail.temperature},</if>
+			<if test="shipmentDetail.fe != null and shipmentDetail.fe != ''">fe = #{shipmentDetail.fe},</if>
+			<if
+				test="shipmentDetail.bookingNo != null  and shipmentDetail.bookingNo != ''">booking_no =
+				#{shipmentDetail.bookingNo},
+			</if>
+			<if
+				test="shipmentDetail.blNo != null  and shipmentDetail.blNo != ''">bl_no = #{shipmentDetail.blNo},</if>
+			<if
+				test="shipmentDetail.sealNo != null and shipmentDetail.sealNo != ''">seal_no =
+				#{shipmentDetail.sealNo},
+			</if>
+			<if
+				test="shipmentDetail.consignee != null and shipmentDetail.consignee != ''">consignee =
+				#{shipmentDetail.consignee},
+			</if>
+			<if test="shipmentDetail.expiredDem != null ">expired_dem = #{shipmentDetail.expiredDem},</if>
+			<if test="shipmentDetail.detFreeTime != null ">det_free_time = #{shipmentDetail.detFreeTime},</if>
+			<if test="shipmentDetail.emptyExpiredDem != null ">empty_expired_dem = #{shipmentDetail.emptyExpiredDem},
+			</if>
+			<if test="shipmentDetail.wgt != null ">wgt = #{shipmentDetail.wgt},</if>
+			<if
+				test="shipmentDetail.vslName != null  and shipmentDetail.vslName != ''">vsl_name =
+				#{shipmentDetail.vslName},
+			</if>
+			<if
+				test="shipmentDetail.vslNm != null  and shipmentDetail.vslNm != ''">vsl_nm = #{shipmentDetail.vslNm},
+			</if>
+			<if
+				test="shipmentDetail.voyNo != null  and shipmentDetail.voyNo != ''">voy_no = #{shipmentDetail.voyNo},
+			</if>
+			<if
+				test="shipmentDetail.voyCarrier != null  and shipmentDetail.voyCarrier != ''">voy_carrier =
+				#{shipmentDetail.voyCarrier},
+			</if>
+			<if
+				test="shipmentDetail.opeCode != null  and shipmentDetail.opeCode != ''">ope_code =
+				#{shipmentDetail.opeCode},
+			</if>
+			<if
+				test="shipmentDetail.carrierName != null  and shipmentDetail.carrierName != ''">carrier_name =
+				#{shipmentDetail.carrierName},
+			</if>
+			<if
+				test="shipmentDetail.loadingPort != null  and shipmentDetail.loadingPort != ''">loading_port =
+				#{shipmentDetail.loadingPort},
+			</if>
+			<if
+				test="shipmentDetail.dischargePort != null  and shipmentDetail.dischargePort != ''">discharge_port =
+				#{shipmentDetail.dischargePort},
+			</if>
+			<if
+				test="shipmentDetail.transportType != null  and shipmentDetail.transportType != ''">transport_type =
+				#{shipmentDetail.transportType},
+			</if>
+			<if
+				test="shipmentDetail.emptyDepot != null  and shipmentDetail.emptyDepot != ''">empty_depot =
+				#{shipmentDetail.emptyDepot},
+			</if>
+			<if
+				test="shipmentDetail.emptyDepotLocation != null  and shipmentDetail.emptyDepotLocation != ''">
+				empty_depot_location = #{shipmentDetail.emptyDepotLocation},
+			</if>
+			<if
+				test="shipmentDetail.cargoType != null  and shipmentDetail.cargoType != ''">cargo_type =
+				#{shipmentDetail.cargoType},
+			</if>
+			<if
+				test="shipmentDetail.commodity != null  and shipmentDetail.commodity != ''">commodity =
+				#{shipmentDetail.commodity},
+			</if>
+			<if test="shipmentDetail.vgmChk != null ">vgm_chk = #{shipmentDetail.vgmChk},</if>
+			<if
+				test="shipmentDetail.vgm != null  and shipmentDetail.vgm != ''">vgm = #{shipmentDetail.vgm},</if>
+			<if
+				test="shipmentDetail.vgmPersonInfo != null  and shipmentDetail.vgmPersonInfo != ''">vgm_person_info =
+				#{shipmentDetail.vgmPersonInfo},
+			</if>
+			<if
+				test="shipmentDetail.preorderPickup != null  and shipmentDetail.preorderPickup != ''">preorder_pickup =
+				#{shipmentDetail.preorderPickup},
+			</if>
+			<if test="shipmentDetail.prePickupPaymentStatus != null">pre_pickup_payment_status =
+				#{shipmentDetail.prePickupPaymentStatus},
+			</if>
+			<if
+				test="shipmentDetail.customStatus != null  and shipmentDetail.customStatus != ''">custom_status =
+				#{shipmentDetail.customStatus},
+			</if>
+			<if
+				test="shipmentDetail.paymentStatus != null  and shipmentDetail.paymentStatus != ''">payment_status =
+				#{shipmentDetail.paymentStatus},
+			</if>
+			<if
+				test="shipmentDetail.processStatus != null  and shipmentDetail.processStatus != ''">process_status =
+				#{shipmentDetail.processStatus},
+			</if>
+			<if
+				test="shipmentDetail.doStatus != null  and shipmentDetail.doStatus != ''">do_status =
+				#{shipmentDetail.doStatus},
+			</if>
+			<if test="shipmentDetail.doReceivedTime != null">do_received_time = #{shipmentDetail.doReceivedTime},</if>
+			<if
+				test="shipmentDetail.userVerifyStatus != null  and shipmentDetail.userVerifyStatus != ''">
+				user_verify_status = #{shipmentDetail.userVerifyStatus},
+			</if>
+			<if
+				test="shipmentDetail.finishStatus != null  and shipmentDetail.finishStatus != ''">finish_status =
+				#{shipmentDetail.finishStatus},
+			</if>
+			<if test="shipmentDetail.status != null ">status = #{shipmentDetail.status},</if>
+			<if
+				test="shipmentDetail.orderNo != null and shipmentDetail.orderNo != ''">order_no =
+				#{shipmentDetail.orderNo},
+			</if>
+			<if
+				test="shipmentDetail.taxCode != null and shipmentDetail.taxCode != ''">tax_code =
+				#{shipmentDetail.taxCode},
+			</if>
+			<if
+				test="shipmentDetail.consigneeByTaxCode != null and shipmentDetail.consigneeByTaxCode != ''">
+				consignee_by_tax_code = #{shipmentDetail.consigneeByTaxCode},
+			</if>
+			<if
+				test="shipmentDetail.customsNo != null and shipmentDetail.customsNo != ''">customs_no =
+				#{shipmentDetail.customsNo},
+			</if>
+			<if test="shipmentDetail.customScanTime != null">custom_scan_time = #{shipmentDetail.customScanTime},</if>
+			<if
+				test="shipmentDetail.contSupplyStatus != null and shipmentDetail.contSupplyStatus != ''">
+				cont_supply_status = #{shipmentDetail.contSupplyStatus},
+			</if>
+			<if test="shipmentDetail.planningDate != null">planning_date = #{shipmentDetail.planningDate},</if>
+			<if
+				test="shipmentDetail.qualityRequirement != null and shipmentDetail.qualityRequirement != ''">
+				quality_requirement = #{shipmentDetail.qualityRequirement},
+			</if>
+			<if
+				test="shipmentDetail.contSupplyRemark != null and shipmentDetail.contSupplyRemark != ''">
+				cont_supply_remark = #{shipmentDetail.contSupplyRemark},
+			</if>
+			<if
+				test="shipmentDetail.contSupplierName != null and shipmentDetail.contSupplierName != ''">
+				cont_supplier_name = #{shipmentDetail.contSupplierName},
+			</if>
+			<if
+				test="shipmentDetail.payType != null  and shipmentDetail.payType != ''">pay_type =
+				#{shipmentDetail.payType},
+			</if>
+			<if
+				test="shipmentDetail.payer != null  and shipmentDetail.payer != ''">payer = #{shipmentDetail.payer},
+			</if>
+			<if
+				test="shipmentDetail.payerName != null  and shipmentDetail.payerName != ''">payer_name =
+				#{shipmentDetail.payerName},
+			</if>
+			<if
+				test="shipmentDetail.remark != null  and shipmentDetail.remark != ''">remark =
+				#{shipmentDetail.remark},
+			</if>
+			<if
+				test="shipmentDetail.deliveryAddress != null and shipmentDetail.deliveryAddress != ''">delivery_address
+				= #{shipmentDetail.deliveryAddress},
+			</if>
+			<if
+				test="shipmentDetail.deliveryMobile != null  and shipmentDetail.deliveryMobile != ''">delivery_mobile =
+				#{shipmentDetail.deliveryMobile},
+			</if>
+			<if
+				test="shipmentDetail.deliveryRemark != null  and shipmentDetail.deliveryRemark != ''">delivery_remark =
+				#{shipmentDetail.deliveryRemark},
+			</if>
+			<if test="shipmentDetail.eta != null">eta = #{shipmentDetail.eta},</if>
+			<if test="shipmentDetail.etd != null">etd = #{shipmentDetail.etd},</if>
+			<if
+				test="shipmentDetail.updateBy != null and shipmentDetail.updateBy != ''">update_by =
+				#{shipmentDetail.updateBy},
+			</if>
+			<if
+				test="shipmentDetail.frozenStatus != null and shipmentDetail.frozenStatus != ''">frozen_status =
+				#{shipmentDetail.frozenStatus},
+			</if>
+			<if
+				test="shipmentDetail.dangerous != null and shipmentDetail.dangerous != ''">dangerous =
+				#{shipmentDetail.dangerous},
+			</if>
+			<if
+				test="shipmentDetail.oversize != null and shipmentDetail.oversize != ''">oversize =
+				#{shipmentDetail.oversize},
+			</if>
+			
+			<if
+				test="shipmentDetail.powerDrawDate != null and shipmentDetail.powerDrawDate != ''">power_draw_date =
+				#{shipmentDetail.powerDrawDate},
+			</if>
+			<if test="shipmentDetail.dateReceiptStatus != null and shipmentDetail.dateReceiptStatus != ''">date_receipt_status = #{shipmentDetail.dateReceiptStatus},</if>
+			<if test="shipmentDetail.dateReceipt != null">date_receipt = #{shipmentDetail.dateReceipt},</if>
+			update_time = sysdate
+		</trim>
+		<where>
+			PROCESS_ORDER_ID in
+			<foreach item="id" collection="shipmentDetailIds" open="("
+				separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</update>
+	
+	<!-- end  -->
+	
  
 	<update id="updateShipmentDetailByCondition" parameterType="ShipmentDetail">
         update shipment_detail
