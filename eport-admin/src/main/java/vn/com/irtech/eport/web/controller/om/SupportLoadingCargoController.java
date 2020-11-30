@@ -28,14 +28,12 @@ import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
-import vn.com.irtech.eport.logistic.domain.CfsHouseBill;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
-import vn.com.irtech.eport.logistic.service.ICfsHouseBillService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -78,9 +76,6 @@ public class SupportLoadingCargoController extends OmBaseController{
     @Autowired
     private ServerConfig serverConfig;
 
-    @Autowired
-	private ICfsHouseBillService cfsHouseBillService;
-    
     @GetMapping("/view")
     public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap)
     {
@@ -283,27 +278,6 @@ public class SupportLoadingCargoController extends OmBaseController{
 		// Add id to make background grey (different from other comment)
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
-		return ajaxResult;
-	}
-    
-    @GetMapping("/shipment-detail/{shipmentDetailId}/house-bill")
-	public String getCfsHouseBill(@PathVariable("shipmentDetailId") Long shipmentDetailId, ModelMap mmap) {
-		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
-		if (shipmentDetail != null) {
-			mmap.put("masterBill", shipmentDetail.getBookingNo());
-			mmap.put("containerNo", shipmentDetail.getContainerNo());
-			mmap.put("shipmentDetailId", shipmentDetailId);
-		}
-		return PREFIX + "/houseBill";
-	}
-
-	@GetMapping("shipment-detail/{shipmentDetailId}/house-bills")
-	@ResponseBody
-	public AjaxResult getHouseBillList(@PathVariable("shipmentDetailId") Long shipmentDetailId) {
-		CfsHouseBill cfsHouseBillParam = new CfsHouseBill();
-		cfsHouseBillParam.setShipmentDetailId(shipmentDetailId);
-		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("cfsHouseBills", cfsHouseBillService.selectCfsHouseBillList(cfsHouseBillParam));
 		return ajaxResult;
 	}
 }

@@ -282,22 +282,24 @@ function configHandson() {
                 case 2:
                     return "House Bill";
                 case 3:
-                    return "Forwarder";
+                    return "Ngày Đóng Hàng";
                 case 4:
-                    return "Số Lượng";
+                    return "Forwarder";
                 case 5:
-                    return "Loại Bao Bì";
+                    return "Số Lượng";
                 case 6:
-                    return "Trọng Lượng";
+                    return "Loại Bao Bì";
                 case 7:
-                    return "Số Khối";
+                    return "Trọng Lượng";
                 case 8:
-                    return "Nhãn/Ký hiệu";
+                    return "Số Khối";
                 case 9:
+                    return "Nhãn/Ký hiệu";
+                case 10:
                     return "Ghi chú";
             }
         },
-        colWidths: [40, 80, 100, 150, 80, 90, 90, 90, 100, 200],
+        colWidths: [40, 80, 100, 120, 150, 80, 90, 90, 90, 100, 200],
         columns: [
             {
                 data: "active",
@@ -306,7 +308,7 @@ function configHandson() {
                 renderer: checkBoxRenderer
             },
             {
-                data: "dateReceiptStatus",
+                data: "status",
                 readOnly: true,
                 renderer: statusIconRenderer
             },
@@ -314,6 +316,14 @@ function configHandson() {
                 data: "houseBill",
                 className: "htCenter",
                 renderer: houseBillRenderer
+            },
+            {
+                data: "dateReceipt",
+                type: "date",
+                dateFormat: "DD/MM/YYYY",
+                correctFormat: true,
+                defaultDate: new Date(),
+                renderer: dateReceiptRenderer
             },
             {
                 data: "forwarder",
@@ -371,7 +381,7 @@ function configHandson() {
                 // Arrow Right
                 case 39:
                     selected = hot.getSelected()[0];
-                    if (selected[3] == 9) {
+                    if (selected[3] == 8) {
                         e.stopImmediatePropagation();
                     }
                     break
@@ -502,6 +512,10 @@ function getDataFromTable(isValidate) {
     console.log(myTableData);
     $.each(cleanedGridData, function (index, object) {
         let cfsHouseBill = new Object();
+        if (object["dateReceipt"] && object["dateReceipt"].length >= 10) {
+            let dateReceipt = new Date(object["dateReceipt"].substring(6, 10) + "/" + object["dateReceipt"].substring(3, 5) + "/" + object["dateReceipt"].substring(0, 2));
+            cfsHouseBill.dateReceipt = dateReceipt.getTime();
+        }
         cfsHouseBill.houseBill = object["houseBill"];
         cfsHouseBill.forwarder = object["forwarder"];
         cfsHouseBill.quantity = object["quantity"];
