@@ -518,7 +518,7 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 						shipmentDetailReference.setConsignee(inputDetail.getConsignee());
 						shipmentDetailReference.setEmptyDepot(inputDetail.getEmptyDepot());
 
-						shipmentDetailReference.setDateReceipt(inputDetail.getDateReceipt());
+						
 
 						// T/h la container domestic, update taxcode, consignee theo thong tin nguoi
 						// dung nhap
@@ -532,6 +532,7 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 							shipmentDetailReference.setDetFreeTime(inputDetail.getDetFreeTime());
 						}
 						shipmentDetailReference.setUpdateTime(new Date());
+						shipmentDetailReference.setDateReceipt(inputDetail.getDateReceipt());
 						if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
 							return error("Lưu khai báo thất bại từ container: " + inputDetail.getContainerNo());
 						}
@@ -1128,3 +1129,4 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 	}
 
 }
+

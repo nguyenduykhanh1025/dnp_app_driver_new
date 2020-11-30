@@ -1739,6 +1739,16 @@ function check(id) {
     }
     hot.render();
     updateLayout();
+  }else {
+    if (checkList[id] == 0) {
+      $("#check" + id).prop("checked", true);
+      checkList[id] = 1;
+    } else {
+      $("#check" + id).prop("checked", false);
+      checkList[id] = 0;
+    }
+    hot.render();
+    updateLayout();
   }
 }
 function updateLayout() {
@@ -2206,6 +2216,7 @@ function getDataFromTable(isValidate) {
  * Save when click btn id="saveShipmentDetailBtn"
  */
 function saveShipmentDetail() {
+
   if (getDataFromTable(true)) {
     if (
       shipmentDetails.length > 0 &&
@@ -2214,7 +2225,6 @@ function saveShipmentDetail() {
       shipmentDetails[0].processStatus = conts;
 
       const payload = checkList.includes(1) ? getDataFromListChecked() : shipmentDetails;
-
       $.modal.loading("Đang xử lý...");
       $.ajax({
         url: prefix + "/" + shipmentSelected.id + "/shipment-detail",
@@ -2227,8 +2237,10 @@ function saveShipmentDetail() {
           var result = JSON.parse(data);
           if (result.code == 0) {
             $.modal.msgSuccess(result.msg);
+            
             reloadShipmentDetail();
           } else {
+            
             if (result.conts != null) {
               $.modal.alertError(
                 "Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>" +
@@ -2309,6 +2321,7 @@ function saveShipmentDetailFollowIndex(index) {
 
 function getDataFromListChecked() {
   let result = [];
+  console.log(checkList);
   for (let checkIndex = 0; checkIndex < checkList.length; ++checkIndex) {
     if (checkList[checkIndex] == 1) {
       result.push(shipmentDetails[checkIndex]);
@@ -2354,7 +2367,7 @@ function verify() {
     let isCanVerify = true;
     for (let i = 0; i < checkList.length; ++i) {
       if (checkList[i] == 1) {
-        if (!(getStatusContFollowIndex(i) == CONT_SPECIAL_STATUS.YES)) {
+        if (getStatusContFollowIndex(i) && !(getStatusContFollowIndex(i) == CONT_SPECIAL_STATUS.YES)) {
           isCanVerify = false;
         }
       }

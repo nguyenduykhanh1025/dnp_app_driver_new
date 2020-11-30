@@ -93,7 +93,6 @@ $(document).ready(function () {
       }
     });
 });
-
 function loadTable(processOrder) {
   $("#dg").datagrid({
     url: PREFIX + "/orders",
@@ -625,7 +624,6 @@ function detFreeTimeRenderer(
   );
   return td;
 }
-
 //CONFIGURATE HANDSONTABLE
 function configHandson() {
   config = {
