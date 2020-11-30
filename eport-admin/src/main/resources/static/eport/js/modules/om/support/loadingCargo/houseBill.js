@@ -3,7 +3,6 @@ var onlyDigitReg = /^[0-9]*$/gm;
 var onlyFloatReg = /^[+-]?([0-9]*[.|,])?[0-9]+$/gm;
 var dogrid = document.getElementById("container-grid"), hot;
 var minRowAmount = 1, sourceData;
-var allChecked, checkList, cfsHouseBillList, cfsHouseBillIds;
 
 $(document).ready(function () {
     $("#houseBillNumber").on("input", function () {
@@ -41,8 +40,6 @@ $(document).ready(function () {
     });
 
     // RENDER HANSONTABLE FIRST TIME
-    checkList = Array(minRowAmount).fill(0);
-    allChecked = false;
     configHandson();
     hot = new Handsontable(dogrid, config);
     loadHouseBill();
@@ -67,8 +64,6 @@ function loadHouseBill() {
                         $('#houseBillNumber').val(minRowAmount);
                     }
                 }
-                checkList = Array(minRowAmount).fill(0);
-                allChecked = false;
                 hot.destroy();
                 configHandson();
                 hot = new Handsontable(dogrid, config);
@@ -273,12 +268,25 @@ function forwarderRemarkRenderer(instance, td, row, col, prop, value, cellProper
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
+function storageFromDateRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).addClass("htMiddle").addClass("htCenter");
+    if (!value || value == null) {
+        value = '';
+    }
+    if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+        }
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
 
 // CONFIGURATE HANDSONTABLE
 function configHandson() {
     config = {
         stretchH: "all",
-        height: $(document).height() - 140,
+        height: $(document).height() - 100,
         minRows: $('#houseBillNumber').val(),
         maxRows: $('#houseBillNumber').val(),
         width: "100%",
@@ -293,14 +301,11 @@ function configHandson() {
         colHeaders: function (col) {
             switch (col) {
                 case 0:
-                    let txt = "<input type='checkbox' class='checker' ";
-                    txt += "onclick='checkAll()' ";
-                    txt += ">";
-                    return txt;
-                case 1:
                     return "Trạng Thái";
-                case 2:
+                case 1:
                     return "House Bill";
+                case 2:
+                    return "Ngày Lưu Kho";
                 case 3:
                     return "Forwarder";
                 case 4:
@@ -317,14 +322,8 @@ function configHandson() {
                     return "Ghi chú";
             }
         },
-        colWidths: [40, 80, 100, 150, 80, 90, 90, 90, 100, 200],
+        colWidths: [80, 100, 120, 150, 80, 90, 90, 90, 100, 200],
         columns: [
-            {
-                data: "active",
-                type: "checkbox",
-                className: "htCenter",
-                renderer: checkBoxRenderer
-            },
             {
                 data: "dateReceiptStatus",
                 readOnly: true,
@@ -334,6 +333,14 @@ function configHandson() {
                 data: "houseBill",
                 className: "htCenter",
                 renderer: houseBillRenderer
+            },
+            {
+                data: "storageFromDate",
+                type: "date",
+                dateFormat: "DD/MM/YYYY",
+                correctFormat: true,
+                defaultDate: new Date(),
+                renderer: storageFromDateRenderer
             },
             {
                 data: "forwarder",
@@ -409,134 +416,7 @@ function configHandson() {
     };
 }
 
-// TRIGGER CHECK ALL SHIPMENT DETAIL
-function checkAll() {
-    if (!allChecked) {
-        allChecked = true
-        checkList = Array(minRowAmount).fill(0);
-        for (let i = 0; i < checkList.length; i++) {
-            checkList[i] = 1;
-            $('#check' + i).prop('checked', true);
-        }
-    } else {
-        allChecked = false;
-        checkList = Array(minRowAmount).fill(0);
-        for (let i = 0; i < checkList.length; i++) {
-            $('#check' + i).prop('checked', false);
-        }
-    }
-    let tempCheck = allChecked;
-    updateLayout();
-    hot.render();
-    allChecked = tempCheck;
-    $('.checker').prop('checked', tempCheck);
-}
-function check(id) {
-    if (sourceData[id].id != null) {
-        if (checkList[id] == 0) {
-            $('#check' + id).prop('checked', true);
-            checkList[id] = 1;
-        } else {
-            $('#check' + id).prop('checked', false);
-            checkList[id] = 0;
-        }
-        hot.render();
-        updateLayout();
-    }
-}
-function updateLayout() {
-    allChecked = true;
-    for (let i = 0; i < checkList.length; i++) {
-        let cellStatus = sourceData[i].id;
-        if (cellStatus != null) {
-            if (checkList[i] != 1) {
-                allChecked = false;
-            }
-        }
-    }
-    $('.checker').prop('checked', allChecked);
-}
-
 function closeForm() {
     $.modal.close();
-}
-
-// GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
-function getDataSelectedFromTable(isValidate) {
-    let myTableData = hot.getSourceData();
-    let errorFlg = false;
-    let cleanedGridData = [];
-    for (let i = 0; i < checkList.length; i++) {
-        if (Object.keys(myTableData[i]).length > 0) {
-            if (checkList[i] == 1) {
-                cleanedGridData.push(myTableData[i]);
-            }
-        }
-    }
-    cfsHouseBillIds = "";
-    cfsHouseBillList = [];
-    $.each(cleanedGridData, function (index, object) {
-        let cfsHouseBill = new Object();
-        cfsHouseBill.houseBill = object["houseBill"];
-        cfsHouseBill.forwarder = object["forwarder"];
-        cfsHouseBill.quantity = object["quantity"];
-        cfsHouseBill.packagingType = object["packagingType"];
-        cfsHouseBill.weight = object["weight"];
-        cfsHouseBill.cubicMeter = object["cubicMeter"];
-        cfsHouseBill.marks = object["marks"];
-        cfsHouseBill.forwarderRemark = object["forwarderRemark"];
-        cfsHouseBillList.push(cfsHouseBill);
-        cfsHouseBillIds += object["id"] + ",";
-    });
-
-    // Get result in "selectedList" variable
-    if (cfsHouseBillList.length == 0 && isValidate) {
-        $.modal.alert("Bạn chưa chọn house bill.");
-        errorFlg = true;
-    } else {
-        cfsHouseBillIds = cfsHouseBillIds.substring(0, cfsHouseBillIds.length - 1);
-    }
-
-    if (errorFlg) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-// GET HOUSE BILL LIST, VALIDATE FIELD WHEN isValidate = true
-function getDataFromTable(isValidate) {
-    let myTableData = hot.getSourceData();
-    let errorFlg = false;
-    let cleanedGridData = [];
-    for (let i = 0; i < checkList.length; i++) {
-        if (Object.keys(myTableData[i]).length > 0) {
-            if (myTableData[i].houseBill || myTableData[i].forwarder || myTableData[i].quantity ||
-                myTableData[i].packagingType || myTableData[i].weight || myTableData[i].cubicMeter ||
-                myTableData[i].marks || myTableData[i].forwarderRemark || myTableData[i].dateReceipt) {
-                cleanedGridData.push(myTableData[i]);
-            }
-        }
-    }
-    cfsHouseBillList = [];
-    console.log(myTableData);
-    $.each(cleanedGridData, function (index, object) {
-        let cfsHouseBill = new Object();
-        cfsHouseBill.houseBill = object["houseBill"];
-        cfsHouseBill.forwarder = object["forwarder"];
-        cfsHouseBill.quantity = object["quantity"];
-        cfsHouseBill.packagingType = object["packagingType"];
-        cfsHouseBill.weight = object["weight"];
-        cfsHouseBill.cubicMeter = object["cubicMeter"];
-        cfsHouseBill.marks = object["marks"];
-        cfsHouseBill.forwarderRemark = object["forwarderRemark"];
-        cfsHouseBillList.push(cfsHouseBill);
-    });
-
-    if (errorFlg) {
-        return false;
-    } else {
-        return true;
-    }
 }
 

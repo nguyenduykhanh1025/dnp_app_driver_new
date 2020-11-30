@@ -3,7 +3,7 @@ const regexRemoveHtml = /(<([^>]+)>)/ig;
 var prefix = ctx + "logistic/loading-cargo";
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData;
-var contList = [], sztpListDisable = [];
+var contList = [], sztpListDisable = [], currentEta;
 var allChecked = false;
 var checkList = [];
 var vslNmList, consigneeList;
@@ -811,33 +811,33 @@ function configHandson() {
                     return "House Bill";
                 case 4:
                     return "Ngày Đóng Hàng";
-                case 4:
-                    return '<span class="required">Kích Thước</span>';
                 case 5:
-                    return '<span class="required">Hạn Lệnh</span>';
+                    return '<span class="required">Kích Thước</span>';
                 case 6:
-                    return '<span class="required">Chủ Hàng</span>';
+                    return '<span class="required">Hạn Lệnh</span>';
                 case 7:
-                    return '<span class="required">Ngày Dự <br>Kiến Bốc</span>';
+                    return '<span class="required">Chủ Hàng</span>';
                 case 8:
-                    return '<span class="required">Loại Hàng</span>';
+                    return '<span class="required">Ngày Dự <br>Kiến Bốc</span>';
                 case 9:
-                    return 'Yêu Cầu <br>Chất Lượng';
+                    return '<span class="required">Loại Hàng</span>';
                 case 10:
-                    return '<span class="required">Tàu và Chuyến</span>';
+                    return 'Yêu Cầu <br>Chất Lượng';
                 case 11:
-                    return "Ngày tàu đến";
+                    return '<span class="required">Tàu và Chuyến</span>';
                 case 12:
-                    return '<span class="required">Cảng Dỡ Hàng</span>';
+                    return "Ngày tàu đến";
                 case 13:
-                    return 'Cấp Container <br>Ghi Chú';
+                    return '<span class="required">Cảng Dỡ Hàng</span>';
                 case 14:
-                    return 'PTTT';
+                    return 'Cấp Container <br>Ghi Chú';
                 case 15:
-                    return 'Mã Số Thuế';
+                    return 'PTTT';
                 case 16:
-                    return 'Người Thanh Toán';
+                    return 'Mã Số Thuế';
                 case 17:
+                    return 'Người Thanh Toán';
+                case 18:
                     return "Ghi Chú";
             }
         },
@@ -998,7 +998,7 @@ function onChange(changes, source) {
     changes.forEach(function (change) {
         // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
         if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-            let vesselAndVoy = hot.getDataAtCell(change[0], 10);
+            let vesselAndVoy = hot.getDataAtCell(change[0], 11);
             //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
             if (vesselAndVoy) {
                 if (currentVesselVoyage != vesselAndVoy) {
@@ -1021,7 +1021,7 @@ function onChange(changes, source) {
                                     if (data.code == 0) {
                                         hot.updateSettings({
                                             cells: function (row, col, prop) {
-                                                if (col == 12) {
+                                                if (col == 13) {
                                                     let cellProperties = {};
                                                     dischargePortList = data.dischargePorts;
                                                     cellProperties.source = dischargePortList;
@@ -1035,7 +1035,7 @@ function onChange(changes, source) {
                         }
                     }
                 }
-                hot.setDataAtCell(change[0], 11, currentEta);
+                hot.setDataAtCell(change[0], 12, currentEta);
             }
         } else if (change[1] == "containerNo") {
             if (!change[3]) {
