@@ -519,19 +519,20 @@ function btnDetailRenderer(
         "'" +
         sztp +
         '\')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
-    } else {
-      value =
-        '<button class="btn btn-success btn-xs" id="detailBtn ' +
-        row +
-        '" onclick="openDetail(' +
-        null +
-        ",'" +
-        containerNo +
-        "'," +
-        "'" +
-        sztp +
-        '\')" disabled><i class="fa fa-check-circle"></i>Chi tiết</button>';
-    }
+    } 
+    // else {
+    //   value =
+    //     '<button class="btn btn-success btn-xs" id="detailBtn ' +
+    //     row +
+    //     '" onclick="openDetail(' +
+    //     null +
+    //     ",'" +
+    //     containerNo +
+    //     "'," +
+    //     "'" +
+    //     sztp +
+    //     '\')" disabled><i class="fa fa-check-circle"></i>Chi tiết</button>';
+    // }
   }
   $(td).html(value);
   cellProperties.readOnly = "true";
