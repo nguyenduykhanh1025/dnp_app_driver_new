@@ -437,9 +437,11 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 						shipmentDetailReference.setEta(inputDetail.getEta());
 						shipmentDetailReference.setEtd(inputDetail.getEtd());
 						shipmentDetailReference.setDischargePort(inputDetail.getDischargePort());
+						
 					}
 					shipmentDetailReference.setRemark(inputDetail.getRemark());
 					shipmentDetailReference.setUpdateBy(user.getFullName());
+					shipmentDetailReference.setDateReceipt(inputDetail.getDateReceipt());
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
 					}
@@ -484,6 +486,7 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 					shipmentDetail.setEtd(inputDetail.getEtd());
 					shipmentDetail.setDischargePort(inputDetail.getDischargePort());
 					shipmentDetail.setRemark(inputDetail.getRemark());
+					shipmentDetail.setDateReceipt(inputDetail.getDateReceipt());
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}

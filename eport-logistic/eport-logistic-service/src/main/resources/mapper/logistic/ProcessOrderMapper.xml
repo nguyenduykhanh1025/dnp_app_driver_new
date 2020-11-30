@@ -118,45 +118,47 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectProcessOrderListWithLogisticName" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
         SELECT
-            id, shipment_id, logistic_group_id, service_type, invoice_no, pay_type, sztp, modee, consignee, truck_co, opr,
-            tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, 
-            result, data, create_by, create_time, update_by, update_time, robot_uuid, ssr_code, sys_user_id,
-            post_process_id, runnable, order_no, process_data, msg, error_image_path, hold_flg,
+            s.id, s.shipment_id, s.logistic_group_id, s.service_type, s.invoice_no, s.pay_type, s.sztp, s.modee, s.consignee, s.truck_co, s.opr,
+            s.tax_code, s.bl_no, s.booking_no, s.pickup_date, s.vessel, s.voyage, s.before_after, s.year, s.cont_number, s.status, 
+            s.result, s.data, s.create_by, s.create_time, s.update_by, s.update_time, s.robot_uuid, s.ssr_code, s.sys_user_id,
+            s.post_process_id, s.runnable, s.order_no, s.process_data, s.msg, s.error_image_path, s.hold_flg,
             (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as logistic_name 
-        FROM process_order s
+        FROM process_order s left join shipment_detail sh on s.id = sh.process_order_id
         <where>  
-            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
-            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
-            <if test="serviceType != null "> and service_type = #{serviceType}</if>
-            <if test="invoiceNo != null  and invoiceNo != ''"> and invoice_no = #{invoiceNo}</if>
-            <if test="payType != null  and payType != ''"> and pay_type = #{payType}</if>
-            <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
-            <if test="modee != null  and modee != ''"> and modee = #{modee}</if>
-            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
-            <if test="truckCo != null  and truckCo != ''"> and truck_co = #{truckCo}</if>
-            <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
-            <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
-            <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
-            <if test="pickupDate != null "> and pickup_date = #{pickupDate}</if>
-            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
-            <if test="voyage != null  and voyage != ''"> and voyage = #{voyage}</if>
-            <if test="beforeAfter != null  and beforeAfter != ''"> and before_after = #{beforeAfter}</if>
-            <if test="year != null  and year != ''"> and year = #{year}</if>
-            <if test="contNumber != null "> and cont_number = #{contNumber}</if>
-            <if test="status != null "> and status = #{status}</if>
-            <if test="result != null  and result != ''"> and result = #{result}</if>
-            <if test="data != null  and data != ''"> and data = #{data}</if>
-            <if test="robotUuid != null  and robotUuid != ''"> and robot_uuid = #{robotUuid}</if>
-            <if test="ssrCode != null  and ssrCode != ''"> and ssr_code = #{ssrCode}</if>
-            <if test="sysUserId != null"> and sys_user_id = #{sysUserId}</if>
-            <if test="postProcessId != null"> and post_process_id = #{postProcessId}</if>
-            <if test="runnable != null"> and runnable = #{runnable}</if>
-            <if test="msg != null and msg != ''"> and msg = #{msg}</if>
-            <if test="errorImagePath != null and errorImagePath != ''"> and error_image_path = #{errorImagePath}</if>
-            <if test="holdFlg != null"> and hold_flg = #{holdFlg}</if>
-            <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+            <if test="shipmentId != null "> and s.shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and s.logistic_group_id = #{logisticGroupId}</if>
+            <if test="serviceType != null "> and s.service_type = #{serviceType}</if>
+            <if test="invoiceNo != null  and invoiceNo != ''"> and s.invoice_no = #{invoiceNo}</if>
+            <if test="payType != null  and payType != ''"> and s.pay_type = #{payType}</if>
+            <if test="sztp != null  and sztp != ''"> and s.sztp = #{sztp}</if>
+            <if test="modee != null  and modee != ''"> and s.modee = #{modee}</if>
+            <if test="consignee != null  and consignee != ''"> and s.consignee = #{consignee}</if>
+            <if test="truckCo != null  and truckCo != ''"> and s.truck_co = #{truckCo}</if>
+            <if test="taxCode != null  and taxCode != ''"> and s.tax_code = #{taxCode}</if>
+            <if test="blNo != null  and blNo != ''"> and s.bl_no = #{blNo}</if>
+            <if test="bookingNo != null  and bookingNo != ''"> and s.booking_no = #{bookingNo}</if>
+            <if test="pickupDate != null "> and s.pickup_date = #{pickupDate}</if>
+            <if test="vessel != null  and vessel != ''"> and s.vessel = #{vessel}</if>
+            <if test="voyage != null  and voyage != ''"> and s.voyage = #{voyage}</if>
+            <if test="beforeAfter != null  and beforeAfter != ''"> and s.before_after = #{beforeAfter}</if>
+            <if test="year != null  and year != ''"> and s.year = #{year}</if>
+            <if test="contNumber != null "> and s.cont_number = #{contNumber}</if>
+            <if test="status != null "> and s.status = #{status}</if>
+            <if test="result != null  and result != ''"> and s.result = #{result}</if>
+            <if test="data != null  and data != ''"> and s.data = #{data}</if>
+            <if test="robotUuid != null  and robotUuid != ''"> and s.robot_uuid = #{robotUuid}</if>
+            <if test="ssrCode != null  and ssrCode != ''"> and s.ssr_code = #{ssrCode}</if>
+            <if test="sysUserId != null"> and s.sys_user_id = #{sysUserId}</if>
+            <if test="postProcessId != null"> and s.post_process_id = #{postProcessId}</if>
+            <if test="runnable != null"> and s.runnable = #{runnable}</if>
+            <if test="msg != null and msg != ''"> and s.msg = #{msg}</if>
+            <if test="errorImagePath != null and errorImagePath != ''"> and s.error_image_path = #{errorImagePath}</if>
+            <if test="holdFlg != null"> and s.hold_flg = #{holdFlg}</if>
+            <if test="remark != null and remark != ''"> and s.remark = #{remark}</if>
+            <if test="params.dateReceiptStatus != null and params.dateReceiptStatus != ''"> and sh.date_receipt_status = #{params.dateReceiptStatus}</if>
+            <if test="params.fe != null and params.fe != ''"> and sh.fe = #{params.fe}</if>
         </where>
-        order by update_time asc
+        order by s.update_time asc
     </select>
 
     <select id="selectProcessOrderOnlyLogisticName" parameterType="ProcessOrder" resultType="String">

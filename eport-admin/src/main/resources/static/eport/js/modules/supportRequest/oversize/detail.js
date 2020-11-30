@@ -425,7 +425,7 @@ function isContIce() {
  * @returns oversize: true | not oversize: false
  */
 function isContOversize() {
-  return shipmentDetail.sztp.includes("P") ? true : false;
+  return shipmentDetail.sztp.includes("P") || shipmentDetail.oversize ? true : false;
 }
 
 /**
