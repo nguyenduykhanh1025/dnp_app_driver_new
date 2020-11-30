@@ -777,7 +777,7 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (sourceData.length > row && sourceData[row].id) {
 
       if ("G" != sourceData[row].sztp.substring(2, 3)) {
-        value = '<button class="btn btn-default btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
+        value = '<button class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Cont đặc biệt</button>';
       }
       else {
         value = '<button class="btn btn-default btn-xs showHide" disabled ><i class="fa fa-check-circle"></i>Chi tiết</button>';
@@ -930,7 +930,7 @@ function configHandson() {
         case 2:
           return '<span class="required">Container No</span>';
         case 3:
-          return "Chi tiết";
+          return "Cont đặc biệt";
         case 4:
           return '<span class="required">Hạn Lệnh</span>';
         case 5:
