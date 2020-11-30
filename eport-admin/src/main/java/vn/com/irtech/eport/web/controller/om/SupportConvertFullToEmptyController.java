@@ -48,10 +48,10 @@ import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 //  /om/support/convert/emty-full
 
 //  /om/support/loading-cargo/view
-@RequestMapping("/om/support/convert/emty-full")
-public class SupportConvertEmptyFullController extends OmBaseController{
-	protected final Logger logger = LoggerFactory.getLogger(SupportConvertEmptyFullController.class);
-	private final String PREFIX = "om/support/convertEmptyFull";
+@RequestMapping("/om/support/convert/full-emty")
+public class SupportConvertFullToEmptyController extends OmBaseController{
+	protected final Logger logger = LoggerFactory.getLogger(SupportConvertFullToEmptyController.class);
+	private final String PREFIX = "om/support/convertFullEmpty";
     
     @Autowired
     private IProcessOrderService processOrderService;
@@ -86,7 +86,7 @@ public class SupportConvertEmptyFullController extends OmBaseController{
      * @return
      */
     @GetMapping("/view")
-    public String getViewSupportEmptyFull(@RequestParam(required = false) Long sId, ModelMap mmap)
+    public String getViewSupportFullEmpty(@RequestParam(required = false) Long sId, ModelMap mmap)
     {
     	if (sId != null) {
 			mmap.put("sId", sId);
@@ -101,7 +101,7 @@ public class SupportConvertEmptyFullController extends OmBaseController{
 	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
 	    logisticGroups.add(0, logisticGroup);
 	    mmap.put("logisticsGroups", logisticGroups);
-		return PREFIX + "/emptyFull";
+		return PREFIX + "/fullEmpty";
     }
     
     /**
