@@ -1,7 +1,5 @@
 package vn.com.irtech.eport.common.constant;
 
-import vn.com.irtech.eport.common.utils.StringUtils;
-
 /**
  * Constants for the ePort system
  * 
@@ -315,12 +313,12 @@ public interface EportConstants {
 	public static final String PTNR_TYPE_TRUCKER = "TRK";
 	/** partner type forwarder */
 	public static final String PTNR_TYPE_FORWARDER = "FWD";
- 
-	public static final String CONT_SPECIAL_STATUS_INIT = "I";// Lưu khai báo 
-	public static final String CONT_SPECIAL_STATUS_REQ = "R";// chờ xác nhận  
-	public static final String CONT_SPECIAL_STATUS_YES = "Y";// đã xac nhận 
-	public static final String CONT_SPECIAL_STATUS_CANCEL = "C";// từ chối xác nhận  
-	
+
+	public static final String CONT_SPECIAL_STATUS_INIT = "I";// Lưu khai báo
+	public static final String CONT_SPECIAL_STATUS_REQ = "R";// chờ xác nhận
+	public static final String CONT_SPECIAL_STATUS_YES = "Y";// đã xac nhận
+	public static final String CONT_SPECIAL_STATUS_CANCEL = "C";// từ chối xác nhận
+
 	/** Bulletin draft status */
 	public static final Integer BULLETIN_DRAFT = 0;
 	/** Bulletin release status */
@@ -334,4 +332,9 @@ public interface EportConstants {
 	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_SUCCESS = "S";
 	/** date receipt status error */
 	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_ERROR = "E";
+
+	/** CFS House bill lock status */
+	public static final String CFS_HOUSE_BILL_LOCK = "L";
+	/** CFS House bill open (not lock) status */
+	public static final String CFS_HOUSE_BILL_OPEN = "O";
 }

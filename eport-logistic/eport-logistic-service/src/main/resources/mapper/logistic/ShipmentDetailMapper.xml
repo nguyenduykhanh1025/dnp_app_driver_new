@@ -476,7 +476,7 @@
 		delivery_address, delivery_mobile, delivery_remark, eta, etd, status,
 		remark,
 		create_by, create_time, update_by,
-		update_time
+		update_time, date_receipt_status, date_receipt
 		from
 		shipment_detail
 		<where>
