@@ -650,11 +650,11 @@ function saveHouseBill() {
   let payload = [];
   for (let i = 0; i < checkList.length; ++i) {
     if (checkList[i] == 1) {
-      payload.push({ ...sourceData[i], storageFromDate: formatDateToSendServer(sourceData[i].storeFromDate) });
+      payload.push({ ...sourceData[i], storageFromDate: formatDateToSendServer(sourceData[i].storageFromDate) });
 
     }
   }
-
+  console.log(payload);
   $.ajax({
     url: PREFIX + "/house-bill/save",
     method: "POST",

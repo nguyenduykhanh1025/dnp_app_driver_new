@@ -344,7 +344,7 @@ public class SupportRegisterDateReceiptLoadingCargoController extends OmBaseCont
 		if (CollectionUtils.isNotEmpty(cfsHouseBills)) {
 			for (CfsHouseBill inputHouseBill : cfsHouseBills) {
 				CfsHouseBill bill = this.cfsHouseBillService.selectCfsHouseBillById(inputHouseBill.getId());
-				bill.setStorageFromDate(inputHouseBill.getStoreFromDate());
+				bill.setStorageFromDate(inputHouseBill.getStorageFromDate());
 				bill.setUpdateBy(getUser().getUserName());
 				cfsHouseBillService.updateCfsHouseBill(bill);
 

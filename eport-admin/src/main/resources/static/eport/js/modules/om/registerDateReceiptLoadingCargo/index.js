@@ -379,7 +379,7 @@ function houseBillBtnRenderer(instance, td, row, col, prop, value, cellPropertie
         shipmentDetailId = sourceData[row].id;
     }
     if (shipmentDetailId) {
-        value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>Khai báo</button>';
+        value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>House bill</button>';
     }
     $(td).html(value);
     cellProperties.readOnly = 'true';
