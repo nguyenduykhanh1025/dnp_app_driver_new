@@ -1,5 +1,6 @@
 const PREFIX = ctx + "om/support/receive-full";
 const HIST_PREFIX = ctx + "om/controlling";
+const containerCol = 3;
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var bill;
 var processOrder = new Object();
@@ -412,12 +413,24 @@ function configHandson() {
           break;
       }
     },
+    beforeCopy: beforeCopy
   };
 }
 configHandson();
 
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
+
+function beforeCopy(data, coords) {
+  if (coords[0].startCol == containerCol && coords[0].endCol == containerCol) {
+    if (data.length > 1) {
+      for (let i=0; i<data.length-1; i++) {
+        data[i][0] = data[i][0] + ',';
+      }
+    }
+  }
+}
+
 function loadTableByContainer(processOrderId) {
   $.modal.loading("Đang xử lý ...");
   $.ajax({

@@ -111,6 +111,8 @@
 
 		<result property="contSpecialStatus"
 			column="cont_special_status" />
+		<result property="dateReceiptStatus" column="date_receipt_status" />
+		<result property="dateReceipt" column="date_receipt" />
 	</resultMap>
 
 	<!-- <resultMap type="ShipmentDetailExtend" id="ShipmentDetailResult" extends="ShipmentDetail"> 
@@ -152,7 +154,7 @@
 		delivery_address, delivery_mobile, delivery_remark, eta, etd,
 		container_remark, det_free_time,
 		create_by, create_time, update_by,
-		update_time,power_draw_date from
+		update_time,power_draw_date, date_receipt, date_receipt_status from
 		shipment_detail
 	</sql>
 	<select id="countShipmentDetailList"
@@ -474,7 +476,7 @@
 		delivery_address, delivery_mobile, delivery_remark, eta, etd, status,
 		remark,
 		create_by, create_time, update_by,
-		update_time
+		update_time, date_receipt_status, date_receipt
 		from
 		shipment_detail
 		<where>
@@ -663,6 +665,8 @@
 			<if test="etd != null">etd,</if>
 			<if test="location != null and location != ''">location,</if>
 			<if test="containerRemark != null and containerRemark != ''">container_remark,</if>
+			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">date_receipt_status,</if>
+			<if test="dateReceipt != null">date_receipt,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
 			<if test="createBy != null  and createBy != ''">create_by,</if>
 			create_time
@@ -763,6 +767,8 @@
 			<if test="etd != null">#{etd},</if>
 			<if test="location != null and location != ''">#{location},</if>
 			<if test="containerRemark != null and containerRemark != ''">#{containerRemark},</if>
+			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">#{dateReceiptStatus},</if>
+			<if test="dateReceipt != null">#{dateReceipt},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
 			<if test="createBy != null  and createBy != ''">#{createBy},</if>
 			sysdate
@@ -885,6 +891,8 @@
 			<if test="etd != null">etd = #{etd},</if>
 			<if test="location != null and location != ''">location = #{location},</if>
 			<if test="containerRemark != null and containerRemark != ''">container_remark = #{containerRemark},</if>
+			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">date_receipt_status = #{dateReceiptStatus},</if>
+			<if test="dateReceipt != null">date_receipt = #{dateReceipt},</if>
 			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
 			update_time = sysdate
 		</trim>
@@ -1715,7 +1723,8 @@
 				test="shipmentDetail.powerDrawDate != null and shipmentDetail.powerDrawDate != ''">power_draw_date =
 				#{shipmentDetail.powerDrawDate},
 			</if>
-
+			<if test="shipmentDetail.dateReceiptStatus != null and shipmentDetail.dateReceiptStatus != ''">date_receipt_status = #{shipmentDetail.dateReceiptStatus},</if>
+			<if test="shipmentDetail.dateReceipt != null">date_receipt = #{shipmentDetail.dateReceipt},</if>
 			update_time = sysdate
 		</trim>
 		<where>

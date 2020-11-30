@@ -1,5 +1,6 @@
 const PREFIX = ctx + "om/support/cancel";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
+const containerCol = 4;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipmentDetailIds;
 var shipmentDetails;
@@ -823,7 +824,8 @@ function configHandsonBilling() {
         default:
           break;
       }
-    }
+    },
+    beforeCopy: beforeCopy
   };
 }
 
@@ -1012,12 +1014,23 @@ function configHandsonBooking() {
         default:
           break;
       }
-    }
+    },
+    beforeCopy: beforeCopy
   };
 }
 
 configHandsonBilling();
 hot = new Handsontable(dogrid, config);
+
+function beforeCopy(data, coords) {
+  if (coords[0].startCol == containerCol && coords[0].endCol == containerCol) {
+    if (data.length > 1) {
+      for (let i=0; i<data.length-1; i++) {
+        data[i][0] = data[i][0] + ',';
+      }
+    }
+  }
+}
 
 function loadShipmentDetails(id) {
   if (id) {
