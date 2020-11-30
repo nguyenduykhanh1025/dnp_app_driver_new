@@ -340,7 +340,7 @@ function configHandson() {
         renderer: dateReceiptRenderer
       },
       {
-        data: "storeFromDate",
+        data: "storageFromDate",
         type: "date",
         dateFormat: "DD/MM/YYYY",
         correctFormat: true,
@@ -650,7 +650,7 @@ function saveHouseBill() {
   let payload = [];
   for (let i = 0; i < checkList.length; ++i) {
     if (checkList[i] == 1) {
-      payload.push({ ...sourceData[i], storeFromDate: formatDateToSendServer(sourceData[i].storeFromDate) });
+      payload.push({ ...sourceData[i], storageFromDate: formatDateToSendServer(sourceData[i].storeFromDate) });
 
     }
   }
