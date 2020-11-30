@@ -1462,8 +1462,7 @@ function updateLayout() {
     status = 1,
     diff = false,
     check = false,
-    verify = false,
-    dateReceiptStatus = false;
+    verify = false;
   done = false;
   allChecked = true;
   for (let i = 0; i < checkList.length; i++) {
@@ -1484,10 +1483,6 @@ function updateLayout() {
           diff = true;
         } else {
           status = cellStatus;
-        }
-
-        if (sourceData[i].dateReceiptStatus == DATE_RECEIPT_STATUS.PROGRESS || sourceData[i].dateReceiptStatus == DATE_RECEIPT_STATUS.SUCCESS) {
-          dateReceiptStatus = true;
         }
       } else {
         allChecked = false;
@@ -1527,9 +1522,6 @@ function updateLayout() {
       break;
     case 4:
       setLayoutPaymentStatus();
-      if (dateReceiptStatus) {
-        $("#dateReceiptBtn").prop("disabled", true);
-      }
       break;
     case 5:
       setLayoutFinishStatus();
