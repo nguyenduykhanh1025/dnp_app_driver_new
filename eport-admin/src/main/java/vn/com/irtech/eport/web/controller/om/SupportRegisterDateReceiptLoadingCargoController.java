@@ -234,6 +234,7 @@ public class SupportRegisterDateReceiptLoadingCargoController extends OmBaseCont
 			mmap.put("masterBill", shipmentDetail.getBookingNo());
 			mmap.put("containerNo", shipmentDetail.getContainerNo());
 			mmap.put("shipmentDetailId", shipmentDetailId);
+			mmap.put("dateReceipt", shipmentDetail.getDateReceipt());
 		}
 		return PREFIX + "/houseBill";
 	}
@@ -335,4 +336,22 @@ public class SupportRegisterDateReceiptLoadingCargoController extends OmBaseCont
 
 	}
 
+	@Log(title = "Lưu house bill", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
+	@PostMapping("/house-bill/save")
+	@Transactional
+	@ResponseBody
+	public AjaxResult saveHouseBill(@RequestBody List<CfsHouseBill> cfsHouseBills) {
+		if (CollectionUtils.isNotEmpty(cfsHouseBills)) {
+			for (CfsHouseBill inputHouseBill : cfsHouseBills) {
+				CfsHouseBill bill = this.cfsHouseBillService.selectCfsHouseBillById(inputHouseBill.getId());
+				bill.setStorageFromDate(inputHouseBill.getStoreFromDate());
+				bill.setUpdateBy(getUser().getUserName());
+				cfsHouseBillService.updateCfsHouseBill(bill);
+
+			}
+			return success("Lưu house bill thành công");
+		}
+		return error("Lưu house bill thất bại");
+
+	}
 }

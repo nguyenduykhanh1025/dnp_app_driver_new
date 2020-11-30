@@ -50,6 +50,17 @@
 								</span>
 							</a>
 						</td>
+
+						<td>
+							<a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
+								<span class="l-btn-left"><span class="l-btn-text">
+										<button onclick="saveHouseBill()" class="btn btn-sm btn-success">
+											<i class="fa fa-check text-primary"></i> Lưu house bill
+										</button>
+									</span>
+								</span>
+							</a>
+						</td>
 					</tr>
 			</div>
 			<tbody>
@@ -70,6 +81,7 @@
 <script type="text/javascript" th:inline="javascript">
 	var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
 	var cfsHouseBills = /*[[${cfsHouseBills}]]*/;
+	var dateReceipt = [[${ dateReceipt }]];
 </script>
 <script th:src="@{/eport/js/modules/om/registerDateReceiptLoadingCargo/houseBill.js}"></script>
 
