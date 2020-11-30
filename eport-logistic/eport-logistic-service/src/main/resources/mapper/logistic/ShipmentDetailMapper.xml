@@ -1015,7 +1015,7 @@
 	
 	
 	
-	<select id="selectConfirmShipmentDetailByIds"
+	<!-- <select id="selectConfirmShipmentDetailByIds"
 		resultMap="ShipmentDetailResult">
 		<include refid="selectShipmentDetailVo" />
 		where id in
@@ -1024,7 +1024,22 @@
 			#{shipmentDetailIds}
 		</foreach>
 		  
-	</select>
+	</select> -->
+	
+	<!-- start yêu cầu xác nhận Nhatlv -->
+	<select id="selectConfirmShipmentDetailByIds"
+		resultMap="ShipmentDetailResult">
+		<include refid="selectShipmentDetailVo" />
+		where id in
+		<foreach item="id" collection="array" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+		  
+	</select> 
+	<!-- end yêu cầu xác nhận Nhatlv -->
+	
+	
 	
 	 
 
