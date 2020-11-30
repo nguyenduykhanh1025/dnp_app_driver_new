@@ -1,4 +1,6 @@
-const PREFIX = ctx + "om/register-date-receipt";
+/*const PREFIX = ctx + "logistic/unloading-cargo";*/
+
+const PREFIX = ctx + "om/support/convert/emty-full";  
 var dogrid = document.getElementById("container-grid"),
   hot;
 var minRowAmount = 1,
@@ -85,6 +87,70 @@ function loadHouseBill() {
       $.modal.closeLoading();
     },
   });
+}
+
+function saveHouseBill() {
+  if (getDataFromTable(true)) {
+    const data = hot.getSourceData();
+    if (data) {
+      // console.log(cfsHouseBillList);
+      $.modal.loading("Đang xử lý...");
+      $.ajax({
+        url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bills",
+        method: "post",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function (res) {
+          if (res.code == 0) {
+            $.modal.alertSuccess(res.msg);
+            loadHouseBill();
+          } else {
+            $.modal.alertError(res.msg);
+          }
+          $.modal.closeLoading();
+        },
+        error: function (res) {
+          $.modal.alertError(
+            "Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau."
+          );
+          $.modal.closeLoading();
+        },
+      });
+   
+    } else {
+      $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
+    }
+  }
+}
+
+function deleteHouseBill() {
+  if (getDataSelectedFromTable(true) && cfsHouseBillList.length > 0) {
+    /*$.modal.confirmShipment("Xác nhận xóa khai báo house bill ?", function () {*/
+      $.modal.loading("Đang xử lý...");
+      $.ajax({
+        url: PREFIX + "/house-bills",
+        method: "delete",
+        data: {
+          houseBillIds: cfsHouseBillIds,
+        },
+        success: function (result) {
+          if (result.code == 0) {
+            $.modal.alertSuccess(result.msg);
+            loadHouseBill();
+          } else {
+            $.modal.alertError(result.msg);
+          }
+          $.modal.closeLoading();
+        },
+        error: function (result) {
+          $.modal.alertError(
+            "Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau."
+          );
+          $.modal.closeLoading();
+        },
+      });
+    /*});*/
+  }
 }
 
 // FORMAT HANDSONTABLE COLUMN

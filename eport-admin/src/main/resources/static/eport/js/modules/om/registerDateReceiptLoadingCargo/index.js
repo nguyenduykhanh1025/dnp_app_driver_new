@@ -1,4 +1,4 @@
-const PREFIX = ctx + "om/register-date-receipt";
+const PREFIX = ctx + "om/register-date-receipt-loading-cargo";
 const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var dogrid = document.getElementById("container-grid"), hot;
