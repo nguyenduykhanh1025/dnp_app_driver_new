@@ -47,7 +47,6 @@ $(document).ready(function () {
   hot = new Handsontable(dogrid, config);
   loadHouseBill();
 });
-
 // LOAD SHIPMENT DETAIL LIST
 function loadHouseBill() {
   $.modal.loading("Đang xử lý ...");
@@ -176,6 +175,19 @@ function houseBillRenderer(instance, td, row, col, prop, value, cellProperties) 
 }
 function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
+  value = dateReceipt;
+  if (value != null && value != '') {
+    if (value.substring(2, 3) != "/") {
+      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+    }
+  } else {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function storeFromDateRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
   if (value != null && value != '') {
     if (value.substring(2, 3) != "/") {
       value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
@@ -282,24 +294,26 @@ function configHandson() {
         case 2:
           return "House Bill";
         case 3:
-          return "Ngày Rut Hàng";
+          return "Ngày Đóng Hàng";
         case 4:
-          return "Forwarder";
+          return "Ngày Lưu Kho";
         case 5:
-          return "Số Lượng";
+          return "Forwarder";
         case 6:
-          return "Loại Bao Bì";
+          return "Số Lượng";
         case 7:
-          return "Trọng Lượng";
+          return "Loại Bao Bì";
         case 8:
-          return "Số Khối";
+          return "Trọng Lượng";
         case 9:
-          return "Nhãn/Ký hiệu";
+          return "Số Khối";
         case 10:
+          return "Nhãn/Ký hiệu";
+        case 11:
           return "Ghi chú";
       }
     },
-    colWidths: [40, 80, 100, 120, 150, 80, 90, 90, 90, 100, 200],
+    colWidths: [40, 80, 100, 120, 120, 150, 80, 90, 90, 90, 100, 200],
     columns: [
       {
         data: "active",
@@ -318,12 +332,20 @@ function configHandson() {
         renderer: houseBillRenderer
       },
       {
-        data: "dateReceipt",
         type: "date",
         dateFormat: "DD/MM/YYYY",
         correctFormat: true,
         defaultDate: new Date(),
+        readOnly: true,
         renderer: dateReceiptRenderer
+      },
+      {
+        data: "storageFromDate",
+        type: "date",
+        dateFormat: "DD/MM/YYYY",
+        correctFormat: true,
+        defaultDate: new Date(),
+        renderer: storeFromDateRenderer
       },
       {
         data: "forwarder",
@@ -553,4 +575,122 @@ function formatDateToSendServer(date) {
   let expiredDem = new Date(date.substring(6, 10) + "-" + date.substring(3, 5) + "-" + date.substring(0, 2));
   expiredDem.setHours(23, 59, 59);
   return expiredDem.getTime();
+}
+
+function unlockHouseBill() {
+  let payload = [];
+  for (let i = 0; i < checkList.length; ++i) {
+    if (checkList[i] == 1) {
+      payload.push(sourceData[i]);
+    }
+  }
+
+  $.ajax({
+    url: PREFIX + "/house-bill/unlock",
+    method: "POST",
+    contentType: "application/json",
+    accept: "text/plain",
+    data: JSON.stringify(payload),
+    dataType: "text",
+    success: function (data) {
+      var result = JSON.parse(data);
+      if (result.code == 0) {
+        $.modal.alertSuccess(result.msg);
+        loadHouseBill();
+      } else {
+        $.modal.alertError(result.msg);
+      }
+      $.modal.closeLoading();
+    },
+    error: function (result) {
+      $.modal.alertError(
+        "Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại."
+      );
+      $.modal.closeLoading();
+    },
+  });
+
+}
+
+function lockHouseBill() {
+  let payload = [];
+  for (let i = 0; i < checkList.length; ++i) {
+    if (checkList[i] == 1) {
+      payload.push(sourceData[i]);
+    }
+  }
+
+  $.ajax({
+    url: PREFIX + "/house-bill/lock",
+    method: "POST",
+    contentType: "application/json",
+    accept: "text/plain",
+    data: JSON.stringify(payload),
+    dataType: "text",
+    success: function (data) {
+      var result = JSON.parse(data);
+      if (result.code == 0) {
+        $.modal.alertSuccess(result.msg);
+        loadHouseBill();
+      } else {
+        $.modal.alertError(result.msg);
+      }
+      $.modal.closeLoading();
+    },
+    error: function (result) {
+      $.modal.alertError(
+        "Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại."
+      );
+      $.modal.closeLoading();
+    },
+  });
+}
+
+function saveHouseBill() {
+  let payload = [];
+  for (let i = 0; i < checkList.length; ++i) {
+    if (checkList[i] == 1) {
+      payload.push({ ...sourceData[i], storageFromDate: formatDateToSendServer(sourceData[i].storeFromDate) });
+
+    }
+  }
+
+  $.ajax({
+    url: PREFIX + "/house-bill/save",
+    method: "POST",
+    contentType: "application/json",
+    accept: "text/plain",
+    data: JSON.stringify(payload),
+    dataType: "text",
+    success: function (data) {
+      var result = JSON.parse(data);
+      if (result.code == 0) {
+        $.modal.alertSuccess(result.msg);
+        loadHouseBill();
+      } else {
+        $.modal.alertError(result.msg);
+      }
+      $.modal.closeLoading();
+    },
+    error: function (result) {
+      $.modal.alertError(
+        "Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại."
+      );
+      $.modal.closeLoading();
+    },
+  });
+}
+
+function formatDateToSendServer(date) {
+  if (new Date(date).getTime()) {
+    return new Date(date).getTime();
+  }
+  let result;
+  if (date) {
+    let expiredDem = new Date(date.substring(6, 10) + "/" + date.substring(3, 5) + "/" + date.substring(0, 2));
+
+    expiredDem.setHours(23, 59, 59);
+    result = expiredDem.getTime();
+  }
+  return result;
 }

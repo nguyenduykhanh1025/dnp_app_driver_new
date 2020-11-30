@@ -378,7 +378,9 @@ function houseBillBtnRenderer(instance, td, row, col, prop, value, cellPropertie
     if (sourceData && sourceData.length > row) {
         shipmentDetailId = sourceData[row].id;
     }
-    value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>Khai báo</button>';
+    if (shipmentDetailId) {
+        value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>Khai báo</button>';
+    }
     $(td).html(value);
     cellProperties.readOnly = 'true';
     return td;
@@ -1255,4 +1257,49 @@ function handleLoadTableFromModel() {
     loadTable();
 }
 
+function saveDocument() {
+    let payload = [];
+    for (let i = 0; i < checkList.length; ++i) {
+        if (checkList[i] == 1) {
+            payload.push({ ...sourceData[i], dateReceipt: formatDateToSendServer(sourceData[i].dateReceipt) });
+        }
+    }
+    $.ajax({
+        url: PREFIX + "/shipment-detail",
+        method: "POST",
+        contentType: "application/json",
+        accept: "text/plain",
+        data: JSON.stringify(payload),
+        dataType: "text",
+        success: function (data) {
+            var result = JSON.parse(data);
+            if (result.code == 0) {
+                $.modal.alertSuccess(result.msg);
+                loadTable();
+            } else {
+                $.modal.alertError(result.msg);
+            }
+            $.modal.closeLoading();
+        },
+        error: function (result) {
+            $.modal.alertError(
+                "Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại."
+            );
+            $.modal.closeLoading();
+        },
+    });
+}
 
+function formatDateToSendServer(date) {
+    if (new Date(date).getTime()) {
+        return new Date(date).getTime();
+    }
+    let result;
+    if (date) {
+        let expiredDem = new Date(date.substring(6, 10) + "/" + date.substring(3, 5) + "/" + date.substring(0, 2));
+
+        expiredDem.setHours(23, 59, 59);
+        result = expiredDem.getTime();
+    }
+    return result;
+}
