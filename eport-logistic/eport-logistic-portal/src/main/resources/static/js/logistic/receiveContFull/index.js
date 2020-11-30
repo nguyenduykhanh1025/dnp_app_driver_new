@@ -777,10 +777,10 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (sourceData.length > row && sourceData[row].id) {
 
       if ("G" != sourceData[row].sztp.substring(2, 3)) {
-        value = '<button class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Cont đặc biệt</button>';
+        value = '<button class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-book"></i>Cont đặc biệt</button>';
       }
       else {
-        value = '<button class="btn btn-default btn-xs showHide" disabled ><i class="fa fa-check-circle"></i>Chi tiết</button>';
+        value = '<button class="btn btn-default btn-xs showHide" disabled ><i class="fa fa-book"></i>Chi tiết</button>';
       }
     }
   }

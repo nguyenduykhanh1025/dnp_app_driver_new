@@ -1334,27 +1334,27 @@ function configHandson() {
           return "Trạng Thái";
         case 2:
           return '<span class="required">Container No</span>';
-
         case 3:
-          return '<span class="required">Kích Thước</span>';
-        case 4:
-          return '<span class="required">Chủ Hàng</span>';
-        case 5:
-          return '<span class="required">Tàu và Chuyến</span>';
-        case 6:
-          return "Ngày tàu đến";
-        case 7:
-          return '<span class="required">Cảng Dỡ Hàng</span>';
-        case 8:
-          return '<span class="required">Trọng Lượng (kg)</span>';
-        case 9:
-          return '<span class="required">Loại Hàng</span>';
-        case 10:
-          return "Tên Hàng";
-        case 11:
-          return "Số Seal";
-        case 12:
           return '<span>Cont đặc biệt</span>';
+        case 4:
+          return '<span class="required">Kích Thước</span>';
+        case 5:
+          return '<span class="required">Chủ Hàng</span>';
+        case 6:
+          return '<span class="required">Tàu và Chuyến</span>';
+        case 7:
+          return "Ngày tàu đến";
+        case 8:
+          return '<span class="required">Cảng Dỡ Hàng</span>';
+        case 9:
+          return '<span class="required">Trọng Lượng (kg)</span>';
+        case 10:
+          return '<span class="required">Loại Hàng</span>';
+        case 11:
+          return "Tên Hàng";
+        case 12:
+          return "Số Seal";
+
         case 13:
           return "Nhiệt Độ (c)";
         case 14:
@@ -1373,6 +1373,7 @@ function configHandson() {
       100,
       150,
       150,
+      150,
       200,
       100,
       120,
@@ -1380,7 +1381,7 @@ function configHandson() {
       80,
       100,
       100,
-      150,
+      
       80,
       80,
       100,
@@ -1405,7 +1406,10 @@ function configHandson() {
         strict: true,
         renderer: containerNoRenderer,
       },
-      
+      {
+        data: "btnInformationContainer",
+        renderer: btnDetailRenderer,
+      },
       {
         data: "sztp",
         type: "autocomplete",
@@ -1459,10 +1463,7 @@ function configHandson() {
         data: "sealNo",
         renderer: sealNoRenderer,
       },
-      {
-        data: "btnInformationContainer",
-        renderer: btnDetailRenderer,
-      },
+      
       {
         data: "temperature",
         type: "numeric",
