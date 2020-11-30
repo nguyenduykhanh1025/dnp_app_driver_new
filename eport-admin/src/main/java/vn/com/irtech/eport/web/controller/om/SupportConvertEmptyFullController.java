@@ -341,7 +341,8 @@ public class SupportConvertEmptyFullController extends OmBaseController{
 		shipmentDetailUpdate.setFinishStatus("Y"); 
 		//shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds,shipmentDetailUpdate); 
 		shipmentDetailService.updateShipmentDetailByProcessOderIds(shipmentDetailIds,shipmentDetailUpdate);
-		return success("Xác nhận chuyển full thành công");
+		return success("Xác nhận chuyển container rỗng thành full thành công");
+		
 		} 
 	
 	// house bill
