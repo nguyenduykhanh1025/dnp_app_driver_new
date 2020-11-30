@@ -220,6 +220,7 @@ public class SupportRegisterDateReceiptUnloadingCargoController extends OmBaseCo
 			mmap.put("masterBill", shipmentDetail.getBookingNo());
 			mmap.put("containerNo", shipmentDetail.getContainerNo());
 			mmap.put("shipmentDetailId", shipmentDetailId);
+			mmap.put("dateReceipt", shipmentDetail.getDateReceipt());
 		}
 		return PREFIX + "/houseBill";
 	}
@@ -311,6 +312,24 @@ public class SupportRegisterDateReceiptUnloadingCargoController extends OmBaseCo
 			for (CfsHouseBill inputHouseBill : cfsHouseBills) {
 				CfsHouseBill bill = this.cfsHouseBillService.selectCfsHouseBillById(inputHouseBill.getId());
 				bill.setStatus("L");
+				bill.setUpdateBy(getUser().getUserName());
+				cfsHouseBillService.updateCfsHouseBill(bill);
+
+			}
+			return success("Lưu house bill thành công");
+		}
+		return error("Lưu house bill thất bại");
+
+	}
+	@Log(title = "Lưu house bill", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
+	@PostMapping("/house-bill/save")
+	@Transactional
+	@ResponseBody
+	public AjaxResult saveHouseBill(@RequestBody List<CfsHouseBill> cfsHouseBills) {
+		if (CollectionUtils.isNotEmpty(cfsHouseBills)) {
+			for (CfsHouseBill inputHouseBill : cfsHouseBills) {
+				CfsHouseBill bill = this.cfsHouseBillService.selectCfsHouseBillById(inputHouseBill.getId());
+				bill.setStorageToDate(inputHouseBill.getStorageToDate());
 				bill.setUpdateBy(getUser().getUserName());
 				cfsHouseBillService.updateCfsHouseBill(bill);
 
