@@ -509,24 +509,41 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
                 break;
         }
-        // Payment status
-        let payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
-        switch (sourceData[row].paymentStatus) {
-            case 'E':
-                payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Lỗi Thanh Toán" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
-                break;
-            case 'Y':
-                payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-                break;
+
+        // Date receipt status
+        let dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Chưa đăng ký ngày đóng hàng" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
+        switch (sourceData[row].dateReceiptStatus) {
             case 'N':
-                if (value > 2) {
-                    payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Có thể đăng ký ngày đóng hàng" aria-hidden="true" style="margin-left: 8px; color: #3498db"></i>';
+                break;
+            case 'P':
+                dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng đang được xét duyệt" aria-hidden="true" style="margin-left: 8px; color: #f8ac59"></i>';
+                break;
+            case 'S':
+                dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng đã được chấp nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394"></i>';
+                break;
+            case 'E':
+                dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng bị từ chối" aria-hidden="true" style="margin-left: 8px; color: #ed5565"></i>';
+                break;
+        }
+
+        // released status
+        let released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+        switch (sourceData[row].finishStatus) {
+            case "Y":
+                released =
+                    '<i id="finish" class="fa fa-ship easyui-tooltip" title="Đã Giao Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+                break;
+            case "N":
+                if (sourceData[row].paymentStatus == "Y") {
+                    released =
+                        '<i id="finish" class="fa fa-ship easyui-tooltip" title="Có Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
                 }
                 break;
         }
 
         // Return the content
-        let content = '<div>' + contSupply + process + payment + '</div>';
+        let content = '<div>' + contSupply + process + dateReceipt + released + '</div>';
         $(td).html(content);
     }
     return td;
@@ -780,6 +797,8 @@ function configHandson() {
                 case 3:
                     return "House Bill";
                 case 4:
+                    return "Ngày Đóng Hàng";
+                case 4:
                     return '<span class="required">Kích Thước</span>';
                 case 5:
                     return '<span class="required">Hạn Lệnh</span>';
@@ -809,7 +828,7 @@ function configHandson() {
                     return "Ghi Chú";
             }
         },
-        colWidths: [40, 100, 100, 100, 150, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200],
+        colWidths: [40, 100, 100, 100, 120, 150, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200],
         filter: "true",
         columns: [
             {
@@ -830,6 +849,14 @@ function configHandson() {
             {
                 data: "housebilBtn",
                 renderer: houseBillBtnRenderer
+            },
+            {
+                data: "dateReceipt",
+                type: "date",
+                dateFormat: "DD/MM/YYYY",
+                correctFormat: true,
+                defaultDate: new Date(),
+                renderer: dateReceiptRenderer
             },
             {
                 data: "sztp",
@@ -930,7 +957,7 @@ function configHandson() {
                 // Arrow Right
                 case 39:
                     selected = hot.getSelected()[0];
-                    if (selected[3] == 16) {
+                    if (selected[3] == 17) {
                         e.stopImmediatePropagation();
                     }
                     break
@@ -958,7 +985,7 @@ function onChange(changes, source) {
     changes.forEach(function (change) {
         // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
         if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-            let vesselAndVoy = hot.getDataAtCell(change[0], 9);
+            let vesselAndVoy = hot.getDataAtCell(change[0], 10);
             //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
             if (vesselAndVoy) {
                 if (currentVesselVoyage != vesselAndVoy) {
@@ -981,7 +1008,7 @@ function onChange(changes, source) {
                                     if (data.code == 0) {
                                         hot.updateSettings({
                                             cells: function (row, col, prop) {
-                                                if (col == 11) {
+                                                if (col == 12) {
                                                     let cellProperties = {};
                                                     dischargePortList = data.dischargePorts;
                                                     cellProperties.source = dischargePortList;
@@ -995,12 +1022,12 @@ function onChange(changes, source) {
                         }
                     }
                 }
-                hot.setDataAtCell(change[0], 10, currentEta);
+                hot.setDataAtCell(change[0], 11, currentEta);
             }
         } else if (change[1] == "containerNo") {
             if (!change[3]) {
                 sztpListDisable[change[0]] = 0;
-                cleanCell(change[0], 3, sizeList);
+                cleanCell(change[0], 5, sizeList);
             } else {
                 $.ajax({
                     url: prefix + "/containerNo/" + change[3] + "/sztp",
@@ -1015,19 +1042,19 @@ function onChange(changes, source) {
                                     }
                                 });
                                 sztpListDisable[change[0]] = 1;
-                                hot.setDataAtCell(change[0], 3, data.sztp);
+                                hot.setDataAtCell(change[0], 5, data.sztp);
                             } else {
                                 sztpListDisable[change[0]] = 0;
-                                cleanCell(change[0], 3, sizeList);
+                                cleanCell(change[0], 5, sizeList);
                             }
                         } else {
                             sztpListDisable[change[0]] = 0;
-                            cleanCell(change[0], 3, sizeList);
+                            cleanCell(change[0], 5, sizeList);
                         }
                     },
                     error: function (err) {
                         sztpListDisable[change[0]] = 0;
-                        cleanCell(change[0], 3, sizeList);
+                        cleanCell(change[0], 5, sizeList);
                     }
                 });
             }
@@ -1246,6 +1273,7 @@ function getDataSelectedFromTable(isValidate) {
         shipmentDetail.processStatus = object["processStatus"];
         shipmentDetail.paymentStatus = object["paymentStatus"];
         shipmentDetail.userVerifyStatus = object["userVerifyStatus"];
+        shipmentDetail.dateReceiptStatus = object["dateReceiptStatus"];
         shipmentDetail.status = object["status"];
         shipmentDetail.eta = object["eta"];
         shipmentDetail.shipmentId = shipmentSelected.id;
@@ -1885,4 +1913,48 @@ function openHouseBillForm(shipmentDetailId) {
         return;
     }
     $.modal.openCustomForm("Khai báo house bill", prefix + "/shipment-detail/" + shipmentDetailId + "/house-bill");
+}
+
+function confirmDateReceipt() {
+    if (getDataSelectedFromTable(true)) {
+        // Check qualify to confirm date receipt status
+        let containers = '';
+        shipmentDetails.forEach(shipmentDetail => {
+            if (shipmentDetail.processStatus != 'Y') {
+                $.modal.alertWarning('Container ' + shipmentDetail.containerNo + ' chưa được làm lệnh, không thể xác nhận ngày đóng hàng.');
+                return;
+            }
+            if (shipmentDetail.dateReceipt == null) {
+                $.modal.alertWarning('Quý khách chưa nhập ngày đóng hàng, không thể xác nhận ngày đóng hàng.');
+                return;
+            }
+            containers += shipmentDetail.containerNo;
+        });
+        layer.confirm("Quý khách đang yêu cầu xác nhận ngày đóng hàng cho container: " + containers + ".", {
+            icon: 3,
+            title: "Xác Nhận",
+            btn: ['Đồng Ý', 'Hủy Bỏ']
+        }, function () {
+            layer.close(layer.index);
+            $.ajax({
+                url: prefix + "/date-receipt",
+                method: "post",
+                data: {
+                    shipmentDetailIds: shipmentDetailIds
+                },
+                success: function (res) {
+                    if (res.code == 0) {
+                        $.modal.alertSuccess(res.msg);
+                    } else {
+                        $.modal.alertWarning(res.msg);
+                    }
+                },
+                error: function (err) {
+                    $.modal.alertError('Lỗi hệ thống, vui lòng liên hệ admin.');
+                }
+            });
+        }, function () {
+            // close form
+        });
+    }
 }

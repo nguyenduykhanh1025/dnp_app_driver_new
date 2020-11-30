@@ -43,6 +43,7 @@ import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.CfsHouseBill;
@@ -1010,5 +1011,37 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 			return success("Lưu khai báo thành công");
 		}
 		return error("Lưu khai báo thất bại");
+	}
+
+	@Log(title = "Đăng ký ngày đóng hàng", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
+	@DeleteMapping("/date-receipt")
+	@Transactional
+	@ResponseBody
+	public AjaxResult requestConfirmDateReceipt(String shipmentDetailIds) {
+		if (StringUtils.isEmpty(shipmentDetailIds)) {
+			return error("Không tìm thấy container cần đăng ký ngày đóng hàng.");
+		}
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
+				getUser().getGroupId());
+		if (CollectionUtils.isEmpty(shipmentDetails)) {
+			return error("Bạn không có quyền cập nhật thông tin cho những container này.");
+		}
+		shipmentDetailIds = "";
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			if (!EportConstants.PROCESS_ORDER_RESULT_SUCCESS.equals(shipmentDetail.getProcessStatus())) {
+				return error("Container chưa được làm lệnh, không thể thực hiện đăng ký ngày đóng hàng.");
+			}
+			if (shipmentDetail.getDateReceipt() == null) {
+				return error(
+						"Container chưa được cập nhật ngày đóng hàng, không thể thực hiện đăng ký ngày đóng hàng.");
+			}
+			shipmentDetailIds += shipmentDetail.getId() + ",";
+		}
+		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
+		shipmentDetailUpdate.setDateReceiptStatus(EportConstants.DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_PROGRESS);
+		shipmentDetailUpdate.setUpdateBy(ShiroUtils.getLoginName());
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds.substring(0, shipmentDetailIds.length() - 1),
+				shipmentDetailUpdate);
+		return success();
 	}
 }

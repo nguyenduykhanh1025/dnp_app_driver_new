@@ -1,6 +1,7 @@
-const PREFIX = ctx + "om/support/loading-cargo";
+const PREFIX = ctx + "om/support/unloading-cargo";
 const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
+const greenBlackColor = "rgb(104 241 131)";
 var bill;
 var processOrder = new Object();
 processOrder.serviceType = 3;
@@ -11,7 +12,8 @@ var rowAmount = 0;
 var processOrderSelected;
 var sourceData;
 var currentHeight;
-var contList = [], sztpListDisable = [];
+var shipmentSelected = new Object();
+
 $(document).ready(function () {
   $(".main-body").layout();
 
@@ -91,7 +93,6 @@ $(document).ready(function () {
       }
     });
 });
-
 function loadTable(processOrder) {
   $("#dg").datagrid({
     url: PREFIX + "/orders",
@@ -126,6 +127,7 @@ function loadTable(processOrder) {
         }),
         dataType: "json",
         success: function (data) {
+          console.log(data);
           success(data);
           $("#dg").datagrid("selectRow", 0);
           parent.updateReportNumberOm();
@@ -149,203 +151,6 @@ function historyEportRenderer(instance, td, row, col, prop, value, cellPropertie
   let historyIcon = '<a id="custom" onclick="openHistoryFormEport(' + row + ')" class="fa fa-history easyui-tooltip" title="Lịch Sử Eport" aria-hidden="true" style="color: #3498db;"></a>';
   $(td).addClass("htCenter").addClass("htMiddle").html(historyIcon);
 }
-function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "containerNo" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function houseBillBtnRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'houseBillBtn' + row).addClass("htMiddle").addClass("htCenter");
-  let shipmentDetailId;
-  if (sourceData && sourceData.length > row) {
-      shipmentDetailId = sourceData[row].id;
-  }
-  value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>Khai báo</button>';
-  $(td).html(value);
-  cellProperties.readOnly = 'true';
-  return td;
-}
-function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'sztp' + row).addClass("htMiddle");
-  if (value != null && value != '') {
-      if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
-          cellProperties.readOnly = 'true';
-          $(td).css("background-color", "rgb(232, 232, 232)");
-      }
-  }
-  if (sztpListDisable[row] == 1) {
-      cellProperties.readOnly = 'true';
-      $(td).css("background-color", "rgb(232, 232, 232)");
-  }
-  if (!value) {
-      value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-
-function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'expiredDem' + row).addClass("htMiddle").addClass("htCenter");
-  if (value != null && value != '') {
-      if (value.substring(2, 3) != "/") {
-          value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-      }
-  } else {
-      value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-
-function planningDateRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'planningDate' + row).addClass("htMiddle").addClass("htCenter");
-  if (value != null && value != '') {
-      if (value.substring(2, 3) != "/") {
-          value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-      }
-      if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
-          cellProperties.readOnly = 'true';
-          $(td).css("background-color", "rgb(232, 232, 232)");
-      }
-  } else {
-      value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-
-function dateOfIssueRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "sztp" + row)
-    .addClass("htMiddle");
-  $(td).html("");
-  return td;
-}
-function emptyExpireDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "emptyExpireDem" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "consignee" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "vslNm" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "cargoType" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function qualityRequirementRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'qualityRequirement' + row).addClass("htMiddle");
-    if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
-    }
-    if (!value) {
-        value = '';
-    }
-    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-    return td;
-}
-
-function etaRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'eta' + row).addClass("htMiddle").addClass("htCenter");
-  if (value != null && value != '') {
-      if (value.substring(2, 3) != "/") {
-          value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-      }
-  } else {
-      value = '';
-  }
-  cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "dischargePort" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function contSupplyRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'remark' + row).addClass("htMiddle");
-  cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
-  if (!value) {
-      value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "payType" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function paymentStatusTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "paymentStatus" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "payer" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'payerNamer' + row).addClass("htMiddle");
-  if (!value) {
-      value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
-  return td;
-}
-function personOfContainerRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "orderNo" + row)
-    .addClass("htMiddle");
-  $(td).html("");
-  return td;
-}
 function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = "true";
   $(td)
@@ -354,23 +159,469 @@ function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html(value);
   return td;
 }
-function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
+function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = "true";
   $(td)
-    .attr("id", "remark" + row)
+    .attr("id", "containerNo" + row)
     .addClass("htMiddle");
   $(td).html(value);
   return td;
 }
-function msgRenderer(instance, td, row, col, prop, value, cellProperties) {
-  // cellProperties.readOnly = "true";
+
+function houseBillBtnRenderer(
+  instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties
+) {
   $(td)
-    .attr("id", "msg" + row)
+    .attr("id", "houseBillBtn" + row)
+    .addClass("htMiddle")
+    .addClass("htCenter");
+  let shipmentDetailId;
+  if (sourceData && sourceData.length > row) {
+    shipmentDetailId = sourceData[row].id;
+  }
+  value =
+    '<button class="btn btn-success btn-xs" id="detailBtn ' +
+    row +
+    '" onclick="openHouseBillForm(' +
+    shipmentDetailId +
+    ')"><i class="fa fa-check-circle"></i>Khai báo</button>';
+  $(td).html(value);
+  cellProperties.readOnly = "true";
+  return td;
+}
+
+function expiredDemRenderer(
+  instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties
+) {
+  if (shipmentSelected.edoFlg == "1") {
+    cellProperties.readOnly = "true";
+    $(td).css("background-color", "rgb(232, 232, 232)");
+  }
+  if (value != null && value != "") {
+    if (value.substring(2, 3) != "/") {
+      value =
+        value.substring(8, 10) +
+        "/" +
+        value.substring(5, 7) +
+        "/" +
+        value.substring(0, 4);
+    }
+    $(td)
+      .attr("id", "expiredDem" + row)
+      .addClass("htMiddle")
+      .addClass("htCenter");
+    $(td).html(
+      '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+      value +
+      "</div>"
+    );
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = "true";
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+  } else {
+    $(td).html(
+      '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;"></div>'
+    );
+  }
+  return td;
+}
+function consigneeRenderer(
+  instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties
+) {
+  $(td)
+    .attr("id", "consignee" + row)
     .addClass("htMiddle");
-  if (processOrderSelected.msg == null) {
-    value = ''
+  if (value != null && value != "") {
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = "true";
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+  }
+  if (!value) {
+    value = "";
+  }
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'receiptDem' + row).addClass("htMiddle").addClass("htCenter");
+  if (value != null && value != '') {
+    if (value.substring(2, 3) != "/") {
+      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+    }
+  } else {
+    value = '';
   }
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+
+function emptyDepotRenderer(
+  instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties
+) {
+  $(td)
+    .attr("id", "emptyDepot" + row)
+    .addClass("htMiddle");
+  if (value != null && value != "") {
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = "true";
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+  }
+  if (!value) {
+    value = "";
+  }
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = "";
+  }
+  cellProperties.readOnly = "true";
+  let backgroundColor = "";
+  if (row % 2 == 1) {
+    backgroundColor = greenBlackColor;
+  } else {
+    backgroundColor = "#C6EFCE";
+  }
+  $(td).css("background-color", backgroundColor);
+  $(td).css("color", "#006100");
+  $(td)
+    .attr("id", "opeCode" + row)
+    .addClass("htMiddle");
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = "";
+  }
+  cellProperties.readOnly = "true";
+  let backgroundColor = "";
+  if (row % 2 == 1) {
+    backgroundColor = greenBlackColor;
+  } else {
+    backgroundColor = "#C6EFCE";
+  }
+  $(td).css("background-color", backgroundColor);
+  $(td).css("color", "#006100");
+  $(td)
+    .attr("id", "vslNm" + row)
+    .addClass("htMiddle");
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = "";
+  }
+  cellProperties.readOnly = "true";
+  let backgroundColor = "";
+  if (row % 2 == 1) {
+    backgroundColor = greenBlackColor;
+  } else {
+    backgroundColor = "#C6EFCE";
+  }
+  $(td).css("background-color", backgroundColor);
+  $(td).css("color", "#006100");
+  $(td)
+    .attr("id", "voyNo" + row)
+    .addClass("htMiddle")
+    .addClass("htCenter");
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = "";
+  }
+  cellProperties.readOnly = "true";
+  let backgroundColor = "";
+  if (row % 2 == 1) {
+    backgroundColor = greenBlackColor;
+  } else {
+    backgroundColor = "#C6EFCE";
+  }
+  $(td).css("background-color", backgroundColor);
+  $(td).css("color", "#006100");
+  $(td)
+    .attr("id", "sztp" + row)
+    .addClass("htMiddle")
+    .addClass("htCenter");
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = "";
+  }
+  cellProperties.readOnly = "true";
+  let backgroundColor = "";
+  if (row % 2 == 1) {
+    backgroundColor = greenBlackColor;
+  } else {
+    backgroundColor = "#C6EFCE";
+  }
+  $(td).css("background-color", backgroundColor);
+  $(td).css("color", "#006100");
+  $(td)
+    .attr("id", "sztp" + row)
+    .addClass("htMiddle")
+    .addClass("htCenter");
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = "";
+  }
+  cellProperties.readOnly = "true";
+  let backgroundColor = "";
+  if (row % 2 == 1) {
+    backgroundColor = greenBlackColor;
+  } else {
+    backgroundColor = "#C6EFCE";
+  }
+  $(td).css("background-color", backgroundColor);
+  $(td).css("color", "#006100");
+  $(td)
+    .attr("id", "wgt" + row)
+    .addClass("htMiddle")
+    .addClass("htRight");
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+
+function loadingPortRenderer(
+  instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties
+) {
+  if (!value) {
+    value = "";
+  }
+  cellProperties.readOnly = "true";
+  let backgroundColor = "";
+  if (row % 2 == 1) {
+    backgroundColor = greenBlackColor;
+  } else {
+    backgroundColor = "#C6EFCE";
+  }
+  $(td).css("background-color", backgroundColor);
+  $(td).css("color", "#006100");
+  $(td)
+    .attr("id", "loadingPort" + row)
+    .addClass("htMiddle")
+    .addClass("htCenter");
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+function dischargePortRenderer(
+  instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties
+) {
+  if (!value) {
+    value = "";
+  }
+  cellProperties.readOnly = "true";
+  let backgroundColor = "";
+  if (row % 2 == 1) {
+    backgroundColor = greenBlackColor;
+  } else {
+    backgroundColor = "#C6EFCE";
+  }
+  $(td).css("background-color", backgroundColor);
+  $(td).css("color", "#006100");
+  $(td)
+    .attr("id", "dischargePort" + row)
+    .addClass("htMiddle")
+    .addClass("htCenter");
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+
+function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = "";
+  }
+  $(td)
+    .attr("id", "payType" + row)
+    .addClass("htMiddle")
+    .addClass("htCenter");
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  cellProperties.readOnly = "true";
+  $(td).css("background-color", "rgb(232, 232, 232)");
+  return td;
+}
+
+function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = "";
+  }
+  $(td)
+    .attr("id", "payer" + row)
+    .addClass("htMiddle")
+    .addClass("htCenter");
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  cellProperties.readOnly = "true";
+  $(td).css("background-color", "rgb(232, 232, 232)");
+  return td;
+}
+
+function payerNameRenderer(
+  instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties
+) {
+  if (!value) {
+    value = "";
+  }
+  $(td)
+    .attr("id", "payerNamer" + row)
+    .addClass("htMiddle");
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  cellProperties.readOnly = "true";
+  $(td).css("background-color", "rgb(232, 232, 232)");
+  return td;
+}
+
+function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td)
+    .attr("id", "remark" + row)
+    .addClass("htMiddle");
+  if (!value) {
+    value = "";
+  }
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+
+function detFreeTimeRenderer(
+  instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties
+) {
+  if (shipmentSelected.edoFlg == "1") {
+    cellProperties.readOnly = "true";
+    $(td).css("background-color", "rgb(232, 232, 232)");
+  }
+  if (value != null && value != "") {
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = "true";
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+  }
+  $(td)
+    .attr("id", "detFreeTime" + row)
+    .addClass("htMiddle")
+    .addClass("htRight");
+  if (!value) {
+    value = "";
+  }
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
   return td;
 }
 //CONFIGURATE HANDSONTABLE
@@ -403,38 +654,64 @@ function configHandson() {
         case 4:
           return "House Bill";
         case 5:
-          return '<span class="required">Kích Thước</span>';
-        case 6:
           return '<span class="required">Hạn Lệnh</span>';
+        case 6:
+          return "Ngày Miễn<br>Lưu Bãi";
         case 7:
           return '<span class="required">Chủ Hàng</span>';
         case 8:
-          return '<span class="required">Ngày Dự <br>Kiến Bốc</span>';
+          return 'Ngày Rút Hàng';
         case 9:
-          return '<span class="required">Loại Hàng</span>';
+          return '<span class="required">Nơi Hạ Vỏ</span>';
         case 10:
-          return 'Yêu Cầu <br>Chất Lượng';
+          return "Kích Thước";
         case 11:
-          return '<span class="required">Tàu và Chuyến</span>';
+          return '<span class="required">Hãng Tàu</span>';
         case 12:
-          return "Ngày tàu đến";
+          return '<span class="required">Tàu</span>';
         case 13:
-          return '<span class="required">Cảng Dỡ Hàng</span>';
+          return '<span class="required">Chuyến</span>';
         case 14:
-          return 'Cấp Container <br>Ghi Chú';
+          return "Seal No";
         case 15:
-          return 'PTTT';
+          return "Trọng Lượng (kg)";
         case 16:
-          return 'Mã Số Thuế';
+          return '<span class="required">Cảng Xếp Hàng</span>';
         case 17:
-          return 'Người Thanh Toán';
+          return "Cảng Dỡ Hàng";
         case 18:
-          return "Ghi Chú";
+          return "PTTT";
         case 19:
-          return "Thông Báo Lỗi"
+          return "Mã Số Thuế";
+        case 20:
+          return "Người Thanh Toán";
+        case 21:
+          return "Ghi Chú";
       }
     },
-    colWidths: [21, 21, 150, 100, 100, 150, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200, 200],
+    colWidths:
+      [21,
+        21,
+        150,
+        100,
+        100,
+        100,
+        80,
+        150,
+        100,
+        100,
+        80,
+        100,
+        120,
+        70,
+        80,
+        120,
+        120,
+        100,
+        100,
+        130,
+        130,
+        200,],
     filter: "true",
     columns: [
       {
@@ -457,85 +734,98 @@ function configHandson() {
       },
       {
         data: "housebilBtn",
-        renderer: houseBillBtnRenderer
+        renderer: houseBillBtnRenderer,
+      },
+      {
+        data: "expiredDem",
+        type: "date",
+        dateFormat: "YYYY-MM-DD",
+        defaultDate: new Date(),
+        renderer: expiredDemRenderer,
+      },
+      {
+        data: "detFreeTime",
+        type: "numeric",
+        renderer: detFreeTimeRenderer,
+      },
+      {
+        data: "consignee",
+        type: "autocomplete",
+        strict: true,
+        renderer: consigneeRenderer,
+      },
+      {
+        data: "dateReceipt",
+        type: "date",
+        dateFormat: "DD/MM/YYYY",
+        correctFormat: true,
+        defaultDate: new Date(),
+        renderer: dateReceiptRenderer,
+      },
+      {
+        data: "emptyDepot",
+        type: "autocomplete",
+        strict: true,
+        renderer: emptyDepotRenderer,
       },
       {
         data: "sztp",
         type: "autocomplete",
         strict: true,
-        renderer: sizeRenderer
+        renderer: sizeRenderer,
       },
       {
-        data: "expiredDem",
-        type: "date",
-        dateFormat: "DD/MM/YYYY",
-        correctFormat: true,
-        defaultDate: new Date(),
-        renderer: expiredDemRenderer
-      },
-      {
-        data: "consignee",
-        strict: true,
-        type: "autocomplete",
-        renderer: consigneeRenderer
-      },
-      {
-        data: "planningDate",
-        type: "date",
-        dateFormat: "DD/MM/YYYY",
-        correctFormat: true,
-        defaultDate: new Date(),
-        renderer: planningDateRenderer
-      },
-      {
-        data: "cargoType",
+        data: "opeCode",
         type: "autocomplete",
         strict: true,
-        renderer: cargoTypeRenderer
-      },
-      {
-        data: "qualityRequirement",
-        renderer: qualityRequirementRenderer
+        renderer: opeCodeRenderer,
       },
       {
         data: "vslNm",
         type: "autocomplete",
         strict: true,
-        renderer: vslNmRenderer
+        renderer: vslNmRenderer,
       },
       {
-        data: "eta",
-        renderer: etaRenderer
+        data: "voyNo",
+        type: "autocomplete",
+        strict: true,
+        renderer: voyNoRenderer,
+      },
+      {
+        data: "sealNo",
+        renderer: sealNoRenderer,
+      },
+      {
+        data: "wgt",
+        renderer: wgtRenderer,
+      },
+      {
+        data: "loadingPort",
+        type: "autocomplete",
+
+        renderer: loadingPortRenderer,
       },
       {
         data: "dischargePort",
         type: "autocomplete",
-        strict: true,
-        renderer: dischargePortRenderer
-      },
-      {
-        data: "contSupplyRemark",
-        renderer: contSupplyRemarkRenderer
+        renderer: dischargePortRenderer,
       },
       {
         data: "payType",
-        renderer: payTypeRenderer
+        renderer: payTypeRenderer,
       },
       {
         data: "payer",
-        renderer: payerRenderer
+        renderer: payerRenderer,
       },
       {
         data: "payerName",
-        renderer: payerNameRenderer
+        renderer: payerNameRenderer,
       },
       {
         data: "remark",
-        renderer: remarkRenderer
-      },
-      {
-        data: "msg",
-        renderer: msgRenderer,
+        renderer: remarkRenderer,
       },
     ],
     beforeKeyDown: function (e) {
@@ -576,6 +866,8 @@ configHandson();
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
 function loadTableByContainer(processOrderId) {
+  console.log('ssssssssssssssssssssssssssss');
+  console.log(processOrderId);
   $.ajax({
     url: PREFIX + "/processOrderId/" + processOrderId + "/shipmentDetails",
     method: "GET",
@@ -879,10 +1171,14 @@ function retryOrder() {
     // Do nothing
   });
 }
+
 function openHouseBillForm(shipmentDetailId) {
   if (shipmentDetailId == null) {
-      $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
-      return;
+    $.modal.alertWarning("Quý khách chưa khai báo container cần làm lệnh!");
+    return;
   }
-  $.modal.openCustomForm("Khai báo house bill", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
+  $.modal.openCustomForm(
+    "Khai báo house bill",
+    PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill"
+  );
 }

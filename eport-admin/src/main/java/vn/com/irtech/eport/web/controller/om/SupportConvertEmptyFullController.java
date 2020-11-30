@@ -28,14 +28,12 @@ import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
-import vn.com.irtech.eport.logistic.domain.CfsHouseBill;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
-import vn.com.irtech.eport.logistic.service.ICfsHouseBillService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -46,10 +44,14 @@ import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Controller
-@RequestMapping("/om/support/loading-cargo")
-public class SupportLoadingCargoController extends OmBaseController{
+
+//  /om/support/convert/emty-full
+
+//  /om/support/loading-cargo/view
+@RequestMapping("/om/support/convert/emty-full")
+public class SupportConvertEmptyFullController extends OmBaseController{
 	protected final Logger logger = LoggerFactory.getLogger(SupportLoadingCargoController.class);
-	private final String PREFIX = "om/support/loadingCargo";
+	private final String PREFIX = "om/support/convertEmptyFull";
     
     @Autowired
     private IProcessOrderService processOrderService;
@@ -78,9 +80,11 @@ public class SupportLoadingCargoController extends OmBaseController{
     @Autowired
     private ServerConfig serverConfig;
 
-    @Autowired
-	private ICfsHouseBillService cfsHouseBillService;
-    
+    /**
+     * @param sId
+     * @param mmap
+     * @return
+     */
     @GetMapping("/view")
     public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap)
     {
@@ -97,21 +101,35 @@ public class SupportLoadingCargoController extends OmBaseController{
 	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
 	    logisticGroups.add(0, logisticGroup);
 	    mmap.put("logisticsGroups", logisticGroups);
-		return PREFIX + "/loadingCargo";
+		return PREFIX + "/emptyFull";
     }
     
+    /**
+     * @param processOrderId
+     * @param mmap
+     * @return
+     */
     @GetMapping("/verify-executed-command-success/process-order/{processOrderId}")
     public String verifyExecutedCommandSuccess(@PathVariable Long processOrderId, ModelMap mmap) {
   	  mmap.put("processOrderId", processOrderId);
   	  return PREFIX + "/verifyExecutedCommandSuccess";
     }
     
+    /**
+     * @param processOrderId
+     * @param mmap
+     * @return
+     */
     @GetMapping("/reset-process-status/process-order/{processOrderId}")
     public String resetProcessStatus(@PathVariable Long processOrderId, ModelMap mmap) {
   	  mmap.put("processOrderId", processOrderId);
   	  return PREFIX + "/verifyResetProcessStatus";
     }
     
+    /**
+     * @param param
+     * @return
+     */
     @PostMapping("/orders")
 	@ResponseBody
 	public TableDataInfo getListOrder(@RequestBody PageAble<ProcessOrder> param) {
@@ -120,12 +138,16 @@ public class SupportLoadingCargoController extends OmBaseController{
         if (processOrder == null) {
             processOrder = new ProcessOrder();
         }
-		processOrder.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		processOrder.setServiceType(EportConstants.SERVICE_LOADING_CARGO);// 15
 		List<ProcessOrder> processOrders = processOrderService.selectProcessOrderListWithLogisticName(processOrder);
         TableDataInfo dataList = getDataTable(processOrders);
 		return dataList;
     }
     
+    /**
+     * @param processOrderId
+     * @return
+     */
     @GetMapping("/processOrderId/{processOrderId}/shipmentDetails")
 	@ResponseBody
 	public AjaxResult getshipmentDetails(@PathVariable Long processOrderId) {
@@ -139,6 +161,11 @@ public class SupportLoadingCargoController extends OmBaseController{
         }
 		return error();
     }
+    /**
+     * @param processOrderId
+     * @param content
+     * @return
+     */
     @Log(title = "Xác nhận làm lệnh OK(OM)", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
     @PostMapping("/executed-the-command-catos-success")
     @ResponseBody
@@ -199,12 +226,18 @@ public class SupportLoadingCargoController extends OmBaseController{
 	    	shipmentComment.setContent(content);
 	    	shipmentComment.setCreateTime(new Date());
 	    	shipmentComment.setCreateBy(getUser().getUserName());
-			shipmentComment.setTopic(Constants.LOADING_CARGO_SUPPORT);
+			shipmentComment.setTopic(Constants.LOADING_CARGO_SUPPORT);// Đóng Hàng Tại Cảng
 			shipmentComment.setServiceType(shipment.getServiceType());
 	    	shipmentCommentService.insertShipmentComment(shipmentComment);
 		}
     	return success();
     }
+    
+    /**
+     * @param processOrderId
+     * @param content
+     * @return
+     */
     @Log(title = "Reset Proccess Status(OM)", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
     @PostMapping("/reset-process-status")
     @Transactional
@@ -216,7 +249,7 @@ public class SupportLoadingCargoController extends OmBaseController{
 			throw new IllegalArgumentException("Process order not exist");
 		}
 
-		if (!EportConstants.PROCESS_HISTORY_RESULT_FAILED.equals(processOrder.getResult())) {
+		if (!EportConstants.PROCESS_HISTORY_RESULT_FAILED.equals(processOrder.getResult())) {// F
 			throw new IllegalArgumentException("Lệnh này không bị lỗi, không thể thực hiện reset lại.");
 		}
 
@@ -254,7 +287,7 @@ public class SupportLoadingCargoController extends OmBaseController{
 		    	shipmentComment.setContent(content);
 		    	shipmentComment.setCreateTime(new Date());
 		    	shipmentComment.setCreateBy(getUser().getUserName());
-				shipmentComment.setTopic(Constants.LOADING_CARGO_SUPPORT);
+				shipmentComment.setTopic(Constants.LOADING_CARGO_SUPPORT);// Đóng Hàng Tại Cảng
 				shipmentComment.setServiceType(shipment.getServiceType());
 		    	shipmentCommentService.insertShipmentComment(shipmentComment);
 			}
@@ -266,16 +299,21 @@ public class SupportLoadingCargoController extends OmBaseController{
 		}
     }
     
+    
+    /**
+     * @param shipmentComment
+     * @return
+     */
     @PostMapping("/shipment/comment")
 	@ResponseBody
 	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
 		SysUser user = getUser();
 		shipmentComment.setCreateBy(user.getUserName());
 		shipmentComment.setUserId(user.getUserId());
-		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF); // S
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
+		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);// 3
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
@@ -285,25 +323,5 @@ public class SupportLoadingCargoController extends OmBaseController{
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
 	}
-    
-    @GetMapping("/shipment-detail/{shipmentDetailId}/house-bill")
-	public String getCfsHouseBill(@PathVariable("shipmentDetailId") Long shipmentDetailId, ModelMap mmap) {
-		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
-		if (shipmentDetail != null) {
-			mmap.put("masterBill", shipmentDetail.getBookingNo());
-			mmap.put("containerNo", shipmentDetail.getContainerNo());
-			mmap.put("shipmentDetailId", shipmentDetailId);
-		}
-		return PREFIX + "/houseBill";
-	}
-
-	@GetMapping("shipment-detail/{shipmentDetailId}/house-bills")
-	@ResponseBody
-	public AjaxResult getHouseBillList(@PathVariable("shipmentDetailId") Long shipmentDetailId) {
-		CfsHouseBill cfsHouseBillParam = new CfsHouseBill();
-		cfsHouseBillParam.setShipmentDetailId(shipmentDetailId);
-		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("cfsHouseBills", cfsHouseBillService.selectCfsHouseBillList(cfsHouseBillParam));
-		return ajaxResult;
-	}
 }
+
