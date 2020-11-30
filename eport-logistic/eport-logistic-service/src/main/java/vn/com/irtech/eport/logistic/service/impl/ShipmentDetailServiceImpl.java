@@ -1397,6 +1397,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		return shipmentDetailMapper.updateShipmentDetailByIds(Convert.toStrArray(shipmentDetailIds), shipmentDetail);
 	} 
 	
+	@Override
+	public int updateShipmentDetailByProcessOderIds(String shipmentDetailIds, ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.updateShipmentDetailByProcessOderIds(Convert.toStrArray(shipmentDetailIds), shipmentDetail);
+	} 
+	
+	
+	
 
 	@Override
 	public void resetCustomStatus(Long shipmentId) {

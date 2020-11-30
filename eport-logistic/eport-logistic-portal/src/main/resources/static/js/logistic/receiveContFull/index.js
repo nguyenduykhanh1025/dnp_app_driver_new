@@ -771,12 +771,12 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
 	    let containerNo, sztp;
 	    if (!isDestroy) {
 	        containerNo = hot.getDataAtCell(row, 2);
-	        sztp = hot.getDataAtCell(row, 9);
+	        sztp = hot.getDataAtCell(row, 8);
 	    } 
 	    if (sourceData && sourceData.length > 0) { 
 	        if (sourceData.length > row && sourceData[row].id) { 
 	        	
-	        	if("G" != sourceData[row].sztp.substring(2,3)){  
+	        	if("G" != sourceData[row].sztp.substring(2,3)){ 
 	        		value = '<button class="btn btn-default btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
 	        	} 
 	        	else{ 
@@ -931,7 +931,7 @@ function configHandson() {
           return '<span class="required">Container No</span>';
           
         case 3:
-            return '<span class="required">Chi tiết</span>';
+            return "Chi tiết";
             
         case 4:
           return '<span class="required">Hạn Lệnh</span>';
@@ -984,11 +984,11 @@ function configHandson() {
       {
         data: "containerNo",
         strict: true,
-        renderer: containerNoRenderer,
+        renderer: containerNoRenderer
       },
       // nhat
       {
-          data: "btnInformationContainer",
+          data: "",
           strict: true,
           readonly: true,
           renderer: detailRenderer

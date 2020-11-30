@@ -272,6 +272,39 @@ function msgRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
+
+function houseBillBtnRenderer( instance, td, row, col, prop, value, cellProperties ) {
+		  $(td)
+		    .attr("id", "houseBillBtn" + row)
+		    .addClass("htMiddle")
+		    .addClass("htCenter");
+		  let shipmentDetailId;
+		  if (sourceData && sourceData.length > row) {
+		    shipmentDetailId = sourceData[row].id;
+		  }
+		  value =
+		    '<button class="btn btn-success btn-xs" id="detailBtn ' +
+		    row +
+		    '" onclick="openHouseBillForm(' +
+		    shipmentDetailId +
+		    ')"><i class="fa fa-check-circle"></i>Khai báo</button>';
+		  $(td).html(value);
+		  cellProperties.readOnly = "true";
+		  return td;
+	}
+
+function openHouseBillForm(shipmentDetailId) {
+	  if (shipmentDetailId == null) {
+	    $.modal.alertWarning("Quý khách chưa khai báo container cần làm lệnh!");
+	    return;
+	  }
+	  $.modal.openCustomForm(
+	    "Khai báo house bill",
+	    PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill"
+	  );
+	}
+
+
 //CONFIGURATE HANDSONTABLE
 function configHandson() {
   config = {
@@ -299,35 +332,39 @@ function configHandson() {
           return "Số Tham Chiếu";
         case 3:
           return "Số Container";
+          
         case 4:
-          return "Sztp";
+            return "House Bill";
+          
         case 5:
-          return "Cấp từ ngày";
+          return "Sztp";
         case 6:
-          return "Ngày hết hạn";
+          return "Cấp từ ngày";
         case 7:
-          return "Chủ hàng";
+          return "Ngày hết hạn";
         case 8:
-          return "Tàu - Chuyến";
+          return "Chủ hàng";
         case 9:
-          return "Loại hàng";
+          return "Tàu - Chuyến";
         case 10:
-          return "Cảng Dở Hàng";
+          return "Loại hàng";
         case 11:
-          return "T.Toán";
+          return "Cảng Dở Hàng";
         case 12:
-          return "TT T.Toán";
+          return "T.Toán";
         case 13:
-          return "Payer";
+          return "TT T.Toán";
         case 14:
-          return "Người Cấp Container";
+          return "Payer";
         case 15:
-          return "Ghi Chú";
+          return "Người Cấp Container";
         case 16:
+          return "Ghi Chú";
+        case 17:
           return "Thông Báo Lỗi"
       }
     },
-    colWidths: [21, 21, 150, 100, 50, 150, 150, 200, 250, 100, 100, 100, 100, 100, 100, 150, 200],
+    colWidths: [21, 21, 150, 100, 150, 150,100, 150, 200, 250, 100, 100, 100, 100, 100, 100, 150, 200],
     filter: "true",
     columns: [
       {
@@ -348,6 +385,12 @@ function configHandson() {
         data: "containerNo",
         renderer: containerNoRenderer,
       },
+      
+      {
+          data: "housebilBtn",
+          renderer: houseBillBtnRenderer,
+        },
+      
       {
         data: "sztp",
         renderer: sztpRenderer,
@@ -514,6 +557,43 @@ function logisticInfo(id, logistics) {
 function executedSuccess() {
   $.modal.open("Xác nhận", PREFIX + "/verify-executed-command-success/process-order/" + processOrderSelected.id, 430, 270);
 }
+
+
+
+/*function executedAcceptFull() {
+	  $.modal.open("Xác nhận", PREFIX + "/verify-executed-command-success/process-order/" + processOrderSelected.id, 430, 270);
+	}*/
+
+function executedAcceptFull() { 
+	/*if (shipmentDetails.length > 0) { */
+		
+	   /* $.modal.confirmShipment("Xác nhận yêu cầu xác nhận ?", function () {*/
+	      $.modal.loading("Đang xử lý...");
+	      $.ajax({ 
+	    	  url: PREFIX + "/shipment-detail/request-confirm/" ,  
+		        method : "post", 
+		        data : { 
+		        	shipmentDetailIds : processOrderSelected.id
+		        },
+	        success: function (result) {
+	          if (result.code == 0) {
+	            $.modal.alertSuccess(result.msg);
+	            //reloadShipmentDetail();
+	          } else {
+	            $.modal.alertError(result.msg);
+	          }
+	          $.modal.closeLoading();
+	        },
+	        error: function (result) {
+	          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại sau.");
+	          $.modal.closeLoading();
+	        },
+	      });
+	    /*});*/
+	  /*}*/
+	}
+
+
 
 function msgSuccess(msg) {
   $.modal.alertSuccess(msg);
