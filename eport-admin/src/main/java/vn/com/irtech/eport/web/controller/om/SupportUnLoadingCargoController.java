@@ -102,7 +102,7 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		shipmentDetail.setVslAndVoy("Chọn tàu chuyến");
 		berthplanList.add(0, shipmentDetail);
 		mmap.put("vesselAndVoyages", berthplanList);
-		return PREFIX + "/loadingCargo";
+		return PREFIX + "/unloadingCargo";
 	}
 
 	@GetMapping("/shipment-detail/{shipmentDetailId}/house-bill")

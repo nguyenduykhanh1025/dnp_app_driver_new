@@ -437,7 +437,7 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 						shipmentDetailReference.setEta(inputDetail.getEta());
 						shipmentDetailReference.setEtd(inputDetail.getEtd());
 						shipmentDetailReference.setDischargePort(inputDetail.getDischargePort());
-						
+
 					}
 					shipmentDetailReference.setRemark(inputDetail.getRemark());
 					shipmentDetailReference.setUpdateBy(user.getFullName());
@@ -1028,7 +1028,7 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 	}
 
 	@Log(title = "Đăng ký ngày đóng hàng", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	@DeleteMapping("/date-receipt")
+	@PostMapping("/date-receipt")
 	@Transactional
 	@ResponseBody
 	public AjaxResult requestConfirmDateReceipt(String shipmentDetailIds) {
@@ -1043,7 +1043,7 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 		shipmentDetailIds = "";
 		String containers = "";
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			if (!EportConstants.PROCESS_ORDER_RESULT_SUCCESS.equals(shipmentDetail.getProcessStatus())) {
+			if (!"Y".equals(shipmentDetail.getProcessStatus())) {
 				return error("Container chưa được làm lệnh, không thể thực hiện đăng ký ngày đóng hàng.");
 			}
 			if (shipmentDetail.getDateReceipt() == null) {

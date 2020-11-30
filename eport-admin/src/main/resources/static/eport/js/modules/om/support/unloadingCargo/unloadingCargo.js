@@ -323,7 +323,7 @@ function historyEportRenderer(instance, td, row, col, prop, value, cellPropertie
 
 function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
-  if (sourceData[row] && sourceData[row].contSupplyStatus && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].finishStatus) {
+  if (sourceData[row] && sourceData[row].processStatus && sourceData[row].finishStatus) {
     // Command process status
     let process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
     switch (sourceData[row].processStatus) {
@@ -742,9 +742,6 @@ function configHandsond() {
       },
       {
         data: "emptyDepot",
-        type: "autocomplete",
-        source: emptyDepots,
-        strict: true,
         renderer: emptyDepotRenderer
       },
       {
