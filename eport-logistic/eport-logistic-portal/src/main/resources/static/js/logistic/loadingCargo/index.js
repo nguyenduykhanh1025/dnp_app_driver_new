@@ -581,6 +581,19 @@ function houseBillBtnRenderer(instance, td, row, col, prop, value, cellPropertie
     return td;
 }
 
+function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
+    if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+        }
+    } else {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+
 function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'expiredDem' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
@@ -1269,6 +1282,10 @@ function getDataSelectedFromTable(isValidate) {
             $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
             errorFlg = true;
         }
+        if (object["dateReceipt"] && object["dateReceipt"].length >= 10) {
+            let dateReceipt = new Date(object["dateReceipt"].substring(6, 10) + "/" + object["dateReceipt"].substring(3, 5) + "/" + object["dateReceipt"].substring(0, 2));
+            shipmentDetail.dateReceipt = dateReceipt.getTime();
+        }
         shipmentDetail.containerNo = object["containerNo"];
         shipmentDetail.processStatus = object["processStatus"];
         shipmentDetail.paymentStatus = object["paymentStatus"];
@@ -1313,9 +1330,8 @@ function getDataFromTable(isValidate) {
     }
     shipmentDetails = [];
     contList = [];
-    let vessel, pod;
+    let pod;
     if (cleanedGridData.length > 0) {
-        vessel = cleanedGridData[0].vslNm;
         pod = cleanedGridData[0].dischargePort;
     }
     $.each(cleanedGridData, function (index, object) {
@@ -1364,13 +1380,16 @@ function getDataFromTable(isValidate) {
             }
         }
         // opecode = object["opeCode"];
-        vessel = object["vslNm"];
         pod = object["dischargePort"];
         let expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         let planningDate = new Date(object["planningDate"].substring(6, 10) + "/" + object["planningDate"].substring(3, 5) + "/" + object["planningDate"].substring(0, 2));
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
         let sizeType = object["sztp"].split(": ");
+        if (object["dateReceipt"] && object["dateReceipt"].length >= 10) {
+            let dateReceipt = new Date(object["dateReceipt"].substring(6, 10) + "/" + object["dateReceipt"].substring(3, 5) + "/" + object["dateReceipt"].substring(0, 2));
+            shipmentDetail.dateReceipt = dateReceipt.getTime();
+        }
         shipmentDetail.sztp = sizeType[0];
         shipmentDetail.sztpDefine = sizeType[1];
         shipmentDetail.opeCode = shipmentSelected.opeCode;
@@ -1919,42 +1938,48 @@ function confirmDateReceipt() {
     if (getDataSelectedFromTable(true)) {
         // Check qualify to confirm date receipt status
         let containers = '';
+        let errorFlg = false;
         shipmentDetails.forEach(shipmentDetail => {
             if (shipmentDetail.processStatus != 'Y') {
                 $.modal.alertWarning('Container ' + shipmentDetail.containerNo + ' chưa được làm lệnh, không thể xác nhận ngày đóng hàng.');
+                errorFlg = true;
                 return;
             }
             if (shipmentDetail.dateReceipt == null) {
                 $.modal.alertWarning('Quý khách chưa nhập ngày đóng hàng, không thể xác nhận ngày đóng hàng.');
+                errorFlg = true;
                 return;
             }
             containers += shipmentDetail.containerNo;
         });
-        layer.confirm("Quý khách đang yêu cầu xác nhận ngày đóng hàng cho container: " + containers + ".", {
-            icon: 3,
-            title: "Xác Nhận",
-            btn: ['Đồng Ý', 'Hủy Bỏ']
-        }, function () {
-            layer.close(layer.index);
-            $.ajax({
-                url: prefix + "/date-receipt",
-                method: "post",
-                data: {
-                    shipmentDetailIds: shipmentDetailIds
-                },
-                success: function (res) {
-                    if (res.code == 0) {
-                        $.modal.alertSuccess(res.msg);
-                    } else {
-                        $.modal.alertWarning(res.msg);
+        if (!errorFlg) {
+            layer.confirm("Quý khách đang yêu cầu xác nhận ngày đóng hàng cho container: " + containers + ".", {
+                icon: 3,
+                title: "Xác Nhận",
+                btn: ['Đồng Ý', 'Hủy Bỏ']
+            }, function () {
+                layer.close(layer.index);
+                $.ajax({
+                    url: prefix + "/date-receipt",
+                    method: "post",
+                    data: {
+                        shipmentDetailIds: shipmentDetailIds
+                    },
+                    success: function (res) {
+                        if (res.code == 0) {
+                            $.modal.alertSuccess(res.msg);
+                        } else {
+                            $.modal.alertWarning(res.msg);
+                        }
+                        reloadShipmentDetail();
+                    },
+                    error: function (err) {
+                        $.modal.alertError('Lỗi hệ thống, vui lòng liên hệ admin.');
                     }
-                },
-                error: function (err) {
-                    $.modal.alertError('Lỗi hệ thống, vui lòng liên hệ admin.');
-                }
+                });
+            }, function () {
+                // close form
             });
-        }, function () {
-            // close form
-        });
+        }
     }
 }

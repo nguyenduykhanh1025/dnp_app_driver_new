@@ -1,4 +1,4 @@
-const PREFIX = ctx + "logistic/loading-cargo";
+const PREFIX = ctx + "om/support/loading-cargo";
 var onlyDigitReg = /^[0-9]*$/gm;
 var onlyFloatReg = /^[+-]?([0-9]*[.|,])?[0-9]+$/gm;
 var dogrid = document.getElementById("container-grid"), hot;
@@ -82,74 +82,7 @@ function loadHouseBill() {
     });
 }
 
-function saveHouseBill() {
-    if (getDataFromTable(true)) {
-        if (cfsHouseBillList.length > 0) {
-            $.modal.loading("Đang xử lý...");
-            $.ajax({
-                url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bills",
-                method: "post",
-                contentType: "application/json",
-                data: JSON.stringify(cfsHouseBillList),
-                success: function (res) {
-                    if (res.code == 0) {
-                        $.modal.alertSuccess(res.msg);
-                        loadHouseBill();
-                    } else {
-                        $.modal.alertError(res.msg);
-                    }
-                    $.modal.closeLoading();
-                },
-                error: function (res) {
-                    $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau.");
-                    $.modal.closeLoading();
-                },
-            });
-        } else {
-            $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
-        }
-    }
-}
-
-function deleteHouseBill() {
-    if (getDataSelectedFromTable(true) && cfsHouseBillList.length > 0) {
-        $.modal.confirmShipment("Xác nhận xóa khai báo house bill ?", function () {
-            $.modal.loading("Đang xử lý...");
-            $.ajax({
-                url: PREFIX + "/house-bills",
-                method: "delete",
-                data: {
-                    houseBillIds: cfsHouseBillIds
-                },
-                success: function (result) {
-                    if (result.code == 0) {
-                        $.modal.alertSuccess(result.msg);
-                        loadHouseBill();
-                    } else {
-                        $.modal.alertError(result.msg);
-                    }
-                    $.modal.closeLoading();
-                },
-                error: function (result) {
-                    $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau.");
-                    $.modal.closeLoading();
-                },
-            });
-        });
-    }
-}
-
 // FORMAT HANDSONTABLE COLUMN
-function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
-    let content = '';
-    if (checkList[row] == 1) {
-        content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')" checked></div>';
-    } else {
-        content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')"></div>';
-    }
-    $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
-    return td;
-}
 function statusIconRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html('');
     cellProperties.readOnly = 'true';
@@ -293,38 +226,27 @@ function configHandson() {
         colHeaders: function (col) {
             switch (col) {
                 case 0:
-                    let txt = "<input type='checkbox' class='checker' ";
-                    txt += "onclick='checkAll()' ";
-                    txt += ">";
-                    return txt;
-                case 1:
                     return "Trạng Thái";
-                case 2:
+                case 1:
                     return "House Bill";
-                case 3:
+                case 2:
                     return "Forwarder";
-                case 4:
+                case 3:
                     return "Số Lượng";
-                case 5:
+                case 4:
                     return "Loại Bao Bì";
-                case 6:
+                case 5:
                     return "Trọng Lượng";
-                case 7:
+                case 6:
                     return "Số Khối";
-                case 8:
+                case 7:
                     return "Nhãn/Ký hiệu";
-                case 9:
+                case 8:
                     return "Ghi chú";
             }
         },
-        colWidths: [40, 80, 100, 150, 80, 90, 90, 90, 100, 200],
+        colWidths: [80, 100, 150, 80, 90, 90, 90, 100, 200],
         columns: [
-            {
-                data: "active",
-                type: "checkbox",
-                className: "htCenter",
-                renderer: checkBoxRenderer
-            },
             {
                 data: "dateReceiptStatus",
                 readOnly: true,
@@ -391,7 +313,7 @@ function configHandson() {
                 // Arrow Right
                 case 39:
                     selected = hot.getSelected()[0];
-                    if (selected[3] == 9) {
+                    if (selected[3] == 8) {
                         e.stopImmediatePropagation();
                     }
                     break
@@ -409,133 +331,6 @@ function configHandson() {
     };
 }
 
-// TRIGGER CHECK ALL SHIPMENT DETAIL
-function checkAll() {
-    if (!allChecked) {
-        allChecked = true
-        checkList = Array(minRowAmount).fill(0);
-        for (let i = 0; i < checkList.length; i++) {
-            checkList[i] = 1;
-            $('#check' + i).prop('checked', true);
-        }
-    } else {
-        allChecked = false;
-        checkList = Array(minRowAmount).fill(0);
-        for (let i = 0; i < checkList.length; i++) {
-            $('#check' + i).prop('checked', false);
-        }
-    }
-    let tempCheck = allChecked;
-    updateLayout();
-    hot.render();
-    allChecked = tempCheck;
-    $('.checker').prop('checked', tempCheck);
-}
-function check(id) {
-    if (sourceData[id].id != null) {
-        if (checkList[id] == 0) {
-            $('#check' + id).prop('checked', true);
-            checkList[id] = 1;
-        } else {
-            $('#check' + id).prop('checked', false);
-            checkList[id] = 0;
-        }
-        hot.render();
-        updateLayout();
-    }
-}
-function updateLayout() {
-    allChecked = true;
-    for (let i = 0; i < checkList.length; i++) {
-        let cellStatus = sourceData[i].id;
-        if (cellStatus != null) {
-            if (checkList[i] != 1) {
-                allChecked = false;
-            }
-        }
-    }
-    $('.checker').prop('checked', allChecked);
-}
-
 function closeForm() {
     $.modal.close();
-}
-
-// GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
-function getDataSelectedFromTable(isValidate) {
-    let myTableData = hot.getSourceData();
-    let errorFlg = false;
-    let cleanedGridData = [];
-    for (let i = 0; i < checkList.length; i++) {
-        if (Object.keys(myTableData[i]).length > 0) {
-            if (checkList[i] == 1) {
-                cleanedGridData.push(myTableData[i]);
-            }
-        }
-    }
-    cfsHouseBillIds = "";
-    cfsHouseBillList = [];
-    $.each(cleanedGridData, function (index, object) {
-        let cfsHouseBill = new Object();
-        cfsHouseBill.houseBill = object["houseBill"];
-        cfsHouseBill.forwarder = object["forwarder"];
-        cfsHouseBill.quantity = object["quantity"];
-        cfsHouseBill.packagingType = object["packagingType"];
-        cfsHouseBill.weight = object["weight"];
-        cfsHouseBill.cubicMeter = object["cubicMeter"];
-        cfsHouseBill.marks = object["marks"];
-        cfsHouseBill.forwarderRemark = object["forwarderRemark"];
-        cfsHouseBillList.push(cfsHouseBill);
-        cfsHouseBillIds += object["id"] + ",";
-    });
-
-    // Get result in "selectedList" variable
-    if (cfsHouseBillList.length == 0 && isValidate) {
-        $.modal.alert("Bạn chưa chọn house bill.");
-        errorFlg = true;
-    } else {
-        cfsHouseBillIds = cfsHouseBillIds.substring(0, cfsHouseBillIds.length - 1);
-    }
-
-    if (errorFlg) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-// GET HOUSE BILL LIST, VALIDATE FIELD WHEN isValidate = true
-function getDataFromTable(isValidate) {
-    let myTableData = hot.getSourceData();
-    let errorFlg = false;
-    let cleanedGridData = [];
-    for (let i = 0; i < checkList.length; i++) {
-        if (Object.keys(myTableData[i]).length > 0) {
-            if (myTableData[i].houseBill || myTableData[i].forwarder || myTableData[i].quantity ||
-                myTableData[i].packagingType || myTableData[i].weight || myTableData[i].cubicMeter ||
-                myTableData[i].marks || myTableData[i].forwarderRemark || myTableData[i].dateReceipt) {
-                cleanedGridData.push(myTableData[i]);
-            }
-        }
-    }
-    cfsHouseBillList = [];
-    console.log(myTableData);
-    $.each(cleanedGridData, function (index, object) {
-        let cfsHouseBill = new Object();
-        cfsHouseBill.houseBill = object["houseBill"];
-        cfsHouseBill.forwarder = object["forwarder"];
-        cfsHouseBill.quantity = object["quantity"];
-        cfsHouseBill.packagingType = object["packagingType"];
-        cfsHouseBill.weight = object["weight"];
-        cfsHouseBill.cubicMeter = object["cubicMeter"];
-        cfsHouseBill.marks = object["marks"];
-        cfsHouseBill.forwarderRemark = object["forwarderRemark"];
-        cfsHouseBillList.push(cfsHouseBill);
-    });
-
-    if (errorFlg) {
-        return false;
-    } else {
-        return true;
-    }
 }

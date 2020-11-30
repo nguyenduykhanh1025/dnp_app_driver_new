@@ -196,6 +196,8 @@ public interface EportConstants {
 	public static final String APP_USER_TYPE_GATE = "gate";
 	/** User type cont supplier in app notification */
 	public static final String APP_USER_TYPE_CONT = "cont";
+	/** User type cfs in app notification */
+	public static final String APP_USER_TYPE_CFS = "cfs";
 
 	// Domain web eport
 	/** Url to mc provide yard position */
@@ -218,6 +220,14 @@ public interface EportConstants {
 	public static final String URL_CANCEL_ORDER_SUPPORT = "/om/support/order-cancel";
 	/** url to gate support */
 	public static final String URL_GATE = "/gate/support";
+	/** url to om support receive empty loading cargo */
+	public static final String URL_OM_LOADING_CARGO = "/om/support/loading-cargo/view";
+	/** url to om support receive full unloading cargo */
+	public static final String URL_OM_UNLOADING_CARGO = "/om/support/unloading-cargo/view";
+	/** url to om support convert container empty to full */
+	public static final String URL_OM_CONVERT_EMTY_FULL = "/om/support/convert/emty-full/view";
+	/** url to om support convert container full to empty */
+	public static final String URL_OM_CONVERT_FULL_EMTY = "/om/support/convert/full-emty/view";
 
 	// Priority notification app window
 	/** High priority notificaiton app window */
