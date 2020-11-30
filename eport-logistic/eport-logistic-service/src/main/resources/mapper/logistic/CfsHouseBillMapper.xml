@@ -33,6 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="shiftReceipt" column="shift_receipt" />
 		<result property="dateReceipt" column="date_receipt" />
 		<result property="equipment" column="equipment" />
+		<result property="storeFromDate" column="store_from_date" />
 	</resultMap>
 
 	<sql id="selectCfsHouseBillVo">
@@ -44,7 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		update_time,
 		update_by, status, storage_from_date, storage_to_date,
 		handing_movement, service_type, forwarder, cargo_description,
-		place_receipt, shift_receipt, date_receipt, equipment from
+		place_receipt, shift_receipt, date_receipt, equipment, store_from_date from
 		cfs_house_bill
 	</sql>
 
@@ -177,6 +178,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="shiftReceipt != null">shift_receipt = #{shiftReceipt},</if>
 			<if test="dateReceipt != null">date_receipt = #{dateReceipt},</if>
 			<if test="equipment != null">equipment = #{equipment},</if>
+			<if test="storeFromDate != null">store_from_date = #{storeFromDate},</if>
 			update_time = sysdate
 		</trim>
 		where id = #{id}
