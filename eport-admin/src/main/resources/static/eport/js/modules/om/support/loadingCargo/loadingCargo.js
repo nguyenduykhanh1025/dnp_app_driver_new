@@ -11,7 +11,7 @@ var rowAmount = 0;
 var processOrderSelected;
 var sourceData;
 var currentHeight;
-
+var contList = [], sztpListDisable = [];
 $(document).ready(function () {
   $(".main-body").layout();
 
@@ -787,6 +787,13 @@ function openHouseBillForm(shipmentDetailId) {
   if (shipmentDetailId == null) {
     $.modal.alertWarning('Conatiner này chưa được khai báo, không có house bill!');
     return;
+  }
+  $.modal.openCustomForm("Khai báo house bill", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
+}
+function openHouseBillForm(shipmentDetailId) {
+  if (shipmentDetailId == null) {
+      $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
+      return;
   }
   $.modal.openCustomForm("Khai báo house bill", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
 }

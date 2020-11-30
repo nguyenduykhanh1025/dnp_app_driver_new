@@ -1,4 +1,4 @@
-const PREFIX = ctx + "logistic/unloading-cargo";
+const PREFIX = ctx + "om/register-date-receipt-unloading-cargo";
 var onlyDigitReg = /^[0-9]*$/gm;
 var onlyFloatReg = /^[+-]?([0-9]*[.|,])?[0-9]+$/gm;
 var dogrid = document.getElementById("container-grid"), hot;

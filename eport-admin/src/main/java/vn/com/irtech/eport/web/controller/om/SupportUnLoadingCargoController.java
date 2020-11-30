@@ -336,7 +336,6 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 	public AjaxResult getHouseBillList(@PathVariable("shipmentDetailId") Long shipmentDetailId) {
 		CfsHouseBill cfsHouseBillParam = new CfsHouseBill();
 		cfsHouseBillParam.setShipmentDetailId(shipmentDetailId);
-//		cfsHouseBillParam.setLogisticGroupId(getUser().getGroupId());
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("cfsHouseBills", cfsHouseBillService.selectCfsHouseBillList(cfsHouseBillParam));
 		return ajaxResult;
