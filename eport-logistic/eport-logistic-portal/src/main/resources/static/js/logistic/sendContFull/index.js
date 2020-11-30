@@ -1068,22 +1068,23 @@ function btnDetailRenderer(
 
   if (sourceData && sourceData.length > 0) {
     if (sourceData.length > row && sourceData[row].id) {
-      value = `<button class="btn btn-default btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-check-circle"></i>Chi tiết</button>`;
+      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
     } else if (containerNo && sztp) {
-      value = `<button class="btn btn-default btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-check-circle"></i>Chi tiết</button>`;
-    } else {
-      value =
-        '<button class="btn btn-success btn-xs" id="detailBtn ' +
-        row +
-        '" onclick="openDetail(' +
-        null +
-        ",'" +
-        containerNo +
-        "'," +
-        "'" +
-        sztp +
-        '\')" disabled><i class="fa fa-check-circle"></i>Chi tiết</button>';
+      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
     }
+    // else {
+    //   value =
+    //     '<button class="btn btn-default btn-xs" id="detailBtn ' +
+    //     row +
+    //     '" onclick="openDetail(' +
+    //     null +
+    //     ",'" +
+    //     containerNo +
+    //     "'," +
+    //     "'" +
+    //     sztp +
+    //     '\')" disabled><i class="fa fa-book"></i>Cont đặc biệt</button>';
+    // }
   }
   $(td).html(value);
   cellProperties.readOnly = "true";
@@ -1333,26 +1334,27 @@ function configHandson() {
           return "Trạng Thái";
         case 2:
           return '<span class="required">Container No</span>';
+
         case 3:
-          return '<span class="required">Chi Tiết</span>';
-        case 4:
           return '<span class="required">Kích Thước</span>';
-        case 5:
+        case 4:
           return '<span class="required">Chủ Hàng</span>';
-        case 6:
+        case 5:
           return '<span class="required">Tàu và Chuyến</span>';
-        case 7:
+        case 6:
           return "Ngày tàu đến";
-        case 8:
+        case 7:
           return '<span class="required">Cảng Dỡ Hàng</span>';
-        case 9:
+        case 8:
           return '<span class="required">Trọng Lượng (kg)</span>';
-        case 10:
+        case 9:
           return '<span class="required">Loại Hàng</span>';
-        case 11:
+        case 10:
           return "Tên Hàng";
-        case 12:
+        case 11:
           return "Số Seal";
+        case 12:
+          return '<span>Cont đặc biệt</span>';
         case 13:
           return "Nhiệt Độ (c)";
         case 14:
@@ -1371,7 +1373,6 @@ function configHandson() {
       100,
       150,
       150,
-      150,
       200,
       100,
       120,
@@ -1379,6 +1380,7 @@ function configHandson() {
       80,
       100,
       100,
+      150,
       80,
       80,
       100,
@@ -1403,10 +1405,7 @@ function configHandson() {
         strict: true,
         renderer: containerNoRenderer,
       },
-      {
-        data: "btnInformationContainer",
-        renderer: btnDetailRenderer,
-      },
+      
       {
         data: "sztp",
         type: "autocomplete",
@@ -1459,6 +1458,10 @@ function configHandson() {
       {
         data: "sealNo",
         renderer: sealNoRenderer,
+      },
+      {
+        data: "btnInformationContainer",
+        renderer: btnDetailRenderer,
       },
       {
         data: "temperature",
@@ -1554,7 +1557,7 @@ function onChange(changes, source) {
                   if (data.code == 0) {
                     hot.updateSettings({
                       cells: function (row, col, prop) {
-                        if (col == 8) {
+                        if (col == 7) {
                           let cellProperties = {};
                           dischargePortList = data.dischargePorts;
                           cellProperties.source = dischargePortList;
@@ -1739,7 +1742,7 @@ function check(id) {
     }
     hot.render();
     updateLayout();
-  }else {
+  } else {
     if (checkList[id] == 0) {
       $("#check" + id).prop("checked", true);
       checkList[id] = 1;
@@ -2237,10 +2240,10 @@ function saveShipmentDetail() {
           var result = JSON.parse(data);
           if (result.code == 0) {
             $.modal.msgSuccess(result.msg);
-            
+
             reloadShipmentDetail();
           } else {
-            
+
             if (result.conts != null) {
               $.modal.alertError(
                 "Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>" +
