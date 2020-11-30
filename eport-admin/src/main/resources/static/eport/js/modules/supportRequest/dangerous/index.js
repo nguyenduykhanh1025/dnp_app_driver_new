@@ -506,7 +506,7 @@ function btnDetailRenderer(
 
   if (sourceData && sourceData.length > 0) {
     if (sourceData.length > row && sourceData[row].id) {
-      value = `<button class="btn btn-default btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-check-circle"></i>Chi tiết</button>`;
+      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
     } else if (containerNo && sztp) {
       value =
         '<button class="btn btn-success btn-xs" id="detailBtn ' +
@@ -518,7 +518,7 @@ function btnDetailRenderer(
         "'," +
         "'" +
         sztp +
-        '\')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
+        '\')"><i class="fa fa-book"></i>Cont đặc biệt</button>';
     } 
     // else {
     //   value =
