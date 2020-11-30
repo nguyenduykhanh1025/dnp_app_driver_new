@@ -342,6 +342,8 @@ public interface EportConstants {
 	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_SUCCESS = "S";
 	/** date receipt status error */
 	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_ERROR = "E";
+	/** date receipt status done */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_DONE = "D";
 
 	/** CFS House bill lock status */
 	public static final String CFS_HOUSE_BILL_LOCK = "L";

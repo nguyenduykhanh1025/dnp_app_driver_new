@@ -1,6 +1,4 @@
-/*const PREFIX = ctx + "logistic/unloading-cargo";*/
-
-const PREFIX = ctx + "om/support/convert/emty-full";  
+const PREFIX = ctx + "om/support/convert/emty-full";
 var dogrid = document.getElementById("container-grid"),
   hot;
 var minRowAmount = 1,
@@ -116,7 +114,7 @@ function saveHouseBill() {
           $.modal.closeLoading();
         },
       });
-   
+
     } else {
       $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
     }
@@ -126,29 +124,29 @@ function saveHouseBill() {
 function deleteHouseBill() {
   if (getDataSelectedFromTable(true) && cfsHouseBillList.length > 0) {
     /*$.modal.confirmShipment("Xác nhận xóa khai báo house bill ?", function () {*/
-      $.modal.loading("Đang xử lý...");
-      $.ajax({
-        url: PREFIX + "/house-bills",
-        method: "delete",
-        data: {
-          houseBillIds: cfsHouseBillIds,
-        },
-        success: function (result) {
-          if (result.code == 0) {
-            $.modal.alertSuccess(result.msg);
-            loadHouseBill();
-          } else {
-            $.modal.alertError(result.msg);
-          }
-          $.modal.closeLoading();
-        },
-        error: function (result) {
-          $.modal.alertError(
-            "Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau."
-          );
-          $.modal.closeLoading();
-        },
-      });
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+      url: PREFIX + "/house-bills",
+      method: "delete",
+      data: {
+        houseBillIds: cfsHouseBillIds,
+      },
+      success: function (result) {
+        if (result.code == 0) {
+          $.modal.alertSuccess(result.msg);
+          loadHouseBill();
+        } else {
+          $.modal.alertError(result.msg);
+        }
+        $.modal.closeLoading();
+      },
+      error: function (result) {
+        $.modal.alertError(
+          "Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau."
+        );
+        $.modal.closeLoading();
+      },
+    });
     /*});*/
   }
 }
@@ -451,7 +449,7 @@ function getDataFromTable(isValidate) {
   //   cfsHouseBillList = {...cleanedGridData, }
   //   cfsHouseBillList.push(cfsHouseBill);
   // });
-    console.log(myTableData);
+  console.log(myTableData);
   if (errorFlg) {
     return false;
   } else {
