@@ -1469,7 +1469,7 @@ function openDetail(id, containerNo, sztp) {
     id = 0;
   }
   //debugger
-  $.modal.openCustomForm("Khai báo chi tiết", prefix + "/shipment-detail/" + id + "/cont/" + containerNo + "/sztp/" + sztp + "/detail", 800, 460);
+  $.modal.openCustomForm("Khai báo chi tiết", prefix + "/shipment-detail/" + id + "/cont/" + containerNo + "/sztp/" + sztp + "/detail", 850, 460);
 }
 
 function reloadShipmentDetail() {
