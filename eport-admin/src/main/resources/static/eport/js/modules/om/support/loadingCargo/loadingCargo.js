@@ -11,7 +11,7 @@ var rowAmount = 0;
 var processOrderSelected;
 var sourceData;
 var currentHeight;
-
+var contList = [], sztpListDisable = [];
 $(document).ready(function () {
   $(".main-body").layout();
 
@@ -157,14 +157,66 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
   $(td).html(value);
   return td;
 }
-function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "sztp" + row)
-    .addClass("htMiddle");
+function houseBillBtnRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'houseBillBtn' + row).addClass("htMiddle").addClass("htCenter");
+  let shipmentDetailId;
+  if (sourceData && sourceData.length > row) {
+      shipmentDetailId = sourceData[row].id;
+  }
+  value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>Khai báo</button>';
   $(td).html(value);
+  cellProperties.readOnly = 'true';
   return td;
 }
+function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+  if (value != null && value != '') {
+      if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+          cellProperties.readOnly = 'true';
+          $(td).css("background-color", "rgb(232, 232, 232)");
+      }
+  }
+  if (sztpListDisable[row] == 1) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+  }
+  if (!value) {
+      value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+
+function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'expiredDem' + row).addClass("htMiddle").addClass("htCenter");
+  if (value != null && value != '') {
+      if (value.substring(2, 3) != "/") {
+          value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+      }
+  } else {
+      value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+
+function planningDateRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'planningDate' + row).addClass("htMiddle").addClass("htCenter");
+  if (value != null && value != '') {
+      if (value.substring(2, 3) != "/") {
+          value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+      }
+      if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+          cellProperties.readOnly = 'true';
+          $(td).css("background-color", "rgb(232, 232, 232)");
+      }
+  } else {
+      value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+
 function dateOfIssueRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = "true";
   $(td)
@@ -205,12 +257,51 @@ function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) 
   $(td).html(value);
   return td;
 }
+function qualityRequirementRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'qualityRequirement' + row).addClass("htMiddle");
+    if (value != null && value != '') {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+
+function etaRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'eta' + row).addClass("htMiddle").addClass("htCenter");
+  if (value != null && value != '') {
+      if (value.substring(2, 3) != "/") {
+          value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+      }
+  } else {
+      value = '';
+  }
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = "true";
   $(td)
     .attr("id", "dischargePort" + row)
     .addClass("htMiddle");
   $(td).html(value);
+  return td;
+}
+function contSupplyRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'remark' + row).addClass("htMiddle");
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
+  if (!value) {
+      value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -235,6 +326,16 @@ function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
     .attr("id", "payer" + row)
     .addClass("htMiddle");
   $(td).html(value);
+  return td;
+}
+function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'payerNamer' + row).addClass("htMiddle");
+  if (!value) {
+      value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
   return td;
 }
 function personOfContainerRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -300,34 +401,40 @@ function configHandson() {
         case 3:
           return "Số Container";
         case 4:
-          return "Sztp";
+          return "House Bill";
         case 5:
-          return "Cấp từ ngày";
+          return '<span class="required">Kích Thước</span>';
         case 6:
-          return "Ngày hết hạn";
+          return '<span class="required">Hạn Lệnh</span>';
         case 7:
-          return "Chủ hàng";
+          return '<span class="required">Chủ Hàng</span>';
         case 8:
-          return "Tàu - Chuyến";
+          return '<span class="required">Ngày Dự <br>Kiến Bốc</span>';
         case 9:
-          return "Loại hàng";
+          return '<span class="required">Loại Hàng</span>';
         case 10:
-          return "Cảng Dở Hàng";
+          return 'Yêu Cầu <br>Chất Lượng';
         case 11:
-          return "T.Toán";
+          return '<span class="required">Tàu và Chuyến</span>';
         case 12:
-          return "TT T.Toán";
+          return "Ngày tàu đến";
         case 13:
-          return "Payer";
+          return '<span class="required">Cảng Dỡ Hàng</span>';
         case 14:
-          return "Người Cấp Container";
+          return 'Cấp Container <br>Ghi Chú';
         case 15:
-          return "Ghi Chú";
+          return 'PTTT';
         case 16:
+          return 'Mã Số Thuế';
+        case 17:
+          return 'Người Thanh Toán';
+        case 18:
+          return "Ghi Chú";
+        case 19:
           return "Thông Báo Lỗi"
       }
     },
-    colWidths: [21, 21, 150, 100, 50, 150, 150, 200, 250, 100, 100, 100, 100, 100, 100, 150, 200],
+    colWidths: [21, 21, 150, 100, 100, 150, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200, 200],
     filter: "true",
     columns: [
       {
@@ -349,53 +456,82 @@ function configHandson() {
         renderer: containerNoRenderer,
       },
       {
-        data: "sztp",
-        renderer: sztpRenderer,
-      },
-      {
-        data: "emptyExpireDem",
-        renderer: emptyExpireDemRenderer,
+        data: "housebilBtn",
+        renderer: houseBillBtnRenderer
       },
       {
         data: "sztp",
-        renderer: dateOfIssueRenderer,
+        type: "autocomplete",
+        strict: true,
+        renderer: sizeRenderer
+      },
+      {
+        data: "expiredDem",
+        type: "date",
+        dateFormat: "DD/MM/YYYY",
+        correctFormat: true,
+        defaultDate: new Date(),
+        renderer: expiredDemRenderer
       },
       {
         data: "consignee",
-        renderer: consigneeRenderer,
+        strict: true,
+        type: "autocomplete",
+        renderer: consigneeRenderer
       },
-      //vslNm = vslNm + "-" + "voyCarrier"
       {
-        data: "vslNm",
-        renderer: vslNmRenderer,
+        data: "planningDate",
+        type: "date",
+        dateFormat: "DD/MM/YYYY",
+        correctFormat: true,
+        defaultDate: new Date(),
+        renderer: planningDateRenderer
       },
       {
         data: "cargoType",
-        renderer: cargoTypeRenderer,
+        type: "autocomplete",
+        strict: true,
+        renderer: cargoTypeRenderer
+      },
+      {
+        data: "qualityRequirement",
+        renderer: qualityRequirementRenderer
+      },
+      {
+        data: "vslNm",
+        type: "autocomplete",
+        strict: true,
+        renderer: vslNmRenderer
+      },
+      {
+        data: "eta",
+        renderer: etaRenderer
       },
       {
         data: "dischargePort",
-        renderer: dischargePortRenderer,
+        type: "autocomplete",
+        strict: true,
+        renderer: dischargePortRenderer
+      },
+      {
+        data: "contSupplyRemark",
+        renderer: contSupplyRemarkRenderer
       },
       {
         data: "payType",
-        renderer: payTypeRenderer,
-      },
-      {
-        data: "paymentStatus",
-        renderer: paymentStatusTypeRenderer,
+        renderer: payTypeRenderer
       },
       {
         data: "payer",
-        renderer: payerRenderer,
+        renderer: payerRenderer
       },
       {
-        data: "sztp",
-        renderer: personOfContainerRenderer,
+        data: "payerName",
+        renderer: payerNameRenderer
       },
       {
         data: "remark",
-        renderer: remarkRenderer,
+        renderer: remarkRenderer
       },
       {
         data: "msg",
@@ -742,4 +878,11 @@ function retryOrder() {
   }, function () {
     // Do nothing
   });
+}
+function openHouseBillForm(shipmentDetailId) {
+  if (shipmentDetailId == null) {
+      $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
+      return;
+  }
+  $.modal.openCustomForm("Khai báo house bill", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
 }

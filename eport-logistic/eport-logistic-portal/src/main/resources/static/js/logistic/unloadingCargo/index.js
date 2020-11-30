@@ -2461,7 +2461,6 @@ function loadListComment(shipmentCommentId) {
         let commentNumber = 0;
         if (data.shipmentComments != null) {
           data.shipmentComments.forEach(function (element, index) {
-            console.log(element);
             let createTime = element.createTime;
             let date = "";
             let time = "";
@@ -2503,7 +2502,6 @@ function loadListComment(shipmentCommentId) {
               "</span></div>";
             // Content comment
             if (element.content) {
-              console.log('alo', element.content);
               html +=
                 "<div><span>" +
                 element.content.replaceAll("#{domain}", domain) +
