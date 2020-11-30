@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="house_bill" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="befdddb3-593e-4d04-a960-dcbbebcf0bf8">
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="house_bill" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="befdddb3-593e-4d04-a960-dcbbebcf0bf8">
 	<property name="ireport.zoom" value="1.6105100000000014"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="249"/>
@@ -28,7 +29,7 @@
 		<field name="sztp" class="java.lang.String"/>
 		<field name="emptyContainerDepot" class="java.lang.String"/>
 		<field name="expiredDem" class="java.util.Date"/>
-		<field name="detFreeTime" class="java.lang.Integer"/>
+		<field name="detFreeTime" class="java.lang.String"/>
 		<variable name="stt" class="java.lang.Integer">
 			<variableExpression><![CDATA[$V{stt} + 1]]></variableExpression>
 			<initialValueExpression><![CDATA[0]]></initialValueExpression>
@@ -266,7 +267,7 @@
 		<band height="55" splitType="Stretch">
 			<componentElement>
 				<reportElement key="table" style="table" x="0" y="0" width="555" height="55" uuid="f35737ea-6a86-458d-850d-fa1d972af85f"/>
-				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="Blank">
 					<datasetRun subDataset="Table Dataset 1" uuid="06541a11-07d3-416d-9452-70010229312e">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{list})]]></dataSourceExpression>
 					</datasetRun>

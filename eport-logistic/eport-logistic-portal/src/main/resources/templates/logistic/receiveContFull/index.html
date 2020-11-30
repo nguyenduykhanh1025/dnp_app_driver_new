@@ -116,10 +116,20 @@
               <div data-options="region:'center'" id="right-side__main-table">
                 <div class="panel-header" style="width: 100%; background-color: #f3f7fa">
                   <div class="panel-title" style="color: #333">Thông tin lô</div>
+                  
+                  <!-- <div style="margin-left: 10px;">
+                   <a id="attachIcon" class="hidden" href="javascript:void(0)"  
+                    th:attr="data-url=@{/logistic/receive-cont-full/shipment/{shipmentId}/shipment-detail}">
+                    <i class="fa fa-paperclip" style="font-size:2rem;" title="Xem hình ảnh booking đính kèm"></i>
+                  </a> 
+                </div> -->
+                  
                   <div class="panel-tool" id="step-area">
                     <ul class="right-info">
-                      <li><a id="registerStatus" class="disable">Khai báo</a></li>
+                      <li><a id="registerStatus" class="disable">Khai báo</a></li> 
+                      <!-- <li><a id="acceptStatus" class="disable">Chờ kiểm tra</a></li> -->
                       <li><a id="customStatus" class="disable">Thông quan</a></li>
+                        
                       <li><a id="verifyStatus" class="disable">Xác thực</a></li>
                       <li><a id="paymentStatus" class="disable">Thanh toán</a></li>
                       <li><a id="finishStatus" class="disable">Hoàn thành</a></li>
@@ -138,16 +148,32 @@
                               ></span
                             >
                           </a>
-                        </td>
+                        </td> 
+                        
                         <td>
                           <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
                             <span class="l-btn-left"
                               ><span class="l-btn-text">
-                                <button id="customBtn" onclick="checkCustomStatus()" disabled class="btn btn-sm btn-primary"><i class="fa fa-address-card text-primary"></i> Khai hải quan</button></span
+                                <button id="acceptBtn" onclick="CheckShipmentDetail()"  class="btn btn-sm btn-primary">
+                                	<i class="fa fa-save text-primary"></i>Yêu cầu xác nhận</button></span
                               ></span
                             >
                           </a>
                         </td>
+                        
+                        <td>
+                          <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                            <span class="l-btn-left">
+                            	<span class="l-btn-text">
+                                	<button id="customBtn" onclick="checkCustomStatus()" disabled class="btn btn-sm btn-primary">
+                                	<i class="fa fa-address-card text-primary"></i> Khai hải quan</button>
+                                </span>
+                             </span>
+                          </a>
+                        </td>
+                        
+                        
+                        
                         <td>
                           <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
                             <span class="l-btn-left"
@@ -190,7 +216,7 @@
                           </div>
                         </td>
                         <td width="100%"></td>
-                        <td>
+                        <!-- <td>
                           <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
                             <span class="l-btn-left"
                               ><span class="l-btn-text">
@@ -207,7 +233,7 @@
                               ></span
                             >
                           </a>
-                        </td>
+                        </td> -->
                       </tr>
                     </table>
                   </div>
@@ -240,7 +266,7 @@
       var sId = /*[[${sId}]]*/;
       var domain = /*[[${domain}]]*/;
     </script>
-    <script th:src="@{/js/logistic/receiveContFull/layout.js?v=1}"></script>
-    <script th:src="@{/js/logistic/receiveContFull/index.js?v=1}"></script>
+    <script th:src="@{/js/logistic/receiveContFull/layout.js?v=12}"></script>
+    <script th:src="@{/js/logistic/receiveContFull/index.js?v=123}"></script>
   </body>
 </html>

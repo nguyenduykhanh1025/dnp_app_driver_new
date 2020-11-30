@@ -139,7 +139,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		}
 		return error();
 	}
-
+	
 	// FORM ADD NEW SHIPMENT
 	@GetMapping("/shipment/add")
 	public String add(ModelMap mmap) {

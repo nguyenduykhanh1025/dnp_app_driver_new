@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<th:block th:include="include :: header('NAPAS PAYMENT GATEWAY')" />
+</head>
+<body>
+	<th:block th:include="include :: footer" />
+	<form id="merchant-form"
+		action="https://test-merchant.napas.com.vn/ecom3stg/finalHostedCheckout.jsp?merchantId=DANANGPORT"
+		method="POST"></form>
+	<div id="napas-widget-container"></div>
+	<script type="text/javascript" id="napas-widget-script"
+		src="https://dps-staging.napas.com.vn/api/restjs/resources/js/napas.paymentpage.min.js"
+		merchantId="DANANGPORT" deviceId="deviceId" environment="WebApp"
+		cardScheme="AtmCard" enable3DSecure="false" apiOperation="PAY"
+		channel="6014" sourceOfFundsType="CARD"
+		th:attr="clientIP=${clientIp},
+        orderId=${data.order.id},
+        orderReference=${referenceOrder},
+        orderAmount=${data.order.amount},
+        orderCurrency=${data.order.currency},
+        dataKey=${data.dataKey},
+        napasKey=${data.napasKey}">
+		
+	</script>
+</body>
+</html>

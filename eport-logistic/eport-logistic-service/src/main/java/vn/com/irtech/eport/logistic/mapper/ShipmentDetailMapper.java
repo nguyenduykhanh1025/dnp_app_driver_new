@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
@@ -22,6 +23,12 @@ public interface ShipmentDetailMapper {
 	 * @return Shipment Details
 	 */
 	public ShipmentDetail selectShipmentDetailById(Long id);
+	
+	
+	public ShipmentDetail selectShipmentDetailByDetailId(String shipmentDetailIds);
+	
+	
+	 
 
 	/**
 	 * Get Shipment Details List
@@ -30,6 +37,15 @@ public interface ShipmentDetailMapper {
 	 * @return Shipment Details List
 	 */
 	public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail);
+	
+	
+	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail);
+	
+	public List<ShipmentDetail> selectShipmentDetailDangerous(ShipmentDetail shipmentDetail);
+	
+	public List<ShipmentDetail> selectShipmentDetailListContOverSize(ShipmentDetail shipmentDetail);
+	
+	
 
 	/**
 	 * Add Shipment Details
@@ -47,6 +63,10 @@ public interface ShipmentDetailMapper {
 	 */
 	public int updateShipmentDetail(ShipmentDetail shipmentDetail);
 
+	
+	public int updateShipmentDetailApply(ShipmentDetail shipmentDetail);
+	
+	
 	/**
 	 * Delete Shipment Details
 	 * 
@@ -66,6 +86,10 @@ public interface ShipmentDetailMapper {
 
 	public List<ShipmentDetail> selectShipmentDetailByIds(@Param("shipmentDetailIds") String[] ids,
 			@Param("logisticGroupId") Long logisticGroupId);
+	
+	
+	public List<ShipmentDetail> selectConfirmShipmentDetailByIds(String[] shipmentDetailIds);
+	 
 
 	public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
 
@@ -176,8 +200,8 @@ public interface ShipmentDetailMapper {
 	 * @return int
 	 */
 	public int updateShipmentDetailByIds(@Param("shipmentDetailIds") String[] shipmentDetailIds,
-			@Param("shipmentDetail") ShipmentDetail shipmentDetail);
-
+			@Param("shipmentDetail") ShipmentDetail shipmentDetail); 
+ 
 	/**
 	 * Reset custom status to null
 	 * 

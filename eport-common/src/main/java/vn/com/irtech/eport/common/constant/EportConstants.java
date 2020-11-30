@@ -103,11 +103,11 @@ public interface EportConstants {
 	/** Container status process order */
 	public static final Integer CONTAINER_STATUS_PROCESSING = 2;
 	/** Container status process order */
-//	public static final Integer CONTAINER_STATUS_PAYMENT = 3;
-//	/** Container status process order */
-//	public static final Integer CONTAINER_STATUS_CUSTOM = 4;
-//	/** Container status process order */
-//	public static final Integer CONTAINER_STATUS_FINISH = 5;
+	// public static final Integer CONTAINER_STATUS_PAYMENT = 3;
+	// /** Container status process order */
+	// public static final Integer CONTAINER_STATUS_CUSTOM = 4;
+	// /** Container status process order */
+	// public static final Integer CONTAINER_STATUS_FINISH = 5;
 
 	// Container supply status
 	/** Container supply status init */
@@ -282,7 +282,7 @@ public interface EportConstants {
 	/** Key name for gate detection info saved in cache */
 	public static final String CACHE_GATE_DETECTION_KEY = "gateDetectionInfo";
 
-	// Synchronize queue type
+// Synchronize queue type
 	/** Sync queue type expired dem */
 	public static final String SYNC_QUEUE_DEM = "DEM";
 	/** Sync queue type det free time */
@@ -314,9 +314,27 @@ public interface EportConstants {
 	/** partner type forwarder */
 	public static final String PTNR_TYPE_FORWARDER = "FWD";
 
-	// Bulletin active status
+	public static final String CONT_SPECIAL_STATUS_INIT = "I";// Lưu khai báo
+	public static final String CONT_SPECIAL_STATUS_REQ = "R";// chờ xác nhận
+	public static final String CONT_SPECIAL_STATUS_YES = "Y";// đã xac nhận
+	public static final String CONT_SPECIAL_STATUS_CANCEL = "C";// từ chối xác nhận
+
 	/** Bulletin draft status */
 	public static final Integer BULLETIN_DRAFT = 0;
 	/** Bulletin release status */
 	public static final Integer BULLETIN_RELEASE = 1;
+
+	/** date receipt status waiting */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_NO = "N";
+	/** date receipt status progress */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_PROGRESS = "P";
+	/** date receipt status success */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_SUCCESS = "S";
+	/** date receipt status error */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_ERROR = "E";
+
+	/** CFS House bill lock status */
+	public static final String CFS_HOUSE_BILL_LOCK = "L";
+	/** CFS House bill open (not lock) status */
+	public static final String CFS_HOUSE_BILL_OPEN = "O";
 }

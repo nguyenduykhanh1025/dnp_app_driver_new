@@ -27,6 +27,11 @@ public interface IShipmentDetailService {
 	 * @return Shipment Details
 	 */
 	public ShipmentDetail selectShipmentDetailById(Long id);
+	
+	
+	public ShipmentDetail selectShipmentDetailByDetailId(String shipmentDetailIds);
+	
+	
 
 	/**
 	 * Get Shipment Details List
@@ -35,7 +40,13 @@ public interface IShipmentDetailService {
 	 * @return Shipment Details List
 	 */
 	public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail);
-
+	
+	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail);
+	
+	public List<ShipmentDetail> selectShipmentDetailDangerous(ShipmentDetail shipmentDetail);
+	
+	public List<ShipmentDetail> selectShipmentDetailListContOverSize(ShipmentDetail shipmentDetail);
+	
 	/**
 	 * Add Shipment Details
 	 * 
@@ -51,6 +62,8 @@ public interface IShipmentDetailService {
 	 * @return result
 	 */
 	public int updateShipmentDetail(ShipmentDetail shipmentDetail);
+	
+	public int updateShipmentDetailApply(ShipmentDetail shipmentDetail);
 
 	/**
 	 * Batch Delete Shipment Details
@@ -76,6 +89,11 @@ public interface IShipmentDetailService {
 	 * @return
 	 */
 	public List<ShipmentDetail> selectShipmentDetailByIds(String ids, Long logisticGroupId);
+	
+	public List<ShipmentDetail> selectConfirmShipmentDetailByIds(String shipmentDetailIds);
+	
+	 
+	
 
 	public long countShipmentDetailList(ShipmentDetail shipmentDetail);
 
@@ -308,7 +326,9 @@ public interface IShipmentDetailService {
 	 * @param shipmentDetail
 	 * @return int
 	 */
-	public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail);
+	public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail); 
+	
+	
 
 	/**
 	 * Reset custom status to null for shipmentId
@@ -334,7 +354,21 @@ public interface IShipmentDetailService {
 	public int updateShipmentDetailByCondition(ShipmentDetail shipmentDetail);
 
 	/**
-	 * Make order loading cargo
+	 * Check cont have request status for cont special
+	 * 
+	 * @param shipmentDetail
+	 * @return boolean
+	 */
+	public Boolean isHaveContSpacialRequest(ShipmentDetail shipmentDetail);
+
+	/**
+	 * Check cont have done status for cont special
+	 * 
+	 * @param shipmentDetail
+	 * @return boolean
+	 */
+	public Boolean isHaveContSpacialYes(ShipmentDetail shipmentDetail);
+	 /* Make order loading cargo
 	 * 
 	 * @param shipmentDetails
 	 * @param shipment
@@ -343,5 +377,17 @@ public interface IShipmentDetailService {
 	 * @return List<ServiceSendFullRobotReq>
 	 */
 	public List<ServiceSendFullRobotReq> makeOrderLoadingCargo(List<ShipmentDetail> shipmentDetails, Shipment shipment,
+			String taxCode, boolean creditFlag);
+	
+	/**
+	 * Make order loading cargo
+	 * 
+	 * @param shipmentDetails
+	 * @param shipment
+	 * @param taxCode
+	 * @param creditFlag
+	 * @return List<ServiceSendFullRobotReq>
+	 */
+	public List<ServiceSendFullRobotReq> makeOrderUnloadingCargo(List<ShipmentDetail> shipmentDetails, Shipment shipment,
 			String taxCode, boolean creditFlag);
 }
