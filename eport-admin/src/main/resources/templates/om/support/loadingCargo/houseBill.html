@@ -2,49 +2,43 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<th:block th:include="include :: header('House Bill')" />
-<th:block th:include="include :: handsontable-css" />
-<th:block th:include="include :: easyui-css" />
-<link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:include="include :: header('House Bill')" />
+    <th:block th:include="include :: handsontable-css" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/eport/css/om/loadingCargo/loadingCargo.css}" rel="stylesheet" />
 </head>
 
 <body>
-	<div class="container">
-		<div class="content">
-			<div class="row">
-				<div class="col-sm-4">
-					<strong>Master Bill: </strong><label th:text="${masterBill}"></label>
-				</div>
-				<div class="col-sm-4">
-					<strong>Container No: </strong><label th:text="${containerNo}"></label>
-				</div>
-				<div class="col-sm-4">
-					<label>Số lượng hàng: </label> <input type="number"
-						id="houseBillNumber" style="width: 70px" value="1" />
-				</div>
-			</div>
-			<div class="datagrid-toolbar">
-				<table cellspacing="0" cellpadding="0">
-					<tbody>
-					</tbody>
-				</table>
-			</div>
-			<div id="container-grid" class="hot handsontable htColumnHeaders"></div>
-		</div>
-		<div class="layui-layer-btn footer">
-			<a class="layui-layer-btn0" onclick="closeForm()">Đóng</a>
-		</div>
-	</div>
+    <div class="container">
+        <div class="content">
+            <div class="row">
+                <div class="col-sm-4">
+                    <strong>Master Bill: </strong><label th:text="${masterBill}"></label>
+                </div>
+                <div class="col-sm-4">
+                    <strong>Container No: </strong><label th:text="${containerNo}"></label>
+                </div>
+                <div class="col-sm-4">
+                    <label>Số lượng hàng: </label>
+                    <input type="number" id="houseBillNumber" style="width: 70px;" value="1" readonly />
+                </div>
+            </div>
+            <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+        </div>
+        <div class="layui-layer-btn footer">
+            <a class="layui-layer-btn0" onclick="closeForm()">Đóng</a>
+        </div>
+    </div>
 </body>
 <th:block th:include="include :: footer" />
 <th:block th:include="include :: easyui-js" />
 <th:block th:include="include :: handsontable-js" />
 <script type="text/javascript" th:inline="javascript">
-  var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
-  var cfsHouseBills = /*[[${cfsHouseBills}]]*/;
+    var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
+    var cfsHouseBills = /*[[${cfsHouseBills}]]*/;
 </script>
-<script th:src="@{/eport/js/modules/om/support/loadingCargo/houseBill.js}"></script>
+<script th:src="@{/eport/js/modules/om/support/loadingCargo/houseBill.js?v=20201124}"></script>
 
 </html>

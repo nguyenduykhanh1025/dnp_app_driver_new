@@ -144,207 +144,9 @@ function historyRenderer(instance, td, row, col, prop, value, cellProperties) {
   let historyIcon = '<a id="custom" onclick="openHistoryFormCatos(' + row + ')" class="fa fa-window-restore easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
   $(td).addClass("htCenter").addClass("htMiddle").html(historyIcon);
 }
-
 function historyEportRenderer(instance, td, row, col, prop, value, cellProperties) {
   let historyIcon = '<a id="custom" onclick="openHistoryFormEport(' + row + ')" class="fa fa-history easyui-tooltip" title="Lịch Sử Eport" aria-hidden="true" style="color: #3498db;"></a>';
   $(td).addClass("htCenter").addClass("htMiddle").html(historyIcon);
-}
-function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "containerNo" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function houseBillBtnRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'houseBillBtn' + row).addClass("htMiddle").addClass("htCenter");
-  let shipmentDetailId;
-  if (sourceData && sourceData.length > row) {
-      shipmentDetailId = sourceData[row].id;
-  }
-  value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>Khai báo</button>';
-  $(td).html(value);
-  cellProperties.readOnly = 'true';
-  return td;
-}
-function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'sztp' + row).addClass("htMiddle");
-  if (value != null && value != '') {
-      if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
-          cellProperties.readOnly = 'true';
-          $(td).css("background-color", "rgb(232, 232, 232)");
-      }
-  }
-  if (sztpListDisable[row] == 1) {
-      cellProperties.readOnly = 'true';
-      $(td).css("background-color", "rgb(232, 232, 232)");
-  }
-  if (!value) {
-      value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-
-function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'expiredDem' + row).addClass("htMiddle").addClass("htCenter");
-  if (value != null && value != '') {
-      if (value.substring(2, 3) != "/") {
-          value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-      }
-  } else {
-      value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-
-function planningDateRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'planningDate' + row).addClass("htMiddle").addClass("htCenter");
-  if (value != null && value != '') {
-      if (value.substring(2, 3) != "/") {
-          value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-      }
-      if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
-          cellProperties.readOnly = 'true';
-          $(td).css("background-color", "rgb(232, 232, 232)");
-      }
-  } else {
-      value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-
-function dateOfIssueRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "sztp" + row)
-    .addClass("htMiddle");
-  $(td).html("");
-  return td;
-}
-function emptyExpireDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "emptyExpireDem" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "consignee" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "vslNm" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "cargoType" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function qualityRequirementRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'qualityRequirement' + row).addClass("htMiddle");
-    if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
-    }
-    if (!value) {
-        value = '';
-    }
-    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-    return td;
-}
-
-function etaRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'eta' + row).addClass("htMiddle").addClass("htCenter");
-  if (value != null && value != '') {
-      if (value.substring(2, 3) != "/") {
-          value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-      }
-  } else {
-      value = '';
-  }
-  cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "dischargePort" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function contSupplyRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'remark' + row).addClass("htMiddle");
-  cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
-  if (!value) {
-      value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "payType" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function paymentStatusTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "paymentStatus" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "payer" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'payerNamer' + row).addClass("htMiddle");
-  if (!value) {
-      value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  cellProperties.readOnly = 'true';
-  $(td).css("background-color", "rgb(232, 232, 232)");
-  return td;
-}
-function personOfContainerRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "orderNo" + row)
-    .addClass("htMiddle");
-  $(td).html("");
-  return td;
 }
 function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = "true";
@@ -354,25 +156,146 @@ function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html(value);
   return td;
 }
-function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "remark" + row)
-    .addClass("htMiddle");
-  $(td).html(value);
-  return td;
-}
-function msgRenderer(instance, td, row, col, prop, value, cellProperties) {
-  // cellProperties.readOnly = "true";
-  $(td)
-    .attr("id", "msg" + row)
-    .addClass("htMiddle");
-  if (processOrderSelected.msg == null) {
-    value = ''
+function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'containerNo' + row).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
   }
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
+function houseBillBtnRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'houseBillBtn' + row).addClass("htMiddle").addClass("htCenter");
+  let shipmentDetailId;
+  if (sourceData && sourceData.length > row) {
+    shipmentDetailId = sourceData[row].id;
+  }
+  value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>Khai báo</button>';
+  $(td).html(value);
+  cellProperties.readOnly = 'true';
+  return td;
+}
+function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'expiredDem' + row).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'consignee' + row).addClass("htMiddle");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function planningDateRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'planningDate' + row).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'cargoType' + row).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function qualityRequirementRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'qualityRequirement' + row).addClass("htMiddle");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function etaRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'eta' + row).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'dischargePort' + row).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function contSupplyRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'remark' + row).addClass("htMiddle");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'payType' + row).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'payer' + row).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'payerNamer' + row).addClass("htMiddle");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'remark' + row).addClass("htMiddle");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+
 //CONFIGURATE HANDSONTABLE
 function configHandson() {
   config = {
@@ -399,42 +322,42 @@ function configHandson() {
         case 2:
           return "Số Tham Chiếu";
         case 3:
-          return "Số Container";
+          return "Container No";
         case 4:
           return "House Bill";
         case 5:
-          return '<span class="required">Kích Thước</span>';
+          return "Ngày Đóng Hàng";
         case 6:
-          return '<span class="required">Hạn Lệnh</span>';
+          return 'Kích Thước';
         case 7:
-          return '<span class="required">Chủ Hàng</span>';
+          return 'Hạn Lệnh';
         case 8:
-          return '<span class="required">Ngày Dự <br>Kiến Bốc</span>';
+          return 'Chủ Hàng';
         case 9:
-          return '<span class="required">Loại Hàng</span>';
+          return 'Ngày Dự <br>Kiến Bốc';
         case 10:
-          return 'Yêu Cầu <br>Chất Lượng';
+          return 'Loại Hàng';
         case 11:
-          return '<span class="required">Tàu và Chuyến</span>';
+          return 'Yêu Cầu <br>Chất Lượng';
         case 12:
-          return "Ngày tàu đến";
+          return 'Tàu và Chuyến';
         case 13:
-          return '<span class="required">Cảng Dỡ Hàng</span>';
+          return "Ngày tàu đến";
         case 14:
-          return 'Cấp Container <br>Ghi Chú';
+          return 'Cảng Dỡ Hàng';
         case 15:
-          return 'PTTT';
+          return 'Cấp Container <br>Ghi Chú';
         case 16:
-          return 'Mã Số Thuế';
+          return 'PTTT';
         case 17:
-          return 'Người Thanh Toán';
+          return 'Mã Số Thuế';
         case 18:
-          return "Ghi Chú";
+          return 'Người Thanh Toán';
         case 19:
-          return "Thông Báo Lỗi"
+          return "Ghi Chú";
       }
     },
-    colWidths: [21, 21, 150, 100, 100, 150, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200, 200],
+    colWidths: [21, 21, 150, 100, 100, 120, 150, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200],
     filter: "true",
     columns: [
       {
@@ -453,16 +376,22 @@ function configHandson() {
       },
       {
         data: "containerNo",
-        renderer: containerNoRenderer,
+        renderer: containerNoRenderer
       },
       {
         data: "housebilBtn",
         renderer: houseBillBtnRenderer
       },
       {
+        data: "dateReceipt",
+        type: "date",
+        dateFormat: "DD/MM/YYYY",
+        correctFormat: true,
+        defaultDate: new Date(),
+        renderer: dateReceiptRenderer
+      },
+      {
         data: "sztp",
-        type: "autocomplete",
-        strict: true,
         renderer: sizeRenderer
       },
       {
@@ -475,8 +404,6 @@ function configHandson() {
       },
       {
         data: "consignee",
-        strict: true,
-        type: "autocomplete",
         renderer: consigneeRenderer
       },
       {
@@ -489,8 +416,6 @@ function configHandson() {
       },
       {
         data: "cargoType",
-        type: "autocomplete",
-        strict: true,
         renderer: cargoTypeRenderer
       },
       {
@@ -499,8 +424,6 @@ function configHandson() {
       },
       {
         data: "vslNm",
-        type: "autocomplete",
-        strict: true,
         renderer: vslNmRenderer
       },
       {
@@ -509,8 +432,6 @@ function configHandson() {
       },
       {
         data: "dischargePort",
-        type: "autocomplete",
-        strict: true,
         renderer: dischargePortRenderer
       },
       {
@@ -533,10 +454,6 @@ function configHandson() {
         data: "remark",
         renderer: remarkRenderer
       },
-      {
-        data: "msg",
-        renderer: msgRenderer,
-      },
     ],
     beforeKeyDown: function (e) {
       let selected = hot.getSelected()[0];
@@ -555,7 +472,7 @@ function configHandson() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 16) {
+          if (selected[3] == 19) {
             e.stopImmediatePropagation();
           }
           break;
@@ -585,7 +502,6 @@ function loadTableByContainer(processOrderId) {
         if (sourceData) {
           for (let i = 0; i < sourceData.length; i++) {
             sourceData[i].vslNm = sourceData[i].vslNm + " - " + sourceData[i].vslName + " - " + sourceData[i].voyCarrier;
-            sourceData[i].msg = processOrderSelected.msg;
           }
         }
         hot.destroy();
@@ -609,10 +525,24 @@ function getSelectedRow(index, row) {
     // shipment info
     let html = '';
     html += 'Mã lô: ' + processOrderSelected.shipmentId;
-    if (processOrderSelected.errorImagePath) {
-      html += ' - Đường dẫn file ảnh lỗi: ' + processOrderSelected.errorImagePath;
-    }
-    $('#shipment-info').html(html);
+    $.ajax({
+      type: "GET",
+      url: PREFIX + "/shipments/" + processOrderSelected.shipmentId + "/shipment-images",
+      contentType: "application/json",
+      success: function (data) {
+        if (data.code == 0) {
+          if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
+            data.shipmentFiles.forEach(function (element, index) {
+              html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
+            });
+          }
+        }
+        $('#shipment-info').html(html);
+      },
+      error: function (errr) {
+        $('#shipment-info').html(html);
+      }
+    });
   }
 }
 
@@ -853,31 +783,12 @@ function openHistoryFormEport(row) {
   }
 }
 
-function retryOrder() {
-  layer.confirm("Xác nhận robot làm lệnh lại.", {
-    icon: 3,
-    title: "Xác Nhận",
-    btn: ['Đồng Ý', 'Hủy Bỏ']
-  }, function () {
-
-    // UPDATE PROCESS ORDER TO DOING STATUS
-    $.ajax({
-      url: PREFIX + "/order/retry",
-      method: "POST",
-      data: {
-        processOrderId: processOrderSelected.id
-      }
-    }).done(function (res) {
-      layer.close(layer.index);
-      if (res.code != 0) {
-        $.modal.alertError(res.msg);
-      } else {
-        $.modal.alertSuccess(res.msg);
-      }
-    });
-  }, function () {
-    // Do nothing
-  });
+function openHouseBillForm(shipmentDetailId) {
+  if (shipmentDetailId == null) {
+    $.modal.alertWarning('Conatiner này chưa được khai báo, không có house bill!');
+    return;
+  }
+  $.modal.openCustomForm("Khai báo house bill", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
 }
 function openHouseBillForm(shipmentDetailId) {
   if (shipmentDetailId == null) {

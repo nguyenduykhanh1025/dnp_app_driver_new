@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
@@ -34,6 +33,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ICfsHouseBillService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
@@ -41,110 +41,122 @@ import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Controller
 @RequestMapping("/om/support/loading-cargo")
-public class SupportLoadingCargoController extends OmBaseController{
+public class SupportLoadingCargoController extends OmBaseController {
 	protected final Logger logger = LoggerFactory.getLogger(SupportLoadingCargoController.class);
 	private final String PREFIX = "om/support/loadingCargo";
-    
-    @Autowired
-    private IProcessOrderService processOrderService;
-    
-    @Autowired
-    private IProcessBillService processBillService;
 
-    @Autowired
-    private IShipmentDetailService shipmentDetailService;
-    
-    @Autowired
-    private ILogisticGroupService logisticGroupService;
-    
-    @Autowired
-    private ICatosApiService catosService;
-    
-    @Autowired
-    private IShipmentService shipmentService;
-    
-    @Autowired
-    private IEdoService edoService;
-    
-    @Autowired
-    private IShipmentCommentService shipmentCommentService;
-    
-    @Autowired
-    private ServerConfig serverConfig;
+	@Autowired
+	private IProcessOrderService processOrderService;
 
-    @Autowired
+	@Autowired
+	private IProcessBillService processBillService;
+
+	@Autowired
+	private IShipmentDetailService shipmentDetailService;
+
+	@Autowired
+	private ILogisticGroupService logisticGroupService;
+
+	@Autowired
+	private ICatosApiService catosService;
+
+	@Autowired
+	private IShipmentService shipmentService;
+
+	@Autowired
+	private IShipmentCommentService shipmentCommentService;
+
+	@Autowired
 	private ICfsHouseBillService cfsHouseBillService;
-    
-    @GetMapping("/view")
-    public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap)
-    {
-    	if (sId != null) {
+
+	@Autowired
+	private IShipmentImageService shipmentImageService;
+
+	@Autowired
+	private ServerConfig serverConfig;
+
+	@GetMapping("/view")
+	public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
+		if (sId != null) {
 			mmap.put("sId", sId);
 		}
-    	mmap.put("domain", serverConfig.getUrl());
-    	
+		mmap.put("domain", serverConfig.getUrl());
+
 		LogisticGroup logisticGroup = new LogisticGroup();
-	    logisticGroup.setGroupName("Chọn đơn vị Logistics");
-	    logisticGroup.setId(0L);
-	    LogisticGroup logisticGroupParam = new LogisticGroup();
-	    logisticGroupParam.setDelFlag("0");
-	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
-	    logisticGroups.add(0, logisticGroup);
-	    mmap.put("logisticsGroups", logisticGroups);
+		logisticGroup.setGroupName("Chọn đơn vị Logistics");
+		logisticGroup.setId(0L);
+		LogisticGroup logisticGroupParam = new LogisticGroup();
+		logisticGroupParam.setDelFlag("0");
+		List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
+		logisticGroups.add(0, logisticGroup);
+		mmap.put("logisticsGroups", logisticGroups);
 		return PREFIX + "/loadingCargo";
-    }
-    
-    @GetMapping("/verify-executed-command-success/process-order/{processOrderId}")
-    public String verifyExecutedCommandSuccess(@PathVariable Long processOrderId, ModelMap mmap) {
-  	  mmap.put("processOrderId", processOrderId);
-  	  return PREFIX + "/verifyExecutedCommandSuccess";
-    }
-    
-    @GetMapping("/reset-process-status/process-order/{processOrderId}")
-    public String resetProcessStatus(@PathVariable Long processOrderId, ModelMap mmap) {
-  	  mmap.put("processOrderId", processOrderId);
-  	  return PREFIX + "/verifyResetProcessStatus";
-    }
-    
-    @PostMapping("/orders")
+	}
+
+	@GetMapping("/verify-executed-command-success/process-order/{processOrderId}")
+	public String verifyExecutedCommandSuccess(@PathVariable Long processOrderId, ModelMap mmap) {
+		mmap.put("processOrderId", processOrderId);
+		return PREFIX + "/verifyExecutedCommandSuccess";
+	}
+
+	@GetMapping("/reset-process-status/process-order/{processOrderId}")
+	public String resetProcessStatus(@PathVariable Long processOrderId, ModelMap mmap) {
+		mmap.put("processOrderId", processOrderId);
+		return PREFIX + "/verifyResetProcessStatus";
+	}
+
+	@GetMapping("/shipment-detail/{shipmentDetailId}/house-bill")
+	public String getCfsHouseBill(@PathVariable("shipmentDetailId") Long shipmentDetailId, ModelMap mmap) {
+		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		if (shipmentDetail != null) {
+			mmap.put("masterBill", shipmentDetail.getBookingNo());
+			mmap.put("containerNo", shipmentDetail.getContainerNo());
+			mmap.put("shipmentDetailId", shipmentDetailId);
+		}
+		return PREFIX + "/houseBill";
+	}
+
+	@PostMapping("/orders")
 	@ResponseBody
 	public TableDataInfo getListOrder(@RequestBody PageAble<ProcessOrder> param) {
-        startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
-        ProcessOrder processOrder = param.getData();
-        if (processOrder == null) {
-            processOrder = new ProcessOrder();
-        }
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		ProcessOrder processOrder = param.getData();
+		if (processOrder == null) {
+			processOrder = new ProcessOrder();
+		}
 		processOrder.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
 		List<ProcessOrder> processOrders = processOrderService.selectProcessOrderListWithLogisticName(processOrder);
-        TableDataInfo dataList = getDataTable(processOrders);
+		TableDataInfo dataList = getDataTable(processOrders);
 		return dataList;
-    }
-    
-    @GetMapping("/processOrderId/{processOrderId}/shipmentDetails")
+	}
+
+	@GetMapping("/processOrderId/{processOrderId}/shipmentDetails")
 	@ResponseBody
 	public AjaxResult getshipmentDetails(@PathVariable Long processOrderId) {
-    	AjaxResult ajaxResult = success();
-    	ShipmentDetail shipmentDetail = new ShipmentDetail();
-    	shipmentDetail.setProcessOrderId(processOrderId);
-        List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-        if (shipmentDetails.size() > 0) {
-        	ajaxResult.put("shipmentDetails", shipmentDetails);
-        	return ajaxResult;
-        }
+		AjaxResult ajaxResult = success();
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setProcessOrderId(processOrderId);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		if (shipmentDetails.size() > 0) {
+			ajaxResult.put("shipmentDetails", shipmentDetails);
+			return ajaxResult;
+		}
 		return error();
-    }
-    @Log(title = "Xác nhận làm lệnh OK(OM)", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
-    @PostMapping("/executed-the-command-catos-success")
-    @ResponseBody
-    public AjaxResult executedTheCommandCatosSuccess(Long processOrderId, String content ) {
-    	ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
-		if(processOrder == null) {
+	}
+
+	@Log(title = "Xác nhận làm lệnh OK(OM)", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
+	@PostMapping("/executed-the-command-catos-success")
+	@ResponseBody
+	public AjaxResult executedTheCommandCatosSuccess(Long processOrderId, String content) {
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
+		if (processOrder == null) {
 			// Co loi bat thuong xay ra. order khong ton tai
 			throw new IllegalArgumentException("Process order not exist");
 		}
@@ -152,10 +164,11 @@ public class SupportLoadingCargoController extends OmBaseController{
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setProcessOrderId(processOrderId);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-    	//get orderNo from catos
+		// get orderNo from catos
 		String orderNo = null, invoiceNo = null;
-    	if(CollectionUtils.isNotEmpty(shipmentDetails)) {
-			List<ContainerInfoDto> cntrInfos = catosService.getContainerInfoDtoByContNos(shipmentDetails.get(0).getContainerNo());
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			List<ContainerInfoDto> cntrInfos = catosService
+					.getContainerInfoDtoByContNos(shipmentDetails.get(0).getContainerNo());
 			if (CollectionUtils.isNotEmpty(cntrInfos)) {
 				for (ContainerInfoDto cntrInfo : cntrInfos) {
 					if ("E".equals(cntrInfo.getFe())) {
@@ -163,19 +176,19 @@ public class SupportLoadingCargoController extends OmBaseController{
 					}
 				}
 			}
-    	}
-    	if(orderNo == null || orderNo.equals("")) {
-    		return error();
-    	}
-    	//get Invoice
-    	if(processOrder.getPayType().equals("Cash") && orderNo != null) {
-    		invoiceNo = catosService.getInvoiceNoByOrderNo(orderNo);
-    	}
-    	//update processOrder
-    	processOrder.setOrderNo(orderNo);
+		}
+		if (orderNo == null || orderNo.equals("")) {
+			return error();
+		}
+		// get Invoice
+		if (processOrder.getPayType().equals("Cash") && orderNo != null) {
+			invoiceNo = catosService.getInvoiceNoByOrderNo(orderNo);
+		}
+		// update processOrder
+		processOrder.setOrderNo(orderNo);
 		processOrder.setInvoiceNo(invoiceNo);
-		processOrder.setStatus(2); // FINISH		
-		processOrder.setResult("S"); // RESULT SUCESS	
+		processOrder.setStatus(2); // FINISH
+		processOrder.setResult("S"); // RESULT SUCESS
 		processOrderService.updateProcessOrder(processOrder);
 		// SAVE BILL TO PROCESS BILL BY INVOICE NO
 		if (invoiceNo != null && !invoiceNo.equals("")) {
@@ -184,34 +197,35 @@ public class SupportLoadingCargoController extends OmBaseController{
 			processBillService.saveProcessBillWithCredit(shipmentDetails, processOrder);
 		}
 
-		//notify msg to Logistic
-		if(content != null && content != "") {
+		// notify msg to Logistic
+		if (content != null && content != "") {
 			ShipmentComment shipmentComment = new ShipmentComment();
-	    	Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
-	    	SysUser user = getUser();
-	    	shipmentComment.setShipmentId(shipment.getId());
-	    	shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
-	    	shipmentComment.setUserId(user.getUserId());
-	    	shipmentComment.setUserType("S");// S: DNP Staff
-	    	shipmentComment.setUserName(getUser().getUserName());
-	    	shipmentComment.setUserAlias(user.getDept().getDeptName());//TODO get tạm username
-	    	shipmentComment.setCommentTime(new Date());
-	    	shipmentComment.setContent(content);
-	    	shipmentComment.setCreateTime(new Date());
-	    	shipmentComment.setCreateBy(getUser().getUserName());
+			Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
+			SysUser user = getUser();
+			shipmentComment.setShipmentId(shipment.getId());
+			shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
+			shipmentComment.setUserId(user.getUserId());
+			shipmentComment.setUserType("S");// S: DNP Staff
+			shipmentComment.setUserName(getUser().getUserName());
+			shipmentComment.setUserAlias(user.getDept().getDeptName());// TODO get tạm username
+			shipmentComment.setCommentTime(new Date());
+			shipmentComment.setContent(content);
+			shipmentComment.setCreateTime(new Date());
+			shipmentComment.setCreateBy(getUser().getUserName());
 			shipmentComment.setTopic(Constants.LOADING_CARGO_SUPPORT);
 			shipmentComment.setServiceType(shipment.getServiceType());
-	    	shipmentCommentService.insertShipmentComment(shipmentComment);
+			shipmentCommentService.insertShipmentComment(shipmentComment);
 		}
-    	return success();
-    }
-    @Log(title = "Reset Proccess Status(OM)", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
-    @PostMapping("/reset-process-status")
-    @Transactional
-    @ResponseBody
-    public AjaxResult resetProcessStatus(Long processOrderId, String content) {
-    	ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
-		if(processOrder == null) {
+		return success();
+	}
+
+	@Log(title = "Reset Proccess Status(OM)", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
+	@PostMapping("/reset-process-status")
+	@Transactional
+	@ResponseBody
+	public AjaxResult resetProcessStatus(Long processOrderId, String content) {
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
+		if (processOrder == null) {
 			// Co loi bat thuong xay ra. order khong ton tai
 			throw new IllegalArgumentException("Process order not exist");
 		}
@@ -224,10 +238,11 @@ public class SupportLoadingCargoController extends OmBaseController{
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setProcessOrderId(processOrderId);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		//update shipment detail 2 truong processOrderId, registerNo processStatus, status
+		// update shipment detail 2 truong processOrderId, registerNo processStatus,
+		// status
 		try {
-			if(shipmentDetails.size() > 0) {
-				for(ShipmentDetail i: shipmentDetails) {
+			if (shipmentDetails.size() > 0) {
+				for (ShipmentDetail i : shipmentDetails) {
 					i.setProcessOrderId(null);
 					i.setRegisterNo(null);
 					i.setProcessStatus("N");
@@ -238,35 +253,35 @@ public class SupportLoadingCargoController extends OmBaseController{
 					shipmentDetailService.resetShipmentDetailProcessStatus(i);
 				}
 			}
-			//delete record table process_order
+			// delete record table process_order
 			processOrderService.deleteProcessOrderById(processOrderId);
-			//notify msg to Logistic
-			if(content != null && content != "") {
+			// notify msg to Logistic
+			if (content != null && content != "") {
 				ShipmentComment shipmentComment = new ShipmentComment();
-		    	Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
-		    	shipmentComment.setShipmentId(shipment.getId());
-		    	shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
-		    	shipmentComment.setUserId(getUserId());
-		    	shipmentComment.setUserType("S");// S: DNP Staff
-		    	shipmentComment.setUserName(getUser().getUserName());
-		    	shipmentComment.setUserAlias(getUser().getUserName());//TODO get tạm username
-		    	shipmentComment.setCommentTime(new Date());
-		    	shipmentComment.setContent(content);
-		    	shipmentComment.setCreateTime(new Date());
-		    	shipmentComment.setCreateBy(getUser().getUserName());
+				Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
+				shipmentComment.setShipmentId(shipment.getId());
+				shipmentComment.setLogisticGroupId(shipment.getLogisticGroupId());
+				shipmentComment.setUserId(getUserId());
+				shipmentComment.setUserType("S");// S: DNP Staff
+				shipmentComment.setUserName(getUser().getUserName());
+				shipmentComment.setUserAlias(getUser().getUserName());// TODO get tạm username
+				shipmentComment.setCommentTime(new Date());
+				shipmentComment.setContent(content);
+				shipmentComment.setCreateTime(new Date());
+				shipmentComment.setCreateBy(getUser().getUserName());
 				shipmentComment.setTopic(Constants.LOADING_CARGO_SUPPORT);
 				shipmentComment.setServiceType(shipment.getServiceType());
-		    	shipmentCommentService.insertShipmentComment(shipmentComment);
+				shipmentCommentService.insertShipmentComment(shipmentComment);
 			}
-	    	return success();
+			return success();
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			e.getStackTrace();
 			return error();
 		}
-    }
-    
-    @PostMapping("/shipment/comment")
+	}
+
+	@PostMapping("/shipment/comment")
 	@ResponseBody
 	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
 		SysUser user = getUser();
@@ -279,22 +294,11 @@ public class SupportLoadingCargoController extends OmBaseController{
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
-		
+
 		// Add id to make background grey (different from other comment)
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
-	}
-    
-    @GetMapping("/shipment-detail/{shipmentDetailId}/house-bill")
-	public String getCfsHouseBill(@PathVariable("shipmentDetailId") Long shipmentDetailId, ModelMap mmap) {
-		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
-		if (shipmentDetail != null) {
-			mmap.put("masterBill", shipmentDetail.getBookingNo());
-			mmap.put("containerNo", shipmentDetail.getContainerNo());
-			mmap.put("shipmentDetailId", shipmentDetailId);
-		}
-		return PREFIX + "/houseBill";
 	}
 
 	@GetMapping("shipment-detail/{shipmentDetailId}/house-bills")
@@ -304,6 +308,20 @@ public class SupportLoadingCargoController extends OmBaseController{
 		cfsHouseBillParam.setShipmentDetailId(shipmentDetailId);
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("cfsHouseBills", cfsHouseBillService.selectCfsHouseBillList(cfsHouseBillParam));
+		return ajaxResult;
+	}
+
+	@GetMapping("/shipments/{shipmentId}/shipment-images")
+	@ResponseBody
+	public AjaxResult getShipmentImages(@PathVariable("shipmentId") Long shipmentId) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setShipmentId(shipmentId);
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+		for (ShipmentImage shipmentImage2 : shipmentImages) {
+			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+		}
+		ajaxResult.put("shipmentFiles", shipmentImages);
 		return ajaxResult;
 	}
 }

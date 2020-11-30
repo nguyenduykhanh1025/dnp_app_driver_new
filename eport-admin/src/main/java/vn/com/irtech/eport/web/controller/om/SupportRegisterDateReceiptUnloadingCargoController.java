@@ -21,47 +21,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.Gson;
-
-import vn.com.irtech.eport.carrier.domain.Edo;
-import vn.com.irtech.eport.carrier.service.IEdoService;
-import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.config.ServerConfig;
-import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
-import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.common.enums.BusinessType;
-import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.CfsHouseBill;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
-import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
-import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
-import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ICfsHouseBillService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
-import vn.com.irtech.eport.logistic.service.IProcessBillService;
-import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.domain.SysUser;
-import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Controller
-@RequestMapping("/om/register-date-receipt-loading-cargo")
-public class SupportRegisterDateReceiptLoadingCargoController extends OmBaseController{
-	protected final Logger logger = LoggerFactory.getLogger(SupportRegisterDateReceiptLoadingCargoController.class);
+@RequestMapping("/om/register-date-receipt-unloading-cargo")
+public class SupportRegisterDateReceiptUnloadingCargoController extends OmBaseController{
+protected final Logger logger = LoggerFactory.getLogger(SupportRegisterDateReceiptLoadingCargoController.class);
 	
-	private final String PREFIX = "om/registerDateReceiptLoadingCargo";
+	private final String PREFIX = "om/registerDateReceiptUnloadingCargo";
 
 	@Autowired
 	private IShipmentService shipmentService;
@@ -140,7 +125,7 @@ public class SupportRegisterDateReceiptLoadingCargoController extends OmBaseCont
 			params = new HashMap<>();
 		}
 		params.put("processStatus", "Y");
-		Integer[] serviceArray = { EportConstants.SERVICE_LOADING_CARGO };
+		Integer[] serviceArray = { EportConstants.SERVICE_UNLOADING_CARGO };
 		params.put("serviceArray", serviceArray);
 //		params.put("dateReceiptStatus", EportConstants.DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_PROGRESS);
 		shipment.setParams(params);
