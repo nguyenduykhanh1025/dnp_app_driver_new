@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,16 +28,12 @@ import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
-import vn.com.irtech.eport.common.utils.StringUtils;
-import vn.com.irtech.eport.logistic.domain.CfsHouseBill;
-import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
-import vn.com.irtech.eport.logistic.service.ICfsHouseBillService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -53,10 +48,10 @@ import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 //  /om/support/convert/emty-full
 
 //  /om/support/loading-cargo/view
-@RequestMapping("/om/support/convert/emty-full")
-public class SupportConvertEmptyFullController extends OmBaseController{
-	protected final Logger logger = LoggerFactory.getLogger(SupportConvertEmptyFullController.class);
-	private final String PREFIX = "om/support/convertEmptyFull";
+@RequestMapping("/om/support/convert/full-emty")
+public class SupportConvertFullToEmptyController extends OmBaseController{
+	protected final Logger logger = LoggerFactory.getLogger(SupportConvertFullToEmptyController.class);
+	private final String PREFIX = "om/support/convertFullEmpty";
     
     @Autowired
     private IProcessOrderService processOrderService;
@@ -84,9 +79,6 @@ public class SupportConvertEmptyFullController extends OmBaseController{
     
     @Autowired
     private ServerConfig serverConfig;
-    
-    @Autowired
-	private ICfsHouseBillService cfsHouseBillService;
 
     /**
      * @param sId
@@ -94,7 +86,7 @@ public class SupportConvertEmptyFullController extends OmBaseController{
      * @return
      */
     @GetMapping("/view")
-    public String getViewSupportEmptyFull(@RequestParam(required = false) Long sId, ModelMap mmap)
+    public String getViewSupportFullEmpty(@RequestParam(required = false) Long sId, ModelMap mmap)
     {
     	if (sId != null) {
 			mmap.put("sId", sId);
@@ -109,7 +101,7 @@ public class SupportConvertEmptyFullController extends OmBaseController{
 	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
 	    logisticGroups.add(0, logisticGroup);
 	    mmap.put("logisticsGroups", logisticGroups);
-		return PREFIX + "/emptyFull";
+		return PREFIX + "/fullEmpty";
     }
     
     /**
@@ -331,101 +323,5 @@ public class SupportConvertEmptyFullController extends OmBaseController{
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
 	}
-    
-	@Log(title = "Yêu cầu xác nhận", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC) 
-	@PostMapping("/shipment-detail/request-confirm") 
-	@ResponseBody  
-	public AjaxResult CheckShipmentDetail(String shipmentDetailIds ) {   
-		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();  
-		shipmentDetailUpdate.setFe("F");
-		shipmentDetailUpdate.setFinishStatus("Y"); 
-		//shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds,shipmentDetailUpdate); 
-		shipmentDetailService.updateShipmentDetailByProcessOderIds(shipmentDetailIds,shipmentDetailUpdate);
-		return success("Xác nhận chuyển full thành công");
-		} 
-	
-	// house bill
-	@GetMapping("/shipment-detail/{shipmentDetailId}/house-bill")
-	public String getCfsHouseBill(@PathVariable("shipmentDetailId") Long shipmentDetailId, ModelMap mmap) {
-		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
-		//if (shipmentDetail != null && getUser().getGroupId().equals(shipmentDetail.getLogisticGroupId())) {
-			mmap.put("masterBill", shipmentDetail.getBookingNo());
-			mmap.put("containerNo", shipmentDetail.getContainerNo());
-			mmap.put("shipmentDetailId", shipmentDetailId);
-		//}
-		return PREFIX + "/houseBill";
-	}
-	
-	@GetMapping("shipment-detail/{shipmentDetailId}/house-bills")
-	@ResponseBody
-	public AjaxResult getHouseBillList(@PathVariable("shipmentDetailId") Long shipmentDetailId) {
-		CfsHouseBill cfsHouseBillParam = new CfsHouseBill();
-		cfsHouseBillParam.setShipmentDetailId(shipmentDetailId);
-		//cfsHouseBillParam.setLogisticGroupId(getUser().getGroupId());
-		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("cfsHouseBills", cfsHouseBillService.selectCfsHouseBillList(cfsHouseBillParam));
-		return ajaxResult;
-	}
-	
-	
-	// SAVE OR EDIT SHIPMENT DETAIL
-	@Log(title = "Lưu Khai Báo House Bill", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/shipment-detail/{shipmentDetailId}/house-bills")
-	@Transactional
-	@ResponseBody
-	public AjaxResult saveHouseBill(@RequestBody List<CfsHouseBill> cfsHouseBills,
-			@PathVariable("shipmentDetailId") Long shipmentDetailId) {
-		if (CollectionUtils.isNotEmpty(cfsHouseBills)) {
-			//LogisticAccount user = getUser();
-			
-			
-			for (CfsHouseBill inputHouseBill : cfsHouseBills) {
-				if (inputHouseBill.getId() != null) {
-					inputHouseBill.setShipmentDetailId(shipmentDetailId);
-					//inputHouseBill.setUpdateBy(user.getUserName());
-					cfsHouseBillService.updateCfsHouseBill(inputHouseBill);
-				} else {
-					//inputHouseBill.setLogisticGroupId(user.getGroupId());
-					inputHouseBill.setShipmentDetailId(shipmentDetailId);
-					//inputHouseBill.setCreateBy(user.getUserName());
-					cfsHouseBillService.insertCfsHouseBill(inputHouseBill);
-				}
-			}
-			return success("Lưu khai báo thành công");
-		}
-		return error("Lưu khai báo thất bại");
-	}
-
-	// DELETE SHIPMENT DETAIL
-	@Log(title = "Xóa Khai Báo House Bill", businessType = BusinessType.DELETE, operatorType = OperatorType.LOGISTIC)
-	@DeleteMapping("/house-bills")
-	@Transactional
-	@ResponseBody
-	public AjaxResult deleteHouseBills(String houseBillIds) {
-		if (houseBillIds != null) {
-			cfsHouseBillService.deleteCfsHouseBillByIds(houseBillIds);
-			return success("Xóa house bill thành công");
-		}
-		return error("Xóa house bill thất bại");
-	}
-
-	@PostMapping("/shipment-detail/register-date-receipt")
-	@ResponseBody
-	public AjaxResult registerDateReceiptShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
-		for (ShipmentDetail detail : shipmentDetails) {
-			if (detail.getDateReceipt() == null) {
-				return error("Bạn chưa nhập ngày rút hàng.");
-			} else {
-				ShipmentDetail shipmentDetailSave = shipmentDetailService.selectShipmentDetailById(detail.getId());
-				shipmentDetailSave.setDateReceipt(detail.getDateReceipt());
-				shipmentDetailSave.setDateReceiptStatus(EportConstants.DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_PROGRESS);
-				shipmentDetailService.updateShipmentDetail(shipmentDetailSave);
-			}
-		}
-
-		return success("Đăng kí ngày rút hàng thành công.");
-	}
-    
-    
 }
 

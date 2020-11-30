@@ -201,6 +201,12 @@ public interface ShipmentDetailMapper {
 	 */
 	public int updateShipmentDetailByIds(@Param("shipmentDetailIds") String[] shipmentDetailIds,
 			@Param("shipmentDetail") ShipmentDetail shipmentDetail); 
+	
+	public int updateShipmentDetailByProcessOderIds(@Param("shipmentDetailIds") String[] shipmentDetailIds,
+			@Param("shipmentDetail") ShipmentDetail shipmentDetail); 
+	
+	
+	
  
 	/**
 	 * Reset custom status to null

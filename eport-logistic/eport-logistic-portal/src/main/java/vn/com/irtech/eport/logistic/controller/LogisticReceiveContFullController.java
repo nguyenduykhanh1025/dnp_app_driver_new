@@ -1180,6 +1180,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody  
 	public AjaxResult CheckShipmentDetail(String shipmentDetailIds ) {   
 		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail(); 
+		 
+		//CheckShipmentDetail
+		
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectConfirmShipmentDetailByIds(shipmentDetailIds);
 		 
 		for (ShipmentDetail shipmentDetail : shipmentDetails) { 
