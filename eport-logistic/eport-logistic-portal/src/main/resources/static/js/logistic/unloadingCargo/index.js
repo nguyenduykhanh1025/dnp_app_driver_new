@@ -1959,6 +1959,7 @@ function save(isSendEmpty) {
   if (shipmentDetails.length > 0) {
     shipmentDetails[0].vgmChk = isSendEmpty;
   }
+  console.log(shipmentDetails);
   $.modal.loading("Đang xử lý...");
   $.ajax({
     url: prefix + "/shipment-detail",

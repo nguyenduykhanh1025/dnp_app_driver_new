@@ -58,8 +58,8 @@ import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Controller
 @RequestMapping("/om/register-date-receipt")
-public class SupportRegisterDateReceiptController extends OmBaseController{
-	protected final Logger logger = LoggerFactory.getLogger(SupportRegisterDateReceiptController.class);
+public class SupportRegisterDateReceiptLoadingCargoController extends OmBaseController{
+	protected final Logger logger = LoggerFactory.getLogger(SupportRegisterDateReceiptLoadingCargoController.class);
 	
 	private final String PREFIX = "om/registerDateReceipt";
 
