@@ -139,7 +139,7 @@ public class SupportRegisterDateReceiptLoadingCargoController extends OmBaseCont
 		if (params == null) {
 			params = new HashMap<>();
 		}
-		params.put("processStatus", "Y");
+//		params.put("processStatus", "Y");
 		Integer[] serviceArray = { EportConstants.SERVICE_LOADING_CARGO };
 		params.put("serviceArray", serviceArray);
 //		params.put("dateReceiptStatus", EportConstants.DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_PROGRESS);
