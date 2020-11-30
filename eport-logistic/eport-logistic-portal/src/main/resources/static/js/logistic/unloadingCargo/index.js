@@ -548,34 +548,22 @@ function statusIconsRenderer(
           '<i id="verify" class="fa fa-windows easyui-tooltip" title="Lỗi làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ed5565;"></i>';
         break;
     }
-    // Payment status
-    let payment =
-      '<i id="payment" class="fa fa-clock-o easyui-tooltip" title="Chưa Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
-    switch (sourceData[row].dateReceiptStatus) {
-      case "E":
-        payment =
-          '<i id="payment" class="fa fa-clock-o easyui-tooltip" title="Lỗi Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
-        break;
-      case "S":
-        payment =
-          '<i id="payment" class="fa fa-clock-o easyui-tooltip" title="Đã Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-        break;
-      case "P":
-        payment =
-          '<i id="payment" class="fa fa-clock-o easyui-tooltip" title="Chờ Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #f8ac59;"></i>';
-        break;
-
-      case null:
-        if (value > 2) {
-          payment = '<i id="payment" class="fa fa-clock-o easyui-tooltip" title="Có thể Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        }
-        break;
-      case "W":
-        if (value > 2) {
-          payment = '<i id="payment" class="fa fa-clock-o easyui-tooltip" title="Có thể Đăng Kí Ngày Rút Hàng" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        }
-        break;
-    }
+     // Date receipt status
+     let dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Chưa đăng ký ngày đóng hàng" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
+     switch (sourceData[row].dateReceiptStatus) {
+         case 'N':
+             dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Có thể đăng ký ngày đóng hàng" aria-hidden="true" style="margin-left: 8px; color: #3498db"></i>';
+             break;
+         case 'P':
+             dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng đang được xét duyệt" aria-hidden="true" style="margin-left: 8px; color: #f8ac59"></i>';
+             break;
+         case 'S':
+             dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng đã được chấp nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394"></i>';
+             break;
+         case 'E':
+             dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng bị từ chối" aria-hidden="true" style="margin-left: 8px; color: #ed5565"></i>';
+             break;
+     }
 
     // Return the content
     let content = "<div>";
@@ -583,7 +571,7 @@ function statusIconsRenderer(
     if (sourceData[row].loadingPort.substring(0, 2) != "VN") {
       content += customs;
     }
-    content += process + payment;
+    content += process + dateReceipt;
     content += "</div>";
     $(td).html(content);
   }
@@ -1959,7 +1947,6 @@ function save(isSendEmpty) {
   if (shipmentDetails.length > 0) {
     shipmentDetails[0].vgmChk = isSendEmpty;
   }
-  console.log(shipmentDetails);
   $.modal.loading("Đang xử lý...");
   $.ajax({
     url: prefix + "/shipment-detail",
