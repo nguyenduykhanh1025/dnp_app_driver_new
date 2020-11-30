@@ -108,6 +108,10 @@ public class CfsHouseBill extends BaseEntity
     @Excel(name = "Thiết bị sử dụng")
     private String equipment;
 
+     /** Thiết bị sử dụng */
+     @Excel(name = "Ngày lưu kho")
+     private Date storeFromDate;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -315,7 +319,15 @@ public class CfsHouseBill extends BaseEntity
     {
         return equipment;
     }
+    public void setStoreFromDate(Date storeFromDate) 
+    {
+        this.storeFromDate = storeFromDate;
+    }
 
+    public Date getStoreFromDate() 
+    {
+        return storeFromDate;
+    }
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -346,6 +358,7 @@ public class CfsHouseBill extends BaseEntity
             .append("shiftReceipt", getShiftReceipt())
             .append("dateReceipt", getDateReceipt())
             .append("equipment", getEquipment())
+            .append("storeFromDate", getStoreFromDate())
             .toString();
     }
 }
