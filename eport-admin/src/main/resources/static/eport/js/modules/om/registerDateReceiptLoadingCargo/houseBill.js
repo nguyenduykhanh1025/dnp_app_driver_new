@@ -554,3 +554,72 @@ function formatDateToSendServer(date) {
   expiredDem.setHours(23, 59, 59);
   return expiredDem.getTime();
 }
+
+function unlockHouseBill() {
+  let payload = [];
+  for (let i = 0; i < checkList.length; ++i) {
+    if (checkList[i] == 1) {
+      payload.push(sourceData[i]);
+    }
+  }
+
+  $.ajax({
+    url: PREFIX + "/house-bill/unlock",
+    method: "POST",
+    contentType: "application/json",
+    accept: "text/plain",
+    data: JSON.stringify(payload),
+    dataType: "text",
+    success: function (data) {
+      var result = JSON.parse(data);
+      if (result.code == 0) {
+        $.modal.alertSuccess(result.msg);
+        loadHouseBill();
+      } else {
+        $.modal.alertError(result.msg);
+      }
+      $.modal.closeLoading();
+    },
+    error: function (result) {
+      $.modal.alertError(
+        "Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại."
+      );
+      $.modal.closeLoading();
+    },
+  });
+
+}
+
+function lockHouseBill() {
+  let payload = [];
+  for (let i = 0; i < checkList.length; ++i) {
+    if (checkList[i] == 1) {
+      payload.push(sourceData[i]);
+    }
+  }
+
+  $.ajax({
+    url: PREFIX + "/house-bill/lock",
+    method: "POST",
+    contentType: "application/json",
+    accept: "text/plain",
+    data: JSON.stringify(payload),
+    dataType: "text",
+    success: function (data) {
+      var result = JSON.parse(data);
+      if (result.code == 0) {
+        $.modal.alertSuccess(result.msg);
+        loadHouseBill();
+      } else {
+        $.modal.alertError(result.msg);
+      }
+      $.modal.closeLoading();
+    },
+    error: function (result) {
+      $.modal.alertError(
+        "Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại."
+      );
+      $.modal.closeLoading();
+    },
+  });
+}
