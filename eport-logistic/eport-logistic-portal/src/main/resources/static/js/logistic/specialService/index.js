@@ -11,7 +11,7 @@ var checkList = [];
 var rowAmount = 0;
 var shipmentSearch = new Object;
 shipmentSearch.params = new Object();
-shipmentSearch.serviceType = 4;
+shipmentSearch.serviceType = 17;
 var sizeList = [];
 var berthplanList;// get infor
 var onChangeFlg = false, currentIndexRow, rejectChange = false, dischargePortList = [], currentVesselVoyage = '', currentEta;
@@ -344,7 +344,24 @@ function formatDate(value) {
     let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
     return day + "/" + monthText + "/" + date.getFullYear() + " " + hours + ":" + minutes;
 }
-
+function formatType(value, row, index) {
+    if (row.blNo) {
+        return "Hàng nhập";
+    }
+    if (row.bookingNo) {
+        return "Hàng xuất";
+    }
+    return "Không xác định";
+}
+function formatBlBooking(value, row, index) {
+    if (row.blNo) {
+        return row.blNo;
+    }
+    if (row.bookingNo) {
+        return row.bookingNo;
+    }
+    return "Không xác định";
+}
 // FORMAT REMARK FOR SHIPMENT LIST
 function formatRemark(value) {
     return '<div class="easyui-tooltip" title="' + (value != null ? value : "Trống") + '" style="width: 80; text-align: center;"><span>' + (value != null ? value : "") + '</span></div>';
