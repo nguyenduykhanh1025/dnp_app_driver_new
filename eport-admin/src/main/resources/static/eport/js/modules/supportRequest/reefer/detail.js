@@ -50,7 +50,7 @@ function initValueToElementHTML() {
   if (shipmentDetail) {
     $("#containerNo").val(shipmentDetail.containerNo);
     $("#sztp").val(shipmentDetail.sztp);
-    $("#powerDrawDate").val(shipmentDetail.powerDrawDate); 
+    $("#powerDrawDate").val(shipmentDetail.powerDrawDate);
     const {
       vgmChk,
       vgmInspectionDepartment,
@@ -69,14 +69,16 @@ function initValueToElementHTML() {
       dangerousUnno,
       dangerousNameProduct,
       dangerousPacking,
+      humidity,
+      ventilation
     } = shipmentDetail;
     initElementHTMLInInformationCommonTab(
-      vgmChk,
-      vgmInspectionDepartment,
-      vgmMaxGross,
       temperature,
-      daySetupTemperature
+      daySetupTemperature,
+      humidity,
+      ventilation
     );
+    console.log(shipmentDetail);
     initElementHTMLInOversizeTab(
       oversize,
       oversizeType,
@@ -101,19 +103,12 @@ function initValueToElementHTML() {
  * @description create another values on tab common if exist from server
  */
 function initElementHTMLInInformationCommonTab(
-  vgmChk,
-  vgmInspectionDepartment,
-  vgmMaxGross,
   temperature,
-  daySetupTemperature
+  daySetupTemperature,
+  humidity,
+  ventilation
 ) {
 
-  $("#vgmChk")
-    .prop("checked", vgmChk ? true : false)
-    .change(function () {
-      $("#inspectionDepartment").prop("disabled", !this.checked);
-      $("#maxGross").prop("disabled", !this.checked);
-    });
   $("#temperature")
     .val(temperature ? temperature : null)
     .prop("disabled", !isContIce() ? true : false);
@@ -121,28 +116,14 @@ function initElementHTMLInInformationCommonTab(
     .css("pointer-events", !isContIce() ? "none" : "")
     .prop("disabled", !isContIce() ? true : false);
 
-    let daySetup = new Date(daySetupTemperature);
-    $("#datetimepicker1 input").val(
-      daySetupTemperature
-        ? `${daySetup.getDate()}/${daySetup.getMonth() + 1}/${daySetup.getFullYear()}`
-        : null
-    );
-  $("#inspectionDepartment")
-    .prop("disabled", vgmChk ? false : true)
-    .val(vgmInspectionDepartment);
-
-  $("#maxGross")
-    .prop("disabled", vgmChk ? false : true)
-    .val(vgmMaxGross)
-    .change(function () {
-      const valueNumber = reFormatNumber($(this).val());
-      $(this).val(formatNumber(valueNumber));
-    })
-    .focus(function () {
-      const valueNumber = reFormatNumber($(this).val());
-      $(this).val(valueNumber);
-    });
-
+  let daySetup = new Date(daySetupTemperature);
+  $("#datetimepicker1 input").val(
+    daySetupTemperature
+      ? `${daySetup.getDate()}/${daySetup.getMonth() + 1}/${daySetup.getFullYear()}`
+      : null
+  );
+  $("#humidity").val(humidity ? humidity : null);
+  $("#ventilation").val(ventilation ? ventilation : null);
   initFileIsExist("preview-container-ice", "R");
 }
 
@@ -472,7 +453,7 @@ function dateparser(s) {
   }
 }
 
-$(document).ready(function () {});
+$(document).ready(function () { });
 
 function initFileIsExist(previewClass, fileType) {
   if (shipmentFiles != null) {
