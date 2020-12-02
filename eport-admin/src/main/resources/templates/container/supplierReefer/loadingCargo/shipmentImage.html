@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <title>Booking Cấp Rỗng</title>
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+  <link th:href="@{/css/shipment-image.css}" rel="stylesheet"/>
+</head>
+<body>
+<h2 class="text-center">
+  Booking cấp container rỗng. Mã lô: <span th:text="${shipmentImages.get(0).shipmentId}" th:remove="tag"></span>
+</h2>
+  <div class="row">
+    <!-- Controls -->
+    <th:block th:if="${shipmentImages.size() > 0}">
+    <div th:each="shipmentImage, iter: ${shipmentImages}"
+      th:class="column">
+      <img th:src="${shipmentImage.path}" alt='' style="width:100%" />
+    </div>
+    </th:block>
+  </div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>
