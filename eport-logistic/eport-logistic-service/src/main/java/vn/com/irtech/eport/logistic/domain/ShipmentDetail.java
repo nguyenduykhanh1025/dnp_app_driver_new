@@ -506,6 +506,10 @@ public class ShipmentDetail extends BaseEntity {
 
 	private Date dateReceipt;
 
+	private int humidity;
+
+	private int ventilation;
+
 	public Long getId() {
 		return id;
 	}
@@ -1347,6 +1351,23 @@ public class ShipmentDetail extends BaseEntity {
 		this.dateReceipt = dateReceipt;
 	}
 
+	
+	public int getHumidity() {
+		return humidity;
+	}
+
+	public void setHumidity(int humidity) {
+		this.humidity = humidity;
+	}
+
+	public int getVentilation() {
+		return ventilation;
+	}
+
+	public void setVentilation(int ventilation) {
+		this.ventilation = ventilation;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -1390,6 +1411,9 @@ public class ShipmentDetail extends BaseEntity {
 				.append("dangerousUnno", getDangerousUnno()).append("dangerousNameProduct", getDangerousNameProduct())
 				.append("dangerousPacking", getDangerousPacking()).append("contSpecialStatus", getContSpecialStatus())
 				.append("frozenStatus", getFrozenStatus()).append("dateReceiptStatus", getDateReceiptStatus())
-				.append("dateReceipt", getDateReceipt()).toString();
+				.append("dateReceipt", getDateReceipt())
+				.append("humidity", getHumidity())
+				.append("ventilation", getVentilation()).toString();
+		
 	}
 }

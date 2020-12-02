@@ -114,6 +114,8 @@
 		<result property="dateReceiptStatus"
 			column="date_receipt_status" />
 		<result property="dateReceipt" column="date_receipt" />
+		<result property="humidity" column="humidity" />
+		<result property="ventilation" column="ventilation" />
 	</resultMap>
 
 	<!-- <resultMap type="ShipmentDetailExtend" id="ShipmentDetailResult" extends="ShipmentDetail"> 
@@ -155,7 +157,7 @@
 		delivery_address, delivery_mobile, delivery_remark, eta, etd,
 		container_remark, det_free_time,
 		create_by, create_time, update_by,
-		update_time,power_draw_date, date_receipt, date_receipt_status from
+		update_time,power_draw_date, date_receipt, date_receipt_status, humidity, ventilation from
 		shipment_detail
 	</sql>
 	<select id="countShipmentDetailList"
@@ -751,6 +753,8 @@
 			<if test="containerRemark != null and containerRemark != ''">container_remark,</if>
 			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">date_receipt_status,</if>
 			<if test="dateReceipt != null">date_receipt,</if>
+			<if test="humidity != null">humidity,</if>
+			<if test="ventilation != null">ventilation,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
 			<if test="createBy != null  and createBy != ''">create_by,</if>
 			create_time
@@ -853,6 +857,8 @@
 			<if test="containerRemark != null and containerRemark != ''">#{containerRemark},</if>
 			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">#{dateReceiptStatus},</if>
 			<if test="dateReceipt != null">#{dateReceipt},</if>
+			<if test="humidity != null">humidity,</if>
+			<if test="ventilation != null">ventilation,</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
 			<if test="createBy != null  and createBy != ''">#{createBy},</if>
 			sysdate
@@ -866,6 +872,8 @@
 		<trim prefix="SET" suffixOverrides=",">
 			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">date_receipt_status = #{dateReceiptStatus},</if>
 			<if test="dateReceipt != null">date_receipt = #{dateReceipt},</if>
+			<if test="humidity != null">humidity = #{humidity},</if>
+			<if test="ventilation != null">ventilation = #{ventilation},</if>
 			<if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
 			<if test="processOrderId != null">process_order_id = #{processOrderId},</if>
 			<if test="registerNo != null  and registerNo != ''">register_no = #{registerNo},</if>

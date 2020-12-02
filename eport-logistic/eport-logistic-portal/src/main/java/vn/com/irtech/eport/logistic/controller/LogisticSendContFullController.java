@@ -435,7 +435,8 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 					shipmentDetailReference.setTemperature(inputDetail.getTemperature());
 					shipmentDetailReference.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
-
+					shipmentDetailReference.setHumidity(inputDetail.getHumidity());
+					shipmentDetailReference.setVentilation(inputDetail.getVentilation());
 					shipmentDetailReference.setRemark(inputDetail.getRemark());
 
 					// Lưu nếu là cont đặc biệt
@@ -521,6 +522,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipmentDetail.setTemperature(inputDetail.getTemperature());
 					shipmentDetail.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
 
+					shipmentDetail.setHumidity(inputDetail.getHumidity());
+					shipmentDetail.setVentilation(inputDetail.getVentilation());
+					
 					// Lưu nếu là cont đặc biệt
 					String sztp = inputDetail.getSztp().substring(2, 3);
 					if (sztp.equals("R")) {
