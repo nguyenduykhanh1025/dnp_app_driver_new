@@ -30,14 +30,14 @@
 						<div class="d-inline">
 							<input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
 						</div>
-						<!-- <div class="d-inline"> <input id="opr" class="easyui-combobox" /> </div> -->
-						<div class="d-inline"> 
-							<input id="frozenStatus" class="easyui-combobox" />
+						<div class="d-inline">
+							<input id="fromDate" class="easyui-datebox" style="width: 100px"
+								data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser" />
 						</div>
-						<!-- <div class="d-inline">
-							<input id="serviceArray" class="easyui-combobox" />
-						</div> -->
-
+						<div class="d-inline">
+							<input id="toDate" class="easyui-datebox" style="width: 100px"
+								data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser" />
+						</div>
 						<div class="d-inline">
 							<button class="btn btn-success" onclick="search()">Tìm kiếm</button>
 						</div>
@@ -123,28 +123,6 @@
 								<div class="datagrid-toolbar">
 									<table cellspacing="0" cellpadding="0">
 										<tr>
-											<td><a href="javascript:;"
-												class="l-btn l-btn-small l-btn-plain">
-													<span class="l-btn-left">
-														<span class="l-btn-text">
-															<button onclick="confirmRequestDocument()" class="btn btn-sm btn-success">
-																<i class="fa fa-check text-primary"></i> Xác Nhận Yêu Cầu
-															</button>
-														</span> 
-													</span>
-												</a>
-											</td>
-
-											<td><a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
-													<span class="l-btn-left">
-														<span class="l-btn-text">
-															<button onclick="rejectRequestDocument()" class="btn btn-sm btn-danger">
-																<i class="fa fa-refresh text-primary"></i> Xác Nhận Từ Chối Yêu Cầu
-															</button>
-														</span> 
-													</span>
-												</a>
-											</td> 
 											<td style="min-width: 320px"><span style="margin-left: 20px; font-weight: bold" id="shipmentInfo"></span></td>
 										</tr>
 									</table>
@@ -170,6 +148,6 @@
       var domain = /*[[${domain}]]*/;
     </script>
 	<script
-		th:src="@{/eport/js/modules/supportRequest/reefer/index.js?v=20201029}"></script>
+		th:src="@{/eport/js/modules/reeferGruop/dateSetupTemperature/index.js?v=20201029}"></script>
 </body>
 </html>

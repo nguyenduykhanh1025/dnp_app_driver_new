@@ -387,21 +387,25 @@ function submitHandler() {
   //   }
   // }
 
-  if (
-    !(
-      getStatusContFollowIndex() == CONT_SPECIAL_STATUS.REQ ||
-      getStatusContFollowIndex() == CONT_SPECIAL_STATUS.YES
-    )
-  ) {
+  // if (
+  //   !(
+  //     getStatusContFollowIndex() == CONT_SPECIAL_STATUS.REQ ||
+  //     getStatusContFollowIndex() == CONT_SPECIAL_STATUS.YES
+  //   )
+  // ) 
+  // {
+ 
     if (isValidateFile && $.validate.form()) {
+      console.log('soooo');
       parent.submitDataFromDetailModal(data);
       onCloseModel();
     }
-  } else {
-    $.modal.alertWarning(
-      "Không thể thay đổi thông tin. Container đang được yêu cầu xét duyệt cont đặc biệt."
-    );
-  }
+  // }
+  //  else {
+  //   $.modal.alertWarning(
+  //     "Không thể thay đổi thông tin. Container đang được yêu cầu xét duyệt cont đặc biệt."
+  //   );
+  // }
 }
 
 function formatDateToSendServer(data) {
