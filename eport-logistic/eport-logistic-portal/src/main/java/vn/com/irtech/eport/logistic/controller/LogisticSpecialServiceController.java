@@ -252,7 +252,7 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateBy(user.getFullName());
-		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
+		shipment.setServiceType(EportConstants.SERVICE_SPECIAL_SERVICE);
 		shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
 
 		boolean attachBooking = false;

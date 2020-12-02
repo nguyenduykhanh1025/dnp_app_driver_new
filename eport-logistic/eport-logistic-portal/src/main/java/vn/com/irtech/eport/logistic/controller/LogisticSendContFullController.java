@@ -247,7 +247,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateBy(user.getFullName());
-		shipment.setServiceType(EportConstants.SERVICE_SPECIAL_SERVICE);
+		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
 		shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
 
 		boolean attachBooking = false;
@@ -284,7 +284,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		Shipment shipment = new Shipment();
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBookingNo(bookingNo);
-		shipment.setServiceType(EportConstants.SERVICE_SPECIAL_SERVICE);
+		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
 		// if(catosApiService.checkBookingNoForSendFReceiveE(bookingNo, "F").intValue()
 		// == 0) {
 		// return error("Booking No này chưa có trong hệ thống. Vui lòng liên hệ OM để
@@ -794,7 +794,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_LOGISTIC);
 		shipmentComment.setUserAlias(getGroup().getGroupName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_SPECIAL_SERVICE);
+		shipmentComment.setServiceType(EportConstants.SERVICE_DROP_FULL);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setSeenFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
