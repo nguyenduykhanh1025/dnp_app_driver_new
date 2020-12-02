@@ -393,6 +393,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="params.blOrBooking != null and params.blOrBooking != ''">
                     and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
                 </if>
+                <if test="params.sztp != null and params.sztp != ''"> and sztp like concat(concat('%', #{params.sztp}), '%')</if>
             </where>
             group by s.id,
                 s.logistic_account_id,

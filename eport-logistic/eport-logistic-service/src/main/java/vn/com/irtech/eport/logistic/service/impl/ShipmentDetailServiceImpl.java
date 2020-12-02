@@ -158,6 +158,17 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		return shipmentDetailMapper.selectShipmentDetailList(shipmentDetail);
 	}
 	
+	/**
+	 * Get Shipment Details List Not Like Cont Reefer
+	 * 
+	 * @param shipmentDetail Shipment Details
+	 * @return Shipment Details
+	 */
+	@Override
+	public List<ShipmentDetail> selectShipmentDetailListNotHaveContReefer(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.selectShipmentDetailListNotHaveContReefer(shipmentDetail);
+	}
+	
 	@Override
 	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.selectShipmentDetailListCont(shipmentDetail);

@@ -39,11 +39,10 @@ import vn.com.irtech.eport.web.mqtt.MqttService;
 import vn.com.irtech.eport.web.mqtt.MqttService.NotificationCode;
 
 @Controller
-@RequestMapping("/container/supplier")
-public class ContainerSupplierController extends BaseController {
-
-	private final static String PREFIX = "container/supplier";
-
+@RequestMapping("/container/supplier/reefer")
+public class ContainerSupplierReeferController extends BaseController{
+	private final static String PREFIX = "container/supplierReefer";
+	private final static String keyReefer = "R";
 	@Autowired
 	private IShipmentService shipmentService;
 
@@ -98,9 +97,8 @@ public class ContainerSupplierController extends BaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
-		// not have cont sztp Reefer
-		shipmentDetail.setSztp("R");
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailListNotHaveContReefer(shipmentDetail);
+		shipmentDetail.setSztp(keyReefer);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		if (shipmentDetails != null) {
 			ajaxResult.put("shipmentDetails", shipmentDetails);
 		} else {
