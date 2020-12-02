@@ -1366,15 +1366,33 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	 * @throws IOException
 	 * @throws InvalidExtensionException
 	 */
-	@PostMapping("/saveDate") 
+	/*@PostMapping("/saveDate") 
 	@ResponseBody
-	public AjaxResult saveDate( String shipmentDetailId, Long shipmentId,  String shipmentSztp, String powerDrawDate) 
+	public AjaxResult saveDate( String shipmentDetailId, Long shipmentId,  String shipmentSztp, Date powerDrawDate) 
 			throws IOException,InvalidExtensionException {  
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		if("R".equalsIgnoreCase(shipmentSztp.substring(2,3))){
 			shipmentDetail.setPowerDrawDate(powerDrawDate); 
 			shipmentDetailService.updateShipmentDetailByIds(shipmentDetailId,shipmentDetail); 
 		}  
+		return success(); 
+	}*/
+	
+	@PostMapping("/saveDate") 
+	@ResponseBody
+	public AjaxResult saveDate( 
+			//String shipmentDetailId, Long shipmentId,  String shipmentSztp, 
+			//Date powerDrawDate
+			@RequestBody ShipmentDetail detail
+			) 
+			throws IOException,InvalidExtensionException {  
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		String shipmentDetailId = detail.getId().toString();
+		 
+		//if("R".equalsIgnoreCase(detail.getSztp().substring(2,3))){
+			shipmentDetail.setPowerDrawDate(detail.getPowerDrawDate()); 
+			shipmentDetailService.updateShipmentDetailByIds(shipmentDetailId,shipmentDetail); 
+		//} 
 		return success(); 
 	}
 	 

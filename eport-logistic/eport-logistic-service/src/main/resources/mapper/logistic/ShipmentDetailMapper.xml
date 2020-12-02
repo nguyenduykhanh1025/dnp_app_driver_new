@@ -1737,7 +1737,7 @@
 			</if>
 			
 			<if
-				test="shipmentDetail.powerDrawDate != null and shipmentDetail.powerDrawDate != ''">power_draw_date =
+				test="shipmentDetail.powerDrawDate != null">power_draw_date =
 				#{shipmentDetail.powerDrawDate},
 			</if>
 			<if test="shipmentDetail.dateReceiptStatus != null and shipmentDetail.dateReceiptStatus != ''">date_receipt_status = #{shipmentDetail.dateReceiptStatus},</if>
