@@ -382,10 +382,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			for (ShipmentDetail inputDetail : shipmentDetails) {
 
 				// validate if cont have status cont special REQUEST | DONE
-				if (shipmentDetailService.isHaveContSpacialRequest(inputDetail)
-				|| shipmentDetailService.isHaveContSpacialYes(inputDetail)) {
-					return error("Không thể thay đổi thông tin các container đang chờ hoặc đã được yêu cầu xét duyệt.");
-				}
+				// if (shipmentDetailService.isHaveContSpacialRequest(inputDetail)
+				// || shipmentDetailService.isHaveContSpacialYes(inputDetail)) {
+				// 	return error("Không thể thay đổi thông tin các container đang chờ hoặc đã được yêu cầu xét duyệt.");
+				// }
 
 				if (inputDetail.getId() != null) {
 

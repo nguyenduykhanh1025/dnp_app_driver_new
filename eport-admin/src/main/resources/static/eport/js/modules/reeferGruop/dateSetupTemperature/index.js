@@ -1,4 +1,4 @@
-const PREFIX = ctx + "support-request/reefer";
+const PREFIX = ctx + "reefer-gruop/date-setup-temperature";
 const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var dogrid = document.getElementById("container-grid"),
@@ -11,8 +11,7 @@ var shipmentSelected,
   shipmentDetailIds;
 var shipment = new Object();
 shipment.params = new Object();
-shipment.params.serviceArray = [1];
-console.log('sss');
+shipment.params.serviceArray = [4];
 const CONT_SPECIAL_STATUS = {
   INIT: "I", // cont đã được lưu
   REQ: "R", // cont đã được yêu cầu xác nhận
@@ -78,75 +77,23 @@ $(document).ready(function () {
     hot.render();
   }, 200);
 
-  $("#frozenStatus").combobox({
-    panelHeight: "auto",
-    valueField: "alias",
-    editable: false,
-    textField: "text",
-    data: [
-      {
-        alias: "",
-        text: "Trạng thái",
-      },
-
-      {
-        alias: CONT_SPECIAL_STATUS.REQ,
-        text: "Chưa kiểm tra",
-        selected: true,
-      },
-
-      {
-        alias: CONT_SPECIAL_STATUS.YES,
-        text: "Đã kiểm tra",
-      },
-
-      {
-        alias: CONT_SPECIAL_STATUS.CANCEL,
-        text: "Đã từ chối kiểm tra",
-      },
-    ],
-    onSelect: function (frozenStatus) {
-      if (frozenStatus.alias != "") {
-        shipment.params.frozenStatus = frozenStatus.alias;
-      } else {
-        shipment.params.frozenStatus = null;
-      }
+  $("#fromDate").datebox({
+    onSelect: function (date) {
+      date.setHours(0, 0, 0);
+      shipment.params.fromDateSetupTemperature = dateToString(date);
       loadTable();
+      return date;
     },
   });
 
-  // $("#serviceArray").combobox({
-  //   panelHeight: "auto",
-  //   valueField: "alias",
-  //   editable: false,
-  //   textField: "text",
-  //   data: [
-  //     {
-  //       alias: "All",
-  //       text: "Tất cả",
-  //       selected: true,
-  //     },
-  //     {
-  //       alias: SERVICE_TYPE.pickupFull,
-  //       text: "Nhận cont hàng từ cảng",
-  //     },
-
-  //     {
-  //       alias: SERVICE_TYPE.dropFull,
-  //       text: "Giao cont hàng cho cảng",
-  //     },
-  //   ],
-  //   onSelect: function (serviceArray) {
-  //     if (serviceArray.alias !== "All") {
-  //       let arrayResult = [];
-  //       arrayResult.push(serviceArray.alias);
-  //       shipment.params.serviceArray = arrayResult;
-  //     } else {
-  //       shipment.params.serviceArray = [1, 4];
-  //     }
-  //     loadTable();
-  //   },
-  // });
+  $("#toDate").datebox({
+    onSelect: function (date) {
+      date.setHours(0, 0, 0);
+      shipment.params.toDateSetupTemperature = dateToString(date);
+      loadTable();
+      return date;
+    },
+  });
 
   $("#logisticGroups").combobox({
     valueField: "id",
@@ -370,23 +317,23 @@ function statusIconsRenderer(
 ) {
   return shipmentSelected.serviceType == SERVICE_TYPE.dropFull
     ? renderIconsFollowServiceTypeDropFull(
-        instance,
-        td,
-        row,
-        col,
-        prop,
-        value,
-        cellProperties
-      )
+      instance,
+      td,
+      row,
+      col,
+      prop,
+      value,
+      cellProperties
+    )
     : renderIconsStatusServiceTypePickupFull(
-        instance,
-        td,
-        row,
-        col,
-        prop,
-        value,
-        cellProperties
-      );
+      instance,
+      td,
+      row,
+      col,
+      prop,
+      value,
+      cellProperties
+    );
 }
 
 function getRequestConfigIcon(row) {
@@ -520,7 +467,7 @@ function btnDetailRenderer(
         "'" +
         sztp +
         '\')"><i class="fa fa-book"></i>Cont đặc biệt</button>';
-    } 
+    }
     // else {
     //   value =
     //     '<button class="btn btn-success btn-xs" id="detailBtn ' +
@@ -568,8 +515,8 @@ function containerNoRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -580,8 +527,8 @@ function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -600,8 +547,8 @@ function consigneeRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -613,10 +560,10 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (sourceData[row] && sourceData[row].vslNm && sourceData[row].voyNo) {
     $(td).html(
       '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-        sourceData[row].vslNm +
-        " - " +
-        sourceData[row].voyNo +
-        "</div>"
+      sourceData[row].vslNm +
+      " - " +
+      sourceData[row].voyNo +
+      "</div>"
     );
   }
   return td;
@@ -628,8 +575,8 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -648,8 +595,8 @@ function cargoTypeRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -660,8 +607,8 @@ function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -680,8 +627,8 @@ function dischargePortRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -692,8 +639,8 @@ function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -704,8 +651,8 @@ function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -716,8 +663,8 @@ function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -728,8 +675,8 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -924,7 +871,6 @@ configHandson();
 hot = new Handsontable(dogrid, config);
 
 function loadShipmentDetails(id) {
-  console.log(shipment.params.frozenStatus);
   if (id) {
     $.modal.loading("Đang xử lý ...");
     $.ajax({
@@ -1440,25 +1386,7 @@ function formatServiceType(value, row) {
 }
 
 function getStatusContFollowIndex(index) {
-  if (
-    !sourceData[index].oversize &&
-    !sourceData[index].dangerous &&
-    !sourceData[index].frozenStatus
-  ) {
-    return null;
-  } else if (sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.REQ) {
-    // là cont đang chờ xác nhận
-    return CONT_SPECIAL_STATUS.REQ;
-  } else if (sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.CANCEL) {
-    // là cont bị từ chối
-    return CONT_SPECIAL_STATUS.CANCEL;
-  } else if (sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.INIT) {
-    // là cont đã được xét duyệt
-    return CONT_SPECIAL_STATUS.INIT;
-  } else {
-    // là cont chỉ mới được tạo
-    return CONT_SPECIAL_STATUS.YES;
-  }
+  return null;
 }
 
 function getListContainerNoFromCheked() {
@@ -1627,7 +1555,7 @@ function renderIconsStatusServiceTypePickupFull(
           '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
         break;
     }
-     
+
     // Command process status
     let process =
       '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
@@ -1671,7 +1599,7 @@ function renderIconsStatusServiceTypePickupFull(
     }
     // Do status
     let doStatus =
-      '<i id="do" class="fa fa-file-text easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>'; 
+      '<i id="do" class="fa fa-file-text easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
     if (sourceData[row].doStatus == "Y") {
       doStatus =
         '<i id="do" class="fa fa-file-text easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
@@ -1721,22 +1649,52 @@ function renderIconsStatusServiceTypePickupFull(
     content += getRequestConfigIcon(row);
     console.log("dischargePort");
     console.log(sourceData[row].dischargePort);
-    
- // Domestic cont: VN --> not show
+
+    // Domestic cont: VN --> not show
     if (sourceData[row].dischargePort.substring(0, 2) != "VN") {
-        content += customs;
-      }
-    
+      content += customs;
+    }
+
     content += process + payment + doStatus + released;
-     
+
     /*if (sourceData[row].dischargePort.substring(0, 2) != "VN") {
         content += customs;
       }*/
-    
-    
+
+
     content += "</div>";
     $(td).html(content);
   }
   return td;
 }
+function dateformatter(date) {
+  var y = date.getFullYear();
+  var m = date.getMonth() + 1;
+  var d = date.getDate();
+  return (d < 10 ? "0" + d : d) + "/" + (m < 10 ? "0" + m : m) + "/" + y;
+}
+function dateparser(s) {
+  var ss = s.split(".");
+  var d = parseInt(ss[0], 10);
+  var m = parseInt(ss[1], 10);
+  var y = parseInt(ss[2], 10);
+  if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+    return new Date(y, m - 1, d);
+  }
+}
 
+function dateToString(date) {
+  return (
+    ("0" + date.getDate()).slice(-2) +
+    "/" +
+    ("0" + (date.getMonth() + 1)).slice(-2) +
+    "/" +
+    date.getFullYear() +
+    " " +
+    ("0" + date.getHours()).slice(-2) +
+    ":" +
+    ("0" + date.getMinutes()).slice(-2) +
+    ":" +
+    ("0" + date.getSeconds()).slice(-2)
+  );
+}
