@@ -1,58 +1,78 @@
 const PREFIX = ctx + "logistic/receive-cont-full";
-  
-$('#containerNo').val(containerNo);// container no
-$('#sztp').val(sztp);//  
-$('#abc').val(shipmentDetail.id); 
-$('#numberContainer').val(shipmentDetail.containerNo); 
-$('#sizeCont').val(shipmentDetail.sztp);// kich thuoc
-$('#expiredDem').val(shipmentDetail.expiredDem); // han lenh
-$('#consignee').val(shipmentDetail.consignee); // Chu hang
-$('#sealNo').val(shipmentDetail.sealNo); // sealNo Lạnh
-$('#sealNoQK').val(shipmentDetail.sealNo); // sealNo Quá khổ
-$('#sealNoNH').val(shipmentDetail.sealNo); // sealNo Nguy hiểm
 
-$('#wgt').val(shipmentDetail.wgt); // trọng lượng
-$('#wgtQK').val(shipmentDetail.wgt); // trọng lượng quá khổ 
-$('#wgtNH').val(shipmentDetail.wgt); // trọng lượng Nguy hiểm  
-$('#temperature').val(shipmentDetail.temperature);// nhiệt độ 
-
-$('#oversizeTop').val(shipmentDetail.oversizeTop);//  
-$('#oversizeRight').val(shipmentDetail.oversizeRight);//  
-$('#oversizeLeft').val(shipmentDetail.oversizeLeft);//  
-$('#oversizeFront').val(shipmentDetail.oversizeFront);//  
-$('#oversizeBack').val(shipmentDetail.oversizeBack);//   
-
- 
-// cont quá khổ
-$('#osHeight').val(shipmentDetail.osHeight);// 
-$('#osPort').val(shipmentDetail.osPort);//  
-$('#osStbd').val(shipmentDetail.osStbd);// 
-$('#ovAft').val(shipmentDetail.ovAft);// 
-$('#ovFore').val(shipmentDetail.ovFore);// 
-$('#ovHeight').val(shipmentDetail.ovHeight);//
-$('#ovPort').val(shipmentDetail.ovPort);// 
-$('#ovStbd').val(shipmentDetail.ovStbd);//  
-
-//$('#powerDrawDate').val(shipmentDetail.powerDrawDate);//   
-// cont nguy hiểm 
-$('#dangerousImo').val(shipmentDetail.dangerousImo);// 
-$('#dangerousUnno').val(shipmentDetail.dangerousUnno);//  
-$('#dangerous').val(shipmentDetail.dangerous);// 
-$("#form-detail-add").validate({
-	  onkeyup: false,
-	  focusCleanup: true,
+$(document).ready(function () {
+	initTabReefer();
+	initTabOversize();
 });
-  
-/*$("#datetimepicker1").datetimepicker({
-	  format: "dd/mm/yyyy", 
-	  language: "vi_VN",
-	  //minView: "month",
-	  autoclose: true
-});*/
 
-  
- 
- 
+function initTabReefer() {
+	if(shipmentDetail.sztp.includes("R")) {
+		$('#reeferContainer').css('display', 'block');
+		$("#tab-1").prop('checked', true);
+	}else {
+		$('#reeferContainer').css('display', 'none');
+		$('.tab-label-1').css('display', 'none');
+	}
+
+	$('#containerNo').val(containerNo);// container no
+	$('#sztp').val(sztp);//  
+	$('#abc').val(shipmentDetail.id); 
+	$('#numberContainer').val(shipmentDetail.containerNo); 
+	$('#sizeCont').val(shipmentDetail.sztp);// kich thuoc
+	$('#expiredDem').val(shipmentDetail.expiredDem); // han lenh
+	$('#consignee').val(shipmentDetail.consignee); // Chu hang
+	$('#sealNo').val(shipmentDetail.sealNo); // sealNo Lạnh
+	$('#sealNoQK').val(shipmentDetail.sealNo); // sealNo Quá khổ
+	$('#sealNoNH').val(shipmentDetail.sealNo); // sealNo Nguy hiểm
+	$('#temperature').val(shipmentDetail.temperature);// nhiệt độ 
+	$('#temperature').val(shipmentDetail.humidity);
+	$('#temperature').val(shipmentDetail.ventilation);
+}
+
+function initTabOversize() {
+	if(oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack) {
+		$('#oversizeContainer').css('display', 'block');
+		$("#tab-2").prop('checked', true);
+	}else {
+		console.log('cppp');
+		$('#oversizeContainer').css('display', 'none');
+		$('.tab-label-2').css('display', 'none');
+	}
+
+	$('#wgt').val(shipmentDetail.wgt); // trọng lượng
+	$('#wgtQK').val(shipmentDetail.wgt); // trọng lượng quá khổ 
+	$('#wgtNH').val(shipmentDetail.wgt); // trọng lượng Nguy hiểm  
+	
+	$('#oversizeTop').val(shipmentDetail.oversizeTop);//  
+	$('#oversizeRight').val(shipmentDetail.oversizeRight);//  
+	$('#oversizeLeft').val(shipmentDetail.oversizeLeft);//  
+	$('#oversizeFront').val(shipmentDetail.oversizeFront);//  
+	$('#oversizeBack').val(shipmentDetail.oversizeBack);//   
+	
+	 
+	// cont quá khổ
+	$('#osHeight').val(shipmentDetail.osHeight);// 
+	$('#osPort').val(shipmentDetail.osPort);//  
+	$('#osStbd').val(shipmentDetail.osStbd);// 
+	$('#ovAft').val(shipmentDetail.ovAft);// 
+	$('#ovFore').val(shipmentDetail.ovFore);// 
+	$('#ovHeight').val(shipmentDetail.ovHeight);//
+	$('#ovPort').val(shipmentDetail.ovPort);// 
+	$('#ovStbd').val(shipmentDetail.ovStbd);//  
+}
+
+function initTabDangerous() {
+	$('#dangerousContainer').css('display', 'block !important');
+	// cont nguy hiểm 
+	$('#dangerousImo').val(shipmentDetail.dangerousImo);// 
+	$('#dangerousUnno').val(shipmentDetail.dangerousUnno);//  
+	$('#dangerous').val(shipmentDetail.dangerous);// 
+	$("#form-detail-add").validate({
+		onkeyup: false,
+		focusCleanup: true,
+	}); 
+}
+
 $("#datetimepicker1").datetimepicker({
 	format: 'dd/mm/yyyy hh:ii',
 	language: "vi_VN",
