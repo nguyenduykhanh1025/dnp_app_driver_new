@@ -96,24 +96,15 @@ let typeO = true;// qua kho
 
    
 // confirm
-function confirm() {
-	console.log("VAo");
-	//console.log($("#datetimepicker1").datetimepicker('getDate').getTime());
-	let date = $("#datetimepicker1").datetimepicker('getDate').getTime();
-	
-	
-	
-	
+function confirm() { 
+	let date = $("#datetimepicker1").datetimepicker('getDate').getTime(); 
 	let shipmentDetailId = shipmentDetail.id;
 	console.log(shipmentDetailId);
 	const detail = { 
 			id : shipmentDetail.id,
 			shipmentId: shipmentDetail.shipmentId,
 			sztp : shipmentDetail.sztp, 
-			powerDrawDate: date
-			/*powerDrawDate: new Date(
-				      formatDateToSendServer(shipmentDetail.powerDrawDate)
-				    ).getTime(),*/
+			powerDrawDate: date 
 	}
 	 $.ajax( 
 		    	{
@@ -126,39 +117,14 @@ function confirm() {
 		    		success: function(result){
 	    			if (result.code == 0) {
 	                    //$.modal.alertError(result.msg);
-	    				insertDate();  
+	    				insertImage();  
 	                } else {
 	                    $.modal.close();
 	                } 
 		    }}); 
 }
-
-
-/*function confirm() {  
-	let myDate = $("#datetimepicker1").datetimepicker('getDate').getTime();
-    $.ajax( 
-    	{
-    		url: prefix + "/saveDate", 
-    		method: "POST",
-    		data: { 
-    			shipmentDetailId : shipmentDetail.id,
-    			shipmentId : shipmentDetail.shipmentId,
-    			shipmentSztp : shipmentDetail.sztp,
-    			powerDrawDate : $("#datetimepicker1").datetimepicker('getDate').getTime() 
-    		},
-    		success: function(result){
-			if (result.code == 0) {
-                //$.modal.alertError(result.msg);
-				insertDate(); 
-				 
-            } else {
-                $.modal.close();
-            } 
-    }});  
-}
-  */
-//confirm
-function insertDate() {   
+ 
+function insertImage() {   
 	    $.ajax( 
 	    	{
 	    		url: prefix + "/saveFileImage", 

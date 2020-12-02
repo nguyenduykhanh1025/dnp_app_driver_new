@@ -88,7 +88,7 @@ $(document).ready(function () {
     });
     
 ///////// dangerous//////////////////
-    myDropzone = new Dropzone("#dropzoneNH", {
+   myDropzone = new Dropzone("#dropzoneNH", {
         url: prefix + "/file/file-type/D",
         method: "post",
         paramName: "file",

@@ -39,6 +39,14 @@ const CONT_SPECIAL_STATUS = {
   CANCEL: "C", // cont đã bị từ chối yêu cầu xác nhận
 };
 
+const CONT_SZTP = {
+		  DANGER: "Dangerous", // cont nguy hiểm 
+		  COOL: "Cool",
+		  OVERSIZE: "OverSize",
+		};
+
+
+
 
 
 
@@ -536,6 +544,9 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     let content = '<div>';
 
     content += getRequestConfigIcon(row);
+    
+    
+    content += getConfigIconSztp(row);
 
 
     if (sourceData[row].loadingPort.substring(0, 2) != 'VN') {
@@ -552,7 +563,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
   }
   return td;
 }
-
+ 
 function getRequestConfigIcon(row) {
   const statusResult = getStatusContFollowIndex(row);
 
@@ -568,6 +579,41 @@ function getRequestConfigIcon(row) {
     return '<i id="verify" class="fa fa-check easyui-tooltip" title="Có thể yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db"></i>';
   }
 }
+
+/*const CONT_SZTP = {
+		  DANGER: "Dangerous", // cont nguy hiểm 
+		  COOL
+		  OVERSIZE
+		};*/
+
+function getConfigIconSztp(row) {
+	  const sztpResult = getIconContFollowIndex(row);
+
+	  if (!sztpResult) {
+	    return "";
+	  } else if (sztpResult == CONT_SZTP.DANGER) {
+	    return '<i id="verify" class="fa fa-assistive-listening-systems" title="Là cont nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
+	  }else if (sztpResult == CONT_SZTP.COOL) {
+		    return '<i id="verify" class="fa fa-thermometer-empty" title="Là cont lạnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
+	  }
+	  else if (sztpResult == CONT_SZTP.OVERSIZE) {
+		    return '<i id="verify" class="fa fa-caret-square-o-down" title="Là cont quá khổ" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
+	  }
+	}
+
+function getIconContFollowIndex(index) {  
+	if(sourceData[index].dangerous){ 
+		return CONT_SZTP.DANGER;
+	} 
+	else if(sourceData[index].sztp.substring(2,3) == "R"){
+		return CONT_SZTP.COOL;
+	}
+	else if(!sourceData[index].ovHeight || !sourceData[index].ovFore || !sourceData[index].ovAft || !sourceData[index].ovPort || !sourceData[index].ovStbd){ 
+		return CONT_SZTP.OVERSIZE;
+	}
+	
+}
+
 
 
 
@@ -965,7 +1011,7 @@ function configHandson() {
           return "Ghi Chú";
       }
     },
-    colWidths: [40, 120, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200, 100],
+    colWidths: [40, 150, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200, 100],
     filter: "true",
     columns: [
       {
