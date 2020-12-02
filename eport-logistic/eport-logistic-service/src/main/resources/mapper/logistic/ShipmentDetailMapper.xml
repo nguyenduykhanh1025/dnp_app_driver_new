@@ -114,6 +114,7 @@
 		<result property="dateReceiptStatus"
 			column="date_receipt_status" />
 		<result property="dateReceipt" column="date_receipt" />
+		<result property="specialService" column="special_service" />
 	</resultMap>
 
 	<!-- <resultMap type="ShipmentDetailExtend" id="ShipmentDetailResult" extends="ShipmentDetail"> 
@@ -155,7 +156,8 @@
 		delivery_address, delivery_mobile, delivery_remark, eta, etd,
 		container_remark, det_free_time,
 		create_by, create_time, update_by,
-		update_time,power_draw_date, date_receipt, date_receipt_status from
+		update_time,power_draw_date, date_receipt, date_receipt_status,
+		special_service from
 		shipment_detail
 	</sql>
 	<select id="countShipmentDetailList"
@@ -977,7 +979,7 @@
 			<if test="etd != null">etd = #{etd},</if>
 			<if test="location != null and location != ''">location = #{location},</if>
 			<if test="containerRemark != null and containerRemark != ''">container_remark = #{containerRemark},</if>
-
+			<if test="specialService != null">special_service = #{specialService},</if>
 			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
 			update_time = sysdate
 		</trim>
@@ -1819,6 +1821,7 @@
 			<if
 				test="shipmentDetail.dateReceiptStatus != null and shipmentDetail.dateReceiptStatus != ''">date_receipt_status = #{shipmentDetail.dateReceiptStatus},</if>
 			<if test="shipmentDetail.dateReceipt != null">date_receipt = #{shipmentDetail.dateReceipt},</if>
+			<if test="shipmentDetail.specialService != null">special_service = #{shipmentDetail.specialService},</if>
 			update_time = sysdate
 		</trim>
 		<where>
