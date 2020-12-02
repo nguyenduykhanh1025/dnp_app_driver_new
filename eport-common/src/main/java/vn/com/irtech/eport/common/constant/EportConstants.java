@@ -40,6 +40,8 @@ public interface EportConstants {
 	public static final int SERVICE_LOADING_CARGO = 15;
 	/** Rut hang tai cang */
 	public static final int SERVICE_UNLOADING_CARGO = 16;
+	/** Dich vu dac biet (Kiem hoa, lay mau, phun trung) */
+	public static final int SERVICE_SPECIAL_SERVICE = 17;
 	/** Update booking */
 	public static final int BOOKING_UPDATE = 1;
 	/** Update booking */
