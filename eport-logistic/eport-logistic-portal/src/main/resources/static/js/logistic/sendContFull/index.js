@@ -722,7 +722,7 @@ function statusIconsRenderer(
 function getRequestConfigIcon(row) {
   const statusResult = getStatusContFollowIndex(row);
 
-  if (!statusResult) {
+  if (!statusResult) { 
     return "";
   } else if (statusResult == CONT_SPECIAL_STATUS.YES) {
     return '<i id="verify" class="fa fa-check easyui-tooltip" title="Yêu cầu xác nhật đã được duyệt" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394"></i>';
@@ -3211,9 +3211,9 @@ function getCodeSizeContFromDataTableHandsonFollowIndex(index) {
    }
  }
 function getStatusContFollowIndex(index) {
- /* console.log('co');
-  return null;*/
-   if (
+  //console.log('co');
+  return null;
+   /*if (
      !sourceData[index].frozenStatus
    ) {
      return null;
@@ -3235,5 +3235,5 @@ function getStatusContFollowIndex(index) {
    } else {
      // là cont chỉ mới được tạo
      return CONT_SPECIAL_STATUS.YES;
-   }
+   }*/
 }
