@@ -1381,6 +1381,7 @@ public class ShipmentDetail extends BaseEntity {
 
 	public void setSpecialService(Integer specialService) {
 		this.specialService = specialService;
+	}
 	
 	public int getHumidity() {
 		return humidity;
@@ -1441,13 +1442,10 @@ public class ShipmentDetail extends BaseEntity {
 				.append("dangerousUnno", getDangerousUnno()).append("dangerousNameProduct", getDangerousNameProduct())
 				.append("dangerousPacking", getDangerousPacking()).append("contSpecialStatus", getContSpecialStatus())
 				.append("frozenStatus", getFrozenStatus()).append("dateReceiptStatus", getDateReceiptStatus())
-<<<<<<< HEAD
-				.append("dateReceipt", getDateReceipt()).append("specialService", getSpecialService()).toString();
-=======
+				.append("dateReceipt", getDateReceipt()).append("specialService", getSpecialService())
 				.append("dateReceipt", getDateReceipt())
 				.append("humidity", getHumidity())
 				.append("ventilation", getVentilation()).toString();
 		
->>>>>>> 6b6d1c7ea1edae315c0c9cdd41608fb9826378a1
 	}
 }

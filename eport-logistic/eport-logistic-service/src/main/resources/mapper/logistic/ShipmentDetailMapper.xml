@@ -114,17 +114,14 @@
 		<result property="dateReceiptStatus"
 			column="date_receipt_status" />
 		<result property="dateReceipt" column="date_receipt" />
-<<<<<<< HEAD
 		<result property="specialService" column="special_service" />
 		<result property="truckNo" column="truck_no" />
 		<result property="chassisNo" column="chassis_no" />
 		
 		
 		
-=======
 		<result property="humidity" column="humidity" />
 		<result property="ventilation" column="ventilation" />
->>>>>>> 6b6d1c7ea1edae315c0c9cdd41608fb9826378a1
 	</resultMap>
 
 	<!-- <resultMap type="ShipmentDetailExtend" id="ShipmentDetailResult" extends="ShipmentDetail"> 
