@@ -59,6 +59,9 @@ function initTabOversize() {
 	$('#ovHeight').val(shipmentDetail.ovHeight);//
 	$('#ovPort').val(shipmentDetail.ovPort);// 
 	$('#ovStbd').val(shipmentDetail.ovStbd);//  
+	
+	$('#chassisNo').val(shipmentDetail.chassisNo);// 
+	$('#truckNo').val(shipmentDetail.truckNo);// 
 }
 
 function initTabDangerous() {
@@ -119,12 +122,18 @@ let typeO = true;// qua kho
 function confirm() { 
 	let date = $("#datetimepicker1").datetimepicker('getDate').getTime(); 
 	let shipmentDetailId = shipmentDetail.id;
+	
+	let truckNo = $("#truckNo").val();
+	let chassisNo = $("#chassisNo").val();
+	console.log("HHHH" + truckNo);
 	console.log(shipmentDetailId);
 	const detail = { 
 			id : shipmentDetail.id,
 			shipmentId: shipmentDetail.shipmentId,
 			sztp : shipmentDetail.sztp, 
-			powerDrawDate: date 
+			powerDrawDate: date, 
+			truckNo : truckNo,
+			chassisNo : chassisNo
 	}
 	 $.ajax( 
 		    	{

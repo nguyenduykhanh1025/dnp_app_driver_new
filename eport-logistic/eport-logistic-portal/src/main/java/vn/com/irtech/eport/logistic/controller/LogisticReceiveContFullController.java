@@ -1393,8 +1393,13 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		 
 		//if("R".equalsIgnoreCase(detail.getSztp().substring(2,3))){
 			shipmentDetail.setPowerDrawDate(detail.getPowerDrawDate()); 
+			shipmentDetail.setTruckNo(detail.getTruckNo());
+			shipmentDetail.setChassisNo(detail.getChassisNo());
 			shipmentDetailService.updateShipmentDetailByIds(shipmentDetailId,shipmentDetail); 
-		//} 
+		//}
+		
+		
+		
 		return success(); 
 	}
 	 

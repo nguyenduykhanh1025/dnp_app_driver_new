@@ -505,6 +505,25 @@ public class ShipmentDetail extends BaseEntity {
 	private String dateReceiptStatus;
 
 	private Date dateReceipt;
+	
+	private String truckNo;
+	private String chassisNo;
+	 
+	public String getTruckNo() {
+		return truckNo;
+	}
+
+	public void setTruckNo(String truckNo) {
+		this.truckNo = truckNo;
+	}
+
+	public String getChassisNo() {
+		return chassisNo;
+	}
+
+	public void setChassisNo(String chassisNo) {
+		this.chassisNo = chassisNo;
+	}
 
 	/**
 	 * 1: inspection (Kiem hoa) 2: sample (Lay mau) 3: disinfection (Phun trung)

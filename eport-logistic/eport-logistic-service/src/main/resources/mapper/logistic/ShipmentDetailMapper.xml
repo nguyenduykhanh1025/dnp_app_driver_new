@@ -115,6 +115,11 @@
 			column="date_receipt_status" />
 		<result property="dateReceipt" column="date_receipt" />
 		<result property="specialService" column="special_service" />
+		<result property="truckNo" column="truck_no" />
+		<result property="chassisNo" column="chassis_no" />
+		
+		
+		
 	</resultMap>
 
 	<!-- <resultMap type="ShipmentDetailExtend" id="ShipmentDetailResult" extends="ShipmentDetail"> 
@@ -157,7 +162,7 @@
 		container_remark, det_free_time,
 		create_by, create_time, update_by,
 		update_time,power_draw_date, date_receipt, date_receipt_status,
-		special_service from
+		special_service, truck_no,chassis_no from
 		shipment_detail
 	</sql>
 	<select id="countShipmentDetailList"
@@ -1813,6 +1818,15 @@
 			<if
 				test="shipmentDetail.oversize != null and shipmentDetail.oversize != ''">oversize =
 				#{shipmentDetail.oversize},
+			</if>
+			
+			<if
+				test="shipmentDetail.truckNo != null and shipmentDetail.truckNo != ''">truck_no =
+				#{shipmentDetail.truckNo},
+			</if>
+			<if
+				test="shipmentDetail.chassisNo != null and shipmentDetail.chassisNo != ''">chassis_no =
+				#{shipmentDetail.chassisNo},
 			</if>
 
 			<if test="shipmentDetail.powerDrawDate != null">power_draw_date =
