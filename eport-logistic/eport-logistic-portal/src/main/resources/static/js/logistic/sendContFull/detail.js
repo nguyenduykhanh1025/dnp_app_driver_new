@@ -21,9 +21,10 @@ $("#form-detail-add").validate({
 });
 
 $("#datetimepicker1").datetimepicker({
-  format: "dd/mm/yyyy",
+  format: "dd/mm/yyyy hh:ii",
   language: "vi_VN",
-  minView: "month",
+  minuteStep: 30,
+  autoClose: true
 });
 
 $(document).ready(function () {
@@ -46,69 +47,51 @@ function initValueToElementHTML() {
     $("#containerNo").val(shipmentDetail.containerNo);
     $("#sztp").val(shipmentDetail.sztp);
     const {
-      vgmChk,
-      vgmInspectionDepartment,
-      vgmMaxGross,
       temperature,
       daySetupTemperature,
-      oversize,
-      oversizeType,
-      oversizeTop,
-      oversizeRight,
-      oversizeLeft,
-      oversizeFront,
-      oversizeBack,
-      dangerous,
-      dangerousImo,
-      dangerousUnno,
-      dangerousNameProduct,
-      dangerousPacking,
     } = shipmentDetail;
 
     initElementHTMLInInformationCommonTab(
-      vgmChk,
-      vgmInspectionDepartment,
-      vgmMaxGross,
       temperature,
       daySetupTemperature
     );
-    initElementHTMLInOversizeTab(
-      oversize,
-      oversizeType,
-      oversizeTop,
-      oversizeRight,
-      oversizeLeft,
-      oversizeFront,
-      oversizeBack
-    );
-    initElementHTMLInDangerousTab(
-      dangerous,
-      dangerousImo,
-      dangerousUnno,
-      dangerousNameProduct,
-      dangerousPacking
-    );
+
+    // initElementHTMLInOversizeTab(
+    //   oversize,
+    //   oversizeType,
+    //   oversizeTop,
+    //   oversizeRight,
+    //   oversizeLeft,
+    //   oversizeFront,
+    //   oversizeBack
+    // );
+    // initElementHTMLInDangerousTab(
+    //   dangerous,
+    //   dangerousImo,
+    //   dangerousUnno,
+    //   dangerousNameProduct,
+    //   dangerousPacking
+    // );
 
     //"preview-container-dangerous",
-    ("");
-    initDropzone(
-      "dropzoneOversize",
-      "preview-container-oversize",
-      "attachButtonOversize",
-      KEY_FORM.OVERSIZE
-    );
-    initDropzone(
-      "dropzoneDangerous",
-      "preview-container-dangerous",
-      "attachButtonDangerous",
-      KEY_FORM.DANGEROUS
-    );
-    initDropzone(
-      "dropzoneIce",
-      "preview-container-ice",
-      "attachButtonIce",
-      KEY_FORM.ICE
-    );
+    // initDropzone(
+    //   "dropzoneOversize",
+    //   "preview-container-oversize",
+    //   "attachButtonOversize",
+    //   KEY_FORM.OVERSIZE
+    // );
+    // initDropzone(
+    //   "dropzoneDangerous",
+    //   "preview-container-dangerous",
+    //   "attachButtonDangerous",
+    //   KEY_FORM.DANGEROUS
+    // );
+    // initDropzone(
+    //   "dropzoneIce",
+    //   "preview-container-ice",
+    //   "attachButtonIce",
+    //   KEY_FORM.ICE
+    // );
   }
 }
 
@@ -117,18 +100,10 @@ function initValueToElementHTML() {
  * @description create another values on tab common if exist from server
  */
 function initElementHTMLInInformationCommonTab(
-  vgmChk,
-  vgmInspectionDepartment,
-  vgmMaxGross,
   temperature,
   daySetupTemperature
 ) {
-  $("#vgmChk")
-    .prop("checked", vgmChk ? true : false)
-    .change(function () {
-      $("#inspectionDepartment").prop("disabled", !this.checked);
-      $("#maxGross").prop("disabled", !this.checked);
-    });
+ 
 
   $("#temperature")
     .val(temperature ? temperature : null)
@@ -138,29 +113,7 @@ function initElementHTMLInInformationCommonTab(
     .prop("disabled", !isContIce() ? true : false);
 
   let daySetup = new Date(daySetupTemperature);
-  $("#datetimepicker1 input").val(
-    daySetupTemperature
-      ? `${daySetup.getDate()}/${
-          daySetup.getMonth() + 1
-        }/${daySetup.getFullYear()}`
-      : null
-  );
-
-  $("#inspectionDepartment")
-    .prop("disabled", vgmChk ? false : true)
-    .val(vgmInspectionDepartment);
-
-  $("#maxGross")
-    .prop("disabled", vgmChk ? false : true)
-    .val(vgmMaxGross)
-    .change(function () {
-      const valueNumber = reFormatNumber($(this).val());
-      $(this).val(formatNumber(valueNumber));
-    })
-    .focus(function () {
-      const valueNumber = reFormatNumber($(this).val());
-      $(this).val(valueNumber);
-    });
+  $("#datetimepicker1").datetimepicker('setDate', daySetup);
 
   $("#attachButtonIce").prop("disabled", !isContIce());
 
@@ -380,7 +333,7 @@ function initSelect(idSelect, data, valueChecked) {
  */
 function submitHandler() {
   var data = $("#form-detail-add").serializeArray();
-  data = covertSerializeArrayToObject(data);
+  data = covertSerializeArrayToObject(data);;
   data = {
     ...data,
     oversizeType: formatValuesCategoryOversize(),
@@ -390,9 +343,7 @@ function submitHandler() {
     vgmInspectionDepartment: $("#vgmChk").prop("checked")
       ? $("#inspectionDepartment").val()
       : null,
-    daySetupTemperature: new Date(
-      formatDateToSendServer(data.daySetupTemperature)
-    ).getTime(),
+    daySetupTemperature: $("#datetimepicker1").datetimepicker('getDate').getTime(),
     dangerous: data.dangerous == "T" ? "T" : "",
     oversize: data.oversize == "T" ? "T" : "",
   };
