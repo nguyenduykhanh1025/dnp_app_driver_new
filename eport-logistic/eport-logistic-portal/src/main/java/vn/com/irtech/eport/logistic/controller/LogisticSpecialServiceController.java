@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package vn.com.irtech.eport.logistic.controller;
 
 import java.io.File;
@@ -67,14 +70,16 @@ import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
+/**
+ * @author Trong Hieu
+ *
+ */
 @Controller
 @RequiresPermissions("logistic:order")
-@RequestMapping("/logistic/send-cont-full")
-public class LogisticSendContFullController extends LogisticBaseController {
-
-	private static final Logger logger = LoggerFactory.getLogger(LogisticSendContFullController.class);
-
-	private final String PREFIX = "logistic/sendContFull";
+@RequestMapping("/logistic/special-service")
+public class LogisticSpecialServiceController extends LogisticBaseController {
+	private static final Logger logger = LoggerFactory.getLogger(LogisticSpecialServiceController.class);
+	private final String PREFIX = "logistic/specialService";
 
 	@Autowired
 	private IShipmentService shipmentService;
@@ -247,7 +252,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateBy(user.getFullName());
-		shipment.setServiceType(EportConstants.SERVICE_SPECIAL_SERVICE);
+		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
 		shipment.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
 
 		boolean attachBooking = false;
@@ -284,7 +289,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		Shipment shipment = new Shipment();
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBookingNo(bookingNo);
-		shipment.setServiceType(EportConstants.SERVICE_SPECIAL_SERVICE);
+		shipment.setServiceType(EportConstants.SERVICE_DROP_FULL);
 		// if(catosApiService.checkBookingNoForSendFReceiveE(bookingNo, "F").intValue()
 		// == 0) {
 		// return error("Booking No này chưa có trong hệ thống. Vui lòng liên hệ OM để
@@ -408,7 +413,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 				// validate if cont have status cont special REQUEST | DONE
 				if (shipmentDetailService.isHaveContSpacialRequest(inputDetail)
-				|| shipmentDetailService.isHaveContSpacialYes(inputDetail)) {
+						|| shipmentDetailService.isHaveContSpacialYes(inputDetail)) {
 					return error("Không thể thay đổi thông tin các container đang chờ hoặc đã được yêu cầu xét duyệt.");
 				}
 
@@ -460,8 +465,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 					shipmentDetailReference.setTemperature(inputDetail.getTemperature());
 					shipmentDetailReference.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
-					shipmentDetailReference.setHumidity(inputDetail.getHumidity());
-					shipmentDetailReference.setVentilation(inputDetail.getVentilation());
+
 					shipmentDetailReference.setRemark(inputDetail.getRemark());
 
 					// Lưu nếu là cont đặc biệt
@@ -547,9 +551,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipmentDetail.setTemperature(inputDetail.getTemperature());
 					shipmentDetail.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
 
-					shipmentDetail.setHumidity(inputDetail.getHumidity());
-					shipmentDetail.setVentilation(inputDetail.getVentilation());
-					
 					// Lưu nếu là cont đặc biệt
 					String sztp = inputDetail.getSztp().substring(2, 3);
 					if (sztp.equals("R")) {
@@ -798,7 +799,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_LOGISTIC);
 		shipmentComment.setUserAlias(getGroup().getGroupName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_SPECIAL_SERVICE);
+		shipmentComment.setServiceType(EportConstants.SERVICE_DROP_FULL);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setSeenFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
@@ -1422,5 +1423,4 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		}
 		return success();
 	}
-
 }

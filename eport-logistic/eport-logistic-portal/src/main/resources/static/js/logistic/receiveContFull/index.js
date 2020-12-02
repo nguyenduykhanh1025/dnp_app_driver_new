@@ -580,72 +580,74 @@ function getRequestConfigIcon(row) {
   }
 }
 
-/*const CONT_SZTP = {
-		  DANGER: "Dangerous", // cont nguy hiểm 
-		  COOL
-		  OVERSIZE
-		};*/
-
 function getConfigIconSztp(row) {
 	  const sztpResult = getIconContFollowIndex(row);
 
-	  if (!sztpResult) {
+	  if (sztpResult == null) {
 	    return "";
-	  } else if (sztpResult == CONT_SZTP.DANGER) {
+	  }  if (sztpResult == CONT_SZTP.DANGER) {
 	    return '<i id="verify" class="fa fa-assistive-listening-systems" title="Là cont nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
-	  }else if (sztpResult == CONT_SZTP.COOL) {
+	  }
+	 /* if (sztpResult == CONT_SZTP.COOL) {
 		    return '<i id="verify" class="fa fa-thermometer-empty" title="Là cont lạnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
 	  }
-	  else if (sztpResult == CONT_SZTP.OVERSIZE) {
+	   if (sztpResult == CONT_SZTP.OVERSIZE) {
 		    return '<i id="verify" class="fa fa-caret-square-o-down" title="Là cont quá khổ" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
-	  }
+	  }*/
 	}
 
 function getIconContFollowIndex(index) {  
-	if(sourceData[index].dangerous){ 
+	//console.log(sourceData[index].dangerous);
+	
+	if( 
+	    !sourceData[index].dangerous 
+	    ){
+		return null;
+	}
+	 if(sourceData[index].dangerous != null){ 
 		return CONT_SZTP.DANGER;
 	} 
-	else if(sourceData[index].sztp.substring(2,3) == "R"){
+	 /*if(sourceData[index].sztp.substring(2,3) == "R"){
 		return CONT_SZTP.COOL;
-	}
-	else if(!sourceData[index].ovHeight || !sourceData[index].ovFore || !sourceData[index].ovAft || !sourceData[index].ovPort || !sourceData[index].ovStbd){ 
+	} 
+	 if(sourceData[index].oversize != null){
 		return CONT_SZTP.OVERSIZE;
-	}
+	} */
+	
 	
 }
 
 
 
 
-function getStatusContFollowIndex(index) {
-
-  /*console.log("Status");
-  console.log("1"+ sourceData[index].oversize);
-  console.log("2"+ sourceData[index].dangerous);
-  console.log("3"+ sourceData[index].frozenStatus);*/
-
+function getStatusContFollowIndex(index) { 
+ /* console.log("Status");
+  console.log("1"+ sourceData[index].oversize);// I
+  console.log("2"+ sourceData[index].dangerous);// null
+  console.log("3"+ sourceData[index].frozenStatus);// R
+*/
   if (
     !sourceData[index].oversize &&
-    !sourceData[index].dangerous &&
+    //!sourceData[index].dangerous &&
     !sourceData[index].frozenStatus
   ) {
     return null;
   } else if (
-    sourceData[index].dangerous == CONT_SPECIAL_STATUS.CANCEL ||
+    //sourceData[index].dangerous == CONT_SPECIAL_STATUS.CANCEL ||
     sourceData[index].oversize == CONT_SPECIAL_STATUS.CANCEL ||
     sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.CANCEL
   ) {
     // là cont bị từ chối
     return CONT_SPECIAL_STATUS.CANCEL;
   } else if (
-    sourceData[index].dangerous == CONT_SPECIAL_STATUS.REQ ||
+    //sourceData[index].dangerous == CONT_SPECIAL_STATUS.REQ ||
     sourceData[index].oversize == CONT_SPECIAL_STATUS.REQ ||
     sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.REQ
   ) {
     // là cont đang chờ xác nhận
     return CONT_SPECIAL_STATUS.REQ;
   } else if (
-    sourceData[index].dangerous == CONT_SPECIAL_STATUS.INIT || // I
+    //sourceData[index].dangerous == CONT_SPECIAL_STATUS.INIT || // I
     sourceData[index].oversize == CONT_SPECIAL_STATUS.INIT ||
     sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.INIT
   ) {
@@ -1384,7 +1386,7 @@ function isDisableBtnRequestConfirm() {
       if (
         !statusResult ||
         statusResult == CONT_SPECIAL_STATUS.REQ ||
-        statusResult == CONT_SPECIAL_STATUS.YES
+        statusResult == CONT_SPECIAL_STATUS.YES 
       ) {
         result = true;
       }
