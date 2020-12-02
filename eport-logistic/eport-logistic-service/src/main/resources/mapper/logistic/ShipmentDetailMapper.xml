@@ -114,12 +114,17 @@
 		<result property="dateReceiptStatus"
 			column="date_receipt_status" />
 		<result property="dateReceipt" column="date_receipt" />
+<<<<<<< HEAD
 		<result property="specialService" column="special_service" />
 		<result property="truckNo" column="truck_no" />
 		<result property="chassisNo" column="chassis_no" />
 		
 		
 		
+=======
+		<result property="humidity" column="humidity" />
+		<result property="ventilation" column="ventilation" />
+>>>>>>> 6b6d1c7ea1edae315c0c9cdd41608fb9826378a1
 	</resultMap>
 
 	<!-- <resultMap type="ShipmentDetailExtend" id="ShipmentDetailResult" extends="ShipmentDetail"> 
@@ -160,9 +165,10 @@
 		custom_scan_time,
 		delivery_address, delivery_mobile, delivery_remark, eta, etd,
 		container_remark, det_free_time,
-		create_by, create_time, update_by,
+		create_by, create_time, update_by,  
 		update_time,power_draw_date, date_receipt, date_receipt_status,
-		special_service, truck_no,chassis_no from
+		special_service, truck_no,chassis_no,humidity, ventilation from
+
 		shipment_detail
 	</sql>
 	<select id="countShipmentDetailList"
@@ -758,6 +764,8 @@
 			<if test="containerRemark != null and containerRemark != ''">container_remark,</if>
 			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">date_receipt_status,</if>
 			<if test="dateReceipt != null">date_receipt,</if>
+			<if test="humidity != null">humidity,</if>
+			<if test="ventilation != null">ventilation,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
 			<if test="createBy != null  and createBy != ''">create_by,</if>
 			create_time
@@ -860,6 +868,8 @@
 			<if test="containerRemark != null and containerRemark != ''">#{containerRemark},</if>
 			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">#{dateReceiptStatus},</if>
 			<if test="dateReceipt != null">#{dateReceipt},</if>
+			<if test="humidity != null">humidity,</if>
+			<if test="ventilation != null">ventilation,</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
 			<if test="createBy != null  and createBy != ''">#{createBy},</if>
 			sysdate
@@ -873,6 +883,8 @@
 		<trim prefix="SET" suffixOverrides=",">
 			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">date_receipt_status = #{dateReceiptStatus},</if>
 			<if test="dateReceipt != null">date_receipt = #{dateReceipt},</if>
+			<if test="humidity != null">humidity = #{humidity},</if>
+			<if test="ventilation != null">ventilation = #{ventilation},</if>
 			<if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
 			<if test="processOrderId != null">process_order_id = #{processOrderId},</if>
 			<if test="registerNo != null  and registerNo != ''">register_no = #{registerNo},</if>

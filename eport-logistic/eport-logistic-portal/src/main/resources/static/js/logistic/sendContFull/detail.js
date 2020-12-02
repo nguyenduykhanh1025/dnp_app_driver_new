@@ -49,11 +49,15 @@ function initValueToElementHTML() {
     const {
       temperature,
       daySetupTemperature,
+      humidity,
+      ventilation
     } = shipmentDetail;
 
     initElementHTMLInInformationCommonTab(
       temperature,
-      daySetupTemperature
+      daySetupTemperature,
+      humidity,
+      ventilation
     );
 
     // initElementHTMLInOversizeTab(
@@ -101,16 +105,18 @@ function initValueToElementHTML() {
  */
 function initElementHTMLInInformationCommonTab(
   temperature,
-  daySetupTemperature
+  daySetupTemperature,
+  humidity,
+  ventilation
 ) {
- 
-
   $("#temperature")
     .val(temperature ? temperature : null)
     .prop("disabled", !isContIce() ? true : false);
   $("#datetimepicker1 *")
     .css("pointer-events", !isContIce() ? "none" : "")
     .prop("disabled", !isContIce() ? true : false);
+  $("#humidity").val(humidity ? humidity : null);
+  $("#ventilation").val(ventilation ? ventilation : null);
 
   let daySetup = new Date(daySetupTemperature);
   $("#datetimepicker1").datetimepicker('setDate', daySetup);
@@ -118,6 +124,7 @@ function initElementHTMLInInformationCommonTab(
   $("#attachButtonIce").prop("disabled", !isContIce());
 
   initFileIsExist("preview-container-ice", "R");
+
 }
 
 /**
@@ -336,50 +343,49 @@ function submitHandler() {
   data = covertSerializeArrayToObject(data);;
   data = {
     ...data,
-    oversizeType: formatValuesCategoryOversize(),
-    vgmMaxGross: $("#vgmChk").prop("checked")
-      ? reFormatNumber($("#maxGross").val())
-      : null,
-    vgmInspectionDepartment: $("#vgmChk").prop("checked")
-      ? $("#inspectionDepartment").val()
-      : null,
+    // oversizeType: formatValuesCategoryOversize(),
+    // vgmMaxGross: $("#vgmChk").prop("checked")
+    //   ? reFormatNumber($("#maxGross").val())
+    //   : null,
+    // vgmInspectionDepartment: $("#vgmChk").prop("checked")
+    //   ? $("#inspectionDepartment").val()
+    //   : null,
     daySetupTemperature: $("#datetimepicker1").datetimepicker('getDate').getTime(),
-    dangerous: data.dangerous == "T" ? "T" : "",
-    oversize: data.oversize == "T" ? "T" : "",
+    // dangerous: data.dangerous == "T" ? "T" : "",
+    // oversize: data.oversize == "T" ? "T" : "",
   };
-
   //validate file
   let isValidateFile = true;
 
-  if (data.dangerous) {
-    // dangerous khong co dinh kem file
-    if (!shipmentFilePaths.dangerous.length) {
-      isValidateFile = false;
-      $.modal.alertWarning(
-        "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file."
-      );
-    }
-  }
-  if (data.oversize) {
-    if (!shipmentFilePaths.oversize.length) {
-      isValidateFile = false;
-      $.modal.alertWarning(
-        "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file."
-      );
-    }
-  }
+  // if (data.dangerous) {
+  //   // dangerous khong co dinh kem file
+  //   if (!shipmentFilePaths.dangerous.length) {
+  //     isValidateFile = false;
+  //     $.modal.alertWarning(
+  //       "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file."
+  //     );
+  //   }
+  // }
+  // if (data.oversize) {
+  //   if (!shipmentFilePaths.oversize.length) {
+  //     isValidateFile = false;
+  //     $.modal.alertWarning(
+  //       "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file."
+  //     );
+  //   }
+  // }
 
-  if (isValidateFile) {
-    if (shipmentFilePaths.dangerous.length) {
-      saveFile(shipmentFilePaths.dangerous, KEY_FORM.DANGEROUS);
-    }
-    if (shipmentFilePaths.oversize.length || shipmentDetail.oversize == "T") {
-      saveFile(shipmentFilePaths.oversize, KEY_FORM.OVERSIZE);
-    }
-    if (shipmentFilePaths.ice.length) {
-      saveFile(shipmentFilePaths.ice, KEY_FORM.ICE);
-    }
-  }
+  // if (isValidateFile) {
+  //   if (shipmentFilePaths.dangerous.length) {
+  //     saveFile(shipmentFilePaths.dangerous, KEY_FORM.DANGEROUS);
+  //   }
+  //   if (shipmentFilePaths.oversize.length || shipmentDetail.oversize == "T") {
+  //     saveFile(shipmentFilePaths.oversize, KEY_FORM.OVERSIZE);
+  //   }
+  //   if (shipmentFilePaths.ice.length) {
+  //     saveFile(shipmentFilePaths.ice, KEY_FORM.ICE);
+  //   }
+  // }
 
   if (
     !(
@@ -391,6 +397,10 @@ function submitHandler() {
       parent.submitDataFromDetailModal(data);
       onCloseModel();
     }
+  } else {
+    $.modal.alertWarning(
+      "Không thể thay đổi thông tin. Container đang được yêu cầu xét duyệt cont đặc biệt."
+    );
   }
 }
 
@@ -531,7 +541,7 @@ function dateparser(s) {
   }
 }
 
-$(document).ready(function () {});
+$(document).ready(function () { });
 
 function initFileIsExist(previewClass, fileType) {
   if (shipmentFiles != null) {

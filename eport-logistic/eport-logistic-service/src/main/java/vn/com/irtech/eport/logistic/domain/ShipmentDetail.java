@@ -530,6 +530,10 @@ public class ShipmentDetail extends BaseEntity {
 	 */
 	private Integer specialService;
 
+	private int humidity;
+
+	private int ventilation;
+
 	public Long getId() {
 		return id;
 	}
@@ -1377,6 +1381,21 @@ public class ShipmentDetail extends BaseEntity {
 
 	public void setSpecialService(Integer specialService) {
 		this.specialService = specialService;
+	
+	public int getHumidity() {
+		return humidity;
+	}
+
+	public void setHumidity(int humidity) {
+		this.humidity = humidity;
+	}
+
+	public int getVentilation() {
+		return ventilation;
+	}
+
+	public void setVentilation(int ventilation) {
+		this.ventilation = ventilation;
 	}
 
 	@Override
@@ -1422,6 +1441,13 @@ public class ShipmentDetail extends BaseEntity {
 				.append("dangerousUnno", getDangerousUnno()).append("dangerousNameProduct", getDangerousNameProduct())
 				.append("dangerousPacking", getDangerousPacking()).append("contSpecialStatus", getContSpecialStatus())
 				.append("frozenStatus", getFrozenStatus()).append("dateReceiptStatus", getDateReceiptStatus())
+<<<<<<< HEAD
 				.append("dateReceipt", getDateReceipt()).append("specialService", getSpecialService()).toString();
+=======
+				.append("dateReceipt", getDateReceipt())
+				.append("humidity", getHumidity())
+				.append("ventilation", getVentilation()).toString();
+		
+>>>>>>> 6b6d1c7ea1edae315c0c9cdd41608fb9826378a1
 	}
 }

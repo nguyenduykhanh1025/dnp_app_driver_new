@@ -76,22 +76,23 @@
 					<!--////////////// start cont lạnh ///////////////start cont lạnh-->
 
 					<div class="content-1" id="reeferContainer">
-						<!-- <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+						<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
 							<div class="form-group col-sm-6 row">
 								<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-										class="text-black">SealNo:</b></span>
+										class="text-black">Độ ẩm (%):</b></span>
 								<div class="col-sm-8 col-xs-6">
-									<input type="text" class="form-control" id="sealNo" name="sealNo" readonly />
+									<input type="text" class="form-control" id="humidity" name="humidity" readonly />
 								</div>
 							</div>
 							<div class="form-group col-sm-6 row">
 								<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-										class="text-black">Trọng lượng (kg):</b></span>
+										class="text-black">Độ thông gió (%):</b></span>
 								<div class="col-sm-8 col-xs-6">
-									<input type="text" class="form-control" id="wgt" name="wgt" readonly />
-								</div>
+									<input type="text" class="form-control" id="ventilation" name="ventilation"
+										readonly />	
+								</div>								
 							</div>
-						</div> -->
+						</div>
 						<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
 							<div class="form-group col-sm-6 row">
 								<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
@@ -105,36 +106,17 @@
 								<span class="control-label col-sm-4 col-xs-6" style="text-align: left">
 									<b class="text-black">Ngày rút điện:</b>
 								</span>
-								<div class="input-group date col-sm-8 col-xs-5" id="datetimepicker1">
+								<div class="input-group date col-sm-8 col-xs-6" id="datetimepicker1">
 									<input type="text" class="form-control" name="powerDrawDate" id="powerDrawDate"
 										readonly />
 									<span class="input-group-addon">
 										<span class="glyphicon glyphicon-calendar"></span>
 									</span>
 								</div>
+								
 							</div>
-
-						</div>
-
-						<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-							<div class="form-group col-sm-6 row">
-								<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-										class="text-black">Độ ẩm (%):</b></span>
-								<div class="col-sm-8 col-xs-6">
-									<input type="text" class="form-control" id="humidity" name="humidity" readonly />
-								</div>
-							</div>
-							<div class="form-group col-sm-6 row">
-								<span class="control-label col-sm-4 col-xs-6" style="text-align: left">
-									<b class="text-black">Độ thông gió (%):</b>
-								</span>
-								<div class="input-group date col-sm-8 col-xs-5" id="datetimepicker1">
-
-									<input type="text" class="form-control" id="ventilation" name="ventilation"
-										readonly />
-								</div>
-							</div>
-
+							<button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()"
+									class="btn btn-sm btn"><i class="fa fa-clock-o text-primary"></i>Gia hạn ngày rút điện</button>
 						</div>
 
 						<!-- //////////// add tệp cont lạnh///////-->

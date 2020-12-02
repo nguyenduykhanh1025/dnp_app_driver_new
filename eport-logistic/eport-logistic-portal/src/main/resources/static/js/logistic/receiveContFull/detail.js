@@ -119,8 +119,8 @@ let typeO = true;// qua kho
 
    
 // confirm
-function confirm() { 
-	let date = $("#datetimepicker1").datetimepicker('getDate').getTime(); 
+function confirm() {
+	let date = $("#datetimepicker1").datetimepicker('getDate').getTime();
 	let shipmentDetailId = shipmentDetail.id;
 	
 	let truckNo = $("#truckNo").val();
@@ -146,14 +146,39 @@ function confirm() {
 		    		success: function(result){
 	    			if (result.code == 0) {
 	                    //$.modal.alertError(result.msg);
-	    				insertImage();  
+	    				insertDate();  
 	                } else {
 	                    $.modal.close();
 	                } 
 		    }}); 
 }
- 
-function insertImage() {   
+
+
+/*function confirm() {  
+	let myDate = $("#datetimepicker1").datetimepicker('getDate').getTime();
+    $.ajax( 
+    	{
+    		url: prefix + "/saveDate", 
+    		method: "POST",
+    		data: { 
+    			shipmentDetailId : shipmentDetail.id,
+    			shipmentId : shipmentDetail.shipmentId,
+    			shipmentSztp : shipmentDetail.sztp,
+    			powerDrawDate : $("#datetimepicker1").datetimepicker('getDate').getTime() 
+    		},
+    		success: function(result){
+			if (result.code == 0) {
+                //$.modal.alertError(result.msg);
+				insertDate(); 
+				 
+            } else {
+                $.modal.close();
+            } 
+    }});  
+}
+  */
+//confirm
+function insertDate() {   
 	    $.ajax( 
 	    	{
 	    		url: prefix + "/saveFileImage", 
