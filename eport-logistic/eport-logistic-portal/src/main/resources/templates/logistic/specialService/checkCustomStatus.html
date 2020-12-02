@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <th:block th:include="include :: header('Khai Bao Hai Quan')" />
+  <th:block th:include="include :: handsontable-css" />
+  <th:block th:include="include :: easyui-css" />
+  <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
+  <link th:href="@{/css/logistic/check-custom-status.css?v20201009}" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="loader">
+    <div class="loader__container">
+      <div class="loader__icon">
+        <div class="lds-spinner">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+      <div class="loader__text text-white" id="loading-text">Loading....</div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="content">
+      <div class="left-side">
+        <div>
+          <span class="title">Danh sách container</span>
+        </div>
+        <div class="loaderbox" style="display : none">
+          <div class="loading-activity">
+          </div>
+          Đang chờ
+        </div>
+        <div class="customTable">
+          <table id="contTable" style="width: 100%; height: 100%;">
+            <thead>
+              <tr>
+                <th data-options="field:'id',halign:'center'" width="10%">Stt</th>
+                <th data-options="field:'bookingNo',halign:'center'" width="30%">Booking No</th>
+                <th data-options="field:'containerNo',halign:'center'" width="30%">Container No</th>
+                <th data-options="field:'customStatus',halign:'center',formatter: formatStatus" width="30%">T.T thông
+                  quan</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+      <div class="right-side">
+        <label class="col-md-5 col-sm-4 col-xs-6" style="margin-top: 4px;">Số Lượng tờ khai</label>
+        <div class="col-md-7 col-sm-8 col-xs-6">
+          <input id="declareNoAmount" type="number" style="width: 60%;" value="1" />
+        </div>
+        <div id="declareNoForm">
+          <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+        </div>
+      </div>
+    </div>
+    <div class="layui-layer-btn footer" style="margin: 0px;">
+      <a id="checkBtn" class="layui-layer-btn0" onclick="checkCustomStatus()">Kiểm tra</a>
+      <a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
+    </div>
+  </div>
+</body>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: handsontable-js" />
+<th:block th:include="include :: easyui-js" />
+<th:block th:include="include :: websocket" />
+<script type="text/javascript" th:inline="javascript">
+  var shipmentId = /*[[${shipmentId}]]*/;
+  var contList = /*[[${contList}]]*/;
+</script>
+<script th:src="@{/js/logistic/sendContFull/checkCustomStatus.js}"></script>
+
+</html>

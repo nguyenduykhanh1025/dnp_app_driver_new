@@ -505,6 +505,30 @@ public class ShipmentDetail extends BaseEntity {
 	private String dateReceiptStatus;
 
 	private Date dateReceipt;
+	
+	private String truckNo;
+	private String chassisNo;
+	 
+	public String getTruckNo() {
+		return truckNo;
+	}
+
+	public void setTruckNo(String truckNo) {
+		this.truckNo = truckNo;
+	}
+
+	public String getChassisNo() {
+		return chassisNo;
+	}
+
+	public void setChassisNo(String chassisNo) {
+		this.chassisNo = chassisNo;
+	}
+
+	/**
+	 * 1: inspection (Kiem hoa) 2: sample (Lay mau) 3: disinfection (Phun trung)
+	 */
+	private Integer specialService;
 
 	private int humidity;
 
@@ -1351,6 +1375,12 @@ public class ShipmentDetail extends BaseEntity {
 		this.dateReceipt = dateReceipt;
 	}
 
+	public Integer getSpecialService() {
+		return specialService;
+	}
+
+	public void setSpecialService(Integer specialService) {
+		this.specialService = specialService;
 	
 	public int getHumidity() {
 		return humidity;
@@ -1411,9 +1441,13 @@ public class ShipmentDetail extends BaseEntity {
 				.append("dangerousUnno", getDangerousUnno()).append("dangerousNameProduct", getDangerousNameProduct())
 				.append("dangerousPacking", getDangerousPacking()).append("contSpecialStatus", getContSpecialStatus())
 				.append("frozenStatus", getFrozenStatus()).append("dateReceiptStatus", getDateReceiptStatus())
+<<<<<<< HEAD
+				.append("dateReceipt", getDateReceipt()).append("specialService", getSpecialService()).toString();
+=======
 				.append("dateReceipt", getDateReceipt())
 				.append("humidity", getHumidity())
 				.append("ventilation", getVentilation()).toString();
 		
+>>>>>>> 6b6d1c7ea1edae315c0c9cdd41608fb9826378a1
 	}
 }

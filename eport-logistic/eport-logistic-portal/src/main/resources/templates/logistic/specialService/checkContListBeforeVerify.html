@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:include="include :: header('Xac Nhan Lam Lenh')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
+    <link th:href="@{/css/logistic/check-cont-list-before-verify.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <!-- <p>Quý khách có chắc chắn làm lệnh cho những container này?</p> -->
+            <div class="payment-type-form">
+                <div class="form-group row">
+                    <label style="margin-top: 7px;" for="" class="col-md-2 col-sm-3 col-xs-4">Phương thức thanh toán</label>
+                    <div class="col-md-10 col-sm-9 col-xs-7">
+                        <input style="margin-top: 6px;" type="radio" name="paymentType" id="credit" value="1" />
+                        <label style="margin-right: 30px;" id="creditLabel">Credit (Trả sau)</label>
+                        <input style="margin-top: 6px;" type="radio" name="paymentType" id="cash" value="0" checked />
+                        <label>Cash (Trả tiền mặt)</label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label style="margin-top: 7px;" for="" class="col-md-2 col-sm-3 col-xs-4">MST xuất hóa đơn</label>
+                    <div class="col-md-10 col-sm-9 col-xs-7">
+                        <input style="margin-top: 6px;" type="radio" name="taxCodeDefault" value="1" checked />
+                        <label style="margin-right: 30px;">Mặc đinh</label>
+                        <input style="margin-top: 6px;" type="radio" name="taxCodeDefault" value="0" />
+                        <label>Của khách hàng khác</label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">MST</label>
+                    <div class="col-md-6 col-sm-5 col-xs-3">
+                      <input name="taxCode" id="taxCode" type="text" class="form-control" onfocusout="loadGroupName()" required />
+                    </div>
+                  </div>
+                <div class="form-group row">
+                    <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Tên Công Ty</label>
+                    <div class="col-md-10 col-sm-9 col-xs-7">
+                        <input name="groupName" id="groupName" class="form-control" rows="2" readonly />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Địa chỉ</label>
+                    <div class="col-md-10 col-sm-9 col-xs-7">
+                        <input name="address" id="address" class="form-control" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-content customTable">
+                <table id="contTable" style="width: 100%; height: 100%;">
+                    <thead>
+                        <tr>
+                            <th data-options="field:'id',halign:'center'" width="20%">Stt</th>
+                            <th data-options="field:'containerNo',halign:'center'" width="80%">Container No</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="layui-layer-btn footer">
+            <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+            <a class="layui-layer-btn1" onclick="closeForm()">Hủy</a>
+        </div>
+    </div>
+</body>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: easyui-js" />
+<script type="text/javascript" th:inline="javascript">
+    var shipmentDetails = /*[[${shipmentDetails}]]*/;
+    var creditFlag = /*[[${creditFlag}]]*/;
+    var taxCode = /*[[${taxCode}]]*/;
+</script>
+<script th:src="@{/js/logistic/sendContFull/checkContListBeforeVerify.js}"></script>
+
+</html>

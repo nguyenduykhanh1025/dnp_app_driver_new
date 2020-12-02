@@ -941,6 +941,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		Map<String, ContainerInfoDto> ctnrMap = getContainerInfoFromCatos(containerNos);
 		String containerHasOrderdEmpty = "";
 		String containerHasOrderdFull = "";
+		String containerNotStorage = "";
 		ContainerInfoDto ctnrInfo = null;
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			// Get ctnr info by contaienr no in catos
@@ -960,6 +961,10 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 					containerHasOrderdEmpty += shipmentDetail.getContainerNo() + ",";
 				}
 			}
+			// Container not storage
+			if (!EportConstants.CTNR_CATOS_IX_CD_STORAGE.equalsIgnoreCase(ctnrInfo.getIxCd())) {
+				containerNotStorage += shipmentDetail.getContainerNo() + ",";
+			}
 		}
 
 		String errorMsg = "";
@@ -970,6 +975,10 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		if (StringUtils.isNotEmpty(containerHasOrderdFull)) {
 			errorMsg += "Các container " + containerHasOrderdFull.substring(0, containerHasOrderdFull.length() - 1)
 					+ " đã có lệnh bốc hàng.";
+		}
+		if (StringUtils.isNotEmpty(containerNotStorage)) {
+			errorMsg += "Các container " + containerNotStorage.substring(0, containerNotStorage.length() - 1)
+					+ " cần được check rỗng để có thể làm lệnh.";
 		}
 
 		if (StringUtils.isNotEmpty(errorMsg)) {
