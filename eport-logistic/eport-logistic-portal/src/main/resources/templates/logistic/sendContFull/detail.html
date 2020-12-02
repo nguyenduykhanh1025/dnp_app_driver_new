@@ -1,58 +1,41 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Khai báo chung</title>
-    <th:block th:include="include :: header('Khai báo chung')" />
-    <th:block th:include="include :: datetimepicker-css" />
 
-    <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
-    <link rel="stylesheet" th:href="@{/css/logistic/detail.css}" />
-  </head>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Khai báo chung</title>
+  <th:block th:include="include :: header('Khai báo chung')" />
+  <th:block th:include="include :: datetimepicker-css" />
 
-  <body>
-    <div class="container-fluid">
-      <form id="form-detail-add" class="form-horizontal">
-        <div class="form-horizontal mt10">
-          <div class="form-group col-sm-6">
-            <label class="control-label col-sm-4 col-xs-6" for="cont"
-              ><b class="text-black">Số container:</b></label
-            >
-            <div class="col-sm-8 col-xs-6">
-              <input
-                type="text"
-                class="form-control"
-                id="containerNo"
-                readonly
-              />
-            </div>
-          </div>
-          <div class="form-group col-sm-6">
-            <label class="control-label col-sm-4 col-xs-6" for="size"
-              ><b class="text-black">Kích thước:</b></label
-            >
-            <div class="col-sm-8 col-xs-6">
-              <input type="text" class="form-control" id="sztp" readonly />
-            </div>
+  <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
+  <link rel="stylesheet" th:href="@{/css/logistic/detail.css}" />
+</head>
+
+<body>
+  <div class="container-fluid">
+    <form id="form-detail-add" class="form-horizontal">
+      <div class="form-horizontal mt10">
+        <div class="form-group col-sm-6">
+          <label class="control-label col-sm-4 col-xs-6" for="cont"><b class="text-black">Số container:</b></label>
+          <div class="col-sm-8 col-xs-6">
+            <input type="text" class="form-control" id="containerNo" readonly />
           </div>
         </div>
-        <div
-          class="col-sm-12 text-black"
-          style="height: 300px; overflow-y: auto"
-        >
-          <section class="tabs" style="margin: 0;">
-            <input
-              id="tab-1"
-              type="radio"
-              name="radio-set"
-              class="tab-selector-1"
-              checked="checked"
-            />
-            <label for="tab-1" class="tab-label-1">Thông tin chung</label>
+        <div class="form-group col-sm-6">
+          <label class="control-label col-sm-4 col-xs-6" for="size"><b class="text-black">Kích thước:</b></label>
+          <div class="col-sm-8 col-xs-6">
+            <input type="text" class="form-control" id="sztp" readonly />
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 text-black" style="height: 300px; overflow-y: auto">
+        <section class="tabs" style="margin: 0;">
+          <input id="tab-1" type="radio" name="radio-set" class="tab-selector-1" checked="checked" />
+          <label for="tab-1" class="tab-label-1">Cont Lạnh</label>
 
-            <input
+          <!-- <input
               id="tab-2"
               type="radio"
               name="radio-set"
@@ -66,13 +49,13 @@
               name="radio-set"
               class="tab-selector-3"
             />
-            <label for="tab-3" class="tab-label-3">Nguy hiểm</label>
+            <label for="tab-3" class="tab-label-3">Nguy hiểm</label> -->
 
-            <div class="clear"></div>
+          <div class="clear"></div>
 
-            <div class="content">
-              <div class="content-1">
-                <!-- <div
+          <div class="content">
+            <div class="content-1">
+              <!-- <div
                   class="form-horizontal mt10 row"
                   style="border-bottom: 1px dashed #ccc"
                 >
@@ -120,62 +103,44 @@
                     </div>
                   </div>
                 </div> -->
-                <div
-                  class="form-horizontal mt10 row"
-                  style="border-bottom: 1px dashed #ccc"
-                >
-                  <div class="form-group col-sm-12 row">
-                    <label class="control-label col-sm-3 col-xs-3"
-                      ><b class="text-black">Nhiệt độ (độ C):</b></label
-                    >
-                    <div class="col-sm-3 col-xs-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="temperature"
-                        name="temperature"
-                      />
-                    </div>
-                    <label class="control-label col-sm-3 col-xs-3"
-                      ><b class="text-black">Ngày cài nhiệt độ:</b></label
-                    >
-                    <div
-                      class="input-group date col-sm-3 col-xs-3"
-                      id="datetimepicker1"
-                    >
-                      <input
-                        type="text"
-                        class="form-control"
-                        name="daySetupTemperature"
-                      />
-                      <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                      </span>
-                    </div>
+              <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+                <div class="form-group col-sm-12 row">
+                  <label class="control-label col-sm-3 col-xs-3"><b class="text-black">Nhiệt độ (độ C):</b></label>
+                  <div class="col-sm-3 col-xs-3">
+                    <input type="text" class="form-control" id="temperature" name="temperature" />
+                  </div>
+                  <label class="control-label col-sm-3 col-xs-3"><b class="text-black">Ngày cài nhiệt độ:</b></label>
+                  <div class="input-group date col-sm-3 col-xs-3" id="datetimepicker1">
+                    <input type="text" class="form-control" name="daySetupTemperature" />
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
                   </div>
                 </div>
 
-                <div
-                  class="form-group col-sm-12"
-                  id="dropzoneIce"
-                  style="margin-top: 5px"
-                >
-                  <div class="col-sm-12 col-xs-12">
-                    <button
-                      type="button"
-                      id="attachButtonIce"
-                      class="btn btn-sm btn-default"
-                    >
-                      <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
-                    </button>
+                <div class="form-group col-sm-12 row">
+                  <label class="control-label col-sm-3 col-xs-3"><b class="text-black">Độ ẩm (%):</b></label>
+                  <div class="col-sm-3 col-xs-3">
+                    <input type="text" class="form-control" id="humidity" name="humidity" />
                   </div>
-                  <div
-                    class="preview-container-ice col-md-12 col-sm-12 col-xs-12"
-                    style="margin-top: 5px"
-                  ></div>
+
+                  <label class="control-label col-sm-3 col-xs-3"><b class="text-black">Thông gió (%):</b></label>
+                  <div class="col-sm-3 col-xs-3">
+                    <input type="text" class="form-control" id="humidity" name="humidity" />
+                  </div>
                 </div>
               </div>
-              <div class="content-2">
+
+              <!-- <div class="form-group col-sm-12" id="dropzoneIce" style="margin-top: 5px">
+                <div class="col-sm-12 col-xs-12">
+                  <button type="button" id="attachButtonIce" class="btn btn-sm btn-default">
+                    <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+                  </button>
+                </div>
+                <div class="preview-container-ice col-md-12 col-sm-12 col-xs-12" style="margin-top: 5px"></div>
+              </div> -->
+            </div>
+            <!-- <div class="content-2">
                 <div class="form-horizontal mt10 row">
                   <div
                     class="col-xs-12 p5"
@@ -452,13 +417,13 @@
                     </div>
                   </span>
                 </div>
-              </div>
-            </div>
-          </section>
-        </div>
-        <div
-          class="layui-layer-btn"
-          style="
+              
+              
+              </div> -->
+          </div>
+        </section>
+      </div>
+      <div class="layui-layer-btn" style="
             float: right;
             z-index: 999 !important;
             position: fixed;
@@ -469,31 +434,31 @@
             background: #f0f4f7;
             border-top: 1px #c7c7c7 solid;
             width: 100%;
-          "
-        >
-          <a class="layui-layer-btn0" onclick="submitHandler()">Lưu</a>
-          <a class="layui-layer-btn1" onclick="onCloseModel()">Hủy</a>
-        </div>
-      </form>
-    </div>
-    <th:block th:include="include :: footer" />
-    <th:block th:include="include :: datetimepicker-js" />
-    <th:block th:include="include :: dropzone-js" />
-    <script type="text/javascript" th:inline="javascript">
-      /**
-       * Data load from server
-      */
-      var containerNo = [[${containerNo}]];
-      var shipmentDetail = [[${shipmentDetail}]];
+          ">
+        <a class="layui-layer-btn0" onclick="submitHandler()">Lưu</a>
+        <a class="layui-layer-btn1" onclick="onCloseModel()">Hủy</a>
+      </div>
+    </form>
+  </div>
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: datetimepicker-js" />
+  <th:block th:include="include :: dropzone-js" />
+  <script type="text/javascript" th:inline="javascript">
+    /**
+     * Data load from server
+    */
+    var containerNo = [[${ containerNo }]];
+    var shipmentDetail = [[${ shipmentDetail }]];
 
-      var contCargoTypes = [[${contCargoTypes}]];
-      var contDangerousImos = [[${contDangerousImos}]];
-      var contDangerousUnnos = [[${contDangerousUnnos}]];
+    var contCargoTypes = [[${ contCargoTypes }]];
+    var contDangerousImos = [[${ contDangerousImos }]];
+    var contDangerousUnnos = [[${ contDangerousUnnos }]];
 
-      var sztp = [[${sztp}]];
-      var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
-      var shipmentFiles = [[${shipmentFiles}]];
-    </script>
-    <script th:src="@{/js/logistic/sendContFull/detail.js}"></script>
-  </body>
+    var sztp = [[${ sztp }]];
+    var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
+    var shipmentFiles = [[${ shipmentFiles }]];
+  </script>
+  <script th:src="@{/js/logistic/sendContFull/detail.js}"></script>
+</body>
+
 </html>

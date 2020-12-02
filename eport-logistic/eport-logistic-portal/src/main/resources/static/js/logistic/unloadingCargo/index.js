@@ -548,22 +548,22 @@ function statusIconsRenderer(
           '<i id="verify" class="fa fa-windows easyui-tooltip" title="Lỗi làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ed5565;"></i>';
         break;
     }
-     // Date receipt status
-     let dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Chưa đăng ký ngày đóng hàng" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
-     switch (sourceData[row].dateReceiptStatus) {
-         case 'N':
-             dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Có thể đăng ký ngày đóng hàng" aria-hidden="true" style="margin-left: 8px; color: #3498db"></i>';
-             break;
-         case 'P':
-             dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng đang được xét duyệt" aria-hidden="true" style="margin-left: 8px; color: #f8ac59"></i>';
-             break;
-         case 'S':
-             dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng đã được chấp nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394"></i>';
-             break;
-         case 'E':
-             dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng bị từ chối" aria-hidden="true" style="margin-left: 8px; color: #ed5565"></i>';
-             break;
-     }
+    // Date receipt status
+    let dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Chưa đăng ký ngày đóng hàng" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
+    switch (sourceData[row].dateReceiptStatus) {
+      case 'N':
+        dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Có thể đăng ký ngày đóng hàng" aria-hidden="true" style="margin-left: 8px; color: #3498db"></i>';
+        break;
+      case 'P':
+        dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng đang được xét duyệt" aria-hidden="true" style="margin-left: 8px; color: #f8ac59"></i>';
+        break;
+      case 'S':
+        dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng đã được chấp nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394"></i>';
+        break;
+      case 'E':
+        dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng bị từ chối" aria-hidden="true" style="margin-left: 8px; color: #ed5565"></i>';
+        break;
+    }
 
     // Return the content
     let content = "<div>";
@@ -708,16 +708,38 @@ function consigneeRenderer(
   return td;
 }
 
+// function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
+//   $(td).attr('id', 'receiptDem' + row).addClass("htMiddle").addClass("htCenter");
+//   if (value != null && value != '') {
+//     if (value.substring(2, 3) != "/") {
+//       value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+//     }
+//   } else {
+//     value = '';
+//   }
+//   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+//   return td;
+// }
+
+
 function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'receiptDem' + row).addClass("htMiddle").addClass("htCenter");
-  if (value != null && value != '') {
-    if (value.substring(2, 3) != "/") {
-      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-    }
-  } else {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  // if (value != null && value != '') {
+  //   if (value.substring(2, 3) != "/") {
+  //     value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+  //   }
+  // } else {
+  //   value = '';
+  // }
+  const data = `
+  <div class="input-group date" id="datetimepicker${row}" data-date-format="dd/mm/yyyy hh:ii">
+                    <input type="text" class="form-control" name="daySetupTemperature${row}" />
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                  </div>
+  `;
+  $(td).css("position", "relative").html(data);
   return td;
 }
 
@@ -1138,6 +1160,8 @@ function configHandson() {
           return "Người Thanh Toán";
         case 20:
           return "Ghi Chú";
+        case 21:
+          return "Ghi Chú";
       }
     },
     colWidths: [
@@ -1162,6 +1186,7 @@ function configHandson() {
       130,
       130,
       200,
+      100
     ],
     filter: "true",
     columns: [{
@@ -1203,12 +1228,16 @@ function configHandson() {
       strict: true,
       renderer: consigneeRenderer,
     },
+    // {
+    //   data: "dateReceipt",
+    //   type: "date",
+    //   dateFormat: "DD/MM/YYYY HH:mm",
+    //   correctFormat: true,
+    //   defaultDate: new Date(),
+    //   renderer: dateReceiptRenderer,
+    // },
     {
       data: "dateReceipt",
-      type: "date",
-      dateFormat: "DD/MM/YYYY",
-      correctFormat: true,
-      defaultDate: new Date(),
       renderer: dateReceiptRenderer,
     },
     {
@@ -1281,6 +1310,7 @@ function configHandson() {
       data: "remark",
       renderer: remarkRenderer,
     },
+
     ],
     afterChange: function (changes, src) {
       //Get data change in cell to render another column
