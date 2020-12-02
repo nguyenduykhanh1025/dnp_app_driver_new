@@ -415,10 +415,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						shipmentDetail.setDangerousImo(ctnrInfo.getImdg());
 						shipmentDetail.setDangerousUnno(ctnrInfo.getUnno());
 						// Check is dangerous
-						if (StringUtils.isNotEmpty(shipmentDetail.getDangerousImo()) 
+						// k can check dangerous
+						/*if (StringUtils.isNotEmpty(shipmentDetail.getDangerousImo()) 
 								|| StringUtils.isNotEmpty(shipmentDetail.getDangerousUnno())) {
 							shipmentDetail.setDangerous(EportConstants.CONT_SPECIAL_STATUS_INIT);// I
-						} 
+						} */
+						// end
 						// Set oversize info
 						shipmentDetail.setOversizeTop(ctnrInfo.getOvHeight());
 						shipmentDetail.setOversizeFront(ctnrInfo.getOvFore());
@@ -1197,9 +1199,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			        	shipmentDetailUpdate.setOversize(EportConstants.CONT_SPECIAL_STATUS_REQ);// R
 			}
 			// cont nguy hiem
-			if (StringUtils.isNotEmpty(shipmentDetail.getDangerousImo())|| StringUtils.isNotEmpty(shipmentDetail.getDangerousUnno())) {
+			/*if (StringUtils.isNotEmpty(shipmentDetail.getDangerousImo())|| StringUtils.isNotEmpty(shipmentDetail.getDangerousUnno())) {
 	        	shipmentDetailUpdate.setDangerous(EportConstants.CONT_SPECIAL_STATUS_REQ);// R
-			}  
+			}  */
 			
 			shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds,shipmentDetailUpdate);
 		} 
