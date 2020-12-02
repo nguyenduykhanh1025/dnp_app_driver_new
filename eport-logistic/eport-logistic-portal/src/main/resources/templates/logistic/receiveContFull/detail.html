@@ -76,22 +76,27 @@
 					<!--////////////// start cont lạnh ///////////////start cont lạnh-->
 
 					<div class="content-1" id="reeferContainer">
-						<!-- <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+						<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
 							<div class="form-group col-sm-6 row">
 								<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-										class="text-black">SealNo:</b></span>
+										class="text-black">Độ ẩm (%):</b></span>
 								<div class="col-sm-8 col-xs-6">
-									<input type="text" class="form-control" id="sealNo" name="sealNo" readonly />
+									<input type="text" class="form-control" id="humidity" name="humidity" readonly />
 								</div>
 							</div>
 							<div class="form-group col-sm-6 row">
 								<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-										class="text-black">Trọng lượng (kg):</b></span>
+										class="text-black">Độ thông gió (%):</b></span>
 								<div class="col-sm-8 col-xs-6">
-									<input type="text" class="form-control" id="wgt" name="wgt" readonly />
+									<input type="text" class="form-control" id="ventilation" name="ventilation"
+										readonly />
+
+										
 								</div>
+
+								
 							</div>
-						</div> -->
+						</div>
 						<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
 							<div class="form-group col-sm-6 row">
 								<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
@@ -112,29 +117,10 @@
 										<span class="glyphicon glyphicon-calendar"></span>
 									</span>
 								</div>
+								
 							</div>
-
-						</div>
-
-						<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-							<div class="form-group col-sm-6 row">
-								<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-										class="text-black">Độ ẩm (%):</b></span>
-								<div class="col-sm-8 col-xs-6">
-									<input type="text" class="form-control" id="humidity" name="humidity" readonly />
-								</div>
-							</div>
-							<div class="form-group col-sm-6 row">
-								<span class="control-label col-sm-4 col-xs-6" style="text-align: left">
-									<b class="text-black">Độ thông gió (%):</b>
-								</span>
-								<div class="input-group date col-sm-8 col-xs-5" id="datetimepicker1">
-
-									<input type="text" class="form-control" id="ventilation" name="ventilation"
-										readonly />
-								</div>
-							</div>
-
+							<button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()"
+									class="btn btn-sm btn"><i class="fa fa-clock-o text-primary"></i>Gia hạn ngày rút điện</button>
 						</div>
 
 						<!-- //////////// add tệp cont lạnh///////-->
@@ -223,128 +209,127 @@
 			                              </div>
 			                           </div> 
 			                       </div> -->
-		                       </div>
-		                        
-        <!-- //////////// add tệp cont quá khổ///////--> 
-						      <div class="form-group col-sm-12" id="dropzoneQK">  
-						        <div class="col-sm-12 col-xs-12">
-						          <button type="button" id="attachButtonQK" class="btn btn-sm btn-default">
-						            <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
-						          </button>
-						        </div>
-						        <div class="preview-containerQK col-md-12 col-sm-12 col-xs-12"></div>
-						      </div>
-                        </div>
-                     </div>
-                     
-   <!--////////////// start cont nguy hiểm -->
-   
-                     <div class="content-3">
-                        <div class="form-horizontal mt10 row">
-                        
-                        	<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-		                           <div class="form-group col-sm-6 row">
-		                              <span class="control-label col-sm-4 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">SealNo:</b></span>
-		                              <div class="col-sm-8 col-xs-6">
-		                                 <input type="text" class="form-control" id="sealNoNH" name="sealNoNH" readonly />
-		                              </div>
-		                           </div>
-		                           <div class="form-group col-sm-6 row">
-		                              <span class="control-label col-sm-4 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">Trọng lượng (kg):</b></span>
-		                              <div class="col-sm-8 col-xs-6">
-		                                 <input type="text" class="form-control" id="wgtNH" name="wgtNH" readonly />
-		                              </div>
-		                           </div>
-		                     </div> 
-		                     
-		                     
-		                     <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-		                           <div class="form-group col-sm-6 row">
-		                              <span class="control-label col-sm-4 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">IMO:</b></span>
-		                              <div class="col-sm-8 col-xs-6">
-		                                 <input type="text" class="form-control" id="dangerousImo" name="dangerousImo" readonly />
-		                              </div>
-		                           </div>
-		                           <div class="form-group col-sm-6 row">
-		                              <span class="control-label col-sm-4 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">UNNO:</b></span>
-		                              <div class="col-sm-8 col-xs-6">
-		                                 <input type="text" class="form-control" id="dangerousUnno" name="dangerousUnno" readonly />
-		                              </div>
-		                           </div>
-		                     </div> 
-		                     
-		                      <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-		                           <div class="form-group col-sm-6 row">
-		                              <span class="control-label col-sm-4 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">Tên hàng hóa:</b></span>
-		                              <div class="col-sm-8 col-xs-6">
-		                                 <input type="text" class="form-control" id="dangerousNameProduct" name="dangerousNameProduct" readonly />
-		                              </div>
-		                           </div>
-		                           <div class="form-group col-sm-6 row">
-		                              <span class="control-label col-sm-4 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">Quy cách đóng gói:</b></span>
-		                              <div class="col-sm-8 col-xs-6">
-		                                 <input type="text" class="form-control" id="dangerousPacking" name="dangerousPacking" readonly />
-		                              </div>
-		                           </div>
-		                     </div> 
-		    <!-- //////////// add tệp cont nguy hiểm ///////-->
-					      <div class="form-group col-sm-12" id="dropzoneNH" style="display: none"> 
-					        <div class="col-sm-12 col-xs-12">
-					          <button type="button" id="attachButtonNH" class="btn btn-sm btn-default">
-					            <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
-					          </button>
-					        </div>
-					        <div class="preview-containerNH col-md-12 col-sm-12 col-xs-12"></div>
-					      </div>
-					       
-                        </div>
-                     </div> 
-                  </div>
-                   
-               </section>
-            </div> 
-					  <div class="col-sm-12 layui-layer-btn footer" style="z-index: 1000"  >
-					      <a class="layui-layer-btn0" onclick="confirm()">Lưu</a>
-					       <a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
-					 </div>         	
-            
-         <!-- </form> -->
-      </div>
-      <th:block th:include="include :: footer" />
-      <th:block th:include="include :: datetimepicker-js" />
-      <th:block th:include="include :: dropzone-js" />
-      <script type="text/javascript" th:inline="javascript">
-         /**
-          * Data load from server
-         */
-         /* var containerNo = /*[[${containerNo}]];*/
-           
-         var containerNo = [[${containerNo}]];
-         var sztp = [[${sztp}]];
-         var shipmentDetailId = [[${shipmentDetailId}]];  
-         var shipmentDetail = [[${shipmentDetail}]];  
-         var shipmentImage = [[${shipmentImage}]]; 
-         var shipmentFiles = [[${shipmentFiles}]]; 
-       
-         
-      </script>
-      <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=1234}"></script>
-      <script th:src="@{/js/logistic/receiveContFull/detail.js?v=1234567}"></script>
-      
-      
-	<script type="text/javascript">  
+							</div>
+
+							<!-- //////////// add tệp cont quá khổ///////-->
+							<div class="form-group col-sm-12" id="dropzoneQK">
+								<div class="col-sm-12 col-xs-12">
+									<button type="button" id="attachButtonQK" class="btn btn-sm btn-default">
+										<i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+									</button>
+								</div>
+								<div class="preview-containerQK col-md-12 col-sm-12 col-xs-12"></div>
+							</div>
+						</div>
+					</div>
+
+					<!--////////////// start cont nguy hiểm -->
+
+					<div class="content-3" id="dangerousContainer">
+						<div class="form-horizontal mt10 row">
+
+							<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+								<div class="form-group col-sm-6 row">
+									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
+											class="text-black">SealNo:</b></span>
+									<div class="col-sm-8 col-xs-6">
+										<input type="text" class="form-control" id="sealNoNH" name="sealNoNH"
+											readonly />
+									</div>
+								</div>
+								<div class="form-group col-sm-6 row">
+									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
+											class="text-black">Trọng lượng (kg):</b></span>
+									<div class="col-sm-8 col-xs-6">
+										<input type="text" class="form-control" id="wgtNH" name="wgtNH" readonly />
+									</div>
+								</div>
+							</div>
+
+
+							<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+								<div class="form-group col-sm-6 row">
+									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
+											class="text-black">IMO:</b></span>
+									<div class="col-sm-8 col-xs-6">
+										<input type="text" class="form-control" id="dangerousImo" name="dangerousImo"
+											readonly />
+									</div>
+								</div>
+								<div class="form-group col-sm-6 row">
+									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
+											class="text-black">UNNO:</b></span>
+									<div class="col-sm-8 col-xs-6">
+										<input type="text" class="form-control" id="dangerousUnno" name="dangerousUnno"
+											readonly />
+									</div>
+								</div>
+							</div>
+
+							<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+								<div class="form-group col-sm-6 row">
+									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
+											class="text-black">Tên hàng hóa:</b></span>
+									<div class="col-sm-8 col-xs-6">
+										<input type="text" class="form-control" id="dangerousNameProduct"
+											name="dangerousNameProduct" readonly />
+									</div>
+								</div>
+								<div class="form-group col-sm-6 row">
+									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
+											class="text-black">Quy cách đóng gói:</b></span>
+									<div class="col-sm-8 col-xs-6">
+										<input type="text" class="form-control" id="dangerousPacking"
+											name="dangerousPacking" readonly />
+									</div>
+								</div>
+							</div>
+							<!-- //////////// add tệp cont nguy hiểm ///////-->
+							<div class="form-group col-sm-12" id="dropzoneNH">
+								<div class="col-sm-12 col-xs-12">
+									<button type="button" id="attachButtonNH" class="btn btn-sm btn-default">
+										<i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+									</button>
+								</div>
+								<div class="preview-containerNH col-md-12 col-sm-12 col-xs-12"></div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+			</section>
+		</div>
+		<div class="col-sm-12 layui-layer-btn footer" style="z-index: 1000">
+			<a class="layui-layer-btn0" onclick="confirm()">Lưu</a>
+			<a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
+		</div>
+
+		<!-- </form> -->
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: datetimepicker-js" />
+	<th:block th:include="include :: dropzone-js" />
+	<script type="text/javascript" th:inline="javascript">
+		/**
+		 * Data load from server
+		*/
+		/* var containerNo = /*[[${containerNo}]];*/
+
+		var containerNo = [[${ containerNo }]];
+		var sztp = [[${ sztp }]];
+		var shipmentDetailId = [[${ shipmentDetailId }]];
+		var shipmentDetail = [[${ shipmentDetail }]];
+		var shipmentImage = [[${ shipmentImage }]];
+		var shipmentFiles = [[${ shipmentFiles }]];
+
+
+	</script>
+	<script th:src="@{/js/logistic/receiveContFull/addFile.js?v=1234}"></script>
+	<script th:src="@{/js/logistic/receiveContFull/detail.js?v=123456}"></script>
+
+
+	<script type="text/javascript">
 		// cont lạnh
 		$(document).ready(function () {
 			var dangerous = shipmentDetail.dangerous;
