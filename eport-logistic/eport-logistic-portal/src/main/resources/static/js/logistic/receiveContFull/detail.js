@@ -32,7 +32,8 @@ $('#ovFore').val(shipmentDetail.ovFore);//
 $('#ovHeight').val(shipmentDetail.ovHeight);//
 $('#ovPort').val(shipmentDetail.ovPort);// 
 $('#ovStbd').val(shipmentDetail.ovStbd);//  
-$('#powerDrawDate').val(shipmentDetail.powerDrawDate);//   
+
+//$('#powerDrawDate').val(shipmentDetail.powerDrawDate);//   
 // cont nguy hiểm 
 $('#dangerousImo').val(shipmentDetail.dangerousImo);// 
 $('#dangerousUnno').val(shipmentDetail.dangerousUnno);//  
@@ -42,12 +43,32 @@ $("#form-detail-add").validate({
 	  focusCleanup: true,
 });
   
-$("#datetimepicker1").datetimepicker({
-	  format: "dd/mm/yyyy",
+/*$("#datetimepicker1").datetimepicker({
+	  format: "dd/mm/yyyy", 
 	  language: "vi_VN",
-	  minView: "month",
+	  //minView: "month",
 	  autoclose: true
-});
+});*/
+
+  
+ 
+ 
+$("#datetimepicker1").datetimepicker({
+	format: 'dd/mm/yyyy hh:ii',
+	language: "vi_VN",
+	//minView: "month",
+	autoclose: true,
+	minuteStep: 30,
+	todayBtn: true,
+	startDate: new Date()
+	});
+
+//$("#datetimepicker1").datetimepicker('getDate').getTime();
+
+ 
+let daySetup = new Date(shipmentDetail.powerDrawDate);  
+$("#datetimepicker1").datetimepicker('setDate', daySetup);
+
   
 var dangerousIMO = shipmentDetail.dangerousImo; 
 var dangerousUNNO = shipmentDetail.dangerousUnno; 
@@ -69,19 +90,39 @@ let contO = true;// qua kho
 let typeD = true;// nguy hiem 
 let typeR = true;// lanh
 let typeO = true;// qua kho
+
+
+ 
+
    
 // confirm
 function confirm() {
+	console.log("VAo");
+	//console.log($("#datetimepicker1").datetimepicker('getDate').getTime());
+	let date = $("#datetimepicker1").datetimepicker('getDate').getTime();
+	
+	
+	
+	
+	let shipmentDetailId = shipmentDetail.id;
+	console.log(shipmentDetailId);
+	const detail = { 
+			id : shipmentDetail.id,
+			shipmentId: shipmentDetail.shipmentId,
+			sztp : shipmentDetail.sztp, 
+			powerDrawDate: date
+			/*powerDrawDate: new Date(
+				      formatDateToSendServer(shipmentDetail.powerDrawDate)
+				    ).getTime(),*/
+	}
 	 $.ajax( 
 		    	{
 		    		url: prefix + "/saveDate", 
-		    		method: "POST",
-		    		data: { 
-		    			shipmentDetailId : shipmentDetail.id,
-		    			shipmentId: shipmentDetail.shipmentId,
-		    			shipmentSztp : shipmentDetail.sztp, 
-		    			powerDrawDate : $("#powerDrawDate").val()
-		    		},
+		    		method: "post",
+		            contentType: "application/json",
+		            accept: "text/plain",
+		    		data: JSON.stringify(detail),
+		    		dataType: "text",
 		    		success: function(result){
 	    			if (result.code == 0) {
 	                    //$.modal.alertError(result.msg);
@@ -91,7 +132,31 @@ function confirm() {
 	                } 
 		    }}); 
 }
-  
+
+
+/*function confirm() {  
+	let myDate = $("#datetimepicker1").datetimepicker('getDate').getTime();
+    $.ajax( 
+    	{
+    		url: prefix + "/saveDate", 
+    		method: "POST",
+    		data: { 
+    			shipmentDetailId : shipmentDetail.id,
+    			shipmentId : shipmentDetail.shipmentId,
+    			shipmentSztp : shipmentDetail.sztp,
+    			powerDrawDate : $("#datetimepicker1").datetimepicker('getDate').getTime() 
+    		},
+    		success: function(result){
+			if (result.code == 0) {
+                //$.modal.alertError(result.msg);
+				insertDate(); 
+				 
+            } else {
+                $.modal.close();
+            } 
+    }});  
+}
+  */
 //confirm
 function insertDate() {   
 	    $.ajax( 

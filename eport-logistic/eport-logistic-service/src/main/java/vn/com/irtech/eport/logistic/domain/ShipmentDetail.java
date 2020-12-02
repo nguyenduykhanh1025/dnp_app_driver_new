@@ -500,7 +500,7 @@ public class ShipmentDetail extends BaseEntity {
 	// cont lạnh
 	private String frozenStatus;
 
-	private String powerDrawDate;
+	private Date powerDrawDate;
 
 	private String dateReceiptStatus;
 
@@ -1322,11 +1322,12 @@ public class ShipmentDetail extends BaseEntity {
 		this.frozenStatus = frozenStatus;
 	}
 
-	public String getPowerDrawDate() {
+	  
+	public Date getPowerDrawDate() {
 		return powerDrawDate;
 	}
 
-	public void setPowerDrawDate(String powerDrawDate) {
+	public void setPowerDrawDate(Date powerDrawDate) {
 		this.powerDrawDate = powerDrawDate;
 	}
 
