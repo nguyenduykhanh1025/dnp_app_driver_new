@@ -46,6 +46,13 @@ function initValueToElementHTML() {
   if (shipmentDetail) {
     $("#containerNo").val(shipmentDetail.containerNo);
     $("#sztp").val(shipmentDetail.sztp);
+    
+    $('#oversizeRight').val(shipmentDetail.oversizeRight);  
+    $('#oversizeTop').val(shipmentDetail.oversizeTop); 
+    $('#oversizeLeft').val(shipmentDetail.oversizeLeft); 
+    $('#dgNameProduct').val(shipmentDetail.dangerousNameProduct); 
+    $('#dgPacking').val(shipmentDetail.dangerousPacking);
+    
     const {
       temperature,
       daySetupTemperature,
@@ -60,22 +67,22 @@ function initValueToElementHTML() {
       ventilation
     );
 
-    // initElementHTMLInOversizeTab(
-    //   oversize,
-    //   oversizeType,
-    //   oversizeTop,
-    //   oversizeRight,
-    //   oversizeLeft,
-    //   oversizeFront,
-    //   oversizeBack
-    // );
-    // initElementHTMLInDangerousTab(
-    //   dangerous,
-    //   dangerousImo,
-    //   dangerousUnno,
-    //   dangerousNameProduct,
-    //   dangerousPacking
-    // );
+    /* initElementHTMLInOversizeTab(
+       //oversize,
+       oversizeType,
+       oversizeTop,
+       oversizeRight,
+       oversizeLeft,
+       oversizeFront,
+       oversizeBack
+     );
+     initElementHTMLInDangerousTab(
+       dangerous,
+       dangerousImo,
+       dangerousUnno,
+       dangerousNameProduct,
+       dangerousPacking
+     );*/
 
     //"preview-container-dangerous",
     // initDropzone(
@@ -96,6 +103,7 @@ function initValueToElementHTML() {
     //   "attachButtonIce",
     //   KEY_FORM.ICE
     // );
+    
   }
 }
 
