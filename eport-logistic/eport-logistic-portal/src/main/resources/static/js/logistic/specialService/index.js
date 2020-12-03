@@ -4,7 +4,7 @@ var prefix = ctx + "logistic/special-service";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot, isDestroy = false;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
-var contList = [], temperatureDisable = [], sztpListDisable = [];
+var contList = [], temperatureDisable = [], sztpListDisable = [], updateCatos = false;
 var conts = '';
 var allChecked = false;
 var checkList = [];
@@ -29,7 +29,7 @@ $.ajax({
         }
     }
 });
-var consigneeList, vslNmList, currentProcessId, currentSubscription;
+var consigneeList, vslNmList, currentProcessId, currentSubscription, specialService, specialServiceDictData;
 
 $.ajax({
     url: ctx + "logistic/source/consignee",
@@ -37,6 +37,17 @@ $.ajax({
     success: function (data) {
         if (data.code == 0) {
             consigneeList = data.consigneeList;
+        }
+    }
+});
+
+$.ajax({
+    url: ctx + "logistic/source/specialService",
+    method: "GET",
+    success: function (data) {
+        if (data.code == 0) {
+            specialService = data.specialService;
+            specialServiceDictData = data.specialServiceDictData;
         }
     }
 });
@@ -224,11 +235,6 @@ $(document).ready(function () {
         }
     });
 
-    // let now = new Date();
-    // now = new Date(now.getFullYear(), now.getMonth(), 1);
-    // let nowStr = ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear();
-
-
     $('#fromDate').datebox({
         onSelect: function (date) {
             date.setHours(0, 0, 0);
@@ -242,9 +248,6 @@ $(document).ready(function () {
             return date;
         }
     });
-
-    // $('#fromDate').datebox('setValue', nowStr);
-    // shipmentSearch.params.fromDate = dateToString(now);
 
     $('#toDate').datebox({
         onSelect: function (date) {
@@ -279,7 +282,7 @@ function dateformatter(date) {
     return (d < 10 ? ('0' + d) : d) + '/' + (m < 10 ? ('0' + m) : m) + '/' + y;
 }
 function dateparser(s) {
-    var ss = (s.split('\.'));
+    var ss = (s.split('/'));
     var d = parseInt(ss[0], 10);
     var m = parseInt(ss[1], 10);
     var y = parseInt(ss[2], 10);
@@ -786,10 +789,49 @@ function commodityRenderer(instance, td, row, col, prop, value, cellProperties) 
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
+
+function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'loadingPort' + row).addClass("htMiddle").addClass("htCenter");
+    if (value != null && value != '') {
+        value = value.split(':')[0];
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'dischargePort' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
         value = value.split(':')[0];
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }
+    if (!value) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+
+function specialServiceRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'specialService' + row).addClass("htMiddle").addClass("htCenter");
+    if (value != null && value != '') {
+        if (specialServiceDictData != null) {
+            specialServiceDictData.forEach(element => {
+                if (value == element.dictLabel) {
+                    value = element.dictValue;
+                }
+            });
+        }
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
@@ -872,38 +914,42 @@ function configHandson() {
                 case 1:
                     return "Trạng Thái";
                 case 2:
-                    return '<span class="required">Container No</span>';
+                    return 'Container No';
                 case 3:
-                    return '<span class="required">Kích Thước</span>';
+                    return '<span class="required">Dịch vụ</span>';
                 case 4:
-                    return '<span class="required">Chủ Hàng</span>';
+                    return 'Kích Thước';
                 case 5:
-                    return '<span class="required">Tàu và Chuyến</span>';
+                    return 'Chủ Hàng';
                 case 6:
-                    return "Ngày tàu đến";
+                    return 'Tàu và Chuyến';
                 case 7:
-                    return '<span class="required">Cảng Dỡ Hàng</span>';
+                    return "Ngày tàu đến";
                 case 8:
-                    return '<span class="required">Trọng Lượng (kg)</span>';
+                    return 'Cảng Xếp Hàng';
                 case 9:
-                    return '<span class="required">Loại Hàng</span>';
+                    return 'Cảng Dỡ Hàng';
                 case 10:
-                    return 'Tên Hàng';
+                    return 'Trọng Lượng (kg)';
                 case 11:
-                    return 'Số Seal';
+                    return 'Loại Hàng';
                 case 12:
-                    return "Nhiệt Độ (c)";
+                    return 'Tên Hàng';
                 case 13:
-                    return 'PTTT';
+                    return 'Số Seal';
                 case 14:
-                    return 'Mã Số Thuế';
+                    return "Nhiệt Độ (c)";
                 case 15:
-                    return 'Người Thanh Toán';
+                    return 'PTTT';
                 case 16:
+                    return 'Mã Số Thuế';
+                case 17:
+                    return 'Người Thanh Toán';
+                case 18:
                     return "Ghi Chú";
             }
         },
-        colWidths: [40, 100, 100, 150, 150, 200, 100, 120, 120, 80, 100, 100, 80, 80, 100, 130, 200],
+        colWidths: [40, 100, 100, 120, 150, 150, 200, 100, 100, 120, 120, 80, 100, 100, 80, 80, 100, 130, 200],
         filter: "true",
         columns: [
             {
@@ -921,6 +967,13 @@ function configHandson() {
                 data: "containerNo",
                 strict: true,
                 renderer: containerNoRenderer,
+            },
+            {
+                data: "specialService",
+                type: "autocomplete",
+                source: specialService,
+                strict: true,
+                renderer: specialServiceRenderer
             },
             {
                 data: "sztp",
@@ -946,6 +999,12 @@ function configHandson() {
             {
                 data: "eta",
                 renderer: etaRenderer
+            },
+            {
+                data: "loadingPort",
+                strict: true,
+                type: "autocomplete",
+                renderer: loadingPortRenderer
             },
             {
                 data: "dischargePort",
@@ -1018,7 +1077,7 @@ function configHandson() {
                 // Arrow Right
                 case 39:
                     selected = hot.getSelected()[0];
-                    if (selected[3] == 16) {
+                    if (selected[3] == 18) {
                         e.stopImmediatePropagation();
                     }
                     break
@@ -1046,49 +1105,52 @@ function onChange(changes, source) {
 
         // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
         if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-            let vesselAndVoy = hot.getDataAtCell(change[0], 5);
-            //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
-            if (vesselAndVoy) {
-                if (currentVesselVoyage != vesselAndVoy) {
-                    currentVesselVoyage = vesselAndVoy;
-                    let shipmentDetail = new Object();
-                    for (let i = 0; i < berthplanList.length; i++) {
-                        if (vesselAndVoy == berthplanList[i].vslAndVoy) {
-                            currentEta = berthplanList[i].eta;
-                            shipmentDetail.vslNm = berthplanList[i].vslNm;
-                            shipmentDetail.voyNo = berthplanList[i].voyNo;
-                            shipmentDetail.year = berthplanList[i].year;
-                            $.modal.loading("Đang xử lý ...");
-                            $.ajax({
-                                url: ctx + "/logistic/pods",
-                                method: "POST",
-                                contentType: "application/json",
-                                data: JSON.stringify(shipmentDetail),
-                                success: function (data) {
-                                    $.modal.closeLoading();
-                                    if (data.code == 0) {
-                                        hot.updateSettings({
-                                            cells: function (row, col, prop) {
-                                                if (col == 7) {
-                                                    let cellProperties = {};
-                                                    dischargePortList = data.dischargePorts;
-                                                    cellProperties.source = dischargePortList;
-                                                    return cellProperties;
+            if (!updateCatos) {
+                let vesselAndVoy = hot.getDataAtCell(change[0], 6);
+                if (vesselAndVoy) {
+                    if (currentVesselVoyage != vesselAndVoy) {
+                        currentVesselVoyage = vesselAndVoy;
+                        let shipmentDetail = new Object();
+                        for (let i = 0; i < berthplanList.length; i++) {
+                            if (vesselAndVoy == berthplanList[i].vslAndVoy) {
+                                currentEta = berthplanList[i].eta;
+                                shipmentDetail.vslNm = berthplanList[i].vslNm;
+                                shipmentDetail.voyNo = berthplanList[i].voyNo;
+                                shipmentDetail.year = berthplanList[i].year;
+                                $.modal.loading("Đang xử lý ...");
+                                $.ajax({
+                                    url: ctx + "/logistic/pods",
+                                    method: "POST",
+                                    contentType: "application/json",
+                                    data: JSON.stringify(shipmentDetail),
+                                    success: function (data) {
+                                        $.modal.closeLoading();
+                                        if (data.code == 0) {
+                                            hot.updateSettings({
+                                                cells: function (row, col, prop) {
+                                                    if (col == 8 || col == 9) {
+                                                        let cellProperties = {};
+                                                        dischargePortList = data.dischargePorts;
+                                                        cellProperties.source = dischargePortList;
+                                                        return cellProperties;
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
                         }
                     }
+                    hot.setDataAtCell(change[0], 7, currentEta);
                 }
-                hot.setDataAtCell(change[0], 6, currentEta);
+            } else {
+                updateCatos = false;
             }
             // check to input temperature
         } else if (change[1] == "sztp") {
 
-            if (change[3] && hot.getDataAtCell(change[0], 2)) {
+            if (change[3] && hot.getDataAtCell(change[0], 3)) {
                 $('#detailBtn' + change[0]).prop('disabled', false);
             } else {
                 $('#detailBtn' + change[0]).prop('disabled', true);
@@ -1098,7 +1160,7 @@ function onChange(changes, source) {
                 temperatureDisable[change[0]] = 0;
                 hot.updateSettings({
                     cells: function (row, col, prop) {
-                        if (row == change[0] && col == 12) {
+                        if (row == change[0] && col == 14) {
                             let cellProperties = {};
                             cellProperties.readOnly = false;
                             return cellProperties;
@@ -1109,7 +1171,7 @@ function onChange(changes, source) {
                 temperatureDisable[change[0]] = 1;
                 hot.updateSettings({
                     cells: function (row, col, prop) {
-                        if (row == change[0] && col == 12) {
+                        if (row == change[0] && col == 14) {
                             let cellProperties = {};
                             cellProperties.readOnly = true;
                             $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
@@ -1121,43 +1183,51 @@ function onChange(changes, source) {
         } else if (change[1] == "containerNo") {
             if (!change[3]) {
                 sztpListDisable[change[0]] = 0;
-                cleanCell(change[0], 3, sizeList);
+                cleanCell(change[0], 4, sizeList);
             } else {
                 if (checkContainerNo(change[3])) {
                     $.ajax({
-                        url: prefix + "/containerNo/" + change[3] + "/sztp",
+                        url: prefix + "/containerNo",
                         method: "GET",
+                        data: {
+                            containerNo : change[3],
+                            shipmentId : shipmentSelected.id
+                        },
                         success: function (data) {
                             if (data.code == 0) {
-                                if (data.sztp && data.sztp[0] != '{') {
-                                    sizeList.forEach(element => {
-                                        if (data.sztp == element.substring(0, 4)) {
-                                            data.sztp = element;
-                                            return false;
-                                        }
-                                    });
-                                    sztpListDisable[change[0]] = 1;
-                                    hot.setDataAtCell(change[0], 3, data.sztp);
+                                if (data.containerInfo) {
+                                    let cntrInfo = data.containerInfo;
+                                    // Set data
+                                    updateCatos = true;
+                                    hot.setDataAtCell(change[0], 4, cntrInfo.sztp); // Kích Thước
+                                    hot.setDataAtCell(change[0], 5, cntrInfo.consignee); // Chủ Hàng
+                                    hot.setDataAtCell(change[0], 6, cntrInfo.vslCd + " - " + cntrInfo.vslNm + " - " + cntrInfo.inVoy); // Tàu và Chuyến
+                                    hot.setDataAtCell(change[0], 8, cntrInfo.pol); // Cảng Xếp Hàng
+                                    hot.setDataAtCell(change[0], 9, cntrInfo.pod); // Cảng Dỡ Hàng
+                                    hot.setDataAtCell(change[0], 10, cntrInfo.wgt); // Trọng Lượng (kg)
+                                    hot.setDataAtCell(change[0], 11, cntrInfo.cargoType); // Loại Hàng
+                                    hot.setDataAtCell(change[0], 13, cntrInfo.sealNo1); // Số Seal
+                                    hot.setDataAtCell(change[0], 18, cntrInfo.remark); // Ghi Chú
                                 } else {
                                     sztpListDisable[change[0]] = 0;
-                                    cleanCell(change[0], 3, sizeList);
+                                    cleanCell(change[0], 4, sizeList);
                                 }
                             } else {
                                 sztpListDisable[change[0]] = 0;
-                                cleanCell(change[0], 3, sizeList);
+                                cleanCell(change[0], 4, sizeList);
                             }
                         },
                         error: function (err) {
                             sztpListDisable[change[0]] = 0;
-                            cleanCell(change[0], 3, sizeList);
+                            cleanCell(change[0], 4, sizeList);
                         }
                     });
                 } else {
                     sztpListDisable[change[0]] = 0;
-                    cleanCell(change[0], 3, sizeList);
+                    cleanCell(change[0], 4, sizeList);
                 }
             }
-            if (change[3] && hot.getDataAtCell(change[0], 3)) {
+            if (change[3] && hot.getDataAtCell(change[0], 4)) {
                 $('#detailBtn' + change[0]).prop('disabled', false);
             } else {
                 $('#detailBtn' + change[0]).prop('disabled', true);
@@ -1466,13 +1536,6 @@ function getDataFromTable(isValidate) {
     shipmentDetails = [];
     contList = [];
     conts = '';
-    let consignee, opecode, vessel, voyage, pod;
-    if (cleanedGridData.length > 0) {
-        consignee = cleanedGridData[0].consignee;
-        vessel = cleanedGridData[0].vslNm;
-        voyage = cleanedGridData[0].voyNo;
-        pod = cleanedGridData[0].dischargePort;
-    }
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
         if (isValidate) {
@@ -1484,59 +1547,12 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
                 errorFlg = true;
                 return false;
-            } else if (!object["consignee"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ":Vui lòng chọn chủ hàng!");
+            } else if (!object["specialService"]) {
+                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng chọn loại dịch vụ!");
                 errorFlg = true;
                 return false;
-            } else if (!object["vslNm"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng chọn tàu - chuyến!");
-                errorFlg = true;
-                return false;
-            } else if (!object["sztp"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng chọn kích thước!");
-                errorFlg = true;
-                return false;
-            } else if (!object["wgt"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng nhập trọng lượng (kg)!");
-                errorFlg = true;
-                return false;
-            } else if (object["wgt"] < 1000) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Trọng lượng (tính bằng kg) quá nhỏ, vui lòng kiểm tra lại!");
-                errorFlg = true;
-                return false;
-            } else if (object["wgt"] > 99999) {
-                    $.modal.alertError("Hàng " + (index + 1) + ": Trọng lượng quá lớn (hơn 100 tấn), vui lòng kiểm tra lại!");
-                    errorFlg = true;
-                    return false;
-            } else if (!object["dischargePort"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Hãy chọn cảng dỡ hàng từ danh sách!");
-                errorFlg = true;
-                return false;
-            } else if (!object["cargoType"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Hãy chọn loại hàng từ danh sách!");
-                errorFlg = true;
-                return false;
-            } else if (consignee != object["consignee"]) {
-                $.modal.alertError("Tên chủ hàng không được khác nhau!");
-                errorFlg = true;
-                return false;
-//            } else if (consignee != object["consignee"]) {
-//                $.modal.alertError("Tên chủ hàng không được khác nhau!");
-//                errorFlg = true;
-//                return false;
-//            } else if (vessel != object["vslNm"]) {
-//                $.modal.alertError("Tàu và Chuyến không được khác nhau!");
-//                errorFlg = true;
-//                return false;
-            } else if (pod.split(": ")[0] != object["dischargePort"].split(": ")[0]) {
-                $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
-                errorFlg = true;
-                return false;
-            }
+            } 
         }
-        consignee = object["consignee"];
-        vessel = object["vslNm"];
-        pod = object["dischargePort"];
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
         if (object["status"] == 1 || object["status"] == null) {
@@ -1567,8 +1583,23 @@ function getDataFromTable(isValidate) {
                 }
             }
         }
+        if (specialServiceDictData != null) {
+            specialServiceDictData.forEach(element => {
+                if (object["specialService"] == element.dictValue) {
+                    shipmentDetail.specialService = element.dictLabel;
+                }
+            });
+        }
+        if (!shipmentDetail.vslNm && object["vslNm"]) {
+            let vslArr = object["vslNm"].split(" - ");
+            if (vslArr.length >= 3) {
+                shipmentDetail.vslNm = vslArr[0];
+                shipmentDetail.voyNo = vslArr[2];
+            }
+        }
         shipmentDetail.commodity = object["commodity"];
         shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
+        shipmentDetail.dischargePort = object["loadingPort"].split(": ")[0];
         shipmentDetail.cargoType = object["cargoType"].substring(0, 2);
         shipmentDetail.remark = object["remark"];
         shipmentDetail.sealNo = object["sealNo"];
@@ -1779,20 +1810,6 @@ function finishForm(result) {
 
 function finishVerifyForm(result) {
     if (result.code == 0 || result.code == 301) {
-        //$.modal.loading(result.msg);
-        currentProcessId = result.processId;
-        // CONNECT WEB SOCKET
-        connectToWebsocketServer();
-
-        showProgress("Đang xử lý ...");
-        timeout = setTimeout(() => {
-            setTimeout(() => {
-                hideProgress();
-                reloadShipmentDetail();
-                $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
-            }, 1000);
-        }, 200000);
-    } else {
         reloadShipmentDetail();
         $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
     }
@@ -1801,89 +1818,6 @@ function finishVerifyForm(result) {
 function napasPaymentForm() {
     //$.modal.openFullWithoutButton("Cổng Thanh Toán", );
     window.open(ctx + "logistic/payment/napas/" + processOrderIds, "_blank");
-}
-
-function connectToWebsocketServer() {
-    // Connect to WebSocket Server.
-    $.websocket.connect({}, onConnected, onError);
-}
-
-function onConnected() {
-    console.log('Connect socket.')
-    currentSubscription = $.websocket.subscribe(currentProcessId + '/response', onMessageReceived);
-}
-
-function onError(error) {
-    console.log(error);
-    $.modal.alertError('Could not connect to WebSocket server. Please refresh this page to try again!');
-    setTimeout(() => {
-        hideProgress();
-        $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
-    }, 1000);
-    //$.modal.closeLoading();
-}
-
-function onMessageReceived(payload) {
-    clearTimeout(timeout);
-    setProgressPercent(currentPercent = 100);
-    setTimeout(() => {
-        hideProgress();
-
-        let message = JSON.parse(payload.body);
-
-        reloadShipmentDetail();
-
-        if (message.code == 0) {
-            $.modal.alertSuccess(message.msg);
-        } else {
-            $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
-        }
-
-        // Close loading
-        //$.modal.closeLoading();
-
-        // Unsubscribe destination
-        if (currentSubscription) {
-            currentSubscription.unsubscribe();
-        }
-
-        // Close websocket connection 
-        $.websocket.disconnect(onDisconnected);
-    }, 1000);
-}
-
-function onDisconnected() {
-    console.log('Disconnected socket.');
-}
-
-function showProgress(title) {
-    $('.progress-wrapper').show();
-    $('.dim-bg').show();
-    $('#titleProgress').text(title);
-    $('.percent-text').text("0%");
-    currentPercent = 0;
-    interval = setInterval(function () {
-        if (currentPercent <= 99) {
-            setProgressPercent(++currentPercent);
-        }
-        if (currentPercent >= 99) {
-            clearInterval(interval);
-        }
-    }, 1000);
-}
-
-function setProgressPercent(percent) {
-    $('#progressBar').prop('aria-valuenow', percent)
-    $('#progressBar').css('width', percent + "%")
-    $('.percent-text').text(percent + "%");
-}
-
-function hideProgress() {
-    $('.progress-wrapper').hide();
-    $('.dim-bg').hide();
-    currentPercent = 0;
-    $('.percent-text').text("0%");
-    setProgressPercent(0);
 }
 function exportReceipt() {
     if (!shipmentSelected) {
