@@ -136,90 +136,75 @@ let contO = true;// qua kho
 let typeD = true;// nguy hiem 
 let typeR = true;// lanh
 let typeO = true;// qua kho
-
+ 
 // confirm
-function confirm() {
-  let date = $("#datetimepicker1").datetimepicker('getDate').getTime();
-  let shipmentDetailId = shipmentDetail.id;
+function insertCont() {
+	let date = $("#datetimepicker1").datetimepicker('getDate').getTime();
+	let shipmentDetailId = shipmentDetail.id; 
+	let truckNo = $("#truckNo").val();
+	let chassisNo = $("#chassisNo").val(); 
+	const detail = { 
+			id : shipmentDetail.id,
+			shipmentId: shipmentDetail.shipmentId,
+			sztp : shipmentDetail.sztp, 
+			powerDrawDate: date, 
+			truckNo : truckNo,
+			chassisNo : chassisNo
+	}
+	 $.ajax( 
+		    	{
+		    		url: prefix + "/saveDate", 
+		    		method: "post",
+		            contentType: "application/json",
+		            accept: "text/plain",
+		    		data: JSON.stringify(detail),
+		    		dataType: "text",
+		    		success: function(result){
+	    			if (result.code == 0) {
+	                    //$.modal.alertError(result.msg);
+	    				$.modal.close();
+	    				//insertFile();  
+	                } else {
+	                    $.modal.close();
+	                } 
+		    }}); 
+}
 
-  let truckNo = $("#truckNo").val();
-  let chassisNo = $("#chassisNo").val();
-  const detail = {
-    id: shipmentDetail.id,
-    shipmentId: shipmentDetail.shipmentId,
-    sztp: shipmentDetail.sztp,
-    powerDrawDate: date,
-    truckNo: truckNo,
-    chassisNo: chassisNo
-  }
-  $.ajax(
-    {
-      url: prefix + "/saveDate",
-      method: "post",
-      contentType: "application/json",
-      accept: "text/plain",
-      data: JSON.stringify(detail),
-      dataType: "text",
-      success: function (result) {
-        if (result.code == 0) {
-          //$.modal.alertError(result.msg);
-          insertDate();
-        } else {
-          $.modal.close();
-        }
-      }
-    });
+ 
+
+function confirm() {   
+	var lengthTemp = shipmentFilePath; 
+    if (lengthTemp == null || lengthTemp.length == 0) { 
+		insertCont();
+	}
+	if(lengthTemp != null || lengthTemp.length != 0){// nếu có thì vào đây
+		saveFile();
+	}
 }
 
 
-/*function confirm() {  
-  let myDate = $("#datetimepicker1").datetimepicker('getDate').getTime();
-  $.ajax( 
-    {
-      url: prefix + "/saveDate", 
-      method: "POST",
-      data: { 
-        shipmentDetailId : shipmentDetail.id,
-        shipmentId : shipmentDetail.shipmentId,
-        shipmentSztp : shipmentDetail.sztp,
-        powerDrawDate : $("#datetimepicker1").datetimepicker('getDate').getTime() 
-      },
-      success: function(result){
-      if (result.code == 0) {
-        //$.modal.alertError(result.msg);
-        insertDate(); 
-         
-      } else {
-        $.modal.close();
-      } 
-  }});  
-}
-  */
-//confirm
-function insertDate() {
-  $.ajax(
-    {
-      url: prefix + "/saveFileImage",
-      method: "POST",
-      data: {
-        filePaths: shipmentFilePath,
-        shipmentDetailId: shipmentDetail.id,
-        shipmentId: shipmentDetail.shipmentId,
-        shipmentSztp: shipmentDetail.sztp,
-        shipmentDangerous: shipmentDetail.dangerous,
-        fileType: fileType,
 
-      },
-      success: function (result) {
-        if (result.code == 0) {
-          //$.modal.alertError(result.msg);
-          $.modal.close();
-
-        } else {
-          $.modal.close();
-        }
-      }
-    });
+function saveFile() {    
+	    $.ajax( 
+	    	{
+	    		url: prefix + "/saveFileImage", 
+	    		method: "POST",
+	    		data: {
+	    			filePaths: shipmentFilePath,
+	    			shipmentDetailId : shipmentDetail.id,
+	    			shipmentId: shipmentDetail.shipmentId,
+	    			shipmentSztp : shipmentDetail.sztp, 
+	    			fileType : fileType
+	    		},
+	    		success: function(result){
+    			if (result.code == 0) {
+                    //$.modal.alertError(result.msg);
+                    //$.modal.close(); 
+                    insertCont();
+                } else {
+                    $.modal.close();
+                } 
+	    }});  
 }
 
 function closeForm() {
@@ -335,6 +320,141 @@ function configHandson() {
   };
 
 }
+ 
+/*function abc() {*/
+	// cont nguy hiểm: trường dangerous khác null
+	// cont quá khổ: trường oversize khác null
+	
+	//if(oversize && dangerous) bắt cả 2 đều có file
+	//if(oversize) bắt oversize có file
+	//if(dangerous)bắt dangerous có file
+	
+//shipmentFiles  fileType
+	
+/*if(oversize && dangerous){
+	if(fileType){ 
+		fileType.forEach(function (elementType, index) { 
+				if(elementType == "O"){// cont quá khổ oversize
+					typeO = true;
+				 }
+				if(elementType == "D"){// con nguy hiểm Dangerous
+					typeD = true;
+				 } 
+		});
+		
+		shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
+			//alert("vao for 2");
+			if(elementcont.fileType == "O"){// filetype quá khổ
+				 contO = true;
+			 }
+			if(elementcont.fileType == "D"){// filetype nguy hiểm
+				 contD = true;
+			 } 
+		});
+		
+		if(contD == false && typeD == false){ 
+			$.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
+		} 
+		else if(contO == false && typeO == false){
+			$.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
+		}
+		else{ 
+			saveFile();
+		} 
+	} 
+		
+}*/
+	
+	 
+ /*if(oversize && dangerous){
+	 if(fileType){ 
+			fileType.forEach(function (elementType, index) { 
+					if(elementType == "O"){// cont quá khổ oversize
+						typeO = true;
+					 }
+					if(elementType == "D"){// con nguy hiểm Dangerous
+						typeD = true;
+					 } 
+			});
+			
+			shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
+				//alert("vao for 2");
+				if(elementcont.fileType == "O"){// filetype quá khổ
+					 contO = true;
+				 }
+				if(elementcont.fileType == "D"){// filetype nguy hiểm
+					 contD = true;
+				 } 
+			});
+			
+			if(contD == false && typeD == false){ 
+				$.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
+			} 
+			else if(contO == false && typeO == false){
+				$.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
+			}
+			else{
+				checkSave(); 
+				//saveFile();
+			} 
+		}
+	 
+ }
+ 
+ if(oversize){
+	 if(fileType){ 
+			fileType.forEach(function (elementType, index) { 
+					if(elementType == "O"){// cont quá khổ oversize
+						typeO = true;
+					 }  
+			});
+			
+			shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
+				//alert("vao for 2");
+				if(elementcont.fileType == "O"){// filetype quá khổ
+					 contO = true;
+				 }
+				 
+			});
+			
+			 if(contO == false && typeO == false){
+				$.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
+			}
+			else{
+				checkSave(); 
+				//saveFile();
+			} 
+		}
+	 
+ }
+ 
+ if(dangerous){
+	 if(fileType){ 
+			fileType.forEach(function (elementType, index) { 
+					if(elementType == "D"){// cont quá khổ oversize
+						typeD = true;
+					 }  
+			});
+			
+			shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
+				//alert("vao for 2");
+				if(elementcont.fileType == "D"){// filetype quá khổ
+					 contD = true;
+				 }
+				 
+			});
+			
+			 if(contD == false && typeD == false){
+				$.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
+			}
+			else{
+				checkSave(); 
+				//saveFile();
+			} 
+		}
+	 
+ }  	
+ */
 function statusIconRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html('');
   cellProperties.readOnly = 'true';

@@ -45,7 +45,7 @@
 					<div class="clear"></div>
 
 					<div class="content">
-						<div class="content-1">
+						<div class="content-1" id="reeferContainer">
 							<div class="form-horizontal mt10 row"
 								style="border-bottom: 1px dashed #ccc"> 
 							</div>
@@ -96,7 +96,7 @@
                 <div class="preview-container-ice col-md-12 col-sm-12 col-xs-12" style="margin-top: 5px"></div>
               </div> -->
 				</div>  
-				<div class="content-2">
+				<div class="content-2" id="oversizeContainer">
                 <div class="form-horizontal mt10 row">
                   <!-- <div class="col-xs-12 p5" style="border-bottom: 1px dashed #ccc">
                     <label class="control-label col-sm-2 col-xs-2 pt0">
@@ -280,7 +280,7 @@
 			var oversizeLeft = shipmentDetail.oversizeLeft;
 			var oversizeFront = shipmentDetail.oversizeFront;
 			var oversizeBack = shipmentDetail.oversizeBack;
-			 $("#tab-1").prop('disabled', true); // disabled check cont lạnh
+			  $("#tab-1").prop('disabled', true); // disabled check cont lạnh
 			 $("#tab-2").prop('disabled', true); // disabled check cont quá khổ
 			 $("#tab-3").prop('disabled', true); // disabled check cont nguy hiểm  
  
@@ -295,7 +295,23 @@
 			 if(cont == 'P' || cont == 'U'){
 				 $("#tab-2").prop('disabled', false); // checked vào cont Nguy hiểm
 				 $("#tab-2").prop('checked', true); // disabled check cont Nguy hiểm
-			 } 
+			 }  
+			 
+			 
+			/*  if(cont == 'R')) {
+					$('#reeferContainer').css('display', 'block');
+					$("#tab-1").prop('checked', true);
+				}
+			if(cont == 'P' || cont == 'U'){
+				$('#reeferContainer').css('display', 'none');
+				$('.tab-label-1').css('display', 'none');
+			}
+			if(cont == 'G'){
+				$('#reeferContainerG').css('display', 'none');
+				$('.tab-label-1').css('display', 'none');
+			 } */
+				 
+			 
 
 		});
 	</script>

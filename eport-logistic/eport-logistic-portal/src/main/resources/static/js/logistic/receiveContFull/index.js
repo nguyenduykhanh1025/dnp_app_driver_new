@@ -40,9 +40,7 @@ const CONT_SPECIAL_STATUS = {
 };
 
 const CONT_SZTP = {
-		  DANGER: "Dangerous", // cont nguy hiểm 
-		  COOL: "Cool",
-		  OVERSIZE: "OverSize",
+		  DANGER: "Dangerous", // cont nguy hiểm  
 		};
 
 
@@ -582,7 +580,7 @@ function getConfigIconSztp(row) {
 	  if (sztpResult == null) {
 	    return "";
 	  }  if (sztpResult == CONT_SZTP.DANGER) {
-	    return '<i id="verify" class="fa fa-assistive-listening-systems" title="Là cont nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
+	    return '<i id="verify" class="fa fa-exclamation-triangle" title="Là cont nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
 	  }
 	 /* if (sztpResult == CONT_SZTP.COOL) {
 		    return '<i id="verify" class="fa fa-thermometer-empty" title="Là cont lạnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
