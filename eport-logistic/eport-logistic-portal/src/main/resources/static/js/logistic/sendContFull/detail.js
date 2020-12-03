@@ -28,16 +28,30 @@ $("#datetimepicker1").datetimepicker({
 });
 
 $(document).ready(function () {
+  initTabs();
   initValueToElementHTML();
-  initOptionForSelectCargoTypeSelect();
-  initOptionForSelectIMOSelect();
-  initOptionForSelectUNNOSelect();
 });
 
 /**
  * * *Init Func* * *
  */
 
+function initTabs() {
+  console.log('sssssssssssss', shipmentDetail.sztp);
+  var keySize =  shipmentDetail.sztp.substring(2, 3);
+  if (keySize == 'R') {// nếu cont lạnh thì show table
+    $(".tab-label-2").css("display", 'none');
+    $(".tab-label-3").css("display", 'none');
+  }
+  if (keySize == 'G') {
+    $(".tab-label-1").css("display", 'none');
+    $(".tab-label-2").css("display", 'none');
+  }
+  if (keySize == 'P' || keySize == 'U') {
+    $(".tab-label-1").css("display", 'none');
+    $(".tab-label-3").css("display", 'none');
+  }
+}
 /**
  * @author Khanh
  * @description create another values if exist from server
@@ -46,13 +60,13 @@ function initValueToElementHTML() {
   if (shipmentDetail) {
     $("#containerNo").val(shipmentDetail.containerNo);
     $("#sztp").val(shipmentDetail.sztp);
-    
-    $('#oversizeRight').val(shipmentDetail.oversizeRight);  
-    $('#oversizeTop').val(shipmentDetail.oversizeTop); 
-    $('#oversizeLeft').val(shipmentDetail.oversizeLeft); 
-    $('#dgNameProduct').val(shipmentDetail.dangerousNameProduct); 
+
+    $('#oversizeRight').val(shipmentDetail.oversizeRight);
+    $('#oversizeTop').val(shipmentDetail.oversizeTop);
+    $('#oversizeLeft').val(shipmentDetail.oversizeLeft);
+    $('#dgNameProduct').val(shipmentDetail.dangerousNameProduct);
     $('#dgPacking').val(shipmentDetail.dangerousPacking);
-    
+
     const {
       temperature,
       daySetupTemperature,
@@ -103,7 +117,7 @@ function initValueToElementHTML() {
     //   "attachButtonIce",
     //   KEY_FORM.ICE
     // );
-    
+
   }
 }
 
@@ -351,63 +365,15 @@ function submitHandler() {
   data = covertSerializeArrayToObject(data);;
   data = {
     ...data,
-    // oversizeType: formatValuesCategoryOversize(),
-    // vgmMaxGross: $("#vgmChk").prop("checked")
-    //   ? reFormatNumber($("#maxGross").val())
-    //   : null,
-    // vgmInspectionDepartment: $("#vgmChk").prop("checked")
-    //   ? $("#inspectionDepartment").val()
-    //   : null,
     daySetupTemperature: $("#datetimepicker1").datetimepicker('getDate').getTime(),
-    // dangerous: data.dangerous == "T" ? "T" : "",
-    // oversize: data.oversize == "T" ? "T" : "",
   };
-  //validate file
-  let isValidateFile = true;
 
-  // if (data.dangerous) {
-  //   // dangerous khong co dinh kem file
-  //   if (!shipmentFilePaths.dangerous.length) {
-  //     isValidateFile = false;
-  //     $.modal.alertWarning(
-  //       "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file."
-  //     );
-  //   }
-  // }
-  // if (data.oversize) {
-  //   if (!shipmentFilePaths.oversize.length) {
-  //     isValidateFile = false;
-  //     $.modal.alertWarning(
-  //       "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file."
-  //     );
-  //   }
-  // }
 
-  // if (isValidateFile) {
-  //   if (shipmentFilePaths.dangerous.length) {
-  //     saveFile(shipmentFilePaths.dangerous, KEY_FORM.DANGEROUS);
-  //   }
-  //   if (shipmentFilePaths.oversize.length || shipmentDetail.oversize == "T") {
-  //     saveFile(shipmentFilePaths.oversize, KEY_FORM.OVERSIZE);
-  //   }
-  //   if (shipmentFilePaths.ice.length) {
-  //     saveFile(shipmentFilePaths.ice, KEY_FORM.ICE);
-  //   }
-  // }
-
-  // if (
-  //   !(
-  //     getStatusContFollowIndex() == CONT_SPECIAL_STATUS.REQ ||
-  //     getStatusContFollowIndex() == CONT_SPECIAL_STATUS.YES
-  //   )
-  // ) 
-  // {
- 
-    if (isValidateFile && $.validate.form()) {
-      console.log('soooo');
-      parent.submitDataFromDetailModal(data);
-      onCloseModel();
-    }
+  if ($.validate.form()) {
+    console.log('soooo');
+    parent.submitDataFromDetailModal(data);
+    onCloseModel();
+  }
   // }
   //  else {
   //   $.modal.alertWarning(
