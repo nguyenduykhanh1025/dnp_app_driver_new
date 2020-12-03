@@ -865,8 +865,8 @@
 			<if test="containerRemark != null and containerRemark != ''">#{containerRemark},</if>
 			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">#{dateReceiptStatus},</if>
 			<if test="dateReceipt != null">#{dateReceipt},</if>
-			<if test="humidity != null">humidity,</if>
-			<if test="ventilation != null">ventilation,</if>
+			<if test="humidity != null"> #{humidity},</if>
+			<if test="ventilation != null">#{ventilation},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
 			<if test="createBy != null  and createBy != ''">#{createBy},</if>
 			sysdate

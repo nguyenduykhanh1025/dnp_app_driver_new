@@ -731,7 +731,7 @@ function getConfigIconSztp(row) {
 	  if (sztpResult == null) {
 	    return "";
 	  }  if (sztpResult == CONT_SZTP.DANGER) {
-	    return '<i id="verify" class="fa fa-assistive-listening-systems" title="Là cont nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
+	    return '<i id="verify" class="fa fa-exclamation-triangle" title="Là cont nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
 	  } 
 	}
 function getIconContFollowIndex(index) {  
