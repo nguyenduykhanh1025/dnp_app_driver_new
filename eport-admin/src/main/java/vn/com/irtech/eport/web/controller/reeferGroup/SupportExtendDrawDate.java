@@ -1,5 +1,11 @@
 package vn.com.irtech.eport.web.controller.reeferGroup;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -27,14 +40,12 @@ import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.web.controller.AdminBaseController;
 
-import java.util.*;
-
 @Controller
-@RequestMapping("/reefer-gruop/date-setup-temperature")
-public class SupportDateSetupTemperature extends AdminBaseController {
+@RequestMapping("/reefer-gruop/extend-draw-date")
+public class SupportExtendDrawDate extends AdminBaseController {
 	private static final Logger logger = LoggerFactory.getLogger(SupportDateSetupTemperature.class);
 
-	private String PREFIX = "/reeferGruop/dateSetupTemperature";
+	private String PREFIX = "/reeferGruop/extendDrawDate";
 
 	private final String KEY_ICE = "R";
 
@@ -94,7 +105,7 @@ public class SupportDateSetupTemperature extends AdminBaseController {
 	@PostMapping("/shipments")
 	@ResponseBody
 	public AjaxResult getShipments(@RequestBody PageAble<Shipment> param) {
- 
+
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		AjaxResult ajaxResult = AjaxResult.success();
 		Shipment shipment = param.getData();
@@ -129,7 +140,7 @@ public class SupportDateSetupTemperature extends AdminBaseController {
 	public String openRejectModel() {
 		return PREFIX + "/reject";
 	}
-	
+
 	@PostMapping("/confirmation")
 	@ResponseBody
 	@Transactional
@@ -197,5 +208,26 @@ public class SupportDateSetupTemperature extends AdminBaseController {
 		mmap.put("shipmentFiles", shipmentImages);
 		return PREFIX + "/detail";
 	}
+	
+	@PostMapping("/shipmentDetail/confirm")
+	@ResponseBody
+	public AjaxResult confirmExtendDateDrop(String idShipmentDetails) {
+ 
+		System.out.println(idShipmentDetails);
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setPowerDrawDateStatus("S");
+		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
+		return success();
+	}
 
+	@PostMapping("/shipmentDetail/reject")
+	@ResponseBody
+	public AjaxResult rejectExtendDateDrop(String idShipmentDetails) {
+ 
+		System.out.println(idShipmentDetails);
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setPowerDrawDateStatus("E");
+		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
+		return success();
+	}
 }
