@@ -743,7 +743,7 @@ function getIconContFollowIndex(index) {
 	    ){
 		return null;
 	}
-	 if(sourceData[index].sztp.substring(2,3) == "G"){ 
+	 if(sourceData[index].sztp.substring(2,3) == "G" && sourceData[index].cargoType == "DG"){ 
 		return CONT_SZTP.DANGER;
 	} 
 	  
