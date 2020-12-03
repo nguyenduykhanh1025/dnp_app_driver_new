@@ -542,13 +542,9 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
 
     // Return the content
     let content = '<div>';
-
-    content += getRequestConfigIcon(row);
-    
-    
     content += getConfigIconSztp(row);
-
-
+    content += getRequestConfigIcon(row);
+     
     if (sourceData[row].loadingPort.substring(0, 2) != 'VN') {
       content += customs;
     }

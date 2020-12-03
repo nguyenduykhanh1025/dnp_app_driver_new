@@ -479,19 +479,19 @@ public class LogisticSendContFullController extends LogisticBaseController {
 						shipmentDetailReference.setFrozenStatus("");
 					}
 
-//					if (StringUtils.isEmpty(inputDetail.getOversize())) {
-//						shipmentDetailReference.setOversize("");
-//					} else if (!(inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
-//							|| inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
-//						shipmentDetailReference.setOversize(EportConstants.CONT_SPECIAL_STATUS_INIT);
-//					}
-//
-//					if (StringUtils.isEmpty(inputDetail.getDangerous())) {
-//						shipmentDetailReference.setDangerous("");
-//					} else if (!(inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
-//							|| inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
-//						shipmentDetailReference.setDangerous(EportConstants.CONT_SPECIAL_STATUS_INIT);
-//					}
+					if (StringUtils.isEmpty(inputDetail.getOversize())) {
+						shipmentDetailReference.setOversize("");
+					} else if (!(inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
+							|| inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
+						shipmentDetailReference.setOversize("");
+					}
+
+					if (StringUtils.isEmpty(inputDetail.getDangerous())) {
+						shipmentDetailReference.setDangerous("");
+					} else if (!(inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
+							|| inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
+						shipmentDetailReference.setDangerous("");
+					}
 
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
