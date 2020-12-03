@@ -315,9 +315,9 @@ function configHandson() {
 
       }
     },
-    colWidths: [ 80, 200],
+    colWidths: [80, 200],
     columns: [
-     
+
       {
         data: "status",
         readOnly: true,
@@ -367,10 +367,13 @@ function registerDateRenderer(instance, td, row, col, prop, value, cellPropertie
   if (value != null && value != '') {
     let dateArray = value.split(" ");
     let resultDate = new Date(dateArray[0]);
-
+    console.log(dateArray);
     if (dateArray[2] === "PM") {
       resultDate.setHours(parseInt(dateArray[1].split(".")[0]) + 12);
 
+    }
+    else {
+      resultDate.setHours(parseInt(dateArray[1].split(".")[0]));
     }
     resultDate.setMinutes(dateArray[1].split(".")[1]);
     let month = resultDate.getMonth() == 12 ? 0 : resultDate.getMonth() + 1;
@@ -390,7 +393,6 @@ function extendPowerDrawDate() {
   arrDate[1] = arrDate[0];
   arrDate[0] = tempDate;
 
-  console.log();
   const detail = {
     id: shipmentDetail.id,
     powerDrawDate: new Date(arrDate.join("/")).getTime()

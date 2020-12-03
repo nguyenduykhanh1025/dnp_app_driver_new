@@ -223,8 +223,6 @@ public class SupportExtendDrawDate extends AdminBaseController {
 	@PostMapping("/shipmentDetail/reject")
 	@ResponseBody
 	public AjaxResult rejectExtendDateDrop(String idShipmentDetails) {
- 
-		System.out.println(idShipmentDetails);
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setPowerDrawDateStatus("E");
 		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
