@@ -121,18 +121,18 @@ $(document).ready(function () {
     data: [
       {
         alias: "All",
-        text: "Tất cả",
-        selected: true,
+        text: "Tất cả", 
       },
       {
         alias: SERVICE_TYPE.pickupFull,
         text: "Nhận cont hàng từ cảng",
+        selected: true,
       },
 
-      {
+     /* {
         alias: SERVICE_TYPE.dropFull,
         text: "Giao cont hàng cho cảng",
-      },
+      },*/
     ],
     onSelect: function (serviceArray) {
       if (serviceArray.alias !== "All") {
