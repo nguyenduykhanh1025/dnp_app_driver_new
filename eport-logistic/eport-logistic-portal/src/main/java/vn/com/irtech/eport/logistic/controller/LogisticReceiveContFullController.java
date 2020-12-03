@@ -70,7 +70,9 @@ import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.ShipmentDetailHist;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
+import vn.com.irtech.eport.system.service.IShipmentDetailHistService;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
 @Controller
@@ -126,6 +128,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@Autowired
 	private ServerConfig serverConfig;
+	
+	@Autowired
+	private IShipmentDetailHistService shipmentDetailHistService;
 
 	@GetMapping()
 	public String receiveContFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
@@ -1323,7 +1328,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			for (ShipmentImage shipmentImage2 : shipmentImages) {
 				shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
 			}
-		mmap.put("shipmentFiles", shipmentImages); 
+		mmap.put("shipmentFiles", shipmentImages);
+		
+		ShipmentDetailHist shipmentDetailHist = new ShipmentDetailHist();
+		shipmentDetailHist.setDataField("Power Draw Date");
+		shipmentDetailHist.setShipmentDetailId(shipmentDetailId);
+		mmap.put("powerDropDate", shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
 		return PREFIX + "/detail";
 	}
 	// save file in detail 
@@ -1402,7 +1412,27 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		
 		return success(); 
 	}
-	 
+	
+	@PostMapping("/extendPowerDrawDate") 
+	@ResponseBody
+	public AjaxResult extendPowerDrawDate( @RequestBody ShipmentDetail detail) {  
+		ShipmentDetail shipmentDetailFromDatabase = shipmentDetailService.selectShipmentDetailById(detail.getId());
+		
+		Date dateOld = shipmentDetailFromDatabase.getPowerDrawDate();
+		
+		detail.setUpdateBy(getUser().getFullName());
+		detail.setPowerDrawDateStatus("P");
+		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
+		
+		detail.setPowerDrawDate(dateOld);
+		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
+		
+		ShipmentDetailHist shipmentDetailHist = new ShipmentDetailHist();
+		shipmentDetailHist.setDataField("Power Draw Date");
+		shipmentDetailHist.setShipmentDetailId(detail.getId());
+
+		return AjaxResult.success(shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist)); 
+	}
 }
 	
 
