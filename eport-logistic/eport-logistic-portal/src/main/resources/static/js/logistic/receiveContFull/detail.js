@@ -113,20 +113,13 @@ let contO = true;// qua kho
 let typeD = true;// nguy hiem 
 let typeR = true;// lanh
 let typeO = true;// qua kho
-
-
  
-
-   
 // confirm
-function confirm() {
+function insertCont() {
 	let date = $("#datetimepicker1").datetimepicker('getDate').getTime();
-	let shipmentDetailId = shipmentDetail.id;
-	
+	let shipmentDetailId = shipmentDetail.id; 
 	let truckNo = $("#truckNo").val();
-	let chassisNo = $("#chassisNo").val();
-	console.log("HHHH" + truckNo);
-	console.log(shipmentDetailId);
+	let chassisNo = $("#chassisNo").val(); 
 	const detail = { 
 			id : shipmentDetail.id,
 			shipmentId: shipmentDetail.shipmentId,
@@ -146,39 +139,29 @@ function confirm() {
 		    		success: function(result){
 	    			if (result.code == 0) {
 	                    //$.modal.alertError(result.msg);
-	    				insertDate();  
+	    				$.modal.close();
+	    				//insertFile();  
 	                } else {
 	                    $.modal.close();
 	                } 
 		    }}); 
 }
 
+ 
 
-/*function confirm() {  
-	let myDate = $("#datetimepicker1").datetimepicker('getDate').getTime();
-    $.ajax( 
-    	{
-    		url: prefix + "/saveDate", 
-    		method: "POST",
-    		data: { 
-    			shipmentDetailId : shipmentDetail.id,
-    			shipmentId : shipmentDetail.shipmentId,
-    			shipmentSztp : shipmentDetail.sztp,
-    			powerDrawDate : $("#datetimepicker1").datetimepicker('getDate').getTime() 
-    		},
-    		success: function(result){
-			if (result.code == 0) {
-                //$.modal.alertError(result.msg);
-				insertDate(); 
-				 
-            } else {
-                $.modal.close();
-            } 
-    }});  
+function confirm() {   
+	var lengthTemp = shipmentFilePath; 
+    if (lengthTemp == null || lengthTemp.length == 0) { 
+		insertCont();
+	}
+	if(lengthTemp != null || lengthTemp.length != 0){// nếu có thì vào đây
+		saveFile();
+	}
 }
-  */
-//confirm
-function insertDate() {   
+
+
+
+function saveFile() {    
 	    $.ajax( 
 	    	{
 	    		url: prefix + "/saveFileImage", 
@@ -187,16 +170,14 @@ function insertDate() {
 	    			filePaths: shipmentFilePath,
 	    			shipmentDetailId : shipmentDetail.id,
 	    			shipmentId: shipmentDetail.shipmentId,
-	    			shipmentSztp : shipmentDetail.sztp,
-	    			shipmentDangerous : shipmentDetail.dangerous,  
-	    			fileType : fileType, 
-	    		
+	    			shipmentSztp : shipmentDetail.sztp, 
+	    			fileType : fileType
 	    		},
 	    		success: function(result){
     			if (result.code == 0) {
                     //$.modal.alertError(result.msg);
-                    $.modal.close(); 
-    				 
+                    //$.modal.close(); 
+                    insertCont();
                 } else {
                     $.modal.close();
                 } 
@@ -281,7 +262,7 @@ function removeImage(element, fileIndex) {
 	//if(oversize) bắt oversize có file
 	//if(dangerous)bắt dangerous có file
 	
-	
+//shipmentFiles  fileType
 	
 /*if(oversize && dangerous){
 	if(fileType){ 

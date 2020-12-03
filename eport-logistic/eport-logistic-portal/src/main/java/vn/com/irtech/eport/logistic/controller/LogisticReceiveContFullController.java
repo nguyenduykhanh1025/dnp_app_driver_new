@@ -1342,8 +1342,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	 */
 	@PostMapping("/saveFileImage") 
 	@ResponseBody 
-	public AjaxResult uploadFile(@RequestParam(value="filePaths[]") String[] filePaths,@RequestParam(value="fileType[]") String[] fileType, 
-								String shipmentDetailId, Long shipmentId, String shipmentSztp,String shipmentDangerous) throws IOException,InvalidExtensionException {
+	public AjaxResult uploadFile(@RequestParam(value="filePaths[]",required = false) String[] filePaths,@RequestParam(value="fileType[]",required = false) String[] fileType, 
+								String shipmentDetailId, Long shipmentId, String shipmentSztp) throws IOException,InvalidExtensionException {
+			
+		if(filePaths.length > 0){
 			for(int i = 0; i < filePaths.length; i++)
 			{  
 				ShipmentImage shipmentImage = new ShipmentImage();
@@ -1353,8 +1355,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				shipmentImage.setFileType(fileType[i]);  
 				shipmentImageService.insertShipmentImage(shipmentImage);// them detail
 			} 
-		//return success();
-		return null;
+		}
+		
+		return success();
+		//return null;
 	} 
 	
 	// insert powerDrawDate
