@@ -1428,8 +1428,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		detail.setPowerDrawDateStatus("P");
 		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
 		
-		detail.setPowerDrawDate(dateOld);
-		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
+//		detail.setPowerDrawDate(dateOld);
+//		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
 		
 		ShipmentDetailHist shipmentDetailHist = new ShipmentDetailHist();
 		shipmentDetailHist.setDataField("Power Draw Date");
