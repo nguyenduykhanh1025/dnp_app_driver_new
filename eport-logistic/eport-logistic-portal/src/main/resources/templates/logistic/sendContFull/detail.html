@@ -279,40 +279,8 @@
 			var oversizeRight = shipmentDetail.oversizeRight;
 			var oversizeLeft = shipmentDetail.oversizeLeft;
 			var oversizeFront = shipmentDetail.oversizeFront;
-			var oversizeBack = shipmentDetail.oversizeBack;
-			  $("#tab-1").prop('disabled', true); // disabled check cont lạnh
-			 $("#tab-2").prop('disabled', true); // disabled check cont quá khổ
-			 $("#tab-3").prop('disabled', true); // disabled check cont nguy hiểm  
- 
-			 if (cont == 'R') {// nếu cont lạnh thì show table
-				$("#tab-1").prop('disabled', false); // checked vào cont lạnh
-			 	$("#tab-1").prop('checked', true); // disabled check cont lạnh
-			 }
-			 if(cont == 'G'){
-				 $("#tab-3").prop('disabled', false); // checked vào cont Nguy hiểm
-				 $("#tab-3").prop('checked', true); // disabled check cont Nguy hiểm
-			 }
-			 if(cont == 'P' || cont == 'U'){
-				 $("#tab-2").prop('disabled', false); // checked vào cont Nguy hiểm
-				 $("#tab-2").prop('checked', true); // disabled check cont Nguy hiểm
-			 }  
+			var oversizeBack = shipmentDetail.oversizeBack; 
 			 
-			 
-			/*  if(cont == 'R')) {
-					$('#reeferContainer').css('display', 'block');
-					$("#tab-1").prop('checked', true);
-				}
-			if(cont == 'P' || cont == 'U'){
-				$('#reeferContainer').css('display', 'none');
-				$('.tab-label-1').css('display', 'none');
-			}
-			if(cont == 'G'){
-				$('#reeferContainerG').css('display', 'none');
-				$('.tab-label-1').css('display', 'none');
-			 } */
-				 
-			 
-
 		});
 	</script>
 </body>
