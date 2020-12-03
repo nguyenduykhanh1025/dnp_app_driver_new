@@ -45,6 +45,10 @@ const CONT_SPECIAL_STATUS = {
   CANCEL: "C", // cont đã bị từ chối yêu cầu xác nhận
 };
 
+const CONT_SZTP = {
+	  DANGER: "Dangerous", // cont nguy hiểm  
+};
+
 //dictionary sizeList
 $.ajax({
   type: "GET",
@@ -705,6 +709,8 @@ function statusIconsRenderer(
     }
     // Return the content
     let content = "<div>";
+    
+    content += getConfigIconSztp(row);
 
     content += getRequestConfigIcon(row);
 
@@ -718,6 +724,31 @@ function statusIconsRenderer(
   }
   return td;
 }
+
+function getConfigIconSztp(row) {
+	  const sztpResult = getIconContFollowIndex(row);
+
+	  if (sztpResult == null) {
+	    return "";
+	  }  if (sztpResult == CONT_SZTP.DANGER) {
+	    return '<i id="verify" class="fa fa-assistive-listening-systems" title="Là cont nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
+	  } 
+	}
+function getIconContFollowIndex(index) {  
+	
+	console.log(sourceData[index].dangerous);
+	
+	if( 
+	    sourceData[index].sztp.substring(2,3) != "G" 
+	    ){
+		return null;
+	}
+	 if(sourceData[index].sztp.substring(2,3) == "G"){ 
+		return CONT_SZTP.DANGER;
+	} 
+	  
+}
+
 
 function getRequestConfigIcon(row) {
   const statusResult = getStatusContFollowIndex(row);
@@ -1065,12 +1096,20 @@ function btnDetailRenderer(
     containerNo = hot.getDataAtCell(row, 2);
     sztp = hot.getDataAtCell(row, 4);
   }
-
+   
   if (sourceData && sourceData.length > 0) {
+	  console.log("FFF");
+	  console.log(sourceData);
+	  
+	  
+	  /*if(sourceData.length > row && sourceData[row].id && sourceData[row].cargoType != "DG" && sourceData[row].sztp.substring(2,3) == "G"){
+		  $.modal.alertWarning("Loại hàng không phải là cont nguy hiểm. Vui lòng nhập loại hàng là cont nguy hiểm và thử lại!");
+	  }*/
+	  
     if (sourceData.length > row && sourceData[row].id) {
-      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
+      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
     } else if (containerNo && sztp) {
-      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
+      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
     }
     // else {
     //   value =
@@ -2679,13 +2718,26 @@ function exportPackingList() {
     ctx + "logistic/print/shipment/" + shipmentSelected.id + "/packing-list"
   );
 }
+//,${sourceData[row].cargoType}'
 
-function openDetail(id, containerNo, sztp, row) {
-  if (!id) {
-    $.modal.alertWarning(
-      "Container chưa được lưu. Vui lòng lưu khai báo trước."
-    );
-  } else {
+function openDetail(id, containerNo, sztp, row,cargoType) {
+	if (!id) {
+	    $.modal.alertWarning(
+	      "Container chưa được lưu. Vui lòng lưu khai báo trước."
+	    );
+	  }
+	
+	if (sztp.substring(2,3) == "G" && cargoType != "DG") {
+	    $.modal.alertWarning(
+	      "Loại hàng không phải là cont nguy hiểm. Vui lòng nhập loại hàng là cont nguy hiểm và thử lại!"
+	    );
+	  }
+	
+	/*if(sztp.substring(2,3) == "G" && cargoType != "DG"){
+		$.modal.alertWarning("Loại hàng không phải là cont nguy hiểm. Vui lòng nhập loại hàng là cont nguy hiểm và thử lại!");
+	}*/
+	 
+   else {
     detailInformationForContainerSpecial.indexSelected = row;
     $.modal.openCustomForm(
       "Khai báo chi tiết",

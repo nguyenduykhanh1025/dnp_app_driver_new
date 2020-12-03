@@ -40,9 +40,7 @@ const CONT_SPECIAL_STATUS = {
 };
 
 const CONT_SZTP = {
-		  DANGER: "Dangerous", // cont nguy hiểm 
-		  COOL: "Cool",
-		  OVERSIZE: "OverSize",
+		  DANGER: "Dangerous", // cont nguy hiểm  
 		};
 
 
