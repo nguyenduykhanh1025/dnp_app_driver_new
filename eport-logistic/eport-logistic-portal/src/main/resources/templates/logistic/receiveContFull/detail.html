@@ -2,154 +2,169 @@
 <html lang="vi">
 
 <head>
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Khai báo chung</title>
-	<th:block th:include="include :: header('Khai báo chung')" />
-	<th:block th:include="include :: datetimepicker-css" />
-	<link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
-	<link rel="stylesheet" th:href="@{/css/logistic/detail.css}" />
-	<th:block th:include="include :: dropzone-css" />
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Khai báo chung</title>
+  <th:block th:include="include :: header('Khai báo chung')" />
+  <th:block th:include="include :: datetimepicker-css" />
+  <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
+  <link rel="stylesheet" th:href="@{/css/logistic/detail.css}" />
+  <th:block th:include="include :: handsontable-css" />
+  <th:block th:include="include :: dropzone-css" />
 </head>
 
 <style>
-	img {
-		max-width: 40px;
-	}
+  img {
+    max-width: 40px;
+  }
 
-	.form-horizontal.mt10.row {
-		height: 47px !important;
-	}
+  .form-horizontal.mt10.row {
+    height: 47px !important;
+  }
 
-	content-2 {
-		height: 20px !important;
-	}
+  content-2 {
+    height: 20px !important;
+  }
 
-	.preview-block {
-		float: left;
-	}
+  .preview-block {
+    float: left;
+  }
 
-	.tabs {
-		position: relative;
-		margin: 5px auto;
-	}
+  .tabs {
+    position: relative;
+    margin: 5px auto;
+  }
 
-	/* .col-sm-12.text-black {
+  /* .col-sm-12.text-black {
     margin-left: 14%;
 } */
 
-	/* .preview-block { float: left;  width: 70px !important; } */
+  /* .preview-block { float: left;  width: 70px !important; } */
 </style>
 
 
 <body>
-	<div class="container-fluid">
-		<!--  <form id="form-detail-add" class="form-horizontal"> -->
-		<div class="form-horizontal mt10">
-			<div class="form-group col-sm-6">
-				<label class="control-label col-sm-4 col-xs-6" for="cont"><b class="text-black">Số
-						container:</b></label>
-				<div class="col-sm-8 col-xs-6">
-					<input type="text" class="form-control" id="numberContainer" readonly />
-				</div>
-			</div>
-			<div class="form-group col-sm-6">
-				<label class="control-label col-sm-4 col-xs-6" for="size"><b class="text-black">Kích thước:</b></label>
-				<div class="col-sm-8 col-xs-6">
-					<input type="text" class="form-control" id="sizeCont" readonly />
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-12 text-black">
-			<!-- checked="checked" -->
-			<section class="tabs">
-				<input id="tab-1" type="radio" name="radio-set" class="tab-selector-1" />
-				<label for="tab-1" class="tab-label-1">Cont lạnh</label>
-				<input id="tab-2" type="radio" name="radio-set" class="tab-selector-2" />
-				<label for="tab-2" class="tab-label-2">Cont quá khổ</label>
-				<!-- <input id="tab-3" type="radio" name="radio-set" class="tab-selector-3" />
+  <div class="container-fluid">
+    <!--  <form id="form-detail-add" class="form-horizontal"> -->
+    <div class="form-horizontal mt10">
+      <div class="form-group col-sm-6">
+        <label class="control-label col-sm-4 col-xs-6" for="cont"><b class="text-black">Số
+            container:</b></label>
+        <div class="col-sm-8 col-xs-6">
+          <input type="text" class="form-control" id="numberContainer" readonly />
+        </div>
+      </div>
+      <div class="form-group col-sm-6">
+        <label class="control-label col-sm-4 col-xs-6" for="size"><b class="text-black">Kích thước:</b></label>
+        <div class="col-sm-8 col-xs-6">
+          <input type="text" class="form-control" id="sizeCont" readonly />
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 text-black">
+      <!-- checked="checked" -->
+      <section class="tabs">
+        <input id="tab-1" type="radio" name="radio-set" class="tab-selector-1" />
+        <label for="tab-1" class="tab-label-1">Cont lạnh</label>
+        <input id="tab-2" type="radio" name="radio-set" class="tab-selector-2" />
+        <label for="tab-2" class="tab-label-2">Cont quá khổ</label>
+        <!-- <input id="tab-3" type="radio" name="radio-set" class="tab-selector-3" />
 				<label for="tab-3" class="tab-label-3">Cont nguy hiểm</label> -->
-				<div class="clear"></div>
-				<div class="content">
+        <div class="clear"></div>
+        <div class="content">
 
-					<!--////////////// start cont lạnh ///////////////start cont lạnh-->
+          <!--////////////// start cont lạnh ///////////////start cont lạnh-->
 
-					<div class="content-1" id="reeferContainer">
-						<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-							<div class="form-group col-sm-6 row">
-								<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-										class="text-black">Độ ẩm (%):</b></span>
-								<div class="col-sm-8 col-xs-6">
-									<input type="text" class="form-control" id="humidity" name="humidity" readonly />
-								</div>
-							</div>
-							<div class="form-group col-sm-6 row">
-								<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-										class="text-black">Độ thông gió (%):</b></span>
-								<div class="col-sm-8 col-xs-6">
-									<input type="text" class="form-control" id="ventilation" name="ventilation"
-										readonly />
-								</div>
-							</div>
-						</div>
-						<div class="form-horizontal mt10 row" >
-							<div class="form-group col-sm-6 row">
-								<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-										class="text-black">Nhiệt đô (độ C):</b></span>
-								<div class="col-sm-8 col-xs-6">
-									<input type="text" class="form-control" id="temperature" name="temperature"
-										readonly />
-								</div>
-							</div>
-							<div class="form-group col-sm-6 row">
-								<span class="control-label col-sm-4 col-xs-6" style="text-align: left">
-									<b class="text-black">Ngày rút điện:</b>
-								</span>
-								<div class="input-group date col-sm-8 col-xs-6" id="datetimepicker1">
-									<input type="text" class="form-control" name="powerDrawDate" id="powerDrawDate"
-										readonly />
-									<span class="input-group-addon">
-										<span class="glyphicon glyphicon-calendar"></span>
-									</span>
-								</div>
+          <div class="content-1" id="reeferContainer">
+            <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+              <div class="form-group col-sm-6 row">
+                <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Độ ẩm
+                    (%):</b></span>
+                <div class="col-sm-8 col-xs-6">
+                  <input type="text" class="form-control" id="humidity" name="humidity" readonly />
+                </div>
+              </div>
+              <div class="form-group col-sm-6 row">
+                <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Độ thông
+                    gió (%):</b></span>
+                <div class="col-sm-8 col-xs-6">
+                  <input type="text" class="form-control" id="ventilation" name="ventilation" readonly />
+                </div>
+              </div>
+            </div>
+            <div class="form-horizontal mt10 row">
+              <div class="form-group col-sm-6 row">
+                <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Nhiệt đô
+                    (độ C):</b></span>
+                <div class="col-sm-8 col-xs-6">
+                  <input type="text" class="form-control" id="temperature" name="temperature" readonly />
+                </div>
+              </div>
+              <div class="form-group col-sm-6 row">
+                <span class="control-label col-sm-4 col-xs-6" style="text-align: left">
+                  <b class="text-black">Ngày rút điện:</b>
+                </span>
+                <div class="input-group date col-sm-8 col-xs-6" id="datetimepicker1">
+                  <input type="text" class="form-control" name="powerDrawDate" id="powerDrawDate" readonly />
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+                </div>
 
-							</div>
+              </div>
 
-						</div>
+            </div>
+            <div class="form-horizontal mt10 row">
+              <div class="form-group col-sm-6 row"></div>
+              <div class="form-group col-sm-6 row">
+                <span class="control-label col-sm-4 col-xs-6" style="text-align: left">
+                  <button id="saveShipmentDetailBtn" onclick="extendPowerDrawDate()" class="btn btn-sm btn"><i
+                    class="fa fa-clock-o text-primary"></i>Gia hạn</button>
+                </span>
+                <div class="input-group date col-sm-8 col-xs-6" id="datetimepicker2">
+                  <input type="text" class="form-control" name="extendPowerDrawDate" id="extendPowerDrawDate"/>
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+                </div>
+              </div>
 
-						<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-							<div class="form-group col-sm-6 row">
-							</div>
-							<div class="form-group col-sm-6 row">
-								<span class="control-label col-sm-4 col-xs-6" style="text-align: left">
-								</span>
-								<div class="input-group date col-sm-8 col-xs-6" id="datetimepicker1">
-									<button id="saveShipmentDetailBtn" onclick="confirm()"
-										class="btn btn-sm btn"><i class="fa fa-clock-o text-primary"></i>Gia hạn ngày
-										rút điện</button>
-								</div>
+            </div>
+            <div class="form-horizontal mt10 row" style>
 
-							</div>
+              <div class="form-group col-sm-6 row">
+              </div>
+              <div class="form-group col-sm-6 row">
+                <div class="datagrid-toolbar">
+                  <table cellspacing="0" cellpadding="0">
+                    <tr>
+                    </tr>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+                <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
 
-						</div>
+              </div>
+            </div>
 
-						<!-- //////////// add tệp cont lạnh///////-->
-						<div class="form-group col-sm-12" id="dropzoneL">
+            <!-- //////////// add tệp cont lạnh///////-->
+            <!-- <div class="form-group col-sm-12" id="dropzoneL">
 							<div class="col-sm-12 col-xs-12">
 								<button type="button" id="attachButtonL" class="btn btn-sm btn-default">
 									<i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
 								</button>
 							</div>
 							<div class="preview-containerL col-md-12 col-sm-12 col-xs-12"></div>
-						</div>
+						</div> -->
 
-					</div>
-					<!--////////////////start cont quá khổ -->
-					<div class="content-2" id="oversizeContainer">
-						<div class="form-horizontal mt10 row">
+          </div>
+          <!--////////////////start cont quá khổ -->
+          <div class="content-2" id="oversizeContainer">
+            <div class="form-horizontal mt10 row">
 
-							<!-- <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+              <!-- <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
 								<div class="form-group col-sm-5 row">
 		                              <span class="control-label col-sm-6 col-xs-6"
 		                                 style="text-align: left"><b
@@ -167,60 +182,57 @@
 									</div>
 								</div> 
 							</div> -->
-							<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-								<div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">Bên trên (cm):</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="oversizeTop" name="oversizeTop"
-											readonly />
-									</div>
-								</div>
-								<div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">Bên phải (cm):</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="oversizeRight" name="oversizeRight"
-											readonly />
-									</div>
-								</div>
-							</div>
+              <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+                <div class="form-group col-sm-6 row">
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Bên trên
+                      (cm):</b></span>
+                  <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="oversizeTop" name="oversizeTop" readonly />
+                  </div>
+                </div>
+                <div class="form-group col-sm-6 row">
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Bên phải
+                      (cm):</b></span>
+                  <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="oversizeRight" name="oversizeRight" readonly />
+                  </div>
+                </div>
+              </div>
 
-							<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-								<div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">Bên trái (cm):</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="oversizeLeft" name="oversizeLeft"
-											readonly />
-									</div>
-								</div>
-								<div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">Trọng lượng (kg):</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="wgtQK" name="wgtQK" readonly />
-									</div>
-								</div>
-							</div>
-							<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-								<div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">Biển số xe đầu kéo:</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="truckNo" name="truckNo" />
-									</div>
-								</div>
-								<div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">Biển số xe rơ móc:</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="chassisNo" name="chassisNo" />
-									</div>
-								</div>
-							</div>
+              <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+                <div class="form-group col-sm-6 row">
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Bên trái
+                      (cm):</b></span>
+                  <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="oversizeLeft" name="oversizeLeft" readonly />
+                  </div>
+                </div>
+                <div class="form-group col-sm-6 row">
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Trọng
+                      lượng (kg):</b></span>
+                  <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="wgtQK" name="wgtQK" readonly />
+                  </div>
+                </div>
+              </div>
+              <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+                <div class="form-group col-sm-6 row">
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Biển số
+                      xe đầu kéo:</b></span>
+                  <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="truckNo" name="truckNo" />
+                  </div>
+                </div>
+                <div class="form-group col-sm-6 row">
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Biển số
+                      xe rơ móc:</b></span>
+                  <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="chassisNo" name="chassisNo" />
+                  </div>
+                </div>
+              </div>
 
-							<!-- <div class="form-group col-sm-6 row">
+              <!-- <div class="form-group col-sm-6 row">
 									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
 											class="text-black">Phía trước (cm):</b></span>
 									<div class="col-sm-8 col-xs-6">
@@ -228,7 +240,7 @@
 											readonly />
 									</div>
 								</div> -->
-							<!-- <div class="form-horizontal mt10 row" >
+              <!-- <div class="form-horizontal mt10 row" >
 			                           <div class="form-group col-sm-5 row">
 			                              <span class="control-label col-sm-6 col-xs-6"
 			                                 style="text-align: left"><b
@@ -240,160 +252,157 @@
 			                       </div> -->
 
 
-							<!-- //////////// add tệp cont quá khổ///////-->
-							<div class="form-group col-sm-12" id="dropzoneQK">
-								<div class="col-sm-12 col-xs-12">
-									<button type="button" id="attachButtonQK" class="btn btn-sm btn-default">
-										<i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
-									</button>
-								</div>
-								<div class="preview-containerQK col-md-12 col-sm-12 col-xs-12"></div>
-							</div>
-						</div>
-					</div>
+              <!-- //////////// add tệp cont quá khổ///////-->
+              <div class="form-group col-sm-12" id="dropzoneQK">
+                <div class="col-sm-12 col-xs-12">
+                  <button type="button" id="attachButtonQK" class="btn btn-sm btn-default">
+                    <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+                  </button>
+                </div>
+                <div class="preview-containerQK col-md-12 col-sm-12 col-xs-12"></div>
+              </div>
+            </div>
+          </div>
 
-					<!--////////////// start cont nguy hiểm -->
+          <!--////////////// start cont nguy hiểm -->
 
-					<div class="content-3">
-						<div class="form-horizontal mt10 row">
+          <div class="content-3">
+            <div class="form-horizontal mt10 row">
 
-							<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-								<div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">SealNo:</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="sealNoNH" name="sealNoNH"
-											readonly />
-									</div>
-								</div>
-								<div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">Trọng lượng (kg):</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="wgtNH" name="wgtNH" readonly />
-									</div>
-								</div>
-							</div>
-
-
-							<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-								<div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">IMO:</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="dangerousImo" name="dangerousImo"
-											readonly />
-									</div>
-								</div>
-								<div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">UNNO:</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="dangerousUnno" name="dangerousUnno"
-											readonly />
-									</div>
-								</div>
-							</div>
-
-							<div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-								<div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">Tên hàng hóa:</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="dangerousNameProduct"
-											name="dangerousNameProduct" readonly />
-									</div>
-								</div>
-								<div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">Quy cách đóng gói:</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="dangerousPacking"
-											name="dangerousPacking" readonly />
-									</div>
-								</div>
-							</div>
-							<!-- //////////// add tệp cont nguy hiểm ///////-->
-							<div class="form-group col-sm-12" id="dropzoneNH" style="display: none">
-								<div class="col-sm-12 col-xs-12">
-									<button type="button" id="attachButtonNH" class="btn btn-sm btn-default">
-										<i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
-									</button>
-								</div>
-								<div class="preview-containerNH col-md-12 col-sm-12 col-xs-12"></div>
-							</div>
-
-						</div>
-					</div>
-				</div>
-
-			</section>
-		</div>
-		<div class="col-sm-12 layui-layer-btn footer" style="z-index: 1000">
-			<a class="layui-layer-btn0" onclick="confirm()">Lưu</a>
-			<a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
-		</div>
-
-		<!-- </form> -->
-	</div>
-	<th:block th:include="include :: footer" />
-	<th:block th:include="include :: datetimepicker-js" />
-	<th:block th:include="include :: dropzone-js" />
-	<script type="text/javascript" th:inline="javascript">
-		/**
-		 * Data load from server
-		*/
-		/* var containerNo = /*[[${containerNo}]];*/
-
-		var containerNo = [[${ containerNo }]];
-		var sztp = [[${ sztp }]];
-		var shipmentDetailId = [[${ shipmentDetailId }]];
-		var shipmentDetail = [[${ shipmentDetail }]];
-		var shipmentImage = [[${ shipmentImage }]];
-		var shipmentFiles = [[${ shipmentFiles }]];
+              <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+                <div class="form-group col-sm-6 row">
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
+                      class="text-black">SealNo:</b></span>
+                  <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="sealNoNH" name="sealNoNH" readonly />
+                  </div>
+                </div>
+                <div class="form-group col-sm-6 row">
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Trọng
+                      lượng (kg):</b></span>
+                  <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="wgtNH" name="wgtNH" readonly />
+                  </div>
+                </div>
+              </div>
 
 
-	</script>
-	<script th:src="@{/js/logistic/receiveContFull/addFile.js?v=1234}"></script>
-	<script th:src="@{/js/logistic/receiveContFull/detail.js?v=1234567}"></script>
+              <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+                <div class="form-group col-sm-6 row">
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
+                      class="text-black">IMO:</b></span>
+                  <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="dangerousImo" name="dangerousImo" readonly />
+                  </div>
+                </div>
+                <div class="form-group col-sm-6 row">
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
+                      class="text-black">UNNO:</b></span>
+                  <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="dangerousUnno" name="dangerousUnno" readonly />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
+                <div class="form-group col-sm-6 row">
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Tên hàng
+                      hóa:</b></span>
+                  <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="dangerousNameProduct" name="dangerousNameProduct"
+                      readonly />
+                  </div>
+                </div>
+                <div class="form-group col-sm-6 row">
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Quy cách
+                      đóng gói:</b></span>
+                  <div class="col-sm-8 col-xs-6">
+                    <input type="text" class="form-control" id="dangerousPacking" name="dangerousPacking" readonly />
+                  </div>
+                </div>
+              </div>
+              <!-- //////////// add tệp cont nguy hiểm ///////-->
+              <div class="form-group col-sm-12" id="dropzoneNH" style="display: none">
+                <div class="col-sm-12 col-xs-12">
+                  <button type="button" id="attachButtonNH" class="btn btn-sm btn-default">
+                    <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+                  </button>
+                </div>
+                <div class="preview-containerNH col-md-12 col-sm-12 col-xs-12"></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+    <div class="col-sm-12 layui-layer-btn footer" style="z-index: 1000; bottom: 0px;height: 50px;">
+      <a class="layui-layer-btn0" onclick="confirm()">Lưu</a>
+      <a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
+    </div>
+
+    <!-- </form> -->
+  </div>
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: datetimepicker-js" />
+  <th:block th:include="include :: dropzone-js" />
+  <th:block th:include="include :: handsontable-js" />
+  <script type="text/javascript" th:inline="javascript">
+    /**
+     * Data load from server
+    */
+    /* var containerNo = /*[[${containerNo}]];*/
+
+    var containerNo = [[${ containerNo }]];
+    var sztp = [[${ sztp }]];
+    var shipmentDetailId = [[${ shipmentDetailId }]];
+    var shipmentDetail = [[${ shipmentDetail }]];
+    var shipmentImage = [[${ shipmentImage }]];
+    var shipmentFiles = [[${ shipmentFiles }]];
+    var powerDropDate = [[${ powerDropDate }]];
+
+  </script>
+  <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=1234}"></script>
+  <script th:src="@{/js/logistic/receiveContFull/detail.js?v=1234567}"></script>
 
 
-	<script type="text/javascript">
-		// cont lạnh
-		$(document).ready(function () {
-			var dangerous = shipmentDetail.dangerous;
-			var dangerousIMO = shipmentDetail.dangerousImo;
-			var dangerousUNNO = shipmentDetail.dangerousUnno;
+  <script type="text/javascript">
+    // cont lạnh
+    $(document).ready(function () {
+      var dangerous = shipmentDetail.dangerous;
+      var dangerousIMO = shipmentDetail.dangerousImo;
+      var dangerousUNNO = shipmentDetail.dangerousUnno;
 
 
-			var contsztp = shipmentDetail.sztp;
-			var cont = contsztp.substring(2, 3);// lấy mã cont cắt ra 
-			var oversizeTop = shipmentDetail.oversizeTop;
-			var oversizeRight = shipmentDetail.oversizeRight;
-			var oversizeLeft = shipmentDetail.oversizeLeft;
-			var oversizeFront = shipmentDetail.oversizeFront;
-			var oversizeBack = shipmentDetail.oversizeBack;
-			// $("#tab-1").prop('disabled', true); // disabled check cont lạnh
-			// $("#tab-2").prop('disabled', true); // disabled check cont quá khổ
-			// $("#tab-3").prop('disabled', true); // disabled check cont nguy hiểm  
+      var contsztp = shipmentDetail.sztp;
+      var cont = contsztp.substring(2, 3);// lấy mã cont cắt ra 
+      var oversizeTop = shipmentDetail.oversizeTop;
+      var oversizeRight = shipmentDetail.oversizeRight;
+      var oversizeLeft = shipmentDetail.oversizeLeft;
+      var oversizeFront = shipmentDetail.oversizeFront;
+      var oversizeBack = shipmentDetail.oversizeBack;
+      // $("#tab-1").prop('disabled', true); // disabled check cont lạnh
+      // $("#tab-2").prop('disabled', true); // disabled check cont quá khổ
+      // $("#tab-3").prop('disabled', true); // disabled check cont nguy hiểm  
 
-			// if (dangerous || dangerousUNNO || dangerousIMO) {
+      // if (dangerous || dangerousUNNO || dangerousIMO) {
 
-			// 	$("#tab-3").prop('disabled', false); //  check cont nguy hiểm
-			// 	$("#tab-3").prop('checked', true); // disabled check cont nguy hiểm 
-			// }
-			// if (cont == 'R') {// nếu cont lạnh thì show table
-			// 	$("#tab-1").prop('disabled', false); // checked vào cont lạnh
-			// 	$("#tab-1").prop('checked', true); // disabled check cont lạnh
-			// }
-			// if (oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack) {// nếu cont quá khổ thì show 
-			// 	$("#tab-2").prop('disabled', false); // checked vào cont qúa khổ
-			// 	// $("#tab-2").prop('checked', true); // disabled check cont quá khổ
-			// }
+      // 	$("#tab-3").prop('disabled', false); //  check cont nguy hiểm
+      // 	$("#tab-3").prop('checked', true); // disabled check cont nguy hiểm 
+      // }
+      // if (cont == 'R') {// nếu cont lạnh thì show table
+      // 	$("#tab-1").prop('disabled', false); // checked vào cont lạnh
+      // 	$("#tab-1").prop('checked', true); // disabled check cont lạnh
+      // }
+      // if (oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack) {// nếu cont quá khổ thì show 
+      // 	$("#tab-2").prop('disabled', false); // checked vào cont qúa khổ
+      // 	// $("#tab-2").prop('checked', true); // disabled check cont quá khổ
+      // }
 
-		});
+    });
 
-	</script>
+  </script>
 </body>
 
 </html>

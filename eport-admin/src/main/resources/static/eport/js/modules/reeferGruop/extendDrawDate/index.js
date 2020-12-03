@@ -1,4 +1,4 @@
-const PREFIX = ctx + "reefer-gruop/date-setup-temperature";
+const PREFIX = ctx + "reefer-gruop/extend-draw-date";
 const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var dogrid = document.getElementById("container-grid"),
@@ -11,7 +11,8 @@ var shipmentSelected,
   shipmentDetailIds;
 var shipment = new Object();
 shipment.params = new Object();
-shipment.params.serviceArray = [4];
+shipment.params.serviceArray = [1];
+shipment.params.powerDrawDateStatus = "P";
 const CONT_SPECIAL_STATUS = {
   INIT: "I", // cont đã được lưu
   REQ: "R", // cont đã được yêu cầu xác nhận
@@ -1696,4 +1697,53 @@ function dateToString(date) {
     ":" +
     ("0" + date.getSeconds()).slice(-2)
   );
+}
+
+function confirmRequestDocument() {
+  let shipmentDetailIdsChoosse = [];
+  for (let i = 0; i < checkList.length; ++i) {
+    if (checkList[i] == 1) {
+      shipmentDetailIdsChoosse.push(sourceData[i].id);
+    }
+  }
+  // console.log(shipmentDetailIdsChoosse.join()  );
+  shipmentDetailIdsChoosse = shipmentDetailIdsChoosse.join(",");
+  $.ajax({
+    url: PREFIX + "/shipmentDetail/confirm",
+    method: "POST",
+    accept: 'text/plain',
+    data: { idShipmentDetails: shipmentDetailIdsChoosse },
+    dataType: 'text',
+    success: function (data) {
+      loadTable();
+    },
+    error: function (result) {
+      $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+      $.modal.closeLoading();
+    },
+  });
+}
+
+function rejectRequestDocument() {
+  let shipmentDetailIdsChoosse = [];
+  for (let i = 0; i < checkList.length; ++i) {
+    if (checkList[i] == 1) {
+      shipmentDetailIdsChoosse.push(sourceData[i].id);
+    }
+  }
+  shipmentDetailIdsChoosse = shipmentDetailIdsChoosse.join(",");
+  $.ajax({
+    url: PREFIX + "/shipmentDetail/reject",
+    method: "POST",
+    accept: 'text/plain',
+    data: { idShipmentDetails: shipmentDetailIdsChoosse },
+    dataType: 'text',
+    success: function (data) {
+      loadTable();
+    },
+    error: function (result) {
+      $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+      $.modal.closeLoading();
+    },
+  });
 }

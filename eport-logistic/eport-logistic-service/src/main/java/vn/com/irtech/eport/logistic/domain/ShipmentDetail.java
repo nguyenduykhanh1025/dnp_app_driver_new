@@ -501,9 +501,9 @@ public class ShipmentDetail extends BaseEntity {
 	private String frozenStatus;
 
 	private Date powerDrawDate;
-
+	private String powerDrawDateStatus;
+	
 	private String dateReceiptStatus;
-
 	private Date dateReceipt;
 	
 	private String truckNo;
@@ -1399,6 +1399,15 @@ public class ShipmentDetail extends BaseEntity {
 		this.ventilation = ventilation;
 	}
 
+	
+	public String getPowerDrawDateStatus() {
+		return powerDrawDateStatus;
+	}
+
+	public void setPowerDrawDateStatus(String powerDrawDateStatus) {
+		this.powerDrawDateStatus = powerDrawDateStatus;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -1445,7 +1454,9 @@ public class ShipmentDetail extends BaseEntity {
 				.append("dateReceipt", getDateReceipt()).append("specialService", getSpecialService())
 				.append("dateReceipt", getDateReceipt())
 				.append("humidity", getHumidity())
-				.append("ventilation", getVentilation()).toString();
+				.append("ventilation", getVentilation())
+				.append("powerDrawDate", getPowerDrawDate())
+				.append("powerDrawDateStatus", getPowerDrawDateStatus()).toString();
 		
 	}
 }
