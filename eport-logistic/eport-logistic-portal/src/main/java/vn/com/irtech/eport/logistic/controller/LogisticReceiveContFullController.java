@@ -1121,9 +1121,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
 			String[] fileArr = shipmentImage.getPath().split("/");
 			File file = new File(Global.getUploadPath() + "/receiveContFull/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
-			if (file.delete()) {
+			//if (file.delete()) {
 				shipmentImageService.deleteShipmentImageById(id);
-			}
+			//}
 			return success();
 		}else{
 			String[] fileArr = filePath.split("/");

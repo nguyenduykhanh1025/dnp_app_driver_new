@@ -1705,4 +1705,38 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		}
 		return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
 	}
+
+	/**
+	 * Make order special service
+	 * 
+	 * @param shipmentDetails
+	 * @param shipment
+	 * @param taxCode
+	 * @param creditFlag
+	 * @return
+	 */
+	@Override
+	public void makeOrderSpecialService(List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode,
+			boolean creditFlag) {
+		String payer = taxCode;
+		String payerName = "";
+		try {
+			logger.debug("Get payer name for shipment detail by tax code: " + taxCode);
+			payerName = catosApiService.getGroupNameByTaxCode(taxCode).getGroupName();
+		} catch (Exception e) {
+			logger.error("Error when get payer name for " + payer + ": " + e);
+		}
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			shipmentDetail.setUserVerifyStatus("Y");
+			shipmentDetail.setPayer(payer);
+			shipmentDetail.setPayerName(payerName);
+			if (creditFlag) {
+				shipmentDetail.setPayType("Credit");
+			} else {
+				shipmentDetail.setPayType("Cash");
+			}
+
+			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+		}
+	}
 }

@@ -183,7 +183,6 @@ function confirm() {
 }
 
 
-
 function saveFile() {    
 	    $.ajax( 
 	    	{
@@ -248,7 +247,6 @@ $(document).ready(function () {
 });
 // xóa khi đã lưu có id 
 function removeImage(element, fileIndex) {
-
   shipmentFiles.forEach(function (value, index) {
     if (value == fileIndex) {
       $.ajax({
@@ -455,6 +453,8 @@ function configHandson() {
 	 
  }  	
  */
+ 
+ 
 function statusIconRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html('');
   cellProperties.readOnly = 'true';

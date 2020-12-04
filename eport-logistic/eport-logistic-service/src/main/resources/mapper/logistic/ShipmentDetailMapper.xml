@@ -568,7 +568,7 @@
 		oversize,
 		frozen_status,
 		delivery_address, delivery_mobile, delivery_remark, eta, etd, status,
-		remark,
+		remark, special_service,
 		create_by, create_time, update_by,
 		update_time,
 		date_receipt_status, date_receipt
@@ -764,6 +764,7 @@
 			<if test="dateReceipt != null">date_receipt,</if>
 			<if test="humidity != null">humidity,</if>
 			<if test="ventilation != null">ventilation,</if>
+			<if test="specialService != null">special_service,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
 			<if test="createBy != null  and createBy != ''">create_by,</if>
 			create_time
@@ -868,6 +869,7 @@
 			<if test="dateReceipt != null">#{dateReceipt},</if>
 			<if test="humidity != null"> #{humidity},</if>
 			<if test="ventilation != null">#{ventilation},</if>
+			<if test="specialService != null">#{specialService},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
 			<if test="createBy != null  and createBy != ''">#{createBy},</if>
 			sysdate
@@ -1642,11 +1644,11 @@
 			<if test="shipmentDetail.temperature != null ">temperature = #{shipmentDetail.temperature},</if>
 			<if test="shipmentDetail.fe != null and shipmentDetail.fe != ''">fe = #{shipmentDetail.fe},</if>
 			<if
-				test="shipmentDetail.bookingNo != null  and shipmentDetail.bookingNo != ''">booking_no =
+				test="shipmentDetail.bookingNo != null">booking_no =
 				#{shipmentDetail.bookingNo},
 			</if>
 			<if
-				test="shipmentDetail.blNo != null  and shipmentDetail.blNo != ''">bl_no = #{shipmentDetail.blNo},</if>
+				test="shipmentDetail.blNo != null">bl_no = #{shipmentDetail.blNo},</if>
 			<if
 				test="shipmentDetail.sealNo != null and shipmentDetail.sealNo != ''">seal_no =
 				#{shipmentDetail.sealNo},
