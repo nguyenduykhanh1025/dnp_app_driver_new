@@ -735,9 +735,6 @@ function getConfigIconSztp(row) {
 	  } 
 	}
 function getIconContFollowIndex(index) {  
-	
-	console.log(sourceData[index].dangerous);
-	
 	if( 
 	    sourceData[index].sztp.substring(2,3) != "G" 
 	    ){
@@ -1098,9 +1095,6 @@ function btnDetailRenderer(
   }
    
   if (sourceData && sourceData.length > 0) {
-	  console.log("FFF");
-	  console.log(sourceData);
-	  
 	  
 	  /*if(sourceData.length > row && sourceData[row].id && sourceData[row].cargoType != "DG" && sourceData[row].sztp.substring(2,3) == "G"){
 		  $.modal.alertWarning("Loại hàng không phải là cont nguy hiểm. Vui lòng nhập loại hàng là cont nguy hiểm và thử lại!");

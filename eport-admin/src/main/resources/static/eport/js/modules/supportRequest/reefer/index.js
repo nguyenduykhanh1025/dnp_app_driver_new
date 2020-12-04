@@ -12,7 +12,6 @@ var shipmentSelected,
 var shipment = new Object();
 shipment.params = new Object();
 shipment.params.serviceArray = [1];
-console.log('sss');
 const CONT_SPECIAL_STATUS = {
   INIT: "I", // cont đã được lưu
   REQ: "R", // cont đã được yêu cầu xác nhận
@@ -924,7 +923,6 @@ configHandson();
 hot = new Handsontable(dogrid, config);
 
 function loadShipmentDetails(id) {
-  console.log(shipment.params.frozenStatus);
   if (id) {
     $.modal.loading("Đang xử lý ...");
     $.ajax({
@@ -1719,7 +1717,6 @@ function renderIconsStatusServiceTypePickupFull(
     //   content += getRequestConfigIcon(sourceData[row].frozenStatus);
     // }
     content += getRequestConfigIcon(row);
-    console.log("dischargePort");
     console.log(sourceData[row].dischargePort);
     
  // Domestic cont: VN --> not show
