@@ -117,8 +117,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticAccountId != null ">logistic_account_id = #{logisticAccountId},</if>
             <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
             <if test="serviceType != null ">service_type = #{serviceType},</if>
-            <if test="blNo != null  and blNo != ''">bl_no = trim(upper(#{blNo})),</if>
-            <if test="bookingNo != null  and bookingNo != ''">booking_no = trim(upper(#{bookingNo})),</if>
+            <if test="blNo != null">bl_no = trim(upper(#{blNo})),</if>
+            <if test="bookingNo != null">booking_no = trim(upper(#{bookingNo})),</if>
             <if test="opeCode != null  and opeCode != ''">ope_code = #{opeCode},</if>
             <if test="containerAmount != null ">container_amount = #{containerAmount},</if>
             <if test="edoFlg != null  and edoFlg != ''">edo_flg = #{edoFlg},</if>

@@ -2,8 +2,37 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper
-	namespace="vn.com.irtech.eport.logistic.mapper.CfsHouseBillMapper">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.CfsHouseBillMapper">
+    
+   <!--  <resultMap type="CfsHouseBill" id="CfsHouseBillResult">
+        <result property="id"    column="id"    />
+        <result property="logisticGroupId"    column="logistic_group_id"    />
+        <result property="shipmentDetailId"    column="shipment_detail_id"    />
+        <result property="houseBill"    column="house_bill"    />
+        <result property="masterBill"    column="master_bill"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="packagingType"    column="packaging_type"    />
+        <result property="weight"    column="weight"    />
+        <result property="cubicMeter"    column="cubic_meter"    />
+        <result property="marks"    column="marks"    />
+        <result property="forwarderRemark"    column="forwarder_remark"    />
+        <result property="consignee"    column="consignee"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="status"    column="status"    />
+        <result property="storageFromDate"    column="storage_from_date"    />
+        <result property="storageToDate"    column="storage_to_date"    />
+        <result property="handingMovement"    column="handing_movement"    />
+        <result property="serviceType"    column="service_type"    />
+        <result property="forwarder"    column="forwarder"    />
+        <result property="cargoDescription"    column="cargo_description"    />
+        <result property="placeReceipt"    column="place_receipt"    />
+        <result property="shiftReceipt"    column="shift_receipt"    />
+        <result property="dateReceipt"    column="date_receipt"    />
+        <result property="equipment"    column="equipment"    />
+    </resultMap> -->
 
 	<resultMap type="CfsHouseBill" id="CfsHouseBillResult">
 		<result property="id" column="id" />
@@ -95,62 +124,62 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
 			select seq_cfs_house_bill.nextval as id from DUAL
 		</selectKey>
-		insert into cfs_house_bill
-		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="id != null">id,</if>
-			<if test="logisticGroupId != null">logistic_group_id,</if>
-			<if test="shipmentDetailId != null">shipment_detail_id,</if>
-			<if test="houseBill != null">house_bill,</if>
-			<if test="masterBill != null">master_bill,</if>
-			<if test="quantity != null">quantity,</if>
-			<if test="packagingType != null">packaging_type,</if>
-			<if test="weight != null">weight,</if>
-			<if test="cubicMeter != null">cubic_meter,</if>
-			<if test="marks != null">marks,</if>
-			<if test="forwarderRemark != null">forwarder_remark,</if>
-			<if test="consignee != null">consignee,</if>
-			<if test="createBy != null">create_by,</if>
-			<if test="status != null">status,</if>
-			<if test="storageFromDate != null">storage_from_date,</if>
-			<if test="storageToDate != null">storage_to_date,</if>
-			<if test="handingMovement != null">handing_movement,</if>
-			<if test="serviceType != null">service_type,</if>
-			<if test="forwarder != null">forwarder,</if>
-			<if test="cargoDescription != null">cargo_description,</if>
-			<if test="placeReceipt != null">place_receipt,</if>
-			<if test="shiftReceipt != null">shift_receipt,</if>
-			<if test="dateReceipt != null">date_receipt,</if>
-			<if test="equipment != null">equipment,</if>
-			create_time
-		</trim>
-		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="id != null">#{id},</if>
-			<if test="logisticGroupId != null">#{logisticGroupId},</if>
-			<if test="shipmentDetailId != null">#{shipmentDetailId},</if>
-			<if test="houseBill != null">#{houseBill},</if>
-			<if test="masterBill != null">#{masterBill},</if>
-			<if test="quantity != null">#{quantity},</if>
-			<if test="packagingType != null">#{packagingType},</if>
-			<if test="weight != null">#{weight},</if>
-			<if test="cubicMeter != null">#{cubicMeter},</if>
-			<if test="marks != null">#{marks},</if>
-			<if test="forwarderRemark != null">#{forwarderRemark},</if>
-			<if test="consignee != null">#{consignee},</if>
-			<if test="createBy != null">#{createBy},</if>
-			<if test="status != null">#{status},</if>
-			<if test="storageFromDate != null">#{storageFromDate},</if>
-			<if test="storageToDate != null">#{storageToDate},</if>
-			<if test="handingMovement != null">#{handingMovement},</if>
-			<if test="serviceType != null">#{serviceType},</if>
-			<if test="forwarder != null">#{forwarder},</if>
-			<if test="cargoDescription != null">#{cargoDescription},</if>
-			<if test="placeReceipt != null">#{placeReceipt},</if>
-			<if test="shiftReceipt != null">#{shiftReceipt},</if>
-			<if test="dateReceipt != null">#{dateReceipt},</if>
-			<if test="equipment != null">#{equipment},</if>
-			#{createTime}
-		</trim>
-	</insert>
+        insert into cfs_house_bill
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="logisticGroupId != null">logistic_group_id,</if>
+            <if test="shipmentDetailId != null">shipment_detail_id,</if>
+            <if test="houseBill != null">house_bill,</if>
+            <if test="masterBill != null">master_bill,</if>
+            <if test="quantity != null">quantity,</if>
+            <if test="packagingType != null">packaging_type,</if>
+            <if test="weight != null">weight,</if>
+            <if test="cubicMeter != null">cubic_meter,</if>
+            <if test="marks != null">marks,</if>
+            <if test="forwarderRemark != null">forwarder_remark,</if>
+            <if test="consignee != null">consignee,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="status != null">status,</if>
+            <if test="storageFromDate != null">storage_from_date,</if>
+            <if test="storageToDate != null">storage_to_date,</if>
+            <if test="handingMovement != null">handing_movement,</if>
+            <if test="serviceType != null">service_type,</if>
+            <if test="forwarder != null">forwarder,</if>
+            <if test="cargoDescription != null">cargo_description,</if>
+            <if test="placeReceipt != null">place_receipt,</if>
+            <if test="shiftReceipt != null">shift_receipt,</if>
+            <if test="dateReceipt != null">date_receipt,</if>
+            <if test="equipment != null">equipment,</if>
+            create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="logisticGroupId != null">#{logisticGroupId},</if>
+            <if test="shipmentDetailId != null">#{shipmentDetailId},</if>
+            <if test="houseBill != null">#{houseBill},</if>
+            <if test="masterBill != null">#{masterBill},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="packagingType != null">#{packagingType},</if>
+            <if test="weight != null">#{weight},</if>
+            <if test="cubicMeter != null">#{cubicMeter},</if>
+            <if test="marks != null">#{marks},</if>
+            <if test="forwarderRemark != null">#{forwarderRemark},</if>
+            <if test="consignee != null">#{consignee},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="status != null">#{status},</if>
+            <if test="storageFromDate != null">#{storageFromDate},</if>
+            <if test="storageToDate != null">#{storageToDate},</if>
+            <if test="handingMovement != null">#{handingMovement},</if>
+            <if test="serviceType != null">#{serviceType},</if>
+            <if test="forwarder != null">#{forwarder},</if>
+            <if test="cargoDescription != null">#{cargoDescription},</if>
+            <if test="placeReceipt != null">#{placeReceipt},</if>
+            <if test="shiftReceipt != null">#{shiftReceipt},</if>
+            <if test="dateReceipt != null">#{dateReceipt},</if>
+            <if test="equipment != null">#{equipment},</if>
+            #{createTime}
+         </trim>
+    </insert>
 
 	<update id="updateCfsHouseBill" parameterType="CfsHouseBill">
 		update cfs_house_bill
@@ -184,16 +213,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where id = #{id}
 	</update>
 
-	<delete id="deleteCfsHouseBillById" parameterType="Long">
-		delete from
-		cfs_house_bill where id = #{id}
-	</delete>
+    <delete id="deleteCfsHouseBillById" parameterType="Long">
+        delete from cfs_house_bill where id = #{id}
+    </delete>
 
-	<delete id="deleteCfsHouseBillByIds" parameterType="String">
-		delete from cfs_house_bill where id in
-		<foreach item="id" collection="array" open="(" separator=","
-			close=")">
-			#{id}
-		</foreach>
-	</delete>
+    <delete id="deleteCfsHouseBillByIds" parameterType="String">
+        delete from cfs_house_bill where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 </mapper>

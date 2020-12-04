@@ -740,7 +740,7 @@ function getIconContFollowIndex(index) {
 	    ){
 		return null;
 	}
-	 if(sourceData[index].sztp.substring(2,3) == "G"){ 
+	 if(sourceData[index].sztp.substring(2,3) == "G" && sourceData[index].cargoType == "DG"){ 
 		return CONT_SZTP.DANGER;
 	} 
 	  
@@ -879,8 +879,8 @@ function containerNoRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   return td;
 }
@@ -912,8 +912,8 @@ function expiredDemRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   return td;
 }
@@ -940,8 +940,8 @@ function consigneeRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   return td;
 }
@@ -961,8 +961,8 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
 
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   return td;
 }
@@ -987,8 +987,8 @@ function etaRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   return td;
 }
@@ -1011,8 +1011,8 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   return td;
 }
@@ -1031,8 +1031,8 @@ function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   return td;
 }
@@ -1066,8 +1066,8 @@ function temperatureRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   return td;
 }
@@ -1156,8 +1156,8 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   return td;
 }
@@ -1199,8 +1199,8 @@ function cargoTypeRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   return td;
 }
@@ -1227,8 +1227,8 @@ function commodityRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   return td;
 }
@@ -1257,8 +1257,8 @@ function dischargePortRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   return td;
 }
@@ -1273,8 +1273,8 @@ function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   cellProperties.readOnly = "true";
   $(td).css("background-color", "rgb(232, 232, 232)");
@@ -1291,8 +1291,8 @@ function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   cellProperties.readOnly = "true";
   $(td).css("background-color", "rgb(232, 232, 232)");
@@ -1316,8 +1316,8 @@ function payerNameRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   cellProperties.readOnly = "true";
   $(td).css("background-color", "rgb(232, 232, 232)");
@@ -1333,8 +1333,8 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
+      value +
+      "</div>"
   );
   return td;
 }
@@ -1623,7 +1623,7 @@ function onChange(changes, source) {
         temperatureDisable[change[0]] = 0;
         hot.updateSettings({
           cells: function (row, col, prop) {
-            if (row == change[0] && col == 13) {
+            if (row == change[0] && col == 12) {
               let cellProperties = {};
               cellProperties.readOnly = false;
               return cellProperties;
@@ -1634,7 +1634,7 @@ function onChange(changes, source) {
         temperatureDisable[change[0]] = 1;
         hot.updateSettings({
           cells: function (row, col, prop) {
-            if (row == change[0] && col == 13) {
+            if (row == change[0] && col == 12) {
               let cellProperties = {};
               cellProperties.readOnly = true;
               $("#temperature" + row).css(
@@ -1649,7 +1649,7 @@ function onChange(changes, source) {
     } else if (change[1] == "containerNo") {
       if (!change[3]) {
         sztpListDisable[change[0]] = 0;
-        cleanCell(change[0], 4, sizeList);
+        cleanCell(change[0], 3, sizeList);
       } else {
         if (checkContainerNo(change[3])) {
           $.ajax({
@@ -1665,27 +1665,27 @@ function onChange(changes, source) {
                     }
                   });
                   sztpListDisable[change[0]] = 1;
-                  hot.setDataAtCell(change[0], 4, data.sztp);
+                  hot.setDataAtCell(change[0], 3, data.sztp);
                 } else {
                   sztpListDisable[change[0]] = 0;
-                  cleanCell(change[0], 4, sizeList);
+                  cleanCell(change[0], 3, sizeList);
                 }
               } else {
                 sztpListDisable[change[0]] = 0;
-                cleanCell(change[0], 4, sizeList);
+                cleanCell(change[0], 3, sizeList);
               }
             },
             error: function (err) {
               sztpListDisable[change[0]] = 0;
-              cleanCell(change[0], 4, sizeList);
+              cleanCell(change[0], 3, sizeList);
             },
           });
         } else {
           sztpListDisable[change[0]] = 0;
-          cleanCell(change[0], 4, sizeList);
+          cleanCell(change[0], 3, sizeList);
         }
       }
-      if (change[3] && hot.getDataAtCell(change[0], 4)) {
+      if (change[3] && hot.getDataAtCell(change[0], 3)) {
         $("#detailBtn" + change[0]).prop("disabled", false);
       } else {
         $("#detailBtn" + change[0]).prop("disabled", true);
@@ -1767,16 +1767,6 @@ function checkAll() {
 }
 function check(id) {
   if (sourceData[id].id != null) {
-    if (checkList[id] == 0) {
-      $("#check" + id).prop("checked", true);
-      checkList[id] = 1;
-    } else {
-      $("#check" + id).prop("checked", false);
-      checkList[id] = 0;
-    }
-    hot.render();
-    updateLayout();
-  } else {
     if (checkList[id] == 0) {
       $("#check" + id).prop("checked", true);
       checkList[id] = 1;
@@ -2115,16 +2105,16 @@ function getDataFromTable(isValidate) {
       } else if (object["wgt"] < 1000) {
         $.modal.alertError(
           "Hàng " +
-          (index + 1) +
-          ": Trọng lượng (tính bằng kg) quá nhỏ, vui lòng kiểm tra lại!"
+            (index + 1) +
+            ": Trọng lượng (tính bằng kg) quá nhỏ, vui lòng kiểm tra lại!"
         );
         errorFlg = true;
         return false;
       } else if (object["wgt"] > 99999) {
         $.modal.alertError(
           "Hàng " +
-          (index + 1) +
-          ": Trọng lượng quá lớn (hơn 100 tấn), vui lòng kiểm tra lại!"
+            (index + 1) +
+            ": Trọng lượng quá lớn (hơn 100 tấn), vui lòng kiểm tra lại!"
         );
         errorFlg = true;
         return false;
@@ -2253,15 +2243,15 @@ function getDataFromTable(isValidate) {
  * Save when click btn id="saveShipmentDetailBtn"
  */
 function saveShipmentDetail() {
-
   if (getDataFromTable(true)) {
     if (
       shipmentDetails.length > 0 &&
       shipmentDetails.length <= shipmentSelected.containerAmount
     ) {
       shipmentDetails[0].processStatus = conts;
-
-      const payload = checkList.includes(1) ? getDataFromListChecked() : shipmentDetails;
+      
+      const payload = checkList.includes(1) ?  getDataFromListChecked() : shipmentDetails;
+      
       $.modal.loading("Đang xử lý...");
       $.ajax({
         url: prefix + "/" + shipmentSelected.id + "/shipment-detail",
@@ -2281,7 +2271,7 @@ function saveShipmentDetail() {
             if (result.conts != null) {
               $.modal.alertError(
                 "Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>" +
-                result.conts
+                  result.conts
               );
             } else {
               $.modal.alertError(result.msg);
@@ -2331,7 +2321,7 @@ function saveShipmentDetailFollowIndex(index) {
             if (result.conts != null) {
               $.modal.alertError(
                 "Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>" +
-                result.conts
+                  result.conts
               );
             } else {
               $.modal.alertError(result.msg);
@@ -2403,7 +2393,7 @@ function verify() {
     let isCanVerify = true;
     for (let i = 0; i < checkList.length; ++i) {
       if (checkList[i] == 1) {
-        if (getStatusContFollowIndex(i) && !(getStatusContFollowIndex(i) == CONT_SPECIAL_STATUS.YES)) {
+        if (!(getStatusContFollowIndex(i) == CONT_SPECIAL_STATUS.YES)) {
           isCanVerify = false;
         }
       }
@@ -2445,14 +2435,14 @@ function verifyOtp(shipmentDtIds, taxCode, creditFlag) {
     $.modal.openCustomForm(
       "Xác thực OTP",
       prefix +
-      "/otp/verification/" +
-      shipmentDtIds +
-      "/" +
-      creditFlag +
-      "/" +
-      taxCode +
-      "/" +
-      shipmentSelected.id,
+        "/otp/verification/" +
+        shipmentDtIds +
+        "/" +
+        creditFlag +
+        "/" +
+        taxCode +
+        "/" +
+        shipmentSelected.id,
       600,
       350
     );
@@ -2483,7 +2473,7 @@ function checkCustomStatus() {
   }
 }
 
-function exportBill() { }
+function exportBill() {}
 
 // Handling UI STATUS
 function setLayoutRegisterStatus() {
@@ -3123,8 +3113,8 @@ function requestConfirmShipmentDetail() {
   } else {
     $.modal.confirmShipment(
       "Quý khách muốn yêu cầu xác nhận container " +
-      getListContainerNoFromCheked().join(", ") +
-      "  ?",
+        getListContainerNoFromCheked().join(", ") +
+        "  ?",
       function () {
         if (getDataFromTable(true)) {
           if (
@@ -3168,7 +3158,7 @@ function requestConfirmShipmentDetail() {
                   if (result.conts != null) {
                     $.modal.alertError(
                       "Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>" +
-                      result.conts
+                        result.conts
                     );
                   } else {
                     $.modal.alertError(result.msg);

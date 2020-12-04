@@ -38,11 +38,19 @@
         </div>
       </div>
       <div class="form-group row">
-        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span
-            style="color: red;">*</span>Booking No</label>
+        <label style="margin-top: 4px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Loại</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <input name="bookingNo" id="bookingNo" type="text" class="form-control" onfocusout="checkBookingNoUnique()"
-            required />
+          <input style="margin-top: 6px;" type="radio" name="ixCd" id="ixCdI" value="0" checked/>
+          <label>Hàng nhập</label>
+          <input style="margin-top: 6px;" type="radio" name="ixCd" id="ixCdX" value="1"/>
+          <label style="margin-right: 30px;">Hàng xuất</label>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label id="blNoLabel" style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span
+            style="color: red;">*</span>B/L No</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <input name="blBookingNo" id="blBookingNo" type="text" class="form-control" required />
         </div>
       </div>
       <div class="form-group row">
@@ -82,9 +90,8 @@
   <script type="text/javascript" th:inline="javascript">
     var shipment = /*[[${shipment}]]*/ ;
     var shipmentFiles = /*[[${shipmentFiles}]]*/ ;
-    var oprListBookingCheck = /*[[${oprListBookingCheck}]]*/ ;
   </script>
-  <script th:src="@{/js/logistic/sendContFull/edit.js?v=20201027}"></script>
+  <script th:src="@{/js/logistic/specialService/edit.js?v=20201204}"></script>
 </body>
 
 </html>

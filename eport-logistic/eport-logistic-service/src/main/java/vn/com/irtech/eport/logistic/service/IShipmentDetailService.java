@@ -398,4 +398,16 @@ public interface IShipmentDetailService {
 	 */
 	public List<ServiceSendFullRobotReq> makeOrderUnloadingCargo(List<ShipmentDetail> shipmentDetails, Shipment shipment,
 			String taxCode, boolean creditFlag);
+
+	/**
+	 * Make order special service
+	 * 
+	 * @param shipmentDetails
+	 * @param shipment
+	 * @param taxCode
+	 * @param creditFlag
+	 * @return
+	 */
+	public void makeOrderSpecialService(List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode,
+			boolean creditFlag);
 }

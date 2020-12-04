@@ -525,7 +525,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			if (location != null) {
 				pickupHistory.setBlock(location.getBlock());
 				pickupHistory.setBay(location.getBay());
-				pickupHistory.setLine(String.valueOf(location.getRow()));
+				pickupHistory.setLine(String.valueOf(location.getRoww()));
 				pickupHistory.setTier(String.valueOf(location.getTier()));
 			}
 			return pickupHistory;

@@ -182,29 +182,27 @@ function confirm() {
 }
 
 
-
-function saveFile() {
-  $.ajax(
-    {
-      url: prefix + "/saveFileImage",
-      method: "POST",
-      data: {
-        filePaths: shipmentFilePath,
-        shipmentDetailId: shipmentDetail.id,
-        shipmentId: shipmentDetail.shipmentId,
-        shipmentSztp: shipmentDetail.sztp,
-        fileType: fileType
-      },
-      success: function (result) {
-        if (result.code == 0) {
-          //$.modal.alertError(result.msg);
-          //$.modal.close(); 
-          insertCont();
-        } else {
-          $.modal.close();
-        }
-      }
-    });
+function saveFile() {    
+	    $.ajax( 
+	    	{
+	    		url: prefix + "/saveFileImage", 
+	    		method: "POST",
+	    		data: {
+	    			filePaths: shipmentFilePath,
+	    			shipmentDetailId : shipmentDetail.id,
+	    			shipmentId: shipmentDetail.shipmentId,
+	    			shipmentSztp : shipmentDetail.sztp, 
+	    			fileType : fileType
+	    		},
+	    		success: function(result){
+    			if (result.code == 0) {
+                    //$.modal.alertError(result.msg);
+                    //$.modal.close(); 
+                    insertCont();
+                } else {
+                    $.modal.close();
+                } 
+	    }});  
 }
 
 function closeForm() {
@@ -248,7 +246,6 @@ $(document).ready(function () {
 });
 // xóa khi đã lưu có id 
 function removeImage(element, fileIndex) {
-
   shipmentFiles.forEach(function (value, index) {
     if (value == fileIndex) {
       $.ajax({
@@ -428,33 +425,35 @@ if(oversize){
   
 }
  
-if(dangerous){
-  if(fileType){ 
-     fileType.forEach(function (elementType, index) { 
-         if(elementType == "D"){// cont quá khổ oversize
-           typeD = true;
-          }  
-     });
-   	
-     shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
-       //alert("vao for 2");
-       if(elementcont.fileType == "D"){// filetype quá khổ
-          contD = true;
-        }
-        
-     });
-   	
-      if(contD == false && typeD == false){
-       $.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
-     }
-     else{
-       checkSave(); 
-       //saveFile();
-     } 
-   }
-  
-}  	
-*/
+ if(dangerous){
+	 if(fileType){ 
+			fileType.forEach(function (elementType, index) { 
+					if(elementType == "D"){// cont quá khổ oversize
+						typeD = true;
+					 }  
+			});
+			
+			shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
+				//alert("vao for 2");
+				if(elementcont.fileType == "D"){// filetype quá khổ
+					 contD = true;
+				 }
+				 
+			});
+			
+			 if(contD == false && typeD == false){
+				$.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
+			}
+			else{
+				checkSave(); 
+				//saveFile();
+			} 
+		}
+	 
+ }  	
+ */
+ 
+ 
 function statusIconRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html('');
   cellProperties.readOnly = 'true';
