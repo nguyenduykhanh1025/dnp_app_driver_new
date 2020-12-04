@@ -23,8 +23,10 @@ import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.ShipmentDetailHist;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.domain.SysUser;
+import vn.com.irtech.eport.system.service.IShipmentDetailHistService;
 import vn.com.irtech.eport.web.controller.AdminBaseController;
 
 import java.util.*;
@@ -62,6 +64,9 @@ public class LogisticSendContFullReeferSupportRequest extends AdminBaseControlle
 	@Autowired
 	private IShipmentImageService shipmentImageService;
 
+	@Autowired
+	private IShipmentDetailHistService shipmentDetailHistService;
+	
 	@GetMapping
 	public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
 
@@ -197,6 +202,12 @@ public class LogisticSendContFullReeferSupportRequest extends AdminBaseControlle
 			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
 		}
 		mmap.put("shipmentFiles", shipmentImages);
+		
+		ShipmentDetailHist shipmentDetailHist = new ShipmentDetailHist();
+		shipmentDetailHist.setDataField("Power Draw Date");
+		shipmentDetailHist.setShipmentDetailId(shipmentDetailId);
+		mmap.put("powerDropDate", shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
+		
 		return PREFIX + "/detail";
 	}
 
