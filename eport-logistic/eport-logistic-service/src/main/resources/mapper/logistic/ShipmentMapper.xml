@@ -687,7 +687,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
            
             <if test="params.dangerous != null and params.dangerous != ''">and sh.dangerous = #{params.dangerous}</if>
 			<if test="params.frozenStatus != null and params.frozenStatus != ''">and sh.frozen_status = #{params.frozenStatus}</if>
- 
+ 			<if test="params.finishStatus != null and params.finishStatus != ''">and sh.finish_status = #{params.finishStatus}</if>
             <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
             <if test="params.paymentStatus != null and params.paymentStatus != ''">and sh.payment_status = #{params.paymentStatus}</if>
             <if test="params.oversize != null and params.oversize != ''">and sh.oversize = #{params.oversize}</if>

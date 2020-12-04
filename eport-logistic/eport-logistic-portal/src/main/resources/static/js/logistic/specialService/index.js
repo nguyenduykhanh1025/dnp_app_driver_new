@@ -519,7 +519,11 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
                 break;
             case 'Y':
-                process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+                if ('W' == sourceData[row].paymentStatus) {
+                    process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
+                } else {
+                    process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+                }
                 break;
             case 'N':
                 process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Yêu cầu bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
@@ -536,6 +540,9 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 break;
             case 'Y':
                 payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+                break;
+            case 'W':
+                payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa ráp đơn giá" aria-hidden="true" style="margin-left: 8px; color: #f8ac59;"></i>';
                 break;
             case 'N':
                 if (value > 1) {
@@ -889,6 +896,22 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     return td;
 }
 
+function btnAttachRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr("id", "btnAttach" + row).addClass("htMiddle").addClass("htCenter");
+    let containerNo;
+    if (!isDestroy) {
+        containerNo = hot.getDataAtCell(row, 3);
+    }
+    if (sourceData && sourceData.length > 0) {
+        if (sourceData.length > row && sourceData[row].id) {
+            value = `<button class="btn btn-success btn-xs" onclick="attach('${sourceData[row].id}', '${containerNo}')"><i class="fa fa-book"></i>Đính kèm</button>`;
+        }
+    }
+    $(td).html(value);
+    cellProperties.readOnly = "true";
+    return td;
+}
+
 // CONFIGURATE HANDSONTABLE
 function configHandson() {
     config = {
@@ -917,42 +940,44 @@ function configHandson() {
                 case 1:
                     return "Trạng Thái";
                 case 2:
-                    return 'Container No';
+                    return "Đính Kèm";
                 case 3:
-                    return '<span class="required">Dịch vụ</span>';
+                    return 'Container No';
                 case 4:
-                    return 'Kích Thước';
+                    return '<span class="required">Dịch vụ</span>';
                 case 5:
-                    return 'Chủ Hàng';
+                    return 'Kích Thước';
                 case 6:
-                    return 'Tàu và Chuyến';
+                    return 'Chủ Hàng';
                 case 7:
-                    return "Ngày tàu đến";
+                    return 'Tàu và Chuyến';
                 case 8:
-                    return 'Cảng Xếp Hàng';
+                    return "Ngày tàu đến";
                 case 9:
-                    return 'Cảng Dỡ Hàng';
+                    return 'Cảng Xếp Hàng';
                 case 10:
-                    return 'Trọng Lượng (kg)';
+                    return 'Cảng Dỡ Hàng';
                 case 11:
-                    return 'Loại Hàng';
+                    return 'Trọng Lượng (kg)';
                 case 12:
-                    return 'Tên Hàng';
+                    return 'Loại Hàng';
                 case 13:
-                    return 'Số Seal';
+                    return 'Tên Hàng';
                 case 14:
-                    return "Nhiệt Độ (c)";
+                    return 'Số Seal';
                 case 15:
-                    return 'PTTT';
+                    return "Nhiệt Độ (c)";
                 case 16:
-                    return 'Mã Số Thuế';
+                    return 'PTTT';
                 case 17:
-                    return 'Người Thanh Toán';
+                    return 'Mã Số Thuế';
                 case 18:
+                    return 'Người Thanh Toán';
+                case 19:
                     return "Ghi Chú";
             }
         },
-        colWidths: [40, 100, 100, 120, 150, 150, 200, 100, 100, 120, 120, 80, 100, 100, 80, 80, 100, 130, 200],
+        colWidths: [40, 100, 120, 100, 120, 150, 150, 200, 100, 100, 120, 120, 80, 100, 100, 80, 80, 100, 130, 200],
         filter: "true",
         columns: [
             {
@@ -965,6 +990,10 @@ function configHandson() {
                 data: "status",
                 readOnly: true,
                 renderer: statusIconsRenderer
+            },
+            {
+                data: "btnAttach",
+                renderer: btnAttachRenderer,
             },
             {
                 data: "containerNo",
@@ -1080,7 +1109,7 @@ function configHandson() {
                 // Arrow Right
                 case 39:
                     selected = hot.getSelected()[0];
-                    if (selected[3] == 18) {
+                    if (selected[3] == 19) {
                         e.stopImmediatePropagation();
                     }
                     break
@@ -1109,7 +1138,7 @@ function onChange(changes, source) {
         // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
         if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
             if (!updateCatos) {
-                let vesselAndVoy = hot.getDataAtCell(change[0], 6);
+                let vesselAndVoy = hot.getDataAtCell(change[0], 7);
                 if (vesselAndVoy) {
                     if (currentVesselVoyage != vesselAndVoy) {
                         currentVesselVoyage = vesselAndVoy;
@@ -1131,7 +1160,7 @@ function onChange(changes, source) {
                                         if (data.code == 0) {
                                             hot.updateSettings({
                                                 cells: function (row, col, prop) {
-                                                    if (col == 8 || col == 9) {
+                                                    if (col == 9 || col == 10) {
                                                         let cellProperties = {};
                                                         dischargePortList = data.dischargePorts;
                                                         cellProperties.source = dischargePortList;
@@ -1145,7 +1174,7 @@ function onChange(changes, source) {
                             }
                         }
                     }
-                    hot.setDataAtCell(change[0], 7, currentEta);
+                    hot.setDataAtCell(change[0], 8, currentEta);
                 }
             } else {
                 updateCatos = false;
@@ -1153,7 +1182,7 @@ function onChange(changes, source) {
             // check to input temperature
         } else if (change[1] == "sztp") {
 
-            if (change[3] && hot.getDataAtCell(change[0], 3)) {
+            if (change[3] && hot.getDataAtCell(change[0], 4)) {
                 $('#detailBtn' + change[0]).prop('disabled', false);
             } else {
                 $('#detailBtn' + change[0]).prop('disabled', true);
@@ -1163,7 +1192,7 @@ function onChange(changes, source) {
                 temperatureDisable[change[0]] = 0;
                 hot.updateSettings({
                     cells: function (row, col, prop) {
-                        if (row == change[0] && col == 14) {
+                        if (row == change[0] && col == 15) {
                             let cellProperties = {};
                             cellProperties.readOnly = false;
                             return cellProperties;
@@ -1174,7 +1203,7 @@ function onChange(changes, source) {
                 temperatureDisable[change[0]] = 1;
                 hot.updateSettings({
                     cells: function (row, col, prop) {
-                        if (row == change[0] && col == 14) {
+                        if (row == change[0] && col == 15) {
                             let cellProperties = {};
                             cellProperties.readOnly = true;
                             $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
@@ -1186,7 +1215,7 @@ function onChange(changes, source) {
         } else if (change[1] == "containerNo") {
             if (!change[3]) {
                 sztpListDisable[change[0]] = 0;
-                cleanCell(change[0], 4, sizeList);
+                cleanCell(change[0], 5, sizeList);
             } else {
                 if (checkContainerNo(change[3])) {
                     $.ajax({
@@ -1202,35 +1231,35 @@ function onChange(changes, source) {
                                     let cntrInfo = data.containerInfo;
                                     // Set data
                                     updateCatos = true;
-                                    hot.setDataAtCell(change[0], 4, cntrInfo.sztp); // Kích Thước
-                                    hot.setDataAtCell(change[0], 5, cntrInfo.consignee); // Chủ Hàng
-                                    hot.setDataAtCell(change[0], 6, cntrInfo.vslCd + " - " + cntrInfo.vslNm + " - " + cntrInfo.inVoy); // Tàu và Chuyến
-                                    hot.setDataAtCell(change[0], 8, cntrInfo.pol); // Cảng Xếp Hàng
-                                    hot.setDataAtCell(change[0], 9, cntrInfo.pod); // Cảng Dỡ Hàng
-                                    hot.setDataAtCell(change[0], 10, cntrInfo.wgt); // Trọng Lượng (kg)
-                                    hot.setDataAtCell(change[0], 11, cntrInfo.cargoType); // Loại Hàng
-                                    hot.setDataAtCell(change[0], 13, cntrInfo.sealNo1); // Số Seal
-                                    hot.setDataAtCell(change[0], 18, cntrInfo.remark); // Ghi Chú
+                                    hot.setDataAtCell(change[0], 5, cntrInfo.sztp); // Kích Thước
+                                    hot.setDataAtCell(change[0], 6, cntrInfo.consignee); // Chủ Hàng
+                                    hot.setDataAtCell(change[0], 7, cntrInfo.vslCd + " - " + cntrInfo.vslNm + " - " + cntrInfo.inVoy); // Tàu và Chuyến
+                                    hot.setDataAtCell(change[0], 9, cntrInfo.pol); // Cảng Xếp Hàng
+                                    hot.setDataAtCell(change[0], 10, cntrInfo.pod); // Cảng Dỡ Hàng
+                                    hot.setDataAtCell(change[0], 11, cntrInfo.wgt); // Trọng Lượng (kg)
+                                    hot.setDataAtCell(change[0], 12, cntrInfo.cargoType); // Loại Hàng
+                                    hot.setDataAtCell(change[0], 14, cntrInfo.sealNo1); // Số Seal
+                                    hot.setDataAtCell(change[0], 19, cntrInfo.remark); // Ghi Chú
                                 } else {
                                     sztpListDisable[change[0]] = 0;
-                                    cleanCell(change[0], 4, sizeList);
+                                    cleanCell(change[0], 5, sizeList);
                                 }
                             } else {
                                 sztpListDisable[change[0]] = 0;
-                                cleanCell(change[0], 4, sizeList);
+                                cleanCell(change[0], 5, sizeList);
                             }
                         },
                         error: function (err) {
                             sztpListDisable[change[0]] = 0;
-                            cleanCell(change[0], 4, sizeList);
+                            cleanCell(change[0], 5, sizeList);
                         }
                     });
                 } else {
                     sztpListDisable[change[0]] = 0;
-                    cleanCell(change[0], 4, sizeList);
+                    cleanCell(change[0], 5, sizeList);
                 }
             }
-            if (change[3] && hot.getDataAtCell(change[0], 4)) {
+            if (change[3] && hot.getDataAtCell(change[0], 5)) {
                 $('#detailBtn' + change[0]).prop('disabled', false);
             } else {
                 $('#detailBtn' + change[0]).prop('disabled', true);
@@ -1759,8 +1788,16 @@ function pay() {
     if (shipmentDetails.length > 0) {
         let errorMsg = "";
         shipmentDetails.forEach(element => {
+            if ("Y" != element.processStatus) {
+                errorMsg = "Quý khách không thể thanh toán cho container chưa được làm lệnh.";
+                return false;
+            }
             if (element.payType == 'Credit') {
                 errorMsg = "Quý khách không thể thanh toán cho container cho trường hợp trả sau.";
+                return false;
+            }
+            if ('W' == element.paymentStatus) {
+                errorMsg = "Container chưa được ráp đơn giá, không thể thanh toán.";
                 return false;
             }
             if (element.paymentStatus == "Y") {
@@ -1771,7 +1808,7 @@ function pay() {
         if (errorMsg.length > 0) {
             $.modal.alertWarning(errorMsg);
         } else {
-            $.modal.openCustomForm("Thanh toán", prefix + "/payment/" + processOrderIds, 800, 400);
+            $.modal.openCustomForm("Thanh toán", prefix + "/payment/" + shipmentDetailIds, 800, 400);
         }
     }
 }
@@ -1862,13 +1899,6 @@ function exportPackingList() {
         return
     }
     $.modal.openTab("In Packing List", ctx + "logistic/print/shipment/" + shipmentSelected.id + "/packing-list");
-}
-
-function openDetail(id, containerNo, sztp) {
-    if (!id) {
-        id = 0;
-    }
-    $.modal.openCustomForm("Khai báo chi tiết", prefix + "/shipment-detail/" + id + "/cont/" + containerNo + "/sztp/" + sztp + "/detail", 800, 460);
 }
 
 function removeShipment() {
@@ -2095,4 +2125,12 @@ function openFormRemarkBeforeReqCancelOrder() {
             return true;
         }
     });
+}
+
+function attach(shipmentDetailId, containerNo) {
+    if (!shipmentDetailId) {
+        $.modal.alertWarning("Quý khách vui lòng lưu khai báo container trước khi đính kèm tệp.");
+    } else {
+        $.modal.openCustomForm("Đính kèm tệp cho container " + containerNo, prefix + "/" + shipmentDetailId + "/attach", 500, 240);
+    }
 }

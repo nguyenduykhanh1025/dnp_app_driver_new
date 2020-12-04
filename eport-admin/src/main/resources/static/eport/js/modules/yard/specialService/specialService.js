@@ -1,4 +1,4 @@
-const PREFIX = ctx + "accountant/support/special-service";
+const PREFIX = ctx + "yard/monitor/special-service";
 const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 const containerCol = 7;
@@ -90,28 +90,25 @@ $(document).ready(function () {
     hot.render();
   }, 200);
 
-  $("#paymentStatus").combobox({
-    valueField: 'paymentStatusValue',
-    textField: 'paymentStatusKey',
+  $("#finishStatus").combobox({
+    valueField: 'finishValue',
+    textField: 'finishKey',
     data: [{
-      "paymentStatusValue": 'N',
-      "paymentStatusKey": "Chưa thanh toán"
-    }, {
-      "paymentStatusValue": 'W',
-      "paymentStatusKey": "Chờ ráp đơn giá",
+      "finishValue": 'N',
+      "finishKey": "chưa hoàn thành",
       "selected": true
     }, {
-      "paymentStatusValue": 'Y',
-      "paymentStatusKey": "Đã thanh toán"
+      "finishValue": 'Y',
+      "finishKey": "Đã hoàn thành"
     }, {
-      "paymentStatusValue": 'null',
-      "paymentStatusKey": "Tất cả"
+      "finishValue": 'null',
+      "finishKey": "Tất cả"
     }],
-    onSelect: function (paymentStatus) {
-      if (paymentStatus.paymentStatusValue != 'null') {
-        shipment.params.paymentStatus = paymentStatus.paymentStatusValue;
+    onSelect: function (finishStatus) {
+      if (finishStatus.finishValue != 'null') {
+        shipment.params.finishStatus = finishStatus.finishValue;
       } else {
-        shipment.params.paymentStatus = null;
+        shipment.params.finishStatus = null;
       }
       loadTable();
     }
@@ -400,15 +397,11 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
         process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
         break;
     }
-
     // Payment status
     let payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
     switch (sourceData[row].paymentStatus) {
       case 'E':
         payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Lỗi Thanh Toán" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
-        break;
-      case 'W':
-        payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Ráp Đơn Giá" aria-hidden="true" style="margin-left: 8px; color : #f8ac59;"></i>';
         break;
       case 'Y':
         payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
@@ -1042,8 +1035,7 @@ function getDataSelectedFromTable() {
         dischargePort: dischargePort,
         payType: object["payType"],
         payer: object["payer"],
-        orderNo: object["orderNo"],
-        paymentStatus: object["paymentStatus"]
+        orderNo: object["orderNo"]
       };
       if (berthplanList) {
         for (let i = 0; i < berthplanList.length; i++) {
@@ -1099,7 +1091,7 @@ function clearInput() {
   $("#blBookingNo").textbox('setText', '');
   $('#fromDate').datebox('setValue', '');
   $('#toDate').datebox('setValue', '');
-  $("#paymentStatus").combobox('select', 'N');
+  $("#finishStatus").combobox('select', 'N');
   shipment = new Object();
   shipment.params = new Object();
   fromDate = null;
@@ -1251,6 +1243,32 @@ function updateShipmentDetail() {
   }
 }
 
+function confirmOrder() {
+  if (getDataSelectedFromTable()) {
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+      url: PREFIX + "/finish/confirm",
+      method: "POST",
+      data: {
+        shipmentDetailIds: shipmentDetailIds
+      },
+      success: function (result) {
+        if (result.code == 0) {
+          $.modal.alertSuccess(result.msg);
+          reloadShipmentDetail();
+        } else {
+          $.modal.alertError(result.msg);
+        }
+        $.modal.closeLoading();
+      },
+      error: function (result) {
+        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+        $.modal.closeLoading();
+      },
+    });
+  }
+}
+
 function openHistoryFormCatos(row) {
   let containerInfo = sourceData[row];
   let vslCd = '';
@@ -1306,59 +1324,6 @@ function openHistoryFormEport(row) {
   }
 }
 
-function applyPrice() {
-  if (getDataSelectedFromTable()) {
-    layer.open({
-      type: 2,
-      area: [600 + 'px', 300 + 'px'],
-      fix: true,
-      maxmin: true,
-      shade: 0.3,
-      title: 'Ráp đơn giá',
-      content: PREFIX + "/price",
-      btn: ["Xác Nhận", "Hủy"],
-      shadeClose: false,
-      yes: function (index, layero) {
-        applyPriceReq(index, layero);
-      },
-      cancel: function (index) {
-        return true;
-      }
-    });
-  }
-}
-
-function applyPriceReq(index, layero) {
-  let childLayer = layero.find("iframe")[0].contentWindow.document;
-  $.modal.loading("Đang xử lý ...");
-  $.ajax({
-    url: PREFIX + "/price",
-    method: "POST",
-    data: {
-      invoiceNo: $(childLayer).find("#invoiceNo").val(),
-      price: $(childLayer).find("#price").val(),
-      shipmentDetailIds: shipmentDetailIds,
-      shipmentId: shipmentSelected.id,
-      logisticGroupId: shipmentSelected.logisticGroupId
-    },
-    success: function (res) {
-      layer.close(index);
-      reloadShipmentDetail();
-      $.modal.closeLoading();
-      if (res.code == 0) {
-        $.modal.alertSuccess(res.msg);
-      } else {
-        $.modal.alertError(res.msg);
-      }
-    },
-    error: function (data) {
-      layer.close(index);
-      reloadShipmentDetail();
-      $.modal.closeLoading();
-    }
-  });
-}
-
 function attach(shipmentDetailId, containerNo) {
   if (!shipmentDetailId) {
       $.modal.alertWarning("Quý khách vui lòng lưu khai báo container trước khi đính kèm tệp.");
@@ -1379,4 +1344,3 @@ function attach(shipmentDetailId, containerNo) {
     });
   }
 }
-

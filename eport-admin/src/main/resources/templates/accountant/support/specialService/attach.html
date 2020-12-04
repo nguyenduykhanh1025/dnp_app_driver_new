@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <th:block th:include="include :: header('Dinh kem tep')" />
+  <th:block th:include="include :: dropzone-css" />>
+
+  <style>
+    .preview-block {
+      float: left;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="form-group row" id="dropzone">
+    <div class="preview-container col-md-12 col-sm-12 col-xs-12"></div>
+  </div>
+</body>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: dropzone-js" />
+<script type="text/javascript" th:inline="javascript">
+  var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
+  var files = /*[[${files}]]*/;
+</script>
+<script th:src="@{/eport/js/modules/accountant/support/specialService/attach.js}"></script>
+</html>

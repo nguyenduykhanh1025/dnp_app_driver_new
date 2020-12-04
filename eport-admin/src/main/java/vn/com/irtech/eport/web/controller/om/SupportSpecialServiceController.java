@@ -108,6 +108,21 @@ public class SupportSpecialServiceController extends OmBaseController {
 		return PREFIX + "/confirmation";
 	}
 
+	@GetMapping("/{shipmentDetailId}/attach")
+	public String getAttachView(@PathVariable("shipmentDetailId") String shipmentDetailId, ModelMap mmap) {
+		ShipmentImage shipmentImageParam = new ShipmentImage();
+		shipmentImageParam.setShipmentDetailId(shipmentDetailId);
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImageParam);
+		if (CollectionUtils.isNotEmpty(shipmentImages)) {
+			for (ShipmentImage shipmentImage : shipmentImages) {
+				shipmentImage.setPath(serverConfig.getUrl() + shipmentImage.getPath());
+			}
+		}
+		mmap.put("shipmentDetailId", shipmentDetailId);
+		mmap.put("files", shipmentImages);
+		return PREFIX + "/attach";
+	}
+
 	@PostMapping("/shipments")
 	@ResponseBody
 	public AjaxResult getShipments(@RequestBody PageAble<Shipment> param) {
@@ -138,9 +153,6 @@ public class SupportSpecialServiceController extends OmBaseController {
 	@ResponseBody
 	@Transactional
 	public AjaxResult confirmOrder(String shipmentDetailIds) {
-		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
-		shipmentDetailUpdate.setProcessStatus("Y");
-		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {

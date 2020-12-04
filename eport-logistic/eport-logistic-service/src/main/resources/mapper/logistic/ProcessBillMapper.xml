@@ -62,7 +62,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="vatRate != null "> and vat_rate = #{vatRate}</if>
             <if test="vatAfterFee != null "> and vat_after_fee = #{vatAfterFee}</if>
             <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
-            <if test="shipmentDetailId != null "> and shipment_detail_id = #{shipmentDetailId}</if>
+            <if test="shipmentDetailId != null"> and shipment_detail_id = #{shipmentDetailId}</if>
+            <if test="params.shipmentDetailIds != null">
+                and shipment_detail_id in
+                <foreach item="shDtId" collection="params.shipmentDetailIds" open="(" separator="," close=")">
+                    #{shDtId}
+                </foreach>
+            </if>
         </where>
         order by process_order_id asc
     </select>

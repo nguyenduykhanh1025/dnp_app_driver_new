@@ -50,6 +50,7 @@ import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -176,18 +177,27 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 		return PREFIX + "/verifyOtp";
 	}
 
-	@GetMapping("/payment/{processOrderIds}")
-	public String paymentForm(@PathVariable("processOrderIds") String processOrderIds, ModelMap mmap) {
-		String shipmentDetailIds = "";
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderIds);
-		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			shipmentDetailIds += shipmentDetail.getId() + ",";
+	@GetMapping("/payment/{shipmentDetailIds}")
+	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
+				getUser().getGroupId());
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			shipmentDetailIds = "";
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				shipmentDetailIds += shipmentDetail.getId() + ",";
+			}
+			shipmentDetailIds = shipmentDetailIds.substring(0, shipmentDetailIds.length() - 1);
+			mmap.put("shipmentDetailIds", shipmentDetailIds);
+
+			// Get process bill
+			ProcessBill processBillParam = new ProcessBill();
+			processBillParam.setPaymentStatus("N");
+			Map<String, Object> params = new HashMap<>();
+			params.put("shipmentDetailIds", Convert.toStrArray(shipmentDetailIds));
+			processBillParam.setParams(params);
+			List<ProcessBill> processBills = processBillService.selectProcessBillList(processBillParam);
+			mmap.put("processBills", processBills);
 		}
-		if (!"".equalsIgnoreCase(shipmentDetailIds)) {
-			shipmentDetailIds.substring(0, shipmentDetailIds.length() - 1);
-		}
-		mmap.put("shipmentDetailIds", shipmentDetailIds);
-		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
 		return PREFIX + "/paymentForm";
 	}
 
@@ -202,6 +212,21 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 			}
 		}
 		return PREFIX + "/checkCustomStatus";
+	}
+
+	@GetMapping("/{shipmentDetailId}/attach")
+	public String getAttachView(@PathVariable("shipmentDetailId") String shipmentDetailId, ModelMap mmap) {
+		ShipmentImage shipmentImageParam = new ShipmentImage();
+		shipmentImageParam.setShipmentDetailId(shipmentDetailId);
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImageParam);
+		if (CollectionUtils.isNotEmpty(shipmentImages)) {
+			for (ShipmentImage shipmentImage : shipmentImages) {
+				shipmentImage.setPath(serverConfig.getUrl() + shipmentImage.getPath());
+			}
+		}
+		mmap.put("shipmentDetailId", shipmentDetailId);
+		mmap.put("files", shipmentImages);
+		return PREFIX + "/attach";
 	}
 
 	@GetMapping("/req/cancel/confirmation")
@@ -721,57 +746,6 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 			return error("Không tìm thấy thông tin chi tiết lô đã chọn.");
 		}
 
-//		// Container no string separated by comma
-//		String containerNos = "";
-//		for (int i = 0; i < shipmentDetails.size(); i++) {
-//			if (EportConstants.SPECIAL_SERVICE_DISINFECTION == shipmentDetails.get(i).getSpecialService()) {
-//				containerNos += shipmentDetails.get(i).getContainerNo() + ",";
-//			}
-//		}
-//
-//		// Validate container has job order no
-//		containerNos = containerNos.substring(0, containerNos.length() - 1);
-//		Map<String, ContainerInfoDto> ctnrMap = getContainerInfoFromCatos(containerNos);
-//		String containerHasOrderdEmpty = "";
-//		String containerHasOrderdFull = "";
-//		ContainerInfoDto ctnrInfoF = null;
-//		ContainerInfoDto ctnrInfoE = null;
-//		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-//			// Get ctnr info by container no in catos
-//			// Get container info (F or E) by container no + FE(F or E)
-//			ctnrInfoF = ctnrMap.get(shipmentDetail.getContainerNo() + "F");
-//			if (ctnrInfoF != null) {
-//				// Container has job order no 2 => has order
-//				if (StringUtils.isNotEmpty(ctnrInfoF.getJobOdrNo())) {
-//					containerHasOrderdFull += shipmentDetail.getContainerNo() + ",";
-//				}
-//			}
-//			// Get container info (F or E) by container no + FE(F or E)
-//			ctnrInfoE = ctnrMap.get(shipmentDetail.getContainerNo() + "E");
-//			if (ctnrInfoE != null) {
-//				// Container has job order no 2 => has order
-//				if (StringUtils.isNotEmpty(ctnrInfoE.getJobOdrNo())
-//						&& !EportConstants.CATOS_CONT_STACKING.equalsIgnoreCase(ctnrInfoE.getCntrState())
-//						&& !EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(ctnrInfoE.getCntrState())) {
-//					containerHasOrderdEmpty += shipmentDetail.getContainerNo() + ",";
-//				}
-//			}
-//		}
-//
-//		String errorMsg = "";
-//		if (StringUtils.isNotEmpty(containerHasOrderdEmpty)) {
-//			errorMsg += "Các container: " + containerHasOrderdEmpty.substring(0, containerHasOrderdEmpty.length() - 1)
-//					+ " đã có lệnh hạ rỗng.<br>";
-//		}
-//		if (StringUtils.isNotEmpty(containerHasOrderdFull)) {
-//			errorMsg += "Các container: " + containerHasOrderdFull.substring(0, containerHasOrderdFull.length() - 1)
-//					+ " đã có lệnh hạ hàng.";
-//		}
-//
-//		if (StringUtils.isNotEmpty(errorMsg)) {
-//			return error(errorMsg);
-//		}
-
 		return success();
 	}
 
@@ -899,6 +873,53 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 	@DeleteMapping("/booking/file")
 	@ResponseBody
 	public AjaxResult deleteFile(Long id) throws IOException {
+		ShipmentImage shipmentImageParam = new ShipmentImage();
+		shipmentImageParam.setId(id);
+		ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+		String[] fileArr = shipmentImage.getPath().split("/");
+		File file = new File(
+				Global.getUploadPath() + "/booking/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
+		if (file.delete()) {
+			shipmentImageService.deleteShipmentImageById(id);
+		}
+		return success();
+	}
+
+	@PostMapping("/shipment-detail/{shipmentDetailId}/file")
+	@ResponseBody
+	public AjaxResult saveShipmentDetailFile(MultipartFile file,
+			@PathVariable("shipmentDetailId") Long shipmentDetailId) throws IOException, InvalidExtensionException {
+
+		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		if (shipmentDetail == null) {
+			return error("Không xác định được thông tin container cần đính kèm.");
+		}
+
+		String basePath = String.format("%s/%s",
+				Global.getUploadPath() + "/" + getUser().getGroupId() + "/shipment-detail", shipmentDetailId);
+		String now = DateUtils.dateTimeNow();
+		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+		String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setPath(filePath);
+		shipmentImage.setShipmentId(shipmentDetail.getShipmentId());
+		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+		shipmentImage.setCreateTime(DateUtils.getNowDate());
+		shipmentImage.setCreateBy(getUser().getFullName());
+		shipmentImageService.insertShipmentImage(shipmentImage);
+
+		AjaxResult ajaxResult = AjaxResult.success();
+		shipmentImage.setPath(serverConfig.getUrl() + shipmentImage.getPath());
+		ajaxResult.put("shipmentFile", shipmentImage);
+		return ajaxResult;
+	}
+
+	@DeleteMapping("/file")
+	@ResponseBody
+	public AjaxResult deleteShipmentDetailFile(Long id) throws IOException {
+		// TODO: Validate permission before delete file
+		
 		ShipmentImage shipmentImageParam = new ShipmentImage();
 		shipmentImageParam.setId(id);
 		ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);

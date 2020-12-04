@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.web.controller.accountant;
+package vn.com.irtech.eport.web.controller.yard.management;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,18 +26,14 @@ import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.utils.CacheUtils;
-import vn.com.irtech.eport.common.utils.StringUtils;
-import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
-import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
-import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
@@ -48,10 +44,10 @@ import vn.com.irtech.eport.system.service.ISysConfigService;
 import vn.com.irtech.eport.web.controller.AdminBaseController;
 
 @Controller
-@RequestMapping("/accountant/support/special-service")
-public class AccountantSpecialServiceController extends AdminBaseController {
-	protected final Logger logger = LoggerFactory.getLogger(AccountantSpecialServiceController.class);
-	private final String PREFIX = "accountant/support/specialService";
+@RequestMapping("/yard/monitor/special-service")
+public class YardMonitorSpecialServiceController extends AdminBaseController {
+	protected final Logger logger = LoggerFactory.getLogger(YardMonitorSpecialServiceController.class);
+	private final String PREFIX = "yard/specialService";
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
@@ -69,19 +65,16 @@ public class AccountantSpecialServiceController extends AdminBaseController {
 	private IShipmentImageService shipmentImageService;
 
 	@Autowired
-	private DictService dictDataService;
-
-	@Autowired
-	private ISysConfigService configService;
-
-	@Autowired
 	private ICatosApiService catosApiService;
 
 	@Autowired
 	private ServerConfig serverConfig;
 
 	@Autowired
-	private IProcessBillService processBillService;
+	private DictService dictDataService;
+
+	@Autowired
+	private ISysConfigService configService;
 
 	@GetMapping("/view")
 	public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
@@ -111,11 +104,6 @@ public class AccountantSpecialServiceController extends AdminBaseController {
 		return PREFIX + "/specialService";
 	}
 
-	@GetMapping("/price")
-	public String getConfirmationForm() {
-		return PREFIX + "/applyPrice";
-	}
-
 	@GetMapping("/{shipmentDetailId}/attach")
 	public String getAttachView(@PathVariable("shipmentDetailId") String shipmentDetailId, ModelMap mmap) {
 		ShipmentImage shipmentImageParam = new ShipmentImage();
@@ -142,9 +130,9 @@ public class AccountantSpecialServiceController extends AdminBaseController {
 		}
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
-			params = new HashMap<String, Object>();
+			params = new HashMap<>();
 		}
-		params.put("processStatus", "Y");
+		params.put("paymentStatus", "Y");
 		shipment.setParams(params);
 		shipment.setServiceType(EportConstants.SERVICE_SPECIAL_SERVICE);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
@@ -161,6 +149,16 @@ public class AccountantSpecialServiceController extends AdminBaseController {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;
+	}
+
+	@PostMapping("/finish/confirm")
+	@ResponseBody
+	@Transactional
+	public AjaxResult confirmOrder(String shipmentDetailIds) {
+		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
+		shipmentDetailUpdate.setFinishStatus("Y");
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
+		return success();
 	}
 
 	@PostMapping("/shipment-detail")
@@ -264,40 +262,5 @@ public class AccountantSpecialServiceController extends AdminBaseController {
 		ajaxResult.put("specialServiceDictData", sysDictDatas);
 
 		return ajaxResult;
-	}
-
-	@PostMapping("/price")
-	@ResponseBody
-	public AjaxResult rejectSupply(Long price, String invoiceNo, String shipmentDetailIds, Long shipmentId,
-			Long logisticGroupId) {
-		if (StringUtils.isEmpty(shipmentDetailIds) || shipmentId == null || logisticGroupId == null) {
-			return error("Invalid input!");
-		}
-		SysUser user = ShiroUtils.getSysUser();
-
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
-		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				ProcessBill processBill = new ProcessBill();
-				processBill.setShipmentId(shipmentDetail.getShipmentId());
-				processBill.setLogisticGroupId(shipmentDetail.getLogisticGroupId());
-				processBill.setServiceType(EportConstants.SERVICE_SPECIAL_SERVICE);
-				processBill.setPayType(shipmentDetail.getPayType());
-				processBill.setPaymentStatus("N");
-				processBill.setInvoiceNo(invoiceNo);
-				processBill.setVatAfterFee(price);
-				processBill.setContainerNo(shipmentDetail.getContainerNo());
-				processBill.setSztp(shipmentDetail.getSztp());
-				processBill.setShipmentDetailId(shipmentDetail.getId());
-				processBillService.insertProcessBill(processBill);
-			}
-		}
-
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setPaymentStatus("N");
-		shipmentDetail.setUpdateBy(user.getLoginName());
-		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
-
-		return success();
 	}
 }

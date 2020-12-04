@@ -413,16 +413,16 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
         break;
     }
     // released status
-    let released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+    let released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
     switch (sourceData[row].finishStatus) {
       case "Y":
         released =
-          '<i id="finish" class="fa fa-ship easyui-tooltip" title="Đã Giao Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+          '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Giao Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
         break;
       case "N":
         if (sourceData[row].paymentStatus == "Y") {
           released =
-            '<i id="finish" class="fa fa-ship easyui-tooltip" title="Có Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+            '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
         }
         break;
     }
@@ -591,6 +591,19 @@ function specialServiceRenderer(instance, td, row, col, prop, value, cellPropert
   return td;
 }
 
+function btnAttachRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr("id", "btnAttach" + row).addClass("htMiddle").addClass("htCenter");
+  if (sourceData && sourceData.length > 0) {
+    if (sourceData.length > row && sourceData[row].id) {
+      let containerNo = '';
+      value = `<button class="btn btn-success btn-xs" onclick="attach('${sourceData[row].id}', '${containerNo}')"><i class="fa fa-book"></i>Đính kèm</button>`;
+    }
+  }
+  $(td).html(value);
+  cellProperties.readOnly = "true";
+  return td;
+}
+
 // CONFIGURATE HANDSONTABLE
 function configHandsond() {
   config = {
@@ -621,44 +634,46 @@ function configHandsond() {
         case 3:
           return "Trạng Thái";
         case 4:
-          return "Số Tham Chiếu";
+          return "Đính Kèm";
         case 5:
-          return 'Container No';
+          return "Số Tham Chiếu";
         case 6:
-          return 'Dịch vụ';
+          return 'Container No';
         case 7:
-          return 'Kích Thước';
+          return 'Dịch vụ';
         case 8:
-          return 'Chủ Hàng';
+          return 'Kích Thước';
         case 9:
-          return 'Tàu và Chuyến';
+          return 'Chủ Hàng';
         case 10:
-          return "Ngày tàu đến";
+          return 'Tàu và Chuyến';
         case 11:
-          return 'Cảng Xếp Hàng';
+          return "Ngày tàu đến";
         case 12:
-          return 'Cảng Dỡ Hàng';
+          return 'Cảng Xếp Hàng';
         case 13:
-          return 'Trọng Lượng (kg)';
+          return 'Cảng Dỡ Hàng';
         case 14:
-          return 'Loại Hàng';
+          return 'Trọng Lượng (kg)';
         case 15:
-          return 'Tên Hàng';
+          return 'Loại Hàng';
         case 16:
-          return 'Số Seal';
+          return 'Tên Hàng';
         case 17:
-          return "Nhiệt Độ (c)";
+          return 'Số Seal';
         case 18:
-          return 'PTTT';
+          return "Nhiệt Độ (c)";
         case 19:
-          return 'Mã Số Thuế';
+          return 'PTTT';
         case 20:
-          return 'Người Thanh Toán';
+          return 'Mã Số Thuế';
         case 21:
+          return 'Người Thanh Toán';
+        case 22:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 105, 130, 100, 120, 150, 150, 200, 100, 100, 120, 120, 80, 100, 100, 80, 80, 100, 130, 200],
+    colWidths: [23, 21, 21, 105, 120, 130, 100, 120, 150, 150, 200, 100, 100, 120, 120, 80, 100, 100, 80, 80, 100, 130, 200],
     filter: "true",
     columns: [
       {
@@ -680,6 +695,10 @@ function configHandsond() {
         data: "status",
         readOnly: true,
         renderer: statusIconsRenderer
+      },
+      {
+        data: "btnAttach",
+        renderer: btnAttachRenderer,
       },
       {
         data: "orderNo",
@@ -796,7 +815,7 @@ function configHandsond() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 21) {
+          if (selected[3] == 22) {
             e.stopImmediatePropagation();
           }
           break
@@ -836,7 +855,7 @@ function onChange(changes, source) {
 
     // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
     if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-      let vesselAndVoy = hot.getDataAtCell(change[0], 9);
+      let vesselAndVoy = hot.getDataAtCell(change[0], 10);
       //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
       if (vesselAndVoy) {
         if (currentVesselVoyage != vesselAndVoy) {
@@ -858,7 +877,7 @@ function onChange(changes, source) {
                   if (data.code == 0) {
                     hot.updateSettings({
                       cells: function (row, col, prop) {
-                        if (col == 11 || col == 12) {
+                        if (col == 12 || col == 13) {
                           let cellProperties = {};
                           dischargePortList = data.dischargePorts;
                           cellProperties.source = dischargePortList;
@@ -1355,4 +1374,25 @@ function rejectOrderReq(index, layero) {
       $.modal.closeLoading();
     }
   });
+}
+
+function attach(shipmentDetailId, containerNo) {
+  if (!shipmentDetailId) {
+      $.modal.alertWarning("Quý khách vui lòng lưu khai báo container trước khi đính kèm tệp.");
+  } else {
+    layer.open({
+      type: 2,
+      area: [500 + 'px', 240 + 'px'],
+      fix: true,
+      maxmin: true,
+      shade: 0.3,
+      title: "Đính kèm tệp cho container " + containerNo,
+      content: PREFIX + "/" + shipmentDetailId + "/attach",
+      btn: ["Đóng"],
+      shadeClose: false,
+      cancel: function (index) {
+        return true;
+      }
+    });
+  }
 }

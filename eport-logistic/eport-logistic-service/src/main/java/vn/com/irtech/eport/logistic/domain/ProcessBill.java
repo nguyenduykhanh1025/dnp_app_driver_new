@@ -275,6 +275,6 @@ public class ProcessBill extends BaseEntity {
 				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime())
 				.append("fromDate", getFromDate()).append("toDate", getToDate()).append("blNo", getBlNo())
 				.append("bookingNo", getBookingNo()).append("taxCode", getTaxCode())
-				.append("shipmentDetailId", getShipmentDetailId()).toString();
+				.append("shipmentDetailId", getShipmentDetailId()).append("params", getParams()).toString();
 	}
 }
