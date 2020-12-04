@@ -66,9 +66,9 @@
       <!-- checked="checked" -->
       <section class="tabs">
         <input id="tab-1" type="radio" name="radio-set" class="tab-selector-1" />
-        <label for="tab-1" class="tab-label-1">Cont lạnh</label>
+        <label for="tab-1" class="tab-label-1" style="display: none;">Cont lạnh</label>
         <input id="tab-2" type="radio" name="radio-set" class="tab-selector-2" />
-        <label for="tab-2" class="tab-label-2">Cont quá khổ</label>
+        <label for="tab-2" class="tab-label-2" style="display: none;">Cont quá khổ</label>
         <!-- <input id="tab-3" type="radio" name="radio-set" class="tab-selector-3" />
 				<label for="tab-3" class="tab-label-3">Cont nguy hiểm</label> -->
         <div class="clear"></div>
@@ -78,29 +78,27 @@
 
           <div class="content-1" id="reeferContainer">
             <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-              <div class="form-group col-sm-6 row">
-                <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Độ ẩm
+              <div class="form-group col-sm-12 row">
+                <span class="control-label col-sm-2 col-xs-2" style="text-align: left"><b class="text-black">Độ ẩm
                     (%):</b></span>
-                <div class="col-sm-8 col-xs-6">
+                <div class="col-sm-2 col-xs-2">
                   <input type="text" class="form-control" id="humidity" name="humidity" readonly />
                 </div>
-              </div>
-              <div class="form-group col-sm-6 row">
-                <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Độ thông
+
+                <span class="control-label col-sm-2 col-xs-2" style="text-align: left"><b class="text-black">Độ thông
                     gió (%):</b></span>
-                <div class="col-sm-8 col-xs-6">
+                <div class="col-sm-2 col-xs-2">
                   <input type="text" class="form-control" id="ventilation" name="ventilation" readonly />
+                </div>
+
+                <span class="control-label col-sm-2 col-xs-2" style="text-align: left"><b class="text-black">Nhiệt đô
+                    (độ C):</b></span>
+                <div class="col-sm-2 col-xs-2">
+                  <input type="text" class="form-control" id="temperature" name="temperature" readonly />
                 </div>
               </div>
             </div>
             <div class="form-horizontal mt10 row">
-              <div class="form-group col-sm-6 row">
-                <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Nhiệt đô
-                    (độ C):</b></span>
-                <div class="col-sm-8 col-xs-6">
-                  <input type="text" class="form-control" id="temperature" name="temperature" readonly />
-                </div>
-              </div>
               <div class="form-group col-sm-6 row">
                 <span class="control-label col-sm-4 col-xs-6" style="text-align: left">
                   <b class="text-black">Ngày rút điện:</b>
@@ -111,31 +109,26 @@
                     <span class="glyphicon glyphicon-calendar"></span>
                   </span>
                 </div>
-
               </div>
 
-            </div>
-            <div class="form-horizontal mt10 row">
-              <div class="form-group col-sm-6 row"></div>
               <div class="form-group col-sm-6 row">
-                <span class="control-label col-sm-4 col-xs-6" style="text-align: left">
-                  <button id="saveShipmentDetailBtn" onclick="extendPowerDrawDate()" class="btn btn-sm btn-success"><i
-                    class="fa fa-clock-o text-primary"></i>Gia hạn</button>
-                </span>
-                <span class="input-group date col-sm-8 col-xs-6" id="datetimepicker2">
-                  <input type="text" class="form-control" name="extendPowerDrawDate" id="extendPowerDrawDate"/>
+                
+                <span class="input-group date col-sm-8 col-xs-6" id="datetimepicker2" style="float: right;">
+                  <input type="text" class="form-control" name="extendPowerDrawDate" id="extendPowerDrawDate" />
                   <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                   </span>
+                </span>
+
+                <span class="control-label col-sm-4 col-xs-6" style="padding: 0;">
+                  <button id="saveShipmentDetailBtn" onclick="extendPowerDrawDate()" class="btn btn-success"><i
+                      class="fa fa-clock-o text-primary"></i>Gia hạn</button>
                 </span>
               </div>
 
             </div>
             <div class="form-horizontal mt10 row" style>
-
-              <div class="form-group col-sm-6 row">
-              </div>
-              <div class="form-group col-sm-6 row">
+              <div class="form-group col-sm-12 row">
                 <div class="datagrid-toolbar">
                   <table cellspacing="0" cellpadding="0">
                     <tr>
@@ -382,24 +375,6 @@
       var oversizeLeft = shipmentDetail.oversizeLeft;
       var oversizeFront = shipmentDetail.oversizeFront;
       var oversizeBack = shipmentDetail.oversizeBack;
-      // $("#tab-1").prop('disabled', true); // disabled check cont lạnh
-      // $("#tab-2").prop('disabled', true); // disabled check cont quá khổ
-      // $("#tab-3").prop('disabled', true); // disabled check cont nguy hiểm  
-
-      // if (dangerous || dangerousUNNO || dangerousIMO) {
-
-      // 	$("#tab-3").prop('disabled', false); //  check cont nguy hiểm
-      // 	$("#tab-3").prop('checked', true); // disabled check cont nguy hiểm 
-      // }
-      // if (cont == 'R') {// nếu cont lạnh thì show table
-      // 	$("#tab-1").prop('disabled', false); // checked vào cont lạnh
-      // 	$("#tab-1").prop('checked', true); // disabled check cont lạnh
-      // }
-      // if (oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack) {// nếu cont quá khổ thì show 
-      // 	$("#tab-2").prop('disabled', false); // checked vào cont qúa khổ
-      // 	// $("#tab-2").prop('checked', true); // disabled check cont quá khổ
-      // }
-
     });
 
   </script>

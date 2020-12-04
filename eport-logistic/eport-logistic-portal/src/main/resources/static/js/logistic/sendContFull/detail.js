@@ -37,8 +37,7 @@ $(document).ready(function () {
  */
 
 function initTabs() {
-  console.log('sssssssssssss', shipmentDetail.sztp);
-  var keySize =  shipmentDetail.sztp.substring(2, 3);
+  var keySize = shipmentDetail.sztp.substring(2, 3);
   if (keySize == 'R') {// nếu cont lạnh thì show table
     $(".tab-label-2").css("display", 'none');
     $(".tab-label-3").css("display", 'none');
@@ -361,25 +360,16 @@ function initSelect(idSelect, data, valueChecked) {
  * @description handle click submit form-detail-add
  */
 function submitHandler() {
+
   var data = $("#form-detail-add").serializeArray();
   data = covertSerializeArrayToObject(data);;
   data = {
     ...data,
     daySetupTemperature: $("#datetimepicker1").datetimepicker('getDate').getTime(),
   };
+  parent.submitDataFromDetailModal(data);
+  onCloseModel();
 
-
-  if ($.validate.form()) {
-    console.log('soooo');
-    parent.submitDataFromDetailModal(data);
-    onCloseModel();
-  }
-  // }
-  //  else {
-  //   $.modal.alertWarning(
-  //     "Không thể thay đổi thông tin. Container đang được yêu cầu xét duyệt cont đặc biệt."
-  //   );
-  // }
 }
 
 function formatDateToSendServer(data) {

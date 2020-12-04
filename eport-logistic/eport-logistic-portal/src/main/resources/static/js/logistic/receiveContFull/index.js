@@ -28,10 +28,6 @@ const DANGEROUS_STATUS = {
   NOT: "F", // không phải là cont danger
 };
 
-/*public static final String CONT_SPECIAL_STATUS_INIT = "I";// Lưu khai báo 
-public static final String CONT_SPECIAL_STATUS_REQ = "R";// chờ xác nhận  
-public static final String CONT_SPECIAL_STATUS_YES = "Y";// đã xac nhận 
-public static final String CONT_SPECIAL_STATUS_CANCEL = "C";// từ chối xác nhận;*/
 const CONT_SPECIAL_STATUS = {
   INIT: "I", // cont đã được lưu
   REQ: "R", // cont đã được yêu cầu xác nhận
@@ -40,13 +36,8 @@ const CONT_SPECIAL_STATUS = {
 };
 
 const CONT_SZTP = {
-		  DANGER: "Dangerous", // cont nguy hiểm  
-		};
-
-
-
-
-
+  DANGER: "Dangerous", // cont nguy hiểm  
+};
 
 var containerRemarkArr = []; // array container remark get from catos mapping with row in handsontable by index of element in array
 var locations = [];
@@ -206,11 +197,6 @@ $(document).ready(function () {
     }
   });
 
-  // let now = new Date();
-  // now = new Date(now.getFullYear(), now.getMonth(), 1);
-  // let nowStr = ("0" + now.getDate()).slice(-2) + "/" + ("0" + (now.getMonth() + 1)).slice(-2) + "/" + now.getFullYear();
-  // $('#fromDate').datebox('setValue', nowStr);
-  // shipmentSearch.params.fromDate = dateToString(now);
 
   $('#toDate').datebox({
     onSelect: function (date) {
@@ -542,7 +528,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     let content = '<div>';
     content += getConfigIconSztp(row);
     content += getRequestConfigIcon(row);
-     
+
     if (sourceData[row].loadingPort.substring(0, 2) != 'VN') {
       content += customs;
     }
@@ -557,7 +543,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
   }
   return td;
 }
- 
+
 function getRequestConfigIcon(row) {
   const statusResult = getStatusContFollowIndex(row);
 
@@ -575,51 +561,44 @@ function getRequestConfigIcon(row) {
 }
 
 function getConfigIconSztp(row) {
-	  const sztpResult = getIconContFollowIndex(row);
+  const sztpResult = getIconContFollowIndex(row);
 
-	  if (sztpResult == null) {
-	    return "";
-	  }  if (sztpResult == CONT_SZTP.DANGER) {
-	    return '<i id="verify" class="fa fa-exclamation-triangle" title="Là cont nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
-	  }
-	 /* if (sztpResult == CONT_SZTP.COOL) {
-		    return '<i id="verify" class="fa fa-thermometer-empty" title="Là cont lạnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
-	  }
-	   if (sztpResult == CONT_SZTP.OVERSIZE) {
-		    return '<i id="verify" class="fa fa-caret-square-o-down" title="Là cont quá khổ" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
-	  }*/
-	}
+  if (sztpResult == null) {
+    return "";
+  } if (sztpResult == CONT_SZTP.DANGER) {
+    return '<i id="verify" class="fa fa-exclamation-triangle" title="Là cont nguy hiểm" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
+  }
+  /* if (sztpResult == CONT_SZTP.COOL) {
+       return '<i id="verify" class="fa fa-thermometer-empty" title="Là cont lạnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
+   }
+    if (sztpResult == CONT_SZTP.OVERSIZE) {
+       return '<i id="verify" class="fa fa-caret-square-o-down" title="Là cont quá khổ" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: red"></i>';
+   }*/
+}
 
-function getIconContFollowIndex(index) {  
-	//console.log(sourceData[index].dangerous);
-	
-	if( 
-	    !sourceData[index].dangerous 
-	    ){
-		return null;
-	}
-	 if(sourceData[index].dangerous != null){ 
-		return CONT_SZTP.DANGER;
-	} 
-	 /*if(sourceData[index].sztp.substring(2,3) == "R"){
-		return CONT_SZTP.COOL;
-	} 
-	 if(sourceData[index].oversize != null){
-		return CONT_SZTP.OVERSIZE;
-	} */
-	
-	
+function getIconContFollowIndex(index) {
+  if (
+    !sourceData[index].dangerous
+  ) {
+    return null;
+  }
+  if (sourceData[index].dangerous != null) {
+    return CONT_SZTP.DANGER;
+  }
+  /*if(sourceData[index].sztp.substring(2,3) == "R"){
+   return CONT_SZTP.COOL;
+ } 
+  if(sourceData[index].oversize != null){
+   return CONT_SZTP.OVERSIZE;
+ } */
+
+
 }
 
 
 
 
-function getStatusContFollowIndex(index) { 
- /* console.log("Status");
-  console.log("1"+ sourceData[index].oversize);// I
-  console.log("2"+ sourceData[index].dangerous);// null
-  console.log("3"+ sourceData[index].frozenStatus);// R
-*/
+function getStatusContFollowIndex(index) {
   if (
     !sourceData[index].oversize &&
     //!sourceData[index].dangerous &&
@@ -1380,7 +1359,7 @@ function isDisableBtnRequestConfirm() {
       if (
         !statusResult ||
         statusResult == CONT_SPECIAL_STATUS.REQ ||
-        statusResult == CONT_SPECIAL_STATUS.YES 
+        statusResult == CONT_SPECIAL_STATUS.YES
       ) {
         result = true;
       }
@@ -2156,7 +2135,6 @@ function onDisconnected() {
 }
 
 function onError(error) {
-  //console.error('Could not connect to WebSocket server. Please refresh this page to try again!');
   setTimeout(() => {
     hideProgress();
     $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
