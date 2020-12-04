@@ -71,6 +71,4 @@ public class Constants
 	public static final String SEND_CONT_FULL_CUSTOM_SUPPORT = "Thông Quan Hạ Hàng";
 
 	public static final String LOADING_CARGO_SUPPORT = "Đóng Hàng Tại Cảng";
-	
-	public static final String UNLOADING_CARGO_SUPPORT = "Rút Hàng Tại Cảng";
 }

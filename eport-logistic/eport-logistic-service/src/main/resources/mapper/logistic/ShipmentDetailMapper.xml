@@ -299,7 +299,6 @@
 			<if test="dangerous != null and dangerous != ''">and dangerous = #{dangerous}</if>
 			<if test="frozenStatus != null and frozenStatus != ''">and frozen_status = #{frozenStatus}</if>
 			<if test="oversize != null and oversize != ''">and oversize = #{oversize}</if>
-			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">and date_receipt_status = #{dateReceiptStatus}</if>
 		</where>
 
 	</select>

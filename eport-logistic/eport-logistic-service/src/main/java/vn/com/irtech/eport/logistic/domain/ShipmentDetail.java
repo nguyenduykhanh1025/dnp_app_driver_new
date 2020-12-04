@@ -1,14 +1,12 @@
 package vn.com.irtech.eport.logistic.domain;
 
-import java.util.Date;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
+
+import java.util.Date;
 
 /**
  * Shipment Details Object shipment_detail
@@ -533,6 +531,9 @@ public class ShipmentDetail extends BaseEntity {
 	private int humidity;
 
 	private int ventilation;
+	
+
+	
 
 	public Long getId() {
 		return id;
@@ -1030,11 +1031,11 @@ public class ShipmentDetail extends BaseEntity {
 		this.bay = bay;
 	}
 
-	public int getRow() {
+	public int getRoww() {
 		return roww;
 	}
 
-	public void setRow(int roww) {
+	public void setRoww(int roww) {
 		this.roww = roww;
 	}
 
@@ -1350,13 +1351,20 @@ public class ShipmentDetail extends BaseEntity {
 		this.frozenStatus = frozenStatus;
 	}
 
-	  
 	public Date getPowerDrawDate() {
 		return powerDrawDate;
 	}
 
 	public void setPowerDrawDate(Date powerDrawDate) {
 		this.powerDrawDate = powerDrawDate;
+	}
+
+	public String getPowerDrawDateStatus() {
+		return powerDrawDateStatus;
+	}
+
+	public void setPowerDrawDateStatus(String powerDrawDateStatus) {
+		this.powerDrawDateStatus = powerDrawDateStatus;
 	}
 
 	public String getDateReceiptStatus() {
@@ -1382,7 +1390,7 @@ public class ShipmentDetail extends BaseEntity {
 	public void setSpecialService(Integer specialService) {
 		this.specialService = specialService;
 	}
-	
+
 	public int getHumidity() {
 		return humidity;
 	}
@@ -1399,13 +1407,8 @@ public class ShipmentDetail extends BaseEntity {
 		this.ventilation = ventilation;
 	}
 
-	
-	public String getPowerDrawDateStatus() {
-		return powerDrawDateStatus;
-	}
-
-	public void setPowerDrawDateStatus(String powerDrawDateStatus) {
-		this.powerDrawDateStatus = powerDrawDateStatus;
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	@Override
@@ -1432,7 +1435,7 @@ public class ShipmentDetail extends BaseEntity {
 				.append("status", getStatus()).append("orderNo", getOrderNo()).append("remark", getRemark())
 				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
 				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("block", getBlock())
-				.append("bay", getBay()).append("roww", getRow()).append("tier", getTier())
+				.append("bay", getBay()).append("roww", getRoww()).append("tier", getTier()) 
 				.append("driverAmount", getDriverAmount()).append("payType", getPayType())
 				.append("assignNumber", getAssignNumber()).append("serviceType", getServiceType())
 				.append("year", getYear()).append("vslAndVoy", getVslAndVoy()).append("invoiceNo", getInvoiceNo())

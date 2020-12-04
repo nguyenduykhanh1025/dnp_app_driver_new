@@ -509,41 +509,24 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
                 break;
         }
-
-        // Date receipt status
-        let dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Chưa đăng ký ngày đóng hàng" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
-        switch (sourceData[row].dateReceiptStatus) {
-            case 'N':
-                dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Có thể đăng ký ngày đóng hàng" aria-hidden="true" style="margin-left: 8px; color: #3498db"></i>';
-                break;
-            case 'P':
-                dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng đang được xét duyệt" aria-hidden="true" style="margin-left: 8px; color: #f8ac59"></i>';
-                break;
-            case 'S':
-                dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng đã được chấp nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394"></i>';
-                break;
+        // Payment status
+        let payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
+        switch (sourceData[row].paymentStatus) {
             case 'E':
-                dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng bị từ chối" aria-hidden="true" style="margin-left: 8px; color: #ed5565"></i>';
+                payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Lỗi Thanh Toán" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
                 break;
-        }
-
-        // released status
-        let released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
-        switch (sourceData[row].finishStatus) {
-            case "Y":
-                released =
-                    '<i id="finish" class="fa fa-ship easyui-tooltip" title="Đã Giao Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+            case 'Y':
+                payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
                 break;
-            case "N":
-                if (sourceData[row].paymentStatus == "Y") {
-                    released =
-                        '<i id="finish" class="fa fa-ship easyui-tooltip" title="Có Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+            case 'N':
+                if (value > 2) {
+                    payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
                 }
                 break;
         }
 
         // Return the content
-        let content = '<div>' + contSupply + process + dateReceipt + released + '</div>';
+        let content = '<div>' + contSupply + process + payment + '</div>';
         $(td).html(content);
     }
     return td;
@@ -841,7 +824,7 @@ function configHandson() {
                     return "Ghi Chú";
             }
         },
-        colWidths: [40, 100, 100, 100, 120, 150, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200],
+        colWidths: [40, 100, 100, 100, 150, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200],
         filter: "true",
         columns: [
             {
@@ -862,14 +845,6 @@ function configHandson() {
             {
                 data: "housebilBtn",
                 renderer: houseBillBtnRenderer
-            },
-            {
-                data: "dateReceipt",
-                type: "date",
-                dateFormat: "DD/MM/YYYY",
-                correctFormat: true,
-                defaultDate: new Date(),
-                renderer: dateReceiptRenderer
             },
             {
                 data: "sztp",
@@ -970,7 +945,7 @@ function configHandson() {
                 // Arrow Right
                 case 39:
                     selected = hot.getSelected()[0];
-                    if (selected[3] == 17) {
+                    if (selected[3] == 16) {
                         e.stopImmediatePropagation();
                     }
                     break
@@ -1040,7 +1015,7 @@ function onChange(changes, source) {
         } else if (change[1] == "containerNo") {
             if (!change[3]) {
                 sztpListDisable[change[0]] = 0;
-                cleanCell(change[0], 5, sizeList);
+                cleanCell(change[0], 3, sizeList);
             } else {
                 $.ajax({
                     url: prefix + "/containerNo/" + change[3] + "/sztp",
@@ -1055,19 +1030,19 @@ function onChange(changes, source) {
                                     }
                                 });
                                 sztpListDisable[change[0]] = 1;
-                                hot.setDataAtCell(change[0], 5, data.sztp);
+                                hot.setDataAtCell(change[0], 3, data.sztp);
                             } else {
                                 sztpListDisable[change[0]] = 0;
-                                cleanCell(change[0], 5, sizeList);
+                                cleanCell(change[0], 3, sizeList);
                             }
                         } else {
                             sztpListDisable[change[0]] = 0;
-                            cleanCell(change[0], 5, sizeList);
+                            cleanCell(change[0], 3, sizeList);
                         }
                     },
                     error: function (err) {
                         sztpListDisable[change[0]] = 0;
-                        cleanCell(change[0], 5, sizeList);
+                        cleanCell(change[0], 3, sizeList);
                     }
                 });
             }
@@ -1290,7 +1265,6 @@ function getDataSelectedFromTable(isValidate) {
         shipmentDetail.processStatus = object["processStatus"];
         shipmentDetail.paymentStatus = object["paymentStatus"];
         shipmentDetail.userVerifyStatus = object["userVerifyStatus"];
-        shipmentDetail.dateReceiptStatus = object["dateReceiptStatus"];
         shipmentDetail.status = object["status"];
         shipmentDetail.eta = object["eta"];
         shipmentDetail.shipmentId = shipmentSelected.id;
