@@ -59,6 +59,7 @@ import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.dto.PartnerInfoDto;
 
 @Controller
@@ -206,9 +207,20 @@ public class LogisticCommonController extends LogisticBaseController {
 		return ajaxResult;
 	}
 
-	@GetMapping("/source/consignee")
+	@GetMapping("/source/specialService")
 	@ResponseBody
 	public AjaxResult getConsigneeListWithoutTaxCode() {
+		AjaxResult ajaxResult = success();
+		List<String> specialService = dictDataService.getListTag("special.service");
+		List<SysDictData> sysDictDatas = dictDataService.getType("special.service");
+		ajaxResult.put("specialService", specialService);
+		ajaxResult.put("specialServiceDictData", sysDictDatas);
+		return ajaxResult;
+	}
+
+	@GetMapping("/source/consignee")
+	@ResponseBody
+	public AjaxResult getSpecialService() {
 		AjaxResult ajaxResult = success();
 		List<String> listConsignee = shipmentDetailService.getConsigneeListWithoutTaxCode();
 		ajaxResult.put("consigneeList", listConsignee);

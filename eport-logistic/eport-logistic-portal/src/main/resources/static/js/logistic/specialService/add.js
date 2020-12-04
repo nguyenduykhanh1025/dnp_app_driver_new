@@ -1,18 +1,14 @@
-var prefix = ctx + "logistic/send-cont-full";
+var prefix = ctx + "logistic/special-service";
 var shipmentFileIds = [];
-var bookingAttach = false;
 
 $(document).ready(function () {
-    $('#dropzone').hide();
 
-    // Check opr code need to attach booking
-    $('#opeCode').change(function () {
-        if (oprListBookingCheck.includes($('#opeCode option:selected').val().split(":")[0].replace(":",""))) {
-            $('#dropzone').show();
-            bookingAttach = true;
-        } else {
-            $('#dropzone').hide();
-            bookingAttach = false;
+    $('input[type=radio][name=ixCd]').change(function() {
+        if (this.value == '0') {
+            $('#blNoLabel').html(`<span style="color: red;">*</span>B/L No`);
+        }
+        else if (this.value == '1') {
+            $('#blNoLabel').html(`<span style="color: red;">*</span>Booking No`);
         }
     });
 
@@ -58,49 +54,17 @@ $("#form-add-shipment").validate({
 
 async function submitHandler() {
     if ($.validate.form()) {
-        if ($("#opeCode option:selected").text() == 'Chọn OPR') {
-            $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
-        } else if (shipmentFileIds.length > 0 || !bookingAttach) {
-            let res = await getBookingNoUnique();
-            if (res.code == 0) {
-                save(prefix + "/shipment");
-            }
-        } else {
-            $.modal.alertError("Hãy đính kèm tệp booking.");
-        }
-    }
-}
-
-function getBookingNoUnique() {
-    return $.ajax({
-        url: prefix + "/unique/booking-no",
-        method: "post",
-        contentType: "application/json",
-        data: JSON.stringify({ "bookingNo": $("#bookingNo").val() }),
-    })
-}
-
-function checkBookingNoUnique() {
-    if ($("#bookingNo").val() != null && $("#bookingNo").val() != '') {
-        $.ajax({
-            url: prefix + "/unique/booking-no",
-            method: "post",
-            contentType: "application/json",
-            data: JSON.stringify({ "bookingNo": $("#bookingNo").val() }),
-        }).done(function (result) {
-            if (result.code == 0) {
-                $("#bookingNo").removeClass("error-input");
-            } else {
-                $.modal.alertError(result.msg);
-                $("#bookingNo").addClass("error-input");
-            }
-        });
+        save(prefix + "/shipment");
     }
 }
 
 function save(url) {
     let shipment = new Object();
-    shipment.bookingNo = $('#bookingNo').val();
+    if ($('input[name="ixCd"]:checked').val() == '0') {
+        shipment.blNo = $('#blBookingNo').val();
+    } else {
+        shipment.bookingNo = $('#blBookingNo').val();
+    }
     shipment.opeCode = $('#opeCode').val().split(": ")[0].replace(":", "");
     shipment.containerAmount = $('#containerAmount').val();
     shipment.remark = $('#remark').val();

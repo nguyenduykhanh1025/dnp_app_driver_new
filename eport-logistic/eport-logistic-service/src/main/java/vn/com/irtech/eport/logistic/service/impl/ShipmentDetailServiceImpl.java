@@ -285,7 +285,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 					if (positionArr.length == 4) {
 						shipmentDetail.setBlock(positionArr[0]);
 						shipmentDetail.setBay(positionArr[1]);
-						shipmentDetail.setRow(Integer.parseInt(positionArr[2]));
+						shipmentDetail.setRoww(Integer.parseInt(positionArr[2]));
 						shipmentDetail.setTier(Integer.parseInt(positionArr[3]));
 						containerInfoDtos.remove(i);
 						i--;
@@ -301,7 +301,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 				ShipmentDetail shipmentDetail2 = new ShipmentDetail();
 				shipmentDetail2.setBlock(positionArr[0]);
 				shipmentDetail2.setBay(positionArr[1]);
-				shipmentDetail2.setRow(Integer.parseInt(positionArr[2]));
+				shipmentDetail2.setRoww(Integer.parseInt(positionArr[2]));
 				shipmentDetail2.setTier(Integer.parseInt(positionArr[3]));
 				containerInfoDtos.remove(i);
 				i--;
@@ -316,16 +316,16 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
 		// Set the max value of each bay into maxRowList
 		String currentBay = shipmentDetails.get(0).getBay();
-		Integer maxRow = shipmentDetails.get(0).getRow();
+		Integer maxRow = shipmentDetails.get(0).getRoww();
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			if (currentBay.equals(shipmentDetail.getBay())) {
-				if (maxRow < shipmentDetail.getRow()) {
-					maxRow = shipmentDetail.getRow();
+				if (maxRow < shipmentDetail.getRoww()) {
+					maxRow = shipmentDetail.getRoww();
 				}
 			} else {
 				maxRowList.add(maxRow);
 				currentBay = shipmentDetail.getBay();
-				maxRow = shipmentDetail.getRow();
+				maxRow = shipmentDetail.getRoww();
 			}
 		}
 		maxRowList.add(maxRow);
@@ -338,12 +338,12 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		currentBay = shipmentDetails.get(0).getBay();
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			if (currentBay.equals(shipmentDetail.getBay())) {
-				shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
+				shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRoww() - 1] = shipmentDetail;
 			} else {
 				bayList.add(shipmentDetailMatrix);
 				currentBay = shipmentDetail.getBay();
 				shipmentDetailMatrix = new ShipmentDetail[5][maxRowList.get(++i)];
-				shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
+				shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRoww() - 1] = shipmentDetail;
 			}
 		}
 		bayList.add(shipmentDetailMatrix);
@@ -367,7 +367,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 						if (positionArr.length == 4) {
 							shipmentDetail.setBlock(positionArr[0]);
 							shipmentDetail.setBay(positionArr[1]);
-							shipmentDetail.setRow(Integer.parseInt(positionArr[2]));
+							shipmentDetail.setRoww(Integer.parseInt(positionArr[2]));
 							shipmentDetail.setTier(Integer.parseInt(positionArr[3]));
 							containerInfoDtos.remove(i);
 							i--;
@@ -383,7 +383,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 					ShipmentDetail shipmentDetail2 = new ShipmentDetail();
 					shipmentDetail2.setBlock(positionArr[0]);
 					shipmentDetail2.setBay(positionArr[1]);
-					shipmentDetail2.setRow(Integer.parseInt(positionArr[2]));
+					shipmentDetail2.setRoww(Integer.parseInt(positionArr[2]));
 					shipmentDetail2.setTier(Integer.parseInt(positionArr[3]));
 					containerInfoDtos.remove(i);
 					i--;
@@ -398,16 +398,16 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
 			// Set the max value of each bay into maxRowList
 			String currentBay = shipmentDetails.get(0).getBay();
-			Integer maxRow = shipmentDetails.get(0).getRow();
+			Integer maxRow = shipmentDetails.get(0).getRoww();
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				if (currentBay.equals(shipmentDetail.getBay())) {
-					if (maxRow < shipmentDetail.getRow()) {
-						maxRow = shipmentDetail.getRow();
+					if (maxRow < shipmentDetail.getRoww()) {
+						maxRow = shipmentDetail.getRoww();
 					}
 				} else {
 					maxRowList.add(maxRow);
 					currentBay = shipmentDetail.getBay();
-					maxRow = shipmentDetail.getRow();
+					maxRow = shipmentDetail.getRoww();
 				}
 			}
 			maxRowList.add(maxRow);
@@ -420,12 +420,12 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			currentBay = shipmentDetails.get(0).getBay();
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				if (currentBay.equals(shipmentDetail.getBay())) {
-					shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
+					shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRoww() - 1] = shipmentDetail;
 				} else {
 					bayList.add(shipmentDetailMatrix);
 					currentBay = shipmentDetail.getBay();
 					shipmentDetailMatrix = new ShipmentDetail[5][maxRowList.get(++i)];
-					shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
+					shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRoww() - 1] = shipmentDetail;
 				}
 			}
 			bayList.add(shipmentDetailMatrix);
@@ -1377,7 +1377,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][12];
 
 		for (ShipmentDetail shipmentDt : shipmentDetails) {
-			shipmentDetailMatrix[shipmentDt.getTier() - 1][shipmentDt.getRow() - 1] = shipmentDt;
+			shipmentDetailMatrix[shipmentDt.getTier() - 1][shipmentDt.getRoww() - 1] = shipmentDt;
 		}
 		return shipmentDetailMatrix;
 	}
@@ -1563,12 +1563,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		processOrder.setPod(detail.getDischargePort());
 		processOrder.setOpr(detail.getOpeCode());
 		processOrder.setPol("VNDAD");
-		processOrder.setFe("E");
-		//
 		processOrder.setRunnable(false);
 		processOrder.setStatus(1); // on progress
 		processOrder.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
-		//
 		processOrderService.insertProcessOrder(processOrder);
 		String payer = taxCode;
 		String payerName = "";
@@ -1588,95 +1585,25 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			} else {
 				shipmentDetail.setPayType("Cash");
 			}
-			//
 			shipmentDetail.setUserVerifyStatus("Y");
 			shipmentDetail.setProcessStatus("W");
-			//
 			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 		}
 		return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
 	}
 
 	/**
-	 * Make order unloading cargo
+	 * Make order special service
 	 * 
 	 * @param shipmentDetails
 	 * @param shipment
 	 * @param taxCode
 	 * @param creditFlag
-	 * @return List<ServiceSendFullRobotReq>
+	 * @return
 	 */
 	@Override
-	public List<ServiceSendFullRobotReq> makeOrderUnloadingCargo(List<ShipmentDetail> shipmentDetails,
-			Shipment shipment, String taxCode, boolean creditFlag) {
-		if (shipmentDetails.size() > 0) {
-			List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
-			Collections.sort(shipmentDetails, new SztpComparator());
-			String sztp = shipmentDetails.get(0).getSztp();
-			List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				if (!sztp.equals(shipmentDetail.getSztp())) {
-					serviceRobotReq.add(groupShipmentDetailByUnloadingCargoOrder(shipmentDetails.get(0).getId(),
-							shipmentOrderList, shipment, taxCode, creditFlag, false));
-					sztp = shipmentDetail.getSztp();
-					shipmentOrderList = new ArrayList<>();
-				}
-				shipmentOrderList.add(shipmentDetail);
-			}
-			serviceRobotReq.add(groupShipmentDetailByUnloadingCargoOrder(shipmentDetails.get(0).getId(),
-					shipmentOrderList, shipment, taxCode, creditFlag, false));
-			return serviceRobotReq;
-		}
-		return null;
-	}
-
-	@Transactional
-	private ServiceSendFullRobotReq groupShipmentDetailByUnloadingCargoOrder(Long registerNo,
-			List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag,
-			Boolean orderByBl) {
-		ShipmentDetail detail = shipmentDetails.get(0);
-		ProcessOrder processOrder = new ProcessOrder();
-		if (orderByBl) {
-			processOrder.setModee("Pickup Order By BL");
-		} else {
-			processOrder.setModee("Truck Out");
-		}
-		processOrder.setConsignee(detail.getConsignee());
-		processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
-		try {
-			String trucker = getTruckerFromRegNoCatos(taxCode);
-			processOrder.setTruckCo(trucker + " : " + getTruckCoName(trucker));
-		} catch (Exception e) {
-			logger.error("Error when get company name with tax code: " + e);
-		}
-		processOrder.setTaxCode(taxCode);
-		if (creditFlag) {
-			processOrder.setPayType("Credit");
-		} else {
-			processOrder.setPayType("Cash");
-		}
-		ProcessOrder tempProcessOrder = getYearBeforeAfter(detail.getVslNm(), detail.getVoyNo());
-		if (tempProcessOrder != null) {
-			processOrder.setYear(tempProcessOrder.getYear());
-			processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
-		} else {
-			processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
-			processOrder.setBeforeAfter("Before");
-		}
-		processOrder.setTrucker(getTruckerFromRegNoCatos(taxCode));
-		processOrder.setBlNo(detail.getBlNo());
-		processOrder.setPickupDate(detail.getExpiredDem());
-		processOrder.setVessel(detail.getVslNm());
-		processOrder.setVoyage(detail.getVoyNo());
-		processOrder.setSztp(detail.getSztp());
-		processOrder.setContNumber(shipmentDetails.size());
-		processOrder.setShipmentId(shipment.getId());
-
-		processOrder.setRunnable(false);
-		processOrder.setStatus(1); // on progress
-		processOrder.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
-
-		processOrderService.insertProcessOrder(processOrder);
+	public void makeOrderSpecialService(List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode,
+			boolean creditFlag) {
 		String payer = taxCode;
 		String payerName = "";
 		try {
@@ -1686,8 +1613,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			logger.error("Error when get payer name for " + payer + ": " + e);
 		}
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			shipmentDetail.setProcessOrderId(processOrder.getId());
-			shipmentDetail.setRegisterNo(registerNo.toString());
+			shipmentDetail.setUserVerifyStatus("Y");
 			shipmentDetail.setPayer(payer);
 			shipmentDetail.setPayerName(payerName);
 			if (creditFlag) {
@@ -1696,13 +1622,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 				shipmentDetail.setPayType("Cash");
 			}
 
-			//
-			shipmentDetail.setUserVerifyStatus("Y");
-			shipmentDetail.setProcessStatus("W");
-			//
-
 			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 		}
-		return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+	}
+
+	@Override
+	public List<ServiceSendFullRobotReq> makeOrderUnloadingCargo(List<ShipmentDetail> shipmentDetails,
+			Shipment shipment, String taxCode, boolean creditFlag) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

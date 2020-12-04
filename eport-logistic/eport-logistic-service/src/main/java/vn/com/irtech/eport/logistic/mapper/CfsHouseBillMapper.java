@@ -9,60 +9,53 @@ import vn.com.irtech.eport.logistic.domain.CfsHouseBill;
  * @author Trong Hieu
  * @date 2020-11-23
  */
-public interface CfsHouseBillMapper {
-	/**
-	 * Get CFS House Bill
-	 * 
-	 * @param id CFS House BillID
-	 * @return CFS House Bill
-	 */
-	public CfsHouseBill selectCfsHouseBillById(Long id);
+public interface CfsHouseBillMapper 
+{
+    /**
+     * Get CFS House Bill
+     * 
+     * @param id CFS House BillID
+     * @return CFS House Bill
+     */
+    public CfsHouseBill selectCfsHouseBillById(Long id);
 
-	/**
-	 * Get CFS House Bill List
-	 * 
-	 * @param cfsHouseBill CFS House Bill
-	 * @return CFS House Bill List
-	 */
-	public List<CfsHouseBill> selectCfsHouseBillList(CfsHouseBill cfsHouseBill);
+    /**
+     * Get CFS House Bill List
+     * 
+     * @param cfsHouseBill CFS House Bill
+     * @return CFS House Bill List
+     */
+    public List<CfsHouseBill> selectCfsHouseBillList(CfsHouseBill cfsHouseBill);
 
-	/**
-	 * Get CFS House Bill follow id shipmentDetail
-	 * 
-	 * @param idShipmentDetail
-	 * @return result
-	 */
-	public List<CfsHouseBill> selectCfsHouseBillByIdShipmentDetail(Long idShipmentDetail);
+    /**
+     * Add CFS House Bill
+     * 
+     * @param cfsHouseBill CFS House Bill
+     * @return Result
+     */
+    public int insertCfsHouseBill(CfsHouseBill cfsHouseBill);
 
-	/**
-	 * Add CFS House Bill
-	 * 
-	 * @param cfsHouseBill CFS House Bill
-	 * @return Result
-	 */
-	public int insertCfsHouseBill(CfsHouseBill cfsHouseBill);
+    /**
+     * Update CFS House Bill
+     * 
+     * @param cfsHouseBill CFS House Bill
+     * @return Result
+     */
+    public int updateCfsHouseBill(CfsHouseBill cfsHouseBill);
 
-	/**
-	 * Update CFS House Bill
-	 * 
-	 * @param cfsHouseBill CFS House Bill
-	 * @return Result
-	 */
-	public int updateCfsHouseBill(CfsHouseBill cfsHouseBill);
+    /**
+     * Delete CFS House Bill
+     * 
+     * @param id CFS House BillID
+     * @return result
+     */
+    public int deleteCfsHouseBillById(Long id);
 
-	/**
-	 * Delete CFS House Bill
-	 * 
-	 * @param id CFS House BillID
-	 * @return result
-	 */
-	public int deleteCfsHouseBillById(Long id);
-
-	/**
-	 * Batch Delete CFS House Bill
-	 * 
-	 * @param ids IDs
-	 * @return result
-	 */
-	public int deleteCfsHouseBillByIds(String[] ids);
+    /**
+     * Batch Delete CFS House Bill
+     * 
+     * @param ids IDs
+     * @return result
+     */
+    public int deleteCfsHouseBillByIds(String[] ids);
 }
