@@ -106,7 +106,11 @@ public class LogisticSendContFullOversizeSupportRequest extends AdminBaseControl
 			params = new HashMap<>();
 		}
 		shipment.setParams(params);
-		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
+		//List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
+		
+		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilterReceive(shipment);
+		
+		
 		ajaxResult.put("shipments", getDataTable(shipments));
 		return ajaxResult;
 	}
