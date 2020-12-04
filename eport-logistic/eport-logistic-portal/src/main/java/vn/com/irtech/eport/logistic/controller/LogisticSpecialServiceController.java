@@ -113,9 +113,6 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 	@Autowired
 	private ConfigService configService;
 
-	@Autowired
-	private DictService dictDataService;
-
 	@GetMapping()
 	public String sendContFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
 		if (sId != null) {
@@ -724,54 +721,56 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 			return error("Không tìm thấy thông tin chi tiết lô đã chọn.");
 		}
 
-		// Container no string separated by comma
-		String containerNos = "";
-		for (int i = 0; i < shipmentDetails.size(); i++) {
-			containerNos += shipmentDetails.get(i).getContainerNo() + ",";
-		}
-
-		// Validate container has job order no
-		containerNos = containerNos.substring(0, containerNos.length() - 1);
-		Map<String, ContainerInfoDto> ctnrMap = getContainerInfoFromCatos(containerNos);
-		String containerHasOrderdEmpty = "";
-		String containerHasOrderdFull = "";
-		ContainerInfoDto ctnrInfoF = null;
-		ContainerInfoDto ctnrInfoE = null;
-		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			// Get ctnr info by container no in catos
-			// Get container info (F or E) by container no + FE(F or E)
-			ctnrInfoF = ctnrMap.get(shipmentDetail.getContainerNo() + "F");
-			if (ctnrInfoF != null) {
-				// Container has job order no 2 => has order
-				if (StringUtils.isNotEmpty(ctnrInfoF.getJobOdrNo())) {
-					containerHasOrderdFull += shipmentDetail.getContainerNo() + ",";
-				}
-			}
-			// Get container info (F or E) by container no + FE(F or E)
-			ctnrInfoE = ctnrMap.get(shipmentDetail.getContainerNo() + "E");
-			if (ctnrInfoE != null) {
-				// Container has job order no 2 => has order
-				if (StringUtils.isNotEmpty(ctnrInfoE.getJobOdrNo())
-						&& !EportConstants.CATOS_CONT_STACKING.equalsIgnoreCase(ctnrInfoE.getCntrState())
-						&& !EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(ctnrInfoE.getCntrState())) {
-					containerHasOrderdEmpty += shipmentDetail.getContainerNo() + ",";
-				}
-			}
-		}
-
-		String errorMsg = "";
-		if (StringUtils.isNotEmpty(containerHasOrderdEmpty)) {
-			errorMsg += "Các container: " + containerHasOrderdEmpty.substring(0, containerHasOrderdEmpty.length() - 1)
-					+ " đã có lệnh hạ rỗng.<br>";
-		}
-		if (StringUtils.isNotEmpty(containerHasOrderdFull)) {
-			errorMsg += "Các container: " + containerHasOrderdFull.substring(0, containerHasOrderdFull.length() - 1)
-					+ " đã có lệnh hạ hàng.";
-		}
-
-		if (StringUtils.isNotEmpty(errorMsg)) {
-			return error(errorMsg);
-		}
+//		// Container no string separated by comma
+//		String containerNos = "";
+//		for (int i = 0; i < shipmentDetails.size(); i++) {
+//			if (EportConstants.SPECIAL_SERVICE_DISINFECTION == shipmentDetails.get(i).getSpecialService()) {
+//				containerNos += shipmentDetails.get(i).getContainerNo() + ",";
+//			}
+//		}
+//
+//		// Validate container has job order no
+//		containerNos = containerNos.substring(0, containerNos.length() - 1);
+//		Map<String, ContainerInfoDto> ctnrMap = getContainerInfoFromCatos(containerNos);
+//		String containerHasOrderdEmpty = "";
+//		String containerHasOrderdFull = "";
+//		ContainerInfoDto ctnrInfoF = null;
+//		ContainerInfoDto ctnrInfoE = null;
+//		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+//			// Get ctnr info by container no in catos
+//			// Get container info (F or E) by container no + FE(F or E)
+//			ctnrInfoF = ctnrMap.get(shipmentDetail.getContainerNo() + "F");
+//			if (ctnrInfoF != null) {
+//				// Container has job order no 2 => has order
+//				if (StringUtils.isNotEmpty(ctnrInfoF.getJobOdrNo())) {
+//					containerHasOrderdFull += shipmentDetail.getContainerNo() + ",";
+//				}
+//			}
+//			// Get container info (F or E) by container no + FE(F or E)
+//			ctnrInfoE = ctnrMap.get(shipmentDetail.getContainerNo() + "E");
+//			if (ctnrInfoE != null) {
+//				// Container has job order no 2 => has order
+//				if (StringUtils.isNotEmpty(ctnrInfoE.getJobOdrNo())
+//						&& !EportConstants.CATOS_CONT_STACKING.equalsIgnoreCase(ctnrInfoE.getCntrState())
+//						&& !EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(ctnrInfoE.getCntrState())) {
+//					containerHasOrderdEmpty += shipmentDetail.getContainerNo() + ",";
+//				}
+//			}
+//		}
+//
+//		String errorMsg = "";
+//		if (StringUtils.isNotEmpty(containerHasOrderdEmpty)) {
+//			errorMsg += "Các container: " + containerHasOrderdEmpty.substring(0, containerHasOrderdEmpty.length() - 1)
+//					+ " đã có lệnh hạ rỗng.<br>";
+//		}
+//		if (StringUtils.isNotEmpty(containerHasOrderdFull)) {
+//			errorMsg += "Các container: " + containerHasOrderdFull.substring(0, containerHasOrderdFull.length() - 1)
+//					+ " đã có lệnh hạ hàng.";
+//		}
+//
+//		if (StringUtils.isNotEmpty(errorMsg)) {
+//			return error(errorMsg);
+//		}
 
 		return success();
 	}
@@ -878,7 +877,6 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 		return success();
 	}
 
-	
 	@PostMapping("/file")
 	@ResponseBody
 	public AjaxResult saveFile(MultipartFile file) throws IOException, InvalidExtensionException {

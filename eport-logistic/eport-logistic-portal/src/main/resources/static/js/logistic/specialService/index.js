@@ -515,11 +515,14 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
             case 'E':
                 process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
                 break;
+            case 'W':
+                process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
+                break;
             case 'Y':
                 process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
                 break;
             case 'N':
-                process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+                process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Yêu cầu bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
                 break;
             case 'D':
                 process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
@@ -740,7 +743,7 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
             layer.msg('Trọng lượng (kg) quá lớn (hơn 100 tấn).', { icon: $.modal.icon(modal_status.FAIL), time: 2000, shift: 5 });
             $(td).css("text-color", "red");
         } else if (value < 1000) {
-        	layer.msg('Trọng lượng (kg) quá nhỏ (nhỏ hơn 1 tấn).', { icon: $.modal.icon(modal_status.FAIL), time: 2000, shift: 5 });
+            layer.msg('Trọng lượng (kg) quá nhỏ (nhỏ hơn 1 tấn).', { icon: $.modal.icon(modal_status.FAIL), time: 2000, shift: 5 });
             $(td).css("text-color", "red");
         }
         value = formatMoney(value);
@@ -1190,8 +1193,8 @@ function onChange(changes, source) {
                         url: prefix + "/containerNo",
                         method: "GET",
                         data: {
-                            containerNo : change[3],
-                            shipmentId : shipmentSelected.id
+                            containerNo: change[3],
+                            shipmentId: shipmentSelected.id
                         },
                         success: function (data) {
                             if (data.code == 0) {
@@ -1361,10 +1364,6 @@ function updateLayout() {
             break;
         case 2:
             setLayoutVerifyUserStatus();
-            if (verify) {
-                $("#verifyBtn").prop("disabled", true);
-                $("#deleteBtn").prop("disabled", true);
-            }
             break;
         case 3:
             setLayoutPaymentStatus();
@@ -1551,7 +1550,7 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Vui lòng chọn loại dịch vụ!");
                 errorFlg = true;
                 return false;
-            } 
+            }
         }
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
@@ -1615,7 +1614,7 @@ function getDataFromTable(isValidate) {
         let contTemp = "";
         $.each(contList, function (index, cont) {
             if (cont != "" && cont == contTemp) {
-                $.modal.alertError("Số container "+cont+" bị trùng, vui lòng kiểm tra lại!");
+                $.modal.alertError("Số container " + cont + " bị trùng, vui lòng kiểm tra lại!");
                 errorFlg = true;
                 return false;
             }
@@ -1736,14 +1735,44 @@ function verify() {
 function verifyOtp(shipmentDtIds, taxCode, creditFlag) {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag + "/" + taxCode + "/" + shipmentSelected.id, 600, 350);
+        let errorMsg = "";
+        shipmentDetails.forEach(element => {
+            if (element.processStatus == 'W') {
+                errorMsg = "Quý khách không thể xác nhận do yêu cầu làm lệnh đang được xử lý cho container " + element.containerNo + ".";
+                return false;
+            }
+            if (element.processStatus == 'Y') {
+                errorMsg = "Quý khách không thể xác nhận do container " + element.containerNo + " đã hoàn tất thủ tục làm lệnh.";
+                return false;
+            }
+        });
+        if (errorMsg.length > 0) {
+            $.modal.alertWarning(errorMsg);
+        } else {
+            $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag + "/" + taxCode + "/" + shipmentSelected.id, 600, 350);
+        }
     }
 }
 
 function pay() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Thanh toán", prefix + "/payment/" + processOrderIds, 800, 400);
+        let errorMsg = "";
+        shipmentDetails.forEach(element => {
+            if (element.payType == 'Credit') {
+                errorMsg = "Quý khách không thể thanh toán cho container cho trường hợp trả sau.";
+                return false;
+            }
+            if (element.paymentStatus == "Y") {
+                errorMsg = "Quý khách không thể thanh toán cho container đã được thanh toán.";
+                return false;
+            }
+        });
+        if (errorMsg.length > 0) {
+            $.modal.alertWarning(errorMsg);
+        } else {
+            $.modal.openCustomForm("Thanh toán", prefix + "/payment/" + processOrderIds, 800, 400);
+        }
     }
 }
 

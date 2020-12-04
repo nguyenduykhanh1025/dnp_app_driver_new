@@ -138,14 +138,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public ShipmentDetail selectShipmentDetailById(Long id) {
 		return shipmentDetailMapper.selectShipmentDetailById(id);
 	}
-	
+
 	@Override
 	public ShipmentDetail selectShipmentDetailByDetailId(String shipmentDetailIds) {
 		return shipmentDetailMapper.selectShipmentDetailByDetailId(shipmentDetailIds);
 	}
-	
-	
-	 
 
 	/**
 	 * Get Shipment Details List
@@ -157,26 +154,21 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.selectShipmentDetailList(shipmentDetail);
 	}
-	
+
 	@Override
 	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.selectShipmentDetailListCont(shipmentDetail);
 	}
-	
+
 	@Override
 	public List<ShipmentDetail> selectShipmentDetailDangerous(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.selectShipmentDetailDangerous(shipmentDetail);
 	}
-	
+
 	@Override
 	public List<ShipmentDetail> selectShipmentDetailListContOverSize(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.selectShipmentDetailListContOverSize(shipmentDetail);
 	}
-	
-	
-	
-	
-	
 
 	/**
 	 * Add Shipment Details
@@ -201,14 +193,12 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		shipmentDetail.setUpdateTime(DateUtils.getNowDate());
 		return shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 	}
-	
+
 	@Override
 	public int updateShipmentDetailApply(ShipmentDetail shipmentDetail) {
 		shipmentDetail.setUpdateTime(DateUtils.getNowDate());
 		return shipmentDetailMapper.updateShipmentDetailApply(shipmentDetail);
 	}
-	
-	
 
 	/**
 	 * Delete Shipment Details By ID
@@ -237,14 +227,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public List<ShipmentDetail> selectShipmentDetailByIds(String ids, Long logisticGroupId) {
 		return shipmentDetailMapper.selectShipmentDetailByIds(Convert.toStrArray(ids), logisticGroupId);
 	}
-	
+
 	@Override
-	public List<ShipmentDetail> selectConfirmShipmentDetailByIds(String shipmentDetailIds) { 
+	public List<ShipmentDetail> selectConfirmShipmentDetailByIds(String shipmentDetailIds) {
 		return shipmentDetailMapper.selectConfirmShipmentDetailByIds(Convert.toStrArray(shipmentDetailIds));
 	}
- 
-	
-	
 
 	public long countShipmentDetailList(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.countShipmentDetailList(shipmentDetail);
@@ -1395,15 +1382,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	@Override
 	public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.updateShipmentDetailByIds(Convert.toStrArray(shipmentDetailIds), shipmentDetail);
-	} 
-	
+	}
+
 	@Override
 	public int updateShipmentDetailByProcessOderIds(String shipmentDetailIds, ShipmentDetail shipmentDetail) {
-		return shipmentDetailMapper.updateShipmentDetailByProcessOderIds(Convert.toStrArray(shipmentDetailIds), shipmentDetail);
-	} 
-	
-	
-	
+		return shipmentDetailMapper.updateShipmentDetailByProcessOderIds(Convert.toStrArray(shipmentDetailIds),
+				shipmentDetail);
+	}
 
 	@Override
 	public void resetCustomStatus(Long shipmentId) {
@@ -1479,12 +1464,18 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		}
 		return result;
 	}
-	 /* Make order loading cargo
+
+	/*
+	 * Make order loading cargo
 	 * 
 	 * @param shipmentDetails
+	 * 
 	 * @param shipment
+	 * 
 	 * @param taxCode
+	 * 
 	 * @param creditFlag
+	 * 
 	 * @return List<ServiceSendFullRobotReq>
 	 */
 	@Override
@@ -1718,6 +1709,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			shipmentDetail.setUserVerifyStatus("Y");
 			shipmentDetail.setPayer(payer);
+			shipmentDetail.setProcessStatus("W");
 			shipmentDetail.setPayerName(payerName);
 			if (creditFlag) {
 				shipmentDetail.setPayType("Credit");

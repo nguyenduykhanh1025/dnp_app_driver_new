@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/send-cont-full";
+var prefix = ctx + "logistic/special-service";
 // Number of custom declare no need to input, default by 1.
 var rowAmount = 1;
 // Handsontable instance

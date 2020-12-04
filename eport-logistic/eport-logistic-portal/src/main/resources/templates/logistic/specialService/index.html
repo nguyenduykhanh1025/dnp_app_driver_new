@@ -69,13 +69,22 @@
             <thead>
               <tr>
                 <th data-options="field:'id', fixed:true" width="1"></th>
-                <th data-options="field:'bookingNo', halign:'center', resizable:true, fixed:true, formatter:formatBlBooking" sortable="true" width="150">BL/Booking No</th>
-                <th data-options="field:'containerAmount', align:'center', halign:'center', fixed:true" width="40">SL</th>
-                <th data-options="field:'opeCode', align:'center', halign:'center', fixed:true" width="50" sortable="true">OPR</th>
-		            <th data-options="field:'type', align:'center', halign:'center', fixed:true, formatter: formatType" width="90">Loại</th>
-                <th data-options="field:'consignee', align:'left', halign:'center', fixed:true" width="150">Tên chủ hàng</th>
-                <th data-options="field:'createTime', align:'center', halign:'center', formatter: formatDate, fixed:true" sortable="true" width="120">Ngày Tạo</th>
-                <th data-options="field:'remark',align:'left',halign:'center', formatter: formatRemark" sortable="true" width="150">Ghi Chú</th>
+                <th
+                  data-options="field:'bookingNo', halign:'center', resizable:true, fixed:true, formatter:formatBlBooking"
+                  sortable="true" width="150">BL/Booking No</th>
+                <th data-options="field:'containerAmount', align:'center', halign:'center', fixed:true" width="40">SL
+                </th>
+                <th data-options="field:'opeCode', align:'center', halign:'center', fixed:true" width="50"
+                  sortable="true">OPR</th>
+                <th data-options="field:'type', align:'center', halign:'center', fixed:true, formatter: formatType"
+                  width="90">Loại</th>
+                <th data-options="field:'consignee', align:'left', halign:'center', fixed:true" width="150">Tên chủ hàng
+                </th>
+                <th
+                  data-options="field:'createTime', align:'center', halign:'center', formatter: formatDate, fixed:true"
+                  sortable="true" width="120">Ngày Tạo</th>
+                <th data-options="field:'remark',align:'left',halign:'center', formatter: formatRemark" sortable="true"
+                  width="150">Ghi Chú</th>
               </tr>
             </thead>
           </table>
@@ -158,23 +167,23 @@
                         </button>
                       </td>
                       <td>
-                        <button id="deleteBtn" onclick="deleteShipmentDetail()"
-                          class="btn btn-sm btn-danger"><i class="fa fa-times text-primary"></i> Xóa
+                        <button id="deleteBtn" onclick="deleteShipmentDetail()" class="btn btn-sm btn-danger"><i
+                            class="fa fa-times text-primary"></i> Xóa
                         </button>
                       </td>
                       <td>
                         <div class="dropdown-wrapper">
-                            <button class="btn btn-sm btn-more btn-main">Yêu cầu</button>
-                            <div class="dropdown">
-                              <button class="btn btn-sm btn-more" style="border-left: 1px solid #070f2d6b">
-                                <i class="fa fa-caret-down"></i>
-                              </button>
-                              <div class="dropdown-content">
-                                <a href="javascript:void(0)" class="btn-sm" onclick="requestCancelOrder()">
+                          <button class="btn btn-sm btn-more btn-main">Yêu cầu</button>
+                          <div class="dropdown">
+                            <button class="btn btn-sm btn-more" style="border-left: 1px solid #070f2d6b">
+                              <i class="fa fa-caret-down"></i>
+                            </button>
+                            <div class="dropdown-content">
+                              <a href="javascript:void(0)" class="btn-sm" onclick="requestCancelOrder()">
                                 <i class="fa fa-window-close text-primary"></i> Hủy lệnh</a>
-                              </div>
                             </div>
                           </div>
+                        </div>
                       </td>
                       <td width="100%"></td>
                       <td>
@@ -183,8 +192,8 @@
                         </button>
                       </td>
                       <td>
-                        <button id="exportReceiptBtn" onclick="exportReceipt()"
-                          class="btn btn-sm btn-default"><i class="fa fa-print text-primary"></i> In biên nhận
+                        <button id="exportReceiptBtn" onclick="exportReceipt()" class="btn btn-sm btn-default"><i
+                            class="fa fa-print text-primary"></i> In biên nhận
                         </button>
                       </td>
                       <td>

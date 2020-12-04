@@ -1327,7 +1327,6 @@ public class ShipmentDetail extends BaseEntity {
 		this.frozenStatus = frozenStatus;
 	}
 
-	  
 	public Date getPowerDrawDate() {
 		return powerDrawDate;
 	}

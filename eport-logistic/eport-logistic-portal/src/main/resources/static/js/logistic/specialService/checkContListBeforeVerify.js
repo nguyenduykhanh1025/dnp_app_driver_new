@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/send-cont-full";
+var prefix = ctx + "logistic/special-service";
 var shipmentDetailIds = "";
 
 async function confirm() {
@@ -6,13 +6,13 @@ async function confirm() {
         if ($('#credit').prop('checked')) {
             let res = await getPaymentPermission();
             if (res.code == 0) {
-                parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $("#taxCode").val(), $('#credit').prop('checked'));
+                parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length - 1), $("#taxCode").val(), $('#credit').prop('checked'));
                 $.modal.close();
             } else {
                 $.modal.alertWarning("Quý khách không có quyền trả sau cho mã số thuế đã chọn.");
             }
         } else {
-        	$.modal.alertWarning("Chưa hỗ trợ thanh toán trả trước (cash).");
+            $.modal.alertWarning("Chưa hỗ trợ thanh toán trả trước (cash).");
             //parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $("#taxCode").val(), $('#credit').prop('checked'));
             //$.modal.close();
         }
@@ -32,7 +32,7 @@ $("#contTable").datagrid({
     loadMsg: " Đang xử lý...",
     loader: function (param, success, error) {
         var index = 1;
-        shipmentDetails.forEach(function(shipmentDetail) {
+        shipmentDetails.forEach(function (shipmentDetail) {
             shipmentDetailIds += shipmentDetail.id + ",";
             shipmentDetail.id = index++;
         })
@@ -73,7 +73,7 @@ function loadGroupName() {
     }
 }
 
-$('input:radio[name="taxCodeDefault"]').change(function() {
+$('input:radio[name="taxCodeDefault"]').change(function () {
     if ($(this).val() == '1') {
         $('#taxCode').val(taxCode).prop('readonly', true);
         loadGroupName();

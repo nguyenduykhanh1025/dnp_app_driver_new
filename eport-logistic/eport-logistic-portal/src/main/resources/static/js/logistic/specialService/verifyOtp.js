@@ -1,9 +1,9 @@
-var prefix = ctx + "logistic/send-cont-full";
+var prefix = ctx + "logistic/special-service";
 var interval;
 var minutes = 0, seconds = 0;
 
 function confirm() {
-    if ($("#otpInput").val() !=null && $("#otpInput").val() != "") {
+    if ($("#otpInput").val() != null && $("#otpInput").val() != "") {
         $.ajax({
             url: prefix + "/otp/" + $("#otpInput").val() + "/verification",
             method: "post",
@@ -27,7 +27,7 @@ function confirm() {
     } else {
         $.modal.alertError("Quý khách chưa nhập mã OTP!");
     }
-    
+
 }
 
 function closeForm() {
@@ -43,13 +43,13 @@ function getOtp() {
             success: function (data) {
                 if (data.code != 0) {
                     $.modal.alertError("Có lỗi xảy ra trong quá trình gửi OTP!");
-                } 
+                }
             },
             error: function (result) {
                 $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng thử lại sau.");
             }
         });
-        
+
         if (interval != null) {
             clearInterval(interval);
         } else {
@@ -58,28 +58,28 @@ function getOtp() {
         }
         // Get today's date and time
         var now = new Date();
-    
+
         // Set the date we're counting down to
-        var countDownDate = new Date(now.getTime() + (5*60000));
-    
+        var countDownDate = new Date(now.getTime() + (5 * 60000));
+
         // Update the count down every 1 second
-        interval = setInterval(function() {
-            
+        interval = setInterval(function () {
+
             now = new Date();
-    
+
             // Find the distance between now and the count down date
             var distance = countDownDate.getTime() - now.getTime();
-    
+
             minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    
+
             // Display the result in the element with id="demo"
             $("#timer").html(minutes + " phút " + seconds + " giây")
-    
+
             // If the count down is finished, write some text
             if (distance < 0) {
                 clearInterval(interval);
-                $("#timer").html("0 phút 0 giây"); 
+                $("#timer").html("0 phút 0 giây");
             }
         }, 1000);
     } else {
@@ -87,8 +87,8 @@ function getOtp() {
     }
 }
 
-$(function() {
-	$("#p1").html("Mã OTP sẽ được gửi đến số điện thoại " + numberPhone + ".");
-	$("#sid").html("<b>" + sid + "</b>");
-	getOtp();
+$(function () {
+    $("#p1").html("Mã OTP sẽ được gửi đến số điện thoại " + numberPhone + ".");
+    $("#sid").html("<b>" + sid + "</b>");
+    getOtp();
 });

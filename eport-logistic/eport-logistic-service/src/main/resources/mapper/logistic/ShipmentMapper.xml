@@ -632,6 +632,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="params.voyNo != null and params.voyNo != ''">and sh.voy_no = #{params.voyNo}</if>
             <if test="params.doStatus != null and params.doStatus != ''">and sh.do_status = #{params.doStatus}</if>
             <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
+            <if test="params.paymentStatus != null and params.paymentStatus != ''">and sh.payment_status = #{params.paymentStatus}</if>
+            <if test="params.specialService != null">and sh.special_service = #{params.specialService}</if>
             <if test="params.serviceArray != null">
                 and s.service_type in
                 <foreach item="service" collection="params.serviceArray" open="(" separator="," close=")">
@@ -687,6 +689,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="params.frozenStatus != null and params.frozenStatus != ''">and sh.frozen_status = #{params.frozenStatus}</if>
  
             <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
+            <if test="params.paymentStatus != null and params.paymentStatus != ''">and sh.payment_status = #{params.paymentStatus}</if>
             <if test="params.oversize != null and params.oversize != ''">and sh.oversize = #{params.oversize}</if>
             <if test="params.serviceArray != null">
                 and s.service_type in

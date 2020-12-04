@@ -1,9 +1,10 @@
-const PREFIX = ctx + "om/controlling";
+const PREFIX = ctx + "om/support/special-service";
+const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 const containerCol = 7;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipmentDetailIds, processOrderIds;
-var shipmentDetails;
+var shipmentDetails, specialService, specialServiceDictData;
 var fromDate, toDate;
 var shipment = new Object();
 shipment.params = new Object();
@@ -39,6 +40,9 @@ $(document).ready(function () {
 
         // empty depot list
         emptyDepotList = data.emptyDepotList;
+
+        specialService = data.specialService;
+        specialServiceDictData = data.specialServiceDictData;
       }
     }
   });
@@ -86,6 +90,30 @@ $(document).ready(function () {
     hot.render();
   }, 200);
 
+  $("#processStatus").combobox({
+    valueField: 'processValue',
+    textField: 'processKey',
+    data: [{
+      "processValue": 'W',
+      "processKey": "Chờ làm lệnh",
+      "selected": true
+    }, {
+      "processValue": 'Y',
+      "processKey": "Đã làm lệnh"
+    }, {
+      "processValue": 'null',
+      "processKey": "Tất cả"
+    }],
+    onSelect: function (processStatus) {
+      if (processStatus.processValue != 'null') {
+        shipment.params.processStatus = processStatus.processValue;
+      } else {
+        shipment.params.processStatus = null;
+      }
+      loadTable();
+    }
+  });
+
   $('#fromDate').datebox({
     onSelect: function (date) {
       date.setHours(0, 0, 0);
@@ -131,10 +159,10 @@ $(document).ready(function () {
     }
   });
 
-  $("#blNo").textbox('textbox').bind('keydown', function (e) {
+  $("#blBookingNo").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
-      shipment.params.blOrBooking = $("#blNo").textbox('getText').toUpperCase();
+      shipment.params.blOrBooking = $("#blBookingNo").textbox('getText').toUpperCase();
       loadTable();
     }
   });
@@ -165,35 +193,6 @@ $(document).ready(function () {
     }
   });
 
-  $("#serviceType").combobox({
-    valueField: 'serviceId',
-    textField: 'text',
-    data: [{
-      "serviceId": 'null',
-      "text": "Loại Dịch Vụ",
-      "selected": true
-    }, {
-      "serviceId": 1,
-      "text": "Bốc Hàng"
-    }, {
-      "serviceId": 2,
-      "text": "Hạ Rỗng"
-    }, {
-      "serviceId": 3,
-      "text": "Bốc Rỗng"
-    }, {
-      "serviceId": 4,
-      "text": "Hạ Hàng"
-    }],
-    onSelect: function (serviceType) {
-      if (serviceType.serviceId != 'null') {
-        shipment.serviceType = serviceType.serviceId;
-      } else {
-        shipment.serviceType = null;
-      }
-      loadTable();
-    }
-  });
 });
 
 function dateformatter(date) {
@@ -247,9 +246,7 @@ function loadTable() {
         success: function (res) {
           if (res.code == 0) {
             success(res.shipments);
-            if (res.shipments.length > 0) {
-              $("#dg").datagrid("selectRow", 0);
-            }
+            $("#dg").datagrid("selectRow", 0);
           } else {
             success([]);
           }
@@ -267,31 +264,6 @@ function loadTable() {
 function formatLogistic(value, row, index) {
   return '<a onclick="logisticInfo(' + row.logisticGroupId + "," + "'" + value + "')\"> " + value + "</a>";
 }
-
-// FORMAT DATE FOR date time format dd/mm/yyyy
-function formatDate(value) {
-  let date = new Date(value);
-  let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-  let month = date.getMonth() + 1;
-  let monthText = month < 10 ? "0" + month : month;
-  return day + "/" + monthText + "/" + date.getFullYear();
-}
-// FORMAT SERVICE TYPE
-function formatServiceType(value, row) {
-  switch (value) {
-    case 1:
-      return 'Bốc Hàng';
-    case 2:
-      return 'Hạ Rỗng';
-    case 3:
-      return 'Bốc Rỗng';
-    case 4:
-      return 'Hạ Hàng';
-    default:
-      return '';
-  }
-}
-
 // FORMAT STATUS SHIPMENT
 function formatStatus(value, row) {
   switch (value) {
@@ -307,17 +279,32 @@ function formatStatus(value, row) {
       '';
   }
 }
-
-// FORMAT BOOKING OR BL NO
-function formatBlBooking(value, row) {
+function formatType(value, row, index) {
+  if (row.blNo) {
+    return "Hàng nhập";
+  }
   if (row.bookingNo) {
-    return row.bookingNo;
-  } else if (row.blNo) {
+    return "Hàng xuất";
+  }
+  return "Không xác định";
+}
+function formatBlBooking(value, row, index) {
+  if (row.blNo) {
     return row.blNo;
   }
-  return '';
+  if (row.bookingNo) {
+    return row.bookingNo;
+  }
+  return "Không xác định";
 }
-
+// FORMAT DATE FOR date time format dd/mm/yyyy
+function formatDate(value) {
+  let date = new Date(value);
+  let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+  let month = date.getMonth() + 1;
+  let monthText = month < 10 ? "0" + month : month;
+  return day + "/" + monthText + "/" + date.getFullYear();
+}
 // Trigger when click a row in easy ui data grid on the left screen
 function getSelected(index, row) {
   if (row) {
@@ -329,59 +316,42 @@ function getSelected(index, row) {
   dischargePortList = [];
   loadShipmentDetails(shipmentSelected.id);
   loadListComment();
-  let serviceType = shipmentSelected.serviceType;
   let html = '';
-  if (shipmentSelected.serviceType == 3) {
-    $.ajax({
-      type: "GET",
-      url: PREFIX + "/shipments/" + shipmentSelected.id + "/shipment-images",
-      contentType: "application/json",
-      success: function (data) {
-        if (serviceType == 1 || serviceType == 2) {
-          html += `<span>Mã lô: ` + shipmentSelected.id + ` - B/L No: ` + shipmentSelected.blNo + `</span>`;
-        } else {
-          html += `<span>Mã lô: ` + shipmentSelected.id + ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`
-        }
-        if (data.code == 0) {
-          if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
-            data.shipmentFiles.forEach(function (element, index) {
-              html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
-            });
-          }
-        }
-        $('#shipment-info').html(html);
-      },
-      error: function (err) {
-        if (serviceType == 1 || serviceType == 2) {
-          html += `<span>Mã lô: ` + shipmentSelected.id + ` - B/L No: ` + shipmentSelected.blNo + `</span>`;
-        } else {
-          html += `<span>Mã lô: ` + shipmentSelected.id + ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`
-        }
-        $('#shipment-info').html(html);
+  $.ajax({
+    type: "GET",
+    url: PREFIX + "/shipments/" + shipmentSelected.id + "/shipment-images",
+    contentType: "application/json",
+    success: function (data) {
+      html += `<span>Mã lô: ` + shipmentSelected.id;
+      if (shipmentSelected.blNo) {
+        html += ` - BL No: ` + shipmentSelected.blNo + `</span>`;
+      } else {
+        html += ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`;
       }
-    });
-  } else {
-    if (serviceType == 1 || serviceType == 2) {
-      html += `<span>Mã lô: ` + shipmentSelected.id + ` - B/L No: ` + shipmentSelected.blNo + `</span>`;
-    } else {
-      html += `<span>Mã lô: ` + shipmentSelected.id + ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`
+      if (data.code == 0) {
+        if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
+          data.shipmentFiles.forEach(function (element, index) {
+            html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
+          });
+        }
+      }
+      $('#shipment-info').html(html);
+    },
+    error: function (err) {
+      html += `<span>Mã lô: ` + shipmentSelected.id;
+      if (shipmentSelected.blNo) {
+        html += ` - BL No: ` + shipmentSelected.blNo + `</span>`;
+      } else {
+        html += ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`;
+      }
+      $('#shipment-info').html(html);
     }
-    $('#shipment-info').html(html);
-  }
-  if (serviceType == 4) {
-    $('#exportPackingListBtn').show();
-  } else {
-    $('#exportPackingListBtn').hide();
-  }
+  });
   if (sId != null) {
     $('#right-layout').layout('expand', 'south');
     shipment.id = null;
     sId = null;
   }
-}
-
-function toggleAttachIcon(shipmentId) {
-
 }
 
 // FORMAT HANDSONTABLE COLUMN
@@ -408,33 +378,18 @@ function historyEportRenderer(instance, td, row, col, prop, value, cellPropertie
 
 function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
-  if (sourceData[row] && sourceData[row].dischargePort && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].finishStatus) {
-    // Customs Status
-    let customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="color: #666;"></i>';
-    if (sourceData[row].customStatus) {
-      switch (sourceData[row].customStatus) {
-        case 'R':
-          customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="color: #1ab394;"></i>';
-          break;
-        case 'Y':
-          customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="color: #ed5565;"></i>';
-          break;
-        case 'N':
-          customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="color: #3498db;"></i>';
-          break;
-      }
-    }
+  if (sourceData[row] && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].finishStatus) {
     // Command process status
     let process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
     switch (sourceData[row].processStatus) {
-      case 'E':
+      case 'W':
         process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
         break;
       case 'Y':
         process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
         break;
       case 'N':
-        if ((value > 1 && shipmentSelected.serviceType != 1) || (value > 2 && shipmentSelected.serviceType == 1)) {
+        if (value > 1 && sourceData[row].contSupplyStatus == 'Y') {
           process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
         }
         break;
@@ -452,147 +407,33 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
         payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
         break;
       case 'N':
-        if (value > 2) {
+        if (value > 1) {
           payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
         }
         break;
     }
-    // Do status
-    let doStatus = '<i id="do" class="fa fa-file-text easyui-tooltip" title="Chưa Thu Chứng TỪ" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-    if (sourceData[row].doStatus && sourceData[row].doStatus == 'Y') {
-      doStatus = '<i id="do" class="fa fa-file-text easyui-tooltip" title="Đã Thu Chứng TỪ" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-    }
     // released status
-    let released = '';
-    // Drop full
-    if (shipmentSelected.serviceType == 4) {
-      released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
-      switch (sourceData[row].finishStatus) {
-        case 'Y':
-          released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-          break;
-        case 'N':
-          if (sourceData[row].paymentStatus == 'Y') {
-            released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-          }
-          break;
-      }
-    } else {
-      // other service
-      released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
-      switch (sourceData[row].finishStatus) {
-        case 'Y':
-          released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-          break;
-        case 'N':
-          if (sourceData[row].paymentStatus == 'Y') {
-            released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-          }
-          break;
-      }
+    let released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+    switch (sourceData[row].finishStatus) {
+      case "Y":
+        released =
+          '<i id="finish" class="fa fa-ship easyui-tooltip" title="Đã Giao Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+      case "N":
+        if (sourceData[row].paymentStatus == "Y") {
+          released =
+            '<i id="finish" class="fa fa-ship easyui-tooltip" title="Có Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+        }
+        break;
     }
 
     // Return the content
-    let content = '<div>';
-    // Domestic cont: VN --> not show
-    switch (shipmentSelected.serviceType) {
-      case 1:
-        content += customs + process + payment + doStatus + released + '</div>';
-        break;
-      case 2:
-        content += process + payment + released + '</div>';
-        break;
-      case 3:
-        content += process + payment + released + '</div>';
-        break;
-      case 4:
-        if (sourceData[row].loadingPort && sourceData[row].loadingPort.substring(0, 2) != 'VN') {
-          content += customs;
-        }
-        content += process + payment + released + '</div>';
-        break;
-      default:
-        break;
-    }
+    let content = '<div>' + process + payment + released + '</div>';
     $(td).html(content);
   }
   return td;
 }
-function blNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function bookingNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value || value == null) {
-    value = '';
-  }
-  if (value != null && value != '') {
-    if (value.substring(2, 3) != "/") {
-      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-    }
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function emptyExpiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value || value == null) {
-    value = '';
-  }
-  if (value != null && value != '') {
-    if (value.substring(2, 3) != "/") {
-      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-    }
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (!value) {
     value = '';
@@ -616,14 +457,6 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
-function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
 function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (!value) {
@@ -633,14 +466,6 @@ function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) 
   return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (!value) {
     value = '';
@@ -672,14 +497,6 @@ function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
-function invoiceNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (!value) {
@@ -688,9 +505,94 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
+function payerNameRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function etaRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value || value == null) {
+    value = '';
+  }
+  if (value != null && value != '') {
+    if (value.substring(2, 3) != "/") {
+      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+    }
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function temperatureRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function commodityRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function specialServiceRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  } else {
+    if (specialServiceDictData != null) {
+      specialServiceDictData.forEach(element => {
+        if (value == element.dictLabel) {
+          value = element.dictValue;
+        }
+      });
+    }
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
 
 // CONFIGURATE HANDSONTABLE
-function configHandsonBilling() {
+function configHandsond() {
   config = {
     stretchH: "all",
     height: $('#right-side__main-table').height() - 35,
@@ -721,42 +623,42 @@ function configHandsonBilling() {
         case 4:
           return "Số Tham Chiếu";
         case 5:
-          return "B/L No"
+          return 'Container No';
         case 6:
-          return "OPR";
+          return 'Dịch vụ';
         case 7:
-          return "Số Container";
+          return 'Kích Thước';
         case 8:
-          return "Sztp";
+          return 'Chủ Hàng';
         case 9:
-          return "Hạn Lệnh";
+          return 'Tàu và Chuyến';
         case 10:
-          return "Hạn Trả Vỏ";
+          return "Ngày tàu đến";
         case 11:
-          return "Nơi Hạ Vỏ";
+          return 'Cảng Xếp Hàng';
         case 12:
-          return "Miễn Lưu";
+          return 'Cảng Dỡ Hàng';
         case 13:
-          return "Chủ Hàng";
+          return 'Trọng Lượng (kg)';
         case 14:
-          return "Tàu - Chuyến";
+          return 'Loại Hàng';
         case 15:
-          return "Trọng Lượng";
+          return 'Tên Hàng';
         case 16:
-          return "Loại Hàng";
+          return 'Số Seal';
         case 17:
-          return "Cảng Dỡ"
+          return "Nhiệt Độ (c)";
         case 18:
-          return "Cảng Xếp Hàng";
+          return 'PTTT';
         case 19:
-          return "P.T.T.T";
+          return 'Mã Số Thuế';
         case 20:
-          return "Payer";
+          return 'Người Thanh Toán';
         case 21:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 105, 130, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 100],
+    colWidths: [23, 21, 21, 105, 130, 100, 120, 150, 150, 200, 100, 100, 120, 120, 80, 100, 100, 80, 80, 100, 130, 200],
     filter: "true",
     columns: [
       {
@@ -784,82 +686,81 @@ function configHandsonBilling() {
         renderer: orderNoRenderer
       },
       {
-        data: "blNo",
-        renderer: blNoRenderer
-      },
-      {
-        data: "opeCode",
-        type: "autocomplete",
-        source: opeCodeList,
-        renderer: opeCodeRenderer
-      },
-      {
         data: "containerNo",
-        renderer: containerNoRenderer
+        strict: true,
+        renderer: containerNoRenderer,
+      },
+      {
+        data: "specialService",
+        type: "autocomplete",
+        source: specialService,
+        strict: true,
+        renderer: specialServiceRenderer
       },
       {
         data: "sztp",
         type: "autocomplete",
         source: sizeList,
-        renderer: sztpRenderer
-      },
-      {
-        data: "expiredDem",
-        type: "date",
-        dateFormat: "YYYY-MM-DD",
-        defaultDate: new Date(),
-        renderer: expiredDemRenderer
-      },
-      {
-        data: "emptyExpiredDem",
-        type: "date",
-        dateFormat: "YYYY-MM-DD",
-        defaultDate: new Date(),
-        renderer: emptyExpiredDemRenderer
-      },
-      {
-        data: "emptyDepot",
-        type: "autocomplete",
-        source: emptyDepotList,
-        renderer: emptyDepotRenderer
-      },
-      {
-        data: "detFreeTime",
-        renderer: detFreeTimeRenderer
+        strict: true,
+        renderer: sizeRenderer
       },
       {
         data: "consignee",
+        strict: true,
         type: "autocomplete",
-        source: currentConsigneeList,
+        source: consigneeList,
         renderer: consigneeRenderer
       },
       {
         data: "vslNm",
         type: "autocomplete",
         source: vslNmList,
+        strict: true,
         renderer: vslNmRenderer
       },
       {
+        data: "eta",
+        renderer: etaRenderer
+      },
+      {
+        data: "loadingPort",
+        strict: true,
+        type: "autocomplete",
+        renderer: loadingPortRenderer
+      },
+      {
+        data: "dischargePort",
+        strict: true,
+        type: "autocomplete",
+        renderer: dischargePortRenderer
+      },
+      {
         data: "wgt",
+        type: "numeric",
+        strict: true,
         renderer: wgtRenderer
       },
       {
         data: "cargoType",
+        strict: true,
         type: "autocomplete",
         source: cargoTypeList,
         renderer: cargoTypeRenderer
       },
       {
-        data: "dischargePort",
-        type: "autocomplete",
-        source: dischargePortList,
-        renderer: dischargePortRenderer
+        data: "commodity",
+        renderer: commodityRenderer
       },
       {
-        data: "loadingPort",
-        type: "autocomplete",
-        source: dischargePortList,
-        renderer: loadingPortRenderer
+        data: "sealNo",
+        renderer: sealNoRenderer
+      },
+      {
+        data: "temperature",
+        type: "numeric",
+        strict: true,
+        readonly: true,
+        renderer: temperatureRenderer
       },
       {
         data: "payType",
@@ -868,6 +769,10 @@ function configHandsonBilling() {
       {
         data: "payer",
         renderer: payerRenderer
+      },
+      {
+        data: "payerName",
+        renderer: payerNameRenderer
       },
       {
         data: "remark",
@@ -910,228 +815,7 @@ function configHandsonBilling() {
   };
 }
 
-// CONFIGURATE HANDSONTABLE
-function configHandsonBooking() {
-  config = {
-    stretchH: "all",
-    height: $('#right-side__main-table').height() - 35,
-    minRows: rowAmount,
-    maxRows: rowAmount,
-    width: "100%",
-    minSpareRows: 0,
-    rowHeights: 30,
-    fixedColumnsLeft: 3,
-    manualColumnResize: true,
-    manualRowResize: true,
-    renderAllRows: true,
-    rowHeaders: true,
-    className: "htMiddle",
-    colHeaders: function (col) {
-      switch (col) {
-        case 0:
-          var txt = "<input type='checkbox' class='checker' ";
-          txt += "onclick='checkAll()' ";
-          txt += ">";
-          return txt;
-        case 1:
-          return '<a class="fa fa-window-restore easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
-        case 2:
-          return '<a class="fa fa-history easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
-        case 3:
-          return "Trạng Thái";
-        case 4:
-          return "Số Tham Chiếu";
-        case 5:
-          return "Booking No"
-        case 6:
-          return "OPR";
-        case 7:
-          return "Số Container";
-        case 8:
-          return "Sztp";
-        case 9:
-          return "Hạn Lệnh";
-        case 10:
-          return "Hạn Trả Vỏ";
-        case 11:
-          return "Nơi Hạ Vỏ";
-        case 12:
-          return "Miễn Lưu";
-        case 13:
-          return "Chủ Hàng";
-        case 14:
-          return "Tàu - Chuyến";
-        case 15:
-          return "Trọng Lượng";
-        case 16:
-          return "Loại Hàng";
-        case 17:
-          return "Cảng Dỡ"
-        case 18:
-          return "Cảng Xếp Hàng";
-        case 19:
-          return "P.T.T.T";
-        case 20:
-          return "Payer";
-        case 21:
-          return "Ghi Chú";
-      }
-    },
-    colWidths: [23, 21, 21, 105, 130, 115, 50, 100, 55, 100, 100, 100, 80, 200, 150, 100, 100, 100, 100, 100, 100, 100],
-    filter: "true",
-    columns: [
-      {
-        data: "active",
-        type: "checkbox",
-        renderer: checkBoxRenderer
-      },
-      {
-        data: "historyCatos",
-        readOnly: true,
-        renderer: historyRenderer
-      },
-      {
-        data: "historyEport",
-        readOnly: true,
-        renderer: historyEportRenderer
-      },
-      {
-        data: "status",
-        readOnly: true,
-        renderer: statusIconsRenderer
-      },
-      {
-        data: "orderNo",
-        renderer: orderNoRenderer
-      },
-      {
-        data: "bookingNo",
-        renderer: bookingNoRenderer
-      },
-      {
-        data: "opeCode",
-        type: "autocomplete",
-        source: opeCodeList,
-        renderer: opeCodeRenderer
-      },
-      {
-        data: "containerNo",
-        renderer: containerNoRenderer
-      },
-      {
-        data: "sztp",
-        type: "autocomplete",
-        source: sizeList,
-        renderer: sztpRenderer
-      },
-      {
-        data: "expiredDem",
-        type: "date",
-        dateFormat: "YYYY-MM-DD",
-        defaultDate: new Date(),
-        renderer: expiredDemRenderer
-      },
-      {
-        data: "emptyExpiredDem",
-        type: "date",
-        dateFormat: "YYYY-MM-DD",
-        defaultDate: new Date(),
-        renderer: emptyExpiredDemRenderer
-      },
-      {
-        data: "emptyDepot",
-        type: "autocomplete",
-        source: emptyDepotList,
-        renderer: emptyDepotRenderer
-      },
-      {
-        data: "detFreeTime",
-        renderer: detFreeTimeRenderer
-      },
-      {
-        data: "consignee",
-        type: "autocomplete",
-        source: currentConsigneeList,
-        renderer: consigneeRenderer
-      },
-      {
-        data: "vslNm",
-        type: "autocomplete",
-        source: vslNmList,
-        renderer: vslNmRenderer
-      },
-      {
-        data: "wgt",
-        renderer: wgtRenderer
-      },
-      {
-        data: "cargoType",
-        type: "autocomplete",
-        source: cargoTypeList,
-        renderer: cargoTypeRenderer
-      },
-      {
-        data: "dischargePort",
-        type: "autocomplete",
-        source: dischargePortList,
-        renderer: dischargePortRenderer
-      },
-      {
-        data: "loadingPort",
-        type: "autocomplete",
-        source: dischargePortList,
-        renderer: loadingPortRenderer
-      },
-      {
-        data: "payType",
-        renderer: payTypeRenderer
-      },
-      {
-        data: "payer",
-        renderer: payerRenderer
-      },
-      {
-        data: "remark",
-        renderer: remarkRenderer
-      }
-    ],
-    beforeKeyDown: function (e) {
-      let selected = hot.getSelected()[0];
-      switch (e.keyCode) {
-        // Arrow Left
-        case 37:
-          if (selected[3] == 0) {
-            e.stopImmediatePropagation();
-          }
-          break;
-        // Arrow Up
-        case 38:
-          if (selected[2] == 0) {
-            e.stopImmediatePropagation();
-          }
-          break;
-        // Arrow Right
-        case 39:
-          if (selected[3] == 21) {
-            e.stopImmediatePropagation();
-          }
-          break
-        // Arrow Down
-        case 40:
-          if (selected[2] == shipmentSelected.containerAmount - 1) {
-            e.stopImmediatePropagation();
-          }
-          break
-        default:
-          break;
-      }
-    },
-    afterChange: onChange,
-    beforeCopy: beforeCopy
-  };
-}
-
-configHandsonBilling();
+configHandsond();
 hot = new Handsontable(dogrid, config);
 
 function beforeCopy(data, coords) {
@@ -1152,7 +836,7 @@ function onChange(changes, source) {
 
     // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
     if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-      let vesselAndVoy = hot.getDataAtCell(change[0], 14);
+      let vesselAndVoy = hot.getDataAtCell(change[0], 9);
       //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
       if (vesselAndVoy) {
         if (currentVesselVoyage != vesselAndVoy) {
@@ -1174,7 +858,7 @@ function onChange(changes, source) {
                   if (data.code == 0) {
                     hot.updateSettings({
                       cells: function (row, col, prop) {
-                        if (col == 17 || col == 18) {
+                        if (col == 11 || col == 12) {
                           let cellProperties = {};
                           dischargePortList = data.dischargePorts;
                           cellProperties.source = dischargePortList;
@@ -1214,15 +898,7 @@ function loadShipmentDetails(id) {
           });
           hot.destroy();
           currentConsigneeList = consigneeList;
-          let serviceType = shipmentSelected.serviceType;
-          if (serviceType == 1 || serviceType == 2) {
-            configHandsonBilling();
-            if (serviceType == 1) {
-              currentConsigneeList = consigneeTaxCodeList;
-            }
-          } else {
-            configHandsonBooking();
-          }
+          configHandsond();
           hot = new Handsontable(dogrid, config);
           hot.loadData(sourceData);
           hot.render();
@@ -1232,6 +908,12 @@ function loadShipmentDetails(id) {
         $.modal.closeLoading();
       }
     });
+  } else {
+    hot.destroy();
+    currentConsigneeList = consigneeList;
+    configHandsond();
+    hot = new Handsontable(dogrid, config);
+    hot.render();
   }
 }
 
@@ -1316,16 +998,6 @@ function getDataSelectedFromTable() {
       if (object["sztp"]) {
         sztp = object["sztp"].split(": ")[0];
       }
-      if (object["expiredDem"]) {
-        let expiredDate = new Date(object["expiredDem"].substring(0, 4) + "/" + object["expiredDem"].substring(5, 7) + "/" + object["expiredDem"].substring(8, 10));
-        expiredDate.setHours(23, 59, 59);
-        expiredDem = expiredDate.getTime();
-      }
-      if (object["emptyExpiredDem"]) {
-        let emptyExpiredDate = new Date(object["emptyExpiredDem"].substring(0, 4) + "/" + object["emptyExpiredDem"].substring(5, 7) + "/" + object["emptyExpiredDem"].substring(8, 10));
-        emptyExpiredDate.setHours(23, 59, 59);
-        emptyExpiredDem = emptyExpiredDate.getTime();
-      }
       let shipmentDetail = {
         id: object["id"],
         blNo: object["blNo"],
@@ -1395,12 +1067,12 @@ function search() {
 
 function clearInput() {
   $('#vesselAndVoyages').combobox('select', 'Chọn tàu chuyến');
-  $('#serviceType').combobox('select', 'null');
   $('#logisticGroups').combobox('select', '0');
   $("#containerNo").textbox('setText', '');
-  $("#blNo").textbox('setText', '');
+  $("#blBookingNo").textbox('setText', '');
   $('#fromDate').datebox('setValue', '');
   $('#toDate').datebox('setValue', '');
+  $("#processStatus").combobox('select', 'W');
   shipment = new Object();
   shipment.params = new Object();
   fromDate = null;
@@ -1552,146 +1224,30 @@ function updateShipmentDetail() {
   }
 }
 
-function cancelShupmentDetail() {
+function confirmOrder() {
   if (getDataSelectedFromTable()) {
-    layer.confirm("Xác nhận hủy khai báo lệnh đã làm. <br/>Vui lòng kiểm tra dữ liệu trên Catos đã được cập nhật/hủy và bấm Xác Nhận để tiếp tục.", {
-      icon: 3,
-      title: "Xác Nhận",
-      btn: ['Xác Nhận', 'Hủy Bỏ']
-    }, function () {
-      $.ajax({
-        url: PREFIX + "/shipment-detail/cancel",
-        method: "POST",
-        data: {
-          shipmentDetailIds: shipmentDetailIds,
-          shipmentId: shipmentSelected.id
-        },
-        success: function (result) {
-          if (result.code == 0) {
-            $.modal.alertSuccess(result.msg);
-            loadTable();
-          } else {
-            $.modal.alertError(result.msg);
-          }
-          $.modal.closeLoading();
-        },
-        error: function (result) {
-          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
-          $.modal.closeLoading();
-        },
-      });
-      layer.close(layer.index);
-    }, function () {
-    });
-  }
-}
-
-function executedSuccess() {
-  if (getDataSelectedFromTable()) {
-    layer.open({
-      type: 2,
-      area: [430 + 'px', 270 + 'px'],
-      fix: true,
-      maxmin: true,
-      shade: 0.3,
-      title: 'Xác Nhận',
-      content: PREFIX + "/verify-executed-command-success",
-      btn: ["Xác Nhận", "Hủy"],
-      shadeClose: false,
-      yes: function (index, layero) {
-        confirmExecutaedSuccess(index, layero);
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+      url: PREFIX + "/order/confirm",
+      method: "POST",
+      data: {
+        shipmentDetailIds: shipmentDetailIds
       },
-      cancel: function (index) {
-        return true;
-      }
-    });
-  }
-}
-
-function confirmExecutaedSuccess(index, layero) {
-  let childLayer = layero.find("iframe")[0].contentWindow.document;
-  $.modal.loading("Đang xử lý ...");
-  $.ajax({
-    url: PREFIX + "/sync-catos",
-    method: "POST",
-    data: {
-      content: $(childLayer).find("#remarkToLogistic").val(),
-      processOrderIds: processOrderIds,
-      shipmentId: shipmentSelected.id
-    },
-    success: function (res) {
-      layer.close(index);
-      $.modal.closeLoading();
-      if (res.code == 0) {
-        $.modal.alertSuccess(res.msg);
-        loadShipmentDetails(shipmentSelected.id);
-      } else {
-        $.modal.alertError(res.msg);
-      }
-    },
-    error: function (data) {
-      layer.close(index);
-      $.modal.closeLoading();
-    }
-  });
-}
-
-function resetProcessStatus() {
-  if (getDataSelectedFromTable()) {
-    layer.open({
-      type: 2,
-      area: [430 + 'px', 270 + 'px'],
-      fix: true,
-      maxmin: true,
-      shade: 0.3,
-      title: 'Xác Nhận',
-      content: PREFIX + "/reset-process-status",
-      btn: ["Xác Nhận", "Hủy"],
-      shadeClose: false,
-      yes: function (index, layero) {
-        confirmResetProcess(index, layero);
+      success: function (result) {
+        if (result.code == 0) {
+          $.modal.alertSuccess(result.msg);
+          reloadShipmentDetail();
+        } else {
+          $.modal.alertError(result.msg);
+        }
+        $.modal.closeLoading();
       },
-      cancel: function (index) {
-        return true;
-      }
+      error: function (result) {
+        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+        $.modal.closeLoading();
+      },
     });
   }
-}
-
-function confirmResetProcess(index, layero) {
-  let childLayer = layero.find("iframe")[0].contentWindow.document;
-  $.modal.loading("Đang xử lý ...");
-  $.ajax({
-    url: PREFIX + "/order/reset",
-    method: "POST",
-    data: {
-      content: $(childLayer).find("#remarkToLogistic").val(),
-      shipmentDetailIds: shipmentDetailIds,
-      shipmentId: shipmentSelected.id
-    },
-    success: function (res) {
-      layer.close(index);
-      $.modal.closeLoading();
-      if (res.code == 0) {
-        $.modal.alertSuccess(res.msg);
-        loadShipmentDetails(shipmentSelected.id);
-      } else {
-        $.modal.alertError(res.msg);
-      }
-    },
-    error: function (data) {
-      layer.close(index);
-      $.modal.closeLoading();
-    }
-  });
-}
-
-function exportPackingList() {
-  if (!shipmentSelected) {
-    $.modal.alertError("Bạn chưa chọn Lô!");
-    return
-  }
-  $.modal.openTab("In Packing List", PREFIX + "/shipment/" + shipmentSelected.id + "/packing-list");
 }
 
 function openHistoryFormCatos(row) {
@@ -1717,7 +1273,7 @@ function openHistoryFormCatos(row) {
       maxmin: true,
       shade: 0.3,
       title: 'Lịch Sử Container ' + containerNo + ' Catos',
-      content: PREFIX + "/container/history/" + voyNo + "/" + vslCd + "/" + containerNo,
+      content: HIST_PREFIX + "/container/history/" + voyNo + "/" + vslCd + "/" + containerNo,
       btn: ["Đóng"],
       shadeClose: false,
       yes: function (index, layero) {
@@ -1739,7 +1295,7 @@ function openHistoryFormEport(row) {
       maxmin: true,
       shade: 0.3,
       title: 'Lịch Sử Container ' + (containerInfo.containerNo != null ? containerInfo.containerNo : '') + ' Eport',
-      content: PREFIX + "/container/history/" + containerInfo.id,
+      content: HIST_PREFIX + "/container/history/" + containerInfo.id,
       btn: ["Đóng"],
       shadeClose: false,
       yes: function (index, layero) {
@@ -1749,3 +1305,54 @@ function openHistoryFormEport(row) {
   }
 }
 
+function rejectOrder() {
+  if (getDataSelectedFromTable()) {
+    layer.open({
+      type: 2,
+      area: [600 + 'px', 240 + 'px'],
+      fix: true,
+      maxmin: true,
+      shade: 0.3,
+      title: 'Xác nhận từ chối yêu cầu làm lệnh',
+      content: PREFIX + "/reject",
+      btn: ["Xác Nhận", "Hủy"],
+      shadeClose: false,
+      yes: function (index, layero) {
+        rejectOrderReq(index, layero);
+      },
+      cancel: function (index) {
+        return true;
+      }
+    });
+  }
+}
+
+function rejectOrderReq(index, layero) {
+  let childLayer = layero.find("iframe")[0].contentWindow.document;
+  $.modal.loading("Đang xử lý ...");
+  $.ajax({
+    url: PREFIX + "/reject",
+    method: "POST",
+    data: {
+      content: $(childLayer).find("#message").val(),
+      shipmentDetailIds: shipmentDetailIds,
+      shipmentId: shipmentSelected.id,
+      logisticGroupId: shipmentSelected.logisticGroupId
+    },
+    success: function (res) {
+      layer.close(index);
+      reloadShipmentDetail();
+      $.modal.closeLoading();
+      if (res.code == 0) {
+        $.modal.alertSuccess(res.msg);
+      } else {
+        $.modal.alertError(res.msg);
+      }
+    },
+    error: function (data) {
+      layer.close(index);
+      reloadShipmentDetail();
+      $.modal.closeLoading();
+    }
+  });
+}

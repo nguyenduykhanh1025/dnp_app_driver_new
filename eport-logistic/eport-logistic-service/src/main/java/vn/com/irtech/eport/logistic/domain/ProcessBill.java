@@ -2,10 +2,11 @@ package vn.com.irtech.eport.logistic.domain;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
@@ -15,285 +16,265 @@ import vn.com.irtech.eport.common.core.domain.BaseEntity;
  * @author admin
  * @date 2020-06-25
  */
-public class ProcessBill extends BaseEntity
-{
-    private static final long serialVersionUID = 1L;
+public class ProcessBill extends BaseEntity {
+	private static final long serialVersionUID = 1L;
 
-    /** ID */
-    private Long id;
+	/** ID */
+	private Long id;
 
-    /** Mã Lô */
-    @Excel(name = "Mã Lô")
-    private Long shipmentId;
-    
-    /** Mã logistic */
-    @Excel(name = "Mã logistic")
-    private Long logisticGroupId;
+	/** Mã Lô */
+	@Excel(name = "Mã Lô")
+	private Long shipmentId;
 
-    /** Process Order ID */
-    @Excel(name = "Process Order ID")
-    private Long processOrderId;
+	/** Mã logistic */
+	@Excel(name = "Mã logistic")
+	private Long logisticGroupId;
 
-    private ProcessOrder processOrder;
+	/** Process Order ID */
+	@Excel(name = "Process Order ID")
+	private Long processOrderId;
 
-    /** Loại dịch vụ (bốc, hạ, gate) */
-    @Excel(name = "Loại dịch vụ (bốc, hạ, gate)")
-    private Integer serviceType;
+	private ProcessOrder processOrder;
 
-    /** Mã Tham Chiếu */
-    @Excel(name = "Mã Tham Chiếu")
-    private String invoiceNo;
-    
-    /** PT thanh toán */
-    @Excel(name = "PT Thanh Toán")
-    private String payType;
+	/** Loại dịch vụ (bốc, hạ, gate) */
+	@Excel(name = "Loại dịch vụ (bốc, hạ, gate)")
+	private Integer serviceType;
 
-    /** Payment Status */
-    @Excel(name = "Payment Status")
-    private String paymentStatus;
+	/** Mã Tham Chiếu */
+	@Excel(name = "Mã Tham Chiếu")
+	private String invoiceNo;
 
-    /** Update Time */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date paymentTime;
+	/** PT thanh toán */
+	@Excel(name = "PT Thanh Toán")
+	private String payType;
 
-    /** Size Type */
-    @Excel(name = "Size Type")
-    private String sztp;
+	/** Payment Status */
+	@Excel(name = "Payment Status")
+	private String paymentStatus;
 
-    /** Phí giao nhận */
-    @Excel(name = "Phí giao nhận")
-    private Long exchangeFee;
+	/** Update Time */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date paymentTime;
 
-    /** Tỉ lệ % thuế VAT */
-    @Excel(name = "Tỉ lệ % thuế VAT")
-    private Integer vatRate;
+	/** Size Type */
+	@Excel(name = "Size Type")
+	private String sztp;
 
-    /** Phí sau thuế VAT */
-    @Excel(name = "Phí sau thuế VAT")
-    private Long vatAfterFee;
+	/** Phí giao nhận */
+	@Excel(name = "Phí giao nhận")
+	private Long exchangeFee;
 
-    /** số container */
-    @Excel(name = "số container")
-    private String containerNo;
+	/** Tỉ lệ % thuế VAT */
+	@Excel(name = "Tỉ lệ % thuế VAT")
+	private Integer vatRate;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date fromDate;
+	/** Phí sau thuế VAT */
+	@Excel(name = "Phí sau thuế VAT")
+	private Long vatAfterFee;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date toDate;
+	/** số container */
+	@Excel(name = "số container")
+	private String containerNo;
 
-    private String blNo;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date fromDate;
 
-    private String bookingNo;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date toDate;
 
-    private String taxCode;
+	private String blNo;
 
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
+	private String bookingNo;
 
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setShipmentId(Long shipmentId) 
-    {
-        this.shipmentId = shipmentId;
-    }
+	private String taxCode;
 
-    public Long getShipmentId() 
-    {
-        return shipmentId;
-    }
-    
-    public void setLogisticGroupId(Long logisticGroupId) 
-    {
-        this.logisticGroupId = logisticGroupId;
-    }
+	/** Shipment detail id */
+	private Long shipmentDetailId;
 
-    public Long getLogisticGroupId() 
-    {
-        return logisticGroupId;
-    }
-    
-    public void setProcessOrderId(Long processOrderId) 
-    {
-        this.processOrderId = processOrderId;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public Long getProcessOrderId() 
-    {
-        return processOrderId;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setProcessOrder(ProcessOrder processOrder) {
-        this.processOrder = processOrder;
-    }
+	public void setShipmentId(Long shipmentId) {
+		this.shipmentId = shipmentId;
+	}
 
-    public ProcessOrder getProcessOrder() {
-        if (processOrder == null) {
-            processOrder = new ProcessOrder();
-        }
-        return processOrder;
-    }
+	public Long getShipmentId() {
+		return shipmentId;
+	}
 
-    public void setServiceType(Integer serviceType) 
-    {
-        this.serviceType = serviceType;
-    }
+	public void setLogisticGroupId(Long logisticGroupId) {
+		this.logisticGroupId = logisticGroupId;
+	}
 
-    public Integer getServiceType() 
-    {
-        return serviceType;
-    }
-    
-    public void setPayType(String payType) {
-    	this.payType = payType;
-    }
-    
-    public String getPayType() {
-    	return payType;
-    }
-    
-    public void setPaymentStatus(String paymentStatus) {
-    	this.paymentStatus = paymentStatus;
-    }
-    
-    public String getPaymentStatus() {
-    	return paymentStatus;
-    }
+	public Long getLogisticGroupId() {
+		return logisticGroupId;
+	}
 
-    public void setPaymentTime(Date paymentTime) {
-        this.paymentTime = paymentTime;
-    }
-    
-    public Date getPaymentTime() {
-        return paymentTime;
-    }
+	public void setProcessOrderId(Long processOrderId) {
+		this.processOrderId = processOrderId;
+	}
 
-    public void setInvoiceNo(String invoiceNo) 
-    {
-        this.invoiceNo = invoiceNo;
-    }
+	public Long getProcessOrderId() {
+		return processOrderId;
+	}
 
-    public String getInvoiceNo() 
-    {
-        return invoiceNo;
-    }
-    public void setSztp(String sztp) 
-    {
-        this.sztp = sztp;
-    }
+	public void setProcessOrder(ProcessOrder processOrder) {
+		this.processOrder = processOrder;
+	}
 
-    public String getSztp() 
-    {
-        return sztp;
-    }
-    public void setExchangeFee(Long exchangeFee) 
-    {
-        this.exchangeFee = exchangeFee;
-    }
+	public ProcessOrder getProcessOrder() {
+		if (processOrder == null) {
+			processOrder = new ProcessOrder();
+		}
+		return processOrder;
+	}
 
-    public Long getExchangeFee() 
-    {
-        return exchangeFee;
-    }
-    public void setVatRate(Integer vatRate) 
-    {
-        this.vatRate = vatRate;
-    }
+	public void setServiceType(Integer serviceType) {
+		this.serviceType = serviceType;
+	}
 
-    public Integer getVatRate() 
-    {
-        return vatRate;
-    }
-    public void setVatAfterFee(Long vatAfterFee) 
-    {
-        this.vatAfterFee = vatAfterFee;
-    }
+	public Integer getServiceType() {
+		return serviceType;
+	}
 
-    public Long getVatAfterFee() 
-    {
-        return vatAfterFee;
-    }
-    public void setContainerNo(String containerNo) 
-    {
-        this.containerNo = containerNo;
-    }
+	public void setPayType(String payType) {
+		this.payType = payType;
+	}
 
-    public String getContainerNo() 
-    {
-        return containerNo;
-    }
+	public String getPayType() {
+		return payType;
+	}
 
-    public void setFromDate(Date fromDate) {
-        this.fromDate = fromDate;
-    }
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
 
-    public Date getFromDate() {
-        return fromDate;
-    }
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
 
-    public void setToDate(Date toDate) {
-        this.toDate = toDate;
-    }
+	public void setPaymentTime(Date paymentTime) {
+		this.paymentTime = paymentTime;
+	}
 
-    public Date getToDate() {
-        return toDate;
-    }
+	public Date getPaymentTime() {
+		return paymentTime;
+	}
 
-    public void setBlNo(String blNo) {
-        this.blNo = blNo;
-    }
+	public void setInvoiceNo(String invoiceNo) {
+		this.invoiceNo = invoiceNo;
+	}
 
-    public String getBlNo() {
-        return blNo;
-    }
+	public String getInvoiceNo() {
+		return invoiceNo;
+	}
 
-    public void setBookingNo(String bookingNo) {
-        this.bookingNo = bookingNo;
-    }
+	public void setSztp(String sztp) {
+		this.sztp = sztp;
+	}
 
-    public String getBookingNo() {
-        return bookingNo;
-    }
+	public String getSztp() {
+		return sztp;
+	}
 
-    public void setTaxCode(String taxCode) {
-        this.taxCode = taxCode;
-    }
+	public void setExchangeFee(Long exchangeFee) {
+		this.exchangeFee = exchangeFee;
+	}
 
-    public String getTaxCode() {
-        return taxCode;
-    }
+	public Long getExchangeFee() {
+		return exchangeFee;
+	}
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("shipmentId", getShipmentId())
-            .append("logisticGroupId", getLogisticGroupId())
-            .append("processOrderId", getProcessOrderId())
-            .append("processOrder", getProcessOrder())
-            .append("serviceType", getServiceType())
-            .append("payType", getPayType())
-            .append("paymentStatus", getPaymentStatus())
-            .append("invoiceNo", getInvoiceNo())
-            .append("sztp", getSztp())
-            .append("exchangeFee", getExchangeFee())
-            .append("vatRate", getVatRate())
-            .append("vatAfterFee", getVatAfterFee())
-            .append("containerNo", getContainerNo())
-            .append("remark", getRemark())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("fromDate", getFromDate())
-            .append("toDate", getToDate())
-            .append("blNo", getBlNo())
-            .append("bookingNo", getBookingNo())
-            .append("taxCode", getTaxCode())
-            .toString();
-    }
+	public void setVatRate(Integer vatRate) {
+		this.vatRate = vatRate;
+	}
+
+	public Integer getVatRate() {
+		return vatRate;
+	}
+
+	public void setVatAfterFee(Long vatAfterFee) {
+		this.vatAfterFee = vatAfterFee;
+	}
+
+	public Long getVatAfterFee() {
+		return vatAfterFee;
+	}
+
+	public void setContainerNo(String containerNo) {
+		this.containerNo = containerNo;
+	}
+
+	public String getContainerNo() {
+		return containerNo;
+	}
+
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public Date getFromDate() {
+		return fromDate;
+	}
+
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
+	}
+
+	public Date getToDate() {
+		return toDate;
+	}
+
+	public void setBlNo(String blNo) {
+		this.blNo = blNo;
+	}
+
+	public String getBlNo() {
+		return blNo;
+	}
+
+	public void setBookingNo(String bookingNo) {
+		this.bookingNo = bookingNo;
+	}
+
+	public String getBookingNo() {
+		return bookingNo;
+	}
+
+	public void setTaxCode(String taxCode) {
+		this.taxCode = taxCode;
+	}
+
+	public String getTaxCode() {
+		return taxCode;
+	}
+
+	public Long getShipmentDetailId() {
+		return shipmentDetailId;
+	}
+
+	public void setShipmentDetailId(Long shipmentDetailId) {
+		this.shipmentDetailId = shipmentDetailId;
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
+				.append("shipmentId", getShipmentId()).append("logisticGroupId", getLogisticGroupId())
+				.append("processOrderId", getProcessOrderId()).append("processOrder", getProcessOrder())
+				.append("serviceType", getServiceType()).append("payType", getPayType())
+				.append("paymentStatus", getPaymentStatus()).append("invoiceNo", getInvoiceNo())
+				.append("sztp", getSztp()).append("exchangeFee", getExchangeFee()).append("vatRate", getVatRate())
+				.append("vatAfterFee", getVatAfterFee()).append("containerNo", getContainerNo())
+				.append("remark", getRemark()).append("createBy", getCreateBy()).append("createTime", getCreateTime())
+				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime())
+				.append("fromDate", getFromDate()).append("toDate", getToDate()).append("blNo", getBlNo())
+				.append("bookingNo", getBookingNo()).append("taxCode", getTaxCode())
+				.append("shipmentDetailId", getShipmentDetailId()).toString();
+	}
 }

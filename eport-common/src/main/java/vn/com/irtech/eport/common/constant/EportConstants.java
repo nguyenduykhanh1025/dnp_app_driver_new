@@ -182,6 +182,8 @@ public interface EportConstants {
 	public static final String TOPIC_COMMENT_CANCEL_DROP_EMPTY = "Yêu cầu hủy lệnh giao container rỗng";
 	/** Topic comment req cancel order drop full */
 	public static final String TOPIC_COMMENT_CANCEL_DROP_FULL = "Yêu cầu hủy lệnh giao container hàng";
+	/** Topic comment container supplier reject */
+	public static final String TOPIC_COMMENT_OM_ORDER_REJECT = "Từ chối làm lệnh";
 
 	// User type on notification app window
 	/** User type om in app notification */
@@ -359,4 +361,10 @@ public interface EportConstants {
 	/** Container catos import/export status export */
 	public static final String CTNR_CATOS_IX_CD_EXPORT = "X";
 
+	/** Special service inspection (Kiem hoa) */
+	public static final Integer SPECIAL_SERVICE_INSPECTION = 1;
+	/** Special service sample (Lay mau) */
+	public static final Integer SPECIAL_SERVICE_SAMPLE = 2;
+	/** Special service inspection (phun trung) */
+	public static final Integer SPECIAL_SERVICE_DISINFECTION = 3;
 }

@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/send-cont-full";
+var prefix = ctx + "logistic/special-service";
 
 $(document).ready(function () {
     $("#billDatagrid").datagrid({
@@ -20,7 +20,7 @@ function formatMoney(value) {
     return value.format(2, 3, ',', '.');
 }
 
-Number.prototype.format = function(n, x, s, c) {
+Number.prototype.format = function (n, x, s, c) {
     var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
         num = this.toFixed(Math.max(0, ~~n));
 
