@@ -26,7 +26,7 @@ var detailInformationForContainerSpecial = {
 
 const SERVICE_TYPE = {
   pickupFull: 1,
-  dropFull: 4,
+  //dropFull: 4,
 };
 
 $(document).ready(function () {
@@ -140,7 +140,7 @@ $(document).ready(function () {
         arrayResult.push(serviceArray.alias);
         shipment.params.serviceArray = arrayResult;
       } else {
-        shipment.params.serviceArray = [1, 4];
+        shipment.params.serviceArray = [1];
       }
       loadTable();
     },
