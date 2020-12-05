@@ -1137,4 +1137,22 @@
 			</foreach>
         </where>
     </select>
+
+	<select id="getContainerListUnderShifting" resultType="vn.com.irtech.api.dto.ContainerInfoDto">
+		select select a.CNTR_NO, a.BLOCK, a.BAY, a.ROWW, a.TIER, a.BOOKING_NO, a.BL_NO, a.CNTR_STATE from DNP_PROD.TB_INVENTORY a 
+		left join (
+			select M.CNTR_NO, M.BLOCK, M.BAY, M.ROWW, M.TIER, M.BOOKING_NO, M.BL_NO, M.CNTR_STATE
+				FROM DNP_PROD.TB_INVENTORY M
+			<where>
+				AND M.CNTR_NO in
+				<foreach item="containerNo" collection="containerNos" open="(" separator="," close=")">
+					#{containerNo}
+				</foreach>
+			</where>
+		) b on a.CNTR_NO != b.CNTR_NO and a.BLOCK = b.BLOCK and a.BAY = b.BAY and a.ROWW = b.ROWW and a.TIER > b.TIER
+		<where>
+			<if test="blNo != null and blNo != ''"> AND TRIM(a.BL_NO) = #{blNo}</if>
+			<if test="bookingNo != null and bookingNo != ''"> AND TRIM(a.BOOKING_NO) = #{bookingNo}</if>
+		</where>
+	</select>
 </mapper>

@@ -419,6 +419,18 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
         }
         break;
     }
+
+    // check status
+    let check = '<i id="finish" class="fa fa-check easyui-tooltip" title="Chưa Xác Nhận Ngày Thực Hiện" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+    switch (sourceData[row].finishStatus) {
+      case 'Y':
+        check = '<i id="check" class="fa fa-check easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+      case 'W':
+        check = '<i id="check" class="fa fa-check easyui-tooltip" title="Chờ Được Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #f8ac59;"></i>';
+        break;
+    }
+
     // released status
     let released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
     switch (sourceData[row].finishStatus) {
@@ -435,7 +447,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     }
 
     // Return the content
-    let content = '<div>' + process + payment + released + '</div>';
+    let content = '<div>' + process + payment + check + released + '</div>';
     $(td).html(content);
   }
   return td;
@@ -611,6 +623,31 @@ function btnAttachRenderer(instance, td, row, col, prop, value, cellProperties) 
   return td;
 }
 
+function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
+  if (value != null && value != '') {
+    if (value.substring(2, 3) != "/") {
+      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+    }
+  } else {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function actualDateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'actualDateReceipt' + row).addClass("htMiddle").addClass("htCenter");
+  if (value != null && value != '') {
+    if (value.substring(2, 3) != "/") {
+      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+    }
+  } else {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+
 // CONFIGURATE HANDSONTABLE
 function configHandsond() {
   config = {
@@ -649,38 +686,42 @@ function configHandsond() {
         case 7:
           return 'Dịch vụ';
         case 8:
-          return 'Kích Thước';
+          return 'Ngày Thực Hiện';
         case 9:
-          return 'Chủ Hàng';
+          return 'Ngày Thực Hiện<br>Thực Tế';
         case 10:
-          return 'Tàu và Chuyến';
+          return 'Kích Thước';
         case 11:
-          return "Ngày tàu đến";
+          return 'Chủ Hàng';
         case 12:
-          return 'Cảng Xếp Hàng';
+          return 'Tàu và Chuyến';
         case 13:
-          return 'Cảng Dỡ Hàng';
+          return "Ngày tàu đến";
         case 14:
-          return 'Trọng Lượng (kg)';
+          return 'Cảng Xếp Hàng';
         case 15:
-          return 'Loại Hàng';
+          return 'Cảng Dỡ Hàng';
         case 16:
-          return 'Tên Hàng';
+          return 'Trọng Lượng (kg)';
         case 17:
-          return 'Số Seal';
+          return 'Loại Hàng';
         case 18:
-          return "Nhiệt Độ (c)";
+          return 'Tên Hàng';
         case 19:
-          return 'PTTT';
+          return 'Số Seal';
         case 20:
-          return 'Mã Số Thuế';
+          return "Nhiệt Độ (c)";
         case 21:
-          return 'Người Thanh Toán';
+          return 'PTTT';
         case 22:
+          return 'Mã Số Thuế';
+        case 23:
+          return 'Người Thanh Toán';
+        case 24:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 105, 120, 130, 100, 120, 150, 150, 200, 100, 100, 120, 120, 80, 100, 100, 80, 80, 100, 130, 200],
+    colWidths: [23, 21, 21, 105, 120, 130, 100, 120, 120, 120, 150, 150, 200, 100, 100, 120, 120, 80, 100, 100, 80, 80, 100, 130, 200],
     filter: "true",
     columns: [
       {
@@ -722,6 +763,22 @@ function configHandsond() {
         source: specialService,
         strict: true,
         renderer: specialServiceRenderer
+      },
+      {
+        data: "dateReceipt",
+        type: "date",
+        dateFormat: "DD/MM/YYYY",
+        correctFormat: true,
+        defaultDate: new Date(),
+        renderer: dateReceiptRenderer
+      },
+      {
+        data: "actualDateReceipt",
+        type: "date",
+        dateFormat: "DD/MM/YYYY",
+        correctFormat: true,
+        defaultDate: new Date(),
+        renderer: actualDateReceiptRenderer
       },
       {
         data: "sztp",
@@ -822,7 +879,7 @@ function configHandsond() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 22) {
+          if (selected[3] == 24) {
             e.stopImmediatePropagation();
           }
           break
@@ -862,7 +919,7 @@ function onChange(changes, source) {
 
     // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
     if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-      let vesselAndVoy = hot.getDataAtCell(change[0], 10);
+      let vesselAndVoy = hot.getDataAtCell(change[0], 12);
       //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
       if (vesselAndVoy) {
         if (currentVesselVoyage != vesselAndVoy) {
@@ -884,7 +941,7 @@ function onChange(changes, source) {
                   if (data.code == 0) {
                     hot.updateSettings({
                       cells: function (row, col, prop) {
-                        if (col == 12 || col == 13) {
+                        if (col == 14 || col == 15) {
                           let cellProperties = {};
                           dischargePortList = data.dischargePorts;
                           cellProperties.source = dischargePortList;
@@ -1045,6 +1102,14 @@ function getDataSelectedFromTable() {
         orderNo: object["orderNo"],
         paymentStatus: object["paymentStatus"]
       };
+      if (object["dateReceipt"] && object["dateReceipt"]) {
+        let dateReceipt = new Date(object["dateReceipt"].substring(6, 10) + "/" + object["dateReceipt"].substring(3, 5) + "/" + object["dateReceipt"].substring(0, 2));
+        shipmentDetail.dateReceipt = dateReceipt.getTime();
+      }
+      if (object["actualDateReceipt"] && object["actualDateReceipt"]) {
+        let dateReceipt = new Date(object["actualDateReceipt"].substring(6, 10) + "/" + object["actualDateReceipt"].substring(3, 5) + "/" + object["actualDateReceipt"].substring(0, 2));
+        shipmentDetail.dateReceipt = dateReceipt.getTime();
+      }
       if (berthplanList) {
         for (let i = 0; i < berthplanList.length; i++) {
           if (object["vslNm"] == berthplanList[i].vslAndVoy) {
@@ -1361,7 +1426,7 @@ function applyPriceReq(index, layero) {
 
 function attach(shipmentDetailId, containerNo) {
   if (!shipmentDetailId) {
-      $.modal.alertWarning("Quý khách vui lòng lưu khai báo container trước khi đính kèm tệp.");
+    $.modal.alertWarning("Quý khách vui lòng lưu khai báo container trước khi đính kèm tệp.");
   } else {
     layer.open({
       type: 2,

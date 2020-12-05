@@ -114,6 +114,7 @@
 		<result property="dateReceiptStatus" column="date_receipt_status" />
 		<result property="dateReceipt" column="date_receipt" />
 		<result property="specialService" column="special_service" />
+		<result property="actualDateReceipt" column="actual_date_receipt" />
 	</resultMap>
 
 	<!-- <resultMap type="ShipmentDetailExtend" id="ShipmentDetailResult" extends="ShipmentDetail"> 
@@ -155,7 +156,7 @@
 		delivery_address, delivery_mobile, delivery_remark, eta, etd,
 		container_remark, det_free_time,
 		create_by, create_time, update_by,
-		update_time,power_draw_date, date_receipt, date_receipt_status,
+		update_time,power_draw_date, date_receipt, date_receipt_status, actual_date_receipt,
 		special_service from
 		shipment_detail
 	</sql>
@@ -479,7 +480,7 @@
 		delivery_address, delivery_mobile, delivery_remark, eta, etd, status,
 		remark, special_service,
 		create_by, create_time, update_by,
-		update_time, date_receipt_status, date_receipt
+		update_time, date_receipt_status, date_receipt, actual_date_receipt
 		from
 		shipment_detail
 		<where>
@@ -670,6 +671,7 @@
 			<if test="containerRemark != null and containerRemark != ''">container_remark,</if>
 			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">date_receipt_status,</if>
 			<if test="dateReceipt != null">date_receipt,</if>
+			<if test="actualDateReceipt != null">actual_date_receipt,</if>
 			<if test="specialService != null">special_service,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
 			<if test="createBy != null  and createBy != ''">create_by,</if>
@@ -773,6 +775,7 @@
 			<if test="containerRemark != null and containerRemark != ''">#{containerRemark},</if>
 			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">#{dateReceiptStatus},</if>
 			<if test="dateReceipt != null">#{dateReceipt},</if>
+			<if test="actualDateReceipt != null">#{actualDateReceipt},</if>
 			<if test="specialService != null">#{specialService},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
 			<if test="createBy != null  and createBy != ''">#{createBy},</if>
@@ -787,6 +790,7 @@
 		<trim prefix="SET" suffixOverrides=",">
 			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">date_receipt_status = #{dateReceiptStatus},</if>
 			<if test="dateReceipt != null">date_receipt = #{dateReceipt},</if>
+			<if test="actualDateReceipt != null">actual_date_receipt = #{actualDateReceipt},</if>
 			<if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
 			<if test="processOrderId != null">process_order_id = #{processOrderId},</if>
 			<if test="registerNo != null  and registerNo != ''">register_no = #{registerNo},</if>
@@ -1746,6 +1750,7 @@
 			</if>
 			<if test="shipmentDetail.dateReceiptStatus != null and shipmentDetail.dateReceiptStatus != ''">date_receipt_status = #{shipmentDetail.dateReceiptStatus},</if>
 			<if test="shipmentDetail.dateReceipt != null">date_receipt = #{shipmentDetail.dateReceipt},</if>
+			<if test="shipmentDetail.actualDateReceipt != null">actual_date_receipt = #{shipmentDetail.actualDateReceipt},</if>
 			<if test="shipmentDetail.specialService != null">special_service = #{shipmentDetail.specialService},</if>
 			update_time = sysdate
 		</trim>

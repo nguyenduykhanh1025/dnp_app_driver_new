@@ -511,6 +511,9 @@ public class ShipmentDetail extends BaseEntity {
 	 */
 	private Integer specialService;
 
+	/** Actual date receipt for special service */
+	private Date actualDateReceipt;
+
 	public Long getId() {
 		return id;
 	}
@@ -1359,6 +1362,14 @@ public class ShipmentDetail extends BaseEntity {
 		this.specialService = specialService;
 	}
 
+	public Date getActualDateReceipt() {
+		return actualDateReceipt;
+	}
+
+	public void setActualDateReceipt(Date actualDateReceipt) {
+		this.actualDateReceipt = actualDateReceipt;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -1402,6 +1413,7 @@ public class ShipmentDetail extends BaseEntity {
 				.append("dangerousUnno", getDangerousUnno()).append("dangerousNameProduct", getDangerousNameProduct())
 				.append("dangerousPacking", getDangerousPacking()).append("contSpecialStatus", getContSpecialStatus())
 				.append("frozenStatus", getFrozenStatus()).append("dateReceiptStatus", getDateReceiptStatus())
-				.append("dateReceipt", getDateReceipt()).append("specialService", getSpecialService()).toString();
+				.append("dateReceipt", getDateReceipt()).append("specialService", getSpecialService())
+				.append("actualDateReceipt", getActualDateReceipt()).toString();
 	}
 }

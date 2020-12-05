@@ -159,6 +159,7 @@ public class SupportSpecialServiceController extends OmBaseController {
 				shipmentDetail.setProcessStatus("Y");
 				if ("Credit".equalsIgnoreCase(shipmentDetail.getPayType())) {
 					shipmentDetail.setPaymentStatus("Y");
+					shipmentDetail.setDateReceiptStatus("W");
 				} else {
 					shipmentDetail.setPaymentStatus("W");
 				}

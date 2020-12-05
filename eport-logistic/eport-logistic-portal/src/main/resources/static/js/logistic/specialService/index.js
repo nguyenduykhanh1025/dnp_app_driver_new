@@ -563,6 +563,18 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
                 break;
         }
+
+        // check status
+        let check = '<i id="finish" class="fa fa-check easyui-tooltip" title="Chưa Xác Nhận Ngày Thực Hiện" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+        switch (sourceData[row].finishStatus) {
+            case 'Y':
+                check = '<i id="check" class="fa fa-check easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+                break;
+            case 'W':
+                check = '<i id="check" class="fa fa-check easyui-tooltip" title="Chờ Được Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #f8ac59;"></i>';
+                break;
+        }
+
         // released status
         let released = '<i id="finish" class="fa fa-ship easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
         switch (sourceData[row].finishStatus) {
@@ -583,10 +595,10 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
 
         content += process + payment
         // Domestic cont: VN --> not show
-        if (sourceData[row].dischargePort.substring(0, 2) != 'VN') {
+        if (sourceData[row].dischargePort && sourceData[row].dischargePort.substring(0, 2) != 'VN') {
             content += customs;
         }
-        content += released + '</div>';
+        content += check + released + '</div>';
         $(td).html(content);
     }
     return td;
@@ -911,6 +923,32 @@ function btnAttachRenderer(instance, td, row, col, prop, value, cellProperties) 
     cellProperties.readOnly = "true";
     return td;
 }
+function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
+    if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+        }
+    } else {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function actualDateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'actualDateReceipt' + row).addClass("htMiddle").addClass("htCenter");
+    if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+        }
+    } else {
+        value = '';
+    }
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
 
 // CONFIGURATE HANDSONTABLE
 function configHandson() {
@@ -946,38 +984,42 @@ function configHandson() {
                 case 4:
                     return '<span class="required">Dịch vụ</span>';
                 case 5:
-                    return 'Kích Thước';
+                    return 'Ngày Thực Hiện';
                 case 6:
-                    return 'Chủ Hàng';
+                    return 'Ngày Thực Hiện<br>Thực Tế';
                 case 7:
-                    return 'Tàu và Chuyến';
+                    return 'Kích Thước';
                 case 8:
-                    return "Ngày tàu đến";
+                    return 'Chủ Hàng';
                 case 9:
-                    return 'Cảng Xếp Hàng';
+                    return 'Tàu và Chuyến';
                 case 10:
-                    return 'Cảng Dỡ Hàng';
+                    return "Ngày tàu đến";
                 case 11:
-                    return 'Trọng Lượng (kg)';
+                    return 'Cảng Xếp Hàng';
                 case 12:
-                    return 'Loại Hàng';
+                    return 'Cảng Dỡ Hàng';
                 case 13:
-                    return 'Tên Hàng';
+                    return 'Trọng Lượng (kg)';
                 case 14:
-                    return 'Số Seal';
+                    return 'Loại Hàng';
                 case 15:
-                    return "Nhiệt Độ (c)";
+                    return 'Tên Hàng';
                 case 16:
-                    return 'PTTT';
+                    return 'Số Seal';
                 case 17:
-                    return 'Mã Số Thuế';
+                    return "Nhiệt Độ (c)";
                 case 18:
-                    return 'Người Thanh Toán';
+                    return 'PTTT';
                 case 19:
+                    return 'Mã Số Thuế';
+                case 20:
+                    return 'Người Thanh Toán';
+                case 21:
                     return "Ghi Chú";
             }
         },
-        colWidths: [40, 100, 120, 100, 120, 150, 150, 200, 100, 100, 120, 120, 80, 100, 100, 80, 80, 100, 130, 200],
+        colWidths: [40, 100, 120, 100, 120, 120, 120, 150, 150, 200, 100, 100, 120, 120, 80, 100, 100, 80, 80, 100, 130, 200],
         filter: "true",
         columns: [
             {
@@ -1006,6 +1048,22 @@ function configHandson() {
                 source: specialService,
                 strict: true,
                 renderer: specialServiceRenderer
+            },
+            {
+                data: "dateReceipt",
+                type: "date",
+                dateFormat: "DD/MM/YYYY",
+                correctFormat: true,
+                defaultDate: new Date(),
+                renderer: dateReceiptRenderer
+            },
+            {
+                data: "actualDateReceipt",
+                type: "date",
+                dateFormat: "DD/MM/YYYY",
+                correctFormat: true,
+                defaultDate: new Date(),
+                renderer: actualDateReceiptRenderer
             },
             {
                 data: "sztp",
@@ -1109,7 +1167,7 @@ function configHandson() {
                 // Arrow Right
                 case 39:
                     selected = hot.getSelected()[0];
-                    if (selected[3] == 19) {
+                    if (selected[3] == 21) {
                         e.stopImmediatePropagation();
                     }
                     break
@@ -1138,7 +1196,7 @@ function onChange(changes, source) {
         // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
         if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
             if (!updateCatos) {
-                let vesselAndVoy = hot.getDataAtCell(change[0], 7);
+                let vesselAndVoy = hot.getDataAtCell(change[0], 9);
                 if (vesselAndVoy) {
                     if (currentVesselVoyage != vesselAndVoy) {
                         currentVesselVoyage = vesselAndVoy;
@@ -1160,7 +1218,7 @@ function onChange(changes, source) {
                                         if (data.code == 0) {
                                             hot.updateSettings({
                                                 cells: function (row, col, prop) {
-                                                    if (col == 9 || col == 10) {
+                                                    if (col == 11 || col == 12) {
                                                         let cellProperties = {};
                                                         dischargePortList = data.dischargePorts;
                                                         cellProperties.source = dischargePortList;
@@ -1174,25 +1232,18 @@ function onChange(changes, source) {
                             }
                         }
                     }
-                    hot.setDataAtCell(change[0], 8, currentEta);
+                    hot.setDataAtCell(change[0], 10, currentEta);
                 }
             } else {
                 updateCatos = false;
             }
             // check to input temperature
         } else if (change[1] == "sztp") {
-
-            if (change[3] && hot.getDataAtCell(change[0], 4)) {
-                $('#detailBtn' + change[0]).prop('disabled', false);
-            } else {
-                $('#detailBtn' + change[0]).prop('disabled', true);
-            }
-
             if (change[3] && change[3].length > 3 && change[3].substring(0, 4).includes("R")) {
                 temperatureDisable[change[0]] = 0;
                 hot.updateSettings({
                     cells: function (row, col, prop) {
-                        if (row == change[0] && col == 15) {
+                        if (row == change[0] && col == 17) {
                             let cellProperties = {};
                             cellProperties.readOnly = false;
                             return cellProperties;
@@ -1203,7 +1254,7 @@ function onChange(changes, source) {
                 temperatureDisable[change[0]] = 1;
                 hot.updateSettings({
                     cells: function (row, col, prop) {
-                        if (row == change[0] && col == 15) {
+                        if (row == change[0] && col == 17) {
                             let cellProperties = {};
                             cellProperties.readOnly = true;
                             $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
@@ -1215,7 +1266,7 @@ function onChange(changes, source) {
         } else if (change[1] == "containerNo") {
             if (!change[3]) {
                 sztpListDisable[change[0]] = 0;
-                cleanCell(change[0], 5, sizeList);
+                cleanCell(change[0], 7, sizeList);
             } else {
                 if (checkContainerNo(change[3])) {
                     $.ajax({
@@ -1231,38 +1282,33 @@ function onChange(changes, source) {
                                     let cntrInfo = data.containerInfo;
                                     // Set data
                                     updateCatos = true;
-                                    hot.setDataAtCell(change[0], 5, cntrInfo.sztp); // Kích Thước
-                                    hot.setDataAtCell(change[0], 6, cntrInfo.consignee); // Chủ Hàng
-                                    hot.setDataAtCell(change[0], 7, cntrInfo.vslCd + " - " + cntrInfo.vslNm + " - " + cntrInfo.inVoy); // Tàu và Chuyến
-                                    hot.setDataAtCell(change[0], 9, cntrInfo.pol); // Cảng Xếp Hàng
-                                    hot.setDataAtCell(change[0], 10, cntrInfo.pod); // Cảng Dỡ Hàng
-                                    hot.setDataAtCell(change[0], 11, cntrInfo.wgt); // Trọng Lượng (kg)
-                                    hot.setDataAtCell(change[0], 12, cntrInfo.cargoType); // Loại Hàng
-                                    hot.setDataAtCell(change[0], 14, cntrInfo.sealNo1); // Số Seal
-                                    hot.setDataAtCell(change[0], 19, cntrInfo.remark); // Ghi Chú
+                                    hot.setDataAtCell(change[0], 7, cntrInfo.sztp); // Kích Thước
+                                    hot.setDataAtCell(change[0], 8, cntrInfo.consignee); // Chủ Hàng
+                                    hot.setDataAtCell(change[0], 9, cntrInfo.vslCd + " - " + cntrInfo.vslNm + " - " + cntrInfo.inVoy); // Tàu và Chuyến
+                                    hot.setDataAtCell(change[0], 11, cntrInfo.pol); // Cảng Xếp Hàng
+                                    hot.setDataAtCell(change[0], 12, cntrInfo.pod); // Cảng Dỡ Hàng
+                                    hot.setDataAtCell(change[0], 13, cntrInfo.wgt); // Trọng Lượng (kg)
+                                    hot.setDataAtCell(change[0], 14, cntrInfo.cargoType); // Loại Hàng
+                                    hot.setDataAtCell(change[0], 16, cntrInfo.sealNo1); // Số Seal
+                                    hot.setDataAtCell(change[0], 21, cntrInfo.remark); // Ghi Chú
                                 } else {
                                     sztpListDisable[change[0]] = 0;
-                                    cleanCell(change[0], 5, sizeList);
+                                    cleanCell(change[0], 7, sizeList);
                                 }
                             } else {
                                 sztpListDisable[change[0]] = 0;
-                                cleanCell(change[0], 5, sizeList);
+                                cleanCell(change[0], 7, sizeList);
                             }
                         },
                         error: function (err) {
                             sztpListDisable[change[0]] = 0;
-                            cleanCell(change[0], 5, sizeList);
+                            cleanCell(change[0], 7, sizeList);
                         }
                     });
                 } else {
                     sztpListDisable[change[0]] = 0;
-                    cleanCell(change[0], 5, sizeList);
+                    cleanCell(change[0], 7, sizeList);
                 }
-            }
-            if (change[3] && hot.getDataAtCell(change[0], 5)) {
-                $('#detailBtn' + change[0]).prop('disabled', false);
-            } else {
-                $('#detailBtn' + change[0]).prop('disabled', true);
             }
         }
     });
@@ -1581,6 +1627,10 @@ function getDataFromTable(isValidate) {
                 return false;
             }
         }
+        if (object["dateReceipt"] && object["dateReceipt"]) {
+            let dateReceipt = new Date(object["dateReceipt"].substring(6, 10) + "/" + object["dateReceipt"].substring(3, 5) + "/" + object["dateReceipt"].substring(0, 2));
+            shipmentDetail.dateReceipt = dateReceipt.getTime();
+        }
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
         if (object["status"] == 1 || object["status"] == null) {
@@ -1673,33 +1723,39 @@ function saveShipmentDetail() {
         if (getDataFromTable(true)) {
             if (shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
                 shipmentDetails[0].processStatus = conts;
-                $.modal.loading("Đang xử lý...");
-                $.ajax({
-                    url: prefix + "/" + shipmentSelected.id + "/shipment-detail",
-                    method: "post",
-                    contentType: "application/json",
-                    accept: 'text/plain',
-                    data: JSON.stringify(shipmentDetails),
-                    dataType: 'text',
-                    success: function (data) {
-                        var result = JSON.parse(data);
-                        if (result.code == 0) {
-                            $.modal.msgSuccess(result.msg);
-                            reloadShipmentDetail();
-                        } else {
-                            if (result.conts != null) {
-                                $.modal.alertError("Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>" + result.conts);
-                            } else {
-                                $.modal.alertError(result.msg);
-                            }
-                        }
-                        $.modal.closeLoading();
-                    },
-                    error: function (result) {
-                        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau.");
-                        $.modal.closeLoading();
-                    },
+                // Get container need to save (id is null)
+                let containers = "";
+                shipmentDetails.forEach(shipmentDt => {
+                    if (shipmentDt.id == null) {
+                        containers += shipmentDt.containerNo + ",";
+                    }
                 });
+                if (containers.length > 0) {
+                    // Check container need shifting
+                    $.modal.loading("Đang xử lý...");
+                    $.ajax({
+                        url: prefix + "/container/shifting",
+                        method: "post",
+                        data: JSON.stringify(shipmentDetails),
+                        success: function (res) {
+                            if (res.code == 0) {
+                                save();
+                            } else {
+                                $.modal.closeLoading();
+                                $.modal.confirmShipment("Xác nhận xóa khai báo container ?", function () {
+                                    $.modal.loading("Đang xử lý...");
+                                    save();
+                                });
+                            }
+                        },
+                        error: function (result) {
+                            $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau.");
+                            $.modal.closeLoading();
+                        },
+                    });
+                } else {
+                    save();
+                }
             } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
                 $.modal.alertError("Số container nhập vào vượt quá số container khai báo của lô.");
             } else {
@@ -1707,6 +1763,35 @@ function saveShipmentDetail() {
             }
         }
     }
+}
+
+function save() {
+    $.ajax({
+        url: prefix + "/" + shipmentSelected.id + "/shipment-detail",
+        method: "post",
+        contentType: "application/json",
+        accept: 'text/plain',
+        data: JSON.stringify(shipmentDetails),
+        dataType: 'text',
+        success: function (data) {
+            var result = JSON.parse(data);
+            if (result.code == 0) {
+                $.modal.msgSuccess(result.msg);
+                reloadShipmentDetail();
+            } else {
+                if (result.conts != null) {
+                    $.modal.alertError("Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>" + result.conts);
+                } else {
+                    $.modal.alertError(result.msg);
+                }
+            }
+            $.modal.closeLoading();
+        },
+        error: function (result) {
+            $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau.");
+            $.modal.closeLoading();
+        },
+    });
 }
 
 // DELETE SHIPMENT DETAIL

@@ -119,6 +119,14 @@ public class YardMonitorSpecialServiceController extends AdminBaseController {
 		return PREFIX + "/attach";
 	}
 
+	@GetMapping("/{shipmentDetailId}/date-receipt")
+	public String getConfirmDateReceiptView(@PathVariable("shipmentDetailId") Long shipmentDetailId, ModelMap mmap) {
+		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		mmap.put("dateReceipt", shipmentDetail.getDateReceipt());
+		mmap.put("actualDateReceipt", shipmentDetail.getActualDateReceipt());
+		return PREFIX + "/date-receipt";
+	}
+
 	@PostMapping("/shipments")
 	@ResponseBody
 	public AjaxResult getShipments(@RequestBody PageAble<Shipment> param) {
@@ -262,5 +270,16 @@ public class YardMonitorSpecialServiceController extends AdminBaseController {
 		ajaxResult.put("specialServiceDictData", sysDictDatas);
 
 		return ajaxResult;
+	}
+
+	@PostMapping("/date-receipt")
+	@ResponseBody
+	@Transactional
+	public AjaxResult confirmDateReceipt(String shipmentDetailIds, Date actualDateReceipt) {
+		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
+		shipmentDetailUpdate.setDateReceiptStatus("Y");
+		shipmentDetailUpdate.setActualDateReceipt(actualDateReceipt);
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
+		return success();
 	}
 }

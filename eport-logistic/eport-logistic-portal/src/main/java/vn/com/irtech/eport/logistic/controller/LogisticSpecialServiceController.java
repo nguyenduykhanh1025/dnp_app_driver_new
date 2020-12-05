@@ -425,7 +425,7 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 					shipmentDetailReference.setCommodity(inputDetail.getCommodity());
 					shipmentDetailReference.setSealNo(inputDetail.getSealNo());
 					shipmentDetailReference.setLoadingPort(inputDetail.getLoadingPort());
-
+					shipmentDetailReference.setDateReceipt(inputDetail.getDateReceipt());
 					shipmentDetailReference.setRemark(inputDetail.getRemark());
 
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
@@ -455,7 +455,9 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
 					shipmentDetail.setCreateBy(user.getFullName());
 					shipmentDetail.setShipmentId(shipmentId);
+					shipmentDetail.setDateReceipt(inputDetail.getDateReceipt());
 					shipmentDetail.setStatus(1);
+					shipmentDetail.setDateReceiptStatus("N");
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setUserVerifyStatus("N");
 					shipmentDetail.setProcessStatus("N");
@@ -746,6 +748,17 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 			return error("Không tìm thấy thông tin chi tiết lô đã chọn.");
 		}
 
+		String containerNo = "";
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			if (EportConstants.SPECIAL_SERVICE_SAMPLE == shipmentDetail.getSpecialService()) {
+				containerNo += shipmentDetail.getContainerNo() + ",";
+			}
+		}
+
+		if (StringUtils.isNotEmpty(containerNo)) {
+			return error("Các container " + containerNo.substring(0, containerNo.length() - 1)
+					+ " cần đính kèm tệp để có thể thực hiện dịch vụ.");
+		}
 		return success();
 	}
 
@@ -919,7 +932,7 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult deleteShipmentDetailFile(Long id) throws IOException {
 		// TODO: Validate permission before delete file
-		
+
 		ShipmentImage shipmentImageParam = new ShipmentImage();
 		shipmentImageParam.setId(id);
 		ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
@@ -928,6 +941,20 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 				Global.getUploadPath() + "/booking/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
 		if (file.delete()) {
 			shipmentImageService.deleteShipmentImageById(id);
+		}
+		return success();
+	}
+
+	@PostMapping("/container/shifting")
+	@ResponseBody
+	public AjaxResult checkContainerNeedShifting(String containerNos, String blNo, String bookingNo) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("containerNos", containerNos);
+		map.put("blNo", blNo);
+		map.put("bookingNo", bookingNo);
+		List<ContainerInfoDto> cntrInfos = catosApiService.getContainerUnderShifting(map);
+		if (CollectionUtils.isNotEmpty(cntrInfos)) {
+			return error();
 		}
 		return success();
 	}
