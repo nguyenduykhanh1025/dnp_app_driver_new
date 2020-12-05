@@ -93,8 +93,8 @@ public class ContainerStatusTask {
 				if(cntrInfo == null) {
 					if("F".equalsIgnoreCase(detail.getFe())) {
 						logger.debug(String.format("Container not found on catos (%s/%s/%s)", detail.getContainerNo(), detail.getFe(), detail.getVslNm() + detail.getVoyNo()));// Container not exist in catos
-						detail.setFinishStatus("E"); // Error
-						shipmentDetailService.updateShipmentDetail(detail);
+//						detail.setFinishStatus("E"); // Error
+//						shipmentDetailService.updateShipmentDetail(detail);
 					}
 					continue; // next
 				}

@@ -2,7 +2,9 @@ package vn.com.irtech.eport.web.controller.om;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -207,6 +209,9 @@ public class SupportSpecialServiceController extends OmBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentImage shipmentImage = new ShipmentImage();
 		shipmentImage.setShipmentId(shipmentId);
+		Map<String, Object> params = new HashMap<>();
+		params.put("nullShipmentDetailId", true);
+		shipmentImage.setParams(params);
 		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
 		for (ShipmentImage shipmentImage2 : shipmentImages) {
 			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());

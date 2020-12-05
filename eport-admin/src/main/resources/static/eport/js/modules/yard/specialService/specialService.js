@@ -1416,8 +1416,8 @@ function confirmDateReceipt() {
       fix: true,
       maxmin: true,
       shade: 0.3,
-      title: "Đính kèm tệp cho container " + containerNo,
-      content: PREFIX + "/" + shipmentDetailId + "/date-receipt",
+      title: "Xác nhận ngày thực hiện",
+      content: PREFIX + "/" + shipmentSelected.shipmentDetailId + "/date-receipt",
       btn: ["Xác Nhận", "Hủy"],
       shadeClose: false,
       yes: function (index, layero) {

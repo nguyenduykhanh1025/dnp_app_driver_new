@@ -207,6 +207,9 @@ public class YardMonitorSpecialServiceController extends AdminBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentImage shipmentImage = new ShipmentImage();
 		shipmentImage.setShipmentId(shipmentId);
+		Map<String, Object> params = new HashMap<>();
+		params.put("nullShipmentDetailId", true);
+		shipmentImage.setParams(params);
 		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
 		for (ShipmentImage shipmentImage2 : shipmentImages) {
 			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());

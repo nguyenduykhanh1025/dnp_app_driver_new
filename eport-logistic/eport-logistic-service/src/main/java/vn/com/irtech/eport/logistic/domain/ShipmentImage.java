@@ -2,6 +2,7 @@ package vn.com.irtech.eport.logistic.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
 /**
@@ -68,14 +69,10 @@ public class ShipmentImage extends BaseEntity {
 	@Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-                .append("id", getId())
-                .append("shipmentId", getShipmentId())
-                .append("path", getPath())
-                .append("createBy", getCreateBy())
-                .append("createTime", getCreateTime())
-                .append("updateBy", getUpdateBy())
-                .append("updateTime", getUpdateTime())
-                .append("shipmentDetailId", getShipmentDetailId())
+				.append("id", getId()).append("shipmentId", getShipmentId()).append("path", getPath())
+				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
+				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime())
+				.append("shipmentDetailId", getShipmentDetailId()).append("params", getParams())
                 .toString();
     }
 }
