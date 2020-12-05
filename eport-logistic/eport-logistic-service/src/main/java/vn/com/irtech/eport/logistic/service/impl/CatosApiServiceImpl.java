@@ -1222,7 +1222,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String url = Global.getApiUrl() + "/container/shifting";
 			logger.debug("Call CATOS API get container under shifting :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity<Map<String, String>> httpEntity = new HttpEntity<Map<String, String>(containerInfo);
+			HttpEntity<Map<String, String>> httpEntity = new HttpEntity<Map<String, String>>(containerInfo);
 			ResponseEntity<List<ContainerInfoDto>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
 					new ParameterizedTypeReference<List<ContainerInfoDto>>() {
 					});
