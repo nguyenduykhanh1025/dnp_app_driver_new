@@ -41,6 +41,14 @@ public interface IShipmentDetailService {
 	 */
 	public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail);
 	
+	/**
+	 * Get Shipment Details List Not Like Cont Reefer
+	 * 
+	 * @param shipmentDetail Shipment Details
+	 * @return Shipment Details List
+	 */
+	public List<ShipmentDetail> selectShipmentDetailListNotHaveContReefer(ShipmentDetail shipmentDetail);
+	
 	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail);
 	
 	public List<ShipmentDetail> selectShipmentDetailDangerous(ShipmentDetail shipmentDetail);

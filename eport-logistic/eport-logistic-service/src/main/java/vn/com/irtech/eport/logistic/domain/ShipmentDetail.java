@@ -501,10 +501,29 @@ public class ShipmentDetail extends BaseEntity {
 	private String frozenStatus;
 
 	private Date powerDrawDate;
-
+	private String powerDrawDateStatus;
+	
 	private String dateReceiptStatus;
-
 	private Date dateReceipt;
+	
+	private String truckNo;
+	private String chassisNo;
+	 
+	public String getTruckNo() {
+		return truckNo;
+	}
+
+	public void setTruckNo(String truckNo) {
+		this.truckNo = truckNo;
+	}
+
+	public String getChassisNo() {
+		return chassisNo;
+	}
+
+	public void setChassisNo(String chassisNo) {
+		this.chassisNo = chassisNo;
+	}
 
 	/**
 	 * 1: inspection (Kiem hoa) 2: sample (Lay mau) 3: disinfection (Phun trung)
@@ -514,6 +533,10 @@ public class ShipmentDetail extends BaseEntity {
 	/** Actual date receipt for special service */
 	private Date actualDateReceipt;
 
+	private int humidity;
+
+	private int ventilation;
+	
 	public Long getId() {
 		return id;
 	}
@@ -1338,6 +1361,14 @@ public class ShipmentDetail extends BaseEntity {
 		this.powerDrawDate = powerDrawDate;
 	}
 
+	public String getPowerDrawDateStatus() {
+		return powerDrawDateStatus;
+	}
+
+	public void setPowerDrawDateStatus(String powerDrawDateStatus) {
+		this.powerDrawDateStatus = powerDrawDateStatus;
+	}
+
 	public String getDateReceiptStatus() {
 		return dateReceiptStatus;
 	}
@@ -1368,6 +1399,22 @@ public class ShipmentDetail extends BaseEntity {
 
 	public void setActualDateReceipt(Date actualDateReceipt) {
 		this.actualDateReceipt = actualDateReceipt;
+	}
+	
+	public int getHumidity() {
+		return humidity;
+	}
+
+	public void setHumidity(int humidity) {
+		this.humidity = humidity;
+	}
+
+	public int getVentilation() {
+		return ventilation;
+	}
+
+	public void setVentilation(int ventilation) {
+		this.ventilation = ventilation;
 	}
 
 	@Override
@@ -1414,6 +1461,12 @@ public class ShipmentDetail extends BaseEntity {
 				.append("dangerousPacking", getDangerousPacking()).append("contSpecialStatus", getContSpecialStatus())
 				.append("frozenStatus", getFrozenStatus()).append("dateReceiptStatus", getDateReceiptStatus())
 				.append("dateReceipt", getDateReceipt()).append("specialService", getSpecialService())
-				.append("actualDateReceipt", getActualDateReceipt()).toString();
+				.append("actualDateReceipt", getActualDateReceipt())
+				.append("dateReceipt", getDateReceipt())
+				.append("humidity", getHumidity())
+				.append("ventilation", getVentilation())
+				.append("powerDrawDate", getPowerDrawDate())
+				.append("powerDrawDateStatus", getPowerDrawDateStatus()).toString();
+		
 	}
 }

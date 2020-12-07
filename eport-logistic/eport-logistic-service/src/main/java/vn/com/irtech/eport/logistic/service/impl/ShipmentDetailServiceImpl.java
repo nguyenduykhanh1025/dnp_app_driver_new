@@ -154,7 +154,18 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.selectShipmentDetailList(shipmentDetail);
 	}
-
+	
+	/**
+	 * Get Shipment Details List Not Like Cont Reefer
+	 * 
+	 * @param shipmentDetail Shipment Details
+	 * @return Shipment Details
+	 */
+	@Override
+	public List<ShipmentDetail> selectShipmentDetailListNotHaveContReefer(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.selectShipmentDetailListNotHaveContReefer(shipmentDetail);
+	}
+	
 	@Override
 	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.selectShipmentDetailListCont(shipmentDetail);
@@ -1543,12 +1554,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		processOrder.setPod(detail.getDischargePort());
 		processOrder.setOpr(detail.getOpeCode());
 		processOrder.setPol("VNDAD");
-		processOrder.setFe("E");
-		//
 		processOrder.setRunnable(false);
 		processOrder.setStatus(1); // on progress
 		processOrder.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
-		//
 		processOrderService.insertProcessOrder(processOrder);
 		String payer = taxCode;
 		String payerName = "";
@@ -1568,119 +1576,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			} else {
 				shipmentDetail.setPayType("Cash");
 			}
-			//
 			shipmentDetail.setUserVerifyStatus("Y");
 			shipmentDetail.setProcessStatus("W");
-			//
-			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
-		}
-		return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
-	}
-
-	/**
-	 * Make order unloading cargo
-	 * 
-	 * @param shipmentDetails
-	 * @param shipment
-	 * @param taxCode
-	 * @param creditFlag
-	 * @return List<ServiceSendFullRobotReq>
-	 */
-	@Override
-	public List<ServiceSendFullRobotReq> makeOrderUnloadingCargo(List<ShipmentDetail> shipmentDetails,
-			Shipment shipment, String taxCode, boolean creditFlag) {
-		if (shipmentDetails.size() > 0) {
-			List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
-			Collections.sort(shipmentDetails, new SztpComparator());
-			String sztp = shipmentDetails.get(0).getSztp();
-			List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				if (!sztp.equals(shipmentDetail.getSztp())) {
-					serviceRobotReq.add(groupShipmentDetailByUnloadingCargoOrder(shipmentDetails.get(0).getId(),
-							shipmentOrderList, shipment, taxCode, creditFlag, false));
-					sztp = shipmentDetail.getSztp();
-					shipmentOrderList = new ArrayList<>();
-				}
-				shipmentOrderList.add(shipmentDetail);
-			}
-			serviceRobotReq.add(groupShipmentDetailByUnloadingCargoOrder(shipmentDetails.get(0).getId(),
-					shipmentOrderList, shipment, taxCode, creditFlag, false));
-			return serviceRobotReq;
-		}
-		return null;
-	}
-
-	@Transactional
-	private ServiceSendFullRobotReq groupShipmentDetailByUnloadingCargoOrder(Long registerNo,
-			List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag,
-			Boolean orderByBl) {
-		ShipmentDetail detail = shipmentDetails.get(0);
-		ProcessOrder processOrder = new ProcessOrder();
-		if (orderByBl) {
-			processOrder.setModee("Pickup Order By BL");
-		} else {
-			processOrder.setModee("Truck Out");
-		}
-		processOrder.setConsignee(detail.getConsignee());
-		processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
-		try {
-			String trucker = getTruckerFromRegNoCatos(taxCode);
-			processOrder.setTruckCo(trucker + " : " + getTruckCoName(trucker));
-		} catch (Exception e) {
-			logger.error("Error when get company name with tax code: " + e);
-		}
-		processOrder.setTaxCode(taxCode);
-		if (creditFlag) {
-			processOrder.setPayType("Credit");
-		} else {
-			processOrder.setPayType("Cash");
-		}
-		ProcessOrder tempProcessOrder = getYearBeforeAfter(detail.getVslNm(), detail.getVoyNo());
-		if (tempProcessOrder != null) {
-			processOrder.setYear(tempProcessOrder.getYear());
-			processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
-		} else {
-			processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
-			processOrder.setBeforeAfter("Before");
-		}
-		processOrder.setTrucker(getTruckerFromRegNoCatos(taxCode));
-		processOrder.setBlNo(detail.getBlNo());
-		processOrder.setPickupDate(detail.getExpiredDem());
-		processOrder.setVessel(detail.getVslNm());
-		processOrder.setVoyage(detail.getVoyNo());
-		processOrder.setSztp(detail.getSztp());
-		processOrder.setContNumber(shipmentDetails.size());
-		processOrder.setShipmentId(shipment.getId());
-
-		processOrder.setRunnable(false);
-		processOrder.setStatus(1); // on progress
-		processOrder.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
-
-		processOrderService.insertProcessOrder(processOrder);
-		String payer = taxCode;
-		String payerName = "";
-		try {
-			logger.debug("Get payer name for shipment detail by tax code: " + taxCode);
-			payerName = catosApiService.getGroupNameByTaxCode(taxCode).getGroupName();
-		} catch (Exception e) {
-			logger.error("Error when get payer name for " + payer + ": " + e);
-		}
-		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			shipmentDetail.setProcessOrderId(processOrder.getId());
-			shipmentDetail.setRegisterNo(registerNo.toString());
-			shipmentDetail.setPayer(payer);
-			shipmentDetail.setPayerName(payerName);
-			if (creditFlag) {
-				shipmentDetail.setPayType("Credit");
-			} else {
-				shipmentDetail.setPayType("Cash");
-			}
-
-			//
-			shipmentDetail.setUserVerifyStatus("Y");
-			shipmentDetail.setProcessStatus("W");
-			//
-
 			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 		}
 		return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
@@ -1719,5 +1616,12 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
 			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 		}
+	}
+
+	@Override
+	public List<ServiceSendFullRobotReq> makeOrderUnloadingCargo(List<ShipmentDetail> shipmentDetails,
+			Shipment shipment, String taxCode, boolean creditFlag) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

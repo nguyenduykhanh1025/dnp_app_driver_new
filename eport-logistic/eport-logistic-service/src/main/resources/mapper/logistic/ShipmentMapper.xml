@@ -393,6 +393,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="params.blOrBooking != null and params.blOrBooking != ''">
                     and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
                 </if>
+                <if test="params.sztp != null and params.sztp != ''"> and sztp like concat(concat('%', #{params.sztp}), '%')</if>
             </where>
             group by s.id,
                 s.logistic_account_id,
@@ -700,9 +701,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="params.blOrBooking != null and params.blOrBooking != ''">
                 and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
             </if>
-            <if
-				test="params.dateReceiptStatus != null and params.dateReceiptStatus != ''">and sh.date_receipt_status = #{params.dateReceiptStatus}</if>
-            
+            <if test="params.fromDateSetupTemperature != null">and sh.day_setup_temperature &gt;= to_date(#{params.fromDateSetupTemperature },'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDateSetupTemperature != null">and sh.day_setup_temperature &lt;= to_date(#{params.toDateSetupTemperature },'dd/MM/yyyy HH24:mi:ss')</if>
+ 			<if test="params.powerDrawDateStatus != null and params.powerDrawDateStatus != ''">and sh.power_draw_date_status = #{params.powerDrawDateStatus}</if>
         </where>
 
         group by s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, 

@@ -28,16 +28,29 @@ $("#datetimepicker1").datetimepicker({
 });
 
 $(document).ready(function () {
+  initTabs();
   initValueToElementHTML();
-  initOptionForSelectCargoTypeSelect();
-  initOptionForSelectIMOSelect();
-  initOptionForSelectUNNOSelect();
 });
 
 /**
  * * *Init Func* * *
  */
 
+function initTabs() {
+  var keySize = shipmentDetail.sztp.substring(2, 3);
+  if (keySize == 'R') {// nếu cont lạnh thì show table
+    $(".tab-label-2").css("display", 'none');
+    $(".tab-label-3").css("display", 'none');
+  }
+  if (keySize == 'G') {
+    $(".tab-label-1").css("display", 'none');
+    $(".tab-label-2").css("display", 'none');
+  }
+  if (keySize == 'P' || keySize == 'U') {
+    $(".tab-label-1").css("display", 'none');
+    $(".tab-label-3").css("display", 'none');
+  }
+}
 /**
  * @author Khanh
  * @description create another values if exist from server
@@ -46,32 +59,43 @@ function initValueToElementHTML() {
   if (shipmentDetail) {
     $("#containerNo").val(shipmentDetail.containerNo);
     $("#sztp").val(shipmentDetail.sztp);
+
+    $('#oversizeRight').val(shipmentDetail.oversizeRight);
+    $('#oversizeTop').val(shipmentDetail.oversizeTop);
+    $('#oversizeLeft').val(shipmentDetail.oversizeLeft);
+    $('#dgNameProduct').val(shipmentDetail.dangerousNameProduct);
+    $('#dgPacking').val(shipmentDetail.dangerousPacking);
+
     const {
       temperature,
       daySetupTemperature,
+      humidity,
+      ventilation
     } = shipmentDetail;
 
     initElementHTMLInInformationCommonTab(
       temperature,
-      daySetupTemperature
+      daySetupTemperature,
+      humidity,
+      ventilation
     );
 
-    // initElementHTMLInOversizeTab(
-    //   oversize,
-    //   oversizeType,
-    //   oversizeTop,
-    //   oversizeRight,
-    //   oversizeLeft,
-    //   oversizeFront,
-    //   oversizeBack
-    // );
-    // initElementHTMLInDangerousTab(
-    //   dangerous,
-    //   dangerousImo,
-    //   dangerousUnno,
-    //   dangerousNameProduct,
-    //   dangerousPacking
-    // );
+    /* initElementHTMLInOversizeTab(
+       //oversize,
+       oversizeType,
+       oversizeTop,
+       oversizeRight,
+       oversizeLeft,
+       oversizeFront,
+       oversizeBack
+     );
+     initElementHTMLInDangerousTab(
+       dangerous,
+       dangerousImo,
+       dangerousUnno,
+       dangerousNameProduct,
+       dangerousPacking
+     );*/
 
     //"preview-container-dangerous",
     // initDropzone(
@@ -92,6 +116,7 @@ function initValueToElementHTML() {
     //   "attachButtonIce",
     //   KEY_FORM.ICE
     // );
+
   }
 }
 
@@ -101,16 +126,18 @@ function initValueToElementHTML() {
  */
 function initElementHTMLInInformationCommonTab(
   temperature,
-  daySetupTemperature
+  daySetupTemperature,
+  humidity,
+  ventilation
 ) {
- 
-
   $("#temperature")
     .val(temperature ? temperature : null)
     .prop("disabled", !isContIce() ? true : false);
   $("#datetimepicker1 *")
     .css("pointer-events", !isContIce() ? "none" : "")
     .prop("disabled", !isContIce() ? true : false);
+  $("#humidity").val(humidity ? humidity : null);
+  $("#ventilation").val(ventilation ? ventilation : null);
 
   let daySetup = new Date(daySetupTemperature);
   $("#datetimepicker1").datetimepicker('setDate', daySetup);
@@ -118,6 +145,7 @@ function initElementHTMLInInformationCommonTab(
   $("#attachButtonIce").prop("disabled", !isContIce());
 
   initFileIsExist("preview-container-ice", "R");
+
 }
 
 /**
@@ -332,66 +360,16 @@ function initSelect(idSelect, data, valueChecked) {
  * @description handle click submit form-detail-add
  */
 function submitHandler() {
+
   var data = $("#form-detail-add").serializeArray();
   data = covertSerializeArrayToObject(data);;
   data = {
     ...data,
-    oversizeType: formatValuesCategoryOversize(),
-    vgmMaxGross: $("#vgmChk").prop("checked")
-      ? reFormatNumber($("#maxGross").val())
-      : null,
-    vgmInspectionDepartment: $("#vgmChk").prop("checked")
-      ? $("#inspectionDepartment").val()
-      : null,
     daySetupTemperature: $("#datetimepicker1").datetimepicker('getDate').getTime(),
-    dangerous: data.dangerous == "T" ? "T" : "",
-    oversize: data.oversize == "T" ? "T" : "",
   };
+  parent.submitDataFromDetailModal(data);
+  onCloseModel();
 
-  //validate file
-  let isValidateFile = true;
-
-  if (data.dangerous) {
-    // dangerous khong co dinh kem file
-    if (!shipmentFilePaths.dangerous.length) {
-      isValidateFile = false;
-      $.modal.alertWarning(
-        "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file."
-      );
-    }
-  }
-  if (data.oversize) {
-    if (!shipmentFilePaths.oversize.length) {
-      isValidateFile = false;
-      $.modal.alertWarning(
-        "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file."
-      );
-    }
-  }
-
-  if (isValidateFile) {
-    if (shipmentFilePaths.dangerous.length) {
-      saveFile(shipmentFilePaths.dangerous, KEY_FORM.DANGEROUS);
-    }
-    if (shipmentFilePaths.oversize.length || shipmentDetail.oversize == "T") {
-      saveFile(shipmentFilePaths.oversize, KEY_FORM.OVERSIZE);
-    }
-    if (shipmentFilePaths.ice.length) {
-      saveFile(shipmentFilePaths.ice, KEY_FORM.ICE);
-    }
-  }
-
-  if (
-    !(
-      getStatusContFollowIndex() == CONT_SPECIAL_STATUS.REQ ||
-      getStatusContFollowIndex() == CONT_SPECIAL_STATUS.YES
-    )
-  ) {
-    if (isValidateFile && $.validate.form()) {
-      parent.submitDataFromDetailModal(data);
-      onCloseModel();
-    }
-  }
 }
 
 function formatDateToSendServer(data) {
@@ -531,7 +509,7 @@ function dateparser(s) {
   }
 }
 
-$(document).ready(function () {});
+$(document).ready(function () { });
 
 function initFileIsExist(previewClass, fileType) {
   if (shipmentFiles != null) {

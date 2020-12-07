@@ -11,7 +11,7 @@ var shipmentSelected,
   shipmentDetailIds;
 var shipment = new Object();
 shipment.params = new Object();
-
+shipment.params.serviceArray = [1];
 const CONT_SPECIAL_STATUS = {
   INIT: "I", // cont đã được lưu
   REQ: "R", // cont đã được yêu cầu xác nhận
@@ -114,38 +114,38 @@ $(document).ready(function () {
     },
   });
 
-  $("#serviceArray").combobox({
-    panelHeight: "auto",
-    valueField: "alias",
-    editable: false,
-    textField: "text",
-    data: [
-      {
-        alias: "All",
-        text: "Tất cả",
-        selected: true,
-      },
-      {
-        alias: SERVICE_TYPE.pickupFull,
-        text: "Nhận cont hàng từ cảng",
-      },
+  // $("#serviceArray").combobox({
+  //   panelHeight: "auto",
+  //   valueField: "alias",
+  //   editable: false,
+  //   textField: "text",
+  //   data: [
+  //     {
+  //       alias: "All",
+  //       text: "Tất cả",
+  //       selected: true,
+  //     },
+  //     {
+  //       alias: SERVICE_TYPE.pickupFull,
+  //       text: "Nhận cont hàng từ cảng",
+  //     },
 
-      {
-        alias: SERVICE_TYPE.dropFull,
-        text: "Giao cont hàng cho cảng",
-      },
-    ],
-    onSelect: function (serviceArray) {
-      if (serviceArray.alias !== "All") {
-        let arrayResult = [];
-        arrayResult.push(serviceArray.alias);
-        shipment.params.serviceArray = arrayResult;
-      } else {
-        shipment.params.serviceArray = [1, 4];
-      }
-      loadTable();
-    },
-  });
+  //     {
+  //       alias: SERVICE_TYPE.dropFull,
+  //       text: "Giao cont hàng cho cảng",
+  //     },
+  //   ],
+  //   onSelect: function (serviceArray) {
+  //     if (serviceArray.alias !== "All") {
+  //       let arrayResult = [];
+  //       arrayResult.push(serviceArray.alias);
+  //       shipment.params.serviceArray = arrayResult;
+  //     } else {
+  //       shipment.params.serviceArray = [1, 4];
+  //     }
+  //     loadTable();
+  //   },
+  // });
 
   $("#logisticGroups").combobox({
     valueField: "id",
@@ -923,7 +923,6 @@ configHandson();
 hot = new Handsontable(dogrid, config);
 
 function loadShipmentDetails(id) {
-  console.log(shipment.params.frozenStatus);
   if (id) {
     $.modal.loading("Đang xử lý ...");
     $.ajax({
@@ -1718,7 +1717,6 @@ function renderIconsStatusServiceTypePickupFull(
     //   content += getRequestConfigIcon(sourceData[row].frozenStatus);
     // }
     content += getRequestConfigIcon(row);
-    console.log("dischargePort");
     console.log(sourceData[row].dischargePort);
     
  // Domestic cont: VN --> not show
@@ -1738,3 +1736,4 @@ function renderIconsStatusServiceTypePickupFull(
   }
   return td;
 }
+

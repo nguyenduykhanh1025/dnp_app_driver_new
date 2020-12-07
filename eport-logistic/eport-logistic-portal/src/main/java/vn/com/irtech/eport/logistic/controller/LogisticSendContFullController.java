@@ -407,10 +407,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			for (ShipmentDetail inputDetail : shipmentDetails) {
 
 				// validate if cont have status cont special REQUEST | DONE
-				if (shipmentDetailService.isHaveContSpacialRequest(inputDetail)
-				|| shipmentDetailService.isHaveContSpacialYes(inputDetail)) {
-					return error("Không thể thay đổi thông tin các container đang chờ hoặc đã được yêu cầu xét duyệt.");
-				}
+				// if (shipmentDetailService.isHaveContSpacialRequest(inputDetail)
+				// || shipmentDetailService.isHaveContSpacialYes(inputDetail)) {
+				// 	return error("Không thể thay đổi thông tin các container đang chờ hoặc đã được yêu cầu xét duyệt.");
+				// }
 
 				if (inputDetail.getId() != null) {
 
@@ -460,7 +460,8 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 					shipmentDetailReference.setTemperature(inputDetail.getTemperature());
 					shipmentDetailReference.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
-
+					shipmentDetailReference.setHumidity(inputDetail.getHumidity());
+					shipmentDetailReference.setVentilation(inputDetail.getVentilation());
 					shipmentDetailReference.setRemark(inputDetail.getRemark());
 
 					// Lưu nếu là cont đặc biệt
@@ -478,19 +479,19 @@ public class LogisticSendContFullController extends LogisticBaseController {
 						shipmentDetailReference.setFrozenStatus("");
 					}
 
-//					if (StringUtils.isEmpty(inputDetail.getOversize())) {
-//						shipmentDetailReference.setOversize("");
-//					} else if (!(inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
-//							|| inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
-//						shipmentDetailReference.setOversize(EportConstants.CONT_SPECIAL_STATUS_INIT);
-//					}
-//
-//					if (StringUtils.isEmpty(inputDetail.getDangerous())) {
-//						shipmentDetailReference.setDangerous("");
-//					} else if (!(inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
-//							|| inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
-//						shipmentDetailReference.setDangerous(EportConstants.CONT_SPECIAL_STATUS_INIT);
-//					}
+					if (StringUtils.isEmpty(inputDetail.getOversize())) {
+						shipmentDetailReference.setOversize("");
+					} else if (!(inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
+							|| inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
+						shipmentDetailReference.setOversize("");
+					}
+
+					if (StringUtils.isEmpty(inputDetail.getDangerous())) {
+						shipmentDetailReference.setDangerous("");
+					} else if (!(inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
+							|| inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
+						shipmentDetailReference.setDangerous("");
+					}
 
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
@@ -546,6 +547,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipmentDetail.setTemperature(inputDetail.getTemperature());
 					shipmentDetail.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
 
+					shipmentDetail.setHumidity(inputDetail.getHumidity());
+					shipmentDetail.setVentilation(inputDetail.getVentilation());
+					
 					// Lưu nếu là cont đặc biệt
 					String sztp = inputDetail.getSztp().substring(2, 3);
 					if (sztp.equals("R")) {

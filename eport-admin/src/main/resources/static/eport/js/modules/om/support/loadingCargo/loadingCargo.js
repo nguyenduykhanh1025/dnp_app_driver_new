@@ -697,12 +697,8 @@ function configHandsond() {
         renderer: consigneeRenderer
       },
       {
-        data: "planningDate",
-        type: "date",
-        dateFormat: "DD/MM/YYYY",
-        correctFormat: true,
-        defaultDate: new Date(),
-        renderer: planningDateRenderer
+        data: "emptyExpireDem",
+        renderer: emptyExpireDemRenderer,
       },
       {
         data: "cargoType",
@@ -712,9 +708,10 @@ function configHandsond() {
         renderer: cargoTypeRenderer
       },
       {
-        data: "qualityRequirement",
-        renderer: qualityRequirementRenderer
+        data: "consignee",
+        renderer: consigneeRenderer,
       },
+      //vslNm = vslNm + "-" + "voyCarrier"
       {
         data: "vslNm",
         type: "autocomplete",
@@ -723,30 +720,28 @@ function configHandsond() {
         renderer: vslNmRenderer
       },
       {
-        data: "eta",
-        renderer: etaRenderer
+        data: "cargoType",
+        renderer: cargoTypeRenderer,
       },
       {
         data: "dischargePort",
-        type: "autocomplete",
-        strict: true,
-        renderer: dischargePortRenderer
-      },
-      {
-        data: "contSupplyRemark",
-        renderer: contSupplyRemarkRenderer
+        renderer: dischargePortRenderer,
       },
       {
         data: "payType",
-        renderer: payTypeRenderer
+        renderer: payTypeRenderer,
+      },
+      {
+        data: "paymentStatus",
+        renderer: paymentStatusTypeRenderer,
       },
       {
         data: "payer",
-        renderer: payerRenderer
+        renderer: payerRenderer,
       },
       {
-        data: "payerName",
-        renderer: payerNameRenderer
+        data: "sztp",
+        renderer: personOfContainerRenderer,
       },
       {
         data: "remark",
@@ -1340,4 +1335,30 @@ function openHouseBillForm(shipmentDetailId) {
     return;
   }
   $.modal.openCustomForm("Thông tin house bill", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
+}
+function retryOrder() {
+  layer.confirm("Xác nhận robot làm lệnh lại.", {
+    icon: 3,
+    title: "Xác Nhận",
+    btn: ['Đồng Ý', 'Hủy Bỏ']
+  }, function () {
+
+    // UPDATE PROCESS ORDER TO DOING STATUS
+    $.ajax({
+      url: PREFIX + "/order/retry",
+      method: "POST",
+      data: {
+        processOrderId: processOrderSelected.id
+      }
+    }).done(function (res) {
+      layer.close(layer.index);
+      if (res.code != 0) {
+        $.modal.alertError(res.msg);
+      } else {
+        $.modal.alertSuccess(res.msg);
+      }
+    });
+  }, function () {
+    // Do nothing
+  });
 }
