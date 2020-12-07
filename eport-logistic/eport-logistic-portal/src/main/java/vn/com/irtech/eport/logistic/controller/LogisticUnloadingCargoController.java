@@ -32,7 +32,6 @@ import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.annotation.RepeatSubmit;
 import vn.com.irtech.eport.common.config.ServerConfig;
-import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -46,10 +45,8 @@ import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
 import vn.com.irtech.eport.logistic.listener.MqttService;
-import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ICfsHouseBillService;
@@ -1124,7 +1121,6 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 				shipmentDetailService.updateShipmentDetail(shipmentDetailSave);
 			}
 		}
-
 		return success("Đăng kí ngày rút hàng thành công.");
 	}
 
