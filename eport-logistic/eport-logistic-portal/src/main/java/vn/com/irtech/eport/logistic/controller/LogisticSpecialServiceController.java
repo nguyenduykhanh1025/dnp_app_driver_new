@@ -787,7 +787,10 @@ public class LogisticSpecialServiceController extends LogisticBaseController {
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			ShipmentImage shipmentImage = new ShipmentImage();
 			shipmentImage.setShipmentId(shipmentId);
-			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageListNotFileType(shipmentImage);
+			Map<String, Object> params = new HashMap<>();
+			params.put("nullShipmentDetailId", true);
+			shipmentImage.setParams(params);
+			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
 			for (ShipmentImage shipmentImage2 : shipmentImages) {
 				shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
 			}

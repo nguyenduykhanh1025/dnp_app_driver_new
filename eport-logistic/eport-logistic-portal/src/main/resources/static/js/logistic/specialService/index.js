@@ -927,7 +927,12 @@ function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties
     $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
         if (value.substring(2, 3) != "/") {
-            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4) + " " + value.substring(10, 16);
+        } else {
+            if (value.length <= 10) {
+                value += " 00:00";
+                hot.setDataAtCell(row, 5, value);
+            }
         }
     } else {
         value = '';
@@ -938,8 +943,8 @@ function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties
 function actualDateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'actualDateReceipt' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
-        if (value.substring(2, 3) != "/") {
-            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+        if (value.length >= 16) {
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4) + " " + value.substring(10, 16);
         }
     } else {
         value = '';
@@ -1053,16 +1058,12 @@ function configHandson() {
                 data: "dateReceipt",
                 type: "date",
                 dateFormat: "DD/MM/YYYY",
-                correctFormat: true,
+                correctFormat: false,
                 defaultDate: new Date(),
                 renderer: dateReceiptRenderer
             },
             {
                 data: "actualDateReceipt",
-                type: "date",
-                dateFormat: "DD/MM/YYYY",
-                correctFormat: true,
-                defaultDate: new Date(),
                 renderer: actualDateReceiptRenderer
             },
             {
@@ -1627,8 +1628,17 @@ function getDataFromTable(isValidate) {
                 return false;
             }
         }
-        if (object["dateReceipt"] && object["dateReceipt"]) {
+        if (object["dateReceipt"]) {
             let dateReceipt = new Date(object["dateReceipt"].substring(6, 10) + "/" + object["dateReceipt"].substring(3, 5) + "/" + object["dateReceipt"].substring(0, 2));
+            
+            // set hours
+            dateReceipt.setHours(object["dateReceipt"].substring(11, 13));
+
+            // set minutes
+            dateReceipt.setMinutes(object["dateReceipt"].substring(14, 16));
+
+            // set seconds
+            dateReceipt.setSeconds(0);
             shipmentDetail.dateReceipt = dateReceipt.getTime();
         }
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
@@ -1676,9 +1686,15 @@ function getDataFromTable(isValidate) {
             }
         }
         shipmentDetail.commodity = object["commodity"];
-        shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
-        shipmentDetail.dischargePort = object["loadingPort"].split(": ")[0];
-        shipmentDetail.cargoType = object["cargoType"].substring(0, 2);
+        if (object["dischargePort"]) {
+            shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
+        }
+        if (object["loadingPort"]) {
+            shipmentDetail.loadingPort = object["loadingPort"].split(": ")[0];
+        }
+        if (object["cargoType"]) {
+            shipmentDetail.cargoType = object["cargoType"].substring(0, 2);
+        }
         shipmentDetail.remark = object["remark"];
         shipmentDetail.sealNo = object["sealNo"];
         shipmentDetail.shipmentId = shipmentSelected.id;

@@ -118,6 +118,19 @@
 	<script th:src="@{/ajax/libs/summernote/lang/summernote-vi-VN.min.js}"></script>
 </div>
 
+<!-- moment js -->
+<div th:fragment="moment-js">
+    <script th:src="@{/ajax/libs/moment/moment.js}"></script>
+</div>
+
+<!-- pikaday js -->
+<div th:fragment="pikaday-css">
+    <link th:href="@{/ajax/libs/pikaday/pikaday.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="pikaday-js">
+    <script th:src="@{/ajax/libs/pikaday/pikaday.js}"></script>
+</div>
+
 <!-- dropzone-->
 <div th:fragment="dropzone-css">
     <link th:href="@{/ajax/libs/dropzone/basic.min.css}" rel="stylesheet"/>

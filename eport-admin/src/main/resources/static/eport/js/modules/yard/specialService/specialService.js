@@ -617,12 +617,14 @@ function btnAttachRenderer(instance, td, row, col, prop, value, cellProperties) 
 function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
   if (value != null && value != '') {
-    if (value.substring(2, 3) != "/") {
-      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+    if (value.length >= 16) {
+      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4) + " " + value.substring(10, 16);
     }
   } else {
     value = '';
   }
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
@@ -630,7 +632,12 @@ function actualDateReceiptRenderer(instance, td, row, col, prop, value, cellProp
   $(td).attr('id', 'actualDateReceipt' + row).addClass("htMiddle").addClass("htCenter");
   if (value != null && value != '') {
     if (value.substring(2, 3) != "/") {
-      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4) + " " + value.substring(10, 16);
+    } else {
+      if (value.length <= 10) {
+        value += " 00:00";
+        hot.setDataAtCell(row, 9, value);
+      }
     }
   } else {
     value = '';
@@ -757,17 +764,13 @@ function configHandsond() {
       },
       {
         data: "dateReceipt",
-        type: "date",
-        dateFormat: "DD/MM/YYYY",
-        correctFormat: true,
-        defaultDate: new Date(),
         renderer: dateReceiptRenderer
       },
       {
         data: "actualDateReceipt",
         type: "date",
         dateFormat: "DD/MM/YYYY",
-        correctFormat: true,
+        correctFormat: false,
         defaultDate: new Date(),
         renderer: actualDateReceiptRenderer
       },
@@ -1092,13 +1095,19 @@ function getDataSelectedFromTable() {
         payer: object["payer"],
         orderNo: object["orderNo"]
       };
-      if (object["dateReceipt"] && object["dateReceipt"]) {
-        let dateReceipt = new Date(object["dateReceipt"].substring(6, 10) + "/" + object["dateReceipt"].substring(3, 5) + "/" + object["dateReceipt"].substring(0, 2));
-        shipmentDetail.dateReceipt = dateReceipt.getTime();
-      }
-      if (object["actualDateReceipt"] && object["actualDateReceipt"]) {
-        let dateReceipt = new Date(object["actualDateReceipt"].substring(6, 10) + "/" + object["actualDateReceipt"].substring(3, 5) + "/" + object["actualDateReceipt"].substring(0, 2));
-        shipmentDetail.dateReceipt = dateReceipt.getTime();
+      if (object["actualDateReceipt"]) {
+        let actualDateReceipt = new Date(object["actualDateReceipt"].substring(6, 10) + "/" + object["actualDateReceipt"].substring(3, 5) + "/" + object["actualDateReceipt"].substring(0, 2));
+
+        // set hours
+        actualDateReceipt.setHours(object["actualDateReceipt"].substring(11, 13));
+
+        // set minutes
+        actualDateReceipt.setMinutes(object["actualDateReceipt"].substring(14, 16));
+
+        // set seconds
+        actualDateReceipt.setSeconds(0);
+        
+        shipmentDetail.actualDateReceipt = actualDateReceipt.getTime();
       }
       if (berthplanList) {
         for (let i = 0; i < berthplanList.length; i++) {
