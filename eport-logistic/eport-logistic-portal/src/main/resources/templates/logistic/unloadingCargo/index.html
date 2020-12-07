@@ -24,7 +24,7 @@
 			<div
 				class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
 				<div class="flex__left w-20">
-					<h3 class="mt-10">Nhận Container Hàng Từ Cảng</h3>
+					<h3 class="mt-10">Rút Hàng Từ Container Tại Cảng</h3>
 				</div>
 				<div class="flex__right w-80">
 					<div class="justify-content-around align-items-center" id="ff">
@@ -185,7 +185,7 @@
 												class="l-btn l-btn-small l-btn-plain" group="" id=""> <span
 													class="l-btn-left"><span class="l-btn-text">
 															<button id="customBtn" onclick="checkCustomStatus()"
-																disabled class="btn btn-sm btn-primary">
+																class="btn btn-sm btn-primary">
 																<i class="fa fa-address-card text-primary"></i> Khai hải
 																quan
 															</button>
@@ -194,7 +194,7 @@
 											<td><a href="javascript:;"
 												class="l-btn l-btn-small l-btn-plain" group="" id=""> <span
 													class="l-btn-left"><span class="l-btn-text">
-															<button id="verifyBtn" onclick="verify()" disabled
+															<button id="verifyBtn" onclick="verify()"
 																class="btn btn-sm btn-primary">
 																<i class="fa fa-check text-primary"></i> Xác nhận
 															</button>
@@ -203,10 +203,9 @@
 											<td><a href="javascript:;"
 												class="l-btn l-btn-small l-btn-plain" group="" id=""> <span
 													class="l-btn-left"><span class="l-btn-text">
-															<button id="dateReceiptBtn"
-																onclick="registerDateReceipt()" disabled
+															<button id="payBtn" onclick="pay()"
 																class="btn btn-sm btn-primary">
-																<i class="fa fa-clock-o"></i> Đăng kí ngày rút hàng
+																<i class="fa fa-credit-card text-primary"></i> Thanh toán
 															</button>
 													</span></span>
 											</a></td>
@@ -214,7 +213,7 @@
 												class="l-btn l-btn-small l-btn-plain" group="" id=""> <span
 													class="l-btn-left"><span class="l-btn-text">
 															<button id="deleteBtn" onclick="deleteShipmentDetail()"
-																disabled class="btn btn-sm btn-danger">
+																class="btn btn-sm btn-danger">
 																<i class="fa fa-times text-primary"></i> Xóa
 															</button>
 													</span></span>
@@ -242,7 +241,7 @@
 												class="l-btn l-btn-small l-btn-plain" group="" id=""> <span
 													class="l-btn-left"><span class="l-btn-text">
 															<button id="exportReceiptBtn" onclick="exportReceipt()"
-																disabled class="btn btn-sm btn-default">
+																class="btn btn-sm btn-default">
 																<i class="fa fa-print text-primary"></i> In biên nhận
 															</button>
 													</span></span>
@@ -250,7 +249,7 @@
 											<td><a href="javascript:;"
 												class="l-btn l-btn-small l-btn-plain" group="" id=""> <span
 													class="l-btn-left"><span class="l-btn-text">
-															<button id="exportBill" onclick="exportBill()" disabled
+															<button id="exportBill" onclick="exportBill()"
 																class="btn btn-sm btn-default">
 																<i class="fa fa-external-link text-primary"></i> Xem hóa
 																đơn
