@@ -22,7 +22,7 @@
   .form-horizontal.mt10.row {
     height: 47px !important;
   }
-
+  
   content-2 {
     height: 20px !important;
   }
@@ -79,6 +79,11 @@
           <div class="content-1" id="reeferContainer">
             <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
               <div class="form-group col-sm-12 row">
+                <span class="control-label col-sm-2 col-xs-2" style="text-align: left"><b class="text-black">Nhiệt đô
+                    (độ C):</b></span>
+                <div class="col-sm-2 col-xs-2">
+                  <input type="text" class="form-control" id="temperature" name="temperature" readonly />
+                </div>
                 <span class="control-label col-sm-2 col-xs-2" style="text-align: left"><b class="text-black">Độ ẩm
                     (%):</b></span>
                 <div class="col-sm-2 col-xs-2">
@@ -89,12 +94,6 @@
                     gió (%):</b></span>
                 <div class="col-sm-2 col-xs-2">
                   <input type="text" class="form-control" id="ventilation" name="ventilation" readonly />
-                </div>
-
-                <span class="control-label col-sm-2 col-xs-2" style="text-align: left"><b class="text-black">Nhiệt đô
-                    (độ C):</b></span>
-                <div class="col-sm-2 col-xs-2">
-                  <input type="text" class="form-control" id="temperature" name="temperature" readonly />
                 </div>
               </div>
             </div>
@@ -112,15 +111,17 @@
               </div>
 
               <div class="form-group col-sm-6 row">
-                
-                <span class="input-group date col-sm-8 col-xs-6" id="datetimepicker2" style="float: right;">
+
+                <span class="input-group date col-sm-10 col-xs-8" id="datetimepicker2" style="    float: left;
+    width: 240px;
+    margin: 0 29px;">
                   <input type="text" class="form-control" name="extendPowerDrawDate" id="extendPowerDrawDate" />
                   <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                   </span>
                 </span>
 
-                <span class="control-label col-sm-4 col-xs-6" style="padding: 0;">
+                <span class="control-label col-sm-2 col-xs-4" style="padding: 0;">
                   <button id="saveShipmentDetailBtn" onclick="extendPowerDrawDate()" class="btn btn-success"><i
                       class="fa fa-clock-o text-primary"></i>Gia hạn</button>
                 </span>
@@ -354,10 +355,10 @@
     var shipmentImage = [[${ shipmentImage }]];
     var shipmentFiles = [[${ shipmentFiles }]];
     var powerDropDate = [[${ powerDropDate }]];
-
+    var reeferInfos = [[${reeferInfos}]];
   </script>
   <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=12345}"></script>
-  <script th:src="@{/js/logistic/receiveContFull/detail.js?v=12345678}"></script>
+  <script th:src="@{/js/logistic/receiveContFull/detail.js?v=123478}"></script>
 
 
   <script type="text/javascript">
@@ -366,7 +367,6 @@
       var dangerous = shipmentDetail.dangerous;
       var dangerousIMO = shipmentDetail.dangerousImo;
       var dangerousUNNO = shipmentDetail.dangerousUnno;
-
 
       var contsztp = shipmentDetail.sztp;
       var cont = contsztp.substring(2, 3);// lấy mã cont cắt ra 

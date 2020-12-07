@@ -1,12 +1,8 @@
 const PREFIX = ctx + "logistic/receive-cont-full";
 var dogrid = document.getElementById("container-grid"), hot;
 var checkList = [];
-var sourceData = powerDropDate.map(item => {
-  return {
-    id: item.id,
-    registerDate: item.newValue
-  }
-})
+sourceData = reeferInfos;
+console.log(sourceData);
 $(document).ready(function () {
   initElement();
   initTabReefer();
@@ -15,7 +11,6 @@ $(document).ready(function () {
 });
 
 function initElement() {
-  console.log(shipmentDetail.sztp.includes("R"));
   if (shipmentDetail.sztp.includes("R")) {
     $('#reeferContainer').css('display', 'block');
     $("#tab-1").prop('checked', true);
@@ -23,11 +18,9 @@ function initElement() {
     $('#oversizeContainer').css('display', 'block');
     $("#tab-2").prop('checked', true);
   }
-
 }
 
 function initTabReefer() {
-
   $('#containerNo').val(containerNo);// container no
   $('#sztp').val(sztp);//  
   $('#abc').val(shipmentDetail.id);
@@ -105,11 +98,10 @@ $("#datetimepicker2").datetimepicker({
   autoclose: true,
   minuteStep: 30,
   todayBtn: true,
-  startDate: new Date()
+  startDate: new Date(shipmentDetail.daySetupTemperature)
 });
 
 //$("#datetimepicker1").datetimepicker('getDate').getTime();
-
 
 let daySetup = new Date(shipmentDetail.powerDrawDate);
 $("#datetimepicker1").datetimepicker('setDate', daySetup);
@@ -176,33 +168,34 @@ function confirm() {
   if (lengthTemp == null || lengthTemp.length == 0) {
     insertCont();
   }
-  if (lengthTemp != null || lengthTemp.length != 0) {// nếu có thì vào đây
+
+  if (!shipmentDetail.sztp.includes("R") && (lengthTemp != null || lengthTemp.length != 0)) {// nếu có thì vào đây
     saveFile();
   }
 }
 
-
-function saveFile() {    
-	    $.ajax( 
-	    	{
-	    		url: prefix + "/saveFileImage", 
-	    		method: "POST",
-	    		data: {
-	    			filePaths: shipmentFilePath,
-	    			shipmentDetailId : shipmentDetail.id,
-	    			shipmentId: shipmentDetail.shipmentId,
-	    			shipmentSztp : shipmentDetail.sztp, 
-	    			fileType : fileType
-	    		},
-	    		success: function(result){
-    			if (result.code == 0) {
-                    //$.modal.alertError(result.msg);
-                    //$.modal.close(); 
-                    insertCont();
-                } else {
-                    $.modal.close();
-                } 
-	    }});  
+function saveFile() {
+  $.ajax(
+    {
+      url: prefix + "/saveFileImage",
+      method: "POST",
+      data: {
+        filePaths: shipmentFilePath,
+        shipmentDetailId: shipmentDetail.id,
+        shipmentId: shipmentDetail.shipmentId,
+        shipmentSztp: shipmentDetail.sztp,
+        fileType: fileType
+      },
+      success: function (result) {
+        if (result.code == 0) {
+          //$.modal.alertError(result.msg);
+          //$.modal.close(); 
+          insertCont();
+        } else {
+          $.modal.close();
+        }
+      }
+    });
 }
 
 function closeForm() {
@@ -273,10 +266,11 @@ function removeImage(element, fileIndex) {
   });
 
 }
+
 function configHandson() {
   config = {
     stretchH: "all",
-    height: $(document).height() - 140,
+    height: 200,
     minRows: 1,
     maxRows: 100,
     width: "100%",
@@ -293,11 +287,19 @@ function configHandson() {
         case 0:
           return "Trạng Thái";
         case 1:
+          return "Ngày gia hạn cắm điện";
+        case 2:
           return "Ngày gia hạn rút điện";
+        case 3:
+          return "Số giờ";
+        case 4:
+          return "Thành tiền";
+        case 5:
+          return "Action";
 
       }
     },
-    colWidths: [80, 200],
+    colWidths: [60, 80, 80, 60, 80, 150],
     columns: [
 
       {
@@ -306,18 +308,29 @@ function configHandson() {
         renderer: statusIconRenderer
       },
       {
-        data: "registerDate",
-        type: "date",
-        dateFormat: "DD/MM/YYYY",
-        correctFormat: true,
-        defaultDate: new Date(),
-        renderer: registerDateRenderer
+        data: "dateSetPower",
+        renderer: dateSetPower
+      },
+      {
+        data: "dateGetPower",
+        renderer: dateGetPower
+      },
+      {
+        data: "hourNumber",
+        renderer: numberHoursRenderer
+      },
+      {
+        data: "moneyNumber",
+        renderer: paymentRenderer
+      },
+      {
+        data: "btnAction",
+        renderer: btnActionRenderer
       },
     ],
   };
 
 }
-
 /*function abc() {*/
 // cont nguy hiểm: trường dangerous khác null
 // cont quá khổ: trường oversize khác null
@@ -422,48 +435,52 @@ if(oversize){
        //saveFile();
      } 
    }
-  
 }
  
  if(dangerous){
-	 if(fileType){ 
-			fileType.forEach(function (elementType, index) { 
-					if(elementType == "D"){// cont quá khổ oversize
-						typeD = true;
-					 }  
-			});
-			
-			shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
-				//alert("vao for 2");
-				if(elementcont.fileType == "D"){// filetype quá khổ
-					 contD = true;
-				 }
-				 
-			});
-			
-			 if(contD == false && typeD == false){
-				$.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
-			}
-			else{
-				checkSave(); 
-				//saveFile();
-			} 
-		}
-	 
+   if(fileType){ 
+      fileType.forEach(function (elementType, index) { 
+          if(elementType == "D"){// cont quá khổ oversize
+            typeD = true;
+           }  
+      });
+    	
+      shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
+        //alert("vao for 2");
+        if(elementcont.fileType == "D"){// filetype quá khổ
+           contD = true;
+         }
+         
+      });
+    	
+       if(contD == false && typeD == false){
+        $.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
+      }
+      else{
+        checkSave(); 
+        //saveFile();
+      } 
+    }
+   
  }  	
  */
- 
- 
+
+
 function statusIconRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (row == reeferInfos.length) {
+    return '';
+  }
   $(td).html('');
   cellProperties.readOnly = 'true';
   $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
   let status = "";
   if (row == 0) {
-    if (shipmentDetail.powerDrawDateStatus == "P") {
+    if (value == "P") {
       status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đang chờ xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #f8ac59;"></i>';
-    } else if (shipmentDetail.powerDrawDateStatus === "S") {
+    } else if (value === "S") {
       status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
+    } else if (value === "E") {
+      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #ef6776;"></i>';
     }
   } else {
     // status
@@ -481,68 +498,186 @@ function statusIconRenderer(instance, td, row, col, prop, value, cellProperties)
   value = '';
   return td;
 }
-function registerDateRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
-  if (value != null && value != '') {
-    let dateArray = value.split(" ");
-    let resultDate = new Date(dateArray[0]);
-    console.log(dateArray);
-    if (dateArray[2] === "PM") {
-      resultDate.setHours(parseInt(dateArray[1].split(".")[0]) + 12);
 
-    }
-    else {
-      resultDate.setHours(parseInt(dateArray[1].split(".")[0]));
-    }
-    resultDate.setMinutes(dateArray[1].split(".")[1]);
-    let month = resultDate.getMonth() == 12 ? 0 : resultDate.getMonth() + 1;
-    value = `${resultDate.getDate()}/${month}/${resultDate.getFullYear()} ${resultDate.getHours()}:${resultDate.getMinutes()}`;
-  } else {
+function dateSetPower(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    return '';
+  }
+  const dateResult = new Date(value);
+  const month = dateResult.getMonth() == 12 ? '00' : dateResult.getMonth() + 1;
+  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()}`;
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
+  return td;
+}
+
+function dateGetPower(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    return '';
+  }
+  const dateResult = new Date(value);
+  const month = dateResult.getMonth() == 12 ? '00' : dateResult.getMonth() + 1;
+  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()}`;
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
+  return td;
+}
+function numberHoursRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
     value = '';
   }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + value + '</div>');
+  return td;
+}
+
+function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + value + '</div>');
+  return td;
+}
+
+function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!sourceData[row]) {
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + '' + '</div>');
+    return td;
+  }
+  let result = '';
+  const btnPayment = `
+  <td>
+                          <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+                            <span class="l-btn-left"
+                              ><span class="l-btn-text">
+                                <button id="saveShipmentDetailBtn" onclick="paymentDateDrop()" class="btn btn-sm btn-primary"><i class="fa fa-save text-primary"></i>Thanh toán</button></span
+                              ></span
+                            >
+                          </a>
+                        </td> 
+  `;
+
+  const btnCancel = `
+  <td>
+    <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
+    <span class="l-btn-left"
+      ><span class="l-btn-text">
+        <button id="acceptBtn" onclick="cancelDateDrop(${sourceData[row].id})"  class="btn btn-sm btn-primary" style="background-color: #ef6776;">
+          <i class="fa fa-book text-primary"></i>Hủy yêu cầu</button></span
+      ></span
+    >
+    </a>
+  </td>
+  `;
+
+  if (sourceData[row].status == "S") {
+    result += btnPayment;
+  }
+
+  if (sourceData[row].status != "S") {
+    result += btnCancel;
+  }
+
+
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
 
 function extendPowerDrawDate() {
+  console.log(shipmentDetail);
+  $("#datetimepicker2").datetimepicker('setDate', null);
+  if (sourceData[0].status != "S" || shipmentDetail.frozenStatus == 'R') {
+    $.modal.alertError("Không thể gia hạn thêm ngày rút điện. Gia hạn ngày rút điện đang chờ xét duyệt từ tổ lạnh.");
+  } else {
 
-  let date = $('#extendPowerDrawDate').val();
-  let arrDate = date.split("/");
-  const tempDate = arrDate[1];
-  arrDate[1] = arrDate[0];
-  arrDate[0] = tempDate;
+    let date = $('#extendPowerDrawDate').val();
+    let arrDate = date.split("/");
+    const tempDate = arrDate[1];
+    arrDate[1] = arrDate[0];
+    arrDate[0] = tempDate;
 
-  const detail = {
-    id: shipmentDetail.id,
-    powerDrawDate: new Date(arrDate.join("/")).getTime()
+    const detail = {
+      id: shipmentDetail.id,
+      powerDrawDate: new Date(arrDate.join("/")).getTime()
+    }
+    $.ajax({
+      url: prefix + "/extendPowerDrawDate",
+      method: "POST",
+      contentType: "application/json",
+      accept: 'text/plain',
+      data: JSON.stringify(detail),
+      dataType: 'text',
+      success: function (data) {
+        data = JSON.parse(data);
+        sourceData = data.data;
+
+        configHandson();
+        hot = new Handsontable(dogrid, config);
+        hot.loadData(sourceData);
+        
+        $.modal.alertSuccess("Gia hạn ngày rút điện thành công.");
+      },
+      error: function (result) {
+        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+        $.modal.closeLoading();
+      },
+    });
   }
-  $.ajax({
-    url: prefix + "/extendPowerDrawDate",
-    method: "POST",
-    contentType: "application/json",
-    accept: 'text/plain',
-    data: JSON.stringify(detail),
-    dataType: 'text',
-    success: function (data) {
-      data = JSON.parse(data);
-      console.log(data);
-      shipmentDetail.powerDrawDateStatus = "P";
-      sourceData = data.data.map(item => {
-        return {
-          id: item.id,
-          registerDate: item.newValue
-        }
-      })
+}
 
-      configHandson();
-      hot = new Handsontable(dogrid, config);
-      hot.loadData(sourceData);
+function paymentDateDrop() {
+  layer.confirm("Bạn có muốn thanh toán?", {
+    icon: 3,
+    title: "Xác Nhận",
+    btn: ['Đồng Ý', 'Hủy Bỏ']
+  }, function () {
+    layer.close(layer.index);
+    $.modal.openCustomForm("Thanh toán", prefix + "/paymentPowerDropForm/" + 69, 800, 400);
+    return true;
+  }, function () {
+    layer.close(layer.index);;
+    return false;
+  });
+}
 
-      $.modal.alertSuccess("Gia hạn ngày rút điện thành công.");
-    },
-    error: function (result) {
-      $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
-      $.modal.closeLoading();
-    },
+function cancelDateDrop(id) {
+  const detail = {
+    id: id,
+    shipmentDetailId: shipmentDetail.id
+  }
+
+  layer.confirm("Bạn có muốn hủy yêu cầu gia hạn ngày cắm điện?", {
+    icon: 3,
+    title: "Xác Nhận",
+    btn: ['Đồng Ý', 'Hủy Bỏ']
+  }, function () {
+    layer.close(layer.index);
+
+    $.ajax({
+      url: prefix + "/cancelDateDrop",
+      method: "POST",
+      contentType: "application/json",
+      accept: 'text/plain',
+      data: JSON.stringify(detail),
+      dataType: 'text',
+      success: function (data) {
+
+        data = JSON.parse(data);
+        sourceData = data.data;
+
+        configHandson();
+        hot = new Handsontable(dogrid, config);
+        hot.loadData(sourceData);
+
+
+        $.modal.msgSuccess("Hủy gia hạn thành công.");
+      },
+      error: function (result) {
+        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+        $.modal.closeLoading();
+      },
+    });
+
+    return true;
+  }, function () {
+    layer.close(layer.index);;
+    return false;
   });
 }

@@ -164,8 +164,7 @@
 		create_by, create_time, update_by,
 		date_receipt, actual_date_receipt,
 		update_time, date_receipt_status,
-		special_service, truck_no,chassis_no,humidity, ventilation, power_draw_date_status from
-
+		special_service, truck_no,chassis_no,humidity, ventilation, power_draw_date_status, power_draw_date from
 		shipment_detail
 	</sql>
 	<select id="countShipmentDetailList"
