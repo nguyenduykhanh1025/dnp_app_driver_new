@@ -64,7 +64,8 @@
 			column="dangerous_name_product" />
 		<result property="dangerousPacking" column="dangerous_packing" />
 
-		<result property="powerDrawDate" column="power_draw_date"/> 
+		<result property="powerDrawDate" column="power_draw_date" />
+		<result property="powerDrawDateStatus" column="power_draw_date_status" />
 
 		<result property="vgm" column="vgm" />
 		<result property="vgmPersonInfo" column="vgm_person_info" />
@@ -111,6 +112,15 @@
 
 		<result property="contSpecialStatus"
 			column="cont_special_status" />
+		<result property="dateReceiptStatus"
+			column="date_receipt_status" />
+		<result property="dateReceipt" column="date_receipt" />
+		<result property="specialService" column="special_service" />
+		<result property="actualDateReceipt" column="actual_date_receipt" />
+		<result property="truckNo" column="truck_no" />
+		<result property="chassisNo" column="chassis_no" />
+		<result property="humidity" column="humidity" />
+		<result property="ventilation" column="ventilation" />
 	</resultMap>
 
 	<!-- <resultMap type="ShipmentDetailExtend" id="ShipmentDetailResult" extends="ShipmentDetail"> 
@@ -152,7 +162,10 @@
 		delivery_address, delivery_mobile, delivery_remark, eta, etd,
 		container_remark, det_free_time,
 		create_by, create_time, update_by,
-		update_time,power_draw_date from
+		date_receipt, actual_date_receipt,
+		update_time, date_receipt_status,
+		special_service, truck_no,chassis_no,humidity, ventilation, power_draw_date_status from
+
 		shipment_detail
 	</sql>
 	<select id="countShipmentDetailList"
@@ -289,6 +302,85 @@
 
 	</select>
 
+	<select id="selectShipmentDetailListNotHaveContReefer"
+		parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
+		<include refid="selectShipmentDetailVo" />
+		<where>
+			<if test="shipmentId != null ">and shipment_id = #{shipmentId}</if>
+			<if test="logisticGroupId != null ">and logistic_group_id = #{logisticGroupId}</if>
+			<if test="processOrderId != null">and process_order_id = #{processOrderId}</if>
+			<if test="registerNo != null  and registerNo != ''">and register_no = #{registerNo}</if>
+			<if test="containerNo != null  and containerNo != ''">and container_no = #{containerNo}</if>
+			<if test="containerStatus != null  and containerStatus != ''">and container_status = #{containerStatus}</if>
+			<if test="sztp != null  and sztp != ''">and sztp not like concat(concat('%',#{sztp}),'%')</if>
+			<if test="temperature != null ">and temperature = #{temperature}</if>
+			<if test="fe != null  and fe != ''">and fe = #{fe}</if>
+			<if test="bookingNo != null  and bookingNo != ''">and booking_no = #{bookingNo}</if>
+			<if test="blNo != null  and blNo != ''">and bl_no = #{blNo}</if>
+			<if test="sealNo != null  and sealNo != ''">and seal_no = #{sealNo}</if>
+			<if test="consignee != null  and consignee != ''">and consignee = #{consignee}</if>
+			<if test="expiredDem != null ">and expired_dem = #{expiredDem}</if>
+			<if test="detFreeTime != null ">and det_free_time = #{detFreeTime}</if>
+			<if test="emptyExpiredDem != null ">and empty_expired_dem = #{emptyExpiredDem}</if>
+			<if test="wgt != null ">and wgt = #{wgt}</if>
+			<if test="vslName != null  and vslName != ''">and vsl_name = #{vslName}</if>
+			<if test="vslNm != null  and vslNm != ''">and vsl_nm = #{vslNm}</if>
+			<if test="voyNo != null  and voyNo != ''">and voy_no = #{voyNo}</if>
+			<if test="voyCarrier != null  and voyCarrier != ''">and voy_carrier = #{voyCarrier}</if>
+			<if test="opeCode != null  and opeCode != ''">and ope_code = #{opeCode}</if>
+			<if test="carrierName != null  and carrierName != ''">and carrier_name = #{carrierName}</if>
+			<if test="loadingPort != null  and loadingPort != ''">and loading_port = #{loadingPort}</if>
+			<if test="dischargePort != null  and dischargePort != ''">and discharge_port = #{dischargePort}</if>
+			<if test="transportType != null  and transportType != ''">and transport_type = #{transportType}</if>
+			<if test="emptyDepot != null  and emptyDepot != ''">and empty_depot = #{emptyDepot}</if>
+			<if
+				test="emptyDepotLocation != null  and emptyDepotLocation != ''">and empty_depot_location =
+				#{emptyDepotLocation}
+			</if>
+			<if test="cargoType != null  and cargoType != ''">and cargo_type = #{cargoType}</if>
+			<if test="commodity != null  and commodity != ''">and commodity = #{commodity}</if>
+			<if test="vgmChk != null ">and vgm_chk = #{vgmChk}</if>
+			<if test="vgm != null  and vgm != ''">and vgm = #{vgm}</if>
+			<if test="vgmPersonInfo != null  and vgmPersonInfo != ''">and vgm_person_info = #{vgmPersonInfo}</if>
+			<if test="preorderPickup != null  and preorderPickup != ''">and preorder_pickup = #{preorderPickup}</if>
+			<if test="prePickupPaymentStatus != null">and pre_pickup_payment_status = #{prePickupPaymentStatus}
+			</if>
+			<if test="customStatus != null  and customStatus != ''">and custom_status = #{customStatus}</if>
+			<if test="paymentStatus != null  and paymentStatus != ''">and payment_status = #{paymentStatus}</if>
+			<if test="processStatus != null  and processStatus != ''">and process_status = #{processStatus}</if>
+			<if test="doStatus != null  and doStatus != ''">and do_status = #{doStatus}</if>
+			<if test="doReceivedTime != null  and doReceivedTime != ''">and do_received_time = #{doReceivedTime}</if>
+			<if test="userVerifyStatus != null  and userVerifyStatus != ''">and user_verify_status =
+				#{userVerifyStatus}
+			</if>
+			<if test="finishStatus != null  and finishStatus != ''">and finish_status = #{finishStatus}</if>
+			<if test="status != null ">and status = #{status}</if>
+			<if
+				test="contSupplyStatus != null and contSupplyStatus != 'contSupplyStatus'">and cont_supply_status =
+				#{contSupplyStatus}
+			</if>
+			<if test="planningDate != null">and planning_date = #{planningDate}</if>
+			<if
+				test="qualityRequirement != null and qualityRequirement != 'qualityRequirement'">and quality_requirement
+				= #{qualityRequirement}
+			</if>
+			<if
+				test="contSupplyRemark != null and contSupplyRemark != 'contSupplyRemark'">and cont_supply_remark =
+				#{contSupplyRemark}
+			</if>
+			<if
+				test="contSupplierName != null and contSupplierName != 'contSupplierName'">and cont_supplier_name =
+				#{contSupplierName}
+			</if>
+			<if test="orderNo != null and orderNo != ''">and order_no = #{orderNo}</if>
+			<if test="dangerous != null and dangerous != ''">and dangerous = #{dangerous}</if>
+			<if test="frozenStatus != null and frozenStatus != ''">and frozen_status = #{frozenStatus}</if>
+			<if test="oversize != null and oversize != ''">and oversize = #{oversize}</if>
+			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">and date_receipt_status = #{dateReceiptStatus}</if>
+		</where>
+
+	</select>
+
 	<select id="selectShipmentDetailListReport"
 		parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
 		<include refid="selectShipmentDetailVo" />
@@ -387,8 +479,10 @@
 		delivery_remark, cont_supplier_name,
 		eta, etd,
 		status, remark, create_by, create_time, update_by,
-		update_time,frozen_status, dangerous,oversize
-		from shipment_detail
+		update_time,frozen_status,
+		dangerous,oversize,date_receipt,date_receipt_status
+		from
+		shipment_detail
 		<where>
 			<if test="shipmentId != null ">and shipment_id = #{shipmentId}</if>
 			<if test="logisticGroupId != null ">and logistic_group_id = #{logisticGroupId}</if>
@@ -472,9 +566,11 @@
 		oversize,
 		frozen_status,
 		delivery_address, delivery_mobile, delivery_remark, eta, etd, status,
-		remark,
+		remark, special_service,
 		create_by, create_time, update_by,
-		update_time
+		actual_date_receipt,
+		update_time,
+		date_receipt_status, date_receipt
 		from
 		shipment_detail
 		<where>
@@ -553,15 +649,15 @@
 		<include refid="selectShipmentDetailVo" />
 		where id = #{id}
 	</select>
-	
-	<select id="selectShipmentDetailByDetailId" parameterType="ShipmentDetail"
-		resultMap="ShipmentDetailResult">
+
+	<select id="selectShipmentDetailByDetailId"
+		parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
 		<include refid="selectShipmentDetailVo" />
 		where id = #{shipmentDetailIds}
 	</select>
-	
-	
-	
+
+
+
 
 	<insert id="insertShipmentDetail" parameterType="ShipmentDetail"
 		useGeneratedKeys="true" keyProperty="id">
@@ -663,6 +759,12 @@
 			<if test="etd != null">etd,</if>
 			<if test="location != null and location != ''">location,</if>
 			<if test="containerRemark != null and containerRemark != ''">container_remark,</if>
+			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">date_receipt_status,</if>
+			<if test="dateReceipt != null">date_receipt,</if>
+			<if test="actualDateReceipt != null">actual_date_receipt,</if>
+			<if test="humidity != null">humidity,</if>
+			<if test="ventilation != null">ventilation,</if>
+			<if test="specialService != null">special_service,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
 			<if test="createBy != null  and createBy != ''">create_by,</if>
 			create_time
@@ -763,6 +865,12 @@
 			<if test="etd != null">#{etd},</if>
 			<if test="location != null and location != ''">#{location},</if>
 			<if test="containerRemark != null and containerRemark != ''">#{containerRemark},</if>
+			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">#{dateReceiptStatus},</if>
+			<if test="dateReceipt != null">#{dateReceipt},</if>
+			<if test="actualDateReceipt != null">#{actualDateReceipt},</if>
+			<if test="humidity != null"> #{humidity},</if>
+			<if test="ventilation != null">#{ventilation},</if>
+			<if test="specialService != null">#{specialService},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
 			<if test="createBy != null  and createBy != ''">#{createBy},</if>
 			sysdate
@@ -774,6 +882,11 @@
 		<!-- <update id="updateShipmentDetail" parameterType="ShipmentDetailExtend"> -->
 		update shipment_detail
 		<trim prefix="SET" suffixOverrides=",">
+			<if test="dateReceiptStatus != null and dateReceiptStatus != ''">date_receipt_status = #{dateReceiptStatus},</if>
+			<if test="dateReceipt != null">date_receipt = #{dateReceipt},</if>
+			<if test="actualDateReceipt != null">actual_date_receipt = #{actualDateReceipt},</if>
+			<if test="humidity != null">humidity = #{humidity},</if>
+			<if test="ventilation != null">ventilation = #{ventilation},</if>
 			<if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
 			<if test="processOrderId != null">process_order_id = #{processOrderId},</if>
 			<if test="registerNo != null  and registerNo != ''">register_no = #{registerNo},</if>
@@ -885,6 +998,7 @@
 			<if test="etd != null">etd = #{etd},</if>
 			<if test="location != null and location != ''">location = #{location},</if>
 			<if test="containerRemark != null and containerRemark != ''">container_remark = #{containerRemark},</if>
+			<if test="specialService != null">special_service = #{specialService},</if>
 			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
 			update_time = sysdate
 		</trim>
@@ -1004,21 +1118,30 @@
 		<if test="logisticGroupId != null">AND logistic_group_id = #{logisticGroupId}</if>
 
 	</select>
-	
-	
-	
+
+
+
+	<!-- <select id="selectConfirmShipmentDetailByIds" resultMap="ShipmentDetailResult"> 
+		<include refid="selectShipmentDetailVo" /> where id in <foreach item="id" 
+		collection="shipmentDetailIds" open="(" separator="," close=")"> #{shipmentDetailIds} 
+		</foreach> </select> -->
+
+	<!-- start yêu cầu xác nhận Nhatlv -->
 	<select id="selectConfirmShipmentDetailByIds"
 		resultMap="ShipmentDetailResult">
 		<include refid="selectShipmentDetailVo" />
 		where id in
-		<foreach item="id" collection="shipmentDetailIds" open="("
-			separator="," close=")">
-			#{shipmentDetailIds}
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
+			#{id}
 		</foreach>
-		  
+
 	</select>
-	
-	 
+	<!-- end yêu cầu xác nhận Nhatlv -->
+
+
+
+
 
 	<resultMap id="ShipmentWaitExecResult"
 		type="vn.com.irtech.eport.logistic.dto.ShipmentWaitExec">
@@ -1523,6 +1646,252 @@
 			<if test="shipmentDetail.temperature != null ">temperature = #{shipmentDetail.temperature},</if>
 			<if test="shipmentDetail.fe != null and shipmentDetail.fe != ''">fe = #{shipmentDetail.fe},</if>
 			<if
+				test="shipmentDetail.bookingNo != null">booking_no =
+				#{shipmentDetail.bookingNo},
+			</if>
+			<if
+				test="shipmentDetail.blNo != null">bl_no = #{shipmentDetail.blNo},</if>
+			<if
+				test="shipmentDetail.sealNo != null and shipmentDetail.sealNo != ''">seal_no =
+				#{shipmentDetail.sealNo},
+			</if>
+			<if
+				test="shipmentDetail.consignee != null and shipmentDetail.consignee != ''">consignee =
+				#{shipmentDetail.consignee},
+			</if>
+			<if test="shipmentDetail.expiredDem != null ">expired_dem = #{shipmentDetail.expiredDem},</if>
+			<if test="shipmentDetail.detFreeTime != null ">det_free_time = #{shipmentDetail.detFreeTime},</if>
+			<if test="shipmentDetail.emptyExpiredDem != null ">empty_expired_dem = #{shipmentDetail.emptyExpiredDem},
+			</if>
+			<if test="shipmentDetail.wgt != null ">wgt = #{shipmentDetail.wgt},</if>
+			<if
+				test="shipmentDetail.vslName != null  and shipmentDetail.vslName != ''">vsl_name =
+				#{shipmentDetail.vslName},
+			</if>
+			<if
+				test="shipmentDetail.vslNm != null  and shipmentDetail.vslNm != ''">vsl_nm = #{shipmentDetail.vslNm},
+			</if>
+			<if
+				test="shipmentDetail.voyNo != null  and shipmentDetail.voyNo != ''">voy_no = #{shipmentDetail.voyNo},
+			</if>
+			<if
+				test="shipmentDetail.voyCarrier != null  and shipmentDetail.voyCarrier != ''">voy_carrier =
+				#{shipmentDetail.voyCarrier},
+			</if>
+			<if
+				test="shipmentDetail.opeCode != null  and shipmentDetail.opeCode != ''">ope_code =
+				#{shipmentDetail.opeCode},
+			</if>
+			<if
+				test="shipmentDetail.carrierName != null  and shipmentDetail.carrierName != ''">carrier_name =
+				#{shipmentDetail.carrierName},
+			</if>
+			<if
+				test="shipmentDetail.loadingPort != null  and shipmentDetail.loadingPort != ''">loading_port =
+				#{shipmentDetail.loadingPort},
+			</if>
+			<if
+				test="shipmentDetail.dischargePort != null  and shipmentDetail.dischargePort != ''">discharge_port =
+				#{shipmentDetail.dischargePort},
+			</if>
+			<if
+				test="shipmentDetail.transportType != null  and shipmentDetail.transportType != ''">transport_type =
+				#{shipmentDetail.transportType},
+			</if>
+			<if
+				test="shipmentDetail.emptyDepot != null  and shipmentDetail.emptyDepot != ''">empty_depot =
+				#{shipmentDetail.emptyDepot},
+			</if>
+			<if
+				test="shipmentDetail.emptyDepotLocation != null  and shipmentDetail.emptyDepotLocation != ''">
+				empty_depot_location = #{shipmentDetail.emptyDepotLocation},
+			</if>
+			<if
+				test="shipmentDetail.cargoType != null  and shipmentDetail.cargoType != ''">cargo_type =
+				#{shipmentDetail.cargoType},
+			</if>
+			<if
+				test="shipmentDetail.commodity != null  and shipmentDetail.commodity != ''">commodity =
+				#{shipmentDetail.commodity},
+			</if>
+			<if test="shipmentDetail.vgmChk != null ">vgm_chk = #{shipmentDetail.vgmChk},</if>
+			<if
+				test="shipmentDetail.vgm != null  and shipmentDetail.vgm != ''">vgm = #{shipmentDetail.vgm},</if>
+			<if
+				test="shipmentDetail.vgmPersonInfo != null  and shipmentDetail.vgmPersonInfo != ''">vgm_person_info =
+				#{shipmentDetail.vgmPersonInfo},
+			</if>
+			<if
+				test="shipmentDetail.preorderPickup != null  and shipmentDetail.preorderPickup != ''">preorder_pickup =
+				#{shipmentDetail.preorderPickup},
+			</if>
+			<if test="shipmentDetail.prePickupPaymentStatus != null">pre_pickup_payment_status =
+				#{shipmentDetail.prePickupPaymentStatus},
+			</if>
+			<if
+				test="shipmentDetail.customStatus != null  and shipmentDetail.customStatus != ''">custom_status =
+				#{shipmentDetail.customStatus},
+			</if>
+			<if
+				test="shipmentDetail.paymentStatus != null  and shipmentDetail.paymentStatus != ''">payment_status =
+				#{shipmentDetail.paymentStatus},
+			</if>
+			<if
+				test="shipmentDetail.processStatus != null  and shipmentDetail.processStatus != ''">process_status =
+				#{shipmentDetail.processStatus},
+			</if>
+			<if
+				test="shipmentDetail.doStatus != null  and shipmentDetail.doStatus != ''">do_status =
+				#{shipmentDetail.doStatus},
+			</if>
+			<if test="shipmentDetail.doReceivedTime != null">do_received_time = #{shipmentDetail.doReceivedTime},</if>
+			<if
+				test="shipmentDetail.userVerifyStatus != null  and shipmentDetail.userVerifyStatus != ''">
+				user_verify_status = #{shipmentDetail.userVerifyStatus},
+			</if>
+			<if
+				test="shipmentDetail.finishStatus != null  and shipmentDetail.finishStatus != ''">finish_status =
+				#{shipmentDetail.finishStatus},
+			</if>
+			<if test="shipmentDetail.status != null ">status = #{shipmentDetail.status},</if>
+			<if
+				test="shipmentDetail.orderNo != null and shipmentDetail.orderNo != ''">order_no =
+				#{shipmentDetail.orderNo},
+			</if>
+			<if
+				test="shipmentDetail.taxCode != null and shipmentDetail.taxCode != ''">tax_code =
+				#{shipmentDetail.taxCode},
+			</if>
+			<if
+				test="shipmentDetail.consigneeByTaxCode != null and shipmentDetail.consigneeByTaxCode != ''">
+				consignee_by_tax_code = #{shipmentDetail.consigneeByTaxCode},
+			</if>
+			<if
+				test="shipmentDetail.customsNo != null and shipmentDetail.customsNo != ''">customs_no =
+				#{shipmentDetail.customsNo},
+			</if>
+			<if test="shipmentDetail.customScanTime != null">custom_scan_time = #{shipmentDetail.customScanTime},</if>
+			<if
+				test="shipmentDetail.contSupplyStatus != null and shipmentDetail.contSupplyStatus != ''">
+				cont_supply_status = #{shipmentDetail.contSupplyStatus},
+			</if>
+			<if test="shipmentDetail.planningDate != null">planning_date = #{shipmentDetail.planningDate},</if>
+			<if
+				test="shipmentDetail.qualityRequirement != null and shipmentDetail.qualityRequirement != ''">
+				quality_requirement = #{shipmentDetail.qualityRequirement},
+			</if>
+			<if
+				test="shipmentDetail.contSupplyRemark != null and shipmentDetail.contSupplyRemark != ''">
+				cont_supply_remark = #{shipmentDetail.contSupplyRemark},
+			</if>
+			<if
+				test="shipmentDetail.contSupplierName != null and shipmentDetail.contSupplierName != ''">
+				cont_supplier_name = #{shipmentDetail.contSupplierName},
+			</if>
+			<if
+				test="shipmentDetail.payType != null  and shipmentDetail.payType != ''">pay_type =
+				#{shipmentDetail.payType},
+			</if>
+			<if
+				test="shipmentDetail.payer != null  and shipmentDetail.payer != ''">payer = #{shipmentDetail.payer},
+			</if>
+			<if
+				test="shipmentDetail.payerName != null  and shipmentDetail.payerName != ''">payer_name =
+				#{shipmentDetail.payerName},
+			</if>
+			<if
+				test="shipmentDetail.remark != null  and shipmentDetail.remark != ''">remark =
+				#{shipmentDetail.remark},
+			</if>
+			<if
+				test="shipmentDetail.deliveryAddress != null and shipmentDetail.deliveryAddress != ''">delivery_address
+				= #{shipmentDetail.deliveryAddress},
+			</if>
+			<if
+				test="shipmentDetail.deliveryMobile != null  and shipmentDetail.deliveryMobile != ''">delivery_mobile =
+				#{shipmentDetail.deliveryMobile},
+			</if>
+			<if
+				test="shipmentDetail.deliveryRemark != null  and shipmentDetail.deliveryRemark != ''">delivery_remark =
+				#{shipmentDetail.deliveryRemark},
+			</if>
+			<if test="shipmentDetail.eta != null">eta = #{shipmentDetail.eta},</if>
+			<if test="shipmentDetail.etd != null">etd = #{shipmentDetail.etd},</if>
+			<if
+				test="shipmentDetail.updateBy != null and shipmentDetail.updateBy != ''">update_by =
+				#{shipmentDetail.updateBy},
+			</if>
+			<if
+				test="shipmentDetail.frozenStatus != null and shipmentDetail.frozenStatus != ''">frozen_status =
+				#{shipmentDetail.frozenStatus},
+			</if>
+			<if
+				test="shipmentDetail.dangerous != null and shipmentDetail.dangerous != ''">dangerous =
+				#{shipmentDetail.dangerous},
+			</if>
+			<if
+				test="shipmentDetail.oversize != null and shipmentDetail.oversize != ''">oversize =
+				#{shipmentDetail.oversize},
+			</if>
+
+			<if
+				test="shipmentDetail.truckNo != null and shipmentDetail.truckNo != ''">truck_no =
+				#{shipmentDetail.truckNo},
+			</if>
+			<if
+				test="shipmentDetail.chassisNo != null and shipmentDetail.chassisNo != ''">chassis_no =
+				#{shipmentDetail.chassisNo},
+			</if>
+
+			<if test="shipmentDetail.powerDrawDate != null">power_draw_date =
+				#{shipmentDetail.powerDrawDate},
+			</if>
+			<if test="shipmentDetail.powerDrawDateStatus != null and shipmentDetail.powerDrawDateStatus != ''">power_draw_date_status =
+				#{shipmentDetail.powerDrawDateStatus},
+			</if>
+			<if
+				test="shipmentDetail.dateReceiptStatus != null and shipmentDetail.dateReceiptStatus != ''">date_receipt_status = #{shipmentDetail.dateReceiptStatus},</if>
+			<if test="shipmentDetail.dateReceipt != null">date_receipt = #{shipmentDetail.dateReceipt},</if>
+			<if test="shipmentDetail.actualDateReceipt != null">actual_date_receipt = #{shipmentDetail.actualDateReceipt},</if>
+			<if test="shipmentDetail.specialService != null">special_service = #{shipmentDetail.specialService},</if>
+			update_time = sysdate
+		</trim>
+		<where>
+			id in
+			<foreach item="id" collection="shipmentDetailIds" open="("
+				separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</update>
+
+	<!-- Nhatlv add -->
+
+	<update id="updateShipmentDetailByProcessOderIds">
+		update shipment_detail
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="shipmentDetail.processOrderId != null">process_order_id = #{shipmentDetail.processOrderId},</if>
+			<if
+				test="shipmentDetail.registerNo != null  and shipmentDetail.registerNo != ''">register_no =
+				#{shipmentDetail.registerNo},
+			</if>
+			<if
+				test="shipmentDetail.containerNo != null  and shipmentDetail.containerNo != ''">container_no =
+				#{shipmentDetail.containerNo},
+			</if>
+			<if
+				test="shipmentDetail.containerStatus != null  and shipmentDetail.containerStatus != ''">container_status
+				= #{shipmentDetail.containerStatus},
+			</if>
+			<if
+				test="shipmentDetail.sztp != null and shipmentDetail.sztp != ''">sztp = #{shipmentDetail.sztp},</if>
+			<if
+				test="shipmentDetail.sztpDefine != null and shipmentDetail.sztpDefine != ''">sztp_define =
+				#{shipmentDetail.sztpDefine},
+			</if>
+			<if test="shipmentDetail.temperature != null ">temperature = #{shipmentDetail.temperature},</if>
+			<if test="shipmentDetail.fe != null and shipmentDetail.fe != ''">fe = #{shipmentDetail.fe},</if>
+			<if
 				test="shipmentDetail.bookingNo != null  and shipmentDetail.bookingNo != ''">booking_no =
 				#{shipmentDetail.bookingNo},
 			</if>
@@ -1710,36 +2079,42 @@
 				test="shipmentDetail.oversize != null and shipmentDetail.oversize != ''">oversize =
 				#{shipmentDetail.oversize},
 			</if>
-			
+
 			<if
 				test="shipmentDetail.powerDrawDate != null and shipmentDetail.powerDrawDate != ''">power_draw_date =
 				#{shipmentDetail.powerDrawDate},
 			</if>
-
+			<if
+				test="shipmentDetail.dateReceiptStatus != null and shipmentDetail.dateReceiptStatus != ''">date_receipt_status = #{shipmentDetail.dateReceiptStatus},</if>
+			<if test="shipmentDetail.dateReceipt != null">date_receipt = #{shipmentDetail.dateReceipt},</if>
 			update_time = sysdate
 		</trim>
 		<where>
-			id in
+			PROCESS_ORDER_ID in
 			<foreach item="id" collection="shipmentDetailIds" open="("
 				separator="," close=")">
 				#{id}
 			</foreach>
 		</where>
 	</update>
- 
-	<update id="updateShipmentDetailByCondition" parameterType="ShipmentDetail">
-        update shipment_detail
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
-            <if test="deliveryAddress != null and deliveryAddress != ''">delivery_address = #{deliveryAddress},</if>
-            <if test="deliveryMobile != null and deliveryMobile != ''">delivery_mobile = #{deliveryMobile},</if>
-            <if test="deliveryRemark != null and deliveryRemark != ''">delivery_remark = #{deliveryRemark},</if>
-            update_time = sysdate
-        </trim>
-        <where>
-            <if test="blNo != null and blNo != ''">and bl_no = {blNo}</if>
-            <if test="shipmentId != null">and shipment_id = {shipmentId}</if>
-            <if test="opeCode != null and opeCode !=''">and ope_code = #{opeCode}</if>
-        </where>
-    </update>
+
+	<!-- end -->
+
+
+	<update id="updateShipmentDetailByCondition"
+		parameterType="ShipmentDetail">
+		update shipment_detail
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
+			<if test="deliveryAddress != null and deliveryAddress != ''">delivery_address = #{deliveryAddress},</if>
+			<if test="deliveryMobile != null and deliveryMobile != ''">delivery_mobile = #{deliveryMobile},</if>
+			<if test="deliveryRemark != null and deliveryRemark != ''">delivery_remark = #{deliveryRemark},</if>
+			update_time = sysdate
+		</trim>
+		<where>
+			<if test="blNo != null and blNo != ''">and bl_no = {blNo}</if>
+			<if test="shipmentId != null">and shipment_id = {shipmentId}</if>
+			<if test="opeCode != null and opeCode !=''">and ope_code = #{opeCode}</if>
+		</where>
+	</update>
 </mapper>

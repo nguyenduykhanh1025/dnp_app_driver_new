@@ -21,22 +21,36 @@ $("#form-detail-add").validate({
 });
 
 $("#datetimepicker1").datetimepicker({
-  format: "dd/mm/yyyy",
+  format: "dd/mm/yyyy hh:ii",
   language: "vi_VN",
-  minView: "month",
+  minuteStep: 30,
+  autoClose: true
 });
 
 $(document).ready(function () {
+  initTabs();
   initValueToElementHTML();
-  initOptionForSelectCargoTypeSelect();
-  initOptionForSelectIMOSelect();
-  initOptionForSelectUNNOSelect();
 });
 
 /**
  * * *Init Func* * *
  */
 
+function initTabs() {
+  var keySize = shipmentDetail.sztp.substring(2, 3);
+  if (keySize == 'R') {// nếu cont lạnh thì show table
+    $(".tab-label-2").css("display", 'none');
+    $(".tab-label-3").css("display", 'none');
+  }
+  if (keySize == 'G') {
+    $(".tab-label-1").css("display", 'none');
+    $(".tab-label-2").css("display", 'none');
+  }
+  if (keySize == 'P' || keySize == 'U') {
+    $(".tab-label-1").css("display", 'none');
+    $(".tab-label-3").css("display", 'none');
+  }
+}
 /**
  * @author Khanh
  * @description create another values if exist from server
@@ -45,70 +59,64 @@ function initValueToElementHTML() {
   if (shipmentDetail) {
     $("#containerNo").val(shipmentDetail.containerNo);
     $("#sztp").val(shipmentDetail.sztp);
+
+    $('#oversizeRight').val(shipmentDetail.oversizeRight);
+    $('#oversizeTop').val(shipmentDetail.oversizeTop);
+    $('#oversizeLeft').val(shipmentDetail.oversizeLeft);
+    $('#dgNameProduct').val(shipmentDetail.dangerousNameProduct);
+    $('#dgPacking').val(shipmentDetail.dangerousPacking);
+
     const {
-      vgmChk,
-      vgmInspectionDepartment,
-      vgmMaxGross,
       temperature,
       daySetupTemperature,
-      oversize,
-      oversizeType,
-      oversizeTop,
-      oversizeRight,
-      oversizeLeft,
-      oversizeFront,
-      oversizeBack,
-      dangerous,
-      dangerousImo,
-      dangerousUnno,
-      dangerousNameProduct,
-      dangerousPacking,
+      humidity,
+      ventilation
     } = shipmentDetail;
 
     initElementHTMLInInformationCommonTab(
-      vgmChk,
-      vgmInspectionDepartment,
-      vgmMaxGross,
       temperature,
-      daySetupTemperature
-    );
-    initElementHTMLInOversizeTab(
-      oversize,
-      oversizeType,
-      oversizeTop,
-      oversizeRight,
-      oversizeLeft,
-      oversizeFront,
-      oversizeBack
-    );
-    initElementHTMLInDangerousTab(
-      dangerous,
-      dangerousImo,
-      dangerousUnno,
-      dangerousNameProduct,
-      dangerousPacking
+      daySetupTemperature,
+      humidity,
+      ventilation
     );
 
+    /* initElementHTMLInOversizeTab(
+       //oversize,
+       oversizeType,
+       oversizeTop,
+       oversizeRight,
+       oversizeLeft,
+       oversizeFront,
+       oversizeBack
+     );
+     initElementHTMLInDangerousTab(
+       dangerous,
+       dangerousImo,
+       dangerousUnno,
+       dangerousNameProduct,
+       dangerousPacking
+     );*/
+
     //"preview-container-dangerous",
-    ("");
-    initDropzone(
-      "dropzoneOversize",
-      "preview-container-oversize",
-      "attachButtonOversize",
-      KEY_FORM.OVERSIZE
-    );
-    initDropzone(
-      "dropzoneDangerous",
-      "preview-container-dangerous",
-      "attachButtonDangerous",
-      KEY_FORM.DANGEROUS
-    );
-    initDropzone(
-      "dropzoneIce",
-      "preview-container-ice",
-      "attachButtonIce",
-      KEY_FORM.ICE
-    );
+    // initDropzone(
+    //   "dropzoneOversize",
+    //   "preview-container-oversize",
+    //   "attachButtonOversize",
+    //   KEY_FORM.OVERSIZE
+    // );
+    // initDropzone(
+    //   "dropzoneDangerous",
+    //   "preview-container-dangerous",
+    //   "attachButtonDangerous",
+    //   KEY_FORM.DANGEROUS
+    // );
+    // initDropzone(
+    //   "dropzoneIce",
+    //   "preview-container-ice",
+    //   "attachButtonIce",
+    //   KEY_FORM.ICE
+    // );
+
   }
 }
 
@@ -117,54 +125,27 @@ function initValueToElementHTML() {
  * @description create another values on tab common if exist from server
  */
 function initElementHTMLInInformationCommonTab(
-  vgmChk,
-  vgmInspectionDepartment,
-  vgmMaxGross,
   temperature,
-  daySetupTemperature
+  daySetupTemperature,
+  humidity,
+  ventilation
 ) {
-  $("#vgmChk")
-    .prop("checked", vgmChk ? true : false)
-    .change(function () {
-      $("#inspectionDepartment").prop("disabled", !this.checked);
-      $("#maxGross").prop("disabled", !this.checked);
-    });
-
   $("#temperature")
     .val(temperature ? temperature : null)
     .prop("disabled", !isContIce() ? true : false);
   $("#datetimepicker1 *")
     .css("pointer-events", !isContIce() ? "none" : "")
     .prop("disabled", !isContIce() ? true : false);
+  $("#humidity").val(humidity ? humidity : null);
+  $("#ventilation").val(ventilation ? ventilation : null);
 
   let daySetup = new Date(daySetupTemperature);
-  $("#datetimepicker1 input").val(
-    daySetupTemperature
-      ? `${daySetup.getDate()}/${
-          daySetup.getMonth() + 1
-        }/${daySetup.getFullYear()}`
-      : null
-  );
-
-  $("#inspectionDepartment")
-    .prop("disabled", vgmChk ? false : true)
-    .val(vgmInspectionDepartment);
-
-  $("#maxGross")
-    .prop("disabled", vgmChk ? false : true)
-    .val(vgmMaxGross)
-    .change(function () {
-      const valueNumber = reFormatNumber($(this).val());
-      $(this).val(formatNumber(valueNumber));
-    })
-    .focus(function () {
-      const valueNumber = reFormatNumber($(this).val());
-      $(this).val(valueNumber);
-    });
+  $("#datetimepicker1").datetimepicker('setDate', daySetup);
 
   $("#attachButtonIce").prop("disabled", !isContIce());
 
   initFileIsExist("preview-container-ice", "R");
+
 }
 
 /**
@@ -379,68 +360,16 @@ function initSelect(idSelect, data, valueChecked) {
  * @description handle click submit form-detail-add
  */
 function submitHandler() {
+
   var data = $("#form-detail-add").serializeArray();
-  data = covertSerializeArrayToObject(data);
+  data = covertSerializeArrayToObject(data);;
   data = {
     ...data,
-    oversizeType: formatValuesCategoryOversize(),
-    vgmMaxGross: $("#vgmChk").prop("checked")
-      ? reFormatNumber($("#maxGross").val())
-      : null,
-    vgmInspectionDepartment: $("#vgmChk").prop("checked")
-      ? $("#inspectionDepartment").val()
-      : null,
-    daySetupTemperature: new Date(
-      formatDateToSendServer(data.daySetupTemperature)
-    ).getTime(),
-    dangerous: data.dangerous == "T" ? "T" : "",
-    oversize: data.oversize == "T" ? "T" : "",
+    daySetupTemperature: $("#datetimepicker1").datetimepicker('getDate').getTime(),
   };
+  parent.submitDataFromDetailModal(data);
+  onCloseModel();
 
-  //validate file
-  let isValidateFile = true;
-
-  if (data.dangerous) {
-    // dangerous khong co dinh kem file
-    if (!shipmentFilePaths.dangerous.length) {
-      isValidateFile = false;
-      $.modal.alertWarning(
-        "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file."
-      );
-    }
-  }
-  if (data.oversize) {
-    if (!shipmentFilePaths.oversize.length) {
-      isValidateFile = false;
-      $.modal.alertWarning(
-        "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file."
-      );
-    }
-  }
-
-  if (isValidateFile) {
-    if (shipmentFilePaths.dangerous.length) {
-      saveFile(shipmentFilePaths.dangerous, KEY_FORM.DANGEROUS);
-    }
-    if (shipmentFilePaths.oversize.length || shipmentDetail.oversize == "T") {
-      saveFile(shipmentFilePaths.oversize, KEY_FORM.OVERSIZE);
-    }
-    if (shipmentFilePaths.ice.length) {
-      saveFile(shipmentFilePaths.ice, KEY_FORM.ICE);
-    }
-  }
-
-  if (
-    !(
-      getStatusContFollowIndex() == CONT_SPECIAL_STATUS.REQ ||
-      getStatusContFollowIndex() == CONT_SPECIAL_STATUS.YES
-    )
-  ) {
-    if (isValidateFile && $.validate.form()) {
-      parent.submitDataFromDetailModal(data);
-      onCloseModel();
-    }
-  }
 }
 
 function formatDateToSendServer(data) {
@@ -580,7 +509,7 @@ function dateparser(s) {
   }
 }
 
-$(document).ready(function () {});
+$(document).ready(function () { });
 
 function initFileIsExist(previewClass, fileType) {
   if (shipmentFiles != null) {

@@ -43,6 +43,7 @@ import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.CfsHouseBill;
@@ -436,9 +437,11 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 						shipmentDetailReference.setEta(inputDetail.getEta());
 						shipmentDetailReference.setEtd(inputDetail.getEtd());
 						shipmentDetailReference.setDischargePort(inputDetail.getDischargePort());
+
 					}
 					shipmentDetailReference.setRemark(inputDetail.getRemark());
 					shipmentDetailReference.setUpdateBy(user.getFullName());
+					shipmentDetailReference.setDateReceipt(inputDetail.getDateReceipt());
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
 					}
@@ -483,6 +486,7 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 					shipmentDetail.setEtd(inputDetail.getEtd());
 					shipmentDetail.setDischargePort(inputDetail.getDischargePort());
 					shipmentDetail.setRemark(inputDetail.getRemark());
+					shipmentDetail.setDateReceipt(inputDetail.getDateReceipt());
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
@@ -957,6 +961,17 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 
 			// Create list req for order receive cont empty
 			shipmentDetailService.makeOrderLoadingCargo(shipmentDetails, shipment, taxCode, creditFlag);
+
+			// Request manual order for om
+			String title = "Yêu cầu làm lệnh bốc rỗng đóng hàng cfs";
+			String msg = "Yêu cầu đóng hàng cho container booking " + shipment.getBookingNo();
+			try {
+				mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg,
+						configService.getKey("domain.admin.name") + EportConstants.URL_OM_LOADING_CARGO,
+						EportConstants.NOTIFICATION_PRIORITY_HIGH);
+			} catch (MqttException e) {
+				logger.error("Error when push request make loading cargo order: " + e);
+			}
 			return success();
 		}
 		return error("Có lỗi xảy ra trong quá trình xác thực!");
@@ -1010,5 +1025,48 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 			return success("Lưu khai báo thành công");
 		}
 		return error("Lưu khai báo thất bại");
+	}
+
+	@Log(title = "Đăng ký ngày đóng hàng", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
+	@PostMapping("/date-receipt")
+	@Transactional
+	@ResponseBody
+	public AjaxResult requestConfirmDateReceipt(String shipmentDetailIds) {
+		if (StringUtils.isEmpty(shipmentDetailIds)) {
+			return error("Không tìm thấy container cần đăng ký ngày đóng hàng.");
+		}
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
+				getUser().getGroupId());
+		if (CollectionUtils.isEmpty(shipmentDetails)) {
+			return error("Bạn không có quyền cập nhật thông tin cho những container này.");
+		}
+		shipmentDetailIds = "";
+		String containers = "";
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			if (!"Y".equals(shipmentDetail.getProcessStatus())) {
+				return error("Container chưa được làm lệnh, không thể thực hiện đăng ký ngày đóng hàng.");
+			}
+			if (shipmentDetail.getDateReceipt() == null) {
+				return error(
+						"Container chưa được cập nhật ngày đóng hàng, không thể thực hiện đăng ký ngày đóng hàng.");
+			}
+			shipmentDetailIds += shipmentDetail.getId() + ",";
+			containers += shipmentDetail.getContainerNo() + ",";
+		}
+		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
+		shipmentDetailUpdate.setDateReceiptStatus(EportConstants.DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_PROGRESS);
+		shipmentDetailUpdate.setUpdateBy(ShiroUtils.getLoginName());
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds.substring(0, shipmentDetailIds.length() - 1),
+				shipmentDetailUpdate);
+		// Set up data to send app notificaton
+		String title = "ePort: Yêu cầu đăng ký đóng hàng.";
+		String msg = "Có yêu cầu cho các container: " + containers.substring(0, containers.length() - 1);
+		try {
+			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_CFS, title, msg,
+					configService.getKey("domain.admin.name") + "", EportConstants.NOTIFICATION_PRIORITY_LOW);
+		} catch (MqttException e) {
+			logger.error("Error when push request cancel order pickup empty: " + e);
+		}
+		return success();
 	}
 }

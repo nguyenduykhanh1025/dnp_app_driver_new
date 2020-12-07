@@ -98,7 +98,9 @@ public class ContainerSupplierController extends BaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		// not have cont sztp Reefer
+		shipmentDetail.setSztp("R");
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailListNotHaveContReefer(shipmentDetail);
 		if (shipmentDetails != null) {
 			ajaxResult.put("shipmentDetails", shipmentDetails);
 		} else {

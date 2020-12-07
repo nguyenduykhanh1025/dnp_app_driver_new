@@ -134,7 +134,9 @@ public class CatosApiServiceImpl implements ICatosApiService {
 		logger.debug("Call CATOS API :{}", url);
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity<ShipmentDetail> httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
-		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<String>>() { });
+		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
+				new ParameterizedTypeReference<List<String>>() {
+				});
 		List<String> pods = response.getBody();
 		return pods;
 	}
@@ -1089,6 +1091,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+
 	/**
 	 * Get container history info
 	 * 
@@ -1204,6 +1207,30 @@ public class CatosApiServiceImpl implements ICatosApiService {
 		} catch (Exception e) {
 			logger.error("Error while call CATOS Api get container info from reserve table", e);
 			return null;
+		}
+	}
+
+	/**
+	 * Get container under shifting
+	 * 
+	 * @param containerInfo
+	 * @return
+	 */
+	@Override
+	public List<ContainerInfoDto> getContainerUnderShifting(Map<String, String> containerInfo) {
+		try {
+			String url = Global.getApiUrl() + "/container/shifting";
+			logger.debug("Call CATOS API get container under shifting :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity<Map<String, String>> httpEntity = new HttpEntity<Map<String, String>>(containerInfo);
+			ResponseEntity<List<ContainerInfoDto>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
+					new ParameterizedTypeReference<List<ContainerInfoDto>>() {
+					});
+			List<ContainerInfoDto> ContainerInfoDtos = response.getBody();
+			return ContainerInfoDtos;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api get container under shifting", e);
+			return new ArrayList<>();
 		}
 	}
 }

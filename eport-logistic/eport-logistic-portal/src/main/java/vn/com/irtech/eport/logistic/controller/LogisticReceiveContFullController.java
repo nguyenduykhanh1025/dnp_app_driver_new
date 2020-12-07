@@ -70,7 +70,9 @@ import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.ShipmentDetailHist;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
+import vn.com.irtech.eport.system.service.IShipmentDetailHistService;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
 @Controller
@@ -126,6 +128,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@Autowired
 	private ServerConfig serverConfig;
+	
+	@Autowired
+	private IShipmentDetailHistService shipmentDetailHistService;
 
 	@GetMapping()
 	public String receiveContFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
@@ -415,10 +420,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						shipmentDetail.setDangerousImo(ctnrInfo.getImdg());
 						shipmentDetail.setDangerousUnno(ctnrInfo.getUnno());
 						// Check is dangerous
-						if (StringUtils.isNotEmpty(shipmentDetail.getDangerousImo()) 
+						// k can check dangerous
+						/*if (StringUtils.isNotEmpty(shipmentDetail.getDangerousImo()) 
 								|| StringUtils.isNotEmpty(shipmentDetail.getDangerousUnno())) {
 							shipmentDetail.setDangerous(EportConstants.CONT_SPECIAL_STATUS_INIT);// I
-						} 
+						} */
+						// end
 						// Set oversize info
 						shipmentDetail.setOversizeTop(ctnrInfo.getOvHeight());
 						shipmentDetail.setOversizeFront(ctnrInfo.getOvFore());
@@ -1114,9 +1121,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
 			String[] fileArr = shipmentImage.getPath().split("/");
 			File file = new File(Global.getUploadPath() + "/receiveContFull/" + getUser().getGroupId() + "/" + fileArr[fileArr.length - 1]);
-			if (file.delete()) {
+			//if (file.delete()) {
 				shipmentImageService.deleteShipmentImageById(id);
-			}
+			//}
 			return success();
 		}else{
 			String[] fileArr = filePath.split("/");
@@ -1180,6 +1187,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody  
 	public AjaxResult CheckShipmentDetail(String shipmentDetailIds ) {   
 		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail(); 
+		 
+		//CheckShipmentDetail
+		
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectConfirmShipmentDetailByIds(shipmentDetailIds);
 		 
 		for (ShipmentDetail shipmentDetail : shipmentDetails) { 
@@ -1194,9 +1204,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			        	shipmentDetailUpdate.setOversize(EportConstants.CONT_SPECIAL_STATUS_REQ);// R
 			}
 			// cont nguy hiem
-			if (StringUtils.isNotEmpty(shipmentDetail.getDangerousImo())|| StringUtils.isNotEmpty(shipmentDetail.getDangerousUnno())) {
+			/*if (StringUtils.isNotEmpty(shipmentDetail.getDangerousImo())|| StringUtils.isNotEmpty(shipmentDetail.getDangerousUnno())) {
 	        	shipmentDetailUpdate.setDangerous(EportConstants.CONT_SPECIAL_STATUS_REQ);// R
-			}  
+			}  */
 			
 			shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds,shipmentDetailUpdate);
 		} 
@@ -1318,7 +1328,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			for (ShipmentImage shipmentImage2 : shipmentImages) {
 				shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
 			}
-		mmap.put("shipmentFiles", shipmentImages); 
+		mmap.put("shipmentFiles", shipmentImages);
+		
+		ShipmentDetailHist shipmentDetailHist = new ShipmentDetailHist();
+		shipmentDetailHist.setDataField("Power Draw Date");
+		shipmentDetailHist.setShipmentDetailId(shipmentDetailId);
+		mmap.put("powerDropDate", shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
 		return PREFIX + "/detail";
 	}
 	// save file in detail 
@@ -1337,8 +1352,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	 */
 	@PostMapping("/saveFileImage") 
 	@ResponseBody 
-	public AjaxResult uploadFile(@RequestParam(value="filePaths[]") String[] filePaths,@RequestParam(value="fileType[]") String[] fileType, 
-								String shipmentDetailId, Long shipmentId, String shipmentSztp,String shipmentDangerous) throws IOException,InvalidExtensionException {
+	public AjaxResult uploadFile(@RequestParam(value="filePaths[]",required = false) String[] filePaths,@RequestParam(value="fileType[]",required = false) String[] fileType, 
+								String shipmentDetailId, Long shipmentId, String shipmentSztp) throws IOException,InvalidExtensionException {
+			
+		if(filePaths.length > 0){
 			for(int i = 0; i < filePaths.length; i++)
 			{  
 				ShipmentImage shipmentImage = new ShipmentImage();
@@ -1348,8 +1365,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				shipmentImage.setFileType(fileType[i]);  
 				shipmentImageService.insertShipmentImage(shipmentImage);// them detail
 			} 
-		//return success();
-		return null;
+		}
+		
+		return success();
+		//return null;
 	} 
 	
 	// insert powerDrawDate
@@ -1363,9 +1382,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	 * @throws IOException
 	 * @throws InvalidExtensionException
 	 */
-	@PostMapping("/saveDate") 
+	/*@PostMapping("/saveDate") 
 	@ResponseBody
-	public AjaxResult saveDate( String shipmentDetailId, Long shipmentId,  String shipmentSztp, String powerDrawDate) 
+	public AjaxResult saveDate( String shipmentDetailId, Long shipmentId,  String shipmentSztp, Date powerDrawDate) 
 			throws IOException,InvalidExtensionException {  
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		if("R".equalsIgnoreCase(shipmentSztp.substring(2,3))){
@@ -1373,8 +1392,51 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			shipmentDetailService.updateShipmentDetailByIds(shipmentDetailId,shipmentDetail); 
 		}  
 		return success(); 
+	}*/
+	
+	@PostMapping("/saveDate") 
+	@ResponseBody
+	public AjaxResult saveDate( 
+			//String shipmentDetailId, Long shipmentId,  String shipmentSztp, 
+			//Date powerDrawDate
+			@RequestBody ShipmentDetail detail
+			) 
+			throws IOException,InvalidExtensionException {  
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		String shipmentDetailId = detail.getId().toString();
+		 
+		//if("R".equalsIgnoreCase(detail.getSztp().substring(2,3))){
+			shipmentDetail.setPowerDrawDate(detail.getPowerDrawDate()); 
+			shipmentDetail.setTruckNo(detail.getTruckNo());
+			shipmentDetail.setChassisNo(detail.getChassisNo());
+			shipmentDetailService.updateShipmentDetailByIds(shipmentDetailId,shipmentDetail); 
+		//}
+		
+		
+		
+		return success(); 
 	}
-	 
+	
+	@PostMapping("/extendPowerDrawDate") 
+	@ResponseBody
+	public AjaxResult extendPowerDrawDate( @RequestBody ShipmentDetail detail) {  
+		ShipmentDetail shipmentDetailFromDatabase = shipmentDetailService.selectShipmentDetailById(detail.getId());
+		
+		Date dateOld = shipmentDetailFromDatabase.getPowerDrawDate();
+		
+		detail.setUpdateBy(getUser().getFullName());
+		detail.setPowerDrawDateStatus("P");
+		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
+		
+//		detail.setPowerDrawDate(dateOld);
+//		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
+		
+		ShipmentDetailHist shipmentDetailHist = new ShipmentDetailHist();
+		shipmentDetailHist.setDataField("Power Draw Date");
+		shipmentDetailHist.setShipmentDetailId(detail.getId());
+
+		return AjaxResult.success(shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist)); 
+	}
 }
 	
 

@@ -44,6 +44,7 @@ public class MqttService implements MqttCallback {
 	private static final String NOTIFICATION_IT_TOPIC = "eport/notification/it";
 	private static final String NOTIFICATION_CONT_TOPIC = "eport/notification/cont";
 	private static final String NOTIFICATION_MC_TOPIC = "eport/notification/mc";
+	private static final String NOTIFICATION_CFS_TOPIC = "eport/notification/cfs";
 	private static final String NOTIFICATION_GATE_TOPIC = "eport/notification/gate";
 
 	@Autowired
@@ -59,7 +60,7 @@ public class MqttService implements MqttCallback {
 	@Autowired
 	private RobotResponseHandler robotResponseHandler;
 	@Autowired
-	private RobotUpdateStatusHandler robotUpdateStatusHandler; 
+	private RobotUpdateStatusHandler robotUpdateStatusHandler;
 
 	@PostConstruct
 	public void connect() throws MqttException {
@@ -90,6 +91,7 @@ public class MqttService implements MqttCallback {
 									e.printStackTrace();
 								}
 							}
+
 							@Override
 							public void onFailure(IMqttToken iMqttToken, Throwable e) {
 								logger.warn("[{}] MQTT broker connection faied! {}", mqttClient.getServerURI(),
@@ -212,7 +214,8 @@ public class MqttService implements MqttCallback {
 	}
 
 	@Transactional
-	public boolean publishMessageToRobot(ServiceSendFullRobotReq payLoad, EServiceRobot serviceRobot) throws MqttException {
+	public boolean publishMessageToRobot(ServiceSendFullRobotReq payLoad, EServiceRobot serviceRobot)
+			throws MqttException {
 		SysRobot sysRobot = this.getAvailableRobot(serviceRobot);
 		if (sysRobot == null) {
 			return false;
@@ -232,7 +235,7 @@ public class MqttService implements MqttCallback {
 		robotService.updateRobotStatusByUuId(sysRobot.getUuId(), "1");
 		return true;
 	}
-	
+
 	@Transactional
 	public boolean publishBookingOrderToRobot(ProcessOrder payLoad, EServiceRobot serviceRobot) throws MqttException {
 		SysRobot sysRobot = this.getAvailableRobot(serviceRobot);
@@ -256,7 +259,8 @@ public class MqttService implements MqttCallback {
 	 * @param uuid
 	 * @throws MqttException
 	 */
-	public void publicMessageToDemandRobot(ServiceSendFullRobotReq payLoad, EServiceRobot serviceRobot, String uuid) throws MqttException {
+	public void publicMessageToDemandRobot(ServiceSendFullRobotReq payLoad, EServiceRobot serviceRobot, String uuid)
+			throws MqttException {
 		String msg = new Gson().toJson(payLoad);
 		String topic = REQUEST_TOPIC.replace("+", uuid);
 		publish(topic, new MqttMessage(msg.getBytes()));
@@ -269,8 +273,9 @@ public class MqttService implements MqttCallback {
 		}
 		processOrderService.updateProcessOrder(processOrder);
 	}
-	
-	public void publicOrderToDemandRobot(ProcessOrder payLoad, EServiceRobot serviceRobot, String uuid) throws MqttException {
+
+	public void publicOrderToDemandRobot(ProcessOrder payLoad, EServiceRobot serviceRobot, String uuid)
+			throws MqttException {
 		SysRobot sysRobot = new SysRobot();
 		sysRobot.setUuId(uuid);
 		sysRobot.setStatus(EportConstants.ROBOT_STATUS_BUSY);
@@ -337,8 +342,9 @@ public class MqttService implements MqttCallback {
 	public enum NotificationCode {
 		NOTIFICATION_OM, // OM ho tro
 		NOTIFICATION_OM_CUSTOM, // OM ho tro khach hang
-		NOTIFICATION_IT, 	// IT ho tro robot
-		NOTIFICATION_CONT	// Notify boc cont
+		NOTIFICATION_IT, // IT ho tro robot
+		NOTIFICATION_CONT, // Notify boc cont
+		NOTIFICATION_CFS // CFS
 	}
 
 	/**
@@ -351,22 +357,26 @@ public class MqttService implements MqttCallback {
 	public void sendNotification(NotificationCode code, String content, String url) throws MqttException {
 		String title = "", topic = "";
 		switch (code) {
-			case NOTIFICATION_OM:
-				topic = NOTIFICATION_OM_TOPIC;
-				title = "Lỗi làm lệnh!";
-				break;
-			case NOTIFICATION_OM_CUSTOM:
-				topic = NOTIFICATION_OM_TOPIC;
-				title = "Lỗi hải quan!";
-				break;
-			case NOTIFICATION_IT:
-				topic = NOTIFICATION_IT_TOPIC;
-				title = "Lỗi robot!";
-				break;
-			case NOTIFICATION_CONT:
-				topic = NOTIFICATION_CONT_TOPIC;
-				title = "Cần cấp cont!";
-				break;
+		case NOTIFICATION_OM:
+			topic = NOTIFICATION_OM_TOPIC;
+			title = "Lỗi làm lệnh!";
+			break;
+		case NOTIFICATION_OM_CUSTOM:
+			topic = NOTIFICATION_OM_TOPIC;
+			title = "Lỗi hải quan!";
+			break;
+		case NOTIFICATION_IT:
+			topic = NOTIFICATION_IT_TOPIC;
+			title = "Lỗi robot!";
+			break;
+		case NOTIFICATION_CONT:
+			topic = NOTIFICATION_CONT_TOPIC;
+			title = "Cần cấp cont!";
+			break;
+		case NOTIFICATION_CFS:
+			topic = NOTIFICATION_CFS_TOPIC;
+			title = "Hỗ trợ CFS!";
+			break;
 		}
 		Map<String, String> data = new HashMap<>();
 		data.put("title", title);
@@ -375,8 +385,9 @@ public class MqttService implements MqttCallback {
 		String msg = new Gson().toJson(data);
 		publish(topic, new MqttMessage(msg.getBytes()));
 	}
-	
-	public void sendNotificationApp(NotificationCode code, String title, String content, String url, Integer priority) throws MqttException {
+
+	public void sendNotificationApp(NotificationCode code, String title, String content, String url, Integer priority)
+			throws MqttException {
 		NotificationReq notificationReq = new NotificationReq();
 		notificationReq.setTitle(title);
 		notificationReq.setMsg(content);
@@ -399,6 +410,9 @@ public class MqttService implements MqttCallback {
 		case NOTIFICATION_CONT:
 			notificationReq.setType(EportConstants.APP_USER_TYPE_CONT);
 			topic = NOTIFICATION_CONT_TOPIC;
+		case NOTIFICATION_CFS:
+			notificationReq.setType(EportConstants.APP_USER_TYPE_CFS);
+			topic = NOTIFICATION_CFS_TOPIC;
 		}
 		String msg = new Gson().toJson(notificationReq);
 		publish(topic, new MqttMessage(msg.getBytes()));

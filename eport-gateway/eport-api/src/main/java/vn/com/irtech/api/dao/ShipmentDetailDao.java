@@ -37,13 +37,15 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 
 	/**
 	 * Get list of POD for Vessel
+	 * 
 	 * @param shipmentDetailEntity: VSL_CD, YEAR, CALL_SEQ
 	 * @return List of POD
 	 */
 	public List<String> selectPODList(ShipmentDetailEntity shipmentDetailEntity);
-	
+
 	/**
 	 * Get all OPRs from vessel
+	 * 
 	 * @param shipmentDetailEntity: VSL_CD, YEAR, CALL_SEQ
 	 * @return List of OPR
 	 */
@@ -260,7 +262,7 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return List<ContainerInfoDto>
 	 */
 	public List<ContainerInfoDto> selectShipmentDetailByContainerNos(String[] containerNos);
-	
+
 	/**
 	 * Get container info stacking and all in history by list container no String[]
 	 * 
@@ -268,6 +270,7 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return List<ContainerInfoDto>
 	 */
 	public List<ContainerInfoDto> selectAllShipmentDetailByContainerNos(String[] containerNos);
+
 	/**
 	 * Get list of container info by JOB_ODR_NO from catos.<br>
 	 * Using when check if JOB_ODR_NO is successful create in catos.
@@ -308,4 +311,15 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return List<ContainerInfoDto>
 	 */
 	public List<ContainerInfoDto> selectContainerInfoFromReserve(String[] containerNos);
+
+	/**
+	 * Get list container under shifting
+	 * 
+	 * @param containerNos
+	 * @param blNo
+	 * @param bookingNo
+	 * @return
+	 */
+	public List<ContainerInfoDto> getContainerListUnderShifting(@Param("containerNos") String[] containerNos,
+			@Param("blNo") String blNo, @Param("bookingNo") String bookingNo);
 }

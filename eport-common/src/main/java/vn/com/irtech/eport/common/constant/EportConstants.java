@@ -42,6 +42,8 @@ public interface EportConstants {
 	public static final int SERVICE_LOADING_CARGO = 15;
 	/** Rut hang tai cang */
 	public static final int SERVICE_UNLOADING_CARGO = 16;
+	/** Dich vu dac biet (Kiem hoa, lay mau, phun trung) */
+	public static final int SERVICE_SPECIAL_SERVICE = 17;
 	/** Update booking */
 	public static final int BOOKING_UPDATE = 1;
 	/** Update booking */
@@ -182,6 +184,8 @@ public interface EportConstants {
 	public static final String TOPIC_COMMENT_CANCEL_DROP_EMPTY = "Yêu cầu hủy lệnh giao container rỗng";
 	/** Topic comment req cancel order drop full */
 	public static final String TOPIC_COMMENT_CANCEL_DROP_FULL = "Yêu cầu hủy lệnh giao container hàng";
+	/** Topic comment container supplier reject */
+	public static final String TOPIC_COMMENT_OM_ORDER_REJECT = "Từ chối làm lệnh";
 
 	// User type on notification app window
 	/** User type om in app notification */
@@ -198,6 +202,8 @@ public interface EportConstants {
 	public static final String APP_USER_TYPE_GATE = "gate";
 	/** User type cont supplier in app notification */
 	public static final String APP_USER_TYPE_CONT = "cont";
+	/** User type cfs in app notification */
+	public static final String APP_USER_TYPE_CFS = "cfs";
 
 	// Domain web eport
 	/** Url to mc provide yard position */
@@ -220,6 +226,14 @@ public interface EportConstants {
 	public static final String URL_CANCEL_ORDER_SUPPORT = "/om/support/order-cancel";
 	/** url to gate support */
 	public static final String URL_GATE = "/gate/support";
+	/** url to om support receive empty loading cargo */
+	public static final String URL_OM_LOADING_CARGO = "/om/support/loading-cargo/view";
+	/** url to om support receive full unloading cargo */
+	public static final String URL_OM_UNLOADING_CARGO = "/om/support/unloading-cargo/view";
+	/** url to om support convert container empty to full */
+	public static final String URL_OM_CONVERT_EMTY_FULL = "/om/support/convert/emty-full/view";
+	/** url to om support convert container full to empty */
+	public static final String URL_OM_CONVERT_FULL_EMTY = "/om/support/convert/full-emty/view";
 
 	// Priority notification app window
 	/** High priority notificaiton app window */
@@ -325,4 +339,34 @@ public interface EportConstants {
 	public static final Integer BULLETIN_DRAFT = 0;
 	/** Bulletin release status */
 	public static final Integer BULLETIN_RELEASE = 1;
+
+	/** date receipt status waiting */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_NO = "N";
+	/** date receipt status progress */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_PROGRESS = "P";
+	/** date receipt status success */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_SUCCESS = "S";
+	/** date receipt status error */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_ERROR = "E";
+	/** date receipt status done */
+	public static final String DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_DONE = "D";
+
+	/** CFS House bill lock status */
+	public static final String CFS_HOUSE_BILL_LOCK = "L";
+	/** CFS House bill open (not lock) status */
+	public static final String CFS_HOUSE_BILL_OPEN = "O";
+
+	/** Container catos import/export status storage */
+	public static final String CTNR_CATOS_IX_CD_STORAGE = "V";
+	/** Container catos import/export status import */
+	public static final String CTNR_CATOS_IX_CD_IMPORT = "I";
+	/** Container catos import/export status export */
+	public static final String CTNR_CATOS_IX_CD_EXPORT = "X";
+
+	/** Special service inspection (Kiem hoa) */
+	public static final Integer SPECIAL_SERVICE_INSPECTION = 1;
+	/** Special service sample (Lay mau) */
+	public static final Integer SPECIAL_SERVICE_SAMPLE = 2;
+	/** Special service inspection (phun trung) */
+	public static final Integer SPECIAL_SERVICE_DISINFECTION = 3;
 }

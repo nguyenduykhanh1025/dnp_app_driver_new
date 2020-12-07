@@ -41,6 +41,14 @@ public interface IShipmentDetailService {
 	 */
 	public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail);
 	
+	/**
+	 * Get Shipment Details List Not Like Cont Reefer
+	 * 
+	 * @param shipmentDetail Shipment Details
+	 * @return Shipment Details List
+	 */
+	public List<ShipmentDetail> selectShipmentDetailListNotHaveContReefer(ShipmentDetail shipmentDetail);
+	
 	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail);
 	
 	public List<ShipmentDetail> selectShipmentDetailDangerous(ShipmentDetail shipmentDetail);
@@ -328,8 +336,8 @@ public interface IShipmentDetailService {
 	 */
 	public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail); 
 	
+	public int updateShipmentDetailByProcessOderIds(String shipmentDetailIds, ShipmentDetail shipmentDetail); 
 	
-
 	/**
 	 * Reset custom status to null for shipmentId
 	 * 
@@ -378,4 +386,28 @@ public interface IShipmentDetailService {
 	 */
 	public List<ServiceSendFullRobotReq> makeOrderLoadingCargo(List<ShipmentDetail> shipmentDetails, Shipment shipment,
 			String taxCode, boolean creditFlag);
+	
+	/**
+	 * Make order loading cargo
+	 * 
+	 * @param shipmentDetails
+	 * @param shipment
+	 * @param taxCode
+	 * @param creditFlag
+	 * @return List<ServiceSendFullRobotReq>
+	 */
+	public List<ServiceSendFullRobotReq> makeOrderUnloadingCargo(List<ShipmentDetail> shipmentDetails, Shipment shipment,
+			String taxCode, boolean creditFlag);
+
+	/**
+	 * Make order special service
+	 * 
+	 * @param shipmentDetails
+	 * @param shipment
+	 * @param taxCode
+	 * @param creditFlag
+	 * @return
+	 */
+	public void makeOrderSpecialService(List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode,
+			boolean creditFlag);
 }

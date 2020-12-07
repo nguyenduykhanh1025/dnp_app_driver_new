@@ -138,14 +138,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public ShipmentDetail selectShipmentDetailById(Long id) {
 		return shipmentDetailMapper.selectShipmentDetailById(id);
 	}
-	
+
 	@Override
 	public ShipmentDetail selectShipmentDetailByDetailId(String shipmentDetailIds) {
 		return shipmentDetailMapper.selectShipmentDetailByDetailId(shipmentDetailIds);
 	}
-	
-	
-	 
 
 	/**
 	 * Get Shipment Details List
@@ -158,25 +155,31 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		return shipmentDetailMapper.selectShipmentDetailList(shipmentDetail);
 	}
 	
+	/**
+	 * Get Shipment Details List Not Like Cont Reefer
+	 * 
+	 * @param shipmentDetail Shipment Details
+	 * @return Shipment Details
+	 */
+	@Override
+	public List<ShipmentDetail> selectShipmentDetailListNotHaveContReefer(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.selectShipmentDetailListNotHaveContReefer(shipmentDetail);
+	}
+	
 	@Override
 	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.selectShipmentDetailListCont(shipmentDetail);
 	}
-	
+
 	@Override
 	public List<ShipmentDetail> selectShipmentDetailDangerous(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.selectShipmentDetailDangerous(shipmentDetail);
 	}
-	
+
 	@Override
 	public List<ShipmentDetail> selectShipmentDetailListContOverSize(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.selectShipmentDetailListContOverSize(shipmentDetail);
 	}
-	
-	
-	
-	
-	
 
 	/**
 	 * Add Shipment Details
@@ -201,14 +204,12 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		shipmentDetail.setUpdateTime(DateUtils.getNowDate());
 		return shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 	}
-	
+
 	@Override
 	public int updateShipmentDetailApply(ShipmentDetail shipmentDetail) {
 		shipmentDetail.setUpdateTime(DateUtils.getNowDate());
 		return shipmentDetailMapper.updateShipmentDetailApply(shipmentDetail);
 	}
-	
-	
 
 	/**
 	 * Delete Shipment Details By ID
@@ -237,14 +238,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public List<ShipmentDetail> selectShipmentDetailByIds(String ids, Long logisticGroupId) {
 		return shipmentDetailMapper.selectShipmentDetailByIds(Convert.toStrArray(ids), logisticGroupId);
 	}
-	
+
 	@Override
-	public List<ShipmentDetail> selectConfirmShipmentDetailByIds(String shipmentDetailIds) { 
+	public List<ShipmentDetail> selectConfirmShipmentDetailByIds(String shipmentDetailIds) {
 		return shipmentDetailMapper.selectConfirmShipmentDetailByIds(Convert.toStrArray(shipmentDetailIds));
 	}
- 
-	
-	
 
 	public long countShipmentDetailList(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.countShipmentDetailList(shipmentDetail);
@@ -1395,8 +1393,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	@Override
 	public int updateShipmentDetailByIds(String shipmentDetailIds, ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.updateShipmentDetailByIds(Convert.toStrArray(shipmentDetailIds), shipmentDetail);
-	} 
-	
+	}
+
+	@Override
+	public int updateShipmentDetailByProcessOderIds(String shipmentDetailIds, ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.updateShipmentDetailByProcessOderIds(Convert.toStrArray(shipmentDetailIds),
+				shipmentDetail);
+	}
 
 	@Override
 	public void resetCustomStatus(Long shipmentId) {
@@ -1472,12 +1475,18 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		}
 		return result;
 	}
-	 /* Make order loading cargo
+
+	/*
+	 * Make order loading cargo
 	 * 
 	 * @param shipmentDetails
+	 * 
 	 * @param shipment
+	 * 
 	 * @param taxCode
+	 * 
 	 * @param creditFlag
+	 * 
 	 * @return List<ServiceSendFullRobotReq>
 	 */
 	@Override
@@ -1572,5 +1581,47 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 		}
 		return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+	}
+
+	/**
+	 * Make order special service
+	 * 
+	 * @param shipmentDetails
+	 * @param shipment
+	 * @param taxCode
+	 * @param creditFlag
+	 * @return
+	 */
+	@Override
+	public void makeOrderSpecialService(List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode,
+			boolean creditFlag) {
+		String payer = taxCode;
+		String payerName = "";
+		try {
+			logger.debug("Get payer name for shipment detail by tax code: " + taxCode);
+			payerName = catosApiService.getGroupNameByTaxCode(taxCode).getGroupName();
+		} catch (Exception e) {
+			logger.error("Error when get payer name for " + payer + ": " + e);
+		}
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			shipmentDetail.setUserVerifyStatus("Y");
+			shipmentDetail.setPayer(payer);
+			shipmentDetail.setProcessStatus("W");
+			shipmentDetail.setPayerName(payerName);
+			if (creditFlag) {
+				shipmentDetail.setPayType("Credit");
+			} else {
+				shipmentDetail.setPayType("Cash");
+			}
+
+			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+		}
+	}
+
+	@Override
+	public List<ServiceSendFullRobotReq> makeOrderUnloadingCargo(List<ShipmentDetail> shipmentDetails,
+			Shipment shipment, String taxCode, boolean creditFlag) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

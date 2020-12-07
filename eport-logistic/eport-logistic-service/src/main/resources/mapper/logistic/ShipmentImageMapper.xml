@@ -34,6 +34,7 @@
 			<if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
 			<if test="path != null and path != ''"> and path = #{path}</if>
 			<if test="shipmentDetailId != null and shipmentDetailId != ''"> and shipment_detail_id = #{shipmentDetailId}</if>
+			<if test="params.nullShipmentDetailId != null"> and shipment_detail_id is null</if>
 		</where>
 		order by create_time desc
 	</select>

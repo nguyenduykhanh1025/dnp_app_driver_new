@@ -26,7 +26,7 @@ var detailInformationForContainerSpecial = {
 
 const SERVICE_TYPE = {
   pickupFull: 1,
-  dropFull: 4,
+  //dropFull: 4,
 };
 
 $(document).ready(function () {
@@ -121,18 +121,18 @@ $(document).ready(function () {
     data: [
       {
         alias: "All",
-        text: "Tất cả",
-        selected: true,
+        text: "Tất cả", 
       },
       {
         alias: SERVICE_TYPE.pickupFull,
         text: "Nhận cont hàng từ cảng",
+        selected: true,
       },
 
-      {
+     /* {
         alias: SERVICE_TYPE.dropFull,
         text: "Giao cont hàng cho cảng",
-      },
+      },*/
     ],
     onSelect: function (serviceArray) {
       if (serviceArray.alias !== "All") {
@@ -140,7 +140,7 @@ $(document).ready(function () {
         arrayResult.push(serviceArray.alias);
         shipment.params.serviceArray = arrayResult;
       } else {
-        shipment.params.serviceArray = [1, 4];
+        shipment.params.serviceArray = [1];
       }
       loadTable();
     },
@@ -505,7 +505,7 @@ function btnDetailRenderer(
 
   if (sourceData && sourceData.length > 0) {
     if (sourceData.length > row && sourceData[row].id) {
-      value = `<button class="btn btn-default btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-check-circle"></i>Chi tiết</button>`;
+      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
     } else if (containerNo && sztp) {
       value =
         '<button class="btn btn-success btn-xs" id="detailBtn ' +
@@ -517,20 +517,21 @@ function btnDetailRenderer(
         "'," +
         "'" +
         sztp +
-        '\')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
-    } else {
-      value =
-        '<button class="btn btn-success btn-xs" id="detailBtn ' +
-        row +
-        '" onclick="openDetail(' +
-        null +
-        ",'" +
-        containerNo +
-        "'," +
-        "'" +
-        sztp +
-        '\')" disabled><i class="fa fa-check-circle"></i>Chi tiết</button>';
-    }
+        '\')"><i class="fa fa-book"></i>Cont đặc biệt</button>';
+    } 
+    // else {
+    //   value =
+    //     '<button class="btn btn-success btn-xs" id="detailBtn ' +
+    //     row +
+    //     '" onclick="openDetail(' +
+    //     null +
+    //     ",'" +
+    //     containerNo +
+    //     "'," +
+    //     "'" +
+    //     sztp +
+    //     '\')" disabled><i class="fa fa-check-circle"></i>Chi tiết</button>';
+    // }
   }
   $(td).html(value);
   cellProperties.readOnly = "true";

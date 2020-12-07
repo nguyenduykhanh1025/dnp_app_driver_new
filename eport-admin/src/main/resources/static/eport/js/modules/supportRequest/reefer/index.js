@@ -11,7 +11,7 @@ var shipmentSelected,
   shipmentDetailIds;
 var shipment = new Object();
 shipment.params = new Object();
-
+shipment.params.serviceArray = [1];
 const CONT_SPECIAL_STATUS = {
   INIT: "I", // cont đã được lưu
   REQ: "R", // cont đã được yêu cầu xác nhận
@@ -114,38 +114,38 @@ $(document).ready(function () {
     },
   });
 
-  $("#serviceArray").combobox({
-    panelHeight: "auto",
-    valueField: "alias",
-    editable: false,
-    textField: "text",
-    data: [
-      {
-        alias: "All",
-        text: "Tất cả",
-        selected: true,
-      },
-      {
-        alias: SERVICE_TYPE.pickupFull,
-        text: "Nhận cont hàng từ cảng",
-      },
+  // $("#serviceArray").combobox({
+  //   panelHeight: "auto",
+  //   valueField: "alias",
+  //   editable: false,
+  //   textField: "text",
+  //   data: [
+  //     {
+  //       alias: "All",
+  //       text: "Tất cả",
+  //       selected: true,
+  //     },
+  //     {
+  //       alias: SERVICE_TYPE.pickupFull,
+  //       text: "Nhận cont hàng từ cảng",
+  //     },
 
-      {
-        alias: SERVICE_TYPE.dropFull,
-        text: "Giao cont hàng cho cảng",
-      },
-    ],
-    onSelect: function (serviceArray) {
-      if (serviceArray.alias !== "All") {
-        let arrayResult = [];
-        arrayResult.push(serviceArray.alias);
-        shipment.params.serviceArray = arrayResult;
-      } else {
-        shipment.params.serviceArray = [1, 4];
-      }
-      loadTable();
-    },
-  });
+  //     {
+  //       alias: SERVICE_TYPE.dropFull,
+  //       text: "Giao cont hàng cho cảng",
+  //     },
+  //   ],
+  //   onSelect: function (serviceArray) {
+  //     if (serviceArray.alias !== "All") {
+  //       let arrayResult = [];
+  //       arrayResult.push(serviceArray.alias);
+  //       shipment.params.serviceArray = arrayResult;
+  //     } else {
+  //       shipment.params.serviceArray = [1, 4];
+  //     }
+  //     loadTable();
+  //   },
+  // });
 
   $("#logisticGroups").combobox({
     valueField: "id",
@@ -506,7 +506,7 @@ function btnDetailRenderer(
 
   if (sourceData && sourceData.length > 0) {
     if (sourceData.length > row && sourceData[row].id) {
-      value = `<button class="btn btn-default btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-check-circle"></i>Chi tiết</button>`;
+      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
     } else if (containerNo && sztp) {
       value =
         '<button class="btn btn-success btn-xs" id="detailBtn ' +
@@ -518,20 +518,21 @@ function btnDetailRenderer(
         "'," +
         "'" +
         sztp +
-        '\')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
-    } else {
-      value =
-        '<button class="btn btn-success btn-xs" id="detailBtn ' +
-        row +
-        '" onclick="openDetail(' +
-        null +
-        ",'" +
-        containerNo +
-        "'," +
-        "'" +
-        sztp +
-        '\')" disabled><i class="fa fa-check-circle"></i>Chi tiết</button>';
-    }
+        '\')"><i class="fa fa-book"></i>Cont đặc biệt</button>';
+    } 
+    // else {
+    //   value =
+    //     '<button class="btn btn-success btn-xs" id="detailBtn ' +
+    //     row +
+    //     '" onclick="openDetail(' +
+    //     null +
+    //     ",'" +
+    //     containerNo +
+    //     "'," +
+    //     "'" +
+    //     sztp +
+    //     '\')" disabled><i class="fa fa-check-circle"></i>Chi tiết</button>';
+    // }
   }
   $(td).html(value);
   cellProperties.readOnly = "true";
@@ -766,7 +767,7 @@ function configHandson() {
         case 5:
           return "Số Container";
         case 6:
-          return '<span class="required">Chi Tiết</span>';
+          return '<span>Cont đặc biệt</span>';
         case 7:
           return "Sztp";
         case 8:
@@ -922,7 +923,6 @@ configHandson();
 hot = new Handsontable(dogrid, config);
 
 function loadShipmentDetails(id) {
-  console.log(shipment.params.frozenStatus);
   if (id) {
     $.modal.loading("Đang xử lý ...");
     $.ajax({
@@ -1717,7 +1717,6 @@ function renderIconsStatusServiceTypePickupFull(
     //   content += getRequestConfigIcon(sourceData[row].frozenStatus);
     // }
     content += getRequestConfigIcon(row);
-    console.log("dischargePort");
     console.log(sourceData[row].dischargePort);
     
  // Domestic cont: VN --> not show
@@ -1737,3 +1736,4 @@ function renderIconsStatusServiceTypePickupFull(
   }
   return td;
 }
+

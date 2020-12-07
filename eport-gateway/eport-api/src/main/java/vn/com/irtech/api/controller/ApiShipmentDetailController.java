@@ -362,4 +362,12 @@ public class ApiShipmentDetailController {
 	public List<ContainerInfoDto> getListCntrInfoFromReserve(String containerNos) {
 		return shipmentDetailDao.selectContainerInfoFromReserve(Convert.toStrArray(containerNos));
 	}
+
+	@PostMapping("/container/shifting")
+	public List<ContainerInfoDto> getListContainerUnderShifting(@RequestBody Map<String, String> containerMap) {
+		String containerNos = containerMap.get("containerNos");
+		String blNo = containerMap.get("blNo");
+		String bookingNo = containerMap.get("bookingNo");
+		return shipmentDetailDao.getContainerListUnderShifting(Convert.toStrArray(containerNos), blNo, bookingNo);
+	}
 }

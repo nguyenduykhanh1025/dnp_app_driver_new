@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Date Receipt Confirmation')" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+    <link th:href="@{/eport/css/om/document/style.css}" rel="stylesheet" />
+</head>
+
+<body style="overflow: hidden;">
+    <div>
+        <div class="form-group mt-10">
+            <b class="ml-10">Xác nhận ngày thực hiện dự kiến:</b>
+        </div>
+
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script type="text/javascript" th:inline="javascript">
+        var dateReceipt = /*[[${dateReceipt}]]*/;
+        var actualDateReceipt = /*[[${actualDateReceipt}]]*/;
+    </script>
+</body>
+
+</html>

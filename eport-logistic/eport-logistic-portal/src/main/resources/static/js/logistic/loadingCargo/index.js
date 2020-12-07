@@ -3,7 +3,7 @@ const regexRemoveHtml = /(<([^>]+)>)/ig;
 var prefix = ctx + "logistic/loading-cargo";
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData;
-var contList = [], sztpListDisable = [];
+var contList = [], sztpListDisable = [], currentEta;
 var allChecked = false;
 var checkList = [];
 var vslNmList, consigneeList;
@@ -564,6 +564,19 @@ function houseBillBtnRenderer(instance, td, row, col, prop, value, cellPropertie
     return td;
 }
 
+function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
+    if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+        }
+    } else {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+
 function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'expiredDem' + row).addClass("htMiddle").addClass("htCenter");
     if (value != null && value != '') {
@@ -780,32 +793,34 @@ function configHandson() {
                 case 3:
                     return "House Bill";
                 case 4:
-                    return '<span class="required">Kích Thước</span>';
+                    return "Ngày Đóng Hàng";
                 case 5:
-                    return '<span class="required">Hạn Lệnh</span>';
+                    return '<span class="required">Kích Thước</span>';
                 case 6:
-                    return '<span class="required">Chủ Hàng</span>';
+                    return '<span class="required">Hạn Lệnh</span>';
                 case 7:
-                    return '<span class="required">Ngày Dự <br>Kiến Bốc</span>';
+                    return '<span class="required">Chủ Hàng</span>';
                 case 8:
-                    return '<span class="required">Loại Hàng</span>';
+                    return '<span class="required">Ngày Dự <br>Kiến Bốc</span>';
                 case 9:
-                    return 'Yêu Cầu <br>Chất Lượng';
+                    return '<span class="required">Loại Hàng</span>';
                 case 10:
-                    return '<span class="required">Tàu và Chuyến</span>';
+                    return 'Yêu Cầu <br>Chất Lượng';
                 case 11:
-                    return "Ngày tàu đến";
+                    return '<span class="required">Tàu và Chuyến</span>';
                 case 12:
-                    return '<span class="required">Cảng Dỡ Hàng</span>';
+                    return "Ngày tàu đến";
                 case 13:
-                    return 'Cấp Container <br>Ghi Chú';
+                    return '<span class="required">Cảng Dỡ Hàng</span>';
                 case 14:
-                    return 'PTTT';
+                    return 'Cấp Container <br>Ghi Chú';
                 case 15:
-                    return 'Mã Số Thuế';
+                    return 'PTTT';
                 case 16:
-                    return 'Người Thanh Toán';
+                    return 'Mã Số Thuế';
                 case 17:
+                    return 'Người Thanh Toán';
+                case 18:
                     return "Ghi Chú";
             }
         },
@@ -958,7 +973,7 @@ function onChange(changes, source) {
     changes.forEach(function (change) {
         // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
         if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-            let vesselAndVoy = hot.getDataAtCell(change[0], 9);
+            let vesselAndVoy = hot.getDataAtCell(change[0], 11);
             //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
             if (vesselAndVoy) {
                 if (currentVesselVoyage != vesselAndVoy) {
@@ -981,7 +996,7 @@ function onChange(changes, source) {
                                     if (data.code == 0) {
                                         hot.updateSettings({
                                             cells: function (row, col, prop) {
-                                                if (col == 11) {
+                                                if (col == 13) {
                                                     let cellProperties = {};
                                                     dischargePortList = data.dischargePorts;
                                                     cellProperties.source = dischargePortList;
@@ -995,7 +1010,7 @@ function onChange(changes, source) {
                         }
                     }
                 }
-                hot.setDataAtCell(change[0], 10, currentEta);
+                hot.setDataAtCell(change[0], 12, currentEta);
             }
         } else if (change[1] == "containerNo") {
             if (!change[3]) {
@@ -1242,6 +1257,10 @@ function getDataSelectedFromTable(isValidate) {
             $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
             errorFlg = true;
         }
+        if (object["dateReceipt"] && object["dateReceipt"].length >= 10) {
+            let dateReceipt = new Date(object["dateReceipt"].substring(6, 10) + "/" + object["dateReceipt"].substring(3, 5) + "/" + object["dateReceipt"].substring(0, 2));
+            shipmentDetail.dateReceipt = dateReceipt.getTime();
+        }
         shipmentDetail.containerNo = object["containerNo"];
         shipmentDetail.processStatus = object["processStatus"];
         shipmentDetail.paymentStatus = object["paymentStatus"];
@@ -1285,9 +1304,8 @@ function getDataFromTable(isValidate) {
     }
     shipmentDetails = [];
     contList = [];
-    let vessel, pod;
+    let pod;
     if (cleanedGridData.length > 0) {
-        vessel = cleanedGridData[0].vslNm;
         pod = cleanedGridData[0].dischargePort;
     }
     $.each(cleanedGridData, function (index, object) {
@@ -1336,13 +1354,16 @@ function getDataFromTable(isValidate) {
             }
         }
         // opecode = object["opeCode"];
-        vessel = object["vslNm"];
         pod = object["dischargePort"];
         let expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         let planningDate = new Date(object["planningDate"].substring(6, 10) + "/" + object["planningDate"].substring(3, 5) + "/" + object["planningDate"].substring(0, 2));
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
         let sizeType = object["sztp"].split(": ");
+        if (object["dateReceipt"] && object["dateReceipt"].length >= 10) {
+            let dateReceipt = new Date(object["dateReceipt"].substring(6, 10) + "/" + object["dateReceipt"].substring(3, 5) + "/" + object["dateReceipt"].substring(0, 2));
+            shipmentDetail.dateReceipt = dateReceipt.getTime();
+        }
         shipmentDetail.sztp = sizeType[0];
         shipmentDetail.sztpDefine = sizeType[1];
         shipmentDetail.opeCode = shipmentSelected.opeCode;
@@ -1885,4 +1906,54 @@ function openHouseBillForm(shipmentDetailId) {
         return;
     }
     $.modal.openCustomForm("Khai báo house bill", prefix + "/shipment-detail/" + shipmentDetailId + "/house-bill");
+}
+
+function confirmDateReceipt() {
+    if (getDataSelectedFromTable(true)) {
+        // Check qualify to confirm date receipt status
+        let containers = '';
+        let errorFlg = false;
+        shipmentDetails.forEach(shipmentDetail => {
+            if (shipmentDetail.processStatus != 'Y') {
+                $.modal.alertWarning('Container ' + shipmentDetail.containerNo + ' chưa được làm lệnh, không thể xác nhận ngày đóng hàng.');
+                errorFlg = true;
+                return;
+            }
+            if (shipmentDetail.dateReceipt == null) {
+                $.modal.alertWarning('Quý khách chưa nhập ngày đóng hàng, không thể xác nhận ngày đóng hàng.');
+                errorFlg = true;
+                return;
+            }
+            containers += shipmentDetail.containerNo;
+        });
+        if (!errorFlg) {
+            layer.confirm("Quý khách đang yêu cầu xác nhận ngày đóng hàng cho container: " + containers + ".", {
+                icon: 3,
+                title: "Xác Nhận",
+                btn: ['Đồng Ý', 'Hủy Bỏ']
+            }, function () {
+                layer.close(layer.index);
+                $.ajax({
+                    url: prefix + "/date-receipt",
+                    method: "post",
+                    data: {
+                        shipmentDetailIds: shipmentDetailIds
+                    },
+                    success: function (res) {
+                        if (res.code == 0) {
+                            $.modal.alertSuccess(res.msg);
+                        } else {
+                            $.modal.alertWarning(res.msg);
+                        }
+                        reloadShipmentDetail();
+                    },
+                    error: function (err) {
+                        $.modal.alertError('Lỗi hệ thống, vui lòng liên hệ admin.');
+                    }
+                });
+            }, function () {
+                // close form
+            });
+        }
+    }
 }

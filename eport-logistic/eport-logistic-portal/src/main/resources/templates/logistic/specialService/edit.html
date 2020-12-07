@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <th:block th:include="include :: header('Chỉnh sửa lô')" />
+  <th:block th:include="include :: dropzone-css" />
+  <link th:href="@{/css/logistic/edit-shipment.css}" rel="stylesheet" />
+</head>
+<style type="text/css">
+  .container {
+    padding-top: 10px;
+  }
+
+  .form-group>label {
+    text-align: right;
+  }
+
+  .form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+  }
+
+  .error-input {
+    background-color: #fbe2e2;
+    border-color: #c66161;
+    color: #c00;
+  }
+</style>
+
+<body>
+  <div class="container">
+    <form id="form-edit-shipment">
+      <div class="form-group row">
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Mã Lô</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <input name="id" id="id" type="text" class="form-control" style="display: none;" />
+          <input name="shipmentCode" id="shipmentCode" type="text" class="form-control" disabled />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label style="margin-top: 4px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Loại</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <input style="margin-top: 6px;" type="radio" name="ixCd" id="ixCdI" value="0" checked/>
+          <label>Hàng nhập</label>
+          <input style="margin-top: 6px;" type="radio" name="ixCd" id="ixCdX" value="1"/>
+          <label style="margin-right: 30px;">Hàng xuất</label>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label id="blNoLabel" style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span
+            style="color: red;">*</span>B/L No</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <input name="blBookingNo" id="blBookingNo" type="text" class="form-control" required />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Mã
+          Hãng Tàu (OPR)</label>
+        <div class="col-md-5 col-sm-4 col-xs-3">
+          <select class="form-control" id="opeCode" name="opeCode">
+            <option th:each="oprCode, iterator : ${oprCodeList}" th:value=${oprCode} th:text=${oprCode}>
+            </option>
+          </select>
+        </div>
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Số
+          Lượng Container</label>
+        <div class="col-md-3 col-sm-2 col-xs-1">
+          <input name="containerAmount" id="containerAmount" type="number" class="form-control" required />
+        </div>
+      </div>
+      <div class="form-group row" id="dropzone">
+        <span class="col-md-2 col-sm-3 col-xs-4"></span>
+        <div class="col-md-4 col-sm-3 col-xs-2">
+          <button type="button" id="attachButton" class="btn btn-sm btn-default">
+            <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+          </button>
+        </div>
+        <div class="preview-container col-md-6 col-sm-6 col-xs-6"></div>
+      </div>
+      <div class="form-group row">
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Ghi Chú</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <textarea name="remark" id="remark" class="form-control" rows="3"></textarea>
+        </div>
+      </div>
+    </form>
+  </div>
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: dropzone-js" />
+  <script type="text/javascript" th:inline="javascript">
+    var shipment = /*[[${shipment}]]*/ ;
+    var shipmentFiles = /*[[${shipmentFiles}]]*/ ;
+  </script>
+  <script th:src="@{/js/logistic/specialService/edit.js?v=20201204}"></script>
+</body>
+
+</html>

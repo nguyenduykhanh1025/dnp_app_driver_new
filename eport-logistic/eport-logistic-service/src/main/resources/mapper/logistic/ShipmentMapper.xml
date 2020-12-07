@@ -117,8 +117,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticAccountId != null ">logistic_account_id = #{logisticAccountId},</if>
             <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
             <if test="serviceType != null ">service_type = #{serviceType},</if>
-            <if test="blNo != null  and blNo != ''">bl_no = trim(upper(#{blNo})),</if>
-            <if test="bookingNo != null  and bookingNo != ''">booking_no = trim(upper(#{bookingNo})),</if>
+            <if test="blNo != null">bl_no = trim(upper(#{blNo})),</if>
+            <if test="bookingNo != null">booking_no = trim(upper(#{bookingNo})),</if>
             <if test="opeCode != null  and opeCode != ''">ope_code = #{opeCode},</if>
             <if test="containerAmount != null ">container_amount = #{containerAmount},</if>
             <if test="edoFlg != null  and edoFlg != ''">edo_flg = #{edoFlg},</if>
@@ -393,6 +393,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="params.blOrBooking != null and params.blOrBooking != ''">
                     and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
                 </if>
+                <if test="params.sztp != null and params.sztp != ''"> and sztp like concat(concat('%', #{params.sztp}), '%')</if>
             </where>
             group by s.id,
                 s.logistic_account_id,
@@ -632,6 +633,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="params.voyNo != null and params.voyNo != ''">and sh.voy_no = #{params.voyNo}</if>
             <if test="params.doStatus != null and params.doStatus != ''">and sh.do_status = #{params.doStatus}</if>
             <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
+            <if test="params.paymentStatus != null and params.paymentStatus != ''">and sh.payment_status = #{params.paymentStatus}</if>
+            <if test="params.specialService != null">and sh.special_service = #{params.specialService}</if>
             <if test="params.serviceArray != null">
                 and s.service_type in
                 <foreach item="service" collection="params.serviceArray" open="(" separator="," close=")">
@@ -685,8 +688,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
            
             <if test="params.dangerous != null and params.dangerous != ''">and sh.dangerous = #{params.dangerous}</if>
 			<if test="params.frozenStatus != null and params.frozenStatus != ''">and sh.frozen_status = #{params.frozenStatus}</if>
- 
+ 			<if test="params.finishStatus != null and params.finishStatus != ''">and sh.finish_status = #{params.finishStatus}</if>
             <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
+            <if test="params.paymentStatus != null and params.paymentStatus != ''">and sh.payment_status = #{params.paymentStatus}</if>
             <if test="params.oversize != null and params.oversize != ''">and sh.oversize = #{params.oversize}</if>
             <if test="params.serviceArray != null">
                 and s.service_type in
@@ -697,6 +701,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="params.blOrBooking != null and params.blOrBooking != ''">
                 and ((upper(s.booking_no) like concat(concat('%', #{params.blOrBooking}), '%')) or (upper(s.bl_no) like concat(concat('%', #{params.blOrBooking}), '%')))
             </if>
+            <if test="params.fromDateSetupTemperature != null">and sh.day_setup_temperature &gt;= to_date(#{params.fromDateSetupTemperature },'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDateSetupTemperature != null">and sh.day_setup_temperature &lt;= to_date(#{params.toDateSetupTemperature },'dd/MM/yyyy HH24:mi:ss')</if>
+ 			<if test="params.powerDrawDateStatus != null and params.powerDrawDateStatus != ''">and sh.power_draw_date_status = #{params.powerDrawDateStatus}</if>
         </where>
 
         group by s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, 

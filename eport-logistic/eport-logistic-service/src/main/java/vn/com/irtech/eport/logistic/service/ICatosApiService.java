@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
+import java.util.Map;
 
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
@@ -35,7 +36,7 @@ public interface ICatosApiService {
 	public List<ContainerInfoDto> getContainerPickup(String containerNos, String userVoy);
 
 	public List<String> getPODList(ShipmentDetail shipmentDetail);
-	
+
 	public List<String> getOPRList(ShipmentDetail shipmentDetail);
 
 	public List<String> getVesselCodeList();
@@ -290,6 +291,7 @@ public interface ICatosApiService {
 	 * @return List<ContaienrInfoDto>
 	 */
 	List<ContainerInfoDto> getAllContainerInfoDtoByContNos(String containerNos);
+
 	/**
 	 * Get container history info
 	 * 
@@ -329,4 +331,12 @@ public interface ICatosApiService {
 	 * @return List<ContainerInfoDto>
 	 */
 	public List<ContainerInfoDto> getContainerInfoReserve(String containerNos);
+
+	/**
+	 * Get container under shifting
+	 * 
+	 * @param containerInfo
+	 * @return
+	 */
+	public List<ContainerInfoDto> getContainerUnderShifting(Map<String, String> containerInfo);
 }

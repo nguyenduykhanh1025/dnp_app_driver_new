@@ -38,6 +38,13 @@ public interface ShipmentDetailMapper {
 	 */
 	public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail);
 	
+	/**
+	 * Get Shipment Details List Not Like Cont Reefer
+	 * 
+	 * @param shipmentDetail Shipment Details
+	 * @return Shipment Details List
+	 */
+	public List<ShipmentDetail> selectShipmentDetailListNotHaveContReefer(ShipmentDetail shipmentDetail);
 	
 	public List<ShipmentDetail> selectShipmentDetailListCont(ShipmentDetail shipmentDetail);
 	
@@ -201,6 +208,12 @@ public interface ShipmentDetailMapper {
 	 */
 	public int updateShipmentDetailByIds(@Param("shipmentDetailIds") String[] shipmentDetailIds,
 			@Param("shipmentDetail") ShipmentDetail shipmentDetail); 
+	
+	public int updateShipmentDetailByProcessOderIds(@Param("shipmentDetailIds") String[] shipmentDetailIds,
+			@Param("shipmentDetail") ShipmentDetail shipmentDetail); 
+	
+	
+	
  
 	/**
 	 * Reset custom status to null

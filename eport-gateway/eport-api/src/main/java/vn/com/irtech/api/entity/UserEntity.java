@@ -25,6 +25,5 @@ public class UserEntity implements Serializable {
 	private String password;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
-	private Date createTime;
-
+	private Date createTime; 
 }

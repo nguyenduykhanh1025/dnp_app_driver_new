@@ -247,7 +247,9 @@ function loadTable() {
         success: function (res) {
           if (res.code == 0) {
             success(res.shipments);
-            $("#dg").datagrid("selectRow", 0);
+            if (res.shipments.length > 0) {
+              $("#dg").datagrid("selectRow", 0);
+            }
           } else {
             success([]);
           }
@@ -489,7 +491,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
           break;
       }
     }
-    
+
     // Return the content
     let content = '<div>';
     // Domestic cont: VN --> not show
@@ -1135,7 +1137,7 @@ hot = new Handsontable(dogrid, config);
 function beforeCopy(data, coords) {
   if (coords[0].startCol == containerCol && coords[0].endCol == containerCol) {
     if (data.length > 1) {
-      for (let i=0; i<data.length-1; i++) {
+      for (let i = 0; i < data.length - 1; i++) {
         data[i][0] = data[i][0] + ',';
       }
     }

@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="vn.com.irtech.eport.logistic.mapper.CfsHouseBillMapper">
     
-    <resultMap type="CfsHouseBill" id="CfsHouseBillResult">
+   <!--  <resultMap type="CfsHouseBill" id="CfsHouseBillResult">
         <result property="id"    column="id"    />
         <result property="logisticGroupId"    column="logistic_group_id"    />
         <result property="shipmentDetailId"    column="shipment_detail_id"    />
@@ -32,47 +32,96 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="shiftReceipt"    column="shift_receipt"    />
         <result property="dateReceipt"    column="date_receipt"    />
         <result property="equipment"    column="equipment"    />
-    </resultMap>
+    </resultMap> -->
 
-    <sql id="selectCfsHouseBillVo">
-        select id, logistic_group_id, shipment_detail_id, house_bill, master_bill, quantity, packaging_type, weight, cubic_meter, marks, forwarder_remark, consignee, create_time, create_by, update_time, update_by, status, storage_from_date, storage_to_date, handing_movement, service_type, forwarder, cargo_description, place_receipt, shift_receipt, date_receipt, equipment from cfs_house_bill
-    </sql>
+	<resultMap type="CfsHouseBill" id="CfsHouseBillResult">
+		<result property="id" column="id" />
+		<result property="logisticGroupId" column="logistic_group_id" />
+		<result property="shipmentDetailId" column="shipment_detail_id" />
+		<result property="houseBill" column="house_bill" />
+		<result property="masterBill" column="master_bill" />
+		<result property="quantity" column="quantity" />
+		<result property="packagingType" column="packaging_type" />
+		<result property="weight" column="weight" />
+		<result property="cubicMeter" column="cubic_meter" />
+		<result property="marks" column="marks" />
+		<result property="forwarderRemark" column="forwarder_remark" />
+		<result property="consignee" column="consignee" />
+		<result property="createTime" column="create_time" />
+		<result property="createBy" column="create_by" />
+		<result property="updateTime" column="update_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="status" column="status" />
+		<result property="storageFromDate" column="storage_from_date" />
+		<result property="storageToDate" column="storage_to_date" />
+		<result property="handingMovement" column="handing_movement" />
+		<result property="serviceType" column="service_type" />
+		<result property="forwarder" column="forwarder" />
+		<result property="cargoDescription" column="cargo_description" />
+		<result property="placeReceipt" column="place_receipt" />
+		<result property="shiftReceipt" column="shift_receipt" />
+		<result property="dateReceipt" column="date_receipt" />
+		<result property="equipment" column="equipment" />
+		<result property="storeFromDate" column="store_from_date" />
+	</resultMap>
 
-    <select id="selectCfsHouseBillList" parameterType="CfsHouseBill" resultMap="CfsHouseBillResult">
-        <include refid="selectCfsHouseBillVo"/>
-        <where>  
-            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
-            <if test="shipmentDetailId != null "> and shipment_detail_id = #{shipmentDetailId}</if>
-            <if test="houseBill != null  and houseBill != ''"> and house_bill = #{houseBill}</if>
-            <if test="masterBill != null  and masterBill != ''"> and master_bill = #{masterBill}</if>
-            <if test="quantity != null "> and quantity = #{quantity}</if>
-            <if test="packagingType != null  and packagingType != ''"> and packaging_type = #{packagingType}</if>
-            <if test="weight != null  and weight != ''"> and weight = #{weight}</if>
-            <if test="cubicMeter != null  and cubicMeter != ''"> and cubic_meter = #{cubicMeter}</if>
-            <if test="marks != null  and marks != ''"> and marks = #{marks}</if>
-            <if test="forwarderRemark != null  and forwarderRemark != ''"> and forwarder_remark = #{forwarderRemark}</if>
-            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="storageFromDate != null "> and storage_from_date = #{storageFromDate}</if>
-            <if test="storageToDate != null "> and storage_to_date = #{storageToDate}</if>
-            <if test="handingMovement != null  and handingMovement != ''"> and handing_movement = #{handingMovement}</if>
-            <if test="serviceType != null  and serviceType != ''"> and service_type = #{serviceType}</if>
-            <if test="forwarder != null  and forwarder != ''"> and forwarder = #{forwarder}</if>
-            <if test="cargoDescription != null  and cargoDescription != ''"> and cargo_description = #{cargoDescription}</if>
-            <if test="placeReceipt != null  and placeReceipt != ''"> and place_receipt = #{placeReceipt}</if>
-            <if test="shiftReceipt != null  and shiftReceipt != ''"> and shift_receipt = #{shiftReceipt}</if>
-            <if test="dateReceipt != null "> and date_receipt = #{dateReceipt}</if>
-            <if test="equipment != null  and equipment != ''"> and equipment = #{equipment}</if>
-        </where>
-    </select>
-    
-    <select id="selectCfsHouseBillById" parameterType="Long" resultMap="CfsHouseBillResult">
-        <include refid="selectCfsHouseBillVo"/>
-        where id = #{id}
-    </select>
-        
-    <insert id="insertCfsHouseBill" parameterType="CfsHouseBill" useGeneratedKeys="true" keyProperty="id">
-   		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+	<sql id="selectCfsHouseBillVo">
+		select id, logistic_group_id, shipment_detail_id,
+		house_bill, master_bill,
+		quantity, packaging_type, weight, cubic_meter,
+		marks,
+		forwarder_remark, consignee, create_time, create_by,
+		update_time,
+		update_by, status, storage_from_date, storage_to_date,
+		handing_movement, service_type, forwarder, cargo_description,
+		place_receipt, shift_receipt, date_receipt, equipment, store_from_date from
+		cfs_house_bill
+	</sql>
+
+	<select id="selectCfsHouseBillList" parameterType="CfsHouseBill"
+		resultMap="CfsHouseBillResult">
+		<include refid="selectCfsHouseBillVo" />
+		<where>
+			<if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+			<if test="shipmentDetailId != null "> and shipment_detail_id = #{shipmentDetailId}</if>
+			<if test="houseBill != null  and houseBill != ''"> and house_bill = #{houseBill}</if>
+			<if test="masterBill != null  and masterBill != ''"> and master_bill = #{masterBill}</if>
+			<if test="quantity != null "> and quantity = #{quantity}</if>
+			<if test="packagingType != null  and packagingType != ''"> and packaging_type = #{packagingType}</if>
+			<if test="weight != null  and weight != ''"> and weight = #{weight}</if>
+			<if test="cubicMeter != null  and cubicMeter != ''"> and cubic_meter = #{cubicMeter}</if>
+			<if test="marks != null  and marks != ''"> and marks = #{marks}</if>
+			<if test="forwarderRemark != null  and forwarderRemark != ''"> and forwarder_remark = #{forwarderRemark}</if>
+			<if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+			<if test="status != null  and status != ''"> and status = #{status}</if>
+			<if test="storageFromDate != null "> and storage_from_date = #{storageFromDate}</if>
+			<if test="storageToDate != null "> and storage_to_date = #{storageToDate}</if>
+			<if test="handingMovement != null  and handingMovement != ''"> and handing_movement = #{handingMovement}</if>
+			<if test="serviceType != null  and serviceType != ''"> and service_type = #{serviceType}</if>
+			<if test="forwarder != null  and forwarder != ''"> and forwarder = #{forwarder}</if>
+			<if test="cargoDescription != null  and cargoDescription != ''"> and cargo_description = #{cargoDescription}</if>
+			<if test="placeReceipt != null  and placeReceipt != ''"> and place_receipt = #{placeReceipt}</if>
+			<if test="shiftReceipt != null  and shiftReceipt != ''"> and shift_receipt = #{shiftReceipt}</if>
+			<if test="dateReceipt != null "> and date_receipt = #{dateReceipt}</if>
+			<if test="equipment != null  and equipment != ''"> and equipment = #{equipment}</if>
+		</where>
+	</select>
+
+	<select id="selectCfsHouseBillById" parameterType="Long"
+		resultMap="CfsHouseBillResult">
+		<include refid="selectCfsHouseBillVo" />
+		where id = #{id}
+	</select>
+
+	<select id="selectCfsHouseBillByIdShipmentDetail"
+		parameterType="Long" resultMap="CfsHouseBillResult">
+		<include refid="selectCfsHouseBillVo" />
+		where shipment_detail_id = #{idShipmentDetail}
+	</select>
+
+	<insert id="insertCfsHouseBill" parameterType="CfsHouseBill"
+		useGeneratedKeys="true" keyProperty="id">
+		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
 			select seq_cfs_house_bill.nextval as id from DUAL
 		</selectKey>
         insert into cfs_house_bill
@@ -132,36 +181,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateCfsHouseBill" parameterType="CfsHouseBill">
-        update cfs_house_bill
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="logisticGroupId != null">logistic_group_id = #{logisticGroupId},</if>
-            <if test="shipmentDetailId != null">shipment_detail_id = #{shipmentDetailId},</if>
-            <if test="houseBill != null">house_bill = #{houseBill},</if>
-            <if test="masterBill != null">master_bill = #{masterBill},</if>
-            <if test="quantity != null">quantity = #{quantity},</if>
-            <if test="packagingType != null">packaging_type = #{packagingType},</if>
-            <if test="weight != null">weight = #{weight},</if>
-            <if test="cubicMeter != null">cubic_meter = #{cubicMeter},</if>
-            <if test="marks != null">marks = #{marks},</if>
-            <if test="forwarderRemark != null">forwarder_remark = #{forwarderRemark},</if>
-            <if test="consignee != null">consignee = #{consignee},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="status != null">status = #{status},</if>
-            <if test="storageFromDate != null">storage_from_date = #{storageFromDate},</if>
-            <if test="storageToDate != null">storage_to_date = #{storageToDate},</if>
-            <if test="handingMovement != null">handing_movement = #{handingMovement},</if>
-            <if test="serviceType != null">service_type = #{serviceType},</if>
-            <if test="forwarder != null">forwarder = #{forwarder},</if>
-            <if test="cargoDescription != null">cargo_description = #{cargoDescription},</if>
-            <if test="placeReceipt != null">place_receipt = #{placeReceipt},</if>
-            <if test="shiftReceipt != null">shift_receipt = #{shiftReceipt},</if>
-            <if test="dateReceipt != null">date_receipt = #{dateReceipt},</if>
-            <if test="equipment != null">equipment = #{equipment},</if>
-            update_time = sysdate
-        </trim>
-        where id = #{id}
-    </update>
+	<update id="updateCfsHouseBill" parameterType="CfsHouseBill">
+		update cfs_house_bill
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="logisticGroupId != null">logistic_group_id = #{logisticGroupId},</if>
+			<if test="shipmentDetailId != null">shipment_detail_id = #{shipmentDetailId},</if>
+			<if test="houseBill != null">house_bill = #{houseBill},</if>
+			<if test="masterBill != null">master_bill = #{masterBill},</if>
+			<if test="quantity != null">quantity = #{quantity},</if>
+			<if test="packagingType != null">packaging_type = #{packagingType},</if>
+			<if test="weight != null">weight = #{weight},</if>
+			<if test="cubicMeter != null">cubic_meter = #{cubicMeter},</if>
+			<if test="marks != null">marks = #{marks},</if>
+			<if test="forwarderRemark != null">forwarder_remark = #{forwarderRemark},</if>
+			<if test="consignee != null">consignee = #{consignee},</if>
+			<if test="updateBy != null">update_by = #{updateBy},</if>
+			<if test="status != null">status = #{status},</if>
+			<if test="storageFromDate != null">storage_from_date = #{storageFromDate},</if>
+			<if test="storageToDate != null">storage_to_date = #{storageToDate},</if>
+			<if test="handingMovement != null">handing_movement = #{handingMovement},</if>
+			<if test="serviceType != null">service_type = #{serviceType},</if>
+			<if test="forwarder != null">forwarder = #{forwarder},</if>
+			<if test="cargoDescription != null">cargo_description = #{cargoDescription},</if>
+			<if test="placeReceipt != null">place_receipt = #{placeReceipt},</if>
+			<if test="shiftReceipt != null">shift_receipt = #{shiftReceipt},</if>
+			<if test="dateReceipt != null">date_receipt = #{dateReceipt},</if>
+			<if test="equipment != null">equipment = #{equipment},</if>
+			<if test="storeFromDate != null">store_from_date = #{storeFromDate},</if>
+			update_time = sysdate
+		</trim>
+		where id = #{id}
+	</update>
 
     <delete id="deleteCfsHouseBillById" parameterType="Long">
         delete from cfs_house_bill where id = #{id}

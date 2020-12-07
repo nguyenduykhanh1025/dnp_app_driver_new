@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <th:block th:include="include :: header('Dinh kem tep')" />
+  <th:block th:include="include :: dropzone-css" />
+  <link th:href="@{/css/logistic/payment-form.css}" rel="stylesheet" />
+
+  <style>
+    .preview-block {
+      float: left;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="content">
+      <div class="form-group row" id="dropzone">
+        <div style="margin-left: 10px;">
+          <button type="button" id="attachButton" class="btn btn-sm btn-default">
+            <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+          </button>
+        </div>
+        <div class="preview-container col-md-12 col-sm-12 col-xs-12"></div>
+      </div>
+    </div>
+    <div class="layui-layer-btn footer">
+      <a class="layui-layer-btn0" onclick="closeForm()">Đóng</a>
+    </div>
+  </div>
+</body>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: dropzone-js" />
+<script type="text/javascript" th:inline="javascript">
+  var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
+  var files = /*[[${files}]]*/;
+</script>
+<script th:src="@{/js/logistic/specialService/attach.js?v=20201205}"></script>
+</html>

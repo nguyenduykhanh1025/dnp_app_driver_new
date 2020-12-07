@@ -1,5 +1,14 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -9,8 +18,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.annotation.RepeatSubmit;
 import vn.com.irtech.eport.common.config.Global;
@@ -28,19 +45,27 @@ import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
-import vn.com.irtech.eport.logistic.domain.*;
+import vn.com.irtech.eport.logistic.domain.LogisticAccount;
+import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentComment;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.dto.BerthPlanInfo;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
 import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
-import vn.com.irtech.eport.logistic.service.*;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.IOtpCodeService;
+import vn.com.irtech.eport.logistic.service.IProcessBillService;
+import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
+import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentImageService;
+import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 @Controller
 @RequiresPermissions("logistic:order")
@@ -382,10 +407,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			for (ShipmentDetail inputDetail : shipmentDetails) {
 
 				// validate if cont have status cont special REQUEST | DONE
-				if (shipmentDetailService.isHaveContSpacialRequest(inputDetail)
-				|| shipmentDetailService.isHaveContSpacialYes(inputDetail)) {
-					return error("Không thể thay đổi thông tin các container đang chờ hoặc đã được yêu cầu xét duyệt.");
-				}
+				// if (shipmentDetailService.isHaveContSpacialRequest(inputDetail)
+				// || shipmentDetailService.isHaveContSpacialYes(inputDetail)) {
+				// 	return error("Không thể thay đổi thông tin các container đang chờ hoặc đã được yêu cầu xét duyệt.");
+				// }
 
 				if (inputDetail.getId() != null) {
 
@@ -435,7 +460,8 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 					shipmentDetailReference.setTemperature(inputDetail.getTemperature());
 					shipmentDetailReference.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
-
+					shipmentDetailReference.setHumidity(inputDetail.getHumidity());
+					shipmentDetailReference.setVentilation(inputDetail.getVentilation());
 					shipmentDetailReference.setRemark(inputDetail.getRemark());
 
 					// Lưu nếu là cont đặc biệt
@@ -457,14 +483,14 @@ public class LogisticSendContFullController extends LogisticBaseController {
 						shipmentDetailReference.setOversize("");
 					} else if (!(inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
 							|| inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
-						shipmentDetailReference.setOversize(EportConstants.CONT_SPECIAL_STATUS_INIT);
+						shipmentDetailReference.setOversize("");
 					}
 
 					if (StringUtils.isEmpty(inputDetail.getDangerous())) {
 						shipmentDetailReference.setDangerous("");
 					} else if (!(inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
 							|| inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
-						shipmentDetailReference.setDangerous(EportConstants.CONT_SPECIAL_STATUS_INIT);
+						shipmentDetailReference.setDangerous("");
 					}
 
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
@@ -521,16 +547,19 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipmentDetail.setTemperature(inputDetail.getTemperature());
 					shipmentDetail.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
 
+					shipmentDetail.setHumidity(inputDetail.getHumidity());
+					shipmentDetail.setVentilation(inputDetail.getVentilation());
+					
 					// Lưu nếu là cont đặc biệt
 					String sztp = inputDetail.getSztp().substring(2, 3);
 					if (sztp.equals("R")) {
 						// là cont lạnh
 						shipmentDetail.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_INIT);
 					}
-					if (sztp.equals("P")) {
-						// la cont qua kho
-						shipmentDetail.setOversize(EportConstants.CONT_SPECIAL_STATUS_INIT);
-					}
+//					if (sztp.equals("P")) {
+//						// la cont qua kho
+//						shipmentDetail.setOversize(EportConstants.CONT_SPECIAL_STATUS_INIT);
+//					}
 
 					if (attachBooking) {
 						shipmentDetail.setDoStatus("N");
