@@ -1860,7 +1860,7 @@ function checkCustomStatus() {
   }
   if (!isCanVerify) {
     $.modal.alertWarning(
-      "Chú ý: những Cont đặc biệt (cont lạnh, cont quá khổ, cont nguy hiểm) cần phải được yêu cầu xác nhận trước khi làm lệnh"
+      "Chú ý: những Cont đặc biệt (cont lạnh, cont quá khổ) cần phải được yêu cầu xác nhận trước khi làm lệnh"
     );
   }
   else {
