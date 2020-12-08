@@ -798,7 +798,7 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (sourceData[row].sztp.includes("R")) {
     textContent = "Lạnh";
   }
-  else if (oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack) {
+  else if (sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft || sourceData[row].oversizeFront || sourceData[row].oversizeBack) {
     textContent = "Quá Khổ"
   }
 
@@ -1860,7 +1860,7 @@ function checkCustomStatus() {
   }
   if (!isCanVerify) {
     $.modal.alertWarning(
-      "Chú ý: những Cont đặc biệt (cont lạnh, cont quá khổ, cont nguy hiểm) cần phải được yêu cầu xác nhận trước khi làm lệnh"
+      "Chú ý: những Cont đặc biệt (cont lạnh, cont quá khổ) cần phải được yêu cầu xác nhận trước khi làm lệnh"
     );
   }
   else {
