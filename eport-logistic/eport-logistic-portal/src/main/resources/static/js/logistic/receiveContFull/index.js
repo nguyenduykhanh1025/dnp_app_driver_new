@@ -793,7 +793,7 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (sourceData[row].sztp.includes("R")) {
     textContent = "Lạnh";
   }
-  else if (oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack) {
+  else if (sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft || sourceData[row].oversizeFront || sourceData[row].oversizeBack) {
     textContent = "Quá Khổ"
   }
 

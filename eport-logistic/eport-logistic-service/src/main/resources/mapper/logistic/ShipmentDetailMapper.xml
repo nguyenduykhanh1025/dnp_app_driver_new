@@ -479,7 +479,8 @@
 		eta, etd,
 		status, remark, create_by, create_time, update_by,
 		update_time,frozen_status,
-		dangerous,oversize,date_receipt,date_receipt_status
+		dangerous,oversize,date_receipt,date_receipt_status,
+		oversize_top,oversize_right,oversize_left,oversize_front,oversize_back 
 		from
 		shipment_detail
 		<where>
