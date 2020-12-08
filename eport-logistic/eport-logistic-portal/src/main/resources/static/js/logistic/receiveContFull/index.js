@@ -789,7 +789,12 @@ function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
 //nhatlv
 function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
   let textContent = '';
-  const {sztp, oversizeTop, oversizeRight, oversizeLeft, oversizeFront, oversizeBack} = sourceData[row];
+  if (!sourceData[row] || !sourceData[row].sztp) {
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    return td;
+  }
+  const { sztp, oversizeTop, oversizeRight, oversizeLeft, oversizeFront, oversizeBack } = sourceData[row];
   if (sourceData[row].sztp.includes("R")) {
     textContent = "Lạnh";
   }
@@ -812,7 +817,7 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
       // else {
       //   value = '<button class="btn btn-default btn-xs showHide" disabled ><i class="fa fa-book"></i></button>';
       // }
-      if(textContent) {
+      if (textContent) {
         value = '<button class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-book" style="margin: 0 3px;"></i>' + textContent + '</button>';
       }
     }
@@ -963,15 +968,15 @@ function configHandson() {
         case 2:
           return '<span class="required">Container No</span>';
         case 3:
-          return "Chi Tiết Container";
-        case 4:
           return '<span class="required">Hạn Lệnh</span>';
-        case 5:
+        case 4:
           return 'Ngày Miễn<br>Lưu Bãi';
-        case 6:
+        case 5:
           return '<span class="required">Chủ Hàng</span>';
-        case 7:
+        case 6:
           return '<span class="required">Nơi Hạ Vỏ</span>';
+        case 7:
+          return "Chi Tiết Container";
         case 8:
           return "Kích Thước";
         case 9:
@@ -1019,14 +1024,6 @@ function configHandson() {
       },
       // nhat
       {
-        data: "",
-        strict: true,
-        readonly: true,
-        renderer: detailRenderer
-      },
-
-
-      {
         data: "expiredDem",
         type: "date",
         dateFormat: "YYYY-MM-DD",
@@ -1051,6 +1048,12 @@ function configHandson() {
         source: emptyDepots,
         strict: true,
         renderer: emptyDepotRenderer
+      },
+      {
+        data: "",
+        strict: true,
+        readonly: true,
+        renderer: detailRenderer
       },
       {
         data: "sztp",
@@ -1132,7 +1135,7 @@ function configHandson() {
                 if (data.code == 0) {
                   hot.updateSettings({
                     cells: function (row, col, prop) {
-                      if (row == change[0] && col == 10) {
+                      if (row == change[0] && col == 11) {
                         let cellProperties = {};
                         cellProperties.source = data.voyages;
                         return cellProperties;
@@ -1154,14 +1157,14 @@ function configHandson() {
               $.modal.loading("Đang xử lý...");
               // CLEAR DATA
               hot.setDataAtCell(change[0], 5, ''); //consignee
-              hot.setDataAtCell(change[0], 7, ''); //sztp
-              hot.setDataAtCell(change[0], 8, ''); //opeCode
-              hot.setDataAtCell(change[0], 9, ''); //vslNm
-              hot.setDataAtCell(change[0], 10, ''); //voyNo
-              hot.setDataAtCell(change[0], 11, ''); //sealNo
-              hot.setDataAtCell(change[0], 12, ''); //wgt
-              hot.setDataAtCell(change[0], 13, ''); //loadingPort
-              hot.setDataAtCell(change[0], 14, ''); //dischargePort
+              hot.setDataAtCell(change[0], 8, ''); //sztp
+              hot.setDataAtCell(change[0], 9, ''); //opeCode
+              hot.setDataAtCell(change[0], 10, ''); //vslNm
+              hot.setDataAtCell(change[0], 11, ''); //voyNo
+              hot.setDataAtCell(change[0], 12, ''); //sealNo
+              hot.setDataAtCell(change[0], 13, ''); //wgt
+              hot.setDataAtCell(change[0], 14, ''); //loadingPort
+              hot.setDataAtCell(change[0], 15, ''); //dischargePort
               containerRemarkArr[change[0]] = ''; // container remark from catos
               locations[change[0]] = ''; // yard position from catos
 
@@ -1177,14 +1180,14 @@ function configHandson() {
               }).done(function (shipmentDetail) {
                 if (shipmentDetail != null) {
                   hot.setDataAtCell(change[0], 5, shipmentDetail.consignee); //consignee
-                  hot.setDataAtCell(change[0], 7, shipmentDetail.sztp); //sztp
-                  hot.setDataAtCell(change[0], 8, shipmentDetail.opeCode); //opeCode
-                  hot.setDataAtCell(change[0], 9, shipmentDetail.vslNm); //vslNm
-                  hot.setDataAtCell(change[0], 10, shipmentDetail.voyNo); //voyNo
-                  hot.setDataAtCell(change[0], 11, shipmentDetail.sealNo); //sealNo
-                  hot.setDataAtCell(change[0], 12, shipmentDetail.wgt); //wgt
-                  hot.setDataAtCell(change[0], 13, shipmentDetail.loadingPort); //loadingPort
-                  hot.setDataAtCell(change[0], 14, shipmentDetail.dischargePort); //dischargePort
+                  hot.setDataAtCell(change[0], 8, shipmentDetail.sztp); //sztp
+                  hot.setDataAtCell(change[0], 9, shipmentDetail.opeCode); //opeCode
+                  hot.setDataAtCell(change[0], 10, shipmentDetail.vslNm); //vslNm
+                  hot.setDataAtCell(change[0], 11, shipmentDetail.voyNo); //voyNo
+                  hot.setDataAtCell(change[0], 12, shipmentDetail.sealNo); //sealNo
+                  hot.setDataAtCell(change[0], 13, shipmentDetail.wgt); //wgt
+                  hot.setDataAtCell(change[0], 14, shipmentDetail.loadingPort); //loadingPort
+                  hot.setDataAtCell(change[0], 15, shipmentDetail.dischargePort); //dischargePort
                   containerRemarkArr[change[0]] = shipmentDetail.containerRemark; // container remark from catos
                   locations[change[0]] = shipmentDetail.location; // yard position from catos
                   voyCarrier = shipmentDetail.voyCarrier;

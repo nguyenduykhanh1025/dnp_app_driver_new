@@ -1478,14 +1478,16 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 //		return AjaxResult.success(shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
 		ReeferInfo reeferInfo = new ReeferInfo();
 		List<ReeferInfo> infos = reeferInfoService.selectReeferInfoListByIdShipmentDetail(detail.getId());
+		ShipmentDetail detailFromDB = shipmentDetailService.selectShipmentDetailById(detail.getId());
 		
 		reeferInfo.setStatus("P");
 		reeferInfo.setDateGetPower(detail.getPowerDrawDate());
-		reeferInfo.setDateSetPower(infos.get(infos.size() - 1).getDateGetPower());
+		reeferInfo.setDateSetPower(detailFromDB.getPowerDrawDate());
 		reeferInfo.setShipmentDetailId(detail.getId());
 		
 		detail.setUpdateBy(getUser().getFullName());
 		detail.setPowerDrawDateStatus("P");
+		detail.setPowerDrawDate(null);
 		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
 		
 		reeferInfoService.insertReeferInfo(reeferInfo);

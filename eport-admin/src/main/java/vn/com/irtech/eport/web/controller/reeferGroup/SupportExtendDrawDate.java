@@ -231,11 +231,17 @@ public class SupportExtendDrawDate extends AdminBaseController {
 	@PostMapping("/shipmentDetail/confirm")
 	@ResponseBody
 	public AjaxResult confirmExtendDateDrop(String idShipmentDetails) {
- 
-		System.out.println(idShipmentDetails);
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setPowerDrawDateStatus("S");
-		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
+		for(String id : idShipmentDetails.split(",")) {
+			List<ReeferInfo> infos = reeferInfoService.selectReeferInfoListByIdShipmentDetail(Long.parseLong(id));
+			ShipmentDetail shipmentDetailFromDB = shipmentDetailService.selectShipmentDetailById(Long.parseLong(id));
+			shipmentDetail.setPowerDrawDate(infos.get(0).getDateGetPower());
+			shipmentDetail.setId(Long.parseLong(id));
+			shipmentDetail.setPowerDrawDateStatus("S");
+			shipmentDetail.setDaySetupTemperature(shipmentDetailFromDB.getPowerDrawDate());
+			shipmentDetailService.updateShipmentDetail(shipmentDetail);
+		}
+//		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
 		return success();
 	}
 
