@@ -607,13 +607,11 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
 
   // if (shipmentDetail.powerDrawDateStatus == "S") {
   // }
-
-  if (row == 0 && shipmentDetail.powerDrawDateStatus != "S") {
+  if (sourceData.length != 1 && row == 0 && shipmentDetail.powerDrawDateStatus != "S") {
     result += btnCancel;
   } else {
     result += btnPayment;
   }
-
 
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
