@@ -300,7 +300,7 @@ function configHandson() {
 
       }
     },
-    colWidths: [60, 80, 80, 60, 80, 150, 150],
+    colWidths: [60, 100, 100, 60, 80, 150, 100],
     columns: [
 
       {
@@ -596,7 +596,7 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
     <span class="l-btn-left"
       ><span class="l-btn-text">
-        <button id="acceptBtn" onclick="cancelDateDrop(${sourceData[row].id})"  class="btn btn-sm btn-primary" style="background-color: #ef6776;">
+        <button id="acceptBtn" onclick="cancelDateDrop(${sourceData[row].id})"  class="btn btn-sm btn-primary" style="background-color: #ef6776;width: 87%;">
           <i class="fa fa-close text-primary"></i>Hủy</button></span
       ></span
     >
