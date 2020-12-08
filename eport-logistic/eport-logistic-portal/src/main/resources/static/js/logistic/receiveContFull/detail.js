@@ -465,7 +465,6 @@ if(oversize){
  }  	
  */
 
-
 function statusIconRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (row == reeferInfos.length) {
     return '';
@@ -505,8 +504,8 @@ function dateSetPower(instance, td, row, col, prop, value, cellProperties) {
     return '';
   }
   const dateResult = new Date(value);
-  const month = dateResult.getMonth() == 12 ? '00' : dateResult.getMonth() + 1;
-  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()}`;
+  const month = dateResult.getMonth() == 12 ? '01' : dateResult.getMonth() + 1;
+  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()} ${dateResult.getHours()}:${dateResult.getMinutes()}`;
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
@@ -517,7 +516,7 @@ function dateGetPower(instance, td, row, col, prop, value, cellProperties) {
   }
   const dateResult = new Date(value);
   const month = dateResult.getMonth() == 12 ? '00' : dateResult.getMonth() + 1;
-  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()}`;
+  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()} ${dateResult.getHours()}:${dateResult.getMinutes()}`;
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
@@ -568,12 +567,13 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
   </td>
   `;
 
-  if (sourceData[row].status == "S") {
-    result += btnPayment;
-  }
+  // if (shipmentDetail.powerDrawDateStatus == "S") {
+  // }
 
-  if (sourceData[row].status != "S") {
+  if (row == 0 && shipmentDetail.powerDrawDateStatus != "S") {
     result += btnCancel;
+  } else {
+    result += btnPayment;
   }
 
 
@@ -582,12 +582,13 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
 }
 
 function extendPowerDrawDate() {
-  // $("#datetimepicker2").datetimepicker('setDate', '');
-  if(!$('#extendPowerDrawDate').val()) {
-
+  if (!$('#extendPowerDrawDate').val()) {
     $.modal.alertError("Quý khách vui lòng điền thông tin gia hạn.");
   }
-  else if (sourceData[0].status != "S" || shipmentDetail.frozenStatus == 'R') {
+  else if ($('#extendPowerDrawDate').val() < $('#powerDrawDate').val()) {
+    $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
+  }
+  else if (shipmentDetail.powerDrawDateStatus != "S" || shipmentDetail.frozenStatus == 'R') {
     $.modal.alertError("Không thể gia hạn thêm ngày rút điện. Gia hạn ngày rút điện đang chờ xét duyệt từ tổ lạnh.");
   } else {
 
@@ -611,11 +612,11 @@ function extendPowerDrawDate() {
       success: function (data) {
         data = JSON.parse(data);
         sourceData = data.data;
-
+        shipmentDetail.powerDrawDateStatus = "P";
         configHandson();
         hot = new Handsontable(dogrid, config);
         hot.loadData(sourceData);
-        
+
         $.modal.alertSuccess("Gia hạn ngày rút điện thành công.");
       },
       error: function (result) {
@@ -665,7 +666,7 @@ function cancelDateDrop(id) {
 
         data = JSON.parse(data);
         sourceData = data.data;
-
+        shipmentDetail.powerDrawDateStatus = "S";
         configHandson();
         hot = new Handsontable(dogrid, config);
         hot.loadData(sourceData);

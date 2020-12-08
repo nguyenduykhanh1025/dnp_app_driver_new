@@ -563,6 +563,51 @@ function paymentRenderer(instance,
   );
   return td;
 }
+
+function daySetupTemperatureRenderer(instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = "";
+  }
+  const date = new Date(value);
+  const month = date.getMonth() == 12 ? '00' : date.getMonth() + 1;
+  const result = `${date.getDate()}/${month}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+
+function powerDrawDateRenderer(instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = "";
+  }
+  const date = new Date(value);
+  const month = date.getMonth() == 12 ? '01' : date.getMonth() + 1;
+  const result = `${date.getDate()}/${month}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+
 function openDetail(id, containerNo, sztp, row) {
   if (!id) {
     id = 0;
@@ -833,24 +878,28 @@ function configHandson() {
         case 10:
           return '<span>Hình Thức Thanh Toán</span>';
         case 11:
-          return "Sztp";
+          return '<span>Ngày cắm điện</span>';
         case 12:
-          return "Chủ Hàng";
+          return '<span>Ngày rút điện</span>';
         case 13:
-          return "Tàu - Chuyến";
+          return "Sztp";
         case 14:
-          return "Trọng Lượng";
+          return "Chủ Hàng";
         case 15:
-          return "Loại Hàng";
+          return "Tàu - Chuyến";
         case 16:
-          return "Số Seal";
+          return "Trọng Lượng";
         case 17:
-          return "Cảng Dỡ Hàng";
+          return "Loại Hàng";
         case 18:
-          return "P.T.T.T";
+          return "Số Seal";
         case 19:
-          return "Payer";
+          return "Cảng Dỡ Hàng";
         case 20:
+          return "P.T.T.T";
+        case 21:
+          return "Payer";
+        case 22:
           return "Ghi Chú";
       }
     },
@@ -865,6 +914,8 @@ function configHandson() {
       100,
       100,
       100,
+      150,
+      150,
       150,
       60,
       200,
@@ -932,6 +983,16 @@ function configHandson() {
       {
         data: "payment",
         renderer: paymentRenderer,
+      },
+
+      {
+        data: "daySetupTemperature",
+        renderer: daySetupTemperatureRenderer,
+      },
+
+      {
+        data: "powerDrawDate",
+        renderer: powerDrawDateRenderer,
       },
       ////////////////////
       {
