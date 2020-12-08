@@ -278,11 +278,19 @@ public class YardMonitorSpecialServiceController extends AdminBaseController {
 	@PostMapping("/date-receipt")
 	@ResponseBody
 	@Transactional
-	public AjaxResult confirmDateReceipt(String shipmentDetailIds, Date actualDateReceipt) {
-		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
-		shipmentDetailUpdate.setDateReceiptStatus("Y");
-		shipmentDetailUpdate.setActualDateReceipt(actualDateReceipt);
-		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
+	public AjaxResult confirmDateReceipt(String shipmentDetailIds) {
+		// Get all shipment detail
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+		if (CollectionUtils.isEmpty(shipmentDetails)) {
+			return error("Không tìm thấy container cần xác nhận, vui lòng kiểm tra lại.");
+		}
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			if (shipmentDetail.getActualDateReceipt() == null) {
+				shipmentDetail.setActualDateReceipt(shipmentDetail.getDateReceipt());
+			}
+			shipmentDetail.setDateReceiptStatus("Y");
+			shipmentDetailService.updateShipmentDetail(shipmentDetail);
+		}
 		return success();
 	}
 }

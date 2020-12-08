@@ -540,10 +540,16 @@ function paymentRenderer(instance,
   value,
   cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
+  if (sourceData[row] == null || sourceData[row].sztp == null) {
+   
     value = "";
-  }
-  if (sourceData[row]) {
+    $(td).html(
+      '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
+      '' +
+      "</div>"
+    );
+    return td;
+  } else {
     if (!sourceData[row].payType) {
       value = "Chủ hàng thanh toán";
     } else if (sourceData[row].payType == "Before") {
@@ -553,15 +559,15 @@ function paymentRenderer(instance,
     } else {
       value = '';
     }
+
+    $(td).html(
+      '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
+      value +
+      "</div>"
+    );
+    return td;
   }
 
-
-  $(td).html(
-    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
-  );
-  return td;
 }
 
 function daySetupTemperatureRenderer(instance,

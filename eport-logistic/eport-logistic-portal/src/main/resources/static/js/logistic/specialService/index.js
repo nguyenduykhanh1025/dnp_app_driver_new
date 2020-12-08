@@ -566,7 +566,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
 
         // check status
         let check = '<i id="finish" class="fa fa-check easyui-tooltip" title="Chưa Xác Nhận Ngày Thực Hiện" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
-        switch (sourceData[row].finishStatus) {
+        switch (sourceData[row].dateReceiptStatus) {
             case 'Y':
                 check = '<i id="check" class="fa fa-check easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
                 break;
@@ -1630,7 +1630,7 @@ function getDataFromTable(isValidate) {
         }
         if (object["dateReceipt"]) {
             let dateReceipt = new Date(object["dateReceipt"].substring(6, 10) + "/" + object["dateReceipt"].substring(3, 5) + "/" + object["dateReceipt"].substring(0, 2));
-            
+
             // set hours
             dateReceipt.setHours(object["dateReceipt"].substring(11, 13));
 

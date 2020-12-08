@@ -43,12 +43,12 @@ import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
-import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.CfsHouseBill;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -60,6 +60,7 @@ import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ICfsHouseBillService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
+import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
@@ -108,6 +109,9 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 	@Autowired
 	private ICfsHouseBillService cfsHouseBillService;
 
+	@Autowired
+	private IProcessBillService processBillService;
+
 	// VIEW RECEIVE CONT EMPTY
 	@GetMapping()
 	public String receiveContEmpty(@RequestParam(required = false) Long sId, ModelMap mmap) {
@@ -126,6 +130,9 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			ShipmentImage shipmentImage = new ShipmentImage();
 			shipmentImage.setShipmentId(shipmentId);
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("nullShipmentDetailId", true);
+			shipmentImage.setParams(params);
 			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
 			for (ShipmentImage shipmentImage2 : shipmentImages) {
 				shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
@@ -196,6 +203,16 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 			mmap.put("masterBill", shipmentDetail.getBookingNo());
 			mmap.put("containerNo", shipmentDetail.getContainerNo());
 			mmap.put("shipmentDetailId", shipmentDetailId);
+			// Get image file from shipment detail id
+			ShipmentImage shipmentImage = new ShipmentImage();
+			shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+			if (CollectionUtils.isNotEmpty(shipmentImages)) {
+				for (ShipmentImage shipmentImage2 : shipmentImages) {
+					shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+				}
+			}
+			mmap.put("shipmentImages", shipmentImages);
 		}
 		return PREFIX + "/houseBill";
 	}
@@ -212,6 +229,30 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 		mmap.put("taxCode", taxCode);
 		mmap.put("shipmentId", shipmentId);
 		return PREFIX + "/verifyOtp";
+	}
+
+	@GetMapping("/payment/{shipmentDetailIds}")
+	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
+				getUser().getGroupId());
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			shipmentDetailIds = "";
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				shipmentDetailIds += shipmentDetail.getId() + ",";
+			}
+			shipmentDetailIds = shipmentDetailIds.substring(0, shipmentDetailIds.length() - 1);
+			mmap.put("shipmentDetailIds", shipmentDetailIds);
+
+			// Get process bill
+			ProcessBill processBillParam = new ProcessBill();
+			processBillParam.setPaymentStatus("N");
+			Map<String, Object> params = new HashMap<>();
+			params.put("shipmentDetailIds", Convert.toStrArray(shipmentDetailIds));
+			processBillParam.setParams(params);
+			List<ProcessBill> processBills = processBillService.selectProcessBillList(processBillParam);
+			mmap.put("processBills", processBills);
+		}
+		return PREFIX + "/paymentForm";
 	}
 
 	// CHECK BOOKING NO IS UNIQUE
@@ -427,6 +468,7 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 								}
 							}
 						}
+						shipmentDetailReference.setSpecialService(inputDetail.getSpecialService());
 						shipmentDetailReference.setExpiredDem(inputDetail.getExpiredDem());
 						shipmentDetailReference.setConsignee(inputDetail.getConsignee());
 						shipmentDetailReference.setVslNm(inputDetail.getVslNm());
@@ -468,6 +510,7 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 									ctnrInfo.getLocation() != null ? ctnrInfo.getLocation() : ctnrInfo.getArea());
 						}
 					}
+					shipmentDetail.setSpecialService(inputDetail.getSpecialService());
 					shipmentDetail.setOpeCode(shipment.getOpeCode());
 					shipmentDetail.setBookingNo(shipment.getBookingNo());
 					shipmentDetail.setSztp(inputDetail.getSztp());
@@ -576,8 +619,9 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 	@PostMapping("/cont-req/shipment-detail")
 	@ResponseBody
 	public AjaxResult reqSupplyContainer(String shipmentDetailIds, String contReqRemark) {
+		LogisticAccount user = getUser();
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
-				getUser().getGroupId());
+				user.getGroupId());
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
 			shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_WAITING);
@@ -595,12 +639,13 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 				shipmentComment.setLogisticGroupId(getUser().getGroupId());
 				shipmentComment.setShipmentId(shipmentDetail.getShipmentId());
 				shipmentComment.setUserId(getUserId());
+				shipmentComment.setUserName(user.getUserName());
 				shipmentComment.setUserType(EportConstants.COMMENTOR_LOGISTIC);
 				shipmentComment.setUserAlias(getGroup().getGroupName());
 				shipmentComment.setCommentTime(new Date());
 				shipmentComment.setContent(contReqRemark);
 				shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CONT_SUPPLIER);
-				shipmentComment.setServiceType(shipmentDetail.getServiceType());
+				shipmentComment.setServiceType(shipment.getServiceType());
 				shipmentCommentService.insertShipmentComment(shipmentComment);
 			}
 
@@ -1027,45 +1072,50 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
-	@Log(title = "Đăng ký ngày đóng hàng", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/date-receipt")
-	@Transactional
+	@PostMapping("/shipment-detail/{shipmentDetailId}/file")
 	@ResponseBody
-	public AjaxResult requestConfirmDateReceipt(String shipmentDetailIds) {
-		if (StringUtils.isEmpty(shipmentDetailIds)) {
-			return error("Không tìm thấy container cần đăng ký ngày đóng hàng.");
+	public AjaxResult saveShipmentDetailFile(MultipartFile file,
+			@PathVariable("shipmentDetailId") Long shipmentDetailId) throws IOException, InvalidExtensionException {
+
+		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		if (shipmentDetail == null) {
+			return error("Không xác định được thông tin container cần đính kèm.");
 		}
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
-				getUser().getGroupId());
-		if (CollectionUtils.isEmpty(shipmentDetails)) {
-			return error("Bạn không có quyền cập nhật thông tin cho những container này.");
-		}
-		shipmentDetailIds = "";
-		String containers = "";
-		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			if (!"Y".equals(shipmentDetail.getProcessStatus())) {
-				return error("Container chưa được làm lệnh, không thể thực hiện đăng ký ngày đóng hàng.");
-			}
-			if (shipmentDetail.getDateReceipt() == null) {
-				return error(
-						"Container chưa được cập nhật ngày đóng hàng, không thể thực hiện đăng ký ngày đóng hàng.");
-			}
-			shipmentDetailIds += shipmentDetail.getId() + ",";
-			containers += shipmentDetail.getContainerNo() + ",";
-		}
-		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
-		shipmentDetailUpdate.setDateReceiptStatus(EportConstants.DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_PROGRESS);
-		shipmentDetailUpdate.setUpdateBy(ShiroUtils.getLoginName());
-		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds.substring(0, shipmentDetailIds.length() - 1),
-				shipmentDetailUpdate);
-		// Set up data to send app notificaton
-		String title = "ePort: Yêu cầu đăng ký đóng hàng.";
-		String msg = "Có yêu cầu cho các container: " + containers.substring(0, containers.length() - 1);
-		try {
-			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_CFS, title, msg,
-					configService.getKey("domain.admin.name") + "", EportConstants.NOTIFICATION_PRIORITY_LOW);
-		} catch (MqttException e) {
-			logger.error("Error when push request cancel order pickup empty: " + e);
+
+		String basePath = String.format("%s/%s",
+				Global.getUploadPath() + "/" + getUser().getGroupId() + "/shipment-detail", shipmentDetailId);
+		String now = DateUtils.dateTimeNow();
+		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+		String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setPath(filePath);
+		shipmentImage.setShipmentId(shipmentDetail.getShipmentId());
+		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+		shipmentImage.setCreateTime(DateUtils.getNowDate());
+		shipmentImage.setCreateBy(getUser().getFullName());
+		shipmentImageService.insertShipmentImage(shipmentImage);
+
+		AjaxResult ajaxResult = AjaxResult.success();
+		shipmentImage.setPath(serverConfig.getUrl() + shipmentImage.getPath());
+		ajaxResult.put("shipmentFile", shipmentImage);
+		return ajaxResult;
+	}
+
+	@DeleteMapping("/shipment-detail/{shipmentDetailId}/file")
+	@ResponseBody
+	public AjaxResult deleteShipmentDetailFile(Long id, @PathVariable("shipmentDetailId") Long shipmentDetailId)
+			throws IOException {
+		// TODO: Validate permission before delete file
+
+		ShipmentImage shipmentImageParam = new ShipmentImage();
+		shipmentImageParam.setId(id);
+		ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+		String[] fileArr = shipmentImage.getPath().split("/");
+		File file = new File(Global.getUploadPath() + "/" + getUser().getGroupId() + "/shipment-detail/"
+				+ shipmentDetailId + "/" + fileArr[fileArr.length - 1]);
+		if (file.delete()) {
+			shipmentImageService.deleteShipmentImageById(id);
 		}
 		return success();
 	}

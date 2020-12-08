@@ -1,5 +1,7 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import vn.com.irtech.eport.carrier.domain.EdoHouseBill;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
@@ -31,25 +34,30 @@ import vn.com.irtech.eport.carrier.service.IEdoHouseBillService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.annotation.RepeatSubmit;
+import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.config.ServerConfig;
-import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
+import vn.com.irtech.eport.common.exception.file.InvalidExtensionException;
+import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
+import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.CfsHouseBill;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
+import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.form.ContainerServiceForm;
 import vn.com.irtech.eport.logistic.listener.MqttService;
-import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ICfsHouseBillService;
@@ -57,6 +65,7 @@ import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.service.ISysConfigService;
@@ -113,6 +122,9 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 
 	@Autowired
 	private ICfsHouseBillService cfsHouseBillService;
+
+	@Autowired
+	private IShipmentImageService shipmentImageService;
 
 	@GetMapping()
 	public String receiveContFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
@@ -189,18 +201,27 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 		return PREFIX + "/verifyOtp";
 	}
 
-	@GetMapping("/payment/{processOrderIds}")
-	public String paymentForm(@PathVariable("processOrderIds") String processOrderIds, ModelMap mmap) {
-		String shipmentDetailIds = "";
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderIds);
-		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			shipmentDetailIds += shipmentDetail.getId() + ",";
+	@GetMapping("/payment/{shipmentDetailIds}")
+	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
+				getUser().getGroupId());
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			shipmentDetailIds = "";
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				shipmentDetailIds += shipmentDetail.getId() + ",";
+			}
+			shipmentDetailIds = shipmentDetailIds.substring(0, shipmentDetailIds.length() - 1);
+			mmap.put("shipmentDetailIds", shipmentDetailIds);
+
+			// Get process bill
+			ProcessBill processBillParam = new ProcessBill();
+			processBillParam.setPaymentStatus("N");
+			Map<String, Object> params = new HashMap<>();
+			params.put("shipmentDetailIds", Convert.toStrArray(shipmentDetailIds));
+			processBillParam.setParams(params);
+			List<ProcessBill> processBills = processBillService.selectProcessBillList(processBillParam);
+			mmap.put("processBills", processBills);
 		}
-		if (!"".equalsIgnoreCase(shipmentDetailIds)) {
-			shipmentDetailIds.substring(0, shipmentDetailIds.length() - 1);
-		}
-		mmap.put("shipmentDetailIds", shipmentDetailIds);
-		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
 		return PREFIX + "/paymentForm";
 	}
 
@@ -355,35 +376,8 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 				return error("Không tìm thấy lô, vui lòng kiểm tra lại thông tin.");
 			}
 			Shipment shipmentSendEmpty = new Shipment();
-			boolean needCreateSendE = false;
 			boolean updateShipment = true;
-			// FIXME sai item, tao them item de luu gia tri
-			boolean isSendEmpty = firstDetail.getVgmChk();
-			// Bốc hàng chọn kết hợp trả rỗng
-			if (dnPortName.equals(firstDetail.getEmptyDepot()) && isSendEmpty) {
-				shipmentSendEmpty.setBlNo(firstDetail.getBlNo());
-				shipmentSendEmpty.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
-				List<Shipment> shipments = shipmentService.selectShipmentList(shipmentSendEmpty);
-				// create if not exist // if exist then skip
-				if (CollectionUtils.isEmpty(shipments)) {
-					// create send empty shipment
-					shipmentSendEmpty.setContainerAmount(Long.valueOf(firstDetail.getTier()));
-					shipmentSendEmpty.setLogisticAccountId(user.getId());
-					// Convert ope code child to parent (example: WHA -> WHL)
-					String oprParent = dictService.getLabel("carrier_parent_child_list", shipment.getOpeCode());
-					if (StringUtils.isNotEmpty(oprParent)) {
-						shipmentSendEmpty.setOpeCode(oprParent);
-					} else {
-						shipmentSendEmpty.setOpeCode(shipment.getOpeCode());
-					}
-					shipmentSendEmpty.setLogisticGroupId(user.getGroupId());
-					shipmentSendEmpty.setCreateTime(new Date());
-					shipmentSendEmpty.setStatus(EportConstants.SHIPMENT_STATUS_INIT);
-					// insert to db
-					shipmentService.insertShipment(shipmentSendEmpty);
-					needCreateSendE = true;
-				}
-			}
+
 			// eDO Map to replace when save info
 			Map<String, ShipmentDetail> edoDetailMap = new HashMap<>();
 			if ("1".equals(shipment.getEdoFlg())) {
@@ -424,6 +418,7 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 					shipmentDetail.setExpiredDem(inputDetail.getExpiredDem());
 					shipmentDetail.setDetFreeTime(inputDetail.getDetFreeTime());
 					shipmentDetail.setDateReceipt(inputDetail.getDateReceipt());
+					shipmentDetail.setSpecialService(inputDetail.getSpecialService());
 					// default value
 					shipmentDetail.setShipmentId(shipmentId);
 					shipmentDetail.setBlNo(shipment.getBlNo());
@@ -486,22 +481,7 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
-					// Save shipment details for SendE
-					if (needCreateSendE) {
-						shipmentDetail.setShipmentId(shipmentSendEmpty.getId());
-						shipmentDetail.setCustomStatus(null);
-						shipmentDetail.setFe("E");
-						shipmentDetail.setCargoType("MT");
-						shipmentDetail.setDischargePort("VNDAD");
-						shipmentDetail.setVslNm("EMTY");
-						shipmentDetail.setVoyNo("0000");
-						shipmentDetail.setLocation(null);
-						shipmentDetail.setOpeCode(shipmentSendEmpty.getOpeCode());
-						shipmentDetail.setEmptyDepotLocation(
-								getEmptyDepotLocation(shipmentDetail.getSztp(), shipmentDetail.getOpeCode()));
-						shipmentDetail.setStatus(1);
-						shipmentDetailService.insertShipmentDetail(shipmentDetail);
-					}
+
 					// Update case
 				} else {
 					// set null to taxcode and consignee
@@ -517,9 +497,7 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 						shipmentDetailReference.setUpdateBy(user.getFullName());
 						shipmentDetailReference.setConsignee(inputDetail.getConsignee());
 						shipmentDetailReference.setEmptyDepot(inputDetail.getEmptyDepot());
-
-						
-
+						shipmentDetailReference.setSpecialService(inputDetail.getSpecialService());
 						// T/h la container domestic, update taxcode, consignee theo thong tin nguoi
 						// dung nhap
 						if ("VN".equalsIgnoreCase(shipmentDetailReference.getLoadingPort().substring(0, 2))) {
@@ -1054,11 +1032,25 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 	public String getCfsHouseBill(@PathVariable("shipmentDetailId") Long shipmentDetailId, ModelMap mmap) {
 		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
 		if (shipmentDetail != null && getUser().getGroupId().equals(shipmentDetail.getLogisticGroupId())) {
-			mmap.put("masterBill", shipmentDetail.getBookingNo());
+			mmap.put("masterBill", shipmentDetail.getBlNo());
 			mmap.put("containerNo", shipmentDetail.getContainerNo());
 			mmap.put("shipmentDetailId", shipmentDetailId);
+
+			// Get image file from shipment detail id
+			ShipmentImage shipmentImage = new ShipmentImage();
+			shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+			if (CollectionUtils.isNotEmpty(shipmentImages)) {
+				for (ShipmentImage shipmentImage2 : shipmentImages) {
+					shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+				}
+			}
+			mmap.put("shipmentImages", shipmentImages);
 		}
-		return PREFIX + "/houseBill";
+		if (EportConstants.SPECIAL_SERVICE_UNLOAD_WAREHOUSE == shipmentDetail.getSpecialService()) {
+			return PREFIX + "/houseBill";
+		}
+		return PREFIX + "/cargo";
 	}
 
 	@GetMapping("shipment-detail/{shipmentDetailId}/house-bills")
@@ -1111,22 +1103,51 @@ public class LogisticUnloadingCargoController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
-	@PostMapping("/shipment-detail/register-date-receipt")
+	@PostMapping("/shipment-detail/{shipmentDetailId}/file")
 	@ResponseBody
-	public AjaxResult registerDateReceiptShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
-		for (ShipmentDetail detail : shipmentDetails) {
-			if (detail.getDateReceipt() == null) {
-				return error("Bạn chưa nhập ngày rút hàng.");
-			} else {
-				ShipmentDetail shipmentDetailSave = shipmentDetailService.selectShipmentDetailById(detail.getId());
-				shipmentDetailSave.setDateReceipt(detail.getDateReceipt());
-				shipmentDetailSave.setDateReceiptStatus(EportConstants.DATE_RECEIPT_STATUS_SHIPMENT_DETAIL_PROGRESS);
-				shipmentDetailService.updateShipmentDetail(shipmentDetailSave);
-			}
+	public AjaxResult saveShipmentDetailFile(MultipartFile file,
+			@PathVariable("shipmentDetailId") Long shipmentDetailId) throws IOException, InvalidExtensionException {
+
+		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		if (shipmentDetail == null) {
+			return error("Không xác định được thông tin container cần đính kèm.");
 		}
 
-		return success("Đăng kí ngày rút hàng thành công.");
+		String basePath = String.format("%s/%s",
+				Global.getUploadPath() + "/" + getUser().getGroupId() + "/shipment-detail", shipmentDetailId);
+		String now = DateUtils.dateTimeNow();
+		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+		String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setPath(filePath);
+		shipmentImage.setShipmentId(shipmentDetail.getShipmentId());
+		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+		shipmentImage.setCreateTime(DateUtils.getNowDate());
+		shipmentImage.setCreateBy(getUser().getFullName());
+		shipmentImageService.insertShipmentImage(shipmentImage);
+
+		AjaxResult ajaxResult = AjaxResult.success();
+		shipmentImage.setPath(serverConfig.getUrl() + shipmentImage.getPath());
+		ajaxResult.put("shipmentFile", shipmentImage);
+		return ajaxResult;
 	}
 
-}
+	@DeleteMapping("/shipment-detail/{shipmentDetailId}/file")
+	@ResponseBody
+	public AjaxResult deleteShipmentDetailFile(Long id, @PathVariable("shipmentDetailId") Long shipmentDetailId)
+			throws IOException {
+		// TODO: Validate permission before delete file
 
+		ShipmentImage shipmentImageParam = new ShipmentImage();
+		shipmentImageParam.setId(id);
+		ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+		String[] fileArr = shipmentImage.getPath().split("/");
+		File file = new File(Global.getUploadPath() + "/" + getUser().getGroupId() + "/shipment-detail/"
+				+ shipmentDetailId + "/" + fileArr[fileArr.length - 1]);
+		if (file.delete()) {
+			shipmentImageService.deleteShipmentImageById(id);
+		}
+		return success();
+	}
+}

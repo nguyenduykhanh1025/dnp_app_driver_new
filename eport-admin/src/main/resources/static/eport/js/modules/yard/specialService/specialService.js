@@ -414,12 +414,12 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     }
     // check status
     let check = '<i id="finish" class="fa fa-check easyui-tooltip" title="Chưa Xác Nhận Ngày Thực Hiện" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
-    switch (sourceData[row].finishStatus) {
+    switch (sourceData[row].dateReceiptStatus) {
       case 'Y':
-        check = '<i id="check" class="fa fa-check easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        check = '<i id="check" class="fa fa-check easyui-tooltip" title="Đã Xác Nhận Ngày Thực Hiện" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
         break;
       case 'W':
-        check = '<i id="check" class="fa fa-check easyui-tooltip" title="Chờ Được Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #f8ac59;"></i>';
+        check = '<i id="check" class="fa fa-check easyui-tooltip" title="Chờ Được Xác Nhận Ngày Thực Hiện" aria-hidden="true" style="margin-left: 8px; color: #f8ac59;"></i>';
         break;
     }
     // released status
@@ -1106,7 +1106,7 @@ function getDataSelectedFromTable() {
 
         // set seconds
         actualDateReceipt.setSeconds(0);
-        
+
         shipmentDetail.actualDateReceipt = actualDateReceipt.getTime();
       }
       if (berthplanList) {
@@ -1419,52 +1419,87 @@ function attach(shipmentDetailId, containerNo) {
 
 function confirmDateReceipt() {
   if (getDataSelectedFromTable()) {
-    layer.open({
-      type: 2,
-      area: [500 + 'px', 500 + 'px'],
-      fix: true,
-      maxmin: true,
-      shade: 0.3,
-      title: "Xác nhận ngày thực hiện",
-      content: PREFIX + "/" + shipmentSelected.shipmentDetailId + "/date-receipt",
-      btn: ["Xác Nhận", "Hủy"],
-      shadeClose: false,
-      yes: function (index, layero) {
-        confirmDateReceiptReq(index, layero);
-      },
-      cancel: function (index) {
-        return true;
-      }
+    layer.confirm("Xác nhận ngày thực hiện cho những container vừa chọn.", {
+      icon: 3,
+      title: "Xác Nhận",
+      btn: ['Đồng Ý', 'Hủy Bỏ']
+    }, function () {
+      layer.close(layer.index);
+      $.modal.loading("Đang xử lý...");
+      $.ajax({
+        url: PREFIX + "/date-receipt",
+        method: "POST",
+        data: {
+          shipmentDetailIds: shipmentDetailIds
+        },
+        success: function (result) {
+          if (result.code == 0) {
+            $.modal.alertSuccess(result.msg);
+            reloadShipmentDetail();
+          } else {
+            $.modal.alertError(result.msg);
+          }
+          $.modal.closeLoading();
+        },
+        error: function (result) {
+          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+          $.modal.closeLoading();
+        },
+      });
+    }, function () {
+      layer.close(layer.index);
     });
   }
 }
 
-function confirmDateReceiptReq(index, layero) {
-  let childLayer = layero.find("iframe")[0].contentWindow.document;
-  // Get actual date
-  let actualDateReceipt = new Date();
-  $.modal.loading("Đang xử lý ...");
-  $.ajax({
-    url: PREFIX + "/date-receipt",
-    method: "POST",
-    data: {
-      actualDateReceipt: actualDateReceipt.getTime(),
-      shipmentDetailIds: shipmentDetailIds
-    },
-    success: function (res) {
-      layer.close(index);
-      reloadShipmentDetail();
-      $.modal.closeLoading();
-      if (res.code == 0) {
-        $.modal.alertSuccess(res.msg);
-      } else {
-        $.modal.alertError(res.msg);
-      }
-    },
-    error: function (data) {
-      layer.close(index);
-      reloadShipmentDetail();
-      $.modal.closeLoading();
-    }
-  });
-}
+// function confirmDateReceipt() {
+//   if (getDataSelectedFromTable()) {
+//     layer.open({
+//       type: 2,
+//       area: [500 + 'px', 500 + 'px'],
+//       fix: true,
+//       maxmin: true,
+//       shade: 0.3,
+//       title: "Xác nhận ngày thực hiện",
+//       content: PREFIX + "/" + shipmentSelected.shipmentDetailId + "/date-receipt",
+//       btn: ["Xác Nhận", "Hủy"],
+//       shadeClose: false,
+//       yes: function (index, layero) {
+//         confirmDateReceiptReq(index, layero);
+//       },
+//       cancel: function (index) {
+//         return true;
+//       }
+//     });
+//   }
+// }
+
+// function confirmDateReceiptReq(index, layero) {
+//   let childLayer = layero.find("iframe")[0].contentWindow.document;
+//   // Get actual date
+//   let actualDateReceipt = new Date();
+//   $.modal.loading("Đang xử lý ...");
+//   $.ajax({
+//     url: PREFIX + "/date-receipt",
+//     method: "POST",
+//     data: {
+//       actualDateReceipt: actualDateReceipt.getTime(),
+//       shipmentDetailIds: shipmentDetailIds
+//     },
+//     success: function (res) {
+//       layer.close(index);
+//       reloadShipmentDetail();
+//       $.modal.closeLoading();
+//       if (res.code == 0) {
+//         $.modal.alertSuccess(res.msg);
+//       } else {
+//         $.modal.alertError(res.msg);
+//       }
+//     },
+//     error: function (data) {
+//       layer.close(index);
+//       reloadShipmentDetail();
+//       $.modal.closeLoading();
+//     }
+//   });
+// }

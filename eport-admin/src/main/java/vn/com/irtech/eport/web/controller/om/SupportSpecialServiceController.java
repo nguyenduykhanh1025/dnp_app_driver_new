@@ -134,6 +134,12 @@ public class SupportSpecialServiceController extends OmBaseController {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
+		Map<String, Object> params = shipment.getParams();
+		if (params == null) {
+			params = new HashMap<String, Object>();
+		}
+		params.put("userVerifyStatus", "Y");
+		shipment.setParams(params);
 		shipment.setServiceType(EportConstants.SERVICE_SPECIAL_SERVICE);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
