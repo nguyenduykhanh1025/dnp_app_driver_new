@@ -1,12 +1,13 @@
 const PREFIX = ctx + "reefer-gruop/extend-draw-date";
 var dogrid = document.getElementById("container-grid"), hot;
 var checkList = [];
-var sourceData = powerDropDate.map(item => {
-  return {
-    id: item.id,
-    registerDate: item.newValue
-  }
-})
+// var sourceData = powerDropDate.map(item => {
+//   return {
+//     id: item.id,
+//     registerDate: item.newValue
+//   }
+// })
+var sourceData = reeferInfos;
 $(document).ready(function () {
   initElement();
   initTabReefer();
@@ -137,34 +138,24 @@ let typeO = true;// qua kho
 
 // confirm
 function insertCont() {
-  let date = $("#datetimepicker1").datetimepicker('getDate').getTime();
-  let shipmentDetailId = shipmentDetail.id;
-  let truckNo = $("#truckNo").val();
-  let chassisNo = $("#chassisNo").val();
-  const detail = {
-    id: shipmentDetail.id,
-    shipmentId: shipmentDetail.shipmentId,
-    sztp: shipmentDetail.sztp,
-    powerDrawDate: date,
-    truckNo: truckNo,
-    chassisNo: chassisNo
-  }
+  const payload = sourceData.map(item => {
+    return {
+      id: item.id,
+      hourNumber: item.hourNumber,
+      moneyNumber: item.moneyNumber,
+      shipmentDetailId: item.shipmentDetailId
+    }
+  })
   $.ajax(
     {
-      url: prefix + "/saveDate",
+      url: PREFIX + "/save-reefer",
       method: "post",
       contentType: "application/json",
       accept: "text/plain",
-      data: JSON.stringify(detail),
+      data: JSON.stringify(payload),
       dataType: "text",
       success: function (result) {
-        if (result.code == 0) {
-          //$.modal.alertError(result.msg);
           $.modal.close();
-          //insertFile();  
-        } else {
-          $.modal.close();
-        }
       }
     });
 }
@@ -172,13 +163,14 @@ function insertCont() {
 
 
 function confirm() {
-  var lengthTemp = shipmentFilePath;
-  if (lengthTemp == null || lengthTemp.length == 0) {
-    insertCont();
-  }
-  if (lengthTemp != null || lengthTemp.length != 0) {// nếu có thì vào đây
-    saveFile();
-  }
+  insertCont();
+
+  // var lengthTemp = shipmentFilePath;
+  // if (lengthTemp == null || lengthTemp.length == 0) {
+  // }
+  // if (lengthTemp != null || lengthTemp.length != 0) {// nếu có thì vào đây
+  //   saveFile();
+  // }
 }
 
 
@@ -302,12 +294,9 @@ function configHandson() {
           return "Số giờ";
         case 4:
           return "Thành tiền";
-        case 5:
-          return "Action";
-
       }
     },
-    colWidths: [60, 80, 80, 60, 80, 150],
+    colWidths: [60, 80, 80, 60, 80],
     columns: [
 
       {
@@ -316,33 +305,22 @@ function configHandson() {
         renderer: statusIconRenderer
       },
       {
-        data: "registerDate",
-        type: "date",
-        dateFormat: "DD/MM/YYYY",
-        correctFormat: true,
-        defaultDate: new Date(),
-        renderer: registerDateRenderer
+        data: "dateSetPower",
+        renderer: dateSetPower
       },
       {
-        data: "registerDate",
-        type: "date",
-        dateFormat: "DD/MM/YYYY",
-        correctFormat: true,
-        defaultDate: new Date(),
-        renderer: registerDateRenderer
+        data: "dateGetPower",
+        renderer: dateGetPower
       },
       {
-        data: "numberHours",
+        data: "hourNumber",
         renderer: numberHoursRenderer
       },
       {
-        data: "payment",
+        data: "moneyNumber",
         renderer: paymentRenderer
       },
-      {
-        data: "btnAction",
-        renderer: btnActionRenderer
-      },
+
     ],
   };
 
@@ -481,18 +459,21 @@ if(oversize){
    
  }  	
  */
-
-
 function statusIconRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (row == reeferInfos.length) {
+    return '';
+  }
   $(td).html('');
   cellProperties.readOnly = 'true';
   $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
   let status = "";
   if (row == 0) {
-    if (shipmentDetail.powerDrawDateStatus == "P") {
+    if (value == "P") {
       status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đang chờ xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #f8ac59;"></i>';
-    } else if (shipmentDetail.powerDrawDateStatus === "S") {
+    } else if (value === "S") {
       status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
+    } else if (value === "E") {
+      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #ef6776;"></i>';
     }
   } else {
     // status
@@ -510,68 +491,43 @@ function statusIconRenderer(instance, td, row, col, prop, value, cellProperties)
   value = '';
   return td;
 }
-function registerDateRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
-  if (value != null && value != '') {
-    let dateArray = value.split(" ");
-    let resultDate = new Date(dateArray[0]);
-    console.log(dateArray);
-    if (dateArray[2] === "PM") {
-      resultDate.setHours(parseInt(dateArray[1].split(".")[0]) + 12);
 
-    }
-    else {
-      resultDate.setHours(parseInt(dateArray[1].split(".")[0]));
-    }
-    resultDate.setMinutes(dateArray[1].split(".")[1]);
-    let month = resultDate.getMonth() == 12 ? 0 : resultDate.getMonth() + 1;
-    value = `${resultDate.getDate()}/${month}/${resultDate.getFullYear()} ${resultDate.getHours()}:${resultDate.getMinutes()}`;
-  } else {
-    value = '';
+function dateSetPower(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    return '';
   }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-
-function numberHoursRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + 25 + '</div>');
-  return td;
-}
-
-function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
-
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + '1,520,000' + '</div>');
-  return td;
-}
-
-function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) {
-
-  const result = `
-  <td>
-                          <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
-                            <span class="l-btn-left"
-                              ><span class="l-btn-text">
-                                <button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()" class="btn btn-sm btn-primary"><i class="fa fa-save text-primary"></i>Thanh toán</button></span
-                              ></span
-                            >
-                          </a>
-                        </td> 
-                        
-                        <td>
-                          <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
-                            <span class="l-btn-left"
-                              ><span class="l-btn-text">
-                                <button id="acceptBtn" onclick="CheckShipmentDetail()"  class="btn btn-sm btn-primary">
-                                	<i class="fa fa-book text-primary"></i>Hủy yêu cầu</button></span
-                              ></span
-                            >
-                          </a>
-                        </td>
-  `
+  const dateResult = new Date(value);
+  const month = dateResult.getMonth() == 12 ? '00' : dateResult.getMonth() + 1;
+  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()}`;
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
 
+function dateGetPower(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    return '';
+  }
+  const dateResult = new Date(value);
+  const month = dateResult.getMonth() == 12 ? '00' : dateResult.getMonth() + 1;
+  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()}`;
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
+  return td;
+}
+function numberHoursRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + value + '</div>');
+  return td;
+}
+
+function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + value + '</div>');
+  return td;
+}
 function extendPowerDrawDate() {
 
   let date = $('#extendPowerDrawDate').val();

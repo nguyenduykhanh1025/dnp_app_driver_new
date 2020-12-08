@@ -1484,6 +1484,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		reeferInfo.setDateSetPower(infos.get(infos.size() - 1).getDateGetPower());
 		reeferInfo.setShipmentDetailId(detail.getId());
 		
+		detail.setUpdateBy(getUser().getFullName());
+		detail.setPowerDrawDateStatus("P");
+		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
+		
 		reeferInfoService.insertReeferInfo(reeferInfo);
 		return AjaxResult.success(reeferInfoService.selectReeferInfoListByIdShipmentDetail(detail.getId()));
 	}
@@ -1492,6 +1496,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult cancelDateDrop(@RequestBody ReeferInfo info) {
 		reeferInfoService.deleteReeferInfoById(info.getId());
+		ShipmentDetail detail = shipmentDetailService.selectShipmentDetailById(info.getShipmentDetailId());
+		detail.setUpdateBy(getUser().getFullName());
+		detail.setPowerDrawDateStatus("S");
+		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
 		return AjaxResult.success(reeferInfoService.selectReeferInfoListByIdShipmentDetail(info.getShipmentDetailId()));
 	}
 }
