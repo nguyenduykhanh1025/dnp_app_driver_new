@@ -438,10 +438,7 @@ function getRequestConfigIconIsRequest(row) {
   ) {
     statusResult += "Tổ Lạnh, ";
   }
-  return `<i id="verify" class="fa fa-check easyui-tooltip" title="Đang chờ yêu cầu xác nhận từ ${statusResult.slice(
-    0,
-    statusResult.length - 2
-  )}" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>`;
+  return `<i id="verify" class="fa fa-check easyui-tooltip" title="Đang chờ yêu cầu xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f8ac59"></i>`;
 }
 
 /**
@@ -479,10 +476,7 @@ function getRequestConfigIconIsCancel(row) {
   ) {
     statusResult += "Tổ Lạnh, ";
   }
-  return `<i id="verify" class="fa fa-check easyui-tooltip" title="Yêu cầu xác nhận bị từ chối từ ${statusResult.slice(
-    0,
-    statusResult.length - 2
-  )}" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>`;
+  return `<i id="verify" class="fa fa-check easyui-tooltip" title="Yêu cầu xác nhận bị từ chối" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ff0000"></i>`;
 }
 
 /**
