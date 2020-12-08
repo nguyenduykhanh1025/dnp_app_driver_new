@@ -36,11 +36,11 @@
 				style="height: 300px; overflow-y: auto">
 				<section class="tabs" style="margin: 0;">
 					<input id="tab-1" type="radio" name="radio-set" class="tab-selector-1" checked="checked" /> 
-						<label for="tab-1" class="tab-label-1">Cont Lạnh</label> 
+						<label for="tab-1" class="tab-label-1" style="display: none;">Cont Lạnh</label> 
 					<input id="tab-2" type="radio" name="radio-set" class="tab-selector-2" />
-						<label for="tab-2" class="tab-label-2">Quá khổ</label> 
+						<label for="tab-2" class="tab-label-2" style="display: none;">Quá khổ</label> 
 					<input id="tab-3" type="radio" name="radio-set" class="tab-selector-3" />
-						<label for="tab-3" class="tab-label-3">Nguy hiểm</label>
+						<label for="tab-3" class="tab-label-3" style="display: none;">Nguy hiểm</label>
 
 					<div class="clear"></div>
 
@@ -86,49 +86,11 @@
 									</div>
 								</div>
 							</div>
-
-							<!-- <div class="form-group col-sm-12" id="dropzoneIce" style="margin-top: 5px">
-                <div class="col-sm-12 col-xs-12">
-                  <button type="button" id="attachButtonIce" class="btn btn-sm btn-default">
-                    <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
-                  </button>
-                </div>
-                <div class="preview-container-ice col-md-12 col-sm-12 col-xs-12" style="margin-top: 5px"></div>
-              </div> -->
+ 
 				</div>  
 				<div class="content-2" id="oversizeContainer">
-                <div class="form-horizontal mt10 row">
-                  <!-- <div class="col-xs-12 p5" style="border-bottom: 1px dashed #ccc">
-                    <label class="control-label col-sm-2 col-xs-2 pt0">
-                    	<b class="text-black">Quá khổ:</b></label>
-                    <div class="col-sm-3 col-xs-2">
-                      <input type="radio" name="oversize" id="rdOversize" value="F" />&nbsp;Không quá khổ
-                    </div>
-                    <div class="col-sm-2 col-xs-2">
-                      <input
-                        type="radio"
-                        name="oversize"
-                        id="rdOversize"
-                        value="T"
-                      />&nbsp;Quá khổ
-                    </div>
-                    <div class="col-sm-5 col-xs-4">
-                      (22G0 - dài: 112.5, rộng: 113.2, cao: 223.5 )
-                    </div>
-                  </div> -->
-                  <span>
-                    <!-- <div class="col-xs-12 p5" id="categoryOversizeCheckboxes" style="border-bottom: 1px dashed #ccc" >
-                      <label class="control-label col-sm-2 col-xs-2 pt0" ><b class="text-black">Loại:</b></label >
-                      <div class="col-sm-2 col-xs-2">
-                        <input type="checkbox" class="ipCategoryOversize" name="oversizeCategory" value="OW" />&nbsp;OW
-                      </div>
-                      <div class="col-sm-2 col-xs-2">
-                        <input type="checkbox" name="oversizeCategory" value="OH" class="ipCategoryOversize" />&nbsp;OH
-                      </div>
-                      <div class="col-sm-2 col-xs-2">
-                        <input type="checkbox" name="oversizeCategory" value="OL" class="ipCategoryOversize" />&nbsp;OL
-                      </div>
-                    </div> -->
+                <div class="form-horizontal mt10 row"> 
+                  <span> 
                     <div class="col-xs-12 p5" style="border-bottom: 1px dashed #ccc" >
                       <label class="control-label col-sm-2 col-xs-2 pt0" style="height: 34px; line-height: 34px" >
                       	<b class="text-black">Bên trên (cm):</b>
@@ -142,49 +104,19 @@
                       <div class="col-sm-2 col-xs-2">
                         <input name="oversizeRight" id="oversizeRight" type="text" class="form-control" />
                       </div>
-                      <label class="control-label col-sm-2 col-xs-2 pt0" style="height: 34px; line-height: 34px" >
+                      <label class="control-label col-sm-2 col-xs-2 pt0" style="height: 34px; line-height: 34px;" >
                       	<b class="text-black">Bên trái (cm):</b>
                       </label >
                       <div class="col-sm-2 col-xs-2">
                         <input name="oversizeLeft" id="oversizeLeft" type="text" class="form-control" />
-                      </div>
-                      <!-- <label class="control-label col-sm-2 col-xs-2 pt5 pl0" style="height: 34px; line-height: 34px" >
-                      	<b class="text-black">Phía trước (cm):</b>
-                      </label>
-                      <div class="col-sm-2 col-xs-2 pt5">
-                        <input name="oversizeFront" id="oversizeFront" type="text" class="form-control" />
-                      </div>
-                      <label class="control-label col-sm-2 col-xs-2 pt5" style="height: 34px; line-height: 34px">
-                      	<b class="text-black">Phía sau (cm):</b>
-                      </label>
-                      <div class="col-sm-2 col-xs-2 pt5">
-                        <input name="oversizeBack" id="oversizeBack" type="text" class="form-control" />
-                      </div> -->
-                    </div>
-                    <!-- <div class="form-group col-sm-12" id="dropzoneOversize" style="margin-top: 5px">
-                      <div class="col-sm-12 col-xs-12">
-                        <button type="button" id="attachButtonOversize" class="btn btn-sm btn-default">
-                          <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
-                        </button>
-                      </div>
-                      <div class="preview-container-oversize col-md-12 col-sm-12 col-xs-12" style="margin-top: 5px"></div>
-                    </div> -->
+                      </div> 
+                    </div> 
                   </span>
                 </div>
               </div>
-              <div class="content-3">
-                <div class="form-horizontal mt10 row">
-                  <!-- <div class="col-xs-12 p5" style="border-bottom: 1px dashed #ccc" >
-                    <label class="control-label col-sm-3 col-xs-3 pt0" >
-                    	<b class="text-black">Cont nguy hiểm:</b></label >
-                    <div class="col-sm-3 col-xs-2">
-                      <input type="radio" name="dangerous" value="F" />&nbsp;Cont bình thường
-                    </div>
-                    <div class="col-sm-3 col-xs-3">
-                      <input type="radio" name="dangerous" id="rdDangerous" value="T" />&nbsp;Cont nguy hiểm
-                    </div>
-                  </div> -->
-                  <span id="dangerousFormContainer">
+              <div class="content-3" id="dangerousContainer">
+                <div class="form-horizontal mt10 row"> 
+                  <span>
                     <div class="col-xs-12 p5" style="border-bottom: 1px dashed #ccc" >
                       <label class="control-label col-sm-3 col-xs-3 pt0 asterisk" style="height: 34px; line-height: 34px" >
                       <b class="text-black">IMO:</b></label>
@@ -219,19 +151,7 @@
                       <div class="col-sm-6 col-xs-6">
                         <input type="text" class="form-control" id="dgPacking" name="dangerousPacking" />
                       </div>
-                    </div>
-
-                    <!-- <div class="form-group col-sm-12" id="dropzoneDangerous">
-                      <div class="col-sm-12 col-xs-12" style="margin-top: 5px">
-                        <button type="button" id="attachButtonDangerous" class="btn btn-sm btn-default" >
-                          <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
-                        </button>
-                      </div>
-                      <div
-                        class="preview-container-dangerous col-md-12 col-sm-12 col-xs-12"
-                        style="margin-top: 5px"
-                      ></div>
-                    </div> -->
+                    </div> 
                   </span>
                 </div>
               
@@ -266,23 +186,7 @@
     var shipmentFiles = [[${ shipmentFiles }]];
   </script>
 	<script th:src="@{/js/logistic/sendContFull/detail.js}"></script>
-	
-	<script type="text/javascript">  
-	$(document).ready(function () {
-			var dangerous = shipmentDetail.dangerous;
-			var dangerousIMO = shipmentDetail.dangerousImo;
-			var dangerousUNNO = shipmentDetail.dangerousUnno;
  
-			var contsztp = shipmentDetail.sztp;
-			var cont = contsztp.substring(2, 3);// lấy mã cont cắt ra 
-			var oversizeTop = shipmentDetail.oversizeTop;
-			var oversizeRight = shipmentDetail.oversizeRight;
-			var oversizeLeft = shipmentDetail.oversizeLeft;
-			var oversizeFront = shipmentDetail.oversizeFront;
-			var oversizeBack = shipmentDetail.oversizeBack; 
-			 
-		});
-	</script>
 </body>
 
 </html>
