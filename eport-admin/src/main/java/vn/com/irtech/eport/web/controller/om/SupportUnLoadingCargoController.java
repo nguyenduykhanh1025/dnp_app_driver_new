@@ -2,9 +2,11 @@ package vn.com.irtech.eport.web.controller.om;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.utils.CacheUtils;
+import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.CfsHouseBill;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
@@ -112,8 +116,26 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 			mmap.put("masterBill", shipmentDetail.getBookingNo());
 			mmap.put("containerNo", shipmentDetail.getContainerNo());
 			mmap.put("shipmentDetailId", shipmentDetailId);
+			// Get image file from shipment detail id
+			ShipmentImage shipmentImage = new ShipmentImage();
+			shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+			List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+			if (CollectionUtils.isNotEmpty(shipmentImages)) {
+				for (ShipmentImage shipmentImage2 : shipmentImages) {
+					shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+				}
+			}
+			mmap.put("shipmentImages", shipmentImages);
 		}
-		return PREFIX + "/houseBill";
+		if (EportConstants.SPECIAL_SERVICE_UNLOAD_WAREHOUSE == shipmentDetail.getSpecialService()) {
+			return PREFIX + "/houseBill";
+		}
+		return PREFIX + "/cargo";
+	}
+
+	@GetMapping("/reject")
+	public String getConfirmationForm() {
+		return PREFIX + "/confirmation";
 	}
 
 	@PostMapping("/shipments")
@@ -126,6 +148,12 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 			shipment = new Shipment();
 		}
 		shipment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
+		Map<String, Object> params = shipment.getParams();
+		if (params == null) {
+			params = new HashMap<String, Object>();
+		}
+		params.put("userVerifyStatus", "Y");
+		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
 		return ajaxResult;
@@ -142,40 +170,26 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		return ajaxResult;
 	}
 
-	@RequiresPermissions("om:permission")
 	@PostMapping("/order/confirm")
 	@ResponseBody
 	@Transactional
 	public AjaxResult confirmOrder(String shipmentDetailIds) {
-		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
-		shipmentDetailUpdate.setProcessStatus("Y");
-		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				shipmentDetail.setProcessStatus("Y");
+				if ("Credit".equalsIgnoreCase(shipmentDetail.getPayType())) {
+					shipmentDetail.setPaymentStatus("Y");
+					shipmentDetail.setDateReceiptStatus("W");
+				} else {
+					shipmentDetail.setPaymentStatus("W");
+				}
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+		}
 		return success();
 	}
 
-	@RequiresPermissions("om:permission")
-	@PostMapping("/fe/convert")
-	@ResponseBody
-	@Transactional
-	public AjaxResult convertFe(String shipmentDetailIds) {
-		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
-		shipmentDetailUpdate.setFe("F");
-		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
-		return success();
-	}
-
-	@RequiresPermissions("yard:monitor:permission")
-	@PostMapping("/complete")
-	@ResponseBody
-	@Transactional
-	public AjaxResult confirmComplete(String shipmentDetailIds) {
-		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
-		shipmentDetailUpdate.setFinishStatus("Y");
-		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
-		return success();
-	}
-
-	@RequiresPermissions("om:permission")
 	@PostMapping("/shipment-detail")
 	@ResponseBody
 	@Transactional
@@ -224,6 +238,9 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentImage shipmentImage = new ShipmentImage();
 		shipmentImage.setShipmentId(shipmentId);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("nullShipmentDetailId", true);
+		shipmentImage.setParams(params);
 		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
 		for (ShipmentImage shipmentImage2 : shipmentImages) {
 			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
@@ -282,5 +299,38 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		ajaxResult.put("oprList", oprCodeList);
 
 		return ajaxResult;
+	}
+
+	@PostMapping("/reject")
+	@ResponseBody
+	public AjaxResult rejectSupply(String content, String shipmentDetailIds, Long shipmentId, Long logisticGroupId) {
+		if (StringUtils.isEmpty(shipmentDetailIds) || shipmentId == null || logisticGroupId == null) {
+			return error("Invalid input!");
+		}
+		SysUser user = ShiroUtils.getSysUser();
+
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setProcessStatus("N");
+		shipmentDetail.setUserVerifyStatus("N");
+		shipmentDetail.setPaymentStatus("N");
+		shipmentDetail.setUpdateBy(user.getLoginName());
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
+
+		ShipmentComment shipmentComment = new ShipmentComment();
+		shipmentComment.setShipmentId(shipmentId);
+		shipmentComment.setLogisticGroupId(logisticGroupId);
+		shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_OM_ORDER_REJECT);
+		shipmentComment.setContent(content);
+		shipmentComment.setCreateBy(user.getUserName());
+		shipmentComment.setUserId(user.getUserId());
+		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+		shipmentComment.setUserAlias(user.getDept().getDeptName());
+		shipmentComment.setUserName(user.getUserName());
+		shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		shipmentComment.setCommentTime(new Date());
+		shipmentComment.setResolvedFlg(true);
+		shipmentCommentService.insertShipmentComment(shipmentComment);
+
+		return success();
 	}
 }

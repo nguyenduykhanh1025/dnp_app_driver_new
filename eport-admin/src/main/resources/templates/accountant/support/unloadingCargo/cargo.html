@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<th:block th:include="include :: header('Cargo')" />
+	<th:block th:include="include :: handsontable-css" />
+	<th:block th:include="include :: dropzone-css" />
+	<th:block th:include="include :: easyui-css" />
+	<link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+</head>
+
+<body>
+	<div class="container">
+		<div class="content">
+			<div class="row">
+				<div class="col-sm-4">
+					<strong>B/L No: </strong><label th:text="${masterBill}"></label>
+				</div>
+				<div class="col-sm-4">
+					<strong>Container No: </strong><label th:text="${containerNo}"></label>
+				</div>
+				<div class="col-sm-4">
+					<label>Số lượng hàng: </label> <input type="number" id="houseBillNumber" style="width: 70px"
+						value="1" readonly />
+				</div>
+			</div>
+			<div class="datagrid-toolbar">
+				<table cellspacing="0" cellpadding="0">
+					<tbody>
+						<tr>
+							<td>
+								<div class="preview-container"></div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+		</div>
+		<div class="layui-layer-btn footer">
+			<a class="layui-layer-btn0" onclick="closeForm()">Đóng</a>
+		</div>
+	</div>
+</body>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: easyui-js" />
+<th:block th:include="include :: dropzone-js" />
+<th:block th:include="include :: handsontable-js" />
+<script type="text/javascript" th:inline="javascript">
+	var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
+	var cfsHouseBills = /*[[${cfsHouseBills}]]*/;
+	var shipmentImages = /*[[${shipmentImages}]]*/;
+</script>
+<script th:src="@{/eport/js/modules/om/support/unloadingCargo/cargo.js}"></script>
+
+</html>
