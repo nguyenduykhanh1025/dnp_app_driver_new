@@ -371,4 +371,8 @@ public interface EportConstants {
 	public static final Integer SPECIAL_SERVICE_UNLOAD_WAREHOUSE = 4;
 	/** Special service unload yard (rut hang tai bai) */
 	public static final Integer SPECIAL_SERVICE_UNLOAD_YARD = 5;
+	/** Special service load warehouse (dong hang tai kho) */
+	public static final Integer SPECIAL_SERVICE_LOAD_WAREHOUSE = 6;
+	/** Special service load yard (dong hang tai bai) */
+	public static final Integer SPECIAL_SERVICE_LOAD_YARD = 7;
 }

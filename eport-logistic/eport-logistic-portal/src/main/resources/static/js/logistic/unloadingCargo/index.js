@@ -1780,8 +1780,6 @@ function getDataFromTable(isValidate) {
     billNo = cleanedGridData[0]["blNo"];
   }
   contList = [];
-  let isSaved = false;
-  let currentEmptyDepot = "";
   let consignee;
   if (cleanedGridData.length > 0) {
     consignee = cleanedGridData[0].consignee;
@@ -1898,13 +1896,9 @@ function getDataFromTable(isValidate) {
     }
     shipmentDetail.dateReceipt = formatDateToSendServer(object["dateReceipt"]);
     shipmentDetails.push(shipmentDetail);
-    if (object["id"] != null) {
-      isSaved = true;
-    }
     let now = new Date();
     now.setHours(0, 0, 0);
     expiredDem.setHours(23, 59, 59);
-    currentEmptyDepot = object["emptyDepot"];
   });
 
   if (isValidate && !errorFlg) {
