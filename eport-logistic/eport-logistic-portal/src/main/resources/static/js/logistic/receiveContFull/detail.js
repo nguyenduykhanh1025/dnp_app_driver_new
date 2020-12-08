@@ -290,9 +290,9 @@ function configHandson() {
         case 2:
           return "Ngày Gia Hạn Rút Điện";
         case 3:
-          return "Số Giờ";
+          return "Số Giờ (h)";
         case 4:
-          return "Thành Tiền";
+          return "Thành Tiền (vnd)";
         case 5:
           return "Hình Thức Thanh Toán";
         case 6:
@@ -300,7 +300,7 @@ function configHandson() {
 
       }
     },
-    colWidths: [60, 100, 100, 60, 80, 150, 100],
+    colWidths: [60, 100, 100, 60, 90, 140, 100],
     columns: [
 
       {
@@ -552,12 +552,13 @@ function paymentTypeRenderer(instance, td, row, col, prop, value, cellProperties
   if (!value) {
     value = "";
   }
-  if (sourceData[row]) {
-    if (!sourceData[row].payType) {
+  console.log(shipmentDetail.payType);
+  if (shipmentDetail) {
+    if (!shipmentDetail.payType) {
       value = "Chủ hàng thanh toán";
-    } else if (sourceData[row].payType == "Before") {
+    } else if (shipmentDetail.payType == "Before") {
       value = "Hãng tàu thanh toán trước"
-    } else if (sourceData[row].payType == "After") {
+    } else if (shipmentDetail.payType == "After") {
       value = "Hãng tàu thanh toán sau"
     } else {
       value = '';
