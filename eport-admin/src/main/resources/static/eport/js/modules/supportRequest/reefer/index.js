@@ -1094,54 +1094,61 @@ function clearInput() {
 
 function confirmRequestDocument() {
   if (getDataSelectedFromTable()) {
+    if (!confirmationPaymentType()) {
+      $.modal.alertError("Vui lòng chọn hình thức thanh toán cho container");
+    } else {
+      layer.confirm(
+        "Xác nhận kiểm tra thông tin đúng.",
+        {
+          icon: 3,
+          title: "Xác Nhận",
+          btn: ["Đồng Ý", "Hủy Bỏ"],
+        },
+        function () {
+          $.modal.loading("Đang xử lý ...");
+          layer.close(layer.index);
+          $.ajax({
+            url: PREFIX + "/confirmation",
+            method: "POST",
+            data: {
+              shipmentDetailIds: shipmentDetailIds,
+              logisticGroupId: shipmentSelected.logisticGroupId,
+            },
+            success: function (res) {
+              $.modal.closeLoading();
+              if (res.code == 0) {
+                $.modal.alertSuccess(res.msg);
 
-    confirmationPaymentType();
-    layer.confirm(
-      "Xác nhận kiểm tra thông tin đúng.",
-      {
-        icon: 3,
-        title: "Xác Nhận",
-        btn: ["Đồng Ý", "Hủy Bỏ"],
-      },
-      function () {
-        $.modal.loading("Đang xử lý ...");
-        layer.close(layer.index);
-        $.ajax({
-          url: PREFIX + "/confirmation",
-          method: "POST",
-          data: {
-            shipmentDetailIds: shipmentDetailIds,
-            logisticGroupId: shipmentSelected.logisticGroupId,
-          },
-          success: function (res) {
-            $.modal.closeLoading();
-            if (res.code == 0) {
-              $.modal.alertSuccess(res.msg);
+                confirmationPaymentType();
+              } else {
+                $.modal.alertError(res.msg);
+              }
+            },
+            error: function (data) {
+              $.modal.closeLoading();
+            },
+          });
 
-              confirmationPaymentType();
-            } else {
-              $.modal.alertError(res.msg);
-            }
-          },
-          error: function (data) {
-            $.modal.closeLoading();
-          },
-        });
-
-      },
-      function () {
-        // close form
-      }
-    );
+        },
+        function () {
+          // close form
+        }
+      );
+    }
   }
 }
 function confirmationPaymentType() {
+  let check = true;
   const payload = sourceData.map(item => {
     if (item.id) {
-      return {
-        id: item.id,
-        payType: getPayType(item),
-        payer: getPayer(item)
+      if (!getPayType(item)) {
+        check = false;
+      } else {
+        return {
+          id: item.id,
+          payType: getPayType(item),
+          payer: getPayer(item)
+        }
       }
     }
   })
@@ -1157,6 +1164,10 @@ function confirmationPaymentType() {
     error: function (data) {
     },
   });
+  if (check) {
+    return true;
+  }
+  return false;
 }
 
 function getPayType(data) {
