@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<th:block th:include="include :: header('House Bill')" />
+	<th:block th:include="include :: header('Cargo')" />
 	<th:block th:include="include :: handsontable-css" />
 	<th:block th:include="include :: dropzone-css" />
 	<th:block th:include="include :: easyui-css" />
@@ -16,7 +16,7 @@
 		<div class="content">
 			<div class="row">
 				<div class="col-sm-4">
-					<strong>Master Bill: </strong><label th:text="${masterBill}"></label>
+					<strong>B/L No: </strong><label th:text="${masterBill}"></label>
 				</div>
 				<div class="col-sm-4">
 					<strong>Container No: </strong><label th:text="${containerNo}"></label>
@@ -53,6 +53,6 @@
 	var cfsHouseBills = /*[[${cfsHouseBills}]]*/;
 	var shipmentImages = /*[[${shipmentImages}]]*/;
 </script>
-<script th:src="@{/eport/js/modules/om/support/unloadingCargo/houseBill.js}"></script>
+<script th:src="@{/eport/js/modules/om/support/unloadingCargo/cargo.js}"></script>
 
 </html>

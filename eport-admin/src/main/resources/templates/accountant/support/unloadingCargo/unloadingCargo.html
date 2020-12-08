@@ -32,7 +32,7 @@
               <input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
             </div>
             <div class="d-inline">
-              <input id="processStatus" class="easyui-combobox">
+              <input id="paymentStatus" class="easyui-combobox">
             </div>
             <div class="d-inline">
               <input id="fromDate" class="easyui-datebox" style="width: 100px;"
@@ -131,18 +131,8 @@
                       <td>
                         <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
                           <span class="l-btn-left"><span class="l-btn-text">
-                              <button id="confirmOrderBtn" onclick="confirmOrder()" class="btn btn-sm btn-success">
-                                <i class="fa fa-refresh text-success"></i> Xác Nhận Làm Lệnh
-                              </button>
-                            </span>
-                          </span>
-                        </a>
-                      </td>
-                      <td>
-                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
-                          <span class="l-btn-left"><span class="l-btn-text">
-                              <button id="rejectOrderBtn" onclick="rejectOrder()" class="btn btn-sm btn-danger">
-                                <i class="fa fa-refresh text-primary"></i> Từ Chối Làm Lệnh
+                              <button id="applyPriceBtn" onclick="applyPrice()" class="btn btn-sm btn-primary">
+                                <i class="fa fa-check text-primary"></i> Ráp đơn giá
                               </button>
                             </span>
                           </span>
@@ -174,5 +164,5 @@
     var sId = /*[[${sId}]]*/;
     var domain = /*[[${domain}]]*/;
   </script>
-  <script th:src="@{/eport/js/modules/om/support/unloadingCargo/unloadingCargo.js?v=20201208}"></script>
+  <script th:src="@{/eport/js/modules/accountant/support/unloadingCargo/unloadingCargo.js?v=20201208}"></script>
 </body>

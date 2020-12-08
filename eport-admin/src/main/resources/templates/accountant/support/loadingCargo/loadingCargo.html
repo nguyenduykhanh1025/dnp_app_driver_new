@@ -26,13 +26,13 @@
               <input id="logisticGroups" class="easyui-combobox">
             </div>
             <div class="d-inline">
-              <input class="easyui-textbox" id="blNo" data-options="prompt:'B/L No'" />
+              <input class="easyui-textbox" id="bookingNo" data-options="prompt:'Booking No'" />
             </div>
             <div class="d-inline">
               <input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
             </div>
             <div class="d-inline">
-              <input id="processStatus" class="easyui-combobox">
+              <input id="paymentStatus" class="easyui-combobox">
             </div>
             <div class="d-inline">
               <input id="fromDate" class="easyui-datebox" style="width: 100px;"
@@ -65,9 +65,8 @@
                 <th
                   data-options="field:'logisticName', resizable:true, align:'left', fixed:true, formatter: formatLogistic"
                   width="100">Logistics</th>
-                <th data-options="field:'blNo', resizable:true, align:'left', fixed:true" sortable="true" width="120">
-                </th>
-                B/L No</th>
+                <th data-options="field:'bookingNo', resizable:true, align:'left', fixed:true" sortable="true"
+                  width="120">Booking No</th>
                 <th data-options="field:'opeCode', resizable:true, align:'left', fixed:true" sortable="true" width="50">
                   OPR</th>
                 <th data-options="field:'containerAmount', resizable:true, align:'center', fixed:true" sortable="true"
@@ -131,18 +130,8 @@
                       <td>
                         <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
                           <span class="l-btn-left"><span class="l-btn-text">
-                              <button id="confirmOrderBtn" onclick="confirmOrder()" class="btn btn-sm btn-success">
-                                <i class="fa fa-refresh text-success"></i> Xác Nhận Làm Lệnh
-                              </button>
-                            </span>
-                          </span>
-                        </a>
-                      </td>
-                      <td>
-                        <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
-                          <span class="l-btn-left"><span class="l-btn-text">
-                              <button id="rejectOrderBtn" onclick="rejectOrder()" class="btn btn-sm btn-danger">
-                                <i class="fa fa-refresh text-primary"></i> Từ Chối Làm Lệnh
+                              <button id="applyPriceBtn" onclick="applyPrice()" class="btn btn-sm btn-primary">
+                                <i class="fa fa-check text-primary"></i> Ráp đơn giá
                               </button>
                             </span>
                           </span>
@@ -174,5 +163,5 @@
     var sId = /*[[${sId}]]*/;
     var domain = /*[[${domain}]]*/;
   </script>
-  <script th:src="@{/eport/js/modules/om/support/unloadingCargo/unloadingCargo.js?v=20201208}"></script>
+  <script th:src="@{/eport/js/modules/accountant/support/loadingCargo/loadingCargo.js}"></script>
 </body>

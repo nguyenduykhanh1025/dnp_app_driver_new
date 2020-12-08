@@ -5,6 +5,18 @@ var dogrid = document.getElementById("container-grid"), hot;
 var minRowAmount = 1, sourceData;
 
 $(document).ready(function () {
+
+    if (shipmentImages.length > 0) {
+        shipmentImages.forEach(shipmentImage => {
+            let html = `<div class="preview-block">
+        <a href="${shipmentImage.path}" target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" style="width: 30px; height: 29px;"/></a>
+        <span aria-hidden="true">&times;</span>
+        </button>
+        </div>`;
+            $('.preview-container').append(html);
+        });
+    }
+
     $("#houseBillNumber").on("input", function () {
         if ($("#houseBillNumber").val()) {
             try {
@@ -162,17 +174,7 @@ function statusIconRenderer(instance, td, row, col, prop, value, cellProperties)
     value = '';
     return td;
 }
-function houseBillRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value == null) {
-        value = '';
-    }
-    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-        cellProperties.readOnly = 'true';
-        $(td).css("background-color", "rgb(232, 232, 232)");
-    }
-    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-    return td;
-}
+
 function forwarderRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value == null) {
         value = '';
@@ -268,6 +270,19 @@ function forwarderRemarkRenderer(instance, td, row, col, prop, value, cellProper
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
+
+function houseBillRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value == null) {
+        value = '';
+    }
+    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+
 function storageFromDateRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).addClass("htMiddle").addClass("htCenter");
     if (!value || value == null) {
@@ -301,46 +316,29 @@ function configHandson() {
         colHeaders: function (col) {
             switch (col) {
                 case 0:
-                    return "Trạng Thái";
-                case 1:
                     return "House Bill";
-                case 2:
-                    return "Ngày Lưu Kho";
-                case 3:
+                case 1:
                     return "Forwarder";
-                case 4:
+                case 2:
                     return "Số Lượng";
-                case 5:
+                case 3:
                     return "Loại Bao Bì";
-                case 6:
+                case 4:
                     return "Trọng Lượng";
-                case 7:
+                case 5:
                     return "Số Khối";
-                case 8:
+                case 6:
                     return "Nhãn/Ký hiệu";
-                case 9:
+                case 7:
                     return "Ghi chú";
             }
         },
-        colWidths: [80, 100, 120, 150, 80, 90, 90, 90, 100, 200],
+        colWidths: [100, 150, 80, 90, 90, 90, 100, 200],
         columns: [
-            {
-                data: "dateReceiptStatus",
-                readOnly: true,
-                renderer: statusIconRenderer
-            },
             {
                 data: "houseBill",
                 className: "htCenter",
                 renderer: houseBillRenderer
-            },
-            {
-                data: "storageFromDate",
-                type: "date",
-                dateFormat: "DD/MM/YYYY",
-                correctFormat: true,
-                defaultDate: new Date(),
-                renderer: storageFromDateRenderer
             },
             {
                 data: "forwarder",
@@ -398,7 +396,7 @@ function configHandson() {
                 // Arrow Right
                 case 39:
                     selected = hot.getSelected()[0];
-                    if (selected[3] == 9) {
+                    if (selected[3] == 8) {
                         e.stopImmediatePropagation();
                     }
                     break
@@ -419,4 +417,5 @@ function configHandson() {
 function closeForm() {
     $.modal.close();
 }
+
 

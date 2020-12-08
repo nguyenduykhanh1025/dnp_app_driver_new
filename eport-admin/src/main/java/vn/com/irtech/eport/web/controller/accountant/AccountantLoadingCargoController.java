@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.web.controller.om;
+package vn.com.irtech.eport.web.controller.accountant;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +31,7 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.CfsHouseBill;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -38,18 +39,20 @@ import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ICfsHouseBillService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
+import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.service.ISysConfigService;
+import vn.com.irtech.eport.web.controller.AdminBaseController;
 
 @Controller
-@RequestMapping("/om/support/unloading-cargo")
-public class SupportUnLoadingCargoController extends OmBaseController {
-	protected final Logger logger = LoggerFactory.getLogger(SupportUnLoadingCargoController.class);
-	private final String PREFIX = "om/support/unloadingCargo";
+@RequestMapping("/accountant/support/loading-cargo")
+public class AccountantLoadingCargoController extends AdminBaseController {
+	protected final Logger logger = LoggerFactory.getLogger(AccountantLoadingCargoController.class);
+	private final String PREFIX = "accountant/support/loadingCargo";
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
@@ -81,6 +84,9 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 	@Autowired
 	private ServerConfig serverConfig;
 
+	@Autowired
+	private IProcessBillService processBillService;
+
 	@GetMapping("/view")
 	public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
 		if (sId != null) {
@@ -106,7 +112,7 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		shipmentDetail.setVslAndVoy("Chọn tàu chuyến");
 		berthplanList.add(0, shipmentDetail);
 		mmap.put("vesselAndVoyages", berthplanList);
-		return PREFIX + "/unloadingCargo";
+		return PREFIX + "/loadingCargo";
 	}
 
 	@GetMapping("/shipment-detail/{shipmentDetailId}/house-bill")
@@ -127,15 +133,12 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 			}
 			mmap.put("shipmentImages", shipmentImages);
 		}
-		if (EportConstants.SPECIAL_SERVICE_UNLOAD_WAREHOUSE == shipmentDetail.getSpecialService()) {
-			return PREFIX + "/houseBill";
-		}
-		return PREFIX + "/cargo";
+		return PREFIX + "/houseBill";
 	}
 
-	@GetMapping("/reject")
+	@GetMapping("/price")
 	public String getConfirmationForm() {
-		return PREFIX + "/confirmation";
+		return PREFIX + "/applyPrice";
 	}
 
 	@PostMapping("/shipments")
@@ -147,13 +150,13 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
-		shipment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
 			params = new HashMap<String, Object>();
 		}
-		params.put("userVerifyStatus", "Y");
+		params.put("processStatus", "Y");
 		shipment.setParams(params);
+		shipment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
 		return ajaxResult;
@@ -165,29 +168,10 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
+
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;
-	}
-
-	@PostMapping("/order/confirm")
-	@ResponseBody
-	@Transactional
-	public AjaxResult confirmOrder(String shipmentDetailIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
-		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				shipmentDetail.setProcessStatus("Y");
-				if ("Credit".equalsIgnoreCase(shipmentDetail.getPayType())) {
-					shipmentDetail.setPaymentStatus("Y");
-					shipmentDetail.setDateReceiptStatus("W");
-				} else {
-					shipmentDetail.setPaymentStatus("W");
-				}
-				shipmentDetailService.updateShipmentDetail(shipmentDetail);
-			}
-		}
-		return success();
 	}
 
 	@PostMapping("/shipment-detail")
@@ -211,7 +195,7 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
+		shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
@@ -326,10 +310,45 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		shipmentComment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
+
+		return success();
+	}
+
+	@PostMapping("/price")
+	@ResponseBody
+	public AjaxResult rejectSupply(Long price, String invoiceNo, String shipmentDetailIds, Long shipmentId,
+			Long logisticGroupId) {
+		if (StringUtils.isEmpty(shipmentDetailIds) || shipmentId == null || logisticGroupId == null) {
+			return error("Invalid input!");
+		}
+		SysUser user = ShiroUtils.getSysUser();
+
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				ProcessBill processBill = new ProcessBill();
+				processBill.setShipmentId(shipmentDetail.getShipmentId());
+				processBill.setLogisticGroupId(shipmentDetail.getLogisticGroupId());
+				processBill.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+				processBill.setPayType(shipmentDetail.getPayType());
+				processBill.setPaymentStatus("N");
+				processBill.setInvoiceNo(invoiceNo);
+				processBill.setVatAfterFee(price);
+				processBill.setContainerNo(shipmentDetail.getContainerNo());
+				processBill.setSztp(shipmentDetail.getSztp());
+				processBill.setShipmentDetailId(shipmentDetail.getId());
+				processBillService.insertProcessBill(processBill);
+			}
+		}
+
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setPaymentStatus("N");
+		shipmentDetail.setUpdateBy(user.getLoginName());
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
 
 		return success();
 	}

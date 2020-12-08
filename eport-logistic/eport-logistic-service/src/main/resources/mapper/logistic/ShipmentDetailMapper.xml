@@ -479,7 +479,7 @@
 		delivery_remark, cont_supplier_name,
 		eta, etd,
 		status, remark, create_by, create_time, update_by,
-		update_time,frozen_status,
+		update_time,frozen_status, special_service,
 		dangerous,oversize,date_receipt,date_receipt_status
 		from
 		shipment_detail

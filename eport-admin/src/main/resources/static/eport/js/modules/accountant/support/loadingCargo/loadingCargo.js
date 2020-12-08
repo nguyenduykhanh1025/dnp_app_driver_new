@@ -1,9 +1,9 @@
-const PREFIX = ctx + "om/support/unloading-cargo";
+const PREFIX = ctx + "accountant/support/loading-cargo";
 const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
-const containerCol = 5;
+const containerCol = 7;
 var dogrid = document.getElementById("container-grid"), hot;
-var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipmentDetailIds;
+var shipmentSelected, checkList, allChecked, sourceData, rowAmount = 0, shipmentDetailIds, processOrderIds;
 var shipmentDetails;
 var fromDate, toDate;
 var shipment = new Object();
@@ -72,30 +72,6 @@ $(document).ready(function () {
     }, 200);
   });
 
-  $("#processStatus").combobox({
-    valueField: 'processValue',
-    textField: 'processKey',
-    data: [{
-      "processValue": 'W',
-      "processKey": "Chờ làm lệnh",
-      "selected": true
-    }, {
-      "processValue": 'Y',
-      "processKey": "Đã làm lệnh"
-    }, {
-      "processValue": 'null',
-      "processKey": "Tất cả"
-    }],
-    onSelect: function (processStatus) {
-      if (processStatus.processValue != 'null') {
-        shipment.params.processStatus = processStatus.processValue;
-      } else {
-        shipment.params.processStatus = null;
-      }
-      loadTable();
-    }
-  });
-
   $('#right-layout').layout({
     onExpand: function (region) {
       if (region == "south") {
@@ -110,6 +86,33 @@ $(document).ready(function () {
     hot.updateSettings({ height: $('#right-side__main-table').height() - 35 });
     hot.render();
   }, 200);
+
+  $("#paymentStatus").combobox({
+    valueField: 'paymentStatusValue',
+    textField: 'paymentStatusKey',
+    data: [{
+      "paymentStatusValue": 'N',
+      "paymentStatusKey": "Chưa thanh toán"
+    }, {
+      "paymentStatusValue": 'W',
+      "paymentStatusKey": "Chờ ráp đơn giá",
+      "selected": true
+    }, {
+      "paymentStatusValue": 'Y',
+      "paymentStatusKey": "Đã thanh toán"
+    }, {
+      "paymentStatusValue": 'null',
+      "paymentStatusKey": "Tất cả"
+    }],
+    onSelect: function (paymentStatus) {
+      if (paymentStatus.paymentStatusValue != 'null') {
+        shipment.params.paymentStatus = paymentStatus.paymentStatusValue;
+      } else {
+        shipment.params.paymentStatus = null;
+      }
+      loadTable();
+    }
+  });
 
   $('#fromDate').datebox({
     onSelect: function (date) {
@@ -148,7 +151,7 @@ $(document).ready(function () {
       } else {
         shipment.logisticGroupId = null;
       }
-      $('#processStatus').combobox('select', 'null');
+      $('#vesselAndVoyages').combobox('select', 'Chọn tàu chuyến');
       $("#containerNo").textbox('setText', '');
       $('#fromDate').datebox('setValue', '');
       $('#toDate').datebox('setValue', '');
@@ -156,10 +159,10 @@ $(document).ready(function () {
     }
   });
 
-  $("#blNo").textbox('textbox').bind('keydown', function (e) {
+  $("#bookingNo").textbox('textbox').bind('keydown', function (e) {
     // enter key
     if (e.keyCode == 13) {
-      shipment.blNo = $("#blNo").textbox('getText').toUpperCase();
+      shipment.bookingNo = $("#bookingNo").textbox('getText').toUpperCase();
       loadTable();
     }
   });
@@ -283,7 +286,7 @@ function getSelected(index, row) {
     url: PREFIX + "/shipments/" + shipmentSelected.id + "/shipment-images",
     contentType: "application/json",
     success: function (data) {
-      html += `<span>Mã lô: ` + shipmentSelected.id + ` - B/L No: ` + shipmentSelected.blNo + `</span>`;
+      html += `<span>Mã lô: ` + shipmentSelected.id + ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`;
       if (data.code == 0) {
         if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
           data.shipmentFiles.forEach(function (element, index) {
@@ -294,7 +297,7 @@ function getSelected(index, row) {
       $('#shipment-info').html(html);
     },
     error: function (err) {
-      html += `<span>Mã lô: ` + shipmentSelected.id + ` - B/L No: ` + shipmentSelected.blNo + `</span>`;
+      html += `<span>Mã lô: ` + shipmentSelected.id + ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`;
       $('#shipment-info').html(html);
     }
   });
@@ -329,49 +332,36 @@ function historyEportRenderer(instance, td, row, col, prop, value, cellPropertie
 
 function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
-  if (sourceData[row] && sourceData[row].processStatus && sourceData[row].finishStatus) {
-    // Customs Status
-    let customs =
-      '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
-    switch (sourceData[row].customStatus) {
-      case "R":
-        customs =
-          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+  if (sourceData[row] && sourceData[row].contSupplyStatus && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].finishStatus) {
+    // Command container supply status
+    let contSupply = '<i id="contSupply" class="fa fa-check easyui-tooltip" title="Chưa yêu cầu cấp container" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
+    switch (sourceData[row].contSupplyStatus) {
+      case 'R':
+        contSupply = '<i id="contSupply" class="fa fa-check easyui-tooltip" title="Đang chờ cấp container" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
         break;
-      case "Y":
-        customs =
-          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #ed5565;"></i>';
+      case 'Y':
+        contSupply = '<i id="contSupply" class="fa fa-check easyui-tooltip" title="Đã cấp container" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
         break;
-      case "N":
-        customs =
-          '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      case 'N':
+        contSupply = '<i id="contSupply" class="fa fa-check easyui-tooltip" title="Có thể yêu cầu cấp container" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
         break;
     }
     // Command process status
-    let process =
-      '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
+    let process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
     switch (sourceData[row].processStatus) {
-      case "W":
-        process =
-          '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
+      case 'W':
+        process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
         break;
-      case "Y":
-        process =
-          '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+      case 'Y':
+        process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
         break;
-      case "N":
-        if (value > 1) {
-          process =
-            '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+      case 'N':
+        if (value > 1 && sourceData[row].contSupplyStatus == 'Y') {
+          process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
         }
         break;
-      case "D":
-        process =
-          '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
-        break;
-      case "E":
-        payment =
-          '<i id="verify" class="fa fa-windows easyui-tooltip" title="Lỗi làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #ed5565;"></i>';
+      case 'D':
+        process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ hủy lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #f93838;"></i>';
         break;
     }
     // Payment status
@@ -407,13 +397,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     }
 
     // Return the content
-    let content = "<div>";
-    // Domestic cont: VN --> not show
-    if (sourceData[row].loadingPort.substring(0, 2) != "VN") {
-      content += customs;
-    }
-    content += process + payment + dateReceipt;
-    content += "</div>";
+    let content = '<div>' + contSupply + process + payment + dateReceipt + '</div>';
     $(td).html(content);
   }
   return td;
@@ -586,68 +570,13 @@ function houseBillBtnRenderer(instance, td, row, col, prop, value, cellPropertie
   cellProperties.readOnly = 'true';
   return td;
 }
-function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
 
 function specialServiceRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'specialService' + row).addClass("htMiddle").addClass("htCenter");
   if (value != null) {
-    if (4 == value) {
+    if (6 == value) {
       value = "Kho"
-    } else if (value == 5) {
+    } else if (value == 7) {
       value = "Bãi";
     }
   } else {
@@ -706,50 +635,46 @@ function configHandsond() {
         case 4:
           return "Số Tham Chiếu";
         case 5:
-          return '<span class="required">Container No</span>';
+          return "Container No";
         case 6:
           return "House Bill";
         case 7:
-          return '<span class="required">Hạn Lệnh</span>';
+          return '<span class="required">Nơi Đóng Hàng</span>';
         case 8:
-          return "Ngày Miễn<br>Lưu Bãi";
+          return "Ngày Đóng Hàng";
         case 9:
-          return '<span class="required">Chủ Hàng</span>';
+          return "Ngày Đóng Hàng<br>Thực Tế";
         case 10:
-          return '<span class="required">Nơi Rút Hàng</span>';
+          return '<span class="required">Kích Thước</span>';
         case 11:
-          return 'Ngày Rút Hàng';
+          return '<span class="required">Hạn Lệnh</span>';
         case 12:
-          return 'Ngày Rút Hàng<br>Thực Tế';
+          return '<span class="required">Chủ Hàng</span>';
         case 13:
-          return 'Nơi Hạ Vỏ';
+          return '<span class="required">Ngày Dự <br>Kiến Bốc</span>';
         case 14:
-          return "Kích Thước";
+          return '<span class="required">Loại Hàng</span>';
         case 15:
-          return '<span class="required">Hãng Tàu</span>';
+          return 'Yêu Cầu <br>Chất Lượng';
         case 16:
-          return '<span class="required">Tàu</span>';
+          return '<span class="required">Tàu và Chuyến</span>';
         case 17:
-          return '<span class="required">Chuyến</span>';
+          return "Ngày tàu đến";
         case 18:
-          return "Seal No";
+          return '<span class="required">Cảng Dỡ Hàng</span>';
         case 19:
-          return "Trọng Lượng (kg)";
+          return 'Cấp Container <br>Ghi Chú';
         case 20:
-          return '<span class="required">Cảng Xếp Hàng</span>';
+          return 'PTTT';
         case 21:
-          return "Cảng Dỡ Hàng";
+          return 'Mã Số Thuế';
         case 22:
-          return "PTTT";
+          return 'Người Thanh Toán';
         case 23:
-          return "Mã Số Thuế";
-        case 24:
-          return "Người Thanh Toán";
-        case 25:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 105, 130, 100, 100, 100, 80, 150, 120, 100, 100, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200],
+    colWidths: [23, 21, 21, 105, 130, 100, 100, 150, 120, 120, 120, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200],
     filter: "true",
     columns: [
       {
@@ -778,31 +703,11 @@ function configHandsond() {
       },
       {
         data: "containerNo",
-        strict: true,
-        renderer: containerNoRenderer,
+        renderer: containerNoRenderer
       },
       {
         data: "housebilBtn",
-        renderer: houseBillBtnRenderer,
-      },
-      {
-        data: "expiredDem",
-        type: "date",
-        dateFormat: "YYYY-MM-DD",
-        defaultDate: new Date(),
-        renderer: expiredDemRenderer,
-      },
-      {
-        data: "detFreeTime",
-        type: "numeric",
-        renderer: detFreeTimeRenderer,
-      },
-      {
-        data: "consignee",
-        type: "autocomplete",
-        source: consigneeList,
-        strict: true,
-        renderer: consigneeRenderer,
+        renderer: houseBillBtnRenderer
       },
       {
         data: "specialService",
@@ -817,72 +722,83 @@ function configHandsond() {
         renderer: actualDateReceiptRenderer
       },
       {
-        data: "emptyDepot",
-        renderer: emptyDepotRenderer,
-      },
-      {
         data: "sztp",
         type: "autocomplete",
         source: sizeList,
         strict: true,
-        renderer: sizeRenderer,
+        renderer: sizeRenderer
       },
       {
-        data: "opeCode",
-        type: "autocomplete",
-        source: opeCodeList,
+        data: "expiredDem",
+        type: "date",
+        dateFormat: "DD/MM/YYYY",
+        correctFormat: true,
+        defaultDate: new Date(),
+        renderer: expiredDemRenderer
+      },
+      {
+        data: "consignee",
         strict: true,
-        renderer: opeCodeRenderer,
+        type: "autocomplete",
+        source: consigneeList,
+        renderer: consigneeRenderer
+      },
+      {
+        data: "planningDate",
+        type: "date",
+        dateFormat: "DD/MM/YYYY",
+        correctFormat: true,
+        defaultDate: new Date(),
+        renderer: planningDateRenderer
+      },
+      {
+        data: "cargoType",
+        type: "autocomplete",
+        source: cargoTypeList,
+        strict: true,
+        renderer: cargoTypeRenderer
+      },
+      {
+        data: "qualityRequirement",
+        renderer: qualityRequirementRenderer
       },
       {
         data: "vslNm",
         type: "autocomplete",
         source: vslNmList,
         strict: true,
-        renderer: vslNmRenderer,
+        renderer: vslNmRenderer
       },
       {
-        data: "voyNo",
-        type: "autocomplete",
-        strict: true,
-        renderer: voyNoRenderer,
-      },
-      {
-        data: "sealNo",
-        renderer: sealNoRenderer,
-      },
-      {
-        data: "wgt",
-        renderer: wgtRenderer,
-      },
-      {
-        data: "loadingPort",
-        type: "autocomplete",
-        source: dischargePortList,
-        renderer: loadingPortRenderer,
+        data: "eta",
+        renderer: etaRenderer
       },
       {
         data: "dischargePort",
         type: "autocomplete",
-        source: dischargePortList,
-        renderer: dischargePortRenderer,
+        strict: true,
+        renderer: dischargePortRenderer
+      },
+      {
+        data: "contSupplyRemark",
+        renderer: contSupplyRemarkRenderer
       },
       {
         data: "payType",
-        renderer: payTypeRenderer,
+        renderer: payTypeRenderer
       },
       {
         data: "payer",
-        renderer: payerRenderer,
+        renderer: payerRenderer
       },
       {
         data: "payerName",
-        renderer: payerNameRenderer,
+        renderer: payerNameRenderer
       },
       {
         data: "remark",
-        renderer: remarkRenderer,
-      },
+        renderer: remarkRenderer
+      }
     ],
     beforeKeyDown: function (e) {
       let selected = hot.getSelected()[0];
@@ -901,7 +817,7 @@ function configHandsond() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 25) {
+          if (selected[3] == 23) {
             e.stopImmediatePropagation();
           }
           break
@@ -939,6 +855,46 @@ function onChange(changes, source) {
   }
   changes.forEach(function (change) {
 
+    // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
+    if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+      let vesselAndVoy = hot.getDataAtCell(change[0], 16);
+      //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
+      if (vesselAndVoy) {
+        if (currentVesselVoyage != vesselAndVoy) {
+          currentVesselVoyage = vesselAndVoy;
+          let shipmentDetail = new Object();
+          for (let i = 0; i < berthplanList.length; i++) {
+            if (vesselAndVoy == berthplanList[i].vslAndVoy) {
+              shipmentDetail.vslNm = berthplanList[i].vslNm;
+              shipmentDetail.voyNo = berthplanList[i].voyNo;
+              shipmentDetail.year = berthplanList[i].year;
+              $.modal.loading("Đang xử lý ...");
+              $.ajax({
+                url: PREFIX + "/vessel/pods",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(shipmentDetail),
+                success: function (data) {
+                  $.modal.closeLoading();
+                  if (data.code == 0) {
+                    hot.updateSettings({
+                      cells: function (row, col, prop) {
+                        if (col == 18) {
+                          let cellProperties = {};
+                          dischargePortList = data.dischargePorts;
+                          cellProperties.source = dischargePortList;
+                          return cellProperties;
+                        }
+                      }
+                    });
+                  }
+                }
+              });
+            }
+          }
+        }
+      }
+    }
   });
 }
 
@@ -1040,6 +996,8 @@ function getDataSelectedFromTable() {
     }
     shipmentDetailIds = "";
     shipmentDetails = [];
+    processOrderIds = '';
+    let temProcessOrderIds = [];
     $.each(cleanedGridData, function (index, object) {
       let cargoType = '', dischargePort = '', loadingPort = '', sztp = '';
       let expiredDem, emptyExpiredDem;
@@ -1100,7 +1058,15 @@ function getDataSelectedFromTable() {
       }
       shipmentDetails.push(shipmentDetail);
       shipmentDetailIds += object["id"] + ",";
+      if (object["processOrderId"] != null && !temProcessOrderIds.includes(object["processOrderId"])) {
+        temProcessOrderIds.push(object["processOrderId"]);
+        processOrderIds += object["processOrderId"] + ',';
+      }
     });
+
+    if (processOrderIds != '') {
+      processOrderIds = processOrderIds.substring(0, processOrderIds.length - 1);
+    }
 
     if (shipmentDetailIds.length == 0) {
       $.modal.alertWarning("Bạn chưa chọn container nào.")
@@ -1125,10 +1091,10 @@ function search() {
 }
 
 function clearInput() {
-  $('#processStatus').combobox('select', 'null');
+  $('#paymentStatus').combobox('select', 'null');
   $('#logisticGroups').combobox('select', '0');
   $("#containerNo").textbox('setText', '');
-  $("#blNo").textbox('setText', '');
+  $("#bookingNo").textbox('setText', '');
   $('#fromDate').datebox('setValue', '');
   $('#toDate').datebox('setValue', '');
   shipment = new Object();
@@ -1282,32 +1248,6 @@ function updateShipmentDetail() {
   }
 }
 
-function confirmOrder() {
-  if (getDataSelectedFromTable()) {
-    $.modal.loading("Đang xử lý...");
-    $.ajax({
-      url: PREFIX + "/order/confirm",
-      method: "POST",
-      data: {
-        shipmentDetailIds: shipmentDetailIds
-      },
-      success: function (result) {
-        if (result.code == 0) {
-          $.modal.alertSuccess(result.msg);
-          reloadShipmentDetail();
-        } else {
-          $.modal.alertError(result.msg);
-        }
-        $.modal.closeLoading();
-      },
-      error: function (result) {
-        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
-        $.modal.closeLoading();
-      },
-    });
-  }
-}
-
 function openHistoryFormCatos(row) {
   let containerInfo = sourceData[row];
   let vslCd = '';
@@ -1371,20 +1311,20 @@ function openHouseBillForm(shipmentDetailId) {
   $.modal.openCustomForm("Thông tin house bill", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
 }
 
-function rejectOrder() {
+function applyPrice() {
   if (getDataSelectedFromTable()) {
     layer.open({
       type: 2,
-      area: [600 + 'px', 240 + 'px'],
+      area: [600 + 'px', 300 + 'px'],
       fix: true,
       maxmin: true,
       shade: 0.3,
-      title: 'Xác nhận từ chối yêu cầu làm lệnh',
-      content: PREFIX + "/reject",
+      title: 'Ráp đơn giá',
+      content: PREFIX + "/price",
       btn: ["Xác Nhận", "Hủy"],
       shadeClose: false,
       yes: function (index, layero) {
-        rejectOrderReq(index, layero);
+        applyPriceReq(index, layero);
       },
       cancel: function (index) {
         return true;
@@ -1393,14 +1333,15 @@ function rejectOrder() {
   }
 }
 
-function rejectOrderReq(index, layero) {
+function applyPriceReq(index, layero) {
   let childLayer = layero.find("iframe")[0].contentWindow.document;
   $.modal.loading("Đang xử lý ...");
   $.ajax({
-    url: PREFIX + "/reject",
+    url: PREFIX + "/price",
     method: "POST",
     data: {
-      content: $(childLayer).find("#message").val(),
+      invoiceNo: $(childLayer).find("#invoiceNo").val(),
+      price: $(childLayer).find("#price").val(),
       shipmentDetailIds: shipmentDetailIds,
       shipmentId: shipmentSelected.id,
       logisticGroupId: shipmentSelected.logisticGroupId

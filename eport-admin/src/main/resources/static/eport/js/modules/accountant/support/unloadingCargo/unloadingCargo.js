@@ -1,4 +1,4 @@
-const PREFIX = ctx + "om/support/unloading-cargo";
+const PREFIX = ctx + "accountant/support/unloading-cargo";
 const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 const containerCol = 5;
@@ -111,17 +111,30 @@ $(document).ready(function () {
     hot.render();
   }, 200);
 
-  $('#fromDate').datebox({
-    onSelect: function (date) {
-      date.setHours(0, 0, 0);
-      fromDate = date;
-      if (toDate != null && date.getTime() > toDate.getTime()) {
-        $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
+  $("#paymentStatus").combobox({
+    valueField: 'paymentStatusValue',
+    textField: 'paymentStatusKey',
+    data: [{
+      "paymentStatusValue": 'N',
+      "paymentStatusKey": "Chưa thanh toán"
+    }, {
+      "paymentStatusValue": 'W',
+      "paymentStatusKey": "Chờ ráp đơn giá",
+      "selected": true
+    }, {
+      "paymentStatusValue": 'Y',
+      "paymentStatusKey": "Đã thanh toán"
+    }, {
+      "paymentStatusValue": 'null',
+      "paymentStatusKey": "Tất cả"
+    }],
+    onSelect: function (paymentStatus) {
+      if (paymentStatus.paymentStatusValue != 'null') {
+        shipment.params.paymentStatus = paymentStatus.paymentStatusValue;
       } else {
-        shipment.params.fromDate = dateToString(date);
-        loadTable();
+        shipment.params.paymentStatus = null;
       }
-      return date;
+      loadTable();
     }
   });
 
@@ -1125,7 +1138,7 @@ function search() {
 }
 
 function clearInput() {
-  $('#processStatus').combobox('select', 'null');
+  $('#paymentStatus').combobox('select', 'null');
   $('#logisticGroups').combobox('select', '0');
   $("#containerNo").textbox('setText', '');
   $("#blNo").textbox('setText', '');
@@ -1282,32 +1295,6 @@ function updateShipmentDetail() {
   }
 }
 
-function confirmOrder() {
-  if (getDataSelectedFromTable()) {
-    $.modal.loading("Đang xử lý...");
-    $.ajax({
-      url: PREFIX + "/order/confirm",
-      method: "POST",
-      data: {
-        shipmentDetailIds: shipmentDetailIds
-      },
-      success: function (result) {
-        if (result.code == 0) {
-          $.modal.alertSuccess(result.msg);
-          reloadShipmentDetail();
-        } else {
-          $.modal.alertError(result.msg);
-        }
-        $.modal.closeLoading();
-      },
-      error: function (result) {
-        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
-        $.modal.closeLoading();
-      },
-    });
-  }
-}
-
 function openHistoryFormCatos(row) {
   let containerInfo = sourceData[row];
   let vslCd = '';
@@ -1371,20 +1358,20 @@ function openHouseBillForm(shipmentDetailId) {
   $.modal.openCustomForm("Thông tin house bill", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
 }
 
-function rejectOrder() {
+function applyPrice() {
   if (getDataSelectedFromTable()) {
     layer.open({
       type: 2,
-      area: [600 + 'px', 240 + 'px'],
+      area: [600 + 'px', 300 + 'px'],
       fix: true,
       maxmin: true,
       shade: 0.3,
-      title: 'Xác nhận từ chối yêu cầu làm lệnh',
-      content: PREFIX + "/reject",
+      title: 'Ráp đơn giá',
+      content: PREFIX + "/price",
       btn: ["Xác Nhận", "Hủy"],
       shadeClose: false,
       yes: function (index, layero) {
-        rejectOrderReq(index, layero);
+        applyPriceReq(index, layero);
       },
       cancel: function (index) {
         return true;
@@ -1393,14 +1380,15 @@ function rejectOrder() {
   }
 }
 
-function rejectOrderReq(index, layero) {
+function applyPriceReq(index, layero) {
   let childLayer = layero.find("iframe")[0].contentWindow.document;
   $.modal.loading("Đang xử lý ...");
   $.ajax({
-    url: PREFIX + "/reject",
+    url: PREFIX + "/price",
     method: "POST",
     data: {
-      content: $(childLayer).find("#message").val(),
+      invoiceNo: $(childLayer).find("#invoiceNo").val(),
+      price: $(childLayer).find("#price").val(),
       shipmentDetailIds: shipmentDetailIds,
       shipmentId: shipmentSelected.id,
       logisticGroupId: shipmentSelected.logisticGroupId

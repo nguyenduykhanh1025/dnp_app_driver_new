@@ -346,40 +346,26 @@ function configHandson() {
           txt += ">";
           return txt;
         case 1:
-          return '<span class="required">House Bill</span>';
-        case 2:
-          return "Forwarder";
-        case 3:
           return "Số Lượng";
-        case 4:
+        case 2:
           return "Loại Bao Bì";
-        case 5:
+        case 3:
           return "Trọng Lượng";
-        case 6:
+        case 4:
           return "Số Khối";
-        case 7:
+        case 5:
           return "Nhãn/Ký hiệu";
-        case 8:
+        case 6:
           return "Ghi chú";
       }
     },
-    colWidths: [40, 100, 150, 80, 90, 90, 90, 100, 200],
+    colWidths: [40, 80, 90, 90, 90, 100, 200],
     columns: [
       {
         data: "active",
         type: "checkbox",
         className: "htCenter",
         renderer: checkBoxRenderer
-      },
-      {
-        data: "houseBill",
-        className: "htCenter",
-        renderer: houseBillRenderer
-      },
-      {
-        data: "forwarder",
-        className: "htCenter",
-        renderer: forwarderRenderer
       },
       {
         data: "quantity",
@@ -432,7 +418,7 @@ function configHandson() {
         // Arrow Right
         case 39:
           selected = hot.getSelected()[0];
-          if (selected[3] == 8) {
+          if (selected[3] == 6) {
             e.stopImmediatePropagation();
           }
           break
@@ -518,8 +504,6 @@ function getDataSelectedFromTable(isValidate) {
   cfsHouseBillList = [];
   $.each(cleanedGridData, function (index, object) {
     let cfsHouseBill = new Object();
-    cfsHouseBill.houseBill = object["houseBill"];
-    cfsHouseBill.forwarder = object["forwarder"];
     cfsHouseBill.quantity = object["quantity"];
     cfsHouseBill.packagingType = object["packagingType"];
     cfsHouseBill.weight = object["weight"];
@@ -548,19 +532,20 @@ function getDataSelectedFromTable(isValidate) {
 function getDataFromTable() {
   const dataTable = hot.getSourceData();
   let results = [];
-  let houseBills = [];
   for (let i = 0; i < dataTable.length; ++i) {
     let dataItemTable = dataTable[i];
-    if (!dataTable[i].houseBill) {
-      $.modal.alertWarning("House bill không được để trống.");
-      return false;
+    if (dataTable[i].quantity ||
+      dataTable[i].packagingType ||
+      dataTable[i].weight ||
+      dataTable[i].cubicMeter ||
+      dataTable[i].marks ||
+      dataTable[i].forwarderRemark) {
+      results.push(dataItemTable);
     }
-    if (houseBills.includes(dataTable[i].houseBill)) {
-      $.modal.alertWarning("House bill không được trùng nhau.");
-      return false;
-    }
-    houseBills.push(dataTable[i].houseBill)
-    results.push(dataItemTable);
+  }
+  if (results.length == 0) {
+    $.modal.alertWarning("Vui lòng nhập vào thông tin.");
+    return false;
   }
   return results;
 }

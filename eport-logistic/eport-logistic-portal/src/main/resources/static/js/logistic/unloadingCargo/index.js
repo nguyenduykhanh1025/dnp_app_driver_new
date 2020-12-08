@@ -16,8 +16,7 @@ var contList = [],
   processOrderIds,
   taxCodeArr;
 var conts = "";
-var allChecked = false,
-  dnDepot = false;
+var allChecked = false;
 var checkList = [];
 var rowAmount = 0;
 var shipmentSearch = new Object();
@@ -558,6 +557,11 @@ function statusIconsRenderer(
       case 'W':
         payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa ráp đơn giá" aria-hidden="true" style="margin-left: 8px; color: #f8ac59;"></i>';
         break;
+      case 'N':
+        if (value > 1) {
+          payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+        }
+        break;
     }
     // Date receipt status
     let dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Chưa đăng ký ngày đóng hàng" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
@@ -579,7 +583,7 @@ function statusIconsRenderer(
     if (sourceData[row].loadingPort.substring(0, 2) != "VN") {
       content += customs;
     }
-    content += process + dateReceipt;
+    content += process + payment + dateReceipt;
     content += "</div>";
     $(td).html(content);
   }
@@ -635,11 +639,11 @@ function houseBillBtnRenderer(
   }
   if (shipmentDetailId) {
     value =
-    '<button class="btn btn-success btn-xs" id="detailBtn ' +
-    row +
-    '" onclick="openHouseBillForm(' +
-    shipmentDetailId +
-    ')"><i class="fa fa-check-circle"></i>Khai báo</button>';
+      '<button class="btn btn-success btn-xs" id="detailBtn ' +
+      row +
+      '" onclick="openHouseBillForm(' +
+      shipmentDetailId +
+      ')"><i class="fa fa-check-circle"></i>Khai báo</button>';
   }
   $(td).html(value);
   cellProperties.readOnly = "true";
@@ -726,7 +730,7 @@ function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties
     } else {
       if (value.length <= 10) {
         value += " 00:00";
-        hot.setDataAtCell(row, 7, value);
+        hot.setDataAtCell(row, 8, value);
       }
     }
   } else {
@@ -1058,11 +1062,11 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 function actualDateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'actualDateReceipt' + row).addClass("htMiddle").addClass("htCenter");
   if (value != null && value != '') {
-      if (value.length >= 16) {
-          value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4) + " " + value.substring(10, 16);
-      }
+    if (value.length >= 16) {
+      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4) + " " + value.substring(10, 16);
+    }
   } else {
-      value = '';
+    value = '';
   }
   cellProperties.readOnly = 'true';
   $(td).css("background-color", "rgb(232, 232, 232)");
@@ -1113,12 +1117,14 @@ function specialServiceRenderer(
   value,
   cellProperties
 ) {
-  if (value != null && value != "") {
+  if (value != null) {
     if (4 == value) {
-      value == "Kho"
-    } else if (value == "Bãi") {
+      value = "Kho"
+    } else if (value == 5) {
       value = "Bãi";
     }
+  } else {
+    value = '';
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
@@ -1196,8 +1202,6 @@ function configHandson() {
           return "Người Thanh Toán";
         case 22:
           return "Ghi Chú";
-        case 23:
-          return "Ghi Chú";
       }
     },
     colWidths: [
@@ -1223,8 +1227,7 @@ function configHandson() {
       100,  // 19
       130,  // 20
       130,  // 21
-      200,  // 22
-      100 // 23
+      200  // 22
     ],
     filter: "true",
     columns: [{
@@ -1777,7 +1780,6 @@ function getDataFromTable(isValidate) {
     billNo = cleanedGridData[0]["blNo"];
   }
   contList = [];
-  dnDepot = false;
   let isSaved = false;
   let currentEmptyDepot = "";
   let consignee;
@@ -1886,7 +1888,14 @@ function getDataFromTable(isValidate) {
     shipmentDetail.processStatus = shipmentSelected.taxCode;
     shipmentDetail.customStatus = shipmentSelected.groupName;
     shipmentDetail.tier = shipmentSelected.containerAmount;
-
+    shipmentDetail.specialService = object["specialService"];
+    if (object["specialService"]) {
+      if (object["specialService"] == "Kho") {
+        shipmentDetail.specialService = 4;
+      } else if (object["specialService"] == "Bãi") {
+        shipmentDetail.specialService = 5;
+      }
+    }
     shipmentDetail.dateReceipt = formatDateToSendServer(object["dateReceipt"]);
     shipmentDetails.push(shipmentDetail);
     if (object["id"] != null) {
@@ -1915,10 +1924,6 @@ function getDataFromTable(isValidate) {
   if (shipmentDetails.length == 0 && !errorFlg) {
     $.modal.alert("Bạn chưa nhập thông tin.");
     errorFlg = true;
-  }
-
-  if (currentEmptyDepot == "Cảng Tiên Sa" && !isSaved) {
-    dnDepot = true;
   }
 
   if (errorFlg) {
@@ -2034,7 +2039,7 @@ function verify() {
   getDataSelectedFromTable(true, true);
   if (shipmentDetails.length > 0) {
     let errorMsg = "";
-    for (let i=0; i<shipmentDetails.length; i++) {
+    for (let i = 0; i < shipmentDetails.length; i++) {
       let shipmentDetail = shipmentDetails[i];
       if (shipmentDetail.customStatus != null && shipmentDetail.customStatus != "R") {
         errorMsg += "Container quý khách vừa chọn chưa được thông quan, không thể xác nhận làm lệnh.";
@@ -2131,13 +2136,21 @@ function pay() {
     let errorMsg = "";
     for (let i = 0; i < shipmentDetails.length; i++) {
       let shipmentDetail = shipmentDetails[i];
-      if (shipmentDetail.processStatus == "N") {
-        errorMsg += "Container quý khách vừa chọn chưa được thực hiện làm lệnh thành công, không thể chuyển qua bước thanh toán.";
-        break;
+      if ("Y" != shipmentDetail.processStatus) {
+        errorMsg = "Quý khách không thể thanh toán cho container chưa được làm lệnh.";
+        return false;
       }
-      if (shipmentDetail.paymentStatus == "W") {
-        errorMsg += "Container quý khách vừa chọn chưa được ráp đơn giá, quý khách vui lòng đợi bộ phận kế toán ráp đơn giá.";
-        break;
+      if (shipmentDetail.payType == 'Credit') {
+        errorMsg = "Quý khách không thể thanh toán cho container cho trường hợp trả sau.";
+        return false;
+      }
+      if ('W' == shipmentDetail.paymentStatus) {
+        errorMsg = "Container chưa được ráp đơn giá, không thể thanh toán.";
+        return false;
+      }
+      if (shipmentDetail.paymentStatus == "Y") {
+        errorMsg = "Quý khách không thể thanh toán cho container đã được thanh toán.";
+        return false;
       }
     }
     if (errorMsg) {
@@ -2145,7 +2158,7 @@ function pay() {
     } else {
       $.modal.openCustomForm(
         "Thanh toán",
-        prefix + "/payment/" + processOrderIds,
+        prefix + "/payment/" + shipmentDetailIds,
         800,
         400
       );
@@ -2541,58 +2554,12 @@ function openHouseBillForm(shipmentDetailId) {
   );
 }
 
-function registerDateReceipt() {
-  $.modal.loading("Đang xử lý...");
-  getDataSelectedFromTable(true, true);
-  $.ajax({
-    url: prefix + "/shipment-detail/validation",
-    method: "POST",
-    data: {
-      shipmentDetailIds: shipmentDetailIds,
-    },
-    success: function (res) {
-      $.modal.closeLoading();
-      if (res.code != 0) {
-        $.modal.alertWarning(res.msg);
-      } else {
-        getDataSelectedFromTable(true, true);
-
-        if (shipmentDetails.length > 0) {
-          $.ajax({
-            url: prefix + "/shipment-detail/register-date-receipt",
-            type: "post",
-            contentType: "application/json",
-            data: JSON.stringify(shipmentDetails),
-            success: function (res) {
-              $.modal.closeLoading();
-              $.modal.alertWarning(res.msg);
-              loadTable();
-            },
-            error: function (err) {
-              $.modal.closeLoading();
-              $.modal.alertWarning(
-                "Có lỗi xảy ra trong quá trình thực hiện, xin vui lòng thử lại sau."
-              );
-            },
-          });
-
-        }
-
-      }
-    },
-    error: function (err) {
-
-      $.modal.closeLoading();
-      $.modal.alertWarning(
-        "Có lỗi xảy ra trong quá trình thực hiện, xin vui lòng thử lại sau."
-      );
-    },
-  });
-}
-
 function formatDateToSendServer(date) {
+  if (!date) {
+    return '';
+  }
   let dateReceipt = new Date(date.substring(6, 10) + "/" + date.substring(3, 5) + "/" + date.substring(0, 2));
-            
+
   // set hours
   dateReceipt.setHours(date.substring(11, 13));
 
