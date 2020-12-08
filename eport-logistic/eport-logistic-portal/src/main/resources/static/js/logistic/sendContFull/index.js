@@ -1091,33 +1091,33 @@ function btnDetailRenderer(
   let containerNo, sztp;
   if (!isDestroy) {
     containerNo = hot.getDataAtCell(row, 2);
-    sztp = hot.getDataAtCell(row, 4);
+    sztp = hot.getDataAtCell(row, 3);
+    
+   // console.log("dfdf" +sztp);
   }
+  
+  
+   //const { sztp, oversizeTop, oversizeRight, oversizeLeft, oversizeFront, oversizeBack } = sourceData[row];
+  /*if (sourceData[row].sztp.substring (2,3)) {
+    textContent = "Cont lạnh";
+  }
+  else if (sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft || sourceData[row].oversizeFront || sourceData[row].oversizeBack) {
+    textContent = "Quá Khổ"
+  }
+  else if(sourceData[row].dangerousImo || sourceData[row].dangerousUnno){
+     textContent = "Nguy hiểm"
+  }*/
+  
 
   if (sourceData && sourceData.length > 0) {
 
-    /*if(sourceData.length > row && sourceData[row].id && sourceData[row].cargoType != "DG" && sourceData[row].sztp.substring(2,3) == "G"){
-      $.modal.alertWarning("Loại hàng không phải là cont nguy hiểm. Vui lòng nhập loại hàng là cont nguy hiểm và thử lại!");
-    }*/
-
+    
     if (sourceData.length > row && sourceData[row].id) {
       value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
     } else if (containerNo && sztp) {
       value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
     }
-    // else {
-    //   value =
-    //     '<button class="btn btn-default btn-xs" id="detailBtn ' +
-    //     row +
-    //     '" onclick="openDetail(' +
-    //     null +
-    //     ",'" +
-    //     containerNo +
-    //     "'," +
-    //     "'" +
-    //     sztp +
-    //     '\')" disabled><i class="fa fa-book"></i>Cont đặc biệt</button>';
-    // }
+   
   }
   $(td).html(value);
   cellProperties.readOnly = "true";
