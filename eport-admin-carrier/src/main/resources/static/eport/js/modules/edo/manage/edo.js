@@ -261,26 +261,6 @@ function formatToYDMHMS(date) {
   return temp.split("-").reverse().join("/") + date.substring(10, 19);
 }
 
-function formatStatus(value, row) {
-  if (row && row.releaseStatus == 'Y') {
-    return "<span class='label label-success'>Đã làm lệnh</span>";
-  } else {
-    if(value == null || value == '' || value == undefined) {
-      return "<span class='label label-success'>Chưa làm lệnh</span>";
-    }
-    switch (value) {
-      case '1':
-        return "<span class='label label-success'>Đã khai báo</span>";
-      case '2':
-        return "<span class='label label-success'>Đã khai báo</span>";
-      case '3':
-        return "<span class='label label-success'>Đã khai báo</span>";
-      case '5':
-      return "<span class='label label-success'>Đã Gate - Out</span>";
-    }
-  }
-}
-
 function formatStatusContainer(value, row) {
   // Stack status 
   let stacking = '<i id="stacking" class="fa fa-ship easyui-tooltip" title="Container chưa xuống bãi" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666;"></i>';

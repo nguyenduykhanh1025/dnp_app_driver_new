@@ -51,49 +51,48 @@
 
 
   <select id="selectEdoList" parameterType="Edo" resultMap="EdoResult">
-    select distinct e.id, e.carrier_id, e.carrier_code, e.order_number, e.release_no, e.bill_of_lading, e.business_unit, e.consignee, e.container_number,
-    e.expired_dem, e.empty_container_depot, e.det_free_time, e.secure_code, e.release_date, e.vessel, e.vessel_no , e.voy_no, e.sztp,
-    e.release_status, e.create_source, e.remark, e.del_flg, e.create_by, e.file_create_time, e.create_time, e.update_by,
-    e.update_time, e.transaction_id, e.pol, e.pod, e.house_bill_id, e.consignee_by_tax_code, e.tax_code , s.status as status
-    from edo e
-    left join shipment_detail s on e.bill_of_lading = s.bl_no and e.container_number = s.container_no
+    select distinct id, carrier_id, carrier_code, order_number, release_no, bill_of_lading, business_unit, consignee, container_number,
+    expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, vessel_no , voy_no, sztp,
+    release_status, create_source, remark, del_flg, create_by, file_create_time, create_time, update_by,
+    update_time, transaction_id, pol, pod, house_bill_id, consignee_by_tax_code, tax_code
+    from edo
     <where>
       <if test="params.groupCode != null">
-        and e.carrier_code in
+        and carrier_code in
         <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
           #{carrier_code}
         </foreach>
       </if>
       <if test="params.ids != null">
-        and e.id in
+        and id in
         <foreach item="id" collection="params.ids" open="(" separator="," close=")">
           #{id}
         </foreach>
       </if>
-      <if test="id != null ">and e.id = #{id}</if>
-      <if test="carrierId != null ">and e.carrier_id = #{carrierId}</if>
-      <if test="carrierCode != null  and carrierCode != ''">and e.carrier_code = #{carrierCode}</if>
-      <if test="orderNumber != null  and orderNumber != ''">and e.order_number = #{orderNumber}</if>
-      <if test="releaseNo != null  and releaseNo != ''">and e.release_no = #{releaseNo}</if>
-      <if test="billOfLading != null  and billOfLading != ''">and e.bill_of_lading = #{billOfLading}</if>
-      <if test="params.containerNumber != null  and params.containerNumber != ''">and e.container_number = #{params.containerNumber}</if>
-      <if test="businessUnit != null  and businessUnit != ''">and e.business_unit = #{businessUnit}</if>
-      <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">and e.empty_container_depot = #{emptyContainerDepot}</if>
-      <if test="detFreeTime != null ">and e.det_free_time = #{detFreeTime}</if>
-      <if test="secureCode != null  and secureCode != ''">and e.secure_code = #{secureCode}</if>
-      <if test="releaseDate != null ">and e.release_date = #{releaseDate}</if>
-      <if test="status != null  and status != ''">and e.status = #{status}</if>
-      <if test="vessel != null  and vessel != ''">and e.vessel like concat(concat('%', #{vessel}), '%')</if>
-      <if test="voyNo != null  and voyNo != ''">and e.voy_no like concat(concat('%', #{voyNo}), '%')</if>
-      <if test="releaseStatus != null  and releaseStatus != ''">and e.release_status = #{releaseStatus}</if>
-      <if test="createSource != null  and createSource != ''">and e.create_source = #{createSource}</if>
-      <if test="delFlg != null">and e.del_flg = #{delFlg}</if>
-      <if test="fromDate != null ">and (e.create_time = #{fromDate} OR e.create_time > #{fromDate})</if>
-      <if test="toDate != null ">and (e.create_time = #{toDate} OR e.create_time &lt; #{toDate})</if>
-      <if test="consignee != null  and consignee != ''">and (upper(e.consignee) like concat(concat('%', #{consignee}),'%')</if>
-      <if test="sztp != null  and sztp != ''">or upper(e.sztp) like concat(concat('%', #{sztp}), '%'))</if>
-      <if test="containerNumber != null  and containerNumber != ''">or upper(e.container_number) like concat(concat('%',#{containerNumber}), '%'))</if>
-      <if test="houseBillId != null">and e.house_bill_id = #{houseBillId}</if>
+      <if test="id != null ">and id = #{id}</if>
+      <if test="carrierId != null ">and carrier_id = #{carrierId}</if>
+      <if test="carrierCode != null  and carrierCode != ''">and carrier_code = #{carrierCode}</if>
+      <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
+      <if test="releaseNo != null  and releaseNo != ''">and release_no = #{releaseNo}</if>
+      <if test="billOfLading != null  and billOfLading != ''">and bill_of_lading = #{billOfLading}</if>
+      <if test="params.containerNumber != null  and params.containerNumber != ''">and container_number = #{params.containerNumber}</if>
+      <if test="businessUnit != null  and businessUnit != ''">and business_unit = #{businessUnit}</if>
+      <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">and empty_container_depot = #{emptyContainerDepot}</if>
+      <if test="detFreeTime != null ">and det_free_time = #{detFreeTime}</if>
+      <if test="secureCode != null  and secureCode != ''">and secure_code = #{secureCode}</if>
+      <if test="releaseDate != null ">and release_date = #{releaseDate}</if>
+      <if test="status != null  and status != ''">and status = #{status}</if>
+      <if test="vessel != null  and vessel != ''">and vessel like concat(concat('%', #{vessel}), '%')</if>
+      <if test="voyNo != null  and voyNo != ''">and voy_no like concat(concat('%', #{voyNo}), '%')</if>
+      <if test="releaseStatus != null  and releaseStatus != ''">and release_status = #{releaseStatus}</if>
+      <if test="createSource != null  and createSource != ''">and create_source = #{createSource}</if>
+      <if test="delFlg != null">and del_flg = #{delFlg}</if>
+      <if test="fromDate != null ">and (create_time = #{fromDate} OR create_time > #{fromDate})</if>
+      <if test="toDate != null ">and (create_time = #{toDate} OR create_time &lt; #{toDate})</if>
+      <if test="consignee != null  and consignee != ''">and (upper(consignee) like concat(concat('%', #{consignee}),'%')</if>
+      <if test="sztp != null  and sztp != ''">or upper(sztp) like concat(concat('%', #{sztp}), '%'))</if>
+      <if test="containerNumber != null  and containerNumber != ''">or upper(container_number) like concat(concat('%',#{containerNumber}), '%'))</if>
+      <if test="houseBillId != null">and house_bill_id = #{houseBillId}</if>
     </where>
   </select>
 
