@@ -30,6 +30,9 @@ $("#datetimepicker1").datetimepicker({
 $(document).ready(function () {
   initTabs();
   initValueToElementHTML();
+  
+  initOptionForSelectUNNOSelect();
+  initOptionForSelectIMOSelect();
 });
 
 /**
@@ -341,7 +344,7 @@ function initOptionForSelectCargoTypeSelect() {
     shipmentDetail.cargoType
   );
 }
-
+ 
 /**
  * @author Khanh
  * @description init option for select IMO danger

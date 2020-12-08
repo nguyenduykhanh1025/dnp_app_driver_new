@@ -801,7 +801,7 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
   let containerNo;
   if (!isDestroy) {
     containerNo = hot.getDataAtCell(row, 2);
-    sztp = hot.getDataAtCell(row, 8);
+    //sztp = hot.getDataAtCell(row, 8);
   }
   if (sourceData && sourceData.length > 0) {
     if (sourceData.length > row && sourceData[row].id) {
