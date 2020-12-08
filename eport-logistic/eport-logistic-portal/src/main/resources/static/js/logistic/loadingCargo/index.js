@@ -1675,19 +1675,19 @@ function pay() {
             let shipmentDetail = shipmentDetails[i];
             if ("Y" != shipmentDetail.processStatus) {
                 errorMsg = "Quý khách không thể thanh toán cho container chưa được làm lệnh.";
-                return false;
+                break;
             }
             if (shipmentDetail.payType == 'Credit') {
                 errorMsg = "Quý khách không thể thanh toán cho container cho trường hợp trả sau.";
-                return false;
+                break;
             }
             if ('W' == shipmentDetail.paymentStatus) {
                 errorMsg = "Container chưa được ráp đơn giá, không thể thanh toán.";
-                return false;
+                break;
             }
             if (shipmentDetail.paymentStatus == "Y") {
                 errorMsg = "Quý khách không thể thanh toán cho container đã được thanh toán.";
-                return false;
+                break;
             }
         }
         if (errorMsg) {
@@ -2027,6 +2027,7 @@ function finishVerifyForm(result) {
     } else {
         $.modal.alertError(result.msg);
     }
+    reloadShipmentDetail();
 }
 
 function requestCancelSupplyContainer() {

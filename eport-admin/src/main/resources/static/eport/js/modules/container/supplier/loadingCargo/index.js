@@ -884,7 +884,7 @@ function saveData() {
 
 function loadListComment(shipmentCommentId) {
     let req = {
-        serviceType: 3,
+        serviceType: 15,
         shipmentId: shipmentSelected.id
     };
     $.ajax({

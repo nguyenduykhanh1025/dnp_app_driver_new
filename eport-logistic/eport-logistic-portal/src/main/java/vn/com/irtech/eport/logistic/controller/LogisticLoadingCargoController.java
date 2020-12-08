@@ -619,8 +619,9 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 	@PostMapping("/cont-req/shipment-detail")
 	@ResponseBody
 	public AjaxResult reqSupplyContainer(String shipmentDetailIds, String contReqRemark) {
+		LogisticAccount user = getUser();
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
-				getUser().getGroupId());
+				user.getGroupId());
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
 			shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_WAITING);
@@ -638,12 +639,13 @@ public class LogisticLoadingCargoController extends LogisticBaseController {
 				shipmentComment.setLogisticGroupId(getUser().getGroupId());
 				shipmentComment.setShipmentId(shipmentDetail.getShipmentId());
 				shipmentComment.setUserId(getUserId());
+				shipmentComment.setUserName(user.getUserName());
 				shipmentComment.setUserType(EportConstants.COMMENTOR_LOGISTIC);
 				shipmentComment.setUserAlias(getGroup().getGroupName());
 				shipmentComment.setCommentTime(new Date());
 				shipmentComment.setContent(contReqRemark);
 				shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CONT_SUPPLIER);
-				shipmentComment.setServiceType(shipmentDetail.getServiceType());
+				shipmentComment.setServiceType(shipment.getServiceType());
 				shipmentCommentService.insertShipmentComment(shipmentComment);
 			}
 
