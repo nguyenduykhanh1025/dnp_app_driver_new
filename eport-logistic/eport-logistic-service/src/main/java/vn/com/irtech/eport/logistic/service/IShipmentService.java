@@ -100,6 +100,10 @@ public interface IShipmentService {
      */
     public List<Shipment> selectShipmentListByWithShipmentDetailFilter(Shipment shipment);
     
+    public List<Shipment> selectShipmentListByWithShipmentDetailFilterReceive(Shipment shipment);
+    
+    
+    
     public List<Shipment> selectShipmentListByWithShipmentDetailFilterApply(Shipment shipment);
     
     

@@ -158,6 +158,13 @@ public class ShipmentServiceImpl implements IShipmentService {
 	}
 	
 	@Override
+    public List<Shipment> selectShipmentListByWithShipmentDetailFilterReceive(Shipment shipment) {
+		return shipmentMapper.selectShipmentListByWithShipmentDetailFilterReceive(shipment);
+	}
+	
+	
+	
+	@Override
     public List<Shipment> selectShipmentListByWithShipmentDetailFilterApply(Shipment shipment) {
 		return shipmentMapper.selectShipmentListByWithShipmentDetailFilterApply(shipment);
 	}

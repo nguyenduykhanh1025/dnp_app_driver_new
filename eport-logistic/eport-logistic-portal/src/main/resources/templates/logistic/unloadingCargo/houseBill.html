@@ -2,14 +2,14 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<th:block th:include="include :: header('House Bill')" />
-<th:block th:include="include :: handsontable-css" />
-<th:block th:include="include :: easyui-css" />
-<link th:href="@{/css/logistic/receiveContFull/style.css}"
-	rel="stylesheet" />
-<link th:href="@{/css/logistic/loadingCargo.css}" rel="stylesheet" />
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<th:block th:include="include :: header('House Bill')" />
+	<th:block th:include="include :: handsontable-css" />
+	<th:block th:include="include :: easyui-css" />
+	<th:block th:include="include :: dropzone-css" />
+	<link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
+	<link th:href="@{/css/logistic/loadingCargo.css}" rel="stylesheet" />
 </head>
 
 <body>
@@ -23,8 +23,8 @@
 					<strong>Container No: </strong><label th:text="${containerNo}"></label>
 				</div>
 				<div class="col-sm-4">
-					<label>Số lượng hàng: </label> <input type="number"
-						id="houseBillNumber" style="width: 70px" value="1" />
+					<label>Số lượng hàng: </label> <input type="number" id="houseBillNumber" style="width: 70px"
+						value="1" />
 				</div>
 			</div>
 			<div class="datagrid-toolbar">
@@ -32,16 +32,24 @@
 					<tbody>
 						<tr>
 							<td>
-								<button id="saveHouseBill" onclick="saveHouseBill()"
-									class="btn btn-sm btn-primary">
+								<button id="saveHouseBill" onclick="saveHouseBill()" class="btn btn-sm btn-primary">
 									<i class="fa fa-save text-primary"></i> Lưu
 								</button>
 							</td>
 							<td>
-								<button id="deleteHouseBill" onclick="deleteHouseBill()"
-									class="btn btn-sm btn-danger">
+								<button id="deleteHouseBill" onclick="deleteHouseBill()" class="btn btn-sm btn-danger">
 									<i class="fa fa-times text-primary"></i> Xóa
 								</button>
+							</td>
+							<td>
+								<div id="dropzone">
+									<button id="attachButton" class="btn btn-sm btn-infor">
+										<i class="fa fa-times text-primary"></i> Đính kèm tệp
+									</button>
+								</div>
+							</td>
+							<td>
+								<div class="preview-container"></div>
 							</td>
 						</tr>
 					</tbody>
@@ -56,10 +64,12 @@
 </body>
 <th:block th:include="include :: footer" />
 <th:block th:include="include :: easyui-js" />
+<th:block th:include="include :: dropzone-js" />
 <th:block th:include="include :: handsontable-js" />
 <script type="text/javascript" th:inline="javascript">
-  var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
-  var cfsHouseBills = /*[[${cfsHouseBills}]]*/;
+	var shipmentDetailId = /*[[${shipmentDetailId}]]*/;
+	var cfsHouseBills = /*[[${cfsHouseBills}]]*/;
+	var shipmentImages = /*[[${shipmentImages}]]*/;
 </script>
 <script th:src="@{/js/logistic/unloadingCargo/houseBill.js?v=20201123}"></script>
 

@@ -6,6 +6,54 @@ var minRowAmount = 1, sourceData;
 var allChecked, checkList, cfsHouseBillList, cfsHouseBillIds;
 
 $(document).ready(function () {
+
+    if (shipmentImages.length > 0) {
+        shipmentImages.forEach(shipmentImage => {
+            let html = `<div class="preview-block">
+        <a href="${shipmentImage.path}" target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" style="width: 30px; height: 29px;"/></a>
+        <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + shipmentImage.id + `)" >
+        <span aria-hidden="true">&times;</span>
+        </button>
+        </div>`;
+            $('.preview-container').append(html);
+        });
+    }
+
+    let previewTemplate = '<span data-dz-name></span>';
+    // Attach house bill
+    myDropzone = new Dropzone("#dropzone", {
+        url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/file",
+        method: "post",
+        paramName: "file",
+        maxFiles: 5,
+        maxFilesize: 10, //MB
+        // autoProcessQueue: false,
+        previewTemplate: previewTemplate,
+        previewsContainer: ".preview-container", // Define the container to display the previews
+        clickable: "#attachButton", // Define the element that should be used as click trigger to select files.
+        init: function () {
+            this.on("maxfilesexceeded", function (file) {
+                $.modal.alertError("Số lượng tệp đính kèm vượt số lượng cho phép.");
+                this.removeFile(file);
+            });
+        },
+        success: function (file, response) {
+            if (response.code == 0) {
+                $.modal.msgSuccess("Đính kèm tệp thành công.");
+                let shipmentImage = response.shipmentFile
+                let html = `<div class="preview-block">
+          <a href="${shipmentImage.path}" target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" style="width: 30px; height: 29px;"/></a>
+          <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + shipmentImage.id + `)" >
+          <span aria-hidden="true">&times;</span>
+          </button>
+          </div>`;
+                $('.preview-container').append(html);
+            } else {
+                $.modal.alertError("Đính kèm tệp thất bại, vui lòng thử lại sau.");
+            }
+        }
+    });
+
     $("#houseBillNumber").on("input", function () {
         if ($("#houseBillNumber").val()) {
             try {
@@ -48,6 +96,28 @@ $(document).ready(function () {
     loadHouseBill();
 });
 
+function removeImage(element, fileId) {
+    $.ajax({
+        url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/file",
+        method: "DELETE",
+        data: {
+            id: fileId
+        },
+        beforeSend: function () {
+            $.modal.loading("Đang xử lý, vui lòng chờ...");
+        },
+        success: function (result) {
+            $.modal.closeLoading();
+            if (result.code == 0) {
+                $.modal.msgSuccess("Xóa tệp thành công.");
+                $(element).parent("div.preview-block").remove();
+            } else {
+                $.modal.msgError("Xóa tệp thất bại.");
+            }
+        }
+    });
+}
+
 // LOAD SHIPMENT DETAIL LIST
 function loadHouseBill() {
     $.modal.loading("Đang xử lý ...");
@@ -83,31 +153,29 @@ function loadHouseBill() {
 }
 
 function saveHouseBill() {
-    if (getDataFromTable(true)) {
-        if (cfsHouseBillList.length > 0) {
-            $.modal.loading("Đang xử lý...");
-            $.ajax({
-                url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bills",
-                method: "post",
-                contentType: "application/json",
-                data: JSON.stringify(cfsHouseBillList),
-                success: function (res) {
-                    if (res.code == 0) {
-                        $.modal.alertSuccess(res.msg);
-                        loadHouseBill();
-                    } else {
-                        $.modal.alertError(res.msg);
-                    }
-                    $.modal.closeLoading();
-                },
-                error: function (res) {
-                    $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau.");
-                    $.modal.closeLoading();
-                },
-            });
-        } else {
-            $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
-        }
+    const payload = getDataFromTable();
+    if (payload) {
+
+        $.modal.loading("Đang xử lý...");
+        $.ajax({
+            url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bills",
+            method: "post",
+            contentType: "application/json",
+            data: JSON.stringify(payload),
+            success: function (res) {
+                if (res.code == 0) {
+                    $.modal.alertSuccess(res.msg);
+                    loadHouseBill();
+                } else {
+                    $.modal.alertError(res.msg);
+                }
+                $.modal.closeLoading();
+            },
+            error: function (res) {
+                $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau.");
+                $.modal.closeLoading();
+            },
+        });
     }
 }
 
@@ -171,9 +239,17 @@ function houseBillRenderer(instance, td, row, col, prop, value, cellProperties) 
     if (value == null) {
         value = '';
     }
-    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-        cellProperties.readOnly = 'true';
-        $(td).css("background-color", "rgb(232, 232, 232)");
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
+    if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
+        }
+    } else {
+        value = '';
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
@@ -181,10 +257,6 @@ function houseBillRenderer(instance, td, row, col, prop, value, cellProperties) 
 function forwarderRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value == null) {
         value = '';
-    }
-    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-        cellProperties.readOnly = 'true';
-        $(td).css("background-color", "rgb(232, 232, 232)");
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
@@ -199,20 +271,12 @@ function quantityRenderer(instance, td, row, col, prop, value, cellProperties) {
     } else {
         value = '';
     }
-    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-        cellProperties.readOnly = 'true';
-        $(td).css("background-color", "rgb(232, 232, 232)");
-    }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function packagingTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value == null) {
         value = '';
-    }
-    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-        cellProperties.readOnly = 'true';
-        $(td).css("background-color", "rgb(232, 232, 232)");
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
@@ -227,10 +291,6 @@ function weightRenderer(instance, td, row, col, prop, value, cellProperties) {
     } else {
         value = '';
     }
-    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-        cellProperties.readOnly = 'true';
-        $(td).css("background-color", "rgb(232, 232, 232)");
-    }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
@@ -244,10 +304,6 @@ function cubicMeterRenderer(instance, td, row, col, prop, value, cellProperties)
     } else {
         value = '';
     }
-    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-        cellProperties.readOnly = 'true';
-        $(td).css("background-color", "rgb(232, 232, 232)");
-    }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
@@ -255,20 +311,12 @@ function marksRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value == null) {
         value = '';
     }
-    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-        cellProperties.readOnly = 'true';
-        $(td).css("background-color", "rgb(232, 232, 232)");
-    }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
 function forwarderRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value == null) {
         value = '';
-    }
-    if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-        cellProperties.readOnly = 'true';
-        $(td).css("background-color", "rgb(232, 232, 232)");
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
@@ -298,28 +346,24 @@ function configHandson() {
                     txt += ">";
                     return txt;
                 case 1:
-                    return "Trạng Thái";
+                    return '<span class="required">House Bill</span>';
                 case 2:
-                    return "House Bill";
-                case 3:
-                    return "Ngày Đóng Hàng";
-                case 4:
                     return "Forwarder";
-                case 5:
+                case 3:
                     return "Số Lượng";
-                case 6:
+                case 4:
                     return "Loại Bao Bì";
-                case 7:
+                case 5:
                     return "Trọng Lượng";
-                case 8:
+                case 6:
                     return "Số Khối";
-                case 9:
+                case 7:
                     return "Nhãn/Ký hiệu";
-                case 10:
+                case 8:
                     return "Ghi chú";
             }
         },
-        colWidths: [40, 80, 100, 120, 150, 80, 90, 90, 90, 100, 200],
+        colWidths: [40, 100, 150, 80, 90, 90, 90, 100, 200],
         columns: [
             {
                 data: "active",
@@ -328,22 +372,9 @@ function configHandson() {
                 renderer: checkBoxRenderer
             },
             {
-                data: "status",
-                readOnly: true,
-                renderer: statusIconRenderer
-            },
-            {
                 data: "houseBill",
                 className: "htCenter",
                 renderer: houseBillRenderer
-            },
-            {
-                data: "dateReceipt",
-                type: "date",
-                dateFormat: "DD/MM/YYYY",
-                correctFormat: true,
-                defaultDate: new Date(),
-                renderer: dateReceiptRenderer
             },
             {
                 data: "forwarder",
@@ -514,42 +545,28 @@ function getDataSelectedFromTable(isValidate) {
     }
 }
 
-// GET HOUSE BILL LIST, VALIDATE FIELD WHEN isValidate = true
-function getDataFromTable(isValidate) {
-    let myTableData = hot.getSourceData();
-    let errorFlg = false;
-    let cleanedGridData = [];
-    for (let i = 0; i < checkList.length; i++) {
-        if (Object.keys(myTableData[i]).length > 0) {
-            if (myTableData[i].houseBill || myTableData[i].forwarder || myTableData[i].quantity ||
-                myTableData[i].packagingType || myTableData[i].weight || myTableData[i].cubicMeter ||
-                myTableData[i].marks || myTableData[i].forwarderRemark || myTableData[i].dateReceipt) {
-                cleanedGridData.push(myTableData[i]);
-            }
+function getDataFromTable() {
+    const dataTable = hot.getSourceData();
+    let results = [];
+    let houseBills = [];
+    for (let i = 0; i < dataTable.length; ++i) {
+        let dataItemTable = dataTable[i];
+        if (!dataTable[i].houseBill) {
+            $.modal.alertWarning("House bill không được để trống.");
+            return false;
         }
+        if (houseBills.includes(dataTable[i].houseBill)) {
+            $.modal.alertWarning("House bill không được trùng nhau.");
+            return false;
+        }
+        houseBills.push(dataTable[i].houseBill)
+        results.push(dataItemTable);
     }
-    cfsHouseBillList = [];
-    console.log(myTableData);
-    $.each(cleanedGridData, function (index, object) {
-        let cfsHouseBill = new Object();
-        if (object["dateReceipt"] && object["dateReceipt"].length >= 10) {
-            let dateReceipt = new Date(object["dateReceipt"].substring(6, 10) + "/" + object["dateReceipt"].substring(3, 5) + "/" + object["dateReceipt"].substring(0, 2));
-            cfsHouseBill.dateReceipt = dateReceipt.getTime();
-        }
-        cfsHouseBill.houseBill = object["houseBill"];
-        cfsHouseBill.forwarder = object["forwarder"];
-        cfsHouseBill.quantity = object["quantity"];
-        cfsHouseBill.packagingType = object["packagingType"];
-        cfsHouseBill.weight = object["weight"];
-        cfsHouseBill.cubicMeter = object["cubicMeter"];
-        cfsHouseBill.marks = object["marks"];
-        cfsHouseBill.forwarderRemark = object["forwarderRemark"];
-        cfsHouseBillList.push(cfsHouseBill);
-    });
+    return results;
+}
 
-    if (errorFlg) {
-        return false;
-    } else {
-        return true;
-    }
+function formatDateToSendServer(date) {
+    let expiredDem = new Date(date.substring(6, 10) + "-" + date.substring(3, 5) + "-" + date.substring(0, 2));
+    expiredDem.setHours(23, 59, 59);
+    return expiredDem.getTime();
 }

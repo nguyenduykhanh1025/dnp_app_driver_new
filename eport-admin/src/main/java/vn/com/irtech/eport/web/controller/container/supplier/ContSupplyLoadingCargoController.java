@@ -196,7 +196,7 @@ public class ContSupplyLoadingCargoController extends BaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
+		shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);

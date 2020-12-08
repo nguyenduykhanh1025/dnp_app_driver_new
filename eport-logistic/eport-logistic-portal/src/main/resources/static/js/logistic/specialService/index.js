@@ -1630,7 +1630,7 @@ function getDataFromTable(isValidate) {
         }
         if (object["dateReceipt"]) {
             let dateReceipt = new Date(object["dateReceipt"].substring(6, 10) + "/" + object["dateReceipt"].substring(3, 5) + "/" + object["dateReceipt"].substring(0, 2));
-            
+
             // set hours
             dateReceipt.setHours(object["dateReceipt"].substring(11, 13));
 

@@ -30,13 +30,16 @@ $("#datetimepicker1").datetimepicker({
 $(document).ready(function () {
   initTabs();
   initValueToElementHTML();
+  
+  initOptionForSelectUNNOSelect();
+  initOptionForSelectIMOSelect();
 });
 
 /**
  * * *Init Func* * *
  */
 
-function initTabs() {
+/*function initTabs() {
   var keySize = shipmentDetail.sztp.substring(2, 3);
   if (keySize == 'R') {// nếu cont lạnh thì show table
     $(".tab-label-2").css("display", 'none');
@@ -49,6 +52,42 @@ function initTabs() {
   if (keySize == 'P' || keySize == 'U') {
     $(".tab-label-1").css("display", 'none');
     $(".tab-label-3").css("display", 'none');
+  }
+}*/
+
+function initTabs() {
+  var keySize = shipmentDetail.sztp.substring(2, 3);
+  var cargoType = shipmentDetail.cargoType;
+  //console.log(shipmentDetail.sztp.includes("R"));
+  if (keySize == "R") {
+    $(".tab-label-2").css("display", 'none');
+    $(".tab-label-3").css("display", 'none');  
+    $("reeferContainer").show();
+    $("dangerousContainer").hide();
+    $("oversizeContainer").hide(); 
+    $("#tab-1").prop('checked', true);
+    $("#tab-2").prop('checked', false);
+    $("#tab-3").prop('checked', false);
+  } 
+  if(keySize == "G" && cargoType == "DG"){
+    $(".tab-label-1").css("display", 'none');
+    $(".tab-label-2").css("display", 'none'); 
+    $("dangerousContainer").show();
+    $("reeferContainer").hide();
+    $("oversizeContainer").hide(); 
+    $("#tab-3").prop('checked', true);
+    $("#tab-1").prop('checked', false);
+    $("#tab-2").prop('checked', false);
+  }
+   if(keySize == "P" || keySize == "U"){
+    $(".tab-label-1").css("display", 'none');
+    $(".tab-label-3").css("display", 'none'); 
+    $("oversizeContainer").show();
+    $("reeferContainer").hide();
+    $("dangerousContainer").hide(); 
+    $("#tab-2").prop('checked', true);
+    $("#tab-1").prop('checked', false);
+    $("#tab-3").prop('checked', false);
   }
 }
 /**
@@ -305,7 +344,7 @@ function initOptionForSelectCargoTypeSelect() {
     shipmentDetail.cargoType
   );
 }
-
+ 
 /**
  * @author Khanh
  * @description init option for select IMO danger

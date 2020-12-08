@@ -27,17 +27,21 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
+import vn.com.irtech.eport.logistic.domain.ReeferInfo;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
+import vn.com.irtech.eport.logistic.service.IReeferInfoService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.ShipmentDetailHist;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.domain.SysUser;
+import vn.com.irtech.eport.system.service.IShipmentDetailHistService;
 import vn.com.irtech.eport.web.controller.AdminBaseController;
 
 @Controller
@@ -73,6 +77,12 @@ public class SupportExtendDrawDate extends AdminBaseController {
 	@Autowired
 	private IShipmentImageService shipmentImageService;
 
+	@Autowired
+	private IShipmentDetailHistService shipmentDetailHistService;
+	
+	@Autowired
+	private IReeferInfoService reeferInfoService;
+	
 	@GetMapping
 	public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
 
@@ -99,6 +109,7 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		sysDictData.setDictValue("Chọn OPR");
 		dictDatas.add(0, sysDictData);
 		mmap.put("oprList", dictDatas);
+		
 		return PREFIX + "/index";
 	}
 
@@ -206,17 +217,31 @@ public class SupportExtendDrawDate extends AdminBaseController {
 			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
 		}
 		mmap.put("shipmentFiles", shipmentImages);
+		
+		ShipmentDetailHist shipmentDetailHist = new ShipmentDetailHist();
+		shipmentDetailHist.setDataField("Power Draw Date");
+		shipmentDetailHist.setShipmentDetailId(shipmentDetailId);
+		mmap.put("powerDropDate", shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
+		
+		mmap.put("reeferInfos", reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId));
+		
 		return PREFIX + "/detail";
 	}
 	
 	@PostMapping("/shipmentDetail/confirm")
 	@ResponseBody
 	public AjaxResult confirmExtendDateDrop(String idShipmentDetails) {
- 
-		System.out.println(idShipmentDetails);
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setPowerDrawDateStatus("S");
-		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
+		for(String id : idShipmentDetails.split(",")) {
+			List<ReeferInfo> infos = reeferInfoService.selectReeferInfoListByIdShipmentDetail(Long.parseLong(id));
+			ShipmentDetail shipmentDetailFromDB = shipmentDetailService.selectShipmentDetailById(Long.parseLong(id));
+			shipmentDetail.setPowerDrawDate(infos.get(0).getDateGetPower());
+			shipmentDetail.setId(Long.parseLong(id));
+			shipmentDetail.setPowerDrawDateStatus("S");
+			shipmentDetail.setDaySetupTemperature(shipmentDetailFromDB.getPowerDrawDate());
+			shipmentDetailService.updateShipmentDetail(shipmentDetail);
+		}
+//		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
 		return success();
 	}
 
@@ -227,5 +252,14 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		shipmentDetail.setPowerDrawDateStatus("E");
 		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
 		return success();
+	}
+	
+	@PostMapping("/save-reefer")
+	@ResponseBody
+	public AjaxResult saveReeferInfo(@RequestBody List<ReeferInfo> reeferInfos) {
+		for(ReeferInfo reeferInfo : reeferInfos) {
+			reeferInfoService.updateReeferInfo(reeferInfo);
+		}
+		return AjaxResult.success(reeferInfoService.selectReeferInfoListByIdShipmentDetail(reeferInfos.get(0).getShipmentDetailId()));
 	}
 }

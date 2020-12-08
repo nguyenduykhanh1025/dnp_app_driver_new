@@ -164,8 +164,7 @@
 		create_by, create_time, update_by,
 		date_receipt, actual_date_receipt,
 		update_time, date_receipt_status,
-		special_service, truck_no,chassis_no,humidity, ventilation, power_draw_date_status from
-
+		special_service, truck_no,chassis_no,humidity, ventilation, power_draw_date_status, power_draw_date from
 		shipment_detail
 	</sql>
 	<select id="countShipmentDetailList"
@@ -480,7 +479,8 @@
 		eta, etd,
 		status, remark, create_by, create_time, update_by,
 		update_time,frozen_status,
-		dangerous,oversize,date_receipt,date_receipt_status
+		dangerous,oversize,date_receipt,date_receipt_status,
+		oversize_top,oversize_right,oversize_left,oversize_front,oversize_back 
 		from
 		shipment_detail
 		<where>
@@ -999,6 +999,8 @@
 			<if test="location != null and location != ''">location = #{location},</if>
 			<if test="containerRemark != null and containerRemark != ''">container_remark = #{containerRemark},</if>
 			<if test="specialService != null">special_service = #{specialService},</if>
+			<if test="powerDrawDateStatus != null">power_draw_date_status = #{powerDrawDateStatus},</if>
+			<if test="powerDrawDate != null">power_draw_date = #{powerDrawDate},</if>
 			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
 			update_time = sysdate
 		</trim>
