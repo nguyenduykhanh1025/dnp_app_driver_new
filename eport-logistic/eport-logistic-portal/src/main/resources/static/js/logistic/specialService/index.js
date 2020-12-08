@@ -1752,7 +1752,11 @@ function saveShipmentDetail() {
                     $.ajax({
                         url: prefix + "/container/shifting",
                         method: "post",
-                        data: JSON.stringify(shipmentDetails),
+                        data: {
+                            containerNos: containers.substring(0, containers.length-1),
+                            blNo : shipmentSelected.blNo,
+                            bookingNo : shipmentSelected.bookingNo
+                        },
                         success: function (res) {
                             if (res.code == 0) {
                                 save();
