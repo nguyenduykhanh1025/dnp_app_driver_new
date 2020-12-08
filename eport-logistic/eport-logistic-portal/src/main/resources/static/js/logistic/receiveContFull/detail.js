@@ -7,7 +7,6 @@ $(document).ready(function () {
   initTabReefer();
   initTabOversize();
   initTableAddRegisterTime();
-  console.log(shipmentDetail);
 });
 
 function initElement() {
@@ -287,19 +286,21 @@ function configHandson() {
         case 0:
           return "Trạng Thái";
         case 1:
-          return "Ngày gia hạn cắm điện";
+          return "Ngày Gia Hạn Cắm Điện";
         case 2:
-          return "Ngày gia hạn rút điện";
+          return "Ngày Gia Hạn Rút Điện";
         case 3:
-          return "Số giờ";
+          return "Số Giờ";
         case 4:
-          return "Thành tiền";
+          return "Thành Tiền";
         case 5:
+          return "Hình Thức Thanh Toán";
+        case 6:
           return "Action";
 
       }
     },
-    colWidths: [60, 80, 80, 60, 80, 150],
+    colWidths: [60, 80, 80, 60, 80, 150, 150],
     columns: [
 
       {
@@ -309,23 +310,33 @@ function configHandson() {
       },
       {
         data: "dateSetPower",
-        renderer: dateSetPower
+        renderer: dateSetPower,
+        readOnly: true
       },
       {
         data: "dateGetPower",
-        renderer: dateGetPower
+        renderer: dateGetPower,
+        readOnly: true
       },
       {
         data: "hourNumber",
-        renderer: numberHoursRenderer
+        renderer: numberHoursRenderer,
+        readOnly: true
       },
       {
         data: "moneyNumber",
-        renderer: paymentRenderer
+        renderer: paymentRenderer,
+        readOnly: true
+      },
+      {
+        data: "moneyTypeNumber",
+        renderer: paymentTypeRenderer,
+        readOnly: true
       },
       {
         data: "btnAction",
-        renderer: btnActionRenderer
+        renderer: btnActionRenderer,
+        readOnly: true
       },
     ],
   };
@@ -536,6 +547,32 @@ function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
   return td;
 }
 
+function paymentTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = "";
+  }
+  if (sourceData[row]) {
+    if (!sourceData[row].payType) {
+      value = "Chủ hàng thanh toán";
+    } else if (sourceData[row].payType == "Before") {
+      value = "Hãng tàu thanh toán trước"
+    } else if (sourceData[row].payType == "After") {
+      value = "Hãng tàu thanh toán sau"
+    } else {
+      value = '';
+    }
+  }
+
+
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+
 function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!sourceData[row]) {
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + '' + '</div>');
@@ -588,7 +625,7 @@ function extendPowerDrawDate() {
   else if ($('#extendPowerDrawDate').val() < $('#powerDrawDate').val()) {
     $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
   }
-  else if (shipmentDetail.powerDrawDateStatus != "S" || shipmentDetail.frozenStatus == 'R') {
+  else if (shipmentDetail.powerDrawDateStatus && shipmentDetail.powerDrawDateStatus != "S" || shipmentDetail.frozenStatus == 'R') {
     $.modal.alertError("Không thể gia hạn thêm ngày rút điện. Gia hạn ngày rút điện đang chờ xét duyệt từ tổ lạnh.");
   } else {
 
