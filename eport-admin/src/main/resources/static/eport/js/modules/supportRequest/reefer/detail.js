@@ -1,43 +1,44 @@
 const PREFIX = ctx + "support-request/reefer";
 var dogrid = document.getElementById("container-grid"), hot;
 var checkList = [];
-var sourceData = powerDropDate.map(item => {
-  return {
-    id: item.id,
-    registerDate: item.newValue
-  }
-})
 $(document).ready(function () {
   initTabReefer();
-  // initTabOversize();
-  initTableAddRegisterTime();
+  initDateTime();
 });
 
-$("#datetimepicker1").datetimepicker({
-  format: 'dd/mm/yyyy hh:ii',
-  language: "vi_VN",
-  //minView: "month",
-  autoclose: true,
-  minuteStep: 30,
-  todayBtn: true,
-  startDate: new Date()
-});
+function initDateTime() {
+  // console.log(new Date(shipmentDetail.daySetupTemperature));
+  let dayDrop = new Date(shipmentDetail.powerDrawDate);
+  let daySetup = new Date(shipmentDetail.daySetupTemperature);
 
-$("#datetimepicker2").datetimepicker({
-  format: 'dd/mm/yyyy hh:ii',
-  language: "vi_VN",
-  //minView: "month",
-  autoclose: true,
-  minuteStep: 30,
-  todayBtn: true,
-  startDate: new Date()
-});
+  // console.log(daySetup);
+  // console.log(dayDrop);
 
-let dayDrop = new Date(shipmentDetail.powerDrawDate);
-let daySetup = new Date(shipmentDetail.daySetupTemperature);
-$("#datetimepicker1").datetimepicker('setDate', dayDrop);
-$("#datetimepicker2").datetimepicker('setDate', daySetup);
+  // $("#datetimepickerGet").datetimepicker({
+  //   format: 'dd/mm/yyyy hh:ii',
+  //   language: "vi_VN",
+  //   //minView: "month",
+  //   autoclose: true,
+  //   minuteStep: 30,
+  //   todayBtn: true,
+  //   startDate: new Date()
+  // });
 
+  // $("#datetimepickerSet").datetimepicker({
+  //   format: 'dd/mm/yyyy hh:ii',
+  //   language: "vi_VN",
+  //   //minView: "month",
+  //   autoclose: true,
+  //   minuteStep: 30,
+  //   todayBtn: true,
+  //   startDate: new Date()
+  // });
+
+  $("#powerDrawDate").val(formatDate(dayDrop));
+  $("#daySetupTemperature").val(formatDate(daySetup));
+}
+
+console.log(reeferInfos);
 function initTabReefer() {
   if (shipmentDetail.sztp.includes("R")) {
     $('#reeferContainer').css('display', 'block');
@@ -60,7 +61,17 @@ function initTabReefer() {
   $('#temperature').val(shipmentDetail.temperature);// nhiệt độ 
   $('#humidity').val(shipmentDetail.humidity);
   $('#ventilation').val(shipmentDetail.ventilation);
-  $("#numberHours").val(getDifferenceBetween(dayDrop, daySetup))
+
+  $('#numberHours').val(reeferInfos[0].hourNumber);
+  $('#moneyNumber').val(reeferInfos[0].moneyNumber);
+
+  // if (!reeferInfos[0].payType) {
+  //   $("input[name=optradio][value='paymentType_0']").prop("checked", true);
+  // } else if (reeferInfos[0].payType == "B") {
+  //   $("input[name=optradio][value='paymentType_1']").prop("checked", true);
+  // }else {
+  //   $("input[name=optradio][value='paymentType_2']").prop("checked", true);
+  // }
 }
 
 function initTabOversize() {
@@ -97,11 +108,6 @@ function initTabOversize() {
   $('#truckNo').val(shipmentDetail.truckNo);// 
 }
 
-function initTableAddRegisterTime() {
-  configHandson();
-  hot = new Handsontable(dogrid, config);
-  hot.loadData(sourceData);
-}
 function initTabDangerous() {
   $('#dangerousContainer').css('display', 'block !important');
   // cont nguy hiểm 
@@ -139,48 +145,54 @@ let typeO = true;// qua kho
 
 // confirm
 function insertCont() {
-  let date = $("#datetimepicker1").datetimepicker('getDate').getTime();
-  let shipmentDetailId = shipmentDetail.id;
-  let truckNo = $("#truckNo").val();
-  let chassisNo = $("#chassisNo").val();
-  const detail = {
-    id: shipmentDetail.id,
-    shipmentId: shipmentDetail.shipmentId,
-    sztp: shipmentDetail.sztp,
-    powerDrawDate: date,
-    truckNo: truckNo,
-    chassisNo: chassisNo
-  }
+  const payload = reeferInfos.map(item => {
+    return {
+      id: item.id,
+      hourNumber: $('#numberHours').val(),
+      moneyNumber: $('#moneyNumber').val(),
+      shipmentDetailId: item.shipmentDetailId,
+      // payType: getPayType(),
+      // payerType: getPayerType()
+    }
+  })
   $.ajax(
     {
-      url: prefix + "/saveDate",
+      url: PREFIX + "/save-reefer",
       method: "post",
       contentType: "application/json",
       accept: "text/plain",
-      data: JSON.stringify(detail),
+      data: JSON.stringify(payload),
       dataType: "text",
       success: function (result) {
-        if (result.code == 0) {
-          //$.modal.alertError(result.msg);
-          $.modal.close();
-          //insertFile();  
-        } else {
-          $.modal.close();
-        }
+        $.modal.close();
       }
     });
 }
 
+function getPayType() {
+  const data = $('input[name="optradio"]:checked').val();
+  console.log(data);
+  let result = '';
+  if (data == 'paymentType_1') {
+    result = 'B';
+  } else if (data == 'paymentType_2') {
+    result = 'A';
+  }
+  return result;
+}
 
-
+function getPayerType() {
+  const data = $('#optradio').val();
+  let result = '';
+  if (data == 'paymentType_0') {
+    result = 'P';
+  } else {
+    result = 'Q';
+  }
+  return result;
+}
 function confirm() {
-  var lengthTemp = shipmentFilePath;
-  if (lengthTemp == null || lengthTemp.length == 0) {
-    insertCont();
-  }
-  if (lengthTemp != null || lengthTemp.length != 0) {// nếu có thì vào đây
-    saveFile();
-  }
+  insertCont();
 }
 
 
@@ -278,145 +290,15 @@ function removeImage(element, fileIndex) {
   });
 
 }
-function configHandson() {
-  config = {
-    stretchH: "all",
-    height: $(document).height() - 140,
-    minRows: 1,
-    maxRows: 100,
-    width: "100%",
-    minSpareRows: 0,
-    rowHeights: 30,
-    trimDropdown: false,
-    manualColumnResize: true,
-    manualRowResize: true,
-    renderAllRows: true,
-    rowHeaders: true,
-    className: "htMiddle",
-    colHeaders: function (col) {
-      switch (col) {
-        case 0:
-          return "Trạng Thái";
-        case 1:
-          return "Ngày gia hạn rút điện";
-
-      }
-    },
-    colWidths: [80, 200],
-    columns: [
-
-      {
-        data: "status",
-        readOnly: true,
-        renderer: statusIconRenderer
-      },
-      {
-        data: "registerDate",
-        type: "date",
-        dateFormat: "DD/MM/YYYY",
-        correctFormat: true,
-        defaultDate: new Date(),
-        renderer: registerDateRenderer
-      },
-    ],
-  };
-
-}
-
-function statusIconRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).html('');
-  cellProperties.readOnly = 'true';
-  $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
-  let status = "";
-  if (row == 0) {
-    if (shipmentDetail.powerDrawDateStatus == "P") {
-      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đang chờ xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #f8ac59;"></i>';
-    } else if (shipmentDetail.powerDrawDateStatus === "S") {
-      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
-    }
-  } else {
-    // status
-    status = '<i id="status" class="fa fa-clock-ofa-flip-horizontal easyui-tooltip" title="Container đã được xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
-    if (value && value == 'L') {
-      status = '<i id="finish" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã bị khóa không thể chỉnh sửa" aria-hidden="true" style="color: #f8ac59;"></i>';
-    }
-  }
-
-  // Return the content
-  let content = '<div style="font-size: 25px">' + status + '</div>';
-  if (sourceData && sourceData.length >= (row + 1) && sourceData[row].id) {
-    $(td).html(content);
-  }
-  value = '';
-  return td;
-}
-function registerDateRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
-  if (value != null && value != '') {
-    let dateArray = value.split(" ");
-    let resultDate = new Date(dateArray[0]);
-    if (dateArray[2] === "PM") {
-      resultDate.setHours(parseInt(dateArray[1].split(".")[0]) + 12);
-
-    }
-    else {
-      resultDate.setHours(parseInt(dateArray[1].split(".")[0]));
-    }
-    resultDate.setMinutes(dateArray[1].split(".")[1]);
-    let month = resultDate.getMonth() == 12 ? 0 : resultDate.getMonth() + 1;
-    value = `${resultDate.getDate()}/${month}/${resultDate.getFullYear()} ${resultDate.getHours()}:${resultDate.getMinutes()}`;
-  } else {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-
-function extendPowerDrawDate() {
-
-  let date = $('#extendPowerDrawDate').val();
-  let arrDate = date.split("/");
-  const tempDate = arrDate[1];
-  arrDate[1] = arrDate[0];
-  arrDate[0] = tempDate;
-
-  const detail = {
-    id: shipmentDetail.id,
-    powerDrawDate: new Date(arrDate.join("/")).getTime()
-  }
-  $.ajax({
-    url: prefix + "/extendPowerDrawDate",
-    method: "POST",
-    contentType: "application/json",
-    accept: 'text/plain',
-    data: JSON.stringify(detail),
-    dataType: 'text',
-    success: function (data) {
-      data = JSON.parse(data);
-      shipmentDetail.powerDrawDateStatus = "P";
-      sourceData = data.data.map(item => {
-        return {
-          id: item.id,
-          registerDate: item.newValue
-        }
-      })
-
-      configHandson();
-      hot = new Handsontable(dogrid, config);
-      hot.loadData(sourceData);
-
-      $.modal.alertSuccess("Gia hạn ngày rút điện thành công.");
-    },
-    error: function (result) {
-      $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
-      $.modal.closeLoading();
-    },
-  });
-}
 
 function getDifferenceBetween(date1, date2) {
   const diffTime = Math.abs(date2 - date1);
-  console.log(diffTime);
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60));
   return diffDays;
+}
+
+function formatDate(data) {
+  let date = new Date(data);
+  const month = date.getMonth() == 12 ? '00' : date.getMonth() + 1;
+  return `${date.getDate()}/${month}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
 }

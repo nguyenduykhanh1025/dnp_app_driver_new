@@ -29,6 +29,8 @@ const SERVICE_TYPE = {
   dropFull: 4,
 };
 
+const paymentTypeList = ['Khách hàng trả', 'Hãng tàu trả trước', 'Hãng tàu trả sau'];
+
 $(document).ready(function () {
   $(".main-body").layout();
 
@@ -369,23 +371,23 @@ function statusIconsRenderer(
 ) {
   return shipmentSelected.serviceType == SERVICE_TYPE.dropFull
     ? renderIconsFollowServiceTypeDropFull(
-        instance,
-        td,
-        row,
-        col,
-        prop,
-        value,
-        cellProperties
-      )
+      instance,
+      td,
+      row,
+      col,
+      prop,
+      value,
+      cellProperties
+    )
     : renderIconsStatusServiceTypePickupFull(
-        instance,
-        td,
-        row,
-        col,
-        prop,
-        value,
-        cellProperties
-      );
+      instance,
+      td,
+      row,
+      col,
+      prop,
+      value,
+      cellProperties
+    );
 }
 
 function getRequestConfigIcon(row) {
@@ -506,7 +508,7 @@ function btnDetailRenderer(
 
   if (sourceData && sourceData.length > 0) {
     if (sourceData.length > row && sourceData[row].id) {
-      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
+      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-book" style="margin: 0 3px;"></i>Lạnh</button>`;
     } else if (containerNo && sztp) {
       value =
         '<button class="btn btn-success btn-xs" id="detailBtn ' +
@@ -518,25 +520,32 @@ function btnDetailRenderer(
         "'," +
         "'" +
         sztp +
-        '\')"><i class="fa fa-book"></i>Cont đặc biệt</button>';
-    } 
-    // else {
-    //   value =
-    //     '<button class="btn btn-success btn-xs" id="detailBtn ' +
-    //     row +
-    //     '" onclick="openDetail(' +
-    //     null +
-    //     ",'" +
-    //     containerNo +
-    //     "'," +
-    //     "'" +
-    //     sztp +
-    //     '\')" disabled><i class="fa fa-check-circle"></i>Chi tiết</button>';
-    // }
+        '\')"><i class="fa fa-book" style="margin: 0 3px"></i>Lạnh</button>';
+    }
   }
   $(td).html(value);
   cellProperties.readOnly = "true";
   return td;
+}
+
+function paymentTypeRenderer(instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties) {
+  $(td)
+    .attr("id", "sztp" + row)
+    .addClass("htMiddle");
+  if (!value) {
+    value = "";
+  }
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
 }
 
 function openDetail(id, containerNo, sztp, row) {
@@ -567,8 +576,8 @@ function containerNoRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -579,8 +588,8 @@ function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -599,8 +608,8 @@ function consigneeRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -612,10 +621,10 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (sourceData[row] && sourceData[row].vslNm && sourceData[row].voyNo) {
     $(td).html(
       '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-        sourceData[row].vslNm +
-        " - " +
-        sourceData[row].voyNo +
-        "</div>"
+      sourceData[row].vslNm +
+      " - " +
+      sourceData[row].voyNo +
+      "</div>"
     );
   }
   return td;
@@ -627,8 +636,8 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -647,8 +656,8 @@ function cargoTypeRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -659,8 +668,8 @@ function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -679,8 +688,8 @@ function dischargePortRenderer(
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -691,8 +700,8 @@ function payTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -703,8 +712,8 @@ function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -715,8 +724,8 @@ function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -727,8 +736,8 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-      value +
-      "</div>"
+    value +
+    "</div>"
   );
   return td;
 }
@@ -767,26 +776,28 @@ function configHandson() {
         case 5:
           return "Số Container";
         case 6:
-          return '<span>Cont đặc biệt</span>';
+          return '<span>Chi Tiết Container</span>';
         case 7:
-          return "Sztp";
+          return '<span>Hình Thức Thanh Toán</span>';
         case 8:
-          return "Chủ Hàng";
+          return "Sztp";
         case 9:
-          return "Tàu - Chuyến";
+          return "Chủ Hàng";
         case 10:
-          return "Trọng Lượng";
+          return "Tàu - Chuyến";
         case 11:
-          return "Loại Hàng";
+          return "Trọng Lượng";
         case 12:
-          return "Số Seal";
+          return "Loại Hàng";
         case 13:
-          return "Cảng Dỡ Hàng";
+          return "Số Seal";
         case 14:
-          return "P.T.T.T";
+          return "Cảng Dỡ Hàng";
         case 15:
-          return "Payer";
+          return "P.T.T.T";
         case 16:
+          return "Payer";
+        case 17:
           return "Ghi Chú";
       }
     },
@@ -797,6 +808,7 @@ function configHandson() {
       120,
       130,
       100,
+      150,
       150,
       60,
       200,
@@ -843,6 +855,13 @@ function configHandson() {
       {
         data: "btnInformationContainer",
         renderer: btnDetailRenderer,
+      },
+      {
+        data: "paymentType",
+        type: "autocomplete",
+        source: paymentTypeList,
+        strict: true,
+        renderer: paymentTypeRenderer,
       },
       {
         data: "sztp",
@@ -1075,6 +1094,8 @@ function clearInput() {
 
 function confirmRequestDocument() {
   if (getDataSelectedFromTable()) {
+
+    confirmationPaymentType();
     layer.confirm(
       "Xác nhận kiểm tra thông tin đúng.",
       {
@@ -1097,7 +1118,7 @@ function confirmRequestDocument() {
             if (res.code == 0) {
               $.modal.alertSuccess(res.msg);
 
-              loadTable();
+              confirmationPaymentType();
             } else {
               $.modal.alertError(res.msg);
             }
@@ -1106,6 +1127,7 @@ function confirmRequestDocument() {
             $.modal.closeLoading();
           },
         });
+
       },
       function () {
         // close form
@@ -1113,7 +1135,45 @@ function confirmRequestDocument() {
     );
   }
 }
+function confirmationPaymentType() {
+  const payload = sourceData.map(item => {
+    if (item.id) {
+      return {
+        id: item.id,
+        payType: getPayType(item),
+        payer: getPayer(item)
+      }
+    }
+  })
 
+  $.ajax({
+    url: PREFIX + "/confirmation/payment-type",
+    method: "POST",
+    contentType: "application/json",
+    data: JSON.stringify(payload),
+    success: function (res) {
+      loadTable();
+    },
+    error: function (data) {
+    },
+  });
+}
+
+function getPayType(data) {
+  if (data.paymentType == paymentTypeList[1]) {
+    return 'Before';
+  } else if (data.paymentType == paymentTypeList[2]) {
+    return 'After';
+  }
+  return '';
+}
+
+function getPayer(data) {
+  if (data.paymentType == paymentTypeList[0]) {
+    return 'Consignee'
+  }
+  return 'Carriers';
+}
 function rejectRequestDocument() {
   if (getDataSelectedFromTable()) {
     openReject();
@@ -1625,7 +1685,7 @@ function renderIconsStatusServiceTypePickupFull(
           '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
         break;
     }
-     
+
     // Command process status
     let process =
       '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
@@ -1669,7 +1729,7 @@ function renderIconsStatusServiceTypePickupFull(
     }
     // Do status
     let doStatus =
-      '<i id="do" class="fa fa-file-text easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>'; 
+      '<i id="do" class="fa fa-file-text easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
     if (sourceData[row].doStatus == "Y") {
       doStatus =
         '<i id="do" class="fa fa-file-text easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
@@ -1717,20 +1777,19 @@ function renderIconsStatusServiceTypePickupFull(
     //   content += getRequestConfigIcon(sourceData[row].frozenStatus);
     // }
     content += getRequestConfigIcon(row);
-    console.log(sourceData[row].dischargePort);
-    
- // Domestic cont: VN --> not show
+
+    // Domestic cont: VN --> not show
     if (sourceData[row].dischargePort.substring(0, 2) != "VN") {
-        content += customs;
-      }
-    
+      content += customs;
+    }
+
     content += process + payment + doStatus + released;
-     
+
     /*if (sourceData[row].dischargePort.substring(0, 2) != "VN") {
         content += customs;
       }*/
-    
-    
+
+
     content += "</div>";
     $(td).html(content);
   }

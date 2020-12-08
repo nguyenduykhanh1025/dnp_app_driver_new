@@ -455,7 +455,7 @@ function btnDetailRenderer(
 
   if (sourceData && sourceData.length > 0) {
     if (sourceData.length > row && sourceData[row].id) {
-      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
+      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-book" style="margin: 0px 3px;"></i>Lạnh</button>`;
     } else if (containerNo && sztp) {
       value =
         '<button class="btn btn-success btn-xs" id="detailBtn ' +
@@ -467,27 +467,102 @@ function btnDetailRenderer(
         "'," +
         "'" +
         sztp +
-        '\')"><i class="fa fa-book"></i>Cont đặc biệt</button>';
+        '\')"><i class="fa fa-book" style="margin: 0px 3px;"></i>Lạnh</button>';
     }
-    // else {
-    //   value =
-    //     '<button class="btn btn-success btn-xs" id="detailBtn ' +
-    //     row +
-    //     '" onclick="openDetail(' +
-    //     null +
-    //     ",'" +
-    //     containerNo +
-    //     "'," +
-    //     "'" +
-    //     sztp +
-    //     '\')" disabled><i class="fa fa-check-circle"></i>Chi tiết</button>';
-    // }
   }
   $(td).html(value);
   cellProperties.readOnly = "true";
   return td;
 }
 
+function temperatureRenderer(instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (value == null) {
+    value = "";
+  }
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+
+function humidityRenderer(instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (value == null) {
+    value = "";
+  }
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+
+function ventilationRenderer(instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (value == null) {
+    value = "";
+  }
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+
+function paymentRenderer(instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = "";
+  }
+  if (sourceData[row]) {
+    if (!sourceData[row].payType) {
+      value = "Chủ hàng thanh toán";
+    } else if (sourceData[row].payType == "Before") {
+      value = "Hãng tàu thanh toán trước"
+    } else if (sourceData[row].payType == "After") {
+      value = "Hãng tàu thanh toán sau"
+    } else {
+      value = '';
+    }
+  }
+
+
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
 function openDetail(id, containerNo, sztp, row) {
   if (!id) {
     id = 0;
@@ -521,6 +596,38 @@ function containerNoRenderer(
   );
   return td;
 }
+
+function payTypeRenderer(
+  instance,
+  td,
+  row,
+  col,
+  prop,
+  value,
+  cellProperties
+) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = "";
+  }
+
+  if (sourceData[row].payType) {
+    value = "Chủ hàng thanh toán";
+  } else if (sourceData[row].payType == "Before") {
+    value = "Hãng tàu thanh toán trước"
+  } else if (sourceData[row].payType == "After") {
+    value = "Hãng tàu thanh toán sau"
+  } else {
+    value = '';
+  }
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+
 function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (!value) {
@@ -716,26 +823,34 @@ function configHandson() {
         case 5:
           return "Số Container";
         case 6:
-          return '<span>Cont đặc biệt</span>';
+          return '<span>Chi Tiết Container</span>';
         case 7:
-          return "Sztp";
+          return '<span>Nhiệt Độ</span>';
         case 8:
-          return "Chủ Hàng";
+          return '<span>Độ Ẩm</span>';
         case 9:
-          return "Tàu - Chuyến";
+          return '<span>Thông Gió</span>';
         case 10:
-          return "Trọng Lượng";
+          return '<span>Hình Thức Thanh Toán</span>';
         case 11:
-          return "Loại Hàng";
+          return "Sztp";
         case 12:
-          return "Số Seal";
+          return "Chủ Hàng";
         case 13:
-          return "Cảng Dỡ Hàng";
+          return "Tàu - Chuyến";
         case 14:
-          return "P.T.T.T";
+          return "Trọng Lượng";
         case 15:
-          return "Payer";
+          return "Loại Hàng";
         case 16:
+          return "Số Seal";
+        case 17:
+          return "Cảng Dỡ Hàng";
+        case 18:
+          return "P.T.T.T";
+        case 19:
+          return "Payer";
+        case 20:
           return "Ghi Chú";
       }
     },
@@ -745,6 +860,10 @@ function configHandson() {
       21,
       120,
       130,
+      100,
+      150,
+      100,
+      100,
       100,
       150,
       60,
@@ -789,10 +908,32 @@ function configHandson() {
         data: "containerNo",
         renderer: containerNoRenderer,
       },
+
       {
-        data: "btnInformationContainer",
+        data: "btnDetail",
         renderer: btnDetailRenderer,
       },
+      ////////////
+      {
+        data: "temperature",
+        renderer: temperatureRenderer,
+      },
+
+      {
+        data: "humidity",
+        renderer: humidityRenderer,
+      },
+
+      {
+        data: "ventilation",
+        renderer: ventilationRenderer,
+      },
+
+      {
+        data: "payment",
+        renderer: paymentRenderer,
+      },
+      ////////////////////
       {
         data: "sztp",
         renderer: sztpRenderer,
@@ -1647,8 +1788,6 @@ function renderIconsStatusServiceTypePickupFull(
     //   content += getRequestConfigIcon(sourceData[row].frozenStatus);
     // }
     content += getRequestConfigIcon(row);
-    console.log("dischargePort");
-    console.log(sourceData[row].dischargePort);
 
     // Domestic cont: VN --> not show
     if (sourceData[row].dischargePort.substring(0, 2) != "VN") {
@@ -1706,7 +1845,6 @@ function confirmRequestDocument() {
       shipmentDetailIdsChoosse.push(sourceData[i].id);
     }
   }
-  // console.log(shipmentDetailIdsChoosse.join()  );
   shipmentDetailIdsChoosse = shipmentDetailIdsChoosse.join(",");
   $.ajax({
     url: PREFIX + "/shipmentDetail/confirm",
@@ -1746,4 +1884,8 @@ function rejectRequestDocument() {
       $.modal.closeLoading();
     },
   });
+}
+
+function saveReeferSuccess() {
+  $.modal.alertSuccess("Lưu thông tin thành công.");
 }

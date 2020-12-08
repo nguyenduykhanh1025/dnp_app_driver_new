@@ -27,11 +27,13 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
+import vn.com.irtech.eport.logistic.domain.ReeferInfo;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
+import vn.com.irtech.eport.logistic.service.IReeferInfoService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
@@ -78,6 +80,9 @@ public class SupportExtendDrawDate extends AdminBaseController {
 	@Autowired
 	private IShipmentDetailHistService shipmentDetailHistService;
 	
+	@Autowired
+	private IReeferInfoService reeferInfoService;
+	
 	@GetMapping
 	public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
 
@@ -104,6 +109,7 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		sysDictData.setDictValue("Chọn OPR");
 		dictDatas.add(0, sysDictData);
 		mmap.put("oprList", dictDatas);
+		
 		return PREFIX + "/index";
 	}
 
@@ -216,6 +222,9 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		shipmentDetailHist.setDataField("Power Draw Date");
 		shipmentDetailHist.setShipmentDetailId(shipmentDetailId);
 		mmap.put("powerDropDate", shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
+		
+		mmap.put("reeferInfos", reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId));
+		
 		return PREFIX + "/detail";
 	}
 	
@@ -237,5 +246,14 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		shipmentDetail.setPowerDrawDateStatus("E");
 		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
 		return success();
+	}
+	
+	@PostMapping("/save-reefer")
+	@ResponseBody
+	public AjaxResult saveReeferInfo(@RequestBody List<ReeferInfo> reeferInfos) {
+		for(ReeferInfo reeferInfo : reeferInfos) {
+			reeferInfoService.updateReeferInfo(reeferInfo);
+		}
+		return AjaxResult.success(reeferInfoService.selectReeferInfoListByIdShipmentDetail(reeferInfos.get(0).getShipmentDetailId()));
 	}
 }

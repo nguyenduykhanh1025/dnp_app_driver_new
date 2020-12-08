@@ -788,8 +788,17 @@ function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 //nhatlv
 function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
+  let textContent = '';
+  const {sztp, oversizeTop, oversizeRight, oversizeLeft, oversizeFront, oversizeBack} = sourceData[row];
+  if (sourceData[row].sztp.includes("R")) {
+    textContent = "Lạnh";
+  }
+  else if (oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack) {
+    textContent = "Quá Khổ"
+  }
+
   $(td).attr('id', 'wgt' + row).addClass("htMiddle").addClass("htCenter");
-  let containerNo, sztp;
+  let containerNo;
   if (!isDestroy) {
     containerNo = hot.getDataAtCell(row, 2);
     sztp = hot.getDataAtCell(row, 8);
@@ -797,11 +806,14 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (sourceData && sourceData.length > 0) {
     if (sourceData.length > row && sourceData[row].id) {
 
-      if ("G" != sourceData[row].sztp.substring(2, 3)) {
-        value = '<button class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-book"></i>Cont đặc biệt</button>';
-      }
-      else {
-        value = '<button class="btn btn-default btn-xs showHide" disabled ><i class="fa fa-book"></i>Chi tiết</button>';
+      // if ("G" != sourceData[row].sztp.substring(2, 3)) {
+      //  value = '<button class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-book">' + textContent + '</i></button>';
+      // }
+      // else {
+      //   value = '<button class="btn btn-default btn-xs showHide" disabled ><i class="fa fa-book"></i></button>';
+      // }
+      if(textContent) {
+        value = '<button class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-book" style="margin: 0 3px;"></i>' + textContent + '</button>';
       }
     }
   }
@@ -951,7 +963,7 @@ function configHandson() {
         case 2:
           return '<span class="required">Container No</span>';
         case 3:
-          return "Cont đặc biệt";
+          return "Chi Tiết Container";
         case 4:
           return '<span class="required">Hạn Lệnh</span>';
         case 5:

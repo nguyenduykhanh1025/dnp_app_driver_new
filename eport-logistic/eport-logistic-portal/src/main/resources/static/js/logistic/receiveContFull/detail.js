@@ -2,12 +2,12 @@ const PREFIX = ctx + "logistic/receive-cont-full";
 var dogrid = document.getElementById("container-grid"), hot;
 var checkList = [];
 sourceData = reeferInfos;
-console.log(sourceData);
 $(document).ready(function () {
   initElement();
   initTabReefer();
   initTabOversize();
   initTableAddRegisterTime();
+  console.log(shipmentDetail);
 });
 
 function initElement() {
@@ -475,6 +475,7 @@ function statusIconRenderer(instance, td, row, col, prop, value, cellProperties)
   $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
   let status = "";
   if (row == 0) {
+    value = shipmentDetail.powerDrawDateStatus;
     if (value == "P") {
       status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đang chờ xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #f8ac59;"></i>';
     } else if (value === "S") {
@@ -547,7 +548,7 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
                           <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
                             <span class="l-btn-left"
                               ><span class="l-btn-text">
-                                <button id="saveShipmentDetailBtn" onclick="paymentDateDrop()" class="btn btn-sm btn-primary"><i class="fa fa-save text-primary"></i>Thanh toán</button></span
+                                <button id="saveShipmentDetailBtn" onclick="paymentDateDrop()" class="btn btn-sm btn-primary"><i class="fa fa-credit-card text-primary"></i>Thanh toán</button></span
                               ></span
                             >
                           </a>
@@ -560,7 +561,7 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     <span class="l-btn-left"
       ><span class="l-btn-text">
         <button id="acceptBtn" onclick="cancelDateDrop(${sourceData[row].id})"  class="btn btn-sm btn-primary" style="background-color: #ef6776;">
-          <i class="fa fa-book text-primary"></i>Hủy yêu cầu</button></span
+          <i class="fa fa-close text-primary"></i>Hủy</button></span
       ></span
     >
     </a>
@@ -581,9 +582,12 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
 }
 
 function extendPowerDrawDate() {
-  console.log(shipmentDetail);
-  $("#datetimepicker2").datetimepicker('setDate', null);
-  if (sourceData[0].status != "S" || shipmentDetail.frozenStatus == 'R') {
+  // $("#datetimepicker2").datetimepicker('setDate', '');
+  if(!$('#extendPowerDrawDate').val()) {
+
+    $.modal.alertError("Quý khách vui lòng điền thông tin gia hạn.");
+  }
+  else if (sourceData[0].status != "S" || shipmentDetail.frozenStatus == 'R') {
     $.modal.alertError("Không thể gia hạn thêm ngày rút điện. Gia hạn ngày rút điện đang chờ xét duyệt từ tổ lạnh.");
   } else {
 
