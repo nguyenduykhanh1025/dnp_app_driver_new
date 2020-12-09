@@ -408,7 +408,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
 			boolean updateShipment = true; // if true => need to update status shipment from init to save
 			for (ShipmentDetail inputDetail : shipmentDetails) {
-				System.out.println(inputDetail.toString());
 				if (inputDetail.getId() != null) {
 					updateShipment = false;
 					// Case: update
