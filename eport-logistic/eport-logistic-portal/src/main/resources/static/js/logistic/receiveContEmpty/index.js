@@ -740,7 +740,7 @@ function humidityRenderer(instance, td, row, col, prop, value, cellProperties) {
 		.attr("id", "humidity" + row)
 		.addClass("htMiddle")
 		.addClass("htRight");
-	if (value != null && value != "") {
+	if (value !== null && value !== "") {
 		if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
 			cellProperties.readOnly = "true";
 			$(td).css("background-color", "rgb(232, 232, 232)");
@@ -1321,6 +1321,7 @@ function loadShipmentDetail(id) {
 			$.modal.closeLoading();
 			if (data.code == 0) {
 				sourceData = data.shipmentDetails;
+				console.log(sourceData);
 				if (rowAmount < sourceData.length) {
 					sourceData = sourceData.slice(0, rowAmount);
 				}
@@ -1633,6 +1634,7 @@ function saveShipmentDetail() {
 		if (getDataFromTable(true)) {
 			if (shipmentDetails.length > 0) {
 				$.modal.loading("Đang xử lý...");
+				console.log(shipmentDetails);
 				$.ajax({
 					url: prefix + "/shipment-detail",
 					method: "post",
