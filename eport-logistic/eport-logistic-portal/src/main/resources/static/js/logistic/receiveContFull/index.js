@@ -2263,7 +2263,7 @@ function loadListComment(shipmentCommentId) {
     method: "POST",
     contentType: "application/json",
     data: JSON.stringify(req),
-    success: function (data) {
+    success: function (data) {  
       if (data.code == 0) {
         let html = '';
         // set title for panel comment
@@ -2276,6 +2276,7 @@ function loadListComment(shipmentCommentId) {
             let createTime = element.createTime;
             let date = '';
             let time = '';
+            let content = element.content;
             if (createTime) {
               date = createTime.substring(8, 10) + "/" + createTime.substring(5, 7) + "/" + createTime.substring(0, 4);
               time = createTime.substring(10, 19);
@@ -2292,8 +2293,13 @@ function loadListComment(shipmentCommentId) {
             html += '<div><i style="font-size: 15px; color: #015198;" class="fa fa-user-circle" aria-hidden="true"></i><span> <a>' + element.userName + ' (' + element.userAlias + ')</a>: <i>' + date + ' at ' + time + '</i></span></div>';
             // Topic comment
             html += '<div><span><strong>Yêu cầu:</strong> ' + element.topic + '</span></div>';
-            // Content comment
-            html += '<div><span>' + element.content.replaceAll("#{domain}", domain) + '</span></div>';
+            // Content comment 
+            if(content){ 
+              html += '<div><span>' + element.content.replaceAll("#{domain}", domain) + '</span></div>';
+            }
+
+            //html += '<div><span>' + element.content.replaceAll("#{domain}", domain) + '</span></div>'; 
+            //
             html += '</div>';
             html += '<hr>';
           });

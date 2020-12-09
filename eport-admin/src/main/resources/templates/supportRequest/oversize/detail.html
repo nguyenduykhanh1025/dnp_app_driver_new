@@ -101,31 +101,31 @@
 										</div>
 									</div> -->
 									<div class="col-xs-12 p5">
-										<label class="control-label col-sm-2 col-xs-2 pt0"><b class="text-black">Bên trên (cm):</b></label>
-										<div class="col-sm-2 col-xs-2">
-											<input name="oversizeTop" id="oversizeTop" type="text" class="form-control" />
+										<label class="control-label col-sm-2 col-xs-2 pt5"><b class="text-black">Bên trên (cm):</b></label>
+										<div class="col-sm-2 col-xs-2 pt5">
+											<input name="oversizeTop" id="oversizeTop" type="text" class="form-control dis" disabled />
 										</div>
-										<label class="control-label col-sm-2 col-xs-2 pt0"><b class="text-black">Bên phải (cm):</b></label>
-										<div class="col-sm-2 col-xs-2">
-											<input name="oversizeRight" id="oversizeRight" type="text" class="form-control" />
+										<label class="control-label col-sm-2 col-xs-2 pt5"><b class="text-black">Bên phải (cm):</b></label>
+										<div class="col-sm-2 col-xs-2 pt5">
+											<input name="oversizeRight" id="oversizeRight" type="text" class="form-control" disabled />
 										</div>
-										<label class="control-label col-sm-2 col-xs-2 pt0"><b class="text-black">Bên trái (cm):</b></label>
-										<div class="col-sm-2 col-xs-2">
-											<input name="oversizeLeft" id="oversizeLeft" type="text" class="form-control" />
+										<label class="control-label col-sm-2 col-xs-2 pt5"><b class="text-black">Bên trái (cm):</b></label>
+										<div class="col-sm-2 col-xs-2 pt5">
+											<input name="oversizeLeft" id="oversizeLeft" type="text" class="form-control" disabled />
 										</div>
 										
-										<label class="control-label col-sm-2 col-xs-2 pt5 pl0"><b class="text-black">Trọng lượng (kg):</b></label>
+										<label class="control-label col-sm-2 col-xs-2 pt5"><b class="text-black">Trọng lượng (kg):</b></label>
 										<div class="col-sm-2 col-xs-2 pt5">
-											<input name="wgt" id="wgt" type="text" class="form-control" />
+											<input name="wgt" id="wgt" type="text" class="form-control"  disabled/>
 										</div>
 										
 										<label class="control-label col-sm-2 col-xs-2 pt5"><b class="text-black">Biển số xe đầu kéo</b></label>
 										<div class="col-sm-2 col-xs-2 pt5">
-											<input name="truckNo" id="truckNo" type="text" class="form-control" />
+											<input name="truckNo" id="truckNo" type="text" class="form-control" disabled/>
 										</div>  
 										<label class="control-label col-sm-2 col-xs-2 pt5"><b class="text-black">Biển số xe rơ móc</b></label>
 										<div class="col-sm-2 col-xs-2 pt5">
-											<input name="chassisNo" id="chassisNo" type="text" class="form-control" />
+											<input name="chassisNo" id="chassisNo" type="text" class="form-control" disabled/>
 										</div>
 										
 										
@@ -210,6 +210,6 @@
       var shipmentFiles = [[${shipmentFiles}]];
     </script>
 	<script
-		th:src="@{/eport/js/modules/supportRequest/oversize/detail.js?v=20201031}"></script>
+		th:src="@{/eport/js/modules/supportRequest/oversize/detail.js?v=20200912}"></script>
 </body>
 </html>
