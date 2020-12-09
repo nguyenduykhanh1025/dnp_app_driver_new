@@ -65,7 +65,8 @@
 		<result property="dangerousPacking" column="dangerous_packing" />
 
 		<result property="powerDrawDate" column="power_draw_date" />
-		<result property="powerDrawDateStatus" column="power_draw_date_status" />
+		<result property="powerDrawDateStatus"
+			column="power_draw_date_status" />
 
 		<result property="vgm" column="vgm" />
 		<result property="vgmPersonInfo" column="vgm_person_info" />
@@ -116,11 +117,13 @@
 			column="date_receipt_status" />
 		<result property="dateReceipt" column="date_receipt" />
 		<result property="specialService" column="special_service" />
-		<result property="actualDateReceipt" column="actual_date_receipt" />
+		<result property="actualDateReceipt"
+			column="actual_date_receipt" />
 		<result property="truckNo" column="truck_no" />
 		<result property="chassisNo" column="chassis_no" />
 		<result property="humidity" column="humidity" />
 		<result property="ventilation" column="ventilation" />
+		<result property="supportStatus" column="support_status" />
 	</resultMap>
 
 	<!-- <resultMap type="ShipmentDetailExtend" id="ShipmentDetailResult" extends="ShipmentDetail"> 
@@ -164,7 +167,8 @@
 		create_by, create_time, update_by,
 		date_receipt, actual_date_receipt,
 		update_time, date_receipt_status,
-		special_service, truck_no,chassis_no,humidity, ventilation, power_draw_date_status, power_draw_date from
+		special_service, truck_no,chassis_no,humidity, ventilation,
+		power_draw_date_status, power_draw_date, support_status from
 		shipment_detail
 	</sql>
 	<select id="countShipmentDetailList"
@@ -480,7 +484,7 @@
 		status, remark, create_by, create_time, update_by,
 		update_time,frozen_status,
 		dangerous,oversize,date_receipt,date_receipt_status,
-		oversize_top,oversize_right,oversize_left,oversize_front,oversize_back 
+		oversize_top,oversize_right,oversize_left,oversize_front,oversize_back
 		from
 		shipment_detail
 		<where>
@@ -570,14 +574,15 @@
 		oversize_Right,
 		oversize_Left,
 		oversize_Front,
-		oversize_Back, 
+		oversize_Back,
 		frozen_status,
 		delivery_address, delivery_mobile, delivery_remark, eta, etd, status,
 		remark, special_service,
 		create_by, create_time, update_by,
 		actual_date_receipt,
 		update_time,
-		date_receipt_status, date_receipt, humidity, ventilation
+		date_receipt_status, date_receipt,
+		humidity, ventilation
 		from
 		shipment_detail
 		<where>
@@ -771,6 +776,7 @@
 			<if test="actualDateReceipt != null">actual_date_receipt,</if>
 			<if test="humidity != null">humidity,</if>
 			<if test="ventilation != null">ventilation,</if>
+			<if test="supportStatus != null">support_status,</if>
 			<if test="specialService != null">special_service,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
 			<if test="createBy != null  and createBy != ''">create_by,</if>
@@ -877,6 +883,7 @@
 			<if test="actualDateReceipt != null">#{actualDateReceipt},</if>
 			<if test="humidity != null"> #{humidity},</if>
 			<if test="ventilation != null">#{ventilation},</if>
+			<if test="supportStatus != null">#{supportStatus},</if>
 			<if test="specialService != null">#{specialService},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
 			<if test="createBy != null  and createBy != ''">#{createBy},</if>
@@ -1654,12 +1661,10 @@
 			</if>
 			<if test="shipmentDetail.temperature != null ">temperature = #{shipmentDetail.temperature},</if>
 			<if test="shipmentDetail.fe != null and shipmentDetail.fe != ''">fe = #{shipmentDetail.fe},</if>
-			<if
-				test="shipmentDetail.bookingNo != null">booking_no =
+			<if test="shipmentDetail.bookingNo != null">booking_no =
 				#{shipmentDetail.bookingNo},
 			</if>
-			<if
-				test="shipmentDetail.blNo != null">bl_no = #{shipmentDetail.blNo},</if>
+			<if test="shipmentDetail.blNo != null">bl_no = #{shipmentDetail.blNo},</if>
 			<if
 				test="shipmentDetail.sealNo != null and shipmentDetail.sealNo != ''">seal_no =
 				#{shipmentDetail.sealNo},
@@ -1855,14 +1860,17 @@
 			<if test="shipmentDetail.powerDrawDate != null">power_draw_date =
 				#{shipmentDetail.powerDrawDate},
 			</if>
-			<if test="shipmentDetail.powerDrawDateStatus != null and shipmentDetail.powerDrawDateStatus != ''">power_draw_date_status =
+			<if
+				test="shipmentDetail.powerDrawDateStatus != null and shipmentDetail.powerDrawDateStatus != ''">power_draw_date_status =
 				#{shipmentDetail.powerDrawDateStatus},
 			</if>
 			<if
 				test="shipmentDetail.dateReceiptStatus != null and shipmentDetail.dateReceiptStatus != ''">date_receipt_status = #{shipmentDetail.dateReceiptStatus},</if>
 			<if test="shipmentDetail.dateReceipt != null">date_receipt = #{shipmentDetail.dateReceipt},</if>
-			<if test="shipmentDetail.actualDateReceipt != null">actual_date_receipt = #{shipmentDetail.actualDateReceipt},</if>
+			<if test="shipmentDetail.actualDateReceipt != null">actual_date_receipt =
+				#{shipmentDetail.actualDateReceipt},</if>
 			<if test="shipmentDetail.specialService != null">special_service = #{shipmentDetail.specialService},</if>
+			<if test="shipmentDetail.supportStatus != null and shipmentDetail.supportStatus != ''">support_status = #{shipmentDetail.supportStatus},</if>
 			update_time = sysdate
 		</trim>
 		<where>

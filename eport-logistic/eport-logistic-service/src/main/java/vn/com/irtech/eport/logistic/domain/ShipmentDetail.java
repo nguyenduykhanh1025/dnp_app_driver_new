@@ -537,6 +537,8 @@ public class ShipmentDetail extends BaseEntity {
 
 	private String ventilation;
 	
+	private String supportStatus;
+	
 	public Long getId() {
 		return id;
 	}
@@ -1417,6 +1419,15 @@ public class ShipmentDetail extends BaseEntity {
 		this.ventilation = ventilation;
 	}
 
+	
+	public String getSupportStatus() {
+		return supportStatus;
+	}
+
+	public void setSupportStatus(String supportStatus) {
+		this.supportStatus = supportStatus;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -1466,7 +1477,8 @@ public class ShipmentDetail extends BaseEntity {
 				.append("humidity", getHumidity())
 				.append("ventilation", getVentilation())
 				.append("powerDrawDate", getPowerDrawDate())
-				.append("powerDrawDateStatus", getPowerDrawDateStatus()).toString();
+				.append("powerDrawDateStatus", getPowerDrawDateStatus())
+				.append("supportStatus", getSupportStatus()).toString();
 		
 	}
 }

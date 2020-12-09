@@ -100,6 +100,8 @@ public interface ShipmentMapper
      */
     public List<Shipment> selectShipmentListByWithShipmentDetailFilter(Shipment shipment);
     
+    public List<Shipment> selectShipmentListByWithShipmentDetailFilterContReefer(Shipment shipment);
+    
     public List<Shipment> selectShipmentListByWithShipmentDetailFilterReceive(Shipment shipment);
     
     
