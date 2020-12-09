@@ -62,8 +62,9 @@ function initTabReefer() {
   $('#humidity').val(shipmentDetail.humidity);
   $('#ventilation').val(shipmentDetail.ventilation);
 
-  $('#numberHours').val(reeferInfos[0].hourNumber);
-  $('#moneyNumber').val(reeferInfos[0].moneyNumber);
+  console.log('sdsadasd');
+  $('#numberHours').val(numberWithCommas(reeferInfos[0].hourNumber));
+  $('#moneyNumber').val(numberWithCommas(reeferInfos[0].moneyNumber));
 
   // if (!reeferInfos[0].payType) {
   //   $("input[name=optradio][value='paymentType_0']").prop("checked", true);
@@ -301,4 +302,11 @@ function formatDate(data) {
   let date = new Date(data);
   const month = date.getMonth() == 12 ? '00' : date.getMonth() + 1;
   return `${date.getDate()}/${month}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
+}
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function numberNotWithCommas(x) {
+  return parseInt(x.split(",").join(""));
 }

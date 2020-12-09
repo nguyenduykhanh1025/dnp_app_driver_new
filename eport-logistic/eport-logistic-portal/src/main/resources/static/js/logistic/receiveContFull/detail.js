@@ -8,7 +8,7 @@ $(document).ready(function () {
   initTabOversize();
   initTableAddRegisterTime();
 });
-
+console.log(shipmentDetail);
 function initElement() {
   if (shipmentDetail.sztp.includes("R")) {
     $('#reeferContainer').css('display', 'block');
@@ -31,8 +31,13 @@ function initTabReefer() {
   $('#sealNoQK').val(shipmentDetail.sealNo); // sealNo Quá khổ
   $('#sealNoNH').val(shipmentDetail.sealNo); // sealNo Nguy hiểm
   $('#temperature').val(shipmentDetail.temperature);// nhiệt độ 
-  $('#temperature').val(shipmentDetail.humidity);
-  $('#temperature').val(shipmentDetail.ventilation);
+  $('#humidity').val(shipmentDetail.humidity);
+  $('#ventilation').val(shipmentDetail.ventilation);
+
+  if(!$('#powerDrawDate').val()) {
+    $('#extendPowerDrawDateContainer').css('display', 'none');
+    $('#tableExtendDateContainer').css('display', 'none');
+  }
 }
 
 function initTabOversize() {
@@ -552,7 +557,6 @@ function paymentTypeRenderer(instance, td, row, col, prop, value, cellProperties
   if (!value) {
     value = "";
   }
-  console.log(shipmentDetail.payType);
   if (shipmentDetail) {
     if (!shipmentDetail.payType) {
       value = "Chủ hàng thanh toán";
@@ -621,10 +625,13 @@ function extendPowerDrawDate() {
   if (!$('#extendPowerDrawDate').val()) {
     $.modal.alertError("Quý khách vui lòng điền thông tin gia hạn.");
   }
+  else if(!$('#powerDrawDate').val()) {
+    $.modal.alertError("Chưa có dữ liệu ngày rút điện.");
+  }
   else if ($('#extendPowerDrawDate').val() < $('#powerDrawDate').val()) {
     $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
   }
-  else if (shipmentDetail.powerDrawDateStatus && shipmentDetail.powerDrawDateStatus != "S" || shipmentDetail.frozenStatus == 'R') {
+  else if (shipmentDetail.powerDrawDateStatus && shipmentDetail.powerDrawDateStatus != "S" || shipmentDetail.frozenStatus != 'S') {
     $.modal.alertError("Không thể gia hạn thêm ngày rút điện. Gia hạn ngày rút điện đang chờ xét duyệt từ tổ lạnh.");
   } else {
 
@@ -706,8 +713,6 @@ function cancelDateDrop(id) {
         configHandson();
         hot = new Handsontable(dogrid, config);
         hot.loadData(sourceData);
-
-
         $.modal.msgSuccess("Hủy gia hạn thành công.");
       },
       error: function (result) {
@@ -715,7 +720,6 @@ function cancelDateDrop(id) {
         $.modal.closeLoading();
       },
     });
-
     return true;
   }, function () {
     layer.close(layer.index);;

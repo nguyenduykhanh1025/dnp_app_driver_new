@@ -408,6 +408,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
 			boolean updateShipment = true; // if true => need to update status shipment from init to save
 			for (ShipmentDetail inputDetail : shipmentDetails) {
+				System.out.println(inputDetail.toString());
 				if (inputDetail.getId() != null) {
 					updateShipment = false;
 					// Case: update
@@ -451,6 +452,11 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 						shipmentDetailReference.setDischargePort(inputDetail.getDischargePort());
 					}
 					shipmentDetailReference.setRemark(inputDetail.getRemark());
+					
+					shipmentDetailReference.setTemperature(inputDetail.getTemperature());
+					shipmentDetailReference.setVentilation(inputDetail.getVentilation());
+					shipmentDetailReference.setHumidity(inputDetail.getHumidity());
+					
 					shipmentDetailReference.setUpdateBy(user.getFullName());
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
@@ -496,6 +502,11 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 					shipmentDetail.setEtd(inputDetail.getEtd());
 					shipmentDetail.setDischargePort(inputDetail.getDischargePort());
 					shipmentDetail.setRemark(inputDetail.getRemark());
+					
+					shipmentDetail.setTemperature(inputDetail.getTemperature());
+					shipmentDetail.setVentilation(inputDetail.getVentilation());
+					shipmentDetail.setHumidity(inputDetail.getHumidity());
+					
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}

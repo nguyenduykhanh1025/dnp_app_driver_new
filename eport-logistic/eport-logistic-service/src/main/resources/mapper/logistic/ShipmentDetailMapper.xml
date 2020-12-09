@@ -577,7 +577,7 @@
 		create_by, create_time, update_by,
 		actual_date_receipt,
 		update_time,
-		date_receipt_status, date_receipt
+		date_receipt_status, date_receipt, humidity, ventilation
 		from
 		shipment_detail
 		<where>
