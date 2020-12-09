@@ -51,6 +51,16 @@ function initValueToElementHTML() {
   if (shipmentDetail) {
     $("#containerNo").val(shipmentDetail.containerNo);
     $("#sztp").val(shipmentDetail.sztp);
+    $("#wgt").val(shipmentDetail.wgt);
+    $("#truckNo").val(shipmentDetail.truckNo);
+    $("#chassisNo").val(shipmentDetail.chassisNo);
+    
+    $("#oversizeLeft").val(shipmentDetail.oversizeLeft);
+    $("#oversizeRight").val(shipmentDetail.oversizeRight);
+    $("#oversizeTop").val(shipmentDetail.oversizeTop);
+      
+      
+      
     const {
       vgmChk,
       vgmInspectionDepartment,
@@ -64,6 +74,9 @@ function initValueToElementHTML() {
       oversizeLeft,
       oversizeFront,
       oversizeBack,
+      wgt,
+      chassisNo,
+      truckNo,
       dangerous,
       dangerousImo,
       dangerousUnno,
@@ -84,7 +97,10 @@ function initValueToElementHTML() {
       oversizeRight,
       oversizeLeft,
       oversizeFront,
-      oversizeBack
+      oversizeBack,
+      wgt,
+      chassisNo,
+      truckNo
     );
     initElementHTMLInDangerousTab(
       dangerous,
@@ -156,7 +172,10 @@ function initElementHTMLInOversizeTab(
   oversizeRight,
   oversizeLeft,
   oversizeFront,
-  oversizeBack
+  oversizeBack,
+  wgt,
+  chassisNo,
+  truckNo
 ) {
   $('input:radio[name="oversize"]')
     .filter('[value="T"]')
@@ -167,11 +186,11 @@ function initElementHTMLInOversizeTab(
   $('input:radio[name="oversize"]').change(function () {
     let isDisable = $(this).val() == "T" ? false : true;
     $(".ipCategoryOversize").prop("disabled", isDisable);
-    $("#oversizeTop").prop("disabled", isDisable);
+   /* $("#oversizeTop").prop("disabled", isDisable);
     $("#oversizeRight").prop("disabled", isDisable);
     $("#oversizeLeft").prop("disabled", isDisable);
     $("#oversizeFront").prop("disabled", isDisable);
-    $("#oversizeBack").prop("disabled", isDisable);
+    $("#oversizeBack").prop("disabled", isDisable);*/
   });
 
   let isDisable = !isContOversize();
@@ -188,11 +207,11 @@ function initElementHTMLInOversizeTab(
     });
   }
 
-  $("#oversizeTop").prop("disabled", isDisable).val(oversizeTop);
+  /*$("#oversizeTop").prop("disabled", isDisable).val(oversizeTop);
   $("#oversizeRight").prop("disabled", isDisable).val(oversizeRight);
   $("#oversizeLeft").prop("disabled", isDisable).val(oversizeLeft);
   $("#oversizeFront").prop("disabled", isDisable).val(oversizeFront);
-  $("#oversizeBack").prop("disabled", isDisable).val(oversizeBack);
+  $("#oversizeBack").prop("disabled", isDisable).val(oversizeBack);*/
   $("#attachButtonOversize").prop("disabled", isDisable);
 
   initFileIsExist("preview-container-oversize", "O");

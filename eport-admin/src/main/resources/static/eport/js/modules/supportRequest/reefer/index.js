@@ -772,32 +772,30 @@ function configHandson() {
         case 3:
           return "Trạng Thái";
         case 4:
-          return "Số Tham Chiếu";
-        case 5:
           return "Số Container";
-        case 6:
+        case 5:
           return '<span>Chi Tiết Container</span>';
-        case 7:
+        case 6:
           return '<span>Hình Thức Thanh Toán</span>';
-        case 8:
+        case 7:
           return "Sztp";
-        case 9:
+        case 8:
           return "Chủ Hàng";
-        case 10:
+        case 9:
           return "Tàu - Chuyến";
-        case 11:
+        case 10:
           return "Trọng Lượng";
-        case 12:
+        case 11:
           return "Loại Hàng";
-        case 13:
+        case 12:
           return "Số Seal";
-        case 14:
+        case 13:
           return "Cảng Dỡ Hàng";
-        case 15:
-          return "P.T.T.T";
-        case 16:
-          return "Payer";
-        case 17:
+        // case 14:
+        //   return "P.T.T.T";
+        // case 15:
+        //   return "Payer";
+        case 14:
           return "Ghi Chú";
       }
     },
@@ -805,7 +803,6 @@ function configHandson() {
       23,
       21,
       21,
-      120,
       130,
       100,
       150,
@@ -817,8 +814,8 @@ function configHandson() {
       80,
       80,
       100,
-      100,
-      100,
+      // 100,
+      // 100,
       100,
     ],
     filter: "true",
@@ -842,11 +839,6 @@ function configHandson() {
         data: "status",
         readOnly: true,
         renderer: statusIconsRenderer,
-      },
-
-      {
-        data: "orderNo",
-        renderer: orderNoRenderer,
       },
       {
         data: "containerNo",
@@ -892,14 +884,14 @@ function configHandson() {
         data: "dischargePort",
         renderer: dischargePortRenderer,
       },
-      {
-        data: "payType",
-        renderer: payTypeRenderer,
-      },
-      {
-        data: "payer",
-        renderer: payerRenderer,
-      },
+      // {
+      //   data: "payType",
+      //   renderer: payTypeRenderer,
+      // },
+      // {
+      //   data: "payer",
+      //   renderer: payerRenderer,
+      // },
       {
         data: "remark",
         renderer: remarkRenderer,
@@ -1094,54 +1086,61 @@ function clearInput() {
 
 function confirmRequestDocument() {
   if (getDataSelectedFromTable()) {
+    if (!confirmationPaymentType()) {
+      $.modal.alertError("Vui lòng chọn hình thức thanh toán cho container");
+    } else {
+      layer.confirm(
+        "Xác nhận kiểm tra thông tin đúng.",
+        {
+          icon: 3,
+          title: "Xác Nhận",
+          btn: ["Đồng Ý", "Hủy Bỏ"],
+        },
+        function () {
+          $.modal.loading("Đang xử lý ...");
+          layer.close(layer.index);
+          $.ajax({
+            url: PREFIX + "/confirmation",
+            method: "POST",
+            data: {
+              shipmentDetailIds: shipmentDetailIds,
+              logisticGroupId: shipmentSelected.logisticGroupId,
+            },
+            success: function (res) {
+              $.modal.closeLoading();
+              if (res.code == 0) {
+                $.modal.alertSuccess(res.msg);
 
-    confirmationPaymentType();
-    layer.confirm(
-      "Xác nhận kiểm tra thông tin đúng.",
-      {
-        icon: 3,
-        title: "Xác Nhận",
-        btn: ["Đồng Ý", "Hủy Bỏ"],
-      },
-      function () {
-        $.modal.loading("Đang xử lý ...");
-        layer.close(layer.index);
-        $.ajax({
-          url: PREFIX + "/confirmation",
-          method: "POST",
-          data: {
-            shipmentDetailIds: shipmentDetailIds,
-            logisticGroupId: shipmentSelected.logisticGroupId,
-          },
-          success: function (res) {
-            $.modal.closeLoading();
-            if (res.code == 0) {
-              $.modal.alertSuccess(res.msg);
+                confirmationPaymentType();
+              } else {
+                $.modal.alertError(res.msg);
+              }
+            },
+            error: function (data) {
+              $.modal.closeLoading();
+            },
+          });
 
-              confirmationPaymentType();
-            } else {
-              $.modal.alertError(res.msg);
-            }
-          },
-          error: function (data) {
-            $.modal.closeLoading();
-          },
-        });
-
-      },
-      function () {
-        // close form
-      }
-    );
+        },
+        function () {
+          // close form
+        }
+      );
+    }
   }
 }
 function confirmationPaymentType() {
+  let check = true;
   const payload = sourceData.map(item => {
     if (item.id) {
-      return {
-        id: item.id,
-        payType: getPayType(item),
-        payer: getPayer(item)
+      if (!getPayType(item)) {
+        check = false;
+      } else {
+        return {
+          id: item.id,
+          payType: getPayType(item),
+          payer: getPayer(item)
+        }
       }
     }
   })
@@ -1157,6 +1156,10 @@ function confirmationPaymentType() {
     error: function (data) {
     },
   });
+  if (check) {
+    return true;
+  }
+  return false;
 }
 
 function getPayType(data) {

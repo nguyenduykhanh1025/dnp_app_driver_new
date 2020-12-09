@@ -1452,6 +1452,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		
 		
 		shipmentDetail.setTruckNo(detail.getTruckNo());
+		shipmentDetail.setChassisNo(detail.getChassisNo());
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailId, shipmentDetail);
 
 		return success();

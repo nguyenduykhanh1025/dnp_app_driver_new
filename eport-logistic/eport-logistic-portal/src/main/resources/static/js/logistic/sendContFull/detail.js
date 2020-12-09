@@ -20,12 +20,12 @@ $("#form-detail-add").validate({
   focusCleanup: true,
 });
 
-$("#datetimepicker1").datetimepicker({
-  format: "dd/mm/yyyy hh:ii",
-  language: "vi_VN",
-  minuteStep: 30,
-  autoClose: true
-});
+// $("#datetimepicker1").datetimepicker({
+//   format: "dd/mm/yyyy hh:ii",
+//   language: "vi_VN",
+//   minuteStep: 30,
+//   autoClose: true
+// });
 
 $(document).ready(function () {
   initTabs();
@@ -172,14 +172,14 @@ function initElementHTMLInInformationCommonTab(
   $("#temperature")
     .val(temperature ? temperature : null)
     .prop("disabled", !isContIce() ? true : false);
-  $("#datetimepicker1 *")
-    .css("pointer-events", !isContIce() ? "none" : "")
-    .prop("disabled", !isContIce() ? true : false);
+  // $("#datetimepicker1 *")
+  //   .css("pointer-events", !isContIce() ? "none" : "")
+  //   .prop("disabled", !isContIce() ? true : false);
   $("#humidity").val(humidity ? humidity : null);
   $("#ventilation").val(ventilation ? ventilation : null);
 
-  let daySetup = new Date(daySetupTemperature);
-  $("#datetimepicker1").datetimepicker('setDate', daySetup);
+  // let daySetup = new Date(daySetupTemperature);
+  // $("#datetimepicker1").datetimepicker('setDate', daySetup);
 
   $("#attachButtonIce").prop("disabled", !isContIce());
 
@@ -404,7 +404,7 @@ function submitHandler() {
   data = covertSerializeArrayToObject(data);;
   data = {
     ...data,
-    daySetupTemperature: $("#datetimepicker1").datetimepicker('getDate').getTime(),
+    // daySetupTemperature: $("#datetimepicker1").datetimepicker('getDate').getTime(),
   };
   parent.submitDataFromDetailModal(data);
   onCloseModel();

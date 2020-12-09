@@ -1886,7 +1886,6 @@ function getDataFromTable(isValidate) {
     shipmentDetail.processStatus = shipmentSelected.taxCode;
     shipmentDetail.customStatus = shipmentSelected.groupName;
     shipmentDetail.tier = shipmentSelected.containerAmount;
-    shipmentDetail.specialService = object["specialService"];
     if (object["specialService"]) {
       if (object["specialService"] == "Kho") {
         shipmentDetail.specialService = 4;

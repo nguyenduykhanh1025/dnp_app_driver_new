@@ -533,9 +533,11 @@ public class ShipmentDetail extends BaseEntity {
 	/** Actual date receipt for special service */
 	private Date actualDateReceipt;
 
-	private int humidity;
+	private String humidity;
 
-	private int ventilation;
+	private String ventilation;
+	
+	private String supportStatus;
 	
 	public Long getId() {
 		return id;
@@ -1400,21 +1402,30 @@ public class ShipmentDetail extends BaseEntity {
 	public void setActualDateReceipt(Date actualDateReceipt) {
 		this.actualDateReceipt = actualDateReceipt;
 	}
-	
-	public int getHumidity() {
+
+	public String getHumidity() {
 		return humidity;
 	}
 
-	public void setHumidity(int humidity) {
+	public void setHumidity(String humidity) {
 		this.humidity = humidity;
 	}
 
-	public int getVentilation() {
+	public String getVentilation() {
 		return ventilation;
 	}
 
-	public void setVentilation(int ventilation) {
+	public void setVentilation(String ventilation) {
 		this.ventilation = ventilation;
+	}
+
+	
+	public String getSupportStatus() {
+		return supportStatus;
+	}
+
+	public void setSupportStatus(String supportStatus) {
+		this.supportStatus = supportStatus;
 	}
 
 	@Override
@@ -1466,7 +1477,8 @@ public class ShipmentDetail extends BaseEntity {
 				.append("humidity", getHumidity())
 				.append("ventilation", getVentilation())
 				.append("powerDrawDate", getPowerDrawDate())
-				.append("powerDrawDateStatus", getPowerDrawDateStatus()).toString();
+				.append("powerDrawDateStatus", getPowerDrawDateStatus())
+				.append("supportStatus", getSupportStatus()).toString();
 		
 	}
 }
