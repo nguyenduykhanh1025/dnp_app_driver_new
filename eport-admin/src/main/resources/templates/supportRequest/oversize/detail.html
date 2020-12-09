@@ -113,14 +113,22 @@
 										<div class="col-sm-2 col-xs-2">
 											<input name="oversizeLeft" id="oversizeLeft" type="text" class="form-control" />
 										</div>
-										<!-- <label class="control-label col-sm-2 col-xs-2 pt5 pl0"><b class="text-black">Phía trước (cm):</b></label>
+										
+										<label class="control-label col-sm-2 col-xs-2 pt5 pl0"><b class="text-black">Trọng lượng (kg):</b></label>
 										<div class="col-sm-2 col-xs-2 pt5">
-											<input name="oversizeFront" id="oversizeFront" type="text" class="form-control" />
+											<input name="wgt" id="wgt" type="text" class="form-control" />
 										</div>
-										<label class="control-label col-sm-2 col-xs-2 pt5"><b class="text-black">Phía sau (cm):</b></label>
+										
+										<label class="control-label col-sm-2 col-xs-2 pt5"><b class="text-black">Biển số xe đầu kéo</b></label>
 										<div class="col-sm-2 col-xs-2 pt5">
-											<input name="oversizeBack" id="oversizeBack" type="text" class="form-control" />
-										</div>  -->
+											<input name="truckNo" id="truckNo" type="text" class="form-control" />
+										</div>  
+										<label class="control-label col-sm-2 col-xs-2 pt5"><b class="text-black">Biển số xe rơ móc</b></label>
+										<div class="col-sm-2 col-xs-2 pt5">
+											<input name="chassisNo" id="chassisNo" type="text" class="form-control" />
+										</div>
+										
+										
 										<div class="form-group col-sm-12" id="dropzoneOversize">
 											<div class="preview-container-oversize col-md-12 col-sm-12 col-xs-12"></div>
 										</div>
@@ -202,6 +210,6 @@
       var shipmentFiles = [[${shipmentFiles}]];
     </script>
 	<script
-		th:src="@{/eport/js/modules/supportRequest/oversize/detail.js?v=20201029}"></script>
+		th:src="@{/eport/js/modules/supportRequest/oversize/detail.js?v=20201031}"></script>
 </body>
 </html>

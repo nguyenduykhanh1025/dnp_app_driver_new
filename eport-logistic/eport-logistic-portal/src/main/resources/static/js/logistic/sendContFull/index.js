@@ -708,7 +708,7 @@ function statusIconsRenderer(
         break;
     }
     // Return the content
-    let content = "<div>";
+    let content = '<div style="text-align: right">';
 
     content += getConfigIconSztp(row);
 
@@ -1091,34 +1091,33 @@ function btnDetailRenderer(
   let containerNo, sztp;
   if (!isDestroy) {
     containerNo = hot.getDataAtCell(row, 2);
-    sztp = hot.getDataAtCell(row, 3);
-    
-   // console.log("dfdf" +sztp);
+    sztp = hot.getDataAtCell(row, 3); 
+    cargoType = hot.getDataAtCell(row, 9);  
   }
   
-  
-   //const { sztp, oversizeTop, oversizeRight, oversizeLeft, oversizeFront, oversizeBack } = sourceData[row];
-  /*if (sourceData[row].sztp.substring (2,3)) {
-    textContent = "Cont lạnh";
-  }
-  else if (sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft || sourceData[row].oversizeFront || sourceData[row].oversizeBack) {
-    textContent = "Quá Khổ"
-  }
-  else if(sourceData[row].dangerousImo || sourceData[row].dangerousUnno){
-     textContent = "Nguy hiểm"
-  }*/
-  
-
-  if (sourceData && sourceData.length > 0) {
-
-    
-    if (sourceData.length > row && sourceData[row].id) {
+  if (sourceData && sourceData.length > 0) { 
+   if (sourceData.length > row && sourceData[row].id) {
       value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
     } else if (containerNo && sztp) {
       value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
-    }
-   
+    } 
   }
+   
+/*  if (sourceData && sourceData.length > 0) {  
+   if (sourceData.length > row && sourceData[row].id) { 
+	   if(sourceData[row].cargoType == "DG"){
+	   	value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont nguy hiểm</button>`;
+	   }
+	   else if(sourceData[row].sztp.substring (2,3) == "R"){
+	   value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont lạnh</button>`;
+	   }
+	   else if(sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft){
+	   	value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont quá khổ</button>`;
+	   } 
+    } else if (containerNo && sztp) {
+      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
+    } 
+  }*/
   $(td).html(value);
   cellProperties.readOnly = "true";
   return td;
@@ -1401,12 +1400,12 @@ function configHandson() {
     },
     colWidths: [
       40,
-      150,
+      120,
       100,
       150,
       150,
       150,
-      200,
+      130,
       100,
       120,
       120,
@@ -2295,6 +2294,59 @@ function saveShipmentDetail() {
   }
 }
 
+  
+function saveShipmentDetailFollowIndexNew(index) {
+  if (getDataFromTable(true)) {
+    if (
+      shipmentDetails.length > 0 &&
+      shipmentDetails.length <= shipmentSelected.containerAmount
+    ) {
+      shipmentDetails[0].processStatus = conts;
+
+      $.modal.loading("Đang xử lý...");
+      $.ajax({
+        url: prefix + "/" + shipmentSelected.id + "/shipment-detail-special",
+        method: "post",
+        contentType: "application/json",
+        accept: "text/plain",
+        data: JSON.stringify([shipmentDetails[index]]),
+        dataType: "text",
+        success: function (data) {
+          var result = JSON.parse(data);
+          if (result.code == 0) {
+            $.modal.msgSuccess(result.msg);
+            reloadShipmentDetail();
+          } else {
+            if (result.conts != null) {
+              $.modal.alertError(
+                "Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>" +
+                result.conts
+              );
+            } else {
+              $.modal.alertError(result.msg);
+            }
+          }
+          $.modal.closeLoading();
+        },
+        error: function (result) {
+          $.modal.alertError(
+            "Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau."
+          );
+          $.modal.closeLoading();
+        },
+      });
+    } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
+      $.modal.alertError(
+        "Số container nhập vào vượt quá số container khai báo của lô."
+      );
+    } else {
+      $.modal.alertError("Hãy nhập thông tin chi tiết lô.");
+    }
+  }
+}
+
+
+
 function saveShipmentDetailFollowIndex(index) {
   if (getDataFromTable(true)) {
     if (
@@ -2709,11 +2761,11 @@ function openDetail(id, containerNo, sztp, row, cargoType) {
     );
   }
 
-  if (sztp.substring(2, 3) == "G" && cargoType != "DG") {
+/*  if (sztp.substring(2, 3) == "G" && cargoType != "DG") {
     $.modal.alertWarning(
       "Loại hàng không phải là cont nguy hiểm. Vui lòng nhập loại hàng là cont nguy hiểm và thử lại!"
     );
-  }
+  }*/
 
   /*if(sztp.substring(2,3) == "G" && cargoType != "DG"){
     $.modal.alertWarning("Loại hàng không phải là cont nguy hiểm. Vui lòng nhập loại hàng là cont nguy hiểm và thử lại!");
@@ -3097,7 +3149,9 @@ function submitDataFromDetailModal(data) {
 
   const { indexSelected } = detailInformationForContainerSpecial;
   detailInformationForContainerSpecial.data[indexSelected] = data;
-  saveShipmentDetailFollowIndex(indexSelected);
+  //saveShipmentDetailFollowIndex(indexSelected);
+  saveShipmentDetailFollowIndexNew(indexSelected);
+  
 }
 
 /**

@@ -525,7 +525,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     }
 
     // Return the content
-    let content = '<div>';
+    let content = '<div style="text-align: right">';
     content += getConfigIconSztp(row);
     content += getRequestConfigIcon(row);
 

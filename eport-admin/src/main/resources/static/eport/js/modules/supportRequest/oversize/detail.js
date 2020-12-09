@@ -51,6 +51,10 @@ function initValueToElementHTML() {
   if (shipmentDetail) {
     $("#containerNo").val(shipmentDetail.containerNo);
     $("#sztp").val(shipmentDetail.sztp);
+    $("#wgt").val(shipmentDetail.wgt);
+    $("#truckNo").val(shipmentDetail.truckNo);
+    $("#chassisNo").val(shipmentDetail.chassisNo);
+      
     const {
       vgmChk,
       vgmInspectionDepartment,
@@ -64,6 +68,9 @@ function initValueToElementHTML() {
       oversizeLeft,
       oversizeFront,
       oversizeBack,
+      wgt,
+      chassisNo,
+      truckNo,
       dangerous,
       dangerousImo,
       dangerousUnno,
@@ -84,7 +91,10 @@ function initValueToElementHTML() {
       oversizeRight,
       oversizeLeft,
       oversizeFront,
-      oversizeBack
+      oversizeBack,
+      wgt,
+      chassisNo,
+      truckNo
     );
     initElementHTMLInDangerousTab(
       dangerous,
@@ -156,7 +166,10 @@ function initElementHTMLInOversizeTab(
   oversizeRight,
   oversizeLeft,
   oversizeFront,
-  oversizeBack
+  oversizeBack,
+  wgt,
+  chassisNo,
+  truckNo
 ) {
   $('input:radio[name="oversize"]')
     .filter('[value="T"]')
