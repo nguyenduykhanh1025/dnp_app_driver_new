@@ -551,6 +551,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 					shipmentDetail.setHumidity(inputDetail.getHumidity());
 					shipmentDetail.setVentilation(inputDetail.getVentilation());
+					shipmentDetail.setSupportStatus("P");
 					
 					// Lưu nếu là cont đặc biệt
 					String sztp = inputDetail.getSztp().substring(2, 3);
