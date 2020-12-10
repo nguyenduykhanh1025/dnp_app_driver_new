@@ -79,10 +79,10 @@ public class SupportExtendDrawDate extends AdminBaseController {
 
 	@Autowired
 	private IShipmentDetailHistService shipmentDetailHistService;
-	
+
 	@Autowired
 	private IReeferInfoService reeferInfoService;
-	
+
 	@GetMapping
 	public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
 
@@ -109,7 +109,7 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		sysDictData.setDictValue("Chọn OPR");
 		dictDatas.add(0, sysDictData);
 		mmap.put("oprList", dictDatas);
-		
+
 		return PREFIX + "/index";
 	}
 
@@ -217,23 +217,23 @@ public class SupportExtendDrawDate extends AdminBaseController {
 			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
 		}
 		mmap.put("shipmentFiles", shipmentImages);
-		
+
 		ShipmentDetailHist shipmentDetailHist = new ShipmentDetailHist();
 		shipmentDetailHist.setDataField("Power Draw Date");
 		shipmentDetailHist.setShipmentDetailId(shipmentDetailId);
 		mmap.put("powerDropDate", shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
-		
+
 		mmap.put("reeferInfos", reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId));
 		mmap.put("billPowers", dictService.getType("bill_power"));
-		
+
 		return PREFIX + "/detail";
 	}
-	
+
 	@PostMapping("/shipmentDetail/confirm")
 	@ResponseBody
 	public AjaxResult confirmExtendDateDrop(String idShipmentDetails) {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		for(String id : idShipmentDetails.split(",")) {
+		for (String id : idShipmentDetails.split(",")) {
 			List<ReeferInfo> infos = reeferInfoService.selectReeferInfoListByIdShipmentDetail(Long.parseLong(id));
 			ShipmentDetail shipmentDetailFromDB = shipmentDetailService.selectShipmentDetailById(Long.parseLong(id));
 			shipmentDetail.setPowerDrawDate(infos.get(0).getDateGetPower());
@@ -241,6 +241,33 @@ public class SupportExtendDrawDate extends AdminBaseController {
 			shipmentDetail.setPowerDrawDateStatus("S");
 			shipmentDetail.setDaySetupTemperature(shipmentDetailFromDB.getPowerDrawDate());
 			shipmentDetailService.updateShipmentDetail(shipmentDetail);
+
+			for (ReeferInfo info : infos) {
+				info.setStatus("S");
+				info.setUpdateBy(getUser().getUserName());
+
+				// if no da thanh toan
+				boolean isPayment = false;
+				List<SysDictData> sysDictDatas = dictService.getType("opr_list_booking_check");
+				for (SysDictData data : sysDictDatas) {
+					if (data.getDictValue().equals(shipmentDetailFromDB.getOpeCode())) {
+						isPayment = true;
+					}
+				}
+				Long logictistId = shipmentDetailFromDB.getLogisticGroupId();
+				LogisticGroup groupFromDB = this.logisticGroupService.selectLogisticGroupById(logictistId);
+				if (!groupFromDB.getCreditFlag().equals("0")) {
+					isPayment = true;
+				}
+
+				if (isPayment) {
+					info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_SUCCESS);
+				} else {
+					info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
+				}
+
+				this.reeferInfoService.updateReeferInfo(info);
+			}
 		}
 //		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
 		return success();
@@ -254,13 +281,14 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
 		return success();
 	}
-	
+
 	@PostMapping("/save-reefer")
 	@ResponseBody
 	public AjaxResult saveReeferInfo(@RequestBody List<ReeferInfo> reeferInfos) {
-		for(ReeferInfo reeferInfo : reeferInfos) {
+		for (ReeferInfo reeferInfo : reeferInfos) {
 			reeferInfoService.updateReeferInfo(reeferInfo);
 		}
-		return AjaxResult.success(reeferInfoService.selectReeferInfoListByIdShipmentDetail(reeferInfos.get(0).getShipmentDetailId()));
+		return AjaxResult.success(
+				reeferInfoService.selectReeferInfoListByIdShipmentDetail(reeferInfos.get(0).getShipmentDetailId()));
 	}
 }
