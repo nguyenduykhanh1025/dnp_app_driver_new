@@ -2200,7 +2200,7 @@ function getDataFromTable(isValidate) {
       shipmentDetail.ventilation = dataModal.ventilation;
     }
 
-    console.log(detailInformationForContainerSpecial.data[index]);
+   // console.log(detailInformationForContainerSpecial.data[index]);
 
     if (berthplanList) {
       for (let i = 0; i < berthplanList.length; i++) {
