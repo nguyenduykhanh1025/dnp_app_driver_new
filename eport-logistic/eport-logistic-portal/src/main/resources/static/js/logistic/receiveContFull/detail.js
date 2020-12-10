@@ -13,10 +13,17 @@ function initElement() {
   if (shipmentDetail.sztp.includes("R")) {
     $('#reeferContainer').css('display', 'block');
     $("#tab-1").prop('checked', true);
-  } else if (oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack) {
-    $('#oversizeContainer').css('display', 'block');
-    $("#tab-2").prop('checked', true);
+  } 
+  // check theo trường hợp chỉ cần P với U là hiển thị cont lên
+  else if(shipmentDetail.sztp.includes("P") || shipmentDetail.sztp.includes("U")){
+       $('#oversizeContainer').css('display', 'block');
+       $("#tab-2").prop('checked', true);
   }
+  // check theo trường hợp cụ thể. nếu có thì mới hiển thị ra
+  // else if (oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack) {
+  //   $('#oversizeContainer').css('display', 'block');
+  //   $("#tab-2").prop('checked', true);
+  // }
 }
 
 function initTabReefer() {
@@ -131,6 +138,34 @@ let typeD = true;// nguy hiem
 let typeR = true;// lanh
 let typeO = true;// qua kho
 
+// var truckNo = shipmentDetail.truckNo;
+// console.log("truckNo" + truckNo);
+
+function confirm() {
+  var truckNo = $("#truckNo").val();
+  var chassisNo = $("#chassisNo").val();  
+  if(truckNo == null || truckNo == ""){
+    $.modal.alertWarning("Vui lòng nhập vào biển số xe đầu kéo rồi thử lại");
+  }
+   if(chassisNo == null || chassisNo == ""){
+    $.modal.alertWarning("Vui lòng nhập vào biển số xe rơ móc rồi thử lại");
+  }
+  else{
+    var lengthTemp = shipmentFilePath;
+    if (lengthTemp == null || lengthTemp.length == 0) {// nếu k có thì vào đây
+      insertCont();
+    }
+  
+    if (!shipmentDetail.sztp.includes("R") && (lengthTemp != null || lengthTemp.length != 0)) {// nếu có thì vào đây
+      saveFile();
+    }
+
+  }
+
+ 
+}
+
+
 // confirm
 function insertCont() {
   let date = $("#datetimepicker1").datetimepicker('getDate').getTime();
@@ -164,20 +199,7 @@ function insertCont() {
       }
     });
 }
-
-
-
-function confirm() {
-  var lengthTemp = shipmentFilePath;
-  if (lengthTemp == null || lengthTemp.length == 0) {
-    insertCont();
-  }
-
-  if (!shipmentDetail.sztp.includes("R") && (lengthTemp != null || lengthTemp.length != 0)) {// nếu có thì vào đây
-    saveFile();
-  }
-}
-
+ 
 function saveFile() {
   $.ajax(
     {
@@ -426,9 +448,9 @@ function configHandson() {
    }
   
 }
- 
+  shipmentFiles fileType
 if(oversize){
-  if(fileType){ 
+  if(fileType){  
      fileType.forEach(function (elementType, index) { 
          if(elementType == "O"){// cont quá khổ oversize
            typeO = true;

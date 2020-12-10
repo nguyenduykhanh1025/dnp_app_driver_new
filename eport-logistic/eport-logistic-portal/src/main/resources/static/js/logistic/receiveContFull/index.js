@@ -798,9 +798,12 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (sourceData[row].sztp.includes("R")) {
     textContent = "Lạnh";
   }
-  else if (sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft || sourceData[row].oversizeFront || sourceData[row].oversizeBack) {
+  else if(sourceData[row].sztp.includes("P") || sourceData[row].sztp.includes("U")){
     textContent = "Quá Khổ"
   }
+  // else if (sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft) {
+  //   textContent = "Quá Khổ"
+  // }
 
   $(td).attr('id', 'wgt' + row).addClass("htMiddle").addClass("htCenter");
   let containerNo;
