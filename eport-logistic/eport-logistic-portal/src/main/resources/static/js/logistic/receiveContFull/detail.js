@@ -2,6 +2,12 @@ const PREFIX = ctx + "logistic/receive-cont-full";
 var dogrid = document.getElementById("container-grid"), hot;
 var checkList = [];
 sourceData = reeferInfos;
+
+const PAYMENT_STATUS = {
+  success: "S",
+  process: "P"
+}
+
 $(document).ready(function () {
   initElement();
   initTabReefer();
@@ -41,9 +47,16 @@ function initTabReefer() {
   $('#humidity').val(shipmentDetail.humidity);
   $('#ventilation').val(shipmentDetail.ventilation);
 
-  if(!$('#powerDrawDate').val()) {
+  if (!$('#powerDrawDate').val()) {
     $('#extendPowerDrawDateContainer').css('display', 'none');
     $('#tableExtendDateContainer').css('display', 'none');
+  }
+
+  console.log('ssssssssssssssssssssss', shipmentDetail.frozenStatus);
+  if (shipmentDetail.frozenStatus == "S") {
+    console.log('iiiiiiiiiiiisii');
+    $("#powerDrawDate").attr('disabled', 'disabled');
+    $("#btnPowerDrawDate").css('display', 'none');
   }
 }
 
@@ -590,7 +603,8 @@ function numberHoursRenderer(instance, td, row, col, prop, value, cellProperties
   if (!value) {
     value = '';
   }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + value + '</div>');
+  let result = getBetweenTwoDateInSourceData(row);
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
 
@@ -598,29 +612,36 @@ function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
     value = '';
   }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + value + '</div>');
+  let billNumber = 0;
+  for (let i = 0; i < billPowers.length; ++i) {
+    if (contsztp.substring(0, 2) == billPowers[i].dictLabel) {
+      billNumber = billPowers[i].dictValue;
+      break;
+    }
+  }
+  const data = numberWithCommas(billNumber * getBetweenTwoDateInSourceData(row));
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + data + '</div>');
   return td;
 }
 
 function paymentTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
+  console.log('sssssssssssssssssss');
   if (!value) {
     value = "";
   }
-
-  //console.log(shipmentDetail);
-  if (shipmentDetail) {
-    if (!shipmentDetail.payType) {
-      value = "Chủ hàng thanh toán";
-    } else if (shipmentDetail.payType == "Before") {
-      value = "Hãng tàu thanh toán trước"
-    } else if (shipmentDetail.payType == "After") {
-      value = "Hãng tàu thanh toán sau"
+  //isBookingCheckPayment
+  if (sourceData[row] && sourceData[row].id) {
+    if (isBookingCheckPayment()) {
+      value = "Hãng tàu thanh toán";
     } else {
-      value = '';
+      if ('0' == creditFlag) {
+        value = "Khách hàng trả trước";
+      } else {
+        value = "Khách hàng trả sau";
+      }
     }
   }
-
 
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
@@ -660,28 +681,34 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     </a>
   </td>
   `;
-  if (sourceData.length != 1 && row == 0 && shipmentDetail.powerDrawDateStatus != "S") {
-    result += btnCancel;
-  } else if(shipmentDetail.powerDrawDateStatus == "S") {
+  if (shipmentDetail.powerDrawDateStatus == "S" && PAYMENT_STATUS.process == sourceData[row].paymentStatus) {
     result += btnPayment;
+  } else if (!sourceData[row].id || PAYMENT_STATUS.success == sourceData[row].paymentStatus) {
+    result += 'Đã thanh toán';
+  } else {
+    result += btnCancel;
   }
+
+
 
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
 
 function extendPowerDrawDate() {
+  let len = sourceData.length - 1;
+
   if (!$('#extendPowerDrawDate').val()) {
     $.modal.alertError("Quý khách vui lòng điền thông tin gia hạn.");
   }
-  else if(!$('#powerDrawDate').val()) {
+  else if (!$('#powerDrawDate').val()) {
     $.modal.alertError("Chưa có dữ liệu ngày rút điện.");
   }
   else if ($('#extendPowerDrawDate').val() < $('#powerDrawDate').val()) {
     $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
   }
-  else if (shipmentDetail.powerDrawDateStatus && shipmentDetail.powerDrawDateStatus != "S" || shipmentDetail.frozenStatus != 'S') {
-    $.modal.alertError("Không thể gia hạn thêm ngày rút điện. Gia hạn ngày rút điện đang chờ xét duyệt từ tổ lạnh.");
+  else if (shipmentDetail.frozenStatus != 'S' || shipmentDetail.powerDrawDateStatus != 'S' || (sourceData[len].status && sourceData[len].paymentStatus != PAYMENT_STATUS.success)) {
+    $.modal.alertError("Cont chưa thể gia hạn ngày rút điện");
   } else {
 
     let date = $('#extendPowerDrawDate').val();
@@ -774,4 +801,33 @@ function cancelDateDrop(id) {
     layer.close(layer.index);;
     return false;
   });
+}
+
+function isBookingCheckPayment() {
+  let result = false;
+  for (let i = 0; i < oprlistBookingCheck.length; ++i) {
+    if (shipmentDetail.opeCode == oprlistBookingCheck[i].dictValue) {
+      result = true;
+      break;
+    }
+  }
+  return result;
+}
+
+
+function getBetweenTwoDate(date1, date2) {
+  const diffTime = Math.abs(date2 - date1);
+  return Math.ceil(diffTime / (1000 * 60 * 60));
+}
+
+function getBetweenTwoDateInSourceData(row) {
+  let result = '';
+  if (sourceData[row] && sourceData[row].dateGetPower && sourceData[row].dateSetPower) {
+    result = getBetweenTwoDate(new Date(sourceData[row].dateSetPower), new Date(sourceData[row].dateGetPower));
+  }
+  return result;
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 }
