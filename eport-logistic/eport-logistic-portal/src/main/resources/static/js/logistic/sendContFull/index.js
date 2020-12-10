@@ -2179,11 +2179,28 @@ function getDataFromTable(isValidate) {
      * add information detail of container special
      */
 
-    shipmentDetail = {
-      ...sourceData[index],
-      ...shipmentDetail,
-      ...detailInformationForContainerSpecial.data[index],
-    };
+    // shipmentDetail = {
+    //   ...sourceData[index],
+    //   ...shipmentDetail,
+    //   ...detailInformationForContainerSpecial.data[index],
+    // };
+
+    if(detailInformationForContainerSpecial.data[index]) {
+      var dataModal = detailInformationForContainerSpecial.data[index];
+      shipmentDetail.dangerousImo = dataModal.dangerousImo;
+      shipmentDetail.dangerousNameProduct = dataModal.dangerousNameProduct;
+      shipmentDetail.dangerousPacking = dataModal.dangerousPacking;
+      shipmentDetail.dangerousUnno = dataModal.dangerousUnno;
+      shipmentDetail.humidity = dataModal.humidity;
+      shipmentDetail.oversizeLeft = dataModal.oversizeLeft;
+      shipmentDetail.oversizeRight = dataModal.oversizeRight;
+      shipmentDetail.oversizeTop = dataModal.oversizeTop;
+      shipmentDetail.oversizeLeft = dataModal.oversizeLeft;
+      shipmentDetail.temperature = dataModal.temperature;
+      shipmentDetail.ventilation = dataModal.ventilation;
+    }
+
+    console.log(detailInformationForContainerSpecial.data[index]);
 
     if (berthplanList) {
       for (let i = 0; i < berthplanList.length; i++) {
@@ -2472,7 +2489,6 @@ function verify() {
         $.modal.alertWarning("Lỗi hệ thống, quý khách vui lòng thử lại sau.");
       },
     });
-
   }
 }
 
@@ -3173,11 +3189,13 @@ function requestConfirmShipmentDetail() {
             shipmentDetails[0].processStatus = conts;
             for (let i = 0; i < sourceData.length; ++i) {
               const data = shipmentDetails[i];
-              shipmentDetails[i] = {
-                dangerous: sourceData[i].dangerous,
-                oversize: sourceData[i].oversize,
-                ...data,
-              };
+              // shipmentDetails[i] = {
+              //   dangerous: sourceData[i].dangerous,
+              //   oversize: sourceData[i].oversize,
+              //   ...data,
+              // };
+              shipmentDetails[i].dangerous = sourceData[i].dangerous;
+              shipmentDetails[i].oversize = sourceData[i].oversize;
             }
 
             let dataResult = [];

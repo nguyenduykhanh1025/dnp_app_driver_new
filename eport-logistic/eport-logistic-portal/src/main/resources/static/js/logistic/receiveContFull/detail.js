@@ -8,7 +8,7 @@ $(document).ready(function () {
   initTabOversize();
   initTableAddRegisterTime();
 });
-console.log(shipmentDetail);
+
 function initElement() {
   if (shipmentDetail.sztp.includes("R")) {
     $('#reeferContainer').css('display', 'block');
@@ -557,6 +557,8 @@ function paymentTypeRenderer(instance, td, row, col, prop, value, cellProperties
   if (!value) {
     value = "";
   }
+
+  console.log(shipmentDetail);
   if (shipmentDetail) {
     if (!shipmentDetail.payType) {
       value = "Chủ hàng thanh toán";
@@ -608,12 +610,9 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     </a>
   </td>
   `;
-
-  // if (shipmentDetail.powerDrawDateStatus == "S") {
-  // }
   if (sourceData.length != 1 && row == 0 && shipmentDetail.powerDrawDateStatus != "S") {
     result += btnCancel;
-  } else {
+  } else if(shipmentDetail.powerDrawDateStatus == "S") {
     result += btnPayment;
   }
 

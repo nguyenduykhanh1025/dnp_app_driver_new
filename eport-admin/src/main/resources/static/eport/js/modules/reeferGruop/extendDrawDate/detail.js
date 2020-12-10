@@ -1,13 +1,8 @@
 const PREFIX = ctx + "reefer-gruop/extend-draw-date";
 var dogrid = document.getElementById("container-grid"), hot;
 var checkList = [];
-// var sourceData = powerDropDate.map(item => {
-//   return {
-//     id: item.id,
-//     registerDate: item.newValue
-//   }
-// })
 var sourceData = reeferInfos;
+
 $(document).ready(function () {
   initElement();
   initTabReefer();
@@ -155,7 +150,7 @@ function insertCont() {
       data: JSON.stringify(payload),
       dataType: "text",
       success: function (result) {
-          $.modal.close();
+        $.modal.close();
       }
     });
 }
@@ -164,13 +159,6 @@ function insertCont() {
 
 function confirm() {
   insertCont();
-
-  // var lengthTemp = shipmentFilePath;
-  // if (lengthTemp == null || lengthTemp.length == 0) {
-  // }
-  // if (lengthTemp != null || lengthTemp.length != 0) {// nếu có thì vào đây
-  //   saveFile();
-  // }
 }
 
 
@@ -306,159 +294,30 @@ function configHandson() {
       },
       {
         data: "dateSetPower",
-        renderer: dateSetPower
+        renderer: dateSetPower,
+        readOnly: true,
       },
       {
         data: "dateGetPower",
-        renderer: dateGetPower
+        renderer: dateGetPower,
+        readOnly: true,
       },
       {
         data: "hourNumber",
-        renderer: numberHoursRenderer
+        renderer: numberHoursRenderer,
+        readOnly: true,
       },
       {
         data: "moneyNumber",
-        renderer: paymentRenderer
+        renderer: paymentRenderer,
+        readOnly: true,
       },
 
     ],
   };
 
 }
-/*function abc() {*/
-// cont nguy hiểm: trường dangerous khác null
-// cont quá khổ: trường oversize khác null
 
-//if(oversize && dangerous) bắt cả 2 đều có file
-//if(oversize) bắt oversize có file
-//if(dangerous)bắt dangerous có file
-
-//shipmentFiles  fileType
-
-/*if(oversize && dangerous){
-  if(fileType){ 
-    fileType.forEach(function (elementType, index) { 
-        if(elementType == "O"){// cont quá khổ oversize
-          typeO = true;
-         }
-        if(elementType == "D"){// con nguy hiểm Dangerous
-          typeD = true;
-         } 
-    });
-  	
-    shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
-      //alert("vao for 2");
-      if(elementcont.fileType == "O"){// filetype quá khổ
-         contO = true;
-       }
-      if(elementcont.fileType == "D"){// filetype nguy hiểm
-         contD = true;
-       } 
-    });
-  	
-    if(contD == false && typeD == false){ 
-      $.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
-    } 
-    else if(contO == false && typeO == false){
-      $.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
-    }
-    else{ 
-      saveFile();
-    } 
-  } 
-  	
-}*/
-
-
-/*if(oversize && dangerous){
-  if(fileType){ 
-     fileType.forEach(function (elementType, index) { 
-         if(elementType == "O"){// cont quá khổ oversize
-           typeO = true;
-          }
-         if(elementType == "D"){// con nguy hiểm Dangerous
-           typeD = true;
-          } 
-     });
-   	
-     shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
-       //alert("vao for 2");
-       if(elementcont.fileType == "O"){// filetype quá khổ
-          contO = true;
-        }
-       if(elementcont.fileType == "D"){// filetype nguy hiểm
-          contD = true;
-        } 
-     });
-   	
-     if(contD == false && typeD == false){ 
-       $.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
-     } 
-     else if(contO == false && typeO == false){
-       $.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
-     }
-     else{
-       checkSave(); 
-       //saveFile();
-     } 
-   }
-  
-}
- 
-if(oversize){
-  if(fileType){ 
-     fileType.forEach(function (elementType, index) { 
-         if(elementType == "O"){// cont quá khổ oversize
-           typeO = true;
-          }  
-     });
-   	
-     shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
-       //alert("vao for 2");
-       if(elementcont.fileType == "O"){// filetype quá khổ
-          contO = true;
-        }
-        
-     });
-   	
-      if(contO == false && typeO == false){
-       $.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
-     }
-     else{
-       checkSave(); 
-       //saveFile();
-     } 
-   }
-  
-}
- 
- if(dangerous){
-   if(fileType){ 
-      fileType.forEach(function (elementType, index) { 
-          if(elementType == "D"){// cont quá khổ oversize
-            typeD = true;
-           }  
-      });
-    	
-      shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
-        //alert("vao for 2");
-        if(elementcont.fileType == "D"){// filetype quá khổ
-           contD = true;
-         }
-         
-      });
-    	
-       if(contD == false && typeD == false){
-        $.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
-      }
-      else{
-        checkSave(); 
-        //saveFile();
-      } 
-    }
-   
- }  	
- */
 function statusIconRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (row == reeferInfos.length) {
     return '';
@@ -498,7 +357,7 @@ function dateSetPower(instance, td, row, col, prop, value, cellProperties) {
   }
   const dateResult = new Date(value);
   const month = dateResult.getMonth() == 12 ? '00' : dateResult.getMonth() + 1;
-  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()}`;
+  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()} ${dateResult.getHours()}:${dateResult.getMinutes()}`;
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
@@ -509,7 +368,7 @@ function dateGetPower(instance, td, row, col, prop, value, cellProperties) {
   }
   const dateResult = new Date(value);
   const month = dateResult.getMonth() == 12 ? '00' : dateResult.getMonth() + 1;
-  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()}`;
+  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()} ${dateResult.getHours()}:${dateResult.getMinutes()}`;
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
@@ -517,7 +376,8 @@ function numberHoursRenderer(instance, td, row, col, prop, value, cellProperties
   if (!value) {
     value = '';
   }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + value + '</div>');
+  let result = getBetweenTwoDateInSourceData(row);
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
 
@@ -525,7 +385,15 @@ function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
     value = '';
   }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + value + '</div>');
+  let billNumber = 0;
+  for(let i = 0; i< billPowers.length; ++i) {
+    if(contsztp.substring(0, 2) == billPowers[i].dictLabel) {
+      billNumber = billPowers[i].dictValue;
+      break;
+    }
+  }
+  const data = numberWithCommas(billNumber * getBetweenTwoDateInSourceData(row));
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + data + '</div>');
   return td;
 }
 function extendPowerDrawDate() {
@@ -549,7 +417,6 @@ function extendPowerDrawDate() {
     dataType: 'text',
     success: function (data) {
       data = JSON.parse(data);
-      console.log(data);
       shipmentDetail.powerDrawDateStatus = "P";
       sourceData = data.data.map(item => {
         return {
@@ -569,4 +436,21 @@ function extendPowerDrawDate() {
       $.modal.closeLoading();
     },
   });
+}
+
+function getBetweenTwoDate(date1, date2) {
+  const diffTime = Math.abs(date2 - date1);
+  return Math.ceil(diffTime / (1000 * 60 * 60));
+}
+
+function getBetweenTwoDateInSourceData(row) {
+  let result = '';
+  if (sourceData[row] && sourceData[row].dateGetPower && sourceData[row].dateSetPower) {
+    result = getBetweenTwoDate(new Date(sourceData[row].dateSetPower), new Date(sourceData[row].dateGetPower));
+  }
+  return result;
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 }
