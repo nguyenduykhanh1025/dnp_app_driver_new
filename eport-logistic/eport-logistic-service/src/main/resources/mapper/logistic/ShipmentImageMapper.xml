@@ -115,6 +115,24 @@
 			sysdate
 		</trim>
 	</insert>
+	
+	
+	<update id="updateShipmentImageByIdsReceive"
+		parameterType="ShipmentImage">
+		update shipment_image
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
+			<if test="path != null  and path != ''">path = #{path},</if>
+			<if test="shipmentDetailId != null  and shipmentDetailId != ''">shipment_detail_id = #{shipmentDetailId},</if>
+			<if test="fileType != null  and fileType != ''">file_type = #{fileType},</if>
+			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+			update_time = sysdate
+		</trim>
+		where id =  #{id}   
+		 
+	</update>
+	
+	
 
 	<update id="updateShipmentImageByIds"
 		parameterType="ShipmentImage">

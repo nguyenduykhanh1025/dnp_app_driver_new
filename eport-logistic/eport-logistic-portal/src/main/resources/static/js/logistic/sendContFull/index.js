@@ -1095,15 +1095,15 @@ function btnDetailRenderer(
     cargoType = hot.getDataAtCell(row, 9);  
   }
   
-  if (sourceData && sourceData.length > 0) { 
-   if (sourceData.length > row && sourceData[row].id) {
-      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
-    } else if (containerNo && sztp) {
-      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
-    } 
-  }
+  // if (sourceData && sourceData.length > 0) { 
+  //  if (sourceData.length > row && sourceData[row].id) {
+  //     value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
+  //   } else if (containerNo && sztp) {
+  //     value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
+  //   } 
+  // }
    
-/*  if (sourceData && sourceData.length > 0) {  
+  if (sourceData && sourceData.length > 0) {  
    if (sourceData.length > row && sourceData[row].id) { 
 	   if(sourceData[row].cargoType == "DG"){
 	   	value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont nguy hiểm</button>`;
@@ -1117,7 +1117,7 @@ function btnDetailRenderer(
     } else if (containerNo && sztp) {
       value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
     } 
-  }*/
+  }
   $(td).html(value);
   cellProperties.readOnly = "true";
   return td;

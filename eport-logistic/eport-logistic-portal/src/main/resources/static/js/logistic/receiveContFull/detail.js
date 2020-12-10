@@ -137,28 +137,50 @@ let contO = true;// qua kho
 let typeD = true;// nguy hiem 
 let typeR = true;// lanh
 let typeO = true;// qua kho
-
-// var truckNo = shipmentDetail.truckNo;
-// console.log("truckNo" + truckNo);
-
+ 
 function confirm() {
   var truckNo = $("#truckNo").val();
-  var chassisNo = $("#chassisNo").val();  
-  if(truckNo == null || truckNo == ""){
-    $.modal.alertWarning("Vui lòng nhập vào biển số xe đầu kéo rồi thử lại");
-  }
-   if(chassisNo == null || chassisNo == ""){
-    $.modal.alertWarning("Vui lòng nhập vào biển số xe rơ móc rồi thử lại");
-  }
+  var chassisNo = $("#chassisNo").val(); 
+  
+  if(shipmentFiles.length <1 && fileIds.length < 1 && !shipmentDetail.sztp.includes("R")){ 
+ $.modal.alertWarning("Vui lòng đính kèm file"); 
+  } 
+ else  
+if(oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")){
+    if(truckNo == null || truckNo == ""){
+      $.modal.alertWarning("Vui lòng nhập vào biển số xe đầu kéo rồi thử lại");
+    }
+    else if(chassisNo == null || chassisNo == "" && !shipmentDetail.sztp.includes("R")){
+      $.modal.alertWarning("Vui lòng nhập vào biển số xe rơ móc rồi thử lại");
+    }
+    else{ 
+      insertCont();
+      saveFile(); 
+    } 
+  //saveFile();
+} 
+// if(oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")){ 
+//   insertCont();
+//   saveFile();
+// }
+ 
   else{
     var lengthTemp = shipmentFilePath;
-    if (lengthTemp == null || lengthTemp.length == 0) {// nếu k có thì vào đây
-      insertCont();
+     if (lengthTemp) {// nếu k có thì vào đây
+       insertCont();
+     }
+    if (!shipmentDetail.sztp.includes("R") && (!lengthTemp)) {// nếu có thì vào đây
+       saveFile();
     }
+
+    // var lengthTemp = shipmentFilePath;
+    // if (lengthTemp == null || lengthTemp.length == 0) {// nếu k có thì vào đây
+    //   insertCont();
+    // }
   
-    if (!shipmentDetail.sztp.includes("R") && (lengthTemp != null || lengthTemp.length != 0)) {// nếu có thì vào đây
-      saveFile();
-    }
+    // if (!shipmentDetail.sztp.includes("R") && (lengthTemp != null || lengthTemp.length != 0)) {// nếu có thì vào đây
+    //   saveFile();
+    // }
 
   }
 
@@ -180,6 +202,7 @@ function insertCont() {
     truckNo: truckNo,
     chassisNo: chassisNo
   }
+
   $.ajax(
     {
       url: prefix + "/saveDate",
@@ -201,11 +224,16 @@ function insertCont() {
 }
  
 function saveFile() {
+console.log("saveFile");
+  console.log(fileIds);
   $.ajax(
     {
       url: prefix + "/saveFileImage",
       method: "POST",
       data: {
+
+        fileIds : fileIds,
+
         filePaths: shipmentFilePath,
         shipmentDetailId: shipmentDetail.id,
         shipmentId: shipmentDetail.shipmentId,

@@ -59,9 +59,9 @@ function initTabs() {
   var keySize = shipmentDetail.sztp.substring(2, 3);
   var cargoType = shipmentDetail.cargoType;
   //console.log(shipmentDetail.sztp.includes("R"));
-  if (keySize == "R") {
-    $(".tab-label-2").css("display", 'none');
-    $(".tab-label-3").css("display", 'none');  
+  if (keySize == "R") {// cont lạnh
+    $(".tab-label-2").css("display", 'none');// quá khổ
+    $(".tab-label-3").css("display", 'none'); // nguy hiểm
     $("reeferContainer").show();
     $("dangerousContainer").hide();
     $("oversizeContainer").hide(); 
@@ -70,8 +70,9 @@ function initTabs() {
     $("#tab-3").prop('checked', false);
   } 
   if(keySize == "G" && cargoType == "DG"){
-    $(".tab-label-1").css("display", 'none');
-    $(".tab-label-2").css("display", 'none'); 
+  //else if(cargoType == "DG"){// cont nguy hiểm
+    $(".tab-label-1").css("display", 'none');// cont lạnh
+    $(".tab-label-2").css("display", 'none'); // cont quá khổ
     $("dangerousContainer").show();
     $("reeferContainer").hide();
     $("oversizeContainer").hide(); 
@@ -79,9 +80,9 @@ function initTabs() {
     $("#tab-1").prop('checked', false);
     $("#tab-2").prop('checked', false);
   }
-   if(keySize == "P" || keySize == "U"){
-    $(".tab-label-1").css("display", 'none');
-    $(".tab-label-3").css("display", 'none'); 
+   else if(keySize == "P" || keySize == "U" && cargoType != "DG"){// cont quá khổ
+    $(".tab-label-1").css("display", 'none');// lạnh
+    $(".tab-label-3").css("display", 'none'); // nguy hiểm
     $("oversizeContainer").show();
     $("reeferContainer").hide();
     $("dangerousContainer").hide(); 
