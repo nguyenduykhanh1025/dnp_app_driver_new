@@ -51,6 +51,13 @@ public class ShipmentImageServiceImpl implements IShipmentImageService {
     	return shipmentImageMapper.updateShipmentImageByIds(shipmentImage);
     }
     
+    @Override
+    public int updateShipmentImageByIdsReceive(ShipmentImage shipmentImage) {
+    	return shipmentImageMapper.updateShipmentImageByIdsReceive(shipmentImage);
+    }
+    
+    
+    
     /**
      * Select shipment image list  
      * 

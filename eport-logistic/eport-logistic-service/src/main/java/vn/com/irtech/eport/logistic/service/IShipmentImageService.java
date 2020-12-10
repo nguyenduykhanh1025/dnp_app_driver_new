@@ -27,6 +27,10 @@ public interface IShipmentImageService {
      */
     public int updateShipmentImageByIds(ShipmentImage shipmentImage);
     
+    
+    public int updateShipmentImageByIdsReceive(ShipmentImage shipmentImage);
+    
+    
     /**
      * Select shipment image list  
      * 

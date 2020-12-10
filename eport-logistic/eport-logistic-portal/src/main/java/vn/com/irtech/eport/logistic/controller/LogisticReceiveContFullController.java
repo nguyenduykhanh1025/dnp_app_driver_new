@@ -1330,11 +1330,14 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		shipmentImage.setCreateTime(DateUtils.getNowDate());
 		shipmentImage.setCreateBy(getUser().getFullName());
 		shipmentImage.setFileType(fileType);
-		// shipmentImageService.insertShipmentImage(shipmentImage);
+		shipmentImageService.insertShipmentImage(shipmentImage);
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentFileId", shipmentImage.getId());
 		ajaxResult.put("file", filePath);
-		ajaxResult.put("fileType", fileType);
+		ajaxResult.put("fileType", fileType); 
+		
+		ajaxResult.put("fileId", shipmentImage.getId());
+		
 		return ajaxResult;
 	}
 	// nhat
@@ -1393,8 +1396,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@PostMapping("/saveFileImage")
 	@ResponseBody
 	public AjaxResult uploadFile(@RequestParam(value = "filePaths[]", required = false) String[] filePaths,
-			@RequestParam(value = "fileType[]", required = false) String[] fileType, String shipmentDetailId,
+			@RequestParam(value = "fileType[]", required = false) String[] fileType,@RequestParam(value = "fileIds[]") String[] fileIds, String shipmentDetailId,
 			Long shipmentId, String shipmentSztp) throws IOException, InvalidExtensionException {
+		
+		  
 
 		if (filePaths.length > 0) {
 			for (int i = 0; i < filePaths.length; i++) {
@@ -1402,9 +1407,20 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				shipmentImage.setPath(filePaths[i]);
 				shipmentImage.setShipmentId(shipmentId);
 				shipmentImage.setShipmentDetailId(shipmentDetailId);
-				shipmentImage.setFileType(fileType[i]);
-				shipmentImageService.insertShipmentImage(shipmentImage);// them detail
+				shipmentImage.setFileType(fileType[i]); 
+				//Map<String, Object> map = new HashMap<>();
+				//map.put("ids", fileIds[i]);
+				//shipmentImage.setParams(map);
+				shipmentImage.setId(Long.valueOf(fileIds[i]));
+				
+				//shipmentImageService.updateShipmentImageByIds(shipmentImage);// them detail
+				
+				shipmentImageService.updateShipmentImageByIdsReceive(shipmentImage);// them detail
+				 
+				//shipmentImageService.insertShipmentImage(shipmentImage);// them detail
 			}
+			
+			
 		}
 
 		return success();

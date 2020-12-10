@@ -6,6 +6,8 @@ var shipmentDetailId =[];
 var shipmentId = []; 
 var fileType = []; 
 
+fileIds = [];
+
 const SPECIAL_STATUS = {
 	  yet: "1",
 	  pending: "2",
@@ -74,6 +76,11 @@ $(document).ready(function () {
                 fileType.push(response.fileType);   
                 shipmentFilePath.push(response.file); 
                 shipmentDetailId.push(response.id);   
+
+                fileIds.push(response.fileId);
+                //console.log("fileIds");
+                //console.log(fileIds);
+                
                 let html = `<div class="preview-block">
                     <img src="` + ctx + `img/document.png" alt="Tài liệu" />
                     <button type="button" class="close" aria-label="Close" onclick="removeImage1(this, '${response.file}')" >
