@@ -402,10 +402,10 @@ function submitHandler() {
 
   var data = $("#form-detail-add").serializeArray();
   data = covertSerializeArrayToObject(data);;
-  data = {
-    ...data,
-    // daySetupTemperature: $("#datetimepicker1").datetimepicker('getDate').getTime(),
-  };
+  // data = {
+  //   ...data,
+  //   // daySetupTemperature: $("#datetimepicker1").datetimepicker('getDate').getTime(),
+  // };
   parent.submitDataFromDetailModal(data);
   onCloseModel();
 

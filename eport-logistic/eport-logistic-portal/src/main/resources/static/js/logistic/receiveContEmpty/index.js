@@ -1624,11 +1624,11 @@ function getDataFromTable(isValidate) {
 		shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
 		shipmentDetail.remark = object["remark"];
 
-		shipmentDetail = {
-			...sourceData[index],
-			...shipmentDetail,
-			...detailInformationForContainerSpecial.data[index],
-		};
+		if(detailInformationForContainerSpecial.data[index]) {
+			shipmentDetail.humidity = detailInformationForContainerSpecial.data[index].humidity;
+			shipmentDetail.temperature = detailInformationForContainerSpecial.data[index].temperature;
+			shipmentDetail.ventilation =  detailInformationForContainerSpecial.data[index].ventilation;
+		}
 
 		if (berthplanList) {
 			for (let i = 0; i < berthplanList.length; i++) {
