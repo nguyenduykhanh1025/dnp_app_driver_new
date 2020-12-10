@@ -5,34 +5,11 @@ $(document).ready(function () {
   initTabReefer();
   initDateTime();
 });
-
+console.log(billPowers);
 function initDateTime() {
-  // console.log(new Date(shipmentDetail.daySetupTemperature));
   let dayDrop = new Date(shipmentDetail.powerDrawDate);
   let daySetup = new Date(shipmentDetail.daySetupTemperature);
 
-  // console.log(daySetup);
-  // console.log(dayDrop);
-
-  // $("#datetimepickerGet").datetimepicker({
-  //   format: 'dd/mm/yyyy hh:ii',
-  //   language: "vi_VN",
-  //   //minView: "month",
-  //   autoclose: true,
-  //   minuteStep: 30,
-  //   todayBtn: true,
-  //   startDate: new Date()
-  // });
-
-  // $("#datetimepickerSet").datetimepicker({
-  //   format: 'dd/mm/yyyy hh:ii',
-  //   language: "vi_VN",
-  //   //minView: "month",
-  //   autoclose: true,
-  //   minuteStep: 30,
-  //   todayBtn: true,
-  //   startDate: new Date()
-  // });
 
   $("#powerDrawDate").val(formatDate(dayDrop));
   $("#daySetupTemperature").val(formatDate(daySetup));
@@ -62,17 +39,8 @@ function initTabReefer() {
   $('#humidity').val(shipmentDetail.humidity);
   $('#ventilation').val(shipmentDetail.ventilation);
 
-  console.log('sdsadasd');
-  $('#numberHours').val(numberWithCommas(reeferInfos[0].hourNumber));
-  $('#moneyNumber').val(numberWithCommas(reeferInfos[0].moneyNumber));
-
-  // if (!reeferInfos[0].payType) {
-  //   $("input[name=optradio][value='paymentType_0']").prop("checked", true);
-  // } else if (reeferInfos[0].payType == "B") {
-  //   $("input[name=optradio][value='paymentType_1']").prop("checked", true);
-  // }else {
-  //   $("input[name=optradio][value='paymentType_2']").prop("checked", true);
-  // }
+  $('#numberHours').val(getBetweenTwoDateInSourceData());
+  $('#moneyNumber').val(getCountNumber());
 }
 
 function initTabOversize() {
@@ -309,4 +277,32 @@ function numberWithCommas(x) {
 
 function numberNotWithCommas(x) {
   return parseInt(x.split(",").join(""));
+}
+
+function getBetweenTwoDate(date1, date2) {
+  const diffTime = Math.abs(date2 - date1);
+  return Math.ceil(diffTime / (1000 * 60 * 60));
+}
+
+function getBetweenTwoDateInSourceData() {
+  let result = '';
+  if (shipmentDetail && shipmentDetail.daySetupTemperature && shipmentDetail.powerDrawDate) {
+    result = getBetweenTwoDate(new Date(shipmentDetail.powerDrawDate), new Date(shipmentDetail.daySetupTemperature));
+  }
+  return result;
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function getCountNumber() {
+  let billNumber = 0;
+  for (let i = 0; i < billPowers.length; ++i) {
+    if (shipmentDetail.sztp.substring(0, 2) == billPowers[i].dictLabel) {
+      billNumber = billPowers[i].dictValue;
+      break;
+    }
+  }
+  return data = numberWithCommas(billNumber * getBetweenTwoDateInSourceData());
 }

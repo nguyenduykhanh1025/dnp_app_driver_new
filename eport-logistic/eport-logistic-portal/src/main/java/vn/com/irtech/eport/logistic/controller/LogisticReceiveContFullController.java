@@ -1371,6 +1371,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		mmap.put("powerDropDate", shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
 		
 		mmap.put("reeferInfos", reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId));
+		mmap.put("oprlistBookingCheck", dictService.getType("opr_list_booking_check"));
+		mmap.put("creditFlag", getGroup().getCreditFlag());
+		mmap.put("billPowers", dictService.getType("bill_power"));
+		
 		return PREFIX + "/detail";
 	}
 	// save file in detail
@@ -1485,10 +1489,11 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		reeferInfo.setDateGetPower(detail.getPowerDrawDate());
 		reeferInfo.setDateSetPower(detailFromDB.getPowerDrawDate());
 		reeferInfo.setShipmentDetailId(detail.getId());
-		
+		reeferInfo.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
 		detail.setUpdateBy(getUser().getFullName());
 		detail.setPowerDrawDateStatus("P");
 		detail.setPowerDrawDate(null);
+		
 		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
 		
 		reeferInfoService.insertReeferInfo(reeferInfo);

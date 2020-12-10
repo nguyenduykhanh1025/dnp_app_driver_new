@@ -19,12 +19,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="updateTime" column="update_time" />
 		<result property="shipmentDetailId" column="shipment_detail_id" />
 		<result property="logisticGroupId" column="logistic_group_id" />
+		<result property="paymentStatus" column="payment_status" />
 	</resultMap>
 
 	<sql id="selectReeferInfoVo">
 		select id, date_set_power, date_get_power, hour_number, pay_type,
 		payer_type, money_number, status, create_by, update_by, create_time,
-		update_time, shipment_detail_id, logistic_group_id from reefer_info
+		update_time, shipment_detail_id, logistic_group_id, payment_status from reefer_info
 	</sql>
 
 	<select id="selectReeferInfoList" parameterType="ReeferInfo"
@@ -74,6 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateTime != null">update_time,</if>
 			<if test="shipmentDetailId != null">shipment_detail_id,</if>
 			<if test="logisticGroupId != null">logistic_group_id,</if>
+			<if test="paymentStatus != null">payment_status,</if>
 			create_time
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -90,6 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateTime != null">#{updateTime},</if>
 			<if test="shipmentDetailId != null">#{shipmentDetailId},</if>
 			<if test="logisticGroupId != null">#{logisticGroupId},</if>
+			<if test="paymentStatus != null and paymentStatus != ''">#{paymentStatus},</if>
 			sysdate
 		</trim>
 	</insert>
@@ -110,6 +113,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateTime != null">update_time = #{updateTime},</if>
 			<if test="shipmentDetailId != null">shipment_detail_id = #{shipmentDetailId},</if>
 			<if test="logisticGroupId != null">logistic_group_id = #{logisticGroupId},</if>
+			<if test="paymentStatus != null">payment_status = #{paymentStatus},</if>
 		</trim>
 		where id = #{id}
 	</update>

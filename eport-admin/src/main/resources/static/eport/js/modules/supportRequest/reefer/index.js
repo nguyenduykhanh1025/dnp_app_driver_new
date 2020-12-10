@@ -528,26 +528,6 @@ function btnDetailRenderer(
   return td;
 }
 
-function paymentTypeRenderer(instance,
-  td,
-  row,
-  col,
-  prop,
-  value,
-  cellProperties) {
-  $(td)
-    .attr("id", "sztp" + row)
-    .addClass("htMiddle");
-  if (!value) {
-    value = "";
-  }
-  $(td).html(
-    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
-  );
-}
-
 function openDetail(id, containerNo, sztp, row) {
   if (!id) {
     id = 0;
@@ -776,26 +756,24 @@ function configHandson() {
         case 5:
           return '<span>Chi Tiết Container</span>';
         case 6:
-          return '<span>Hình Thức Thanh Toán</span>';
-        case 7:
           return "Sztp";
-        case 8:
+        case 7:
           return "Chủ Hàng";
-        case 9:
+        case 8:
           return "Tàu - Chuyến";
-        case 10:
+        case 9:
           return "Trọng Lượng";
-        case 11:
+        case 10:
           return "Loại Hàng";
-        case 12:
+        case 11:
           return "Số Seal";
-        case 13:
+        case 12:
           return "Cảng Dỡ Hàng";
         // case 14:
         //   return "P.T.T.T";
         // case 15:
         //   return "Payer";
-        case 14:
+        case 13:
           return "Ghi Chú";
       }
     },
@@ -805,7 +783,6 @@ function configHandson() {
       21,
       130,
       100,
-      150,
       150,
       60,
       200,
@@ -848,13 +825,7 @@ function configHandson() {
         data: "btnInformationContainer",
         renderer: btnDetailRenderer,
       },
-      {
-        data: "paymentType",
-        type: "autocomplete",
-        source: paymentTypeList,
-        strict: true,
-        renderer: paymentTypeRenderer,
-      },
+
       {
         data: "sztp",
         renderer: sztpRenderer,
@@ -1086,47 +1057,43 @@ function clearInput() {
 
 function confirmRequestDocument() {
   if (getDataSelectedFromTable()) {
-    if (!confirmationPaymentType()) {
-      $.modal.alertError("Vui lòng chọn hình thức thanh toán cho container");
-    } else {
-      layer.confirm(
-        "Xác nhận kiểm tra thông tin đúng.",
-        {
-          icon: 3,
-          title: "Xác Nhận",
-          btn: ["Đồng Ý", "Hủy Bỏ"],
-        },
-        function () {
-          $.modal.loading("Đang xử lý ...");
-          layer.close(layer.index);
-          $.ajax({
-            url: PREFIX + "/confirmation",
-            method: "POST",
-            data: {
-              shipmentDetailIds: shipmentDetailIds,
-              logisticGroupId: shipmentSelected.logisticGroupId,
-            },
-            success: function (res) {
-              $.modal.closeLoading();
-              if (res.code == 0) {
-                $.modal.alertSuccess(res.msg);
+    layer.confirm(
+      "Xác nhận kiểm tra thông tin đúng.",
+      {
+        icon: 3,
+        title: "Xác Nhận",
+        btn: ["Đồng Ý", "Hủy Bỏ"],
+      },
+      function () {
+        $.modal.loading("Đang xử lý ...");
+        layer.close(layer.index);
+        $.ajax({
+          url: PREFIX + "/confirmation",
+          method: "POST",
+          data: {
+            shipmentDetailIds: shipmentDetailIds,
+            logisticGroupId: shipmentSelected.logisticGroupId,
+          },
+          success: function (res) {
+            $.modal.closeLoading();
+            if (res.code == 0) {
+              $.modal.alertSuccess(res.msg);
 
-                confirmationPaymentType();
-              } else {
-                $.modal.alertError(res.msg);
-              }
-            },
-            error: function (data) {
-              $.modal.closeLoading();
-            },
-          });
+              confirmationPaymentType();
+            } else {
+              $.modal.alertError(res.msg);
+            }
+          },
+          error: function (data) {
+            $.modal.closeLoading();
+          },
+        });
 
-        },
-        function () {
-          // close form
-        }
-      );
-    }
+      },
+      function () {
+        // close form
+      }
+    );
   }
 }
 function confirmationPaymentType() {
@@ -1799,3 +1766,13 @@ function renderIconsStatusServiceTypePickupFull(
   return td;
 }
 
+function isBookingCheckPayment() {
+  let result = false;
+  for (let i = 0; i < oprlistBookingCheck.length; ++i) {
+    if (shipmentDetail.opeCode == oprlistBookingCheck[i].dictValue) {
+      result = true;
+      break;
+    }
+  }
+  return result;
+}
