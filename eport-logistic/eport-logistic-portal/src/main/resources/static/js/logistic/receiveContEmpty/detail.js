@@ -1,4 +1,4 @@
-const PREFIX = ctx + "logistic/send-cont-full";
+const PREFIX = ctx + "logistic/receive-cont-empty";
 
 const KEY_FORM = {
   OVERSIZE: "oversize",
@@ -59,9 +59,9 @@ function initTabs() {
   var keySize = shipmentDetail.sztp.substring(2, 3);
   var cargoType = shipmentDetail.cargoType;
   //console.log(shipmentDetail.sztp.includes("R"));
-  if (keySize == "R") {// cont lạnh
-    $(".tab-label-2").css("display", 'none');// quá khổ
-    $(".tab-label-3").css("display", 'none'); // nguy hiểm
+  if (keySize == "R") {
+    $(".tab-label-2").css("display", 'none');
+    $(".tab-label-3").css("display", 'none');  
     $("reeferContainer").show();
     $("dangerousContainer").hide();
     $("oversizeContainer").hide(); 
@@ -70,9 +70,8 @@ function initTabs() {
     $("#tab-3").prop('checked', false);
   } 
   if(keySize == "G" && cargoType == "DG"){
-  //else if(cargoType == "DG"){// cont nguy hiểm
-    $(".tab-label-1").css("display", 'none');// cont lạnh
-    $(".tab-label-2").css("display", 'none'); // cont quá khổ
+    $(".tab-label-1").css("display", 'none');
+    $(".tab-label-2").css("display", 'none'); 
     $("dangerousContainer").show();
     $("reeferContainer").hide();
     $("oversizeContainer").hide(); 
@@ -80,9 +79,9 @@ function initTabs() {
     $("#tab-1").prop('checked', false);
     $("#tab-2").prop('checked', false);
   }
-   else if(keySize == "P" || keySize == "U" && cargoType != "DG"){// cont quá khổ
-    $(".tab-label-1").css("display", 'none');// lạnh
-    $(".tab-label-3").css("display", 'none'); // nguy hiểm
+   if(keySize == "P" || keySize == "U"){
+    $(".tab-label-1").css("display", 'none');
+    $(".tab-label-3").css("display", 'none'); 
     $("oversizeContainer").show();
     $("reeferContainer").hide();
     $("dangerousContainer").hide(); 
@@ -403,10 +402,6 @@ function submitHandler() {
 
   var data = $("#form-detail-add").serializeArray();
   data = covertSerializeArrayToObject(data);;
-  // data = {
-  //   ...data,
-  //   // daySetupTemperature: $("#datetimepicker1").datetimepicker('getDate').getTime(),
-  // };
   parent.submitDataFromDetailModal(data);
   onCloseModel();
 

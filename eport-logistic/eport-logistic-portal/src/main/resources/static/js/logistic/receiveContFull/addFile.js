@@ -78,8 +78,8 @@ $(document).ready(function () {
                 shipmentDetailId.push(response.id);   
 
                 fileIds.push(response.fileId);
-                console.log("fileIds");
-                console.log(fileIds);
+                //console.log("fileIds");
+                //console.log(fileIds);
                 
                 let html = `<div class="preview-block">
                     <img src="` + ctx + `img/document.png" alt="Tài liệu" />

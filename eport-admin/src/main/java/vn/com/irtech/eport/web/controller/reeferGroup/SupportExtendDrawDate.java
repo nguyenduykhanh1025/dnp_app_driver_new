@@ -224,6 +224,7 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		mmap.put("powerDropDate", shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
 		
 		mmap.put("reeferInfos", reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId));
+		mmap.put("billPowers", dictService.getType("bill_power"));
 		
 		return PREFIX + "/detail";
 	}

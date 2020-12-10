@@ -21,6 +21,10 @@ var myDropzone;
 //dictionary sizeList
 var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
 var temperatureDisable = [];
+var detailInformationForContainerSpecial = {
+	data: [],
+	indexSelected: -1,
+};
 
 $.ajax({
 	type: "GET",
@@ -707,6 +711,40 @@ function dischargePortRenderer(instance, td, row, col, prop, value, cellProperti
 	return td;
 }
 
+function btnDetailRenderer(
+	instance,
+	td,
+	row,
+	col,
+	prop,
+	value,
+	cellProperties
+) {
+	$(td)
+		.attr("id", "wgt" + row)
+		.addClass("htMiddle")
+		.addClass("htCenter");
+	let containerNo, sztp = '';
+	if (value != null && value != "") {
+		if (hot.getDataAtCell(row, 2) && hot.getDataAtCell(row, 3)) {
+			containerNo = hot.getDataAtCell(row, 2);
+			sztp = hot.getDataAtCell(row, 3);
+		}
+	}
+
+	if (sourceData && sourceData.length > 0) {
+		if (sourceData.length > row && sourceData[row].id && sourceData[row].sztp.substring(0,4).includes("R")) {
+			sztp = sourceData[row].sztp;
+			value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Lạnh</button>`;
+		} else if (containerNo && sztp) {
+			value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Lạnh</button>`;
+		}
+	}
+	$(td).html(value);
+	cellProperties.readOnly = "true";
+	return td;
+}
+
 function temperatureRenderer(instance, td, row, col, prop, value, cellProperties) {
 	$(td)
 		.attr("id", "temperature" + row)
@@ -889,25 +927,27 @@ function configHandson() {
 					return "Ngày tàu đến";
 				case 11:
 					return '<span class="required">Cảng Dỡ Hàng</span>';
+				// case 12:
+				// 	return 'Nhiệt Độ';
+				// case 13:
+				// 	return 'Độ Ẩm';
+				// case 14:
+				// 	return 'Thông Gió';
 				case 12:
-					return 'Nhiệt Độ';
+					return 'Chi Tiết Container';
 				case 13:
-					return 'Độ Ẩm';
-				case 14:
-					return 'Thông Gió';
-				case 15:
 					return 'Cấp Container <br>Ghi Chú';
-				case 16:
+				case 14:
 					return 'PTTT';
-				case 17:
+				case 15:
 					return 'Mã Số Thuế';
-				case 18:
+				case 16:
 					return 'Người Thanh Toán';
-				case 19:
+				case 17:
 					return "Ghi Chú";
 			}
 		},
-		colWidths: [40, 100, 100, 150, 100, 200, 100, 80, 150, 150, 100, 120, 80, 80, 80, 150, 100, 130, 130, 200],
+		colWidths: [40, 100, 100, 150, 100, 200, 100, 80, 150, 150, 100, 120, 130, 150, 100, 130, 130, 200],
 		filter: "true",
 		columns: [
 			{
@@ -983,26 +1023,30 @@ function configHandson() {
 				strict: true,
 				renderer: dischargePortRenderer
 			},
+			// {
+			// 	data: "temperature",
+			// 	type: "numeric",
+			// 	strict: true,
+			// 	readonly: true,
+			// 	renderer: temperatureRenderer
+			// },
+			// {
+			// 	data: "humidity",
+			// 	type: "numeric",
+			// 	strict: true,
+			// 	readonly: true,
+			// 	renderer: humidityRenderer
+			// },
+			// {
+			// 	data: "ventilation",
+			// 	type: "numeric",
+			// 	strict: true,
+			// 	readonly: true,
+			// 	renderer: ventilationRenderer
+			// },
 			{
-				data: "temperature",
-				type: "numeric",
-				strict: true,
-				readonly: true,
-				renderer: temperatureRenderer
-			},
-			{
-				data: "humidity",
-				type: "numeric",
-				strict: true,
-				readonly: true,
-				renderer: humidityRenderer
-			},
-			{
-				data: "ventilation",
-				type: "numeric",
-				strict: true,
-				readonly: true,
-				renderer: ventilationRenderer
+				data: "btnInformationContainer",
+				renderer: btnDetailRenderer,
 			},
 			{
 				data: "contSupplyRemark",
@@ -1150,44 +1194,56 @@ function onChange(changes, source) {
 				});
 			}
 		} else if (change[1] == "sztp") {
-			if (
-				change[3] &&
-				change[3].length > 3 &&
-				change[3].substring(0, 4).includes("R")
-			) {
-				temperatureDisable[change[0]] = 0;
-				hot.updateSettings({
-					cells: function (row, col, prop) {
-						if (row == change[0] && (col == 12 || col == 13 || col == 14)) {
-							let cellProperties = {};
-							cellProperties.readOnly = false;
-							return cellProperties;
-						}
-					},
-				});
+			if (change[3] && hot.getDataAtCell(change[0], 2)) {
+				$("#detailBtn" + change[0]).prop("disabled", false);
 			} else {
-				temperatureDisable[change[0]] = 1;
-				hot.updateSettings({
-					cells: function (row, col, prop) {
-						if (row == change[0] && (col == 12 || col == 13 || col == 14)) {
-							let cellProperties = {};
-							cellProperties.readOnly = true;
-							$("#temperature" + row).css(
-								"background-color",
-								"rgb(232, 232, 232)"
-							);
-							$("#humidity" + row).css(
-								"background-color",
-								"rgb(232, 232, 232)"
-							);
-							$("#ventilation" + row).css(
-								"background-color",
-								"rgb(232, 232, 232)"
-							);
-							return cellProperties;
-						}
-					},
-				});
+				$("#detailBtn" + change[0]).prop("disabled", true);
+			}
+
+			// if (
+			// 	change[3] &&
+			// 	change[3].length > 3 &&
+			// 	change[3].substring(0, 4).includes("R")
+			// ) {
+			// 	temperatureDisable[change[0]] = 0;
+			// 	hot.updateSettings({
+			// 		cells: function (row, col, prop) {
+			// 			if (row == change[0] && (col == 12 || col == 13 || col == 14)) {
+			// 				let cellProperties = {};
+			// 				cellProperties.readOnly = false;
+			// 				return cellProperties;
+			// 			}
+			// 		},
+			// 	});
+			// } else {
+			// 	temperatureDisable[change[0]] = 1;
+			// 	hot.updateSettings({
+			// 		cells: function (row, col, prop) {
+			// 			if (row == change[0] && (col == 12 || col == 13 || col == 14)) {
+			// 				let cellProperties = {};
+			// 				cellProperties.readOnly = true;
+			// 				$("#temperature" + row).css(
+			// 					"background-color",
+			// 					"rgb(232, 232, 232)"
+			// 				);
+			// 				$("#humidity" + row).css(
+			// 					"background-color",
+			// 					"rgb(232, 232, 232)"
+			// 				);
+			// 				$("#ventilation" + row).css(
+			// 					"background-color",
+			// 					"rgb(232, 232, 232)"
+			// 				);
+			// 				return cellProperties;
+			// 			}
+			// 		},
+			// 	});
+			// }
+		} else if (change[1] == "containerNo") {
+			if (change[3] && hot.getDataAtCell(change[0], 3)) {
+				$("#detailBtn" + change[0]).prop("disabled", false);
+			} else {
+				$("#detailBtn" + change[0]).prop("disabled", true);
 			}
 		}
 	});
@@ -1321,7 +1377,6 @@ function loadShipmentDetail(id) {
 			$.modal.closeLoading();
 			if (data.code == 0) {
 				sourceData = data.shipmentDetails;
-				console.log(sourceData);
 				if (rowAmount < sourceData.length) {
 					sourceData = sourceData.slice(0, rowAmount);
 				}
@@ -1569,9 +1624,11 @@ function getDataFromTable(isValidate) {
 		shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
 		shipmentDetail.remark = object["remark"];
 
-		shipmentDetail.temperature = object["temperature"];
-		shipmentDetail.humidity = object["humidity"];
-		shipmentDetail.ventilation = object["ventilation"];
+		if(detailInformationForContainerSpecial.data[index]) {
+			shipmentDetail.humidity = detailInformationForContainerSpecial.data[index].humidity;
+			shipmentDetail.temperature = detailInformationForContainerSpecial.data[index].temperature;
+			shipmentDetail.ventilation =  detailInformationForContainerSpecial.data[index].ventilation;
+		}
 
 		if (berthplanList) {
 			for (let i = 0; i < berthplanList.length; i++) {
@@ -1634,7 +1691,6 @@ function saveShipmentDetail() {
 		if (getDataFromTable(true)) {
 			if (shipmentDetails.length > 0) {
 				$.modal.loading("Đang xử lý...");
-				console.log(shipmentDetails);
 				$.ajax({
 					url: prefix + "/shipment-detail",
 					method: "post",
@@ -2242,3 +2298,80 @@ function requestCancelSupplyContainer() {
 function requestExchangeContainer() {
 
 }
+
+function openDetail(id, containerNo, sztp, row, cargoType) {
+	if (!id) {
+		$.modal.alertWarning(
+			"Container chưa được lưu. Vui lòng lưu khai báo trước."
+		);
+	}
+	else {
+		detailInformationForContainerSpecial.indexSelected = row;
+		$.modal.openCustomForm(
+			"Khai báo chi tiết",
+			`${prefix}/shipment-detail/${id}/cont/${containerNo}/sztp/${sztp}/detail`,
+			800,
+			460
+		);
+	}
+}
+
+function submitDataFromDetailModal(data) {
+
+	const { indexSelected } = detailInformationForContainerSpecial;
+	detailInformationForContainerSpecial.data[indexSelected] = data;
+	//saveShipmentDetailFollowIndex(indexSelected);
+	saveShipmentDetailFollowIndexNew(indexSelected);
+
+}
+
+function saveShipmentDetailFollowIndexNew(index) {
+	if (getDataFromTable(true)) {
+		if (
+			shipmentDetails.length > 0 &&
+			shipmentDetails.length <= shipmentSelected.containerAmount
+		) {
+			shipmentDetails[0].processStatus = conts;
+
+			$.modal.loading("Đang xử lý...");
+			$.ajax({
+				url: prefix + "/" + shipmentSelected.id + "/shipment-detail-special",
+				method: "post",
+				contentType: "application/json",
+				accept: "text/plain",
+				data: JSON.stringify([shipmentDetails[index]]),
+				dataType: "text",
+				success: function (data) {
+					var result = JSON.parse(data);
+					if (result.code == 0) {
+						$.modal.msgSuccess(result.msg);
+						reloadShipmentDetail();
+					} else {
+						if (result.conts != null) {
+							$.modal.alertError(
+								"Các container sau đã được thực hiện lệnh nâng/hạ trong hệ thống của Cảng. Xin vui lòng kiểm tra lại dữ liệu.<br>" +
+								result.conts
+							);
+						} else {
+							$.modal.alertError(result.msg);
+						}
+					}
+					$.modal.closeLoading();
+				},
+				error: function (result) {
+					$.modal.alertError(
+						"Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau."
+					);
+					$.modal.closeLoading();
+				},
+			});
+		} else if (shipmentDetails.length > shipmentSelected.containerAmount) {
+			$.modal.alertError(
+				"Số container nhập vào vượt quá số container khai báo của lô."
+			);
+		} else {
+			$.modal.alertError("Hãy nhập thông tin chi tiết lô.");
+		}
+	}
+}
+
