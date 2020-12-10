@@ -65,6 +65,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.ShipmentDetailHist;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Controller
@@ -1079,5 +1080,228 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			}
 		}
 		return containerInfoMap;
+	}
+	
+	@GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail")
+	public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
+			@PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
+		
+		ShipmentDetail shipmentDetailFromDB =  shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		mmap.put("containerNo", containerNo);
+		mmap.put("sztp", sztp);
+		mmap.put("shipmentDetailId", shipmentDetailId);
+		mmap.put("shipmentDetail", shipmentDetailFromDB);
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+		for (ShipmentImage shipmentImage2 : shipmentImages) {
+			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+		}
+		mmap.put("shipmentFiles", shipmentImages);
+		return PREFIX + "/detail";
+	}
+	
+	@Log(title = "Lưu Khai Báo Cont Detail", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
+	@PostMapping("/{shipmentId}/shipment-detail-special")
+	@ResponseBody
+	public AjaxResult saveShipmentDetailSpecial(@RequestBody List<ShipmentDetail> shipmentDetails,
+			@PathVariable("shipmentId") Long shipmentId) {
+
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			LogisticAccount user = getUser();
+			if (shipmentId == null) {
+				return error("Không tìm thấy lô cần thêm chi tiết.");
+			}
+			Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+			if (shipment == null || !verifyPermission(shipment.getLogisticGroupId())) {
+				return error("Không tìm thấy lô, vui lòng kiểm tra lại thông tin.");
+			}
+
+			boolean attachBooking = false;
+			// List opr need to attach booking (domestic container)
+			List<String> oprList = dictService.getListTag("opr_list_booking_check");
+			if (oprList.contains(shipment.getOpeCode())) {
+				attachBooking = true;
+			}
+
+			boolean updateShipment = true; // if true => need to update status shipment from init to save
+			for (ShipmentDetail inputDetail : shipmentDetails) {
+
+				// validate if cont have status cont special REQUEST | DONE
+				// if (shipmentDetailService.isHaveContSpacialRequest(inputDetail)
+				// || shipmentDetailService.isHaveContSpacialYes(inputDetail)) {
+				// 	return error("Không thể thay đổi thông tin các container đang chờ hoặc đã được yêu cầu xét duyệt.");
+				// }
+
+				if (inputDetail.getId() != null) {
+
+					// Case update
+					ShipmentDetail shipmentDetailReference = shipmentDetailService
+							.selectShipmentDetailById(inputDetail.getId());
+
+					// Check permission
+					if (!shipmentDetailReference.getLogisticGroupId().equals(user.getGroupId())) {
+						return error("Không tìm thấy thông tin, vui lòng kiểm tra lại");
+					}
+
+					updateShipment = false;
+					
+					shipmentDetailReference.setDangerousImo(inputDetail.getDangerousImo());
+					shipmentDetailReference.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
+					shipmentDetailReference.setDangerousPacking(inputDetail.getDangerousPacking());
+					shipmentDetailReference.setDangerousUnno(inputDetail.getDangerousUnno());
+					
+					
+
+					shipmentDetailReference.setContainerNo(inputDetail.getContainerNo());
+					shipmentDetailReference.setSztp(inputDetail.getSztp());
+					shipmentDetailReference.setSztpDefine(inputDetail.getSztpDefine());
+					shipmentDetailReference.setConsignee(inputDetail.getConsignee()); 
+					 
+					shipmentDetailReference.setYear(inputDetail.getYear());
+					 
+					shipmentDetailReference.setVoyCarrier(inputDetail.getVoyCarrier());
+					shipmentDetailReference.setEta(inputDetail.getEta());
+					shipmentDetailReference.setEtd(inputDetail.getEtd());
+					shipmentDetailReference.setDischargePort(inputDetail.getDischargePort());
+					shipmentDetailReference.setWgt(inputDetail.getWgt());
+					shipmentDetailReference.setCargoType(inputDetail.getCargoType());
+					shipmentDetailReference.setCommodity(inputDetail.getCommodity());
+					shipmentDetailReference.setSealNo(inputDetail.getSealNo());
+
+					shipmentDetailReference.setVgmChk(inputDetail.getVgmChk());
+					shipmentDetailReference.setVgmMaxGross(inputDetail.getVgmMaxGross());
+					shipmentDetailReference.setVgmInspectionDepartment(inputDetail.getVgmInspectionDepartment());
+
+					shipmentDetailReference.setOversizeBack(inputDetail.getOversizeBack());
+					shipmentDetailReference.setOversizeFront(inputDetail.getOversizeFront());
+					shipmentDetailReference.setOversizeLeft(inputDetail.getOversizeLeft());
+					shipmentDetailReference.setOversizeRight(inputDetail.getOversizeRight());
+					shipmentDetailReference.setOversizeTop(inputDetail.getOversizeTop());
+					shipmentDetailReference.setOversizeType(inputDetail.getOversizeType());
+
+					
+
+					shipmentDetailReference.setTemperature(inputDetail.getTemperature());
+					shipmentDetailReference.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
+					shipmentDetailReference.setHumidity(inputDetail.getHumidity());
+					shipmentDetailReference.setVentilation(inputDetail.getVentilation());
+					shipmentDetailReference.setRemark(inputDetail.getRemark());
+
+					// Lưu nếu là cont đặc biệt
+					String sztp = inputDetail.getSztp().substring(2, 3);
+
+					if (sztp.equals("R")) {
+						if (StringUtils.isEmpty(inputDetail.getFrozenStatus())) {
+							shipmentDetailReference.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_INIT);
+						} else if (!(inputDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
+								|| inputDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
+							shipmentDetailReference.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_INIT);
+						}
+
+					} else {
+						shipmentDetailReference.setFrozenStatus("");
+					}
+
+					if (StringUtils.isEmpty(inputDetail.getOversize())) {
+						shipmentDetailReference.setOversize("");
+					} else if (!(inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
+							|| inputDetail.getOversize().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
+						shipmentDetailReference.setOversize("");
+					}
+
+					if (StringUtils.isEmpty(inputDetail.getDangerous())) {
+						shipmentDetailReference.setDangerous("");
+					} else if (!(inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_REQ)
+							|| inputDetail.getDangerous().equals(EportConstants.CONT_SPECIAL_STATUS_YES))) {
+						shipmentDetailReference.setDangerous("");
+					}
+
+					if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
+						return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
+					}
+				} else {
+					// Case insertShipmentDetail shipmentDetail = new ShipmentDetail();
+					ShipmentDetail shipmentDetail = new ShipmentDetail();
+					shipmentDetail.setContainerNo(inputDetail.getContainerNo());
+					shipmentDetail.setSztp(inputDetail.getSztp());
+					shipmentDetail.setSztpDefine(inputDetail.getSztpDefine());
+					shipmentDetail.setConsignee(inputDetail.getConsignee());
+					shipmentDetail.setVslNm(inputDetail.getVslNm());
+					shipmentDetail.setVoyNo(inputDetail.getVoyNo());
+					shipmentDetail.setYear(inputDetail.getYear());
+					shipmentDetail.setVslName(inputDetail.getVslName());
+					shipmentDetail.setVoyCarrier(inputDetail.getVoyCarrier());
+					shipmentDetail.setEta(inputDetail.getEta());
+					shipmentDetail.setEtd(inputDetail.getEtd());
+					shipmentDetail.setDischargePort(inputDetail.getDischargePort());
+					shipmentDetail.setWgt(inputDetail.getWgt());
+					shipmentDetail.setCargoType(inputDetail.getCargoType());
+					shipmentDetail.setCommodity(inputDetail.getCommodity());
+					shipmentDetail.setSealNo(inputDetail.getSealNo());
+					shipmentDetail.setOpeCode(shipment.getOpeCode());
+					shipmentDetail.setBookingNo(shipment.getBookingNo());
+					shipmentDetail.setLogisticGroupId(user.getGroupId());
+					shipmentDetail.setCreateBy(user.getFullName());
+					shipmentDetail.setShipmentId(shipmentId);
+					shipmentDetail.setStatus(1);
+					shipmentDetail.setPaymentStatus("N");
+					shipmentDetail.setUserVerifyStatus("N");
+					shipmentDetail.setProcessStatus("N");
+					shipmentDetail.setCustomStatus("N");
+					shipmentDetail.setFinishStatus("N");
+					shipmentDetail.setFe("F");
+
+					shipmentDetail.setVgmChk(inputDetail.getVgmChk());
+					shipmentDetail.setVgmMaxGross(inputDetail.getVgmMaxGross());
+					shipmentDetail.setVgmInspectionDepartment(inputDetail.getVgmInspectionDepartment());
+
+					shipmentDetail.setOversizeBack(inputDetail.getOversizeBack());
+					shipmentDetail.setOversizeFront(inputDetail.getOversizeFront());
+					shipmentDetail.setOversizeLeft(inputDetail.getOversizeLeft());
+					shipmentDetail.setOversizeRight(inputDetail.getOversizeRight());
+					shipmentDetail.setOversizeTop(inputDetail.getOversizeTop());
+					shipmentDetail.setOversizeType(inputDetail.getOversizeType());
+
+					shipmentDetail.setDangerousImo(inputDetail.getDangerousImo());
+					shipmentDetail.setDangerousNameProduct(inputDetail.getDangerousNameProduct());
+					shipmentDetail.setDangerousPacking(inputDetail.getDangerousPacking());
+					shipmentDetail.setDangerousUnno(inputDetail.getDangerousUnno());
+
+					shipmentDetail.setTemperature(inputDetail.getTemperature());
+					shipmentDetail.setDaySetupTemperature(inputDetail.getDaySetupTemperature());
+
+					shipmentDetail.setHumidity(inputDetail.getHumidity());
+					shipmentDetail.setVentilation(inputDetail.getVentilation());
+					
+					// Lưu nếu là cont đặc biệt
+					String sztp = inputDetail.getSztp().substring(2, 3);
+					if (sztp.equals("R")) {
+						// là cont lạnh
+						shipmentDetail.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_INIT);
+					}
+//					if (sztp.equals("P")) {
+//						// la cont qua kho
+//						shipmentDetail.setOversize(EportConstants.CONT_SPECIAL_STATUS_INIT);
+//					}
+
+					if (attachBooking) {
+						shipmentDetail.setDoStatus("N");
+					}
+					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
+						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
+					}
+				}
+			}
+			if (updateShipment) {
+				shipment.setUpdateBy(getUser().getFullName());
+				shipment.setStatus(EportConstants.SHIPMENT_STATUS_SAVE);
+				shipmentService.updateShipment(shipment);
+			}
+			return success("Lưu khai báo thành công");
+		}
+		return
+
+		error("Lưu khai báo thất bại");
 	}
 }
