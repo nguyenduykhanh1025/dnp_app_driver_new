@@ -1105,17 +1105,18 @@ function btnDetailRenderer(
    
   if (sourceData && sourceData.length > 0) {  
    if (sourceData.length > row && sourceData[row].id) { 
+     const iElement = '<i style="margin-right: 3px;" class="fa fa-book"></i>';
 	   if(sourceData[row].cargoType == "DG"){
-	   	value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont nguy hiểm</button>`;
+	   	value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Nguy hiểm</button>`;
 	   }
 	   else if(sourceData[row].sztp.substring (2,3) == "R"){
-	   value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont lạnh</button>`;
+	   value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Lạnh</button>`;
 	   }
 	   else if(sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft){
-	   	value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont quá khổ</button>`;
+	   	value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Quá khổ</button>`;
 	   } 
     } else if (containerNo && sztp) {
-      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
+      value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Đặc biệt</button>`;
     } 
   }
   $(td).html(value);
