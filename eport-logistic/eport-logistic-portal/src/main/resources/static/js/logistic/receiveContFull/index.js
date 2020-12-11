@@ -1408,26 +1408,26 @@ function isDisableCustomBTN() {
 function getStatusContFollowIndexBTN(index) {
   if (
     !sourceData[index].oversize &&
-    !sourceData[index].dangerous &&
+    //!sourceData[index].dangerous &&
     !sourceData[index].frozenStatus
   ) {
     return null;
   } else if (
-    sourceData[index].dangerous == CONT_SPECIAL_STATUS.CANCEL ||
+    //sourceData[index].dangerous == CONT_SPECIAL_STATUS.CANCEL ||
     sourceData[index].oversize == CONT_SPECIAL_STATUS.CANCEL ||
     sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.CANCEL
   ) {
     // là cont bị từ chối
     return CONT_SPECIAL_STATUS.CANCEL;
   } else if (
-    sourceData[index].dangerous == CONT_SPECIAL_STATUS.REQ ||
+    //sourceData[index].dangerous == CONT_SPECIAL_STATUS.REQ ||
     sourceData[index].oversize == CONT_SPECIAL_STATUS.REQ ||
     sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.REQ
   ) {
     // là cont đang chờ xác nhận
     return CONT_SPECIAL_STATUS.REQ;
   } else if (
-    sourceData[index].dangerous == CONT_SPECIAL_STATUS.INIT || // I
+    //sourceData[index].dangerous == CONT_SPECIAL_STATUS.INIT || // I
     sourceData[index].oversize == CONT_SPECIAL_STATUS.INIT ||
     sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.INIT
   ) {
