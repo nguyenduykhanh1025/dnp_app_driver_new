@@ -973,6 +973,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public List<ShipmentDetail> getShipmentDetailListForSendFReceiveE(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.getShipmentDetailListForSendFReceiveE(shipmentDetail);
 	}
+	
+	@Override
+	public List<ShipmentDetail> getShipmentDetailListInnerJoinToShipment(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.getShipmentDetailListInnerJoinToShipment(shipmentDetail);
+	}
 
 	@Override
 	public List<Long> getProcessOrderIdListByShipment(ShipmentDetail shipmentDetail) {
