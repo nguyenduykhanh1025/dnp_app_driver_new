@@ -1094,30 +1094,31 @@ function btnDetailRenderer(
     sztp = hot.getDataAtCell(row, 3);
     cargoType = hot.getDataAtCell(row, 9);
   }
-
-  if (sourceData && sourceData.length > 0) {
-    if (sourceData.length > row && sourceData[row].id) {
-      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
+  
+  // if (sourceData && sourceData.length > 0) { 
+  //  if (sourceData.length > row && sourceData[row].id) {
+  //     value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
+  //   } else if (containerNo && sztp) {
+  //     value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
+  //   } 
+  // }
+   
+  if (sourceData && sourceData.length > 0) {  
+   if (sourceData.length > row && sourceData[row].id) { 
+     const iElement = '<i style="margin-right: 3px;" class="fa fa-book"></i>';
+	   if(sourceData[row].cargoType == "DG"){
+	   	value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Nguy hiểm</button>`;
+	   }
+	   else if(sourceData[row].sztp.substring (2,3) == "R"){
+	   value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Lạnh</button>`;
+	   }
+	   else if(sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft){
+	   	value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Quá khổ</button>`;
+	   } 
     } else if (containerNo && sztp) {
-      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
-    }
+      value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Đặc biệt</button>`;
+    } 
   }
-
-  /*  if (sourceData && sourceData.length > 0) {  
-     if (sourceData.length > row && sourceData[row].id) { 
-       if(sourceData[row].cargoType == "DG"){
-          value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont nguy hiểm</button>`;
-       }
-       else if(sourceData[row].sztp.substring (2,3) == "R"){
-       value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont lạnh</button>`;
-       }
-       else if(sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft){
-          value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont quá khổ</button>`;
-       } 
-      } else if (containerNo && sztp) {
-        value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
-      } 
-    }*/
   $(td).html(value);
   cellProperties.readOnly = "true";
   return td;
@@ -2200,7 +2201,7 @@ function getDataFromTable(isValidate) {
       shipmentDetail.ventilation = dataModal.ventilation;
     }
 
-    console.log(detailInformationForContainerSpecial.data[index]);
+   // console.log(detailInformationForContainerSpecial.data[index]);
 
     if (berthplanList) {
       for (let i = 0; i < berthplanList.length; i++) {

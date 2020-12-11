@@ -2,6 +2,12 @@ const PREFIX = ctx + "logistic/receive-cont-full";
 var dogrid = document.getElementById("container-grid"), hot;
 var checkList = [];
 sourceData = reeferInfos;
+
+const PAYMENT_STATUS = {
+  success: "S",
+  process: "P"
+}
+
 $(document).ready(function () {
   initElement();
   initTabReefer();
@@ -13,10 +19,17 @@ function initElement() {
   if (shipmentDetail.sztp.includes("R")) {
     $('#reeferContainer').css('display', 'block');
     $("#tab-1").prop('checked', true);
-  } else if (oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack) {
-    $('#oversizeContainer').css('display', 'block');
-    $("#tab-2").prop('checked', true);
+  } 
+  // check theo trường hợp chỉ cần P với U là hiển thị cont lên
+  else if(shipmentDetail.sztp.includes("P") || shipmentDetail.sztp.includes("U")){
+       $('#oversizeContainer').css('display', 'block');
+       $("#tab-2").prop('checked', true);
   }
+  // check theo trường hợp cụ thể. nếu có thì mới hiển thị ra
+  // else if (oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack) {
+  //   $('#oversizeContainer').css('display', 'block');
+  //   $("#tab-2").prop('checked', true);
+  // }
 }
 
 function initTabReefer() {
@@ -34,9 +47,16 @@ function initTabReefer() {
   $('#humidity').val(shipmentDetail.humidity);
   $('#ventilation').val(shipmentDetail.ventilation);
 
-  if(!$('#powerDrawDate').val()) {
+  if (!$('#powerDrawDate').val()) {
     $('#extendPowerDrawDateContainer').css('display', 'none');
     $('#tableExtendDateContainer').css('display', 'none');
+  }
+
+  console.log('ssssssssssssssssssssss', shipmentDetail.frozenStatus);
+  if (shipmentDetail.frozenStatus == "S") {
+    console.log('iiiiiiiiiiiisii');
+    $("#powerDrawDate").attr('disabled', 'disabled');
+    $("#btnPowerDrawDate").css('display', 'none');
   }
 }
 
@@ -130,6 +150,56 @@ let contO = true;// qua kho
 let typeD = true;// nguy hiem 
 let typeR = true;// lanh
 let typeO = true;// qua kho
+ 
+function confirm() {
+  var truckNo = $("#truckNo").val();
+  var chassisNo = $("#chassisNo").val(); 
+  
+  if(shipmentFiles.length <1 && fileIds.length < 1 && !shipmentDetail.sztp.includes("R")){ 
+ $.modal.alertWarning("Vui lòng đính kèm file"); 
+  } 
+ else  
+if(oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")){
+    if(truckNo == null || truckNo == ""){
+      $.modal.alertWarning("Vui lòng nhập vào biển số xe đầu kéo rồi thử lại");
+    }
+    else if(chassisNo == null || chassisNo == "" && !shipmentDetail.sztp.includes("R")){
+      $.modal.alertWarning("Vui lòng nhập vào biển số xe rơ móc rồi thử lại");
+    }
+    else{ 
+      insertCont();
+      saveFile(); 
+    } 
+  //saveFile();
+} 
+// if(oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")){ 
+//   insertCont();
+//   saveFile();
+// }
+ 
+  else{
+    var lengthTemp = shipmentFilePath;
+     if (lengthTemp) {// nếu k có thì vào đây
+       insertCont();
+     }
+    if (!shipmentDetail.sztp.includes("R") && (!lengthTemp)) {// nếu có thì vào đây
+       saveFile();
+    }
+
+    // var lengthTemp = shipmentFilePath;
+    // if (lengthTemp == null || lengthTemp.length == 0) {// nếu k có thì vào đây
+    //   insertCont();
+    // }
+  
+    // if (!shipmentDetail.sztp.includes("R") && (lengthTemp != null || lengthTemp.length != 0)) {// nếu có thì vào đây
+    //   saveFile();
+    // }
+
+  }
+
+ 
+}
+
 
 // confirm
 function insertCont() {
@@ -145,6 +215,7 @@ function insertCont() {
     truckNo: truckNo,
     chassisNo: chassisNo
   }
+
   $.ajax(
     {
       url: prefix + "/saveDate",
@@ -164,26 +235,18 @@ function insertCont() {
       }
     });
 }
-
-
-
-function confirm() {
-  var lengthTemp = shipmentFilePath;
-  if (lengthTemp == null || lengthTemp.length == 0) {
-    insertCont();
-  }
-
-  if (!shipmentDetail.sztp.includes("R") && (lengthTemp != null || lengthTemp.length != 0)) {// nếu có thì vào đây
-    saveFile();
-  }
-}
-
+ 
 function saveFile() {
+//console.log("saveFile");
+  //console.log(fileIds);
   $.ajax(
     {
       url: prefix + "/saveFileImage",
       method: "POST",
       data: {
+
+        fileIds : fileIds,
+
         filePaths: shipmentFilePath,
         shipmentDetailId: shipmentDetail.id,
         shipmentId: shipmentDetail.shipmentId,
@@ -426,9 +489,9 @@ function configHandson() {
    }
   
 }
- 
+  shipmentFiles fileType
 if(oversize){
-  if(fileType){ 
+  if(fileType){  
      fileType.forEach(function (elementType, index) { 
          if(elementType == "O"){// cont quá khổ oversize
            typeO = true;
@@ -540,7 +603,8 @@ function numberHoursRenderer(instance, td, row, col, prop, value, cellProperties
   if (!value) {
     value = '';
   }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + value + '</div>');
+  let result = getBetweenTwoDateInSourceData(row);
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
 
@@ -548,29 +612,36 @@ function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (!value) {
     value = '';
   }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + value + '</div>');
+  let billNumber = 0;
+  for (let i = 0; i < billPowers.length; ++i) {
+    if (contsztp.substring(0, 2) == billPowers[i].dictLabel) {
+      billNumber = billPowers[i].dictValue;
+      break;
+    }
+  }
+  const data = numberWithCommas(billNumber * getBetweenTwoDateInSourceData(row));
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + data + '</div>');
   return td;
 }
 
 function paymentTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
+  console.log('sssssssssssssssssss');
   if (!value) {
     value = "";
   }
-
-  console.log(shipmentDetail);
-  if (shipmentDetail) {
-    if (!shipmentDetail.payType) {
-      value = "Chủ hàng thanh toán";
-    } else if (shipmentDetail.payType == "Before") {
-      value = "Hãng tàu thanh toán trước"
-    } else if (shipmentDetail.payType == "After") {
-      value = "Hãng tàu thanh toán sau"
+  //isBookingCheckPayment
+  if (sourceData[row] && sourceData[row].id) {
+    if (isBookingCheckPayment()) {
+      value = "Hãng tàu thanh toán";
     } else {
-      value = '';
+      if ('0' == creditFlag) {
+        value = "Khách hàng trả trước";
+      } else {
+        value = "Khách hàng trả sau";
+      }
     }
   }
-
 
   $(td).html(
     '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
@@ -610,28 +681,34 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     </a>
   </td>
   `;
-  if (sourceData.length != 1 && row == 0 && shipmentDetail.powerDrawDateStatus != "S") {
-    result += btnCancel;
-  } else if(shipmentDetail.powerDrawDateStatus == "S") {
+  if (shipmentDetail.powerDrawDateStatus == "S" && PAYMENT_STATUS.process == sourceData[row].paymentStatus) {
     result += btnPayment;
+  } else if (!sourceData[row].id || PAYMENT_STATUS.success == sourceData[row].paymentStatus) {
+    result += 'Đã thanh toán';
+  } else {
+    result += btnCancel;
   }
+
+
 
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
 
 function extendPowerDrawDate() {
+  let len = sourceData.length - 1;
+
   if (!$('#extendPowerDrawDate').val()) {
     $.modal.alertError("Quý khách vui lòng điền thông tin gia hạn.");
   }
-  else if(!$('#powerDrawDate').val()) {
+  else if (!$('#powerDrawDate').val()) {
     $.modal.alertError("Chưa có dữ liệu ngày rút điện.");
   }
   else if ($('#extendPowerDrawDate').val() < $('#powerDrawDate').val()) {
     $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
   }
-  else if (shipmentDetail.powerDrawDateStatus && shipmentDetail.powerDrawDateStatus != "S" || shipmentDetail.frozenStatus != 'S') {
-    $.modal.alertError("Không thể gia hạn thêm ngày rút điện. Gia hạn ngày rút điện đang chờ xét duyệt từ tổ lạnh.");
+  else if (shipmentDetail.frozenStatus != 'S' || shipmentDetail.powerDrawDateStatus != 'S' || (sourceData[len].status && sourceData[len].paymentStatus != PAYMENT_STATUS.success)) {
+    $.modal.alertError("Cont chưa thể gia hạn ngày rút điện");
   } else {
 
     let date = $('#extendPowerDrawDate').val();
@@ -724,4 +801,33 @@ function cancelDateDrop(id) {
     layer.close(layer.index);;
     return false;
   });
+}
+
+function isBookingCheckPayment() {
+  let result = false;
+  for (let i = 0; i < oprlistBookingCheck.length; ++i) {
+    if (shipmentDetail.opeCode == oprlistBookingCheck[i].dictValue) {
+      result = true;
+      break;
+    }
+  }
+  return result;
+}
+
+
+function getBetweenTwoDate(date1, date2) {
+  const diffTime = Math.abs(date2 - date1);
+  return Math.ceil(diffTime / (1000 * 60 * 60));
+}
+
+function getBetweenTwoDateInSourceData(row) {
+  let result = '';
+  if (sourceData[row] && sourceData[row].dateGetPower && sourceData[row].dateSetPower) {
+    result = getBetweenTwoDate(new Date(sourceData[row].dateSetPower), new Date(sourceData[row].dateGetPower));
+  }
+  return result;
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 }

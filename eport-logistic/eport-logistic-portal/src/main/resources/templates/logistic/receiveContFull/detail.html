@@ -107,7 +107,7 @@
                 </span>
                 <div class="input-group date col-sm-8 col-xs-6" id="datetimepicker1">
                   <input type="text" class="form-control" name="powerDrawDate" id="powerDrawDate" />
-                  <span class="input-group-addon">
+                  <span class="input-group-addon" id="btnPowerDrawDate">
                     <span class="glyphicon glyphicon-calendar"></span>
                   </span>
                 </div>
@@ -354,12 +354,17 @@
     var shipmentDetailId = [[${ shipmentDetailId }]];
     var shipmentDetail = [[${ shipmentDetail }]];
     var shipmentImage = [[${ shipmentImage }]];
-    var shipmentFiles = [[${ shipmentFiles }]];
+    var shipmentFiles = [[${ shipmentFiles }]]; 
+    var filePath = [[${ filePath }]];
+    var fileIds = [[${ fileIds }]];  
     var powerDropDate = [[${ powerDropDate }]];
     var reeferInfos = [[${ reeferInfos }]];
+    var oprlistBookingCheck = [[${oprlistBookingCheck}]];
+    var creditFlag = /*[[${creditFlag}]]*/;
+    var billPowers = [[${billPowers}]];
   </script>
-  <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=12345}"></script>
-  <script th:src="@{/js/logistic/receiveContFull/detail.js?v=123478}"></script>
+  <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=20201012}"></script>
+  <script th:src="@{/js/logistic/receiveContFull/detail.js?v=20201012}"></script>
 
 
   <script type="text/javascript">

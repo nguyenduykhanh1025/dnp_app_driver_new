@@ -138,6 +138,11 @@ public interface ShipmentDetailMapper {
 	public List<ShipmentDetail> getShipmentDetailListForSendFReceiveE(ShipmentDetail shipmentDetail);
 
 	/***
+	 * getShipmentDetailListInnerJoinToShipment
+	 */
+	public List<ShipmentDetail> getShipmentDetailListInnerJoinToShipment(ShipmentDetail shipmentDetail);
+	
+	/***
 	 * get command List of batch
 	 */
 	public List<Long> getCommandListInBatch(ShipmentDetail shipmentDetail);

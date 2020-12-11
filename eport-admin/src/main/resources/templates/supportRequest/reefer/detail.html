@@ -96,19 +96,19 @@
             <div class="form-horizontal mt10 row">
               <div class="form-group col-sm-6 row">
                 <span class="control-label col-sm-4 col-xs-6" style="text-align: left">
-                  <b class="text-black">Số giờ cắm điện (h):</b>
+                  <b class="text-black">Giờ cắm điện (h):</b>
                 </span>
                 <div class="input-group date col-sm-8 col-xs-6">
-                  <input type="text" class="form-control" id="numberHours" name="numberHours" />
+                  <input type="text" class="form-control" id="numberHours" name="numberHours" readonly/>
                 </div>
               </div>
 
               <div class="form-group col-sm-6 row">
                 <span class="control-label col-sm-4 col-xs-6" style="text-align: left">
-                  <b class="text-black">Thanh toán:</b>
+                  <b class="text-black">Thành tiền (vnd):</b>
                 </span>
                 <div class="input-group date col-sm-8 col-xs-6">
-                  <input type="text" class="form-control" id="moneyNumber" name="paymentPerson" />
+                  <input type="text" class="form-control" id="moneyNumber" name="paymentPerson" readonly/>
                 </div>
               </div>
             </div>
@@ -297,7 +297,10 @@
     var powerDropDate = [[${ powerDropDate }]];
 
     var reeferInfos = [[${ reeferInfos }]];
-
+    var billPowers = [[${billPowers}]];
+    var oprlistBookingCheck = [[${oprlistBookingCheck}]];
+	  var creditFlag = /*[[${creditFlag}]]*/;
+    
     $(document).ready(function () {
       var dangerous = shipmentDetail.dangerous;
       var dangerousIMO = shipmentDetail.dangerousImo;
@@ -311,8 +314,6 @@
       var oversizeLeft = shipmentDetail.oversizeLeft;
       var oversizeFront = shipmentDetail.oversizeFront;
       var oversizeBack = shipmentDetail.oversizeBack;
-
-      console.log(shipmentDetail);
     });
   </script>
   <script th:src="@{/eport/js/modules/supportRequest/reefer/detail.js?v=20201029}"></script>

@@ -3,6 +3,7 @@ var dogrid = document.getElementById("container-grid"), hot;
 var checkList = [];
 var sourceData = reeferInfos;
 
+console.log(shipmentDetail);
 $(document).ready(function () {
   initElement();
   initTabReefer();
@@ -225,6 +226,7 @@ $(document).ready(function () {
     });
   }
 });
+
 // xóa khi đã lưu có id 
 function removeImage(element, fileIndex) {
   shipmentFiles.forEach(function (value, index) {
@@ -454,3 +456,4 @@ function getBetweenTwoDateInSourceData(row) {
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 }
+

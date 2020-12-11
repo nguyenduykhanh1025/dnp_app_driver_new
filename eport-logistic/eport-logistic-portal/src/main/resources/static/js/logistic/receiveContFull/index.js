@@ -798,9 +798,12 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (sourceData[row].sztp.includes("R")) {
     textContent = "Lạnh";
   }
-  else if (sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft || sourceData[row].oversizeFront || sourceData[row].oversizeBack) {
+  else if(sourceData[row].sztp.includes("P") || sourceData[row].sztp.includes("U")){
     textContent = "Quá Khổ"
   }
+  // else if (sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft) {
+  //   textContent = "Quá Khổ"
+  // }
 
   $(td).attr('id', 'wgt' + row).addClass("htMiddle").addClass("htCenter");
   let containerNo;
@@ -1405,26 +1408,26 @@ function isDisableCustomBTN() {
 function getStatusContFollowIndexBTN(index) {
   if (
     !sourceData[index].oversize &&
-    !sourceData[index].dangerous &&
+    //!sourceData[index].dangerous &&
     !sourceData[index].frozenStatus
   ) {
     return null;
   } else if (
-    sourceData[index].dangerous == CONT_SPECIAL_STATUS.CANCEL ||
+    //sourceData[index].dangerous == CONT_SPECIAL_STATUS.CANCEL ||
     sourceData[index].oversize == CONT_SPECIAL_STATUS.CANCEL ||
     sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.CANCEL
   ) {
     // là cont bị từ chối
     return CONT_SPECIAL_STATUS.CANCEL;
   } else if (
-    sourceData[index].dangerous == CONT_SPECIAL_STATUS.REQ ||
+    //sourceData[index].dangerous == CONT_SPECIAL_STATUS.REQ ||
     sourceData[index].oversize == CONT_SPECIAL_STATUS.REQ ||
     sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.REQ
   ) {
     // là cont đang chờ xác nhận
     return CONT_SPECIAL_STATUS.REQ;
   } else if (
-    sourceData[index].dangerous == CONT_SPECIAL_STATUS.INIT || // I
+    //sourceData[index].dangerous == CONT_SPECIAL_STATUS.INIT || // I
     sourceData[index].oversize == CONT_SPECIAL_STATUS.INIT ||
     sourceData[index].frozenStatus == CONT_SPECIAL_STATUS.INIT
   ) {

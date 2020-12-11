@@ -375,4 +375,9 @@ public interface EportConstants {
 	public static final Integer SPECIAL_SERVICE_LOAD_WAREHOUSE = 6;
 	/** Special service load yard (dong hang tai bai) */
 	public static final Integer SPECIAL_SERVICE_LOAD_YARD = 7;
+
+	/** status payment of bill cont reefer (trang thai da thanh toan chua cua cont lanh khi gia han) */
+	public static final String CONT_REEFER_PAYMENT_SUCCESS = "S";
+	/** status payment of bill cont reefer (trang thai chua thanh toan chua cua cont lanh khi gia han) */
+	public static final String CONT_REEFER_PAYMENT_PROCESS = "P";
 }

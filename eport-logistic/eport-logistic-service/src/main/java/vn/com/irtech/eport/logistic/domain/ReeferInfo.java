@@ -55,7 +55,10 @@ public class ReeferInfo extends BaseEntity
     /** logistic group iid */
     @Excel(name = "logistic group iid")
     private Long logisticGroupId;
-
+    
+    @Excel(name = "Payment status")
+    private String paymentStatus;
+    
     public void setId(Long id) 
     {
         this.id = id;
@@ -147,7 +150,16 @@ public class ReeferInfo extends BaseEntity
         return logisticGroupId;
     }
 
-    @Override
+    
+    public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
@@ -164,6 +176,7 @@ public class ReeferInfo extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("shipmentDetailId", getShipmentDetailId())
             .append("logisticGroupId", getLogisticGroupId())
+            .append("paymentStatus", getPaymentStatus())
             .toString();
     }
 }

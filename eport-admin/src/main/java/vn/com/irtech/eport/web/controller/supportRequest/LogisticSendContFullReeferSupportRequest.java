@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+
+import net.bytebuddy.asm.Advice.This;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -198,7 +200,8 @@ public class LogisticSendContFullReeferSupportRequest extends AdminBaseControlle
 		mmap.put("contDangerousImos", dictDataService.getType("cont_dangerous_imo"));
 		mmap.put("contDangerousUnnos", dictDataService.getType("cont_dangerous_unno"));
 
-		mmap.put("shipmentDetail", this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId));
+		ShipmentDetail shipmentDetailFromDB = this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		mmap.put("shipmentDetail", shipmentDetailFromDB);
 
 		ShipmentImage shipmentImage = new ShipmentImage();
 		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
@@ -214,6 +217,10 @@ public class LogisticSendContFullReeferSupportRequest extends AdminBaseControlle
 		mmap.put("powerDropDate", shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
 		
 		mmap.put("reeferInfos", reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId));
+		
+		mmap.put("billPowers", dictService.getType("bill_power"));
+		mmap.put("oprlistBookingCheck", dictService.getType("opr_list_booking_check"));
+		mmap.put("creditFlag", this.logisticGroupService.selectLogisticGroupById(shipmentDetailFromDB.getLogisticGroupId()));
 		return PREFIX + "/detail";
 	}
 

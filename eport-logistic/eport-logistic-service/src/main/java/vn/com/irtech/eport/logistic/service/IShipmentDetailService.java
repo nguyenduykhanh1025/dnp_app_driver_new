@@ -226,6 +226,12 @@ public interface IShipmentDetailService {
 	 * getShipmentDetail for SendContFull and receiveContEmpty
 	 */
 	public List<ShipmentDetail> getShipmentDetailListForSendFReceiveE(ShipmentDetail shipmentDetail);
+	
+	/***
+	 * getShipmentDetailListInnerJoinToShipment
+	 */
+	public List<ShipmentDetail> getShipmentDetailListInnerJoinToShipment(ShipmentDetail shipmentDetail);
+	
 
 	/***
 	 * get process order id list by shipment id
