@@ -214,6 +214,7 @@ function clearInput() {
 
 // HANDLE WHEN SELECT A SHIPMENT
 function getSelected() {
+	console.log('ssssssssssssssssss');
 	var row = $("#dg").datagrid("getSelected");
 	if (row) {
 		$("#loCode").text(row.id);
@@ -1170,6 +1171,7 @@ function updateLayout() {
 }
 
 function loadShipmentDetail(id) {
+	console.log('Aloooooooooooooooooooooooooo');
 	$.ajax({
 		url: PREFIX + "/shipment/" + id + "/shipment-detail",
 		method: "GET",

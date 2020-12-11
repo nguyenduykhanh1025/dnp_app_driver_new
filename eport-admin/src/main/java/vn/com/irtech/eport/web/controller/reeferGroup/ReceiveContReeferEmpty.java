@@ -1,7 +1,9 @@
-package vn.com.irtech.eport.web.controller.container.supplier;
+package vn.com.irtech.eport.web.controller.reeferGroup;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.databind.deser.impl.CreatorCandidate.Param;
 
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.EportConstants;
@@ -35,13 +39,14 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysUser;
+import vn.com.irtech.eport.web.controller.AdminBaseController;
 import vn.com.irtech.eport.web.mqtt.MqttService;
 import vn.com.irtech.eport.web.mqtt.MqttService.NotificationCode;
 
 @Controller
-@RequestMapping("/container/supplier/reefer")
-public class ContainerSupplierReeferController extends BaseController{
-	private final static String PREFIX = "container/supplierReefer";
+@RequestMapping("/reefer-gruop/receive-cont-empty")
+public class ReceiveContReeferEmpty extends AdminBaseController {
+	private final static String PREFIX = "/reeferGruop/ReceiveContEmpty";
 	private final static String keyReefer = "R";
 	@Autowired
 	private IShipmentService shipmentService;
@@ -76,6 +81,50 @@ public class ContainerSupplierReeferController extends BaseController{
 	@GetMapping("/confirmation")
 	public String getConfirmationForm() {
 		return PREFIX + "/confirmation";
+	}
+
+	@GetMapping("/shipment-details")
+	@ResponseBody
+	public AjaxResult getShipmentDetails() {
+		AjaxResult ajaxResult = AjaxResult.success();
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setSztp(keyReefer);
+
+		Map<String, Object> params = shipmentDetail.getParams();
+		if (params == null) {
+			params = new HashMap<>();
+		}
+		params.put("contSupplyStatus", 'R');
+
+		shipmentDetail.setParams(params);
+
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService
+				.getShipmentDetailListInnerJoinToShipment(shipmentDetail);
+		if (shipmentDetails != null) {
+			ajaxResult.put("shipmentDetails", shipmentDetails);
+		} else {
+			ajaxResult = AjaxResult.error();
+		}
+		return ajaxResult;
+	}
+
+	@GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail")
+	public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
+			@PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
+
+		mmap.put("containerNo", containerNo);
+		mmap.put("sztp", sztp);
+		mmap.put("shipmentDetailId", shipmentDetailId);
+		mmap.put("shipmentDetail", this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId));
+
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
+		List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImage);
+		for (ShipmentImage shipmentImage2 : shipmentImages) {
+			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
+		}
+		mmap.put("shipmentFiles", shipmentImages);
+		return PREFIX + "/detail";
 	}
 
 	@PostMapping("/shipments")
@@ -207,158 +256,54 @@ public class ContainerSupplierReeferController extends BaseController{
 		return ajaxResult;
 	}
 
-	@PostMapping("/reject")
-	@ResponseBody
-	public AjaxResult rejectSupply(String content, String shipmentDetailIds, Long shipmentId, Long logisticGroupId) {
-		if (StringUtils.isEmpty(shipmentDetailIds) || shipmentId == null || logisticGroupId == null) {
-			return error("Invalid input!");
-		}
-
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_HOLD);
-		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
-
-		SysUser user = ShiroUtils.getSysUser();
-		ShipmentComment shipmentComment = new ShipmentComment();
-		shipmentComment.setShipmentId(shipmentId);
-		shipmentComment.setLogisticGroupId(logisticGroupId);
-		shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CONT_SUPPLIER_REJECT);
-		shipmentComment.setContent(content);
-		shipmentComment.setCreateBy(user.getUserName());
-		shipmentComment.setUserId(user.getUserId());
-		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
-		shipmentComment.setUserAlias(user.getDept().getDeptName());
-		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
-		shipmentComment.setCommentTime(new Date());
-		shipmentComment.setResolvedFlg(true);
-		shipmentCommentService.insertShipmentComment(shipmentComment);
-
-		// Send notification to om
-		try {
-			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, shipmentComment.getTopic(),
-					shipmentComment.getContent(), "", EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
-		} catch (MqttException e) {
-			logger.error("Fail to send message om notification app: " + e);
-		}
-
-		// Check update shipment if all container doesn't need container for supply
-		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
-		shipmentDetailParam.setShipmentId(shipmentId);
-		shipmentDetailParam.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_REQ);
-		if (CollectionUtils.isEmpty(shipmentDetailService.selectShipmentDetailList(shipmentDetailParam))) {
-			Shipment shipment = new Shipment();
-			shipment.setId(shipmentId);
-			shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
-			shipmentService.updateShipment(shipment);
-		}
-
-		return success();
-	}
-
-//	@PostMapping("/order/cancel")
-//	@ResponseBody
-//	public AjaxResult cancelOrderReq(String content, String shipmentDetailIds, Long shipmentId,  Long logisticGroupId) {		
-//		// Check container process status Y 
-//		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
-//		if (CollectionUtils.isEmpty(shipmentDetails)) {
-//			return error("Không tìm thấy dữ liệu container trong hệ thống.");
-//		}
-//		
-//		String containerNotOrder = "";
-//		for (ShipmentDetail shDetail : shipmentDetails) {
-//			if (!"Y".equals(shDetail.getProcessStatus())) {
-//				containerNotOrder += shDetail.getContainerNo() + ",";
-//			}
-//		}
-//		if (containerNotOrder.length() > 0) {
-//			return error("Các container " + containerNotOrder.substring(0, containerNotOrder.length()-1) + " chưa được làm lệnh trên eport.");
-//		}
-//		
-//		ShipmentDetail shipmentDetail = new ShipmentDetail();
-//		shipmentDetail.setProcessStatus(EportConstants.PROCESS_STATUS_SHIPMENT_DETAIL_DELETE);
-//		shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_HOLD);
-//		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
-//		
-//		// Create process order cancel pickup empty
-//		// Send req cancel order to robot
-//		ProcessOrder processOrder = new ProcessOrder();
-//		ProcessJsonData processJsonData = new ProcessJsonData();
-//		processJsonData.setShDetailIds(shipmentDetailIds);
-//		processOrder.setProcessData(new Gson().toJson(processJsonData));
-//		
-//		SysUser user = ShiroUtils.getSysUser();
-//		ShipmentComment shipmentComment = new ShipmentComment();
-//		shipmentComment.setShipmentId(shipmentId);
-//		shipmentComment.setLogisticGroupId(logisticGroupId);
-//		shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CONT_SUPPLIER_DELETE);
-//		shipmentComment.setContent(content);
-//		shipmentComment.setCreateBy(user.getUserName());
-//		shipmentComment.setUserId(user.getUserId());
-//		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
-//		shipmentComment.setUserAlias(user.getDept().getDeptName());
-//		shipmentComment.setUserName(user.getUserName());
-//		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
-//		shipmentComment.setCommentTime(new Date());
-//		shipmentComment.setResolvedFlg(true);
-//		shipmentCommentService.insertShipmentComment(shipmentComment);
-//		
-//		// Check update shipment if all container doesn't need container for supply
-//		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
-//		shipmentDetailParam.setShipmentId(shipmentId);
-//		shipmentDetailParam.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_REQ);
-//		if (CollectionUtils.isEmpty(shipmentDetailService.selectShipmentDetailList(shipmentDetailParam))) {
-//			Shipment shipment = new Shipment();
-//			shipment.setId(shipmentId);
-//			shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
-//			shipmentService.updateShipment(shipment);
-//		}
-//		
-//		return success();
-//	}
-
 	@PostMapping("/delete")
 	@ResponseBody
-	public AjaxResult deleteSupply(String content, String shipmentDetailIds, Long shipmentId, Long logisticGroupId) {
+	public AjaxResult deleteSupply(String content, String shipmentDetailIds) {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setProcessStatus(EportConstants.PROCESS_STATUS_SHIPMENT_DETAIL_DELETE);
 		shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_HOLD);
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
 
-		SysUser user = ShiroUtils.getSysUser();
-		ShipmentComment shipmentComment = new ShipmentComment();
-		shipmentComment.setShipmentId(shipmentId);
-		shipmentComment.setLogisticGroupId(logisticGroupId);
-		shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CONT_SUPPLIER_DELETE);
-		shipmentComment.setContent(content);
-		shipmentComment.setCreateBy(user.getUserName());
-		shipmentComment.setUserId(user.getUserId());
-		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
-		shipmentComment.setUserAlias(user.getDept().getDeptName());
-		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
-		shipmentComment.setCommentTime(new Date());
-		shipmentComment.setResolvedFlg(true);
-		shipmentCommentService.insertShipmentComment(shipmentComment);
+		for(String i : shipmentDetailIds.split(",")) {
+			ShipmentDetail detail = this.shipmentDetailService.selectShipmentDetailById(Long.parseLong(i));
+			Long shipmentId = detail.getShipmentId();
+			Long logisticGroupId = detail.getLogisticGroupId();
+			SysUser user = ShiroUtils.getSysUser();
+			ShipmentComment shipmentComment = new ShipmentComment();
+			shipmentComment.setShipmentId(shipmentId);
+			shipmentComment.setLogisticGroupId(logisticGroupId);
+			shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CONT_SUPPLIER_DELETE);
+			shipmentComment.setContent(content);
+			shipmentComment.setCreateBy(user.getUserName());
+			shipmentComment.setUserId(user.getUserId());
+			shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+			shipmentComment.setUserAlias(user.getDept().getDeptName());
+			shipmentComment.setUserName(user.getUserName());
+			shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
+			shipmentComment.setCommentTime(new Date());
+			shipmentComment.setResolvedFlg(true);
+			shipmentCommentService.insertShipmentComment(shipmentComment);
 
-		// Send notification to om
-		try {
-			mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, shipmentComment.getTopic(),
-					shipmentComment.getContent(), "", EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
-		} catch (MqttException e) {
-			logger.error("Fail to send message om notification app: " + e);
-		}
+			// Send notification to om
+			try {
+				mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, shipmentComment.getTopic(),
+						shipmentComment.getContent(), "", EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
+			} catch (MqttException e) {
+				logger.error("Fail to send message om notification app: " + e);
+			}
 
-		// Check update shipment if all container doesn't need container for supply
-		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
-		shipmentDetailParam.setShipmentId(shipmentId);
-		shipmentDetailParam.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_REQ);
-		if (CollectionUtils.isEmpty(shipmentDetailService.selectShipmentDetailList(shipmentDetailParam))) {
-			Shipment shipment = new Shipment();
-			shipment.setId(shipmentId);
-			shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
-			shipmentService.updateShipment(shipment);
+			// Check update shipment if all container doesn't need container for supply
+			ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+			shipmentDetailParam.setShipmentId(shipmentId);
+			shipmentDetailParam.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_REQ);
+			if (CollectionUtils.isEmpty(shipmentDetailService.selectShipmentDetailList(shipmentDetailParam))) {
+				Shipment shipment = new Shipment();
+				shipment.setId(shipmentId);
+				shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
+				shipmentService.updateShipment(shipment);
+			}
 		}
+		
 
 		return success();
 	}
@@ -387,4 +332,101 @@ public class ContainerSupplierReeferController extends BaseController{
 			return AjaxResult.warn("Không tìm thấy thông tin container");
 		}
 	}
+
+	@PostMapping("/confirm")
+	@Transactional
+	@ResponseBody
+	public AjaxResult confirm(@RequestBody List<ShipmentDetail> shipmentDetails) {
+		if (shipmentDetails != null) {
+			boolean allUpdate = true;
+			SysUser user = ShiroUtils.getSysUser();
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				if (StringUtils.isEmpty(shipmentDetail.getContainerNo()) || EportConstants.CONTAINER_SUPPLY_STATUS_REQ
+						.equalsIgnoreCase(shipmentDetail.getContSupplyStatus())) {
+					allUpdate = false;
+				} else if (!EportConstants.CONTAINER_SUPPLY_STATUS_HOLD
+						.equalsIgnoreCase(shipmentDetail.getContSupplyStatus())) {
+					shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_FINISH);
+					// Set container is qualified to verify otp to make order with status = 2
+					shipmentDetail.setStatus(2);
+					shipmentDetail.setContSupplierName(user.getLoginName());
+				}
+				shipmentDetail.setUpdateBy(user.getLoginName());
+				if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
+					return error("Cấp container thất bại từ container: " + shipmentDetail.getContainerNo());
+				}
+			}
+			if (allUpdate) {
+				Shipment shipment = new Shipment();
+				shipment.setId(shipmentDetails.get(0).getShipmentId());
+				shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
+				shipment.setUpdateTime(new Date());
+				shipment.setUpdateBy(user.getLoginName());
+				shipmentService.updateShipment(shipment);
+			}
+			return success("Cấp container thành công");
+		}
+		return error("Cấp container thất bại");
+	}
+
+	@PostMapping("/reject")
+	@ResponseBody
+	public AjaxResult rejectSupply(@RequestBody List<ShipmentDetail> shipmentDetails) {
+		StringBuilder shipmentDetailIds = new StringBuilder();
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			shipmentDetailIds.append(shipmentDetail.getId());
+			shipmentDetailIds.append(",");
+		}
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_HOLD);
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds.toString(), shipmentDetail);
+		return success();
+	}
+
+	@PostMapping("/reject-information")
+	@ResponseBody
+	public AjaxResult rejectSupplyInformation(String content, String shipmentDetailIds) {
+
+		for (String i : shipmentDetailIds.split(",")) {
+			ShipmentDetail shipmentDetail = this.shipmentDetailService.selectShipmentDetailById(Long.parseLong(i));
+			Long shipmentId = shipmentDetail.getShipmentId();
+			Long logisticGroupId = shipmentDetail.getLogisticGroupId();
+			SysUser user = ShiroUtils.getSysUser();
+			ShipmentComment shipmentComment = new ShipmentComment();
+			shipmentComment.setShipmentId(shipmentId);
+			shipmentComment.setLogisticGroupId(logisticGroupId);
+			shipmentComment.setTopic(EportConstants.TOPIC_COMMENT_CONT_SUPPLIER_REJECT);
+			shipmentComment.setContent(content);
+			shipmentComment.setCreateBy(user.getUserName());
+			shipmentComment.setUserId(user.getUserId());
+			shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
+			shipmentComment.setUserAlias(user.getDept().getDeptName());
+			shipmentComment.setUserName(user.getUserName());
+			shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
+			shipmentComment.setCommentTime(new Date());
+			shipmentComment.setResolvedFlg(true);
+			shipmentCommentService.insertShipmentComment(shipmentComment);
+
+			// Send notification to om
+			try {
+				mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, shipmentComment.getTopic(),
+						shipmentComment.getContent(), "", EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
+			} catch (MqttException e) {
+				logger.error("Fail to send message om notification app: " + e);
+			}
+
+			// Check update shipment if all container doesn't need container for supply
+			ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+			shipmentDetailParam.setShipmentId(shipmentId);
+			shipmentDetailParam.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_REQ);
+			if (CollectionUtils.isEmpty(shipmentDetailService.selectShipmentDetailList(shipmentDetailParam))) {
+				Shipment shipment = new Shipment();
+				shipment.setId(shipmentId);
+				shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
+				shipmentService.updateShipment(shipment);
+			}
+		}
+		return success();
+	}
+
 }

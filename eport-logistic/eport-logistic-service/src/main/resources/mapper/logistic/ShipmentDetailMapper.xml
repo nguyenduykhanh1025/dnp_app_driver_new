@@ -576,9 +576,11 @@
 		oversize_Front,
 		oversize_Back,
 		frozen_status,
-		delivery_address, delivery_mobile, delivery_remark, eta, etd, status,
+		delivery_address, delivery_mobile,
+		delivery_remark, eta, etd, status,
 		remark, special_service,
-		create_by, create_time, update_by,
+		create_by,
+		create_time, update_by,
 		actual_date_receipt,
 		update_time,
 		date_receipt_status, date_receipt,
@@ -653,6 +655,113 @@
 				test="contSupplierName != null and contSupplierName != 'contSupplierName'">and cont_supplier_name =
 				#{contSupplierName}
 			</if>
+		</where>
+	</select>
+
+	<select id="getShipmentDetailListInnerJoinToShipment"
+		parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
+		SELECT sd.id,
+		sd.shipment_id,
+		sd.logistic_group_id,
+		sd.process_order_id,
+		sd.register_no,
+		sd.container_no,
+		sd.container_status,
+		sd.sztp,
+		sd.sztp_define,
+		sd.temperature,
+		sd.day_setup_temperature,
+		sd.fe,
+		sd.seal_no,
+		sd.consignee,
+		sd.expired_dem,
+		sd.empty_expired_dem,
+		sd.wgt,
+		sd.vsl_name,
+		sd.vsl_nm,
+		sd.voy_no,
+		sd.voy_carrier,
+		sd.ope_code,
+		sd.carrier_name,
+		sd.loading_port,
+		sd.discharge_port,
+		sd.transport_type,
+		sd.empty_depot,
+		sd.empty_depot_location,
+		sd.cargo_type,
+		sd.vgm_chk,
+		sd.vgm_inspection_department,
+		sd.vgm_max_gross,
+		sd.frozen_status,
+		sd.oversize,
+		sd.oversize_type,
+		sd.oversize_top,
+		sd.oversize_right,
+		sd.oversize_left,
+		sd.oversize_front,
+		sd.oversize_back,
+		sd.dangerous,
+		sd.dangerous_imo,
+		sd.dangerous_unno,
+		sd.dangerous_name_product,
+		sd.dangerous_packing,
+		sd.vgm,
+		sd.vgm_person_info,
+		sd.preorder_pickup,
+		sd.pre_pickup_payment_status,
+		sd.custom_status,
+		sd.payment_status,
+		sd.process_status,
+		sd.do_status,
+		sd.do_received_time,
+		sd.user_verify_status,
+		sd.finish_status,
+		sd.status,
+		sd.order_no,
+		sd.tax_code,
+		sd.consignee_by_tax_code,
+		sd.planning_date,
+		sd.quality_requirement,
+		sd.cont_supply_remark,
+		sd.cont_supplier_name,
+		sd.remark,
+		sd.pay_type,
+		sd.payer,
+		sd.payer_name,
+		sd.customs_no,
+		sd.custom_scan_time,
+		sd.delivery_address,
+		sd.delivery_mobile,
+		sd.delivery_remark,
+		sd.eta,
+		sd.etd,
+		sd.container_remark,
+		sd.det_free_time,
+		sd.create_by,
+		sd.create_time,
+		sd.update_by,
+		sd.date_receipt,
+		sd.actual_date_receipt,
+		sd.update_time,
+		sd.date_receipt_status,
+		sd.special_service,
+		sd.truck_no,
+		sd.chassis_no,
+		sd.humidity,
+		sd.ventilation,
+		sd.power_draw_date_status,
+		sd.power_draw_date,
+		sd.support_status,
+		s.booking_no,
+		s.bl_no,
+		sd.cont_supply_status
+		from
+		shipment_detail sd inner join shipment s on
+		sd.shipment_id = s.id
+		<where>
+			<if test="sztp != null and sztp != ''"> and sd.sztp like concat(concat('%', #{sztp}), '%')</if>
+			<if
+				test="params.contSupplyStatus != null  and params.contSupplyStatus != ''"> and sd.CONT_SUPPLY_STATUS = #{params.contSupplyStatus}</if>
 		</where>
 	</select>
 
@@ -1868,9 +1977,11 @@
 				test="shipmentDetail.dateReceiptStatus != null and shipmentDetail.dateReceiptStatus != ''">date_receipt_status = #{shipmentDetail.dateReceiptStatus},</if>
 			<if test="shipmentDetail.dateReceipt != null">date_receipt = #{shipmentDetail.dateReceipt},</if>
 			<if test="shipmentDetail.actualDateReceipt != null">actual_date_receipt =
-				#{shipmentDetail.actualDateReceipt},</if>
+				#{shipmentDetail.actualDateReceipt},
+			</if>
 			<if test="shipmentDetail.specialService != null">special_service = #{shipmentDetail.specialService},</if>
-			<if test="shipmentDetail.supportStatus != null and shipmentDetail.supportStatus != ''">support_status = #{shipmentDetail.supportStatus},</if>
+			<if
+				test="shipmentDetail.supportStatus != null and shipmentDetail.supportStatus != ''">support_status = #{shipmentDetail.supportStatus},</if>
 			update_time = sysdate
 		</trim>
 		<where>
