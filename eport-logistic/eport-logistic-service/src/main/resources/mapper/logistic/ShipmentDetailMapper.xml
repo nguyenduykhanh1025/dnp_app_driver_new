@@ -760,8 +760,7 @@
 		sd.shipment_id = s.id
 		<where>
 			<if test="sztp != null and sztp != ''"> and sd.sztp like concat(concat('%', #{sztp}), '%')</if>
-			<if
-				test="params.contSupplyStatus != null  and params.contSupplyStatus != ''"> and sd.CONT_SUPPLY_STATUS = #{params.contSupplyStatus}</if>
+			<if test="contSupplyStatus != null  and contSupplyStatus != ''"> and sd.CONT_SUPPLY_STATUS = #{contSupplyStatus}</if>
 		</where>
 	</select>
 
