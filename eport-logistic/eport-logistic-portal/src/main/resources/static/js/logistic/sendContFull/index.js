@@ -1112,8 +1112,9 @@ function btnDetailRenderer(
 	   else if(sourceData[row].sztp.substring (2,3) == "R"){
 	   value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Lạnh</button>`;
 	   }
-	   else if(sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft){
-	   	value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Quá khổ</button>`;
+	   //else if(sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft){
+      else if(sourceData[row].sztp.substring (2,3) == "P" || sourceData[row].sztp.substring (2,3) == "U"){
+	   	value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Quá khổ</button>`;
 	   } 
     } else if (containerNo && sztp) {
       value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Đặc biệt</button>`;
