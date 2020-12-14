@@ -2,7 +2,10 @@ const PREFIX = ctx + "reefer-gruop/extend-draw-date";
 var dogrid = document.getElementById("container-grid"), hot;
 var checkList = [];
 var sourceData = reeferInfos;
-
+const PAYMENT_STATUS = {
+  success: "S",
+  process: "P"
+}
 console.log(shipmentDetail);
 $(document).ready(function () {
   initElement();
@@ -257,6 +260,7 @@ function removeImage(element, fileIndex) {
 
 }
 
+
 function configHandson() {
   config = {
     stretchH: "all",
@@ -277,16 +281,19 @@ function configHandson() {
         case 0:
           return "Trạng Thái";
         case 1:
-          return "Ngày gia hạn cắm điện";
+          return "Ngày Gia Hạn Cắm Điện";
         case 2:
-          return "Ngày gia hạn rút điện";
+          return "Ngày Gia Hạn Rút Điện";
         case 3:
-          return "Số giờ";
+          return "Số Giờ (h)";
         case 4:
-          return "Thành tiền";
+          return "Thành Tiền (vnd)";
+        case 5:
+          return "Hình Thức Thanh Toán";
+
       }
     },
-    colWidths: [60, 80, 80, 60, 80],
+    colWidths: [60, 100, 100, 60, 90, 140],
     columns: [
 
       {
@@ -297,24 +304,28 @@ function configHandson() {
       {
         data: "dateSetPower",
         renderer: dateSetPower,
-        readOnly: true,
+        readOnly: true
       },
       {
         data: "dateGetPower",
         renderer: dateGetPower,
-        readOnly: true,
+        readOnly: true
       },
       {
         data: "hourNumber",
         renderer: numberHoursRenderer,
-        readOnly: true,
+        readOnly: true
       },
       {
         data: "moneyNumber",
         renderer: paymentRenderer,
-        readOnly: true,
+        readOnly: true
       },
-
+      {
+        data: "moneyTypeNumber",
+        renderer: paymentTypeRenderer,
+        readOnly: true
+      },
     ],
   };
 
@@ -398,6 +409,32 @@ function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + data + '</div>');
   return td;
 }
+function paymentTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = "";
+  }
+  //isBookingCheckPayment
+  if (sourceData[row] && sourceData[row].id) {
+    if (isBookingCheckPayment()) {
+      value = "Hãng tàu thanh toán";
+    } else {
+      if ('0' == creditFlag) {
+        value = "Khách hàng trả trước";
+      } else {
+        value = "Khách hàng trả sau";
+      }
+    }
+  }
+
+  $(td).html(
+    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
+    value +
+    "</div>"
+  );
+  return td;
+}
+
 function extendPowerDrawDate() {
 
   let date = $('#extendPowerDrawDate').val();
@@ -457,3 +494,13 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function isBookingCheckPayment() {
+  let result = false;
+  for (let i = 0; i < oprlistBookingCheck.length; ++i) {
+    if (shipmentDetail.opeCode == oprlistBookingCheck[i].dictValue) {
+      result = true;
+      break;
+    }
+  }
+  return result;
+}

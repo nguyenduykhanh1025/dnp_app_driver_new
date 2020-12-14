@@ -53,7 +53,7 @@ import java.util.*;
 public class LogisticSendContFullDangerousSupportRequest extends AdminBaseController {
 	private static final Logger logger = LoggerFactory.getLogger(LogisticSendContFullDangerousSupportRequest.class);
 
-	private String PREFIX = "/supportRequest/dangerous";
+	private String PREFIX = "supportRequest/dangerous";
 
 	@Autowired
 	private IShipmentService shipmentService;

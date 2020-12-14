@@ -34,7 +34,7 @@ import java.util.*;
 public class SupportDateSetupTemperature extends AdminBaseController {
 	private static final Logger logger = LoggerFactory.getLogger(SupportDateSetupTemperature.class);
 
-	private String PREFIX = "/reeferGruop/dateSetupTemperature";
+	private String PREFIX = "reeferGruop/dateSetupTemperature";
 
 	private final String KEY_ICE = "R";
 
