@@ -10,6 +10,10 @@ var shipmentSelected;
 var shipmentDetailIds;
 var sourceData, isChange;
 
+var shipmentDetailSearch = new Object();
+shipmentDetailSearch.sztp = "R";
+shipmentDetailSearch.contSupplyStatus = "R";
+
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var dogrid = document.getElementById("container-grid"), hot;
 
@@ -87,14 +91,21 @@ $(document).ready(function () {
         }
     });
 
+    $("#batchStatus").combobox({
+        onChange: function (serviceType) {
+            shipment.contSupplyStatus = serviceType.value;
+            search();
+        }
+    });
     getSelectedForShipmentDetails();
 });
 
 function search() {
-    shipment.bookingNo = $("#blNo").textbox('getText').toUpperCase();
-    shipment.params.containerNo = $("#containerNo").textbox('getText').toUpperCase();
-    shipment.contSupplyStatus = $('#batchStatus').combobox('getValue');
+    shipmentDetailSearch.bookingNo = $("#blNo").textbox('getText').toUpperCase();
+    shipmentDetailSearch.containerNo = $("#containerNo").textbox('getText').toUpperCase();
+    shipmentDetailSearch.contSupplyStatus = $('#batchStatus').combobox('getValue');
     // loadTable();
+    loadShipmentDetails();
 }
 
 function handleCollapse(status) {
@@ -119,55 +130,6 @@ function handleCollapse(status) {
     }, 500);
 }
 
-// LOAD SHIPMENT LIST
-// function loadTable() {
-//     $("#dg").datagrid({
-//         url: PREFIX + '/shipments',
-//         height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
-//         method: 'POST',
-//         singleSelect: true,
-//         collapsible: true,
-//         clientPaging: false,
-//         pagination: true,
-//         rownumbers: true,
-//         onBeforeSelect: function (index, row) {
-//             getSelected(index, row);
-//         },
-//         // onClickRow: function () {
-//         //     getSelected();
-//         // },
-//         pageSize: 50,
-//         nowrap: true,
-//         striped: true,
-//         loadMsg: " Đang xử lý...",
-//         loader: function (param, success, error) {
-//             var opts = $(this).datagrid("options");
-//             if (!opts.url) return false;
-//             $.ajax({
-//                 type: opts.method,
-//                 url: opts.url,
-//                 contentType: "application/json",
-//                 accept: 'text/plain',
-//                 dataType: 'text',
-//                 data: JSON.stringify({
-//                     pageNum: param.page,
-//                     pageSize: param.rows,
-//                     orderByColumn: param.sort,
-//                     isAsc: param.order,
-//                     data: shipment
-//                 }),
-//                 success: function (data) {
-//                     success(JSON.parse(data));
-//                     $("#dg").datagrid("hideColumn", "id");
-//                     $("#dg").datagrid("selectRow", 0);
-//                 },
-//                 error: function () {
-//                     error.apply(this, arguments);
-//                 },
-//             });
-//         },
-//     });
-// }
 // FORMATTER
 function formatLogistic(value, row, index) {
     return '<a onclick="logisticInfo(' + row.logisticGroupId + "," + "'" + value + "')\"> " + value + "</a>";
@@ -206,33 +168,7 @@ function clearInput() {
     // loadTable();
 }
 
-
-// HANDLE WHEN SELECT A SHIPMENT
-// function getSelected(index, row) {
-//     // var row = $("#dg").datagrid("getSelected");
-//     // if (row) {
-//     // $("#loCode").text(row.id);
-//     // $("#quantity").text(row.containerAmount);
-//     // $("#bookingNo").text(row.bookingNo);
-//     rowAmount = 10;
-//     // shipmentSelected = row;
-//     checkList = Array(rowAmount).fill(0);
-//     allChecked = false;
-//     // if (row.specificContFlg == 0) {
-//     //     $("#saveShipmentDetailBtn").html("Xác Nhận Cấp Container");
-//     // } else {
-//     //     $("#saveShipmentDetailBtn").html("Duyệt Cấp Container");
-//     // }
-//     // loadShipmentDetail(row.id);
-//     loadShipmentDetails();
-//     // toggleAttachIcon(row.id);
-//     loadListComment();
-//     // }
-// }
-
 function getSelectedForShipmentDetails(index, row) {
-
-
     loadShipmentDetails();
     // loadListComment();
 }
@@ -255,17 +191,6 @@ function toggleAttachIcon(shipmentId) {
         }
     });
 }
-
-
-
-// $("#batchStatus").combobox({
-//     onChange: function (serviceType) {
-//         shipment.contSupplyStatus = serviceType.value;
-//         search();
-//     }
-// });
-
-
 
 // FORMAT HANDSONTABLE COLUMN
 function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -354,6 +279,27 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
+function filePathRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'filePath' + row).addClass("htMiddle").addClass("htCenter");
+    $.ajax({
+        type: "GET",
+        url: PREFIX + "/shipments/" + sourceData[row].shipmentId + "/shipment-images",
+        contentType: "application/json",
+        success: function (data) {
+            if (data.code == 0) {
+                if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
+                    let html = '';
+                    data.shipmentFiles.forEach(function (element, index) {
+                        html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
+                    });
+                    // $('#attachFile').html(html);
+                    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + html + '</div>');
+                    return td;
+                }
+            }
+        }
+    });
+}
 function contSupplyRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (!value) {
         value = '';
@@ -381,11 +327,6 @@ function temperatureRenderer(
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
-    // if (temperatureDisable[row] == 1) {
-    //   $(td).html("");
-    //   cellProperties.readOnly = "true";
-    //   $(td).css("background-color", "rgb(232, 232, 232)");
-    // }
 
     if (value === null || value === "") {
         value = "";
@@ -543,44 +484,46 @@ function configHandson() {
                 case 1:
                     return "Trạng Thái";
                 case 2:
-                    return "Số Container";
-                case 3:
                     return "Booking no";
+                case 3:
+                    return "Đính Kèm Tệp";
                 case 4:
-                    return "Ghi Chú <br>Cấp/Duyệt Container";
+                    return "Số Container";
                 case 5:
-                    return "Nhiệt Độ (c)";
+                    return "Ghi Chú <br>Cấp/Duyệt Container";
                 case 6:
-                    return "Độ Ẩm (%)";
-                case 7:
-                    return "Thông Gió (%)";
-                case 8:
-                    return "Sztp";
-                case 9:
-                    return "Vị Trí";
-                case 10:
-                    return "Tình Trạng Container";
-                case 11:
                     return "Hãng Tàu";
+                case 7:
+                    return "Nhiệt Độ (c)";
+                case 8:
+                    return "Độ Ẩm (%)";
+                case 9:
+                    return "Thông Gió (%)";
+                case 10:
+                    return "Sztp";
+                case 11:
+                    return "Vị Trí";
                 case 12:
-                    return "Thời Gian <br>Dự Kiến Bốc";
+                    return "Tình Trạng Container";
                 case 13:
-                    return "Loại Hàng";
+                    return "Thời Gian <br>Dự Kiến Bốc";
                 case 14:
-                    return "Yêu Cầu Chất <br>Lượng Vỏ";
+                    return "Loại Hàng";
                 case 15:
-                    return "Chủ hàng";
+                    return "Yêu Cầu Chất <br>Lượng Vỏ";
                 case 16:
-                    return "Tên Tàu";
+                    return "Chủ hàng";
                 case 17:
-                    return "Chuyến";
+                    return "Tên Tàu";
                 case 18:
-                    return "Cảng Dỡ";
+                    return "Chuyến";
                 case 19:
+                    return "Cảng Dỡ";
+                case 20:
                     return "Ghi Chú (K/H)";
             }
         },
-        colWidths: [21, 91, 100, 100, 150, 80, 80, 80, 43, 100, 150, 66, 82, 95, 100, 100, 60, 58, 66, 150],
+        colWidths: [21, 91, 100, 100, 100, 150, 80, 80, 80, 100, 100, 150, 150, 82, 95, 100, 100, 60, 58, 66, 150],
         filter: "true",
         columns: [
             {
@@ -594,18 +537,25 @@ function configHandson() {
                 readOnly: true,
                 renderer: statusIconsRenderer
             },
-
-            {
-                data: "containerNo",
-                renderer: containerNoRenderer
-            },
             {
                 data: "bookingNo",
                 renderer: containerNoRenderer
             },
             {
+                data: "filePaths",
+                renderer: filePathRenderer
+            },
+            {
+                data: "containerNo",
+                renderer: containerNoRenderer
+            },
+            {
                 data: "contSupplyRemark",
                 renderer: contSupplyRemarkRenderer
+            },
+            {
+                data: "opeCode",
+                renderer: opeCodeRenderer
             },
             {
                 data: "temperature",
@@ -639,10 +589,6 @@ function configHandson() {
             {
                 data: "containerRemark",
                 renderer: containerRemarkRenderer
-            },
-            {
-                data: "opeCode",
-                renderer: opeCodeRenderer
             },
             {
                 data: "planningDate",
@@ -1108,41 +1054,6 @@ function deleteSupply() {
     }
 }
 
-// function rejectSupplyReq(index, layero) {
-// // console.log(loadShipmentDetails);
-// let childLayer = layero.find("iframe")[0].contentWindow.document;
-// $.modal.loading("Đang xử lý ...");
-// if(getDataFromTable()) {
-//     console.log(shipmentDetails);
-// }
-// // $.ajax({
-// //     url: PREFIX + "/reject",
-// //     method: "POST",
-// //     data: {
-// //         content: $(childLayer).find("#message").val(),
-// //         shipmentDetailIds: shipmentDetailIds,
-// //         shipmentId: shipmentSelected.id,
-// //         logisticGroupId: shipmentSelected.logisticGroupId
-// //     },
-// //     success: function (res) {
-// //         layer.close(index);
-// //         reloadShipmentDetail();
-// //         $.modal.closeLoading();
-// //         if (res.code == 0) {
-// //             $.modal.alertSuccess(res.msg);
-// //         } else {
-// //             $.modal.alertError(res.msg);
-// //         }
-// //     },
-// //     error: function (data) {
-// //         layer.close(index);
-// //         reloadShipmentDetail();
-// //         $.modal.closeLoading();
-// //     }
-// // });
-
-// }
-
 function rejectSupplyReq(index, layero) {
 
     let childLayer = layero.find("iframe")[0].contentWindow.document;
@@ -1162,7 +1073,7 @@ function rejectSupplyReq(index, layero) {
             layer.close(index);
             loadShipmentDetails();
             $.modal.closeLoading();
-            
+
             rejectSupplyReqSendInformation(index, layero);
         },
         error: function (result) {
@@ -1232,12 +1143,14 @@ function reloadShipmentDetail() {
 }
 
 function loadShipmentDetails() {
+
     $.ajax({
         url: PREFIX + "/shipment-details",
-        method: "GET",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(shipmentDetailSearch),
         success: function (data) {
             if (data.code == 0) {
-
                 rowAmount = data.shipmentDetails.length;
                 checkList = Array(rowAmount).fill(data.shipmentDetails.length);
                 allChecked = false;

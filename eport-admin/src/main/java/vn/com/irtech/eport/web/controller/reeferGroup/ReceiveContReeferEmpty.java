@@ -83,21 +83,18 @@ public class ReceiveContReeferEmpty extends AdminBaseController {
 		return PREFIX + "/confirmation";
 	}
 
-	@GetMapping("/shipment-details")
+	@PostMapping("/shipment-details")
 	@ResponseBody
-	public AjaxResult getShipmentDetails() {
+	public AjaxResult getShipmentDetails(@RequestBody ShipmentDetail shipmentDetail) {
 		AjaxResult ajaxResult = AjaxResult.success();
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setSztp(keyReefer);
 
-		Map<String, Object> params = shipmentDetail.getParams();
-		if (params == null) {
-			params = new HashMap<>();
-		}
-		params.put("contSupplyStatus", 'R');
-
-		shipmentDetail.setParams(params);
-
+//		Map<String, Object> params = shipmentDetail.getParams();
+//		if (params == null) {
+//			params = new HashMap<>();
+//		}
+//		params.put("contSupplyStatus", 'R');
+//
+//		shipmentDetail.setParams(params);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService
 				.getShipmentDetailListInnerJoinToShipment(shipmentDetail);
 		if (shipmentDetails != null) {
@@ -264,7 +261,7 @@ public class ReceiveContReeferEmpty extends AdminBaseController {
 		shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_HOLD);
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
 
-		for(String i : shipmentDetailIds.split(",")) {
+		for (String i : shipmentDetailIds.split(",")) {
 			ShipmentDetail detail = this.shipmentDetailService.selectShipmentDetailById(Long.parseLong(i));
 			Long shipmentId = detail.getShipmentId();
 			Long logisticGroupId = detail.getLogisticGroupId();
@@ -303,7 +300,6 @@ public class ReceiveContReeferEmpty extends AdminBaseController {
 				shipmentService.updateShipment(shipment);
 			}
 		}
-		
 
 		return success();
 	}
@@ -356,14 +352,14 @@ public class ReceiveContReeferEmpty extends AdminBaseController {
 					return error("Cấp container thất bại từ container: " + shipmentDetail.getContainerNo());
 				}
 			}
-			if (allUpdate) {
-				Shipment shipment = new Shipment();
-				shipment.setId(shipmentDetails.get(0).getShipmentId());
-				shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
-				shipment.setUpdateTime(new Date());
-				shipment.setUpdateBy(user.getLoginName());
-				shipmentService.updateShipment(shipment);
-			}
+//			if (allUpdate) {
+//				Shipment shipment = new Shipment();
+//				shipment.setId(shipmentDetails.get(0).getShipmentId());
+//				shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
+//				shipment.setUpdateTime(new Date());
+//				shipment.setUpdateBy(user.getLoginName());
+//				shipmentService.updateShipment(shipment);
+//			}
 			return success("Cấp container thành công");
 		}
 		return error("Cấp container thất bại");

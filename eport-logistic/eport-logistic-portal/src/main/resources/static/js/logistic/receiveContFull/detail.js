@@ -22,6 +22,13 @@ function initElement() {
   } 
   // check theo trường hợp chỉ cần P với U là hiển thị cont lên
   else if(shipmentDetail.sztp.includes("P") || shipmentDetail.sztp.includes("U")){
+        if(shipmentDetail.oversize == "Y"){
+          $("#truckNo").attr("disabled", "disabled");
+          $("#chassisNo").attr("disabled", "disabled");
+          
+          //$("truckNo").prop('checked', true);
+        }
+ 
        $('#oversizeContainer').css('display', 'block');
        $("#tab-2").prop('checked', true);
   }
@@ -52,9 +59,9 @@ function initTabReefer() {
     $('#tableExtendDateContainer').css('display', 'none');
   }
 
-  console.log('ssssssssssssssssssssss', shipmentDetail.frozenStatus);
+  //console.log('ssssssssssssssssssssss', shipmentDetail.frozenStatus);
   if (shipmentDetail.frozenStatus == "S") {
-    console.log('iiiiiiiiiiiisii');
+    //console.log('iiiiiiiiiiiisii');
     $("#powerDrawDate").attr('disabled', 'disabled');
     $("#btnPowerDrawDate").css('display', 'none');
   }
@@ -150,6 +157,10 @@ let contO = true;// qua kho
 let typeD = true;// nguy hiem 
 let typeR = true;// lanh
 let typeO = true;// qua kho
+
+//var checkStatus = shipmentDetail.oversize;
+console.log("oversize"); 
+console.log(oversize);
  
 function confirm() {
   var truckNo = $("#truckNo").val();
@@ -159,13 +170,20 @@ function confirm() {
  $.modal.alertWarning("Vui lòng đính kèm file"); 
   } 
  else  
-if(oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")){
-    if(truckNo == null || truckNo == ""){
+if(oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")){ 
+    // if(oversize == "Y"){
+    //   $.modal.alertWarning("Không thể chỉnh sửa biển số xe"); 
+    // }
+
+    //else
+     if(truckNo == null || truckNo == ""){
       $.modal.alertWarning("Vui lòng nhập vào biển số xe đầu kéo rồi thử lại");
     }
     else if(chassisNo == null || chassisNo == "" && !shipmentDetail.sztp.includes("R")){
       $.modal.alertWarning("Vui lòng nhập vào biển số xe rơ móc rồi thử lại");
     }
+
+
     else{ 
       insertCont();
       saveFile(); 
@@ -239,6 +257,12 @@ function insertCont() {
 function saveFile() {
 //console.log("saveFile");
   //console.log(fileIds);
+
+  // if(oversize == "Y"){
+  //   $.modal.alertWarning("Khồn thể thêm mới file vì đã phê duyệt");
+  //   //break;
+  // }
+  // else{
   $.ajax(
     {
       url: prefix + "/saveFileImage",
@@ -263,6 +287,7 @@ function saveFile() {
         }
       }
     });
+  //}
 }
 
 function closeForm() {
@@ -305,8 +330,14 @@ $(document).ready(function () {
   }
 });
 // xóa khi đã lưu có id 
+
+ 
 function removeImage(element, fileIndex) {
-  shipmentFiles.forEach(function (value, index) {
+if(oversize == "Y"){
+  $.modal.alertWarning("Không thể xóa file ở trạng thái đã phê duyệt");
+}
+else{ 
+  shipmentFiles.forEach(function (value, index) { 
     if (value == fileIndex) {
       $.ajax({
         url: prefix + "/delete_file",
@@ -331,6 +362,7 @@ function removeImage(element, fileIndex) {
       return false;
     }
   });
+}
 
 }
 

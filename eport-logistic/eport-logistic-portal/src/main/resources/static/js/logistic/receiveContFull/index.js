@@ -798,12 +798,12 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (sourceData[row].sztp.includes("R")) {
     textContent = "Lạnh";
   }
-  else if(sourceData[row].sztp.includes("P") || sourceData[row].sztp.includes("U")){
-    textContent = "Quá Khổ"
-  }
-  // else if (sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft) {
+  // else if(sourceData[row].sztp.includes("P") || sourceData[row].sztp.includes("U")){
   //   textContent = "Quá Khổ"
   // }
+   else if (sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft) {
+     textContent = "Quá Khổ"
+  }
 
   $(td).attr('id', 'wgt' + row).addClass("htMiddle").addClass("htCenter");
   let containerNo;
@@ -821,7 +821,7 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
       //   value = '<button class="btn btn-default btn-xs showHide" disabled ><i class="fa fa-book"></i></button>';
       // }
       if (textContent) {
-        value = '<button class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-book" style="margin: 0 3px;"></i>' + textContent + '</button>';
+        value = '<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-book" style="margin: 0 3px;"></i>' + textContent + '</button>';
       }
     }
   }
