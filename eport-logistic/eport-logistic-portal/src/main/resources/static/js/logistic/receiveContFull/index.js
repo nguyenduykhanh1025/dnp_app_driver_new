@@ -448,16 +448,6 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
   if (sourceData[row] && sourceData[row].id && sourceData[row].dischargePort && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].finishStatus) {
     // Customs Status
     let customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
-
-
-    /*if (
-         (!sourceData[row].contSpecialStatus ||
-           sourceData[row].contSpecialStatus == SPECIAL_STATUS.approve) &&
-         (!sourceData[row].dangerous ||
-           sourceData[row].dangerous == DANGEROUS_STATUS.NOT ||
-           sourceData[row].dangerous == DANGEROUS_STATUS.approve)
-       ) {*/
-
     switch (sourceData[row].customStatus) {
       case 'R':
         customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
