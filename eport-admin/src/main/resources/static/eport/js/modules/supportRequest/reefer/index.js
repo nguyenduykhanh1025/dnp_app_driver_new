@@ -1088,7 +1088,6 @@ function confirmRequestDocument() {
             $.modal.closeLoading();
           },
         });
-
       },
       function () {
         // close form

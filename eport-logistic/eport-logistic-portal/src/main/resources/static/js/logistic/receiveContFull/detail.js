@@ -5,7 +5,8 @@ sourceData = reeferInfos;
 
 const PAYMENT_STATUS = {
   success: "S",
-  process: "P"
+  process: "P",
+  error: "E"
 }
 
 $(document).ready(function () {
@@ -234,8 +235,6 @@ function insertCont() {
 }
  
 function saveFile() {
-//console.log("saveFile");
-  //console.log(fileIds);
   $.ajax(
     {
       url: prefix + "/saveFileImage",
@@ -623,7 +622,6 @@ function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function paymentTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  console.log('sssssssssssssssssss');
   if (!value) {
     value = "";
   }
@@ -678,7 +676,11 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     </a>
   </td>
   `;
-  if (shipmentDetail.powerDrawDateStatus == "S" && PAYMENT_STATUS.process == sourceData[row].paymentStatus) {
+  console.log(sourceData[row].paymentStatus);
+  if(sourceData[row].paymentStatus == PAYMENT_STATUS.error) {
+    result += "Đã hủy gia hạn"
+  }
+  else if (shipmentDetail.powerDrawDateStatus == "S" && PAYMENT_STATUS.process == sourceData[row].paymentStatus) {
     result += btnPayment;
   } else if (!sourceData[row].id || PAYMENT_STATUS.success == sourceData[row].paymentStatus) {
     result += 'Đã thanh toán';
@@ -687,14 +689,13 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
   } else {
     result += btnCancel;
   }
-
-
-
+  
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
 
 function extendPowerDrawDate() {
+  console.log('fro, ', shipmentDetail .frozenStatus);
   let len = sourceData.length - 1;
 
   if (!$('#extendPowerDrawDate').val()) {
@@ -706,7 +707,7 @@ function extendPowerDrawDate() {
   else if ($('#extendPowerDrawDate').val() < $('#powerDrawDate').val()) {
     $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
   }
-  else if (shipmentDetail.frozenStatus != 'S' || shipmentDetail.powerDrawDateStatus != 'S' || (sourceData[len].status && sourceData[len].paymentStatus != PAYMENT_STATUS.success)) {
+  else if (shipmentDetail .frozenStatus != 'Y' || (shipmentDetail.powerDrawDateStatus != 'S' && shipmentDetail.powerDrawDateStatus != 'E') || (sourceData[len].status && sourceData[len].paymentStatus != PAYMENT_STATUS.success)) {
     $.modal.alertError("Cont chưa thể gia hạn ngày rút điện");
   } else {
 

@@ -112,7 +112,7 @@
                   </span>
                 </div>
               </div>
-
+              
               <div class="form-group col-sm-6 row" id="extendPowerDrawDateContainer">
 
                 <span class="input-group date col-sm-10 col-xs-8" id="datetimepicker2" style="    float: left;
@@ -214,13 +214,15 @@
               </div>
               <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
                 <div class="form-group col-sm-6 row">
-                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Biển số xe đầu kéo:</b></span>
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Biển số
+                      xe đầu kéo:</b></span>
                   <div class="col-sm-8 col-xs-6">
                     <input type="text" class="form-control" id="truckNo" name="truckNo" />
                   </div>
                 </div>
                 <div class="form-group col-sm-6 row">
-                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Biển số xe rơ móc:</b></span>
+                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Biển số
+                      xe rơ móc:</b></span>
                   <div class="col-sm-8 col-xs-6">
                     <input type="text" class="form-control" id="chassisNo" name="chassisNo" />
                   </div>
@@ -354,14 +356,14 @@
     var shipmentDetailId = [[${ shipmentDetailId }]];
     var shipmentDetail = [[${ shipmentDetail }]];
     var shipmentImage = [[${ shipmentImage }]];
-    var shipmentFiles = [[${ shipmentFiles }]]; 
+    var shipmentFiles = [[${ shipmentFiles }]];
     var filePath = [[${ filePath }]];
-    var fileIds = [[${ fileIds }]];  
+    var fileIds = [[${ fileIds }]];
     var powerDropDate = [[${ powerDropDate }]];
     var reeferInfos = [[${ reeferInfos }]];
-    var oprlistBookingCheck = [[${oprlistBookingCheck}]];
+    var oprlistBookingCheck = [[${ oprlistBookingCheck }]];
     var creditFlag = /*[[${creditFlag}]]*/;
-    var billPowers = [[${billPowers}]];
+    var billPowers = [[${ billPowers }]];
   </script>
   <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=20201012}"></script>
   <script th:src="@{/js/logistic/receiveContFull/detail.js?v=20201012}"></script>

@@ -113,6 +113,11 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		return PREFIX + "/index";
 	}
 
+	@GetMapping("/reject")
+	public String openRejectModel() {
+		return PREFIX + "/reject";
+	}
+	
 	@PostMapping("/shipments")
 	@ResponseBody
 	public AjaxResult getShipments(@RequestBody PageAble<Shipment> param) {
@@ -208,7 +213,8 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		mmap.put("contDangerousImos", dictDataService.getType("cont_dangerous_imo"));
 		mmap.put("contDangerousUnnos", dictDataService.getType("cont_dangerous_unno"));
 
-		mmap.put("shipmentDetail", this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId));
+		ShipmentDetail shipmentDetailFromDB = this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		mmap.put("shipmentDetail", shipmentDetailFromDB);
 
 		ShipmentImage shipmentImage = new ShipmentImage();
 		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
@@ -224,6 +230,11 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		mmap.put("powerDropDate", shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
 
 		mmap.put("reeferInfos", reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId));
+
+		mmap.put("reeferInfos", reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId));
+		mmap.put("oprlistBookingCheck", dictService.getType("opr_list_booking_check"));
+		mmap.put("creditFlag", logisticGroupService.selectLogisticGroupById(shipmentDetailFromDB.getLogisticGroupId())
+				.getCreditFlag());
 		mmap.put("billPowers", dictService.getType("bill_power"));
 
 		return PREFIX + "/detail";
@@ -269,7 +280,8 @@ public class SupportExtendDrawDate extends AdminBaseController {
 				this.reeferInfoService.updateReeferInfo(info);
 			}
 		}
-//		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
+		// shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails,
+		// shipmentDetail);
 		return success();
 	}
 
@@ -278,6 +290,18 @@ public class SupportExtendDrawDate extends AdminBaseController {
 	public AjaxResult rejectExtendDateDrop(String idShipmentDetails) {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setPowerDrawDateStatus("E");
+		for (String id : idShipmentDetails.split(",")) {
+			List<ReeferInfo> infos = reeferInfoService.selectReeferInfoListByIdShipmentDetail(Long.parseLong(id));
+
+			for (ReeferInfo info : infos) {
+				info.setStatus("E");
+				info.setUpdateBy(getUser().getUserName());
+				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_ERROR);
+				
+				this.reeferInfoService.updateReeferInfo(info);
+			}
+
+		}
 		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
 		return success();
 	}
@@ -291,4 +315,5 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		return AjaxResult.success(
 				reeferInfoService.selectReeferInfoListByIdShipmentDetail(reeferInfos.get(0).getShipmentDetailId()));
 	}
+	
 }
