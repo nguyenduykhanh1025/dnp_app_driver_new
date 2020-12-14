@@ -541,7 +541,7 @@ function paymentRenderer(instance,
   cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (sourceData[row] == null || sourceData[row].sztp == null) {
-   
+
     value = "";
     $(td).html(
       '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
@@ -815,6 +815,7 @@ function payerRenderer(instance, td, row, col, prop, value, cellProperties) {
   );
   return td;
 }
+
 function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (!value) {
@@ -870,42 +871,40 @@ function configHandson() {
         case 3:
           return "Trạng Thái";
         case 4:
-          return "Số Tham Chiếu";
-        case 5:
           return "Số Container";
-        case 6:
+        case 5:
           return '<span>Chi Tiết Container</span>';
-        case 7:
+        case 6:
           return '<span>Nhiệt Độ</span>';
-        case 8:
+        case 7:
           return '<span>Độ Ẩm</span>';
-        case 9:
+        case 8:
           return '<span>Thông Gió</span>';
-        case 10:
+        case 9:
           return '<span>Hình Thức Thanh Toán</span>';
-        case 11:
+        case 10:
           return '<span>Ngày cắm điện</span>';
-        case 12:
+        case 11:
           return '<span>Ngày rút điện</span>';
-        case 13:
+        case 12:
           return "Sztp";
-        case 14:
+        case 13:
           return "Chủ Hàng";
-        case 15:
+        case 14:
           return "Tàu - Chuyến";
-        case 16:
+        case 15:
           return "Trọng Lượng";
-        case 17:
+        case 16:
           return "Loại Hàng";
-        case 18:
+        case 17:
           return "Số Seal";
-        case 19:
+        case 18:
           return "Cảng Dỡ Hàng";
-        case 20:
+        case 19:
           return "P.T.T.T";
-        case 21:
+        case 20:
           return "Payer";
-        case 22:
+        case 21:
           return "Ghi Chú";
       }
     },
@@ -914,7 +913,6 @@ function configHandson() {
       21,
       21,
       120,
-      130,
       100,
       150,
       100,
@@ -955,11 +953,6 @@ function configHandson() {
         data: "status",
         readOnly: true,
         renderer: statusIconsRenderer,
-      },
-
-      {
-        data: "orderNo",
-        renderer: orderNoRenderer,
       },
       {
         data: "containerNo",
@@ -1229,46 +1222,46 @@ function clearInput() {
   loadTable();
 }
 
-function confirmRequestDocument() {
-  if (getDataSelectedFromTable()) {
-    layer.confirm(
-      "Xác nhận kiểm tra thông tin đúng.",
-      {
-        icon: 3,
-        title: "Xác Nhận",
-        btn: ["Đồng Ý", "Hủy Bỏ"],
-      },
-      function () {
-        $.modal.loading("Đang xử lý ...");
-        layer.close(layer.index);
-        $.ajax({
-          url: PREFIX + "/confirmation",
-          method: "POST",
-          data: {
-            shipmentDetailIds: shipmentDetailIds,
-            logisticGroupId: shipmentSelected.logisticGroupId,
-          },
-          success: function (res) {
-            $.modal.closeLoading();
-            if (res.code == 0) {
-              $.modal.alertSuccess(res.msg);
+// function confirmRequestDocument() {
+//   if (getDataSelectedFromTable()) {
+//     layer.confirm(
+//       "Xác nhận kiểm tra thông tin đúng.",
+//       {
+//         icon: 3,
+//         title: "Xác Nhận",
+//         btn: ["Đồng Ý", "Hủy Bỏ"],
+//       },
+//       function () {
+//         $.modal.loading("Đang xử lý ...");
+//         layer.close(layer.index);
+//         $.ajax({
+//           url: PREFIX + "/confirmation",
+//           method: "POST",
+//           data: {
+//             shipmentDetailIds: shipmentDetailIds,
+//             logisticGroupId: shipmentSelected.logisticGroupId,
+//           },
+//           success: function (res) {
+//             $.modal.closeLoading();
+//             if (res.code == 0) {
+//               $.modal.alertSuccess(res.msg);
 
-              loadTable();
-            } else {
-              $.modal.alertError(res.msg);
-            }
-          },
-          error: function (data) {
-            $.modal.closeLoading();
-          },
-        });
-      },
-      function () {
-        // close form
-      }
-    );
-  }
-}
+//               loadTable();
+//             } else {
+//               $.modal.alertError(res.msg);
+//             }
+//           },
+//           error: function (data) {
+//             $.modal.closeLoading();
+//           },
+//         });
+//       },
+//       function () {
+//         // close form
+//       }
+//     );
+//   }
+// }
 
 function rejectRequestDocument() {
   if (getDataSelectedFromTable()) {
@@ -1499,26 +1492,50 @@ function confirmReject(index, layero) {
 
   $.modal.loading("Đang xử lý ...");
   layer.close(layer.index);
+  // $.ajax({
+  //   url: PREFIX + "/reject",
+  //   method: "POST",
+  //   data: {
+  //     shipmentDetailIds: shipmentDetailIds,
+  //   },
+  //   success: function (res) {
+  //     const contentReject = $(childLayer).find("#contentReject").val();
+  //     sendComment(contentReject, shipmentSelected.id, shipmentSelected.logisticGroupId, shipmentSelected.serviceType, containerNoCheckeds);
+  //     if (res.code == 0) {
+  //       $.modal.alertSuccess(res.msg);
+  //       handleLoadTableFromModel();
+  //     } else {
+  //       $.modal.alertError(res.msg);
+  //     }
+  //   },
+  //   error: function (data) {
+  //     onCloseModel();
+  //   },
+  // });
+  let shipmentDetailIdsChoosse = [];
+  for (let i = 0; i < checkList.length; ++i) {
+    if (checkList[i] == 1) {
+      shipmentDetailIdsChoosse.push(sourceData[i].id);
+    }
+  }
+  shipmentDetailIdsChoosse = shipmentDetailIdsChoosse.join(",");
   $.ajax({
-    url: PREFIX + "/reject",
+    url: PREFIX + "/shipmentDetail/reject",
     method: "POST",
-    data: {
-      shipmentDetailIds: shipmentDetailIds,
-    },
-    success: function (res) {
+    accept: 'text/plain',
+    data: { idShipmentDetails: shipmentDetailIdsChoosse },
+    dataType: 'text',
+    success: function (data) {
       const contentReject = $(childLayer).find("#contentReject").val();
       sendComment(contentReject, shipmentSelected.id, shipmentSelected.logisticGroupId, shipmentSelected.serviceType, containerNoCheckeds);
-      if (res.code == 0) {
-        $.modal.alertSuccess(res.msg);
-        handleLoadTableFromModel();
-      } else {
-        $.modal.alertError(res.msg);
-      }
+      loadTable();
     },
-    error: function (data) {
-      onCloseModel();
+    error: function (result) {
+      $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+      $.modal.closeLoading();
     },
   });
+
 }
 
 /**
@@ -1906,51 +1923,49 @@ function dateToString(date) {
 }
 
 function confirmRequestDocument() {
-  let shipmentDetailIdsChoosse = [];
-  for (let i = 0; i < checkList.length; ++i) {
-    if (checkList[i] == 1) {
-      shipmentDetailIdsChoosse.push(sourceData[i].id);
+
+
+  layer.confirm(
+    "Xác nhận kiểm tra thông tin đúng.",
+    {
+      icon: 3,
+      title: "Xác Nhận",
+      btn: ["Đồng Ý", "Hủy Bỏ"],
+    },
+    function () {
+      $.modal.loading("Đang xử lý ...");
+      layer.close(layer.index);
+
+      let shipmentDetailIdsChoosse = [];
+      for (let i = 0; i < checkList.length; ++i) {
+        if (checkList[i] == 1) {
+          shipmentDetailIdsChoosse.push(sourceData[i].id);
+        }
+      }
+      shipmentDetailIdsChoosse = shipmentDetailIdsChoosse.join(",");
+      $.ajax({
+        url: PREFIX + "/shipmentDetail/confirm",
+        method: "POST",
+        accept: 'text/plain',
+        data: { idShipmentDetails: shipmentDetailIdsChoosse },
+        dataType: 'text',
+        success: function (data) {
+          loadTable();
+        },
+        error: function (result) {
+          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+          $.modal.closeLoading();
+        },
+      });
+    },
+    function () {
+      // close form
     }
-  }
-  shipmentDetailIdsChoosse = shipmentDetailIdsChoosse.join(",");
-  $.ajax({
-    url: PREFIX + "/shipmentDetail/confirm",
-    method: "POST",
-    accept: 'text/plain',
-    data: { idShipmentDetails: shipmentDetailIdsChoosse },
-    dataType: 'text',
-    success: function (data) {
-      loadTable();
-    },
-    error: function (result) {
-      $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
-      $.modal.closeLoading();
-    },
-  });
+  );
 }
 
-function rejectRequestDocument() {
-  let shipmentDetailIdsChoosse = [];
-  for (let i = 0; i < checkList.length; ++i) {
-    if (checkList[i] == 1) {
-      shipmentDetailIdsChoosse.push(sourceData[i].id);
-    }
-  }
-  shipmentDetailIdsChoosse = shipmentDetailIdsChoosse.join(",");
-  $.ajax({
-    url: PREFIX + "/shipmentDetail/reject",
-    method: "POST",
-    accept: 'text/plain',
-    data: { idShipmentDetails: shipmentDetailIdsChoosse },
-    dataType: 'text',
-    success: function (data) {
-      loadTable();
-    },
-    error: function (result) {
-      $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
-      $.modal.closeLoading();
-    },
-  });
+function rejectRequest() {
+  
 }
 
 function saveReeferSuccess() {

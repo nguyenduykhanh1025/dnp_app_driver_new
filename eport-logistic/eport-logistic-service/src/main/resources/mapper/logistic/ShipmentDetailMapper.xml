@@ -761,6 +761,8 @@
 		<where>
 			<if test="sztp != null and sztp != ''"> and sd.sztp like concat(concat('%', #{sztp}), '%')</if>
 			<if test="contSupplyStatus != null  and contSupplyStatus != ''"> and sd.CONT_SUPPLY_STATUS = #{contSupplyStatus}</if>
+			<if test="containerNo != null  and containerNo != ''"> and sd.container_no = #{containerNo}</if>
+			<if test="bookingNo != null  and bookingNo != ''"> and s.booking_no = #{bookingNo}</if>
 		</where>
 	</select>
 

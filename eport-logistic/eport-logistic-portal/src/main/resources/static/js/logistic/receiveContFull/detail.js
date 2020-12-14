@@ -5,7 +5,8 @@ sourceData = reeferInfos;
 
 const PAYMENT_STATUS = {
   success: "S",
-  process: "P"
+  process: "P",
+  error: "E"
 }
 
 $(document).ready(function () {
@@ -19,18 +20,18 @@ function initElement() {
   if (shipmentDetail.sztp.includes("R")) {
     $('#reeferContainer').css('display', 'block');
     $("#tab-1").prop('checked', true);
-  } 
+  }
   // check theo trường hợp chỉ cần P với U là hiển thị cont lên
-  else if(shipmentDetail.sztp.includes("P") || shipmentDetail.sztp.includes("U")){
-        if(shipmentDetail.oversize == "Y"){
-          $("#truckNo").attr("disabled", "disabled");
-          $("#chassisNo").attr("disabled", "disabled");
-          
-          //$("truckNo").prop('checked', true);
-        }
- 
-       $('#oversizeContainer').css('display', 'block');
-       $("#tab-2").prop('checked', true);
+  else if (shipmentDetail.sztp.includes("P") || shipmentDetail.sztp.includes("U")) {
+    if (shipmentDetail.oversize == "Y") {
+      $("#truckNo").attr("disabled", "disabled");
+      $("#chassisNo").attr("disabled", "disabled");
+
+      //$("truckNo").prop('checked', true);
+    }
+
+    $('#oversizeContainer').css('display', 'block');
+    $("#tab-2").prop('checked', true);
   }
   // check theo trường hợp cụ thể. nếu có thì mới hiển thị ra
   // else if (oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack) {
@@ -58,10 +59,7 @@ function initTabReefer() {
     $('#extendPowerDrawDateContainer').css('display', 'none');
     $('#tableExtendDateContainer').css('display', 'none');
   }
-
-  //console.log('ssssssssssssssssssssss', shipmentDetail.frozenStatus);
-  if (shipmentDetail.frozenStatus == "S") {
-    //console.log('iiiiiiiiiiiisii');
+  if (shipmentDetail.frozenStatus != "I" && shipmentDetail.frozenStatus != "C") {
     $("#powerDrawDate").attr('disabled', 'disabled');
     $("#btnPowerDrawDate").css('display', 'none');
   }
@@ -162,58 +160,58 @@ let typeO = true;// qua kho
  
 function confirm() {
   var truckNo = $("#truckNo").val();
-  var chassisNo = $("#chassisNo").val(); 
-  
-  if(shipmentFiles.length <1 && fileIds.length < 1 && !shipmentDetail.sztp.includes("R")){ 
- $.modal.alertWarning("Vui lòng đính kèm file"); 
-  } 
- else  
-if(oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")){ 
-    // if(oversize == "Y"){
-    //   $.modal.alertWarning("Không thể chỉnh sửa biển số xe"); 
-    // }
+  var chassisNo = $("#chassisNo").val();
 
-    //else
-     if(truckNo == null || truckNo == ""){
-      $.modal.alertWarning("Vui lòng nhập vào biển số xe đầu kéo rồi thử lại");
+  if (shipmentFiles.length < 1 && fileIds.length < 1 && !shipmentDetail.sztp.includes("R")) {
+    $.modal.alertWarning("Vui lòng đính kèm file");
+  }
+  else
+    if (oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")) {
+      // if(oversize == "Y"){
+      //   $.modal.alertWarning("Không thể chỉnh sửa biển số xe"); 
+      // }
+
+      //else
+      if (truckNo == null || truckNo == "") {
+        $.modal.alertWarning("Vui lòng nhập vào biển số xe đầu kéo rồi thử lại");
+      }
+      else if (chassisNo == null || chassisNo == "" && !shipmentDetail.sztp.includes("R")) {
+        $.modal.alertWarning("Vui lòng nhập vào biển số xe rơ móc rồi thử lại");
+      }
+
+
+      else {
+        insertCont();
+        saveFile();
+      }
+      //saveFile();
     }
-    else if(chassisNo == null || chassisNo == "" && !shipmentDetail.sztp.includes("R")){
-      $.modal.alertWarning("Vui lòng nhập vào biển số xe rơ móc rồi thử lại");
-    }
-
-
-    else{ 
-      insertCont();
-      saveFile(); 
-    } 
-  //saveFile();
-} 
-// if(oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")){ 
-//   insertCont();
-//   saveFile();
-// }
- 
-  else{
-    var lengthTemp = shipmentFilePath;
-     if (lengthTemp) {// nếu k có thì vào đây
-       insertCont();
-     }
-    if (!shipmentDetail.sztp.includes("R") && (!lengthTemp)) {// nếu có thì vào đây
-       saveFile();
-    }
-
-    // var lengthTemp = shipmentFilePath;
-    // if (lengthTemp == null || lengthTemp.length == 0) {// nếu k có thì vào đây
+    // if(oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")){ 
     //   insertCont();
-    // }
-  
-    // if (!shipmentDetail.sztp.includes("R") && (lengthTemp != null || lengthTemp.length != 0)) {// nếu có thì vào đây
     //   saveFile();
     // }
 
-  }
+    else {
+      var lengthTemp = shipmentFilePath;
+      if (lengthTemp) {// nếu k có thì vào đây
+        insertCont();
+      }
+      if (!shipmentDetail.sztp.includes("R") && (!lengthTemp)) {// nếu có thì vào đây
+        saveFile();
+      }
 
- 
+      // var lengthTemp = shipmentFilePath;
+      // if (lengthTemp == null || lengthTemp.length == 0) {// nếu k có thì vào đây
+      //   insertCont();
+      // }
+
+      // if (!shipmentDetail.sztp.includes("R") && (lengthTemp != null || lengthTemp.length != 0)) {// nếu có thì vào đây
+      //   saveFile();
+      // }
+
+    }
+
+
 }
 
 
@@ -251,9 +249,9 @@ function insertCont() {
       }
     });
 }
- 
+
 function saveFile() {
-//console.log("saveFile");
+  //console.log("saveFile");
   //console.log(fileIds);
 
   // if(oversize == "Y"){
@@ -267,7 +265,7 @@ function saveFile() {
       method: "POST",
       data: {
 
-        fileIds : fileIds,
+        fileIds: fileIds,
 
         filePaths: shipmentFilePath,
         shipmentDetailId: shipmentDetail.id,
@@ -329,38 +327,38 @@ $(document).ready(function () {
 });
 // xóa khi đã lưu có id 
 
- 
+
 function removeImage(element, fileIndex) {
-if(oversize == "Y"){
-  $.modal.alertWarning("Không thể xóa file ở trạng thái đã phê duyệt");
-}
-else{ 
-  shipmentFiles.forEach(function (value, index) { 
-    if (value == fileIndex) {
-      $.ajax({
-        url: prefix + "/delete_file",
-        method: "DELETE",
-        data: {
-          id: value
-        },
-        beforeSend: function () {
-          $.modal.loading("Đang xử lý, vui lòng chờ...");
-        },
-        success: function (result) {
-          $.modal.closeLoading();
-          if (result.code == 0) {
-            $.modal.msgSuccess("Xóa tệp thành công.");
-            $(element).parent("div.preview-block").remove();
-            shipmentFileIds.splice(index, 1);
-          } else {
-            $.modal.alertWarning("Xóa tệp thất bại.");
+  if (oversize == "Y") {
+    $.modal.alertWarning("Không thể xóa file ở trạng thái đã phê duyệt");
+  }
+  else {
+    shipmentFiles.forEach(function (value, index) {
+      if (value == fileIndex) {
+        $.ajax({
+          url: prefix + "/delete_file",
+          method: "DELETE",
+          data: {
+            id: value
+          },
+          beforeSend: function () {
+            $.modal.loading("Đang xử lý, vui lòng chờ...");
+          },
+          success: function (result) {
+            $.modal.closeLoading();
+            if (result.code == 0) {
+              $.modal.msgSuccess("Xóa tệp thành công.");
+              $(element).parent("div.preview-block").remove();
+              shipmentFileIds.splice(index, 1);
+            } else {
+              $.modal.alertWarning("Xóa tệp thất bại.");
+            }
           }
-        }
-      });
-      return false;
-    }
-  });
-}
+        });
+        return false;
+      }
+    });
+  }
 
 }
 
@@ -589,7 +587,7 @@ function statusIconRenderer(instance, td, row, col, prop, value, cellProperties)
     } else if (value === "S") {
       status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
     } else if (value === "E") {
-      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #ef6776;"></i>';
+      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã bị từ chối xác nhận gia hạn rút điện" aria-hidden="true" style="color: #ef6776;"></i>';
     }
   } else {
     // status
@@ -656,7 +654,6 @@ function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function paymentTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  console.log('sssssssssssssssssss');
   if (!value) {
     value = "";
   }
@@ -711,15 +708,18 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     </a>
   </td>
   `;
-  if (shipmentDetail.powerDrawDateStatus == "S" && PAYMENT_STATUS.process == sourceData[row].paymentStatus) {
+  if (sourceData[row].paymentStatus == PAYMENT_STATUS.error) {
+    result += "Đã hủy gia hạn"
+  }
+  else if (shipmentDetail.powerDrawDateStatus == "S" && PAYMENT_STATUS.process == sourceData[row].paymentStatus) {
     result += btnPayment;
   } else if (!sourceData[row].id || PAYMENT_STATUS.success == sourceData[row].paymentStatus) {
     result += 'Đã thanh toán';
+  } else if (shipmentDetail.frozenStatus == "R" && sourceData.length == 1) {
+    result += 'Đang chờ';
   } else {
     result += btnCancel;
   }
-
-
 
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
@@ -727,7 +727,6 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
 
 function extendPowerDrawDate() {
   let len = sourceData.length - 1;
-
   if (!$('#extendPowerDrawDate').val()) {
     $.modal.alertError("Quý khách vui lòng điền thông tin gia hạn.");
   }
@@ -737,7 +736,7 @@ function extendPowerDrawDate() {
   else if ($('#extendPowerDrawDate').val() < $('#powerDrawDate').val()) {
     $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
   }
-  else if (shipmentDetail.frozenStatus != 'S' || shipmentDetail.powerDrawDateStatus != 'S' || (sourceData[len].status && sourceData[len].paymentStatus != PAYMENT_STATUS.success)) {
+  else if (shipmentDetail.frozenStatus != 'Y' || shipmentDetail.powerDrawDateStatus == 'P' || (sourceData[len].status && (sourceData[len].paymentStatus != PAYMENT_STATUS.success && sourceData[len].paymentStatus != PAYMENT_STATUS.error))) {
     $.modal.alertError("Cont chưa thể gia hạn ngày rút điện");
   } else {
 
