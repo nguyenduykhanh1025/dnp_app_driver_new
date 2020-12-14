@@ -19,6 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="rfid"    column="rfid"    />
     </resultMap>
 
     <sql id="selectLogisticTruckVo">
@@ -127,5 +128,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectListChassisNoByDriverId" parameterType="Long" resultType="String">
         select t.plate_number from driver_truck dt left join logistic_truck t on dt.truck_id = t.id where t.type = '1' and dt.driver_id = #{driverId}
+    </select>
+    
+    <select id="selectLogisticTruckListWithRfid" parameterType="LogisticTruck" resultMap="LogisticTruckResult">
+        select id, logistic_group_id, plate_number, gatepass, type, self_wgt, wgt, 
+	        registry_expiry_date, del_flag, remark, create_by, create_time, update_by, 
+	        update_time, (select r.rfid from rfid_truck r where r.plate_number = t.plate_number fetch next 1 rows only) as rfid from logistic_truck t
+        <where>  
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="delFlag != null"> and del_flag = #{delFlag}</if>
+            <if test="plateNumber != null  and plateNumber != ''"> and plate_number like concat(concat('%', #{plateNumber}), '%')</if>
+            <if test="gatepass != null  and gatepass != ''"> and gatepass = #{gatepass}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="selfWgt != null "> and self_wgt = #{selfWgt}</if>
+            <if test="wgt != null "> and wgt = #{wgt}</if>
+            <if test="registryExpiryDate != null "> and registry_expiry_date = #{registryExpiryDate}</if>
+        </where>
+        ORDER BY create_Time DESC
+    </select>
+    
+    <select id="selectLogisticTruckByIdWithRfid" parameterType="Long" resultMap="LogisticTruckResult">
+        select id, logistic_group_id, plate_number, gatepass, type, self_wgt, wgt, 
+	        registry_expiry_date, del_flag, remark, create_by, create_time, update_by, 
+	        update_time, (select r.rfid from rfid_truck r where r.plate_number = t.plate_number fetch next 1 rows only) as rfid from logistic_truck t
+        where id = #{id}
     </select>
 </mapper>

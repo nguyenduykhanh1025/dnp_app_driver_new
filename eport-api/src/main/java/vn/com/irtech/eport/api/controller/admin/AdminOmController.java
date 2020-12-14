@@ -115,12 +115,14 @@ public class AdminOmController extends BaseController {
 					rfidTruckInfoRes.setTruckNo(rfidTruck.getPlateNumber());
 					rfidTruckInfoRes.setGatePass(rfidTruck.getGatePass());
 					if (rfidTruck.getWgt() != null) {
+						rfidTruckInfoRes.setTruckNoWgt(rfidTruck.getWgt());
 						deduct += rfidTruck.getWgt();
 					}
 					// Chassis no
 				} else if ("C".equalsIgnoreCase(rfidTruck.getTruckType())) {
 					rfidTruckInfoRes.setChassisNo(rfidTruck.getPlateNumber());
 					if (rfidTruck.getWgt() != null) {
+						rfidTruckInfoRes.setChassisNoWgt(rfidTruck.getWgt());
 						deduct += rfidTruck.getWgt();
 					}
 				}
