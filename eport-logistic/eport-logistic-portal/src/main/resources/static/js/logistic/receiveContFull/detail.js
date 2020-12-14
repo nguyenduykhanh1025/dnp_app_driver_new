@@ -159,8 +159,6 @@ let typeR = true;// lanh
 let typeO = true;// qua kho
 
 //var checkStatus = shipmentDetail.oversize;
-console.log("oversize"); 
-console.log(oversize);
  
 function confirm() {
   var truckNo = $("#truckNo").val();
