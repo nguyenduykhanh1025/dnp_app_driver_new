@@ -51,10 +51,7 @@ function initTabReefer() {
     $('#extendPowerDrawDateContainer').css('display', 'none');
     $('#tableExtendDateContainer').css('display', 'none');
   }
-
-  console.log('ssssssssssssssssssssss', shipmentDetail.frozenStatus);
-  if (shipmentDetail.frozenStatus == "S") {
-    console.log('iiiiiiiiiiiisii');
+  if (shipmentDetail.frozenStatus != "I" && shipmentDetail.frozenStatus != "C") {
     $("#powerDrawDate").attr('disabled', 'disabled');
     $("#btnPowerDrawDate").css('display', 'none');
   }
@@ -685,6 +682,8 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     result += btnPayment;
   } else if (!sourceData[row].id || PAYMENT_STATUS.success == sourceData[row].paymentStatus) {
     result += 'Đã thanh toán';
+  }else if(shipmentDetail.frozenStatus == "R" && sourceData.length == 1) {
+    result += 'Đang chờ';
   } else {
     result += btnCancel;
   }

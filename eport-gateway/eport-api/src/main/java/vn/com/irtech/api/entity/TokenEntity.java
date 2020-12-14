@@ -21,4 +21,5 @@ public class TokenEntity implements Serializable {
 	private Date expireTime;
 
 	private Date updateTime;
+	
 }

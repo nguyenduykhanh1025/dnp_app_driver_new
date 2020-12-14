@@ -42,7 +42,7 @@ import vn.com.irtech.eport.web.mqtt.MqttService.NotificationCode;
 @Controller
 @RequestMapping("/reefer-gruop/send-cont-reefer")
 public class SupportSendContReefer  extends BaseController{
-    private final static String PREFIX = "/reeferGruop/sendContReefer";
+    private final static String PREFIX = "reeferGruop/sendContReefer";
 	private final static String keyReefer = "R";
 	@Autowired
 	private IShipmentService shipmentService;

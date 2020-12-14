@@ -46,7 +46,7 @@ import vn.com.irtech.eport.web.mqtt.MqttService.NotificationCode;
 @Controller
 @RequestMapping("/reefer-gruop/receive-cont-empty")
 public class ReceiveContReeferEmpty extends AdminBaseController {
-	private final static String PREFIX = "/reeferGruop/ReceiveContEmpty";
+	private final static String PREFIX = "reeferGruop/ReceiveContEmpty";
 	private final static String keyReefer = "R";
 	@Autowired
 	private IShipmentService shipmentService;

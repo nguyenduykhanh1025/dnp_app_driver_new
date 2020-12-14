@@ -49,7 +49,7 @@ import vn.com.irtech.eport.web.controller.AdminBaseController;
 public class SupportExtendDrawDate extends AdminBaseController {
 	private static final Logger logger = LoggerFactory.getLogger(SupportDateSetupTemperature.class);
 
-	private String PREFIX = "/reeferGruop/extendDrawDate";
+	private String PREFIX = "reeferGruop/extendDrawDate";
 
 	private final String KEY_ICE = "R";
 
