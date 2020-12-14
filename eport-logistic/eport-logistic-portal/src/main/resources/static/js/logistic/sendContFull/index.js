@@ -1095,37 +1095,22 @@ function btnDetailRenderer(
     cargoType = hot.getDataAtCell(row, 9);
   }
   
-  // if (sourceData && sourceData.length > 0) { 
-  //  if (sourceData.length > row && sourceData[row].id) {
-  //     value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
-  //   } else if (containerNo && sztp) {
-  //     value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Cont đặc biệt</button>`;
-  //   } 
-  // }
-<<<<<<< HEAD
-   
-  if (sourceData && sourceData.length > 0) {  
-    const iElement = '<i style="margin-right: 3px;" class="fa fa-book"></i>';
-
-   if (sourceData.length > row && sourceData[row].id) { 
-=======
-    const iElement = '<i style="margin-right: 3px;" class="fa fa-book"></i>';
-  if (sourceData && sourceData.length > 0) {   
-   if (sourceData.length > row && sourceData[row].id) {  
->>>>>>> 98bdf4a845fc01aa3d1cf11a69fa1a8ee64fa045
-	   if(sourceData[row].cargoType == "DG"){
-	   	value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i style="margin-right: 3px;" class="fa fa-book"></i> Nguy hiểm</button>`;
-	   }
-	   else if(sourceData[row].sztp.substring (2,3) == "R"){
-	   value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i style="margin-right: 3px;" class="fa fa-book"></i> Lạnh</button>`;
-	   }
-	   //else if(sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft){
-      else if(sourceData[row].sztp.substring (2,3) == "P" || sourceData[row].sztp.substring (2,3) == "U"){
-	   	value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Quá khổ</button>`;
-	   } 
+  const iElement = '<i style="margin-right: 3px;" class="fa fa-book"></i>';
+  if (sourceData && sourceData.length > 0) {
+    if (sourceData.length > row && sourceData[row].id) {
+      if (sourceData[row].cargoType == "DG") {
+        value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i style="margin-right: 3px;" class="fa fa-book"></i> Nguy hiểm</button>`;
+      }
+      else if (sourceData[row].sztp.substring(2, 3) == "R") {
+        value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i style="margin-right: 3px;" class="fa fa-book"></i> Lạnh</button>`;
+      }
+      //else if(sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft){
+      else if (sourceData[row].sztp.substring(2, 3) == "P" || sourceData[row].sztp.substring(2, 3) == "U") {
+        value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Quá khổ</button>`;
+      }
     } else if (containerNo && sztp) {
       value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i style="margin-right: 3px;" class="fa fa-book"></i> Đặc biệt</button>`;
-    } 
+    }
   }
   $(td).html(value);
   cellProperties.readOnly = "true";
@@ -2194,7 +2179,7 @@ function getDataFromTable(isValidate) {
     //   ...detailInformationForContainerSpecial.data[index],
     // };
 
-    if(detailInformationForContainerSpecial.data[index]) {
+    if (detailInformationForContainerSpecial.data[index]) {
       var dataModal = detailInformationForContainerSpecial.data[index];
       shipmentDetail.dangerousImo = dataModal.dangerousImo;
       shipmentDetail.dangerousNameProduct = dataModal.dangerousNameProduct;
@@ -2209,7 +2194,7 @@ function getDataFromTable(isValidate) {
       shipmentDetail.ventilation = dataModal.ventilation;
     }
 
-   // console.log(detailInformationForContainerSpecial.data[index]);
+    // console.log(detailInformationForContainerSpecial.data[index]);
 
     if (berthplanList) {
       for (let i = 0; i < berthplanList.length; i++) {

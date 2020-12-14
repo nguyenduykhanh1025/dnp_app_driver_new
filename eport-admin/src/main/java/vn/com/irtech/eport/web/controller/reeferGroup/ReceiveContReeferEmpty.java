@@ -88,13 +88,6 @@ public class ReceiveContReeferEmpty extends AdminBaseController {
 	public AjaxResult getShipmentDetails(@RequestBody ShipmentDetail shipmentDetail) {
 		AjaxResult ajaxResult = AjaxResult.success();
 
-//		Map<String, Object> params = shipmentDetail.getParams();
-//		if (params == null) {
-//			params = new HashMap<>();
-//		}
-//		params.put("contSupplyStatus", 'R');
-//
-//		shipmentDetail.setParams(params);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService
 				.getShipmentDetailListInnerJoinToShipment(shipmentDetail);
 		if (shipmentDetails != null) {
@@ -340,13 +333,14 @@ public class ReceiveContReeferEmpty extends AdminBaseController {
 				if (StringUtils.isEmpty(shipmentDetail.getContainerNo()) || EportConstants.CONTAINER_SUPPLY_STATUS_REQ
 						.equalsIgnoreCase(shipmentDetail.getContSupplyStatus())) {
 					allUpdate = false;
-				} else if (!EportConstants.CONTAINER_SUPPLY_STATUS_HOLD
-						.equalsIgnoreCase(shipmentDetail.getContSupplyStatus())) {
+				} 
+//				else if (!EportConstants.CONTAINER_SUPPLY_STATUS_HOLD
+//						.equalsIgnoreCase(shipmentDetail.getContSupplyStatus())) {
 					shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_FINISH);
 					// Set container is qualified to verify otp to make order with status = 2
 					shipmentDetail.setStatus(2);
 					shipmentDetail.setContSupplierName(user.getLoginName());
-				}
+//				}
 				shipmentDetail.setUpdateBy(user.getLoginName());
 				if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
 					return error("Cấp container thất bại từ container: " + shipmentDetail.getContainerNo());

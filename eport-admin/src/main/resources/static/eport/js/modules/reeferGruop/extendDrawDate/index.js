@@ -881,30 +881,28 @@ function configHandson() {
         case 8:
           return '<span>Thông Gió</span>';
         case 9:
-          return '<span>Hình Thức Thanh Toán</span>';
-        case 10:
           return '<span>Ngày cắm điện</span>';
-        case 11:
+        case 10:
           return '<span>Ngày rút điện</span>';
-        case 12:
+        case 11:
           return "Sztp";
-        case 13:
+        case 12:
           return "Chủ Hàng";
-        case 14:
+        case 13:
           return "Tàu - Chuyến";
-        case 15:
+        case 14:
           return "Trọng Lượng";
-        case 16:
+        case 15:
           return "Loại Hàng";
-        case 17:
+        case 16:
           return "Số Seal";
-        case 18:
+        case 17:
           return "Cảng Dỡ Hàng";
-        case 19:
+        case 18:
           return "P.T.T.T";
-        case 20:
+        case 19:
           return "Payer";
-        case 21:
+        case 20:
           return "Ghi Chú";
       }
     },
@@ -918,7 +916,6 @@ function configHandson() {
       100,
       100,
       100,
-      150,
       150,
       150,
       60,
@@ -978,12 +975,6 @@ function configHandson() {
         data: "ventilation",
         renderer: ventilationRenderer,
       },
-
-      {
-        data: "payment",
-        renderer: paymentRenderer,
-      },
-
       {
         data: "daySetupTemperature",
         renderer: daySetupTemperatureRenderer,

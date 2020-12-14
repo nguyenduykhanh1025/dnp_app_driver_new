@@ -1481,22 +1481,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@PostMapping("/extendPowerDrawDate")
 	@ResponseBody
 	public AjaxResult extendPowerDrawDate(@RequestBody ShipmentDetail detail) {
-//		ShipmentDetail shipmentDetailFromDatabase = shipmentDetailService.selectShipmentDetailById(detail.getId());
-//
-//		Date dateOld = shipmentDetailFromDatabase.getPowerDrawDate();
-//
-//		detail.setUpdateBy(getUser().getFullName());
-//		detail.setPowerDrawDateStatus("P");
-//		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
-//
-////		detail.setPowerDrawDate(dateOld);
-////		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
-//
-//		ShipmentDetailHist shipmentDetailHist = new ShipmentDetailHist();
-//		shipmentDetailHist.setDataField("Power Draw Date");
-//		shipmentDetailHist.setShipmentDetailId(detail.getId());
-//
-//		return AjaxResult.success(shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
 		ReeferInfo reeferInfo = new ReeferInfo();
 		List<ReeferInfo> infos = reeferInfoService.selectReeferInfoListByIdShipmentDetail(detail.getId());
 		ShipmentDetail detailFromDB = shipmentDetailService.selectShipmentDetailById(detail.getId());
