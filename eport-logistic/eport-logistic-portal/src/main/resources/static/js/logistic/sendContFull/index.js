@@ -1115,9 +1115,10 @@ function btnDetailRenderer(
       else if(sourceData[row].sztp.substring (2,3) == "P" || sourceData[row].sztp.substring (2,3) == "U"){
 	   	value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Quá khổ</button>`;
 	   } 
-    } else if (containerNo && sztp) {
-      value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Đặc biệt</button>`;
-    } 
+    }
+    //  else if (containerNo && sztp) {
+    //   value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Đặc biệt</button>`;
+    // } 
   }
   $(td).html(value);
   cellProperties.readOnly = "true";

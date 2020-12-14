@@ -40,7 +40,7 @@ import java.util.*;
 public class LogisticSendContFullReeferSupportRequest extends AdminBaseController {
 	private static final Logger logger = LoggerFactory.getLogger(LogisticSendContFullReeferSupportRequest.class);
 
-	private String PREFIX = "/supportRequest/reefer";
+	private String PREFIX = "supportRequest/reefer";
 
 	private final String KEY_ICE = "R";
 
