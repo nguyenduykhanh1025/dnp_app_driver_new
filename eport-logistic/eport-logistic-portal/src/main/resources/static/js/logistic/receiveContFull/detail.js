@@ -9,6 +9,13 @@ const PAYMENT_STATUS = {
   error: "E"
 }
 
+const CONT_SPECIAL_STATUS = {
+  INIT: "I", // cont đã được lưu
+  REQ: "R", // cont đã được yêu cầu xác nhận
+  YES: "Y", // cont đã được phê duyệt yêu cầu xác nhận
+  CANCEL: "C", // cont đã bị từ chối yêu cầu xác nhận
+};
+
 $(document).ready(function () {
   initElement();
   initTabReefer();
@@ -156,37 +163,27 @@ let typeO = true;// qua kho
 function confirm() {
   var truckNo = $("#truckNo").val();
   var chassisNo = $("#chassisNo").val();
+  if(shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ) {
+    $.modal.close();
+    return;
+  }
 
   if (shipmentFiles.length < 1 && fileIds.length < 1 && !shipmentDetail.sztp.includes("R")) {
     $.modal.alertWarning("Vui lòng đính kèm file");
   }
   else
     if (oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")) {
-      // if(oversize == "Y"){
-      //   $.modal.alertWarning("Không thể chỉnh sửa biển số xe"); 
-      // }
-
-      //else
       if (truckNo == null || truckNo == "") {
         $.modal.alertWarning("Vui lòng nhập vào biển số xe đầu kéo rồi thử lại");
       }
       else if (chassisNo == null || chassisNo == "" && !shipmentDetail.sztp.includes("R")) {
         $.modal.alertWarning("Vui lòng nhập vào biển số xe rơ móc rồi thử lại");
       }
-
-
       else {
         insertCont();
         saveFile();
       }
-      //saveFile();
-    }
-    // if(oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")){ 
-    //   insertCont();
-    //   saveFile();
-    // }
-
-    else {
+    } else {
       var lengthTemp = shipmentFilePath;
       if (lengthTemp) {// nếu k có thì vào đây
         insertCont();
@@ -194,19 +191,7 @@ function confirm() {
       if (!shipmentDetail.sztp.includes("R") && (!lengthTemp)) {// nếu có thì vào đây
         saveFile();
       }
-
-      // var lengthTemp = shipmentFilePath;
-      // if (lengthTemp == null || lengthTemp.length == 0) {// nếu k có thì vào đây
-      //   insertCont();
-      // }
-
-      // if (!shipmentDetail.sztp.includes("R") && (lengthTemp != null || lengthTemp.length != 0)) {// nếu có thì vào đây
-      //   saveFile();
-      // }
-
     }
-
-
 }
 
 
