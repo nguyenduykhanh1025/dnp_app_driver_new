@@ -274,8 +274,6 @@ public class SupportExtendDrawDate extends AdminBaseController {
 			this.reeferInfoService.updateReeferInfo(info);
 
 		}
-		// shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails,
-		// shipmentDetail);
 		return success();
 	}
 

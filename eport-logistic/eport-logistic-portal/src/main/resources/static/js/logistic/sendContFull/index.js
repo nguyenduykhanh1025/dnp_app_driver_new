@@ -2187,7 +2187,7 @@ function getDataFromTable(isValidate) {
     //   ...detailInformationForContainerSpecial.data[index],
     // };
 
-    if(detailInformationForContainerSpecial.data[index]) {
+    if (detailInformationForContainerSpecial.data[index]) {
       var dataModal = detailInformationForContainerSpecial.data[index];
       shipmentDetail.dangerousImo = dataModal.dangerousImo;
       shipmentDetail.dangerousNameProduct = dataModal.dangerousNameProduct;
@@ -2202,7 +2202,7 @@ function getDataFromTable(isValidate) {
       shipmentDetail.ventilation = dataModal.ventilation;
     }
 
-   // console.log(detailInformationForContainerSpecial.data[index]);
+    // console.log(detailInformationForContainerSpecial.data[index]);
 
     if (berthplanList) {
       for (let i = 0; i < berthplanList.length; i++) {
