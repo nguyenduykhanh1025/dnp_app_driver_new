@@ -36,12 +36,16 @@ public interface EportConstants {
 	public static final int SERVICE_EXPORT_RECEIPT = 13;
 	/** Gia han ngay mien luu vo */
 	public static final int SERVICE_EXTEND_DET = 14;
-	/** Dong hang tai cang */
-	public static final int SERVICE_LOADING_CARGO = 15;
-	/** Rut hang tai cang */
-	public static final int SERVICE_UNLOADING_CARGO = 16;
+	/** Dong hang tai bai */
+	public static final int SERVICE_LOADING_CARGO_YARD = 15;
+	/** Dong hang tai kho */
+	public static final int SERVICE_LOADING_CARGO_WAREHOUSE = 16;
 	/** Dich vu dac biet (Kiem hoa, lay mau, phun trung) */
 	public static final int SERVICE_SPECIAL_SERVICE = 17;
+	/** Rut hang tai bai */
+	public static final int SERVICE_UNLOADING_CARGO_YARD = 18;
+	/** Rut hang tai kho */
+	public static final int SERVICE_UNLOADING_CARGO_WAREHOUSE = 19;
 	/** Update booking */
 	public static final int BOOKING_UPDATE = 1;
 	/** Update booking */

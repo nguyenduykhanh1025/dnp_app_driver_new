@@ -1561,7 +1561,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		processOrder.setPol("VNDAD");
 		processOrder.setRunnable(false);
 		processOrder.setStatus(1); // on progress
-		processOrder.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		processOrder.setServiceType(shipment.getServiceType());
 		processOrderService.insertProcessOrder(processOrder);
 		String payer = taxCode;
 		String payerName = "";

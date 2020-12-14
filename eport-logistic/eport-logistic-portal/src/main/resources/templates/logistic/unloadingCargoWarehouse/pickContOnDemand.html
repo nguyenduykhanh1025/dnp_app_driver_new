@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <th:block th:include="include :: header('Boc Cont Chi Dinh')" />
+</head>
+<style type="text/css">
+  .container {
+    padding: 0;
+    width: 100%;
+    display: flex;
+    height: 100%;
+    flex-flow: column;
+  }
+
+  .footer {
+    background-color: #f0f4f7;
+    flex: 0 1 55px;
+    padding: 10px 30px 12px 15px !important;
+  }
+
+  .content {
+    flex: 1 1 auto;
+    padding: 12px 15px 12px 15px;
+    margin-left: 10px;
+  }
+
+  .contListPosition {
+    height: 225px;
+    /* width: 760px; */
+    overflow-y: scroll;
+    text-align: center;
+  }
+
+  .bayPosition {
+    display: flex;
+    width: fit-content;
+    margin: 0 auto;
+  }
+
+  .contListPicked {
+    margin-top: 12px;
+    height: 185px;
+    width: fit-content;
+  }
+
+  .contBill {
+    height: 103px;
+    width: fit-content;
+  }
+
+  .columnDiv {
+    margin-right: 10px;
+  }
+
+  .cellDiv {
+    text-align: center;
+    border: solid black 1px;
+    width: 100px;
+    height: 20px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .cellDivDisable {
+    border: solid black 1px;
+    width: 100px;
+    height: 20px;
+    margin-bottom: 5px;
+    background-color: grey;
+  }
+
+  table tbody, table thead {
+    display: block;
+  }
+
+  table tbody {
+    overflow: auto;
+    height: 120px;
+  }
+
+  table {
+    margin-bottom: 0 !important;
+  }
+
+  .payment-type-form {
+    display: flex;
+    margin-top: 10px;
+  }
+</style>
+
+<body>
+  <div class="container">
+    <div class="content">
+      <div class="contListPosition"></div>
+      <div class="contListPicked" style="overflow-x:auto;margin: 0 auto;">
+        <div style="margin: 5px;">
+          <b>Danh sách container chỉ dịnh</b>
+        </div>
+        <table id="pickedContTable" class="table w-auto" border="1" align="left" > 
+          <thead>
+            <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+              <th width="330px">Container No</th>
+              <th width="165px">Kích thước</th>
+              <th width="165px">Tọa độ</th>
+            </tr>
+          </thead>
+          <tbody id="pickedContList"></tbody>
+        </table>
+      </div>
+<!--       <div class="contBill" style="margin: 0 auto;">
+        <div style="margin: 5px;">
+          <b>Phí dịch chuyển</b>
+        </div>
+        <table id="pickedContTable" class="table" style="width: 660px;" border="1" align="left" > 
+          <thead>
+            <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+              <th width="240px">Đơn giá</th>
+              <th width="240px">Số container dịch chuyển</th>
+              <th width="180px">Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody style="height: 36px;">
+            <tr>
+              <td style="width: 240px">
+                <span id="unitCosts">0</span><span> đồng.</span>
+              </td>
+              <td style="width: 240px">
+                <span id="pickedContAmount">0</span><span>.</span>
+              </td>
+              <td style="width: 180px">
+                <span id="totalCosts">0</span><span> đồng.</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div> -->
+      <div class="payment-type-form">
+        <label></span>Phương thức thanh toán </label>
+        <input style="margin: 3px 10px 0 20px;" type="radio" name="paymentType" id="credit" value="1"/>
+        <label id="creditLabel">Credit (Trả sau)</label>
+        <input style="margin: 3px 10px 0 20px;" type="radio" name="paymentType" id="cash" value="0" checked/>
+        <label>Cash (Trả tiền mặt)</label>
+      </div>
+    </div>
+    <div class="layui-layer-btn footer">
+      <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+      <a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
+    </div>
+  </div>
+</body>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: websocket" />
+<script type="text/javascript" th:inline="javascript">
+  var bayList = /*[[${bayList}]]*/;
+  var blNo = /*[[${blNo}]]*/;
+  var isCredit = /*[[${isCredit}]]*/;
+</script>
+<script th:src="@{/js/logistic/unloadingCargoWarehouse/pickContOnDemand.js}"></script>
+
+</html>

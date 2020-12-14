@@ -147,12 +147,12 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
-		shipment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
 			params = new HashMap<String, Object>();
 		}
 		params.put("userVerifyStatus", "Y");
+		params.put("unloadingCargoService", true);
 		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
@@ -205,13 +205,21 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 	@PostMapping("/shipment/comment")
 	@ResponseBody
 	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
+		if (shipmentComment.getShipmentId() == null) {
+			return error("Không xác định được mã lô!");
+		}
+		Shipment shipment = shipmentService.selectShipmentById(shipmentComment.getShipmentId());
+		if (shipment == null) {
+			return error("Không xác định được mã lô!");
+		}
+
 		SysUser user = getUser();
 		shipmentComment.setCreateBy(user.getUserName());
 		shipmentComment.setUserId(user.getUserId());
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
+		shipmentComment.setServiceType(shipment.getServiceType());
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
@@ -316,6 +324,11 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		shipmentDetail.setUpdateBy(user.getLoginName());
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
 
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		if (shipment == null) {
+			return error("Không xác định được mã lô!");
+		}
+
 		ShipmentComment shipmentComment = new ShipmentComment();
 		shipmentComment.setShipmentId(shipmentId);
 		shipmentComment.setLogisticGroupId(logisticGroupId);
@@ -326,7 +339,7 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		shipmentComment.setServiceType(shipment.getServiceType());
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);

@@ -146,7 +146,7 @@ public class YardMonitorUnLoadingCargoController extends AdminBaseController {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
-		shipment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
+		shipment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO_YARD);
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
 			params = new HashMap<String, Object>();
@@ -201,7 +201,7 @@ public class YardMonitorUnLoadingCargoController extends AdminBaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
+		shipmentComment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO_YARD);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);

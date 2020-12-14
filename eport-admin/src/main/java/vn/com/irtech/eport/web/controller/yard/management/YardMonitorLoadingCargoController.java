@@ -151,7 +151,7 @@ public class YardMonitorLoadingCargoController extends AdminBaseController {
 		params.put("specialService", EportConstants.SPECIAL_SERVICE_LOAD_YARD);
 		shipment.setParams(params);
 		shipment.setParams(params);
-		shipment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		shipment.setServiceType(EportConstants.SERVICE_LOADING_CARGO_YARD);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
 		return ajaxResult;
@@ -200,7 +200,7 @@ public class YardMonitorLoadingCargoController extends AdminBaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO_YARD);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);

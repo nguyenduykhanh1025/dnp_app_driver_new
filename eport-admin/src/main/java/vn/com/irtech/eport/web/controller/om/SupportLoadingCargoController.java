@@ -149,8 +149,8 @@ public class SupportLoadingCargoController extends OmBaseController {
 			params = new HashMap<String, Object>();
 		}
 		params.put("userVerifyStatus", "Y");
+		params.put("loadingCargoService", true);
 		shipment.setParams(params);
-		shipment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
 		return ajaxResult;
@@ -203,13 +203,21 @@ public class SupportLoadingCargoController extends OmBaseController {
 	@PostMapping("/shipment/comment")
 	@ResponseBody
 	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
+		if (shipmentComment.getShipmentId() == null) {
+			return error("Không xác định được mã lô!");
+		}
+		Shipment shipment = shipmentService.selectShipmentById(shipmentComment.getShipmentId());
+		if (shipment == null) {
+			return error("Không xác định được mã lô!");
+		}
+
 		SysUser user = getUser();
 		shipmentComment.setCreateBy(user.getUserName());
 		shipmentComment.setUserId(user.getUserId());
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		shipmentComment.setServiceType(shipment.getServiceType());
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
@@ -314,6 +322,11 @@ public class SupportLoadingCargoController extends OmBaseController {
 		shipmentDetail.setUpdateBy(user.getLoginName());
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
 
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		if (shipment == null) {
+			return error("Không xác định được mã lô!");
+		}
+
 		ShipmentComment shipmentComment = new ShipmentComment();
 		shipmentComment.setShipmentId(shipmentId);
 		shipmentComment.setLogisticGroupId(logisticGroupId);
@@ -324,7 +337,7 @@ public class SupportLoadingCargoController extends OmBaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
+		shipmentComment.setServiceType(shipment.getServiceType());
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
