@@ -1,4 +1,4 @@
-const PREFIX = ctx + "om/support/unloading-cargo";
+const PREFIX = ctx + "yard/monitor/unloading-cargo";
 const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 const containerCol = 5;
@@ -392,6 +392,16 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
         }
         break;
     }
+    // do status
+    let doStatus = '<i id="doStatus" class="fa fa-file-text easyui-tooltip" title="Chưa Nộp Đầy Đủ Chứng Từ" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
+    switch (sourceData[row].doStatus) {
+      case 'N':
+        doStatus = '<i id="doStatus" class="fa fa-file-text easyui-tooltip" title="Chưa Nộp Đầy Đủ Chứng Từ" aria-hidden="true" style="margin-left: 8px; color : #3498db;"></i>';
+        break;
+      case 'Y':
+        doStatus = '<i id="doStatus" class="fa fa-file-text easyui-tooltip" title="Đã Nộp Đầy Đủ Chứng Từ" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+    }
     // Date receipt status
     let dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Chưa đăng ký ngày đóng hàng" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
     switch (sourceData[row].dateReceiptStatus) {
@@ -412,7 +422,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     if (sourceData[row].loadingPort.substring(0, 2) != "VN") {
       content += customs;
     }
-    content += process + payment + dateReceipt;
+    content += process + payment + doStatus + dateReceipt;
     content += "</div>";
     $(td).html(content);
   }
@@ -646,9 +656,9 @@ function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties
 function specialServiceRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value != null) {
     if (4 == value) {
-      value = "Kho"
+      value = "Kho CFS"
     } else if (value == 5) {
-      value = "Bãi";
+      value = "Bãi CFS";
     }
   } else {
     value = '';
@@ -669,7 +679,7 @@ function actualDateReceiptRenderer(instance, td, row, col, prop, value, cellProp
     } else {
       if (value.length <= 10) {
         value += " 00:00";
-        hot.setDataAtCell(row, 12, value);
+        hot.setDataAtCell(row, 10, value);
       }
     }
   } else {
@@ -717,31 +727,31 @@ function configHandsond() {
         case 7:
           return 'Hạn Lệnh';
         case 8:
-          return "Ngày Miễn<br>Lưu Bãi";
+          return '<span class="required">Nơi Rút Hàng</span>';
         case 9:
-          return 'Chủ Hàng';
+          return 'Ngày Rút Hàng<br>Đăng ký';
         case 10:
-          return 'Nơi Rút Hàng';
+          return 'Ngày Rút Hàng<br>Xác Nhận';
         case 11:
-          return 'Ngày Rút Hàng';
+          return "Ngày Miễn<br>Lưu Bãi";
         case 12:
-          return 'Ngày Rút Hàng<br>Thực Tế';
+          return '<span class="required">Chủ Hàng</span>';
         case 13:
           return 'Nơi Hạ Vỏ';
         case 14:
           return "Kích Thước";
         case 15:
-          return 'Hãng Tàu';
+          return '<span class="required">Hãng Tàu</span>';
         case 16:
-          return 'Tàu';
+          return '<span class="required">Tàu</span>';
         case 17:
-          return 'Chuyến';
+          return '<span class="required">Chuyến</span>';
         case 18:
           return "Seal No";
         case 19:
           return "Trọng Lượng (kg)";
         case 20:
-          return 'Cảng Xếp Hàng';
+          return '<span class="required">Cảng Xếp Hàng</span>';
         case 21:
           return "Cảng Dỡ Hàng";
         case 22:
@@ -754,7 +764,7 @@ function configHandsond() {
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 105, 130, 100, 100, 100, 80, 150, 120, 100, 100, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200],
+    colWidths: [23, 21, 21, 135, 130, 100, 100, 100, 120, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200],
     filter: "true",
     columns: [
       {
@@ -798,6 +808,18 @@ function configHandsond() {
         renderer: expiredDemRenderer,
       },
       {
+        data: "specialService",
+        renderer: specialServiceRenderer,
+      },
+      {
+        data: "dateReceipt",
+        renderer: dateReceiptRenderer
+      },
+      {
+        data: "actualDateReceipt",
+        renderer: actualDateReceiptRenderer
+      },
+      {
         data: "detFreeTime",
         type: "numeric",
         renderer: detFreeTimeRenderer,
@@ -808,22 +830,6 @@ function configHandsond() {
         source: consigneeList,
         strict: true,
         renderer: consigneeRenderer,
-      },
-      {
-        data: "specialService",
-        renderer: specialServiceRenderer,
-      },
-      {
-        data: "dateReceipt",
-        renderer: dateReceiptRenderer
-      },
-      {
-        data: "actualDateReceipt",
-        type: "date",
-        dateFormat: "DD/MM/YYYY",
-        correctFormat: false,
-        defaultDate: new Date(),
-        renderer: actualDateReceiptRenderer
       },
       {
         data: "emptyDepot",
@@ -1424,6 +1430,32 @@ function confirmOrder() {
     $.modal.loading("Đang xử lý...");
     $.ajax({
       url: PREFIX + "/finish/confirm",
+      method: "POST",
+      data: {
+        shipmentDetailIds: shipmentDetailIds
+      },
+      success: function (result) {
+        if (result.code == 0) {
+          $.modal.alertSuccess(result.msg);
+          reloadShipmentDetail();
+        } else {
+          $.modal.alertError(result.msg);
+        }
+        $.modal.closeLoading();
+      },
+      error: function (result) {
+        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+        $.modal.closeLoading();
+      },
+    });
+  }
+}
+
+function confirmDo() {
+  if (getDataSelectedFromTable()) {
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+      url: PREFIX + "/do/confirm",
       method: "POST",
       data: {
         shipmentDetailIds: shipmentDetailIds
