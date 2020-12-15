@@ -148,10 +148,9 @@ public class CfsLoadingCargoController extends AdminBaseController {
 			params = new HashMap<String, Object>();
 		}
 		params.put("paymentStatus", "Y");
-		params.put("specialService", EportConstants.SPECIAL_SERVICE_LOAD_WAREHOUSE);
 		shipment.setParams(params);
 		shipment.setParams(params);
-		shipment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		shipment.setServiceType(EportConstants.SERVICE_LOADING_CARGO_WAREHOUSE);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
 		return ajaxResult;
@@ -200,7 +199,7 @@ public class CfsLoadingCargoController extends AdminBaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO_WAREHOUSE);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
