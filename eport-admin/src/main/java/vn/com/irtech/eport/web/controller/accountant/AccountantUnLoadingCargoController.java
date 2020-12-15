@@ -153,12 +153,12 @@ public class AccountantUnLoadingCargoController extends AdminBaseController {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
-		shipment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
 			params = new HashMap<String, Object>();
 		}
 		params.put("processStatus", "Y");
+		params.put("unloadingCargoService", true);
 		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
@@ -191,13 +191,21 @@ public class AccountantUnLoadingCargoController extends AdminBaseController {
 	@PostMapping("/shipment/comment")
 	@ResponseBody
 	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
+		if (shipmentComment.getShipmentId() == null) {
+			return error("Không xác định được mã lô!");
+		}
+		Shipment shipment = shipmentService.selectShipmentById(shipmentComment.getShipmentId());
+		if (shipment == null) {
+			return error("Không xác định được mã lô!");
+		}
+
 		SysUser user = getUser();
 		shipmentComment.setCreateBy(user.getUserName());
 		shipmentComment.setUserId(user.getUserId());
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
+		shipmentComment.setServiceType(shipment.getServiceType());
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
@@ -295,6 +303,11 @@ public class AccountantUnLoadingCargoController extends AdminBaseController {
 		}
 		SysUser user = ShiroUtils.getSysUser();
 
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		if (shipment == null) {
+			return error("Không xác định được mã lô!");
+		}
+
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setProcessStatus("N");
 		shipmentDetail.setUserVerifyStatus("N");
@@ -312,7 +325,8 @@ public class AccountantUnLoadingCargoController extends AdminBaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		shipmentComment.setServiceType(shipment.getServiceType());
+		shipmentComment.setShipmentId(shipmentId);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
@@ -329,13 +343,18 @@ public class AccountantUnLoadingCargoController extends AdminBaseController {
 		}
 		SysUser user = ShiroUtils.getSysUser();
 
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		if (shipment == null) {
+			return error("Không xác định được mã lô!");
+		}
+
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				ProcessBill processBill = new ProcessBill();
 				processBill.setShipmentId(shipmentDetail.getShipmentId());
 				processBill.setLogisticGroupId(shipmentDetail.getLogisticGroupId());
-				processBill.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
+				processBill.setServiceType(shipment.getServiceType());
 				processBill.setPayType(shipmentDetail.getPayType());
 				processBill.setPaymentStatus("N");
 				processBill.setInvoiceNo(invoiceNo);

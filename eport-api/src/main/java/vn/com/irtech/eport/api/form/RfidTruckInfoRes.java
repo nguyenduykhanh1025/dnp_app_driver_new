@@ -21,6 +21,10 @@ public class RfidTruckInfoRes implements Serializable {
 
 	private String gatePass;
 
+	private Long truckNoWgt;
+
+	private Long chassisNoWgt;
+
 	public String getTruckNo() {
 		return truckNo;
 	}
@@ -51,6 +55,22 @@ public class RfidTruckInfoRes implements Serializable {
 
 	public void setGatePass(String gatePass) {
 		this.gatePass = gatePass;
+	}
+
+	public Long getTruckNoWgt() {
+		return truckNoWgt;
+	}
+
+	public void setTruckNoWgt(Long truckNoWgt) {
+		this.truckNoWgt = truckNoWgt;
+	}
+
+	public Long getChassisNoWgt() {
+		return chassisNoWgt;
+	}
+
+	public void setChassisNoWgt(Long chassisNoWgt) {
+		this.chassisNoWgt = chassisNoWgt;
 	}
 
 }

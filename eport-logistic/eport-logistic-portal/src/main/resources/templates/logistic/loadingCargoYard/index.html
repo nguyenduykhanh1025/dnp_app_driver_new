@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <th:block th:include="include :: header('Nhan Cont Rong')" />
+  <th:block th:include="include :: handsontable-css" />
+  <th:block th:include="include :: easyui-css" />
+  <th:block th:include="include :: summernote-css" />
+  <th:block th:include="include :: dropzone-css" />
+  <link th:href="@{/css/logistic/receiveContFull/style.css?v=0916}" rel="stylesheet" />
+  <link th:href="@{/eport/css/common/style.css?v=0916}" rel="stylesheet" />
+</head>
+
+<body class="grey-background">
+  <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+  <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+  <div class="main-body">
+    <div class="main-body__search-wrapper mb-2">
+
+      <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+        <div class="flex__left w-20">
+          <h3 class="mt-10">Đóng Hàng Vào Container Tại Bãi</h3>
+        </div>
+        <div class="flex__right w-80">
+          <div class="justify-content-around align-items-center" id="ff">
+            <div class="d-inline">
+              <input class="easyui-textbox" id="bookingNo" data-options="prompt:'Booking No'" />
+            </div>
+            <div class="d-inline">
+              <input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
+            </div>
+            <div class="d-inline">
+              <input class="easyui-textbox" id="consignee" data-options="prompt:'Chủ hàng'" />
+            </div>
+            <div class="d-inline">
+              <select id="shipmentStatus" class="easyui-combobox" panelHeight="auto" editable="false"
+                style="width: 130px">
+                <option value="" selected>Tất Cả</option>
+                <option value=1>Đang Giao Dịch</option>
+                <option value=4>Hoàn Thành</option>
+              </select>
+            </div>
+            <div class="d-inline">
+              <input id="fromDate" class="easyui-datebox" style="width: 100px;"
+                data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser">
+            </div>
+            <div class="d-inline">
+              <input id="toDate" class="easyui-datebox" style="width: 100px;"
+                data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser">
+            </div>
+            <div class="d-inline">
+              <button class="btn btn-success" onclick="search()" style="margin-bottom: 5px;">Tìm kiếm</button>
+            </div>
+            <div class="d-inline">
+              <button class="btn btn-success btn-outline" onclick="clearInput()" style="margin-bottom: 5px;">Làm
+                mới</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-body__table-wrapper">
+      <div class="easyui-layout" id="main-layout" style="width: 100%;">
+        <div class="left-side" title="Danh sách lô" data-options="region:'west',split:true" style="width: 30%;">
+          <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
+          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+                <th data-options="field:'id', fixed:true" width="1"></th>
+                <th data-options="field:'bookingNo', halign:'center', resizable:true, fixed:true" sortable="true"
+                  width="150">Booking No</th>
+                <th data-options="field:'containerAmount', align:'center', halign:'center', fixed:true" width="40">SL
+                </th>
+                <th data-options="field:'opeCode', align:'center', halign:'center', fixed:true" width="50"
+                  sortable="true">OPR</th>
+                <th data-options="field:'consignee', align:'left', halign:'center', fixed:true" width="150"
+                  sortable="true">Tên chủ hàng</th>
+                <th
+                  data-options="field:'createTime', align:'center', halign:'center', formatter: formatDate, fixed:true"
+                  sortable="true" width="110">Ngày Tạo</th>
+                <th data-options="field:'remark', align:'left', halign:'center', formatter: formatRemark"
+                  sortable="true" width="150">Ghi Chú</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <div class="right-side" data-options="region:'center'" style="width: 100%;">
+          <div class="easyui-layout" id="right-layout" data-options="fit:true" style="position: relative;">
+            <div style="height: 50%;" data-options="region:'south', split:true">
+              <span class="right-side__collapse"><i class="fa fa-chevron-down"></i></span>
+              <div class="panel-header" style="width: 100%; background-color: #f3f7fa;">
+                <div class="panel-title" style="color: #333;">Hỗ Trợ</div>
+              </div>
+              <div id="comment-div" style="padding: 10px 20px 10px 20px;">
+                <div id="commentList"></div>
+                <div style="text-align: right;">
+                  <div class="form-group row">
+                    <label class="col-md-1 col-sm-2 col-xs-3">Tiêu đề <span style="color: red;">*</span></label>
+                    <div class="col-md-11 col-sm-10 col-xs-9">
+                      <input class="easyui-textbox" id="topic" style="width: 100%;" />
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-1 col-sm-2 col-xs-3">Nội dung <span style="color: red;">*</span></label>
+                    <div class="col-md-11 col-sm-10 col-xs-9">
+                      <textarea class="summernote" id="content"></textarea>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <span class="col-md-1 col-sm-2 col-xs-3"></span>
+                    <div id="dropzone" class="col-md-2 col-sm-2 col-xs-2" style="text-align: left;">
+                      <button id="attachButton" class="btn btn-sm btn-default">
+                        <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+                      </button>
+                    </div>
+                    <div id="previews" class="col-md-2 col-sm-2 col-xs-2">
+                    </div>
+                    <a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
+                      <span class="l-btn-left"><span class="l-btn-text">
+                          <button id="sendComment" onclick="addComment()" class="btn btn-sm btn-primary">
+                            <i class="fa fa-send text-primary"></i> Gửi</button></span></span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div data-options="region:'center'" id="right-side__main-table">
+              <div class="panel-header" style="width: 100%; background-color: #f3f7fa; display: flex;">
+                <div class="panel-title" style="color: #333;">Thông tin lô </div>
+                <div style="margin-left: 10px;">
+                  <a id="attachIcon" class="hidden" href="javascript:void(0)"
+                    th:attr="data-url=@{/logistic/receive-cont-empty/shipments/{shipmentId}/shipment-images}">
+                    <i class="fa fa-paperclip" style="font-size:2rem;" title="Xem hình ảnh booking đính kèm"></i>
+                  </a>
+                </div>
+                <div class="panel-tool" id="step-area">
+                  <ul class="right-info">
+                    <li><a id="registerStatus" class="disable">Khai báo</a></li>
+                    <li><a id="contSupplyStatus" class="disable">Cấp container</a></li>
+                    <li><a id="verifyStatus" class="disable">Xác thực</a></li>
+                    <li><a id="paymentStatus" class="disable">Thanh toán</a></li>
+                    <li><a id="finishStatus" class="disable">Hoàn thành</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="right-side__toolbar">
+                <div class="datagrid-toolbar">
+                  <table cellspacing="0" cellpadding="0">
+                    <tbody>
+                      <tr>
+                        <td>
+                          <button id="saveShipmentDetailBtn" onclick="saveShipmentDetail()"
+                            class="btn btn-sm btn-primary"><i class="fa fa-save text-primary"></i> Lưu khai báo
+                          </button>
+                        </td>
+                        <td>
+                          <button id="contSupplyBtn" onclick="requestContSupply()" class="btn btn-sm btn-primary"><i
+                              class="fa fa-plus text-primary"></i> Yêu cầu cấp rỗng
+                          </button>
+                        </td>
+                        <td>
+                          <button id="verifyBtn" onclick="verify()" class="btn btn-sm btn-primary"><i
+                              class="fa fa-check text-primary"></i> Xác nhận
+                          </button>
+                        </td>
+                        <td>
+                          <button id="payBtn" onclick="pay()" class="btn btn-sm btn-primary"><i
+                              class="fa fa-credit-card text-primary"></i> Thanh toán
+                          </button>
+                        </td>
+                        <td>
+                          <button id="deleteBtn" onclick="deleteShipmentDetail()" class="btn btn-sm btn-danger"><i
+                              class="fa fa-times text-primary"></i> Xóa
+                          </button>
+                        </td>
+                        <td>
+                          <div class="dropdown-wrapper">
+                            <button class="btn btn-sm btn-more btn-main">Yêu cầu</button>
+                            <div class="dropdown">
+                              <button class="btn btn-sm btn-more" style="border-left: 1px solid #070f2d6b">
+                                <i class="fa fa-caret-down"></i>
+                              </button>
+                              <div class="dropdown-content">
+                                <a href="javascript:void(0)" onclick="requestCancelOrder()">
+                                  <i class="fa fa-window-close text-primary"></i> Hủy lệnh</a>
+
+                                <a href="javascript:void(0)" onclick="requestCancelSupplyContainer()">
+                                  <i class="fa fa-close text-primary"></i> Hủy yêu cầu cấp container</a>
+
+                                <a href="javascript:void(0)" onclick="requestExchangeContainer()">
+                                  <i class="fa fa-exchange text-primary"></i> Đổi container</a>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: summernote-js" />
+  <th:block th:include="include :: dropzone-js" />
+  <th:block th:include="include :: handsontable-js" />
+  <th:block th:include="include :: websocket" />
+  <script type="text/javascript" th:inline="javascript">
+    $(".main-body").height($(document).height() - 10);
+    $(".easyui-layout").height($('.main-body').height() - 40);
+    var sId = /*[[${sId}]]*/;
+    var domain = /*[[${domain}]]*/;
+  </script>
+  <script th:src="@{/js/logistic/loadingCargoYard/index.js?v=20201208}"></script>
+</body>
+
+</html>

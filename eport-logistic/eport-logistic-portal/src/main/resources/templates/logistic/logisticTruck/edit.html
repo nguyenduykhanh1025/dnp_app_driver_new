@@ -55,6 +55,12 @@
                     <input name="gatepass" id="gatepass" th:field="*{gatepass}" class="form-control" >
                 </div>
             </div>
+            <div id="rfid" class="form-group">    
+                <label class="col-sm-3 control-label">RFID:</label>
+                <div class="col-sm-8">
+                    <input name="rfid" id="rfid" th:field="*{rfid}" class="form-control" >
+                </div>
+            </div>
         </form>
     </div>
     <th:block th:include="include :: footer" />

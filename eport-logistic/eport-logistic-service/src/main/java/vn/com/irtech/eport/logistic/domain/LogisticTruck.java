@@ -1,12 +1,14 @@
 package vn.com.irtech.eport.logistic.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import vn.com.irtech.eport.common.annotation.Excel;
-import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import vn.com.irtech.eport.common.annotation.Excel;
+import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
 /**
  *LogisticTruck Object truck
@@ -52,6 +54,9 @@ public class LogisticTruck extends BaseEntity
     /** Delete Flag(default 0) */
     private boolean delFlag;
     
+	/** RFID */
+	private String rfid;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -132,7 +137,16 @@ public class LogisticTruck extends BaseEntity
     {
         return delFlag;
     }
-    @Override
+
+	public String getRfid() {
+		return rfid;
+	}
+
+	public void setRfid(String rfid) {
+		this.rfid = rfid;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())

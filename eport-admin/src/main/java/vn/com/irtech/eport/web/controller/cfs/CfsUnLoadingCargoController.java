@@ -146,13 +146,12 @@ public class CfsUnLoadingCargoController extends AdminBaseController {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
-		shipment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
+		shipment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO_WAREHOUSE);
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
 			params = new HashMap<String, Object>();
 		}
 		params.put("paymentStatus", "Y");
-		params.put("specialService", EportConstants.SPECIAL_SERVICE_UNLOAD_WAREHOUSE);
 		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
@@ -201,7 +200,7 @@ public class CfsUnLoadingCargoController extends AdminBaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO);
+		shipmentComment.setServiceType(EportConstants.SERVICE_UNLOADING_CARGO_WAREHOUSE);
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);

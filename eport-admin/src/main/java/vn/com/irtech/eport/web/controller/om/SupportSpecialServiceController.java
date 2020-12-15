@@ -192,13 +192,21 @@ public class SupportSpecialServiceController extends OmBaseController {
 	@PostMapping("/shipment/comment")
 	@ResponseBody
 	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
+		if (shipmentComment.getShipmentId() == null) {
+			return error("Không xác định được mã lô!");
+		}
+		Shipment shipment = shipmentService.selectShipmentById(shipmentComment.getShipmentId());
+		if (shipment == null) {
+			return error("Không xác định được mã lô!");
+		}
+
 		SysUser user = getUser();
 		shipmentComment.setCreateBy(user.getUserName());
 		shipmentComment.setUserId(user.getUserId());
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		shipmentComment.setServiceType(shipment.getServiceType());
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);

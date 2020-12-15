@@ -1,13 +1,15 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
 import java.util.List;
-import vn.com.irtech.eport.common.utils.DateUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vn.com.irtech.eport.logistic.mapper.LogisticTruckMapper;
-import vn.com.irtech.eport.logistic.domain.LogisticTruck;
-import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
+
 import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.logistic.domain.LogisticTruck;
+import vn.com.irtech.eport.logistic.mapper.LogisticTruckMapper;
+import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 
 /**
  *LogisticTruckService Business Processing
@@ -118,4 +120,26 @@ public class LogisticTruckServiceImpl implements ILogisticTruckService
     public List<String> selectListChassisNoByDriverId(Long driverId) {
         return logisticTruckMapper.selectListChassisNoByDriverId(driverId);
     }
+
+	/**
+	 * Select logistic truck list with rfid
+	 * 
+	 * @param logisticTruck
+	 * @return
+	 */
+	@Override
+	public List<LogisticTruck> selectLogisticTruckListWithRfid(LogisticTruck logisticTruck) {
+		return logisticTruckMapper.selectLogisticTruckListWithRfid(logisticTruck);
+	}
+
+	/**
+	 * Select logistic truck by id with rfid
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public LogisticTruck selectLogisticTruckByIdWithRfid(Long id) {
+		return logisticTruckMapper.selectLogisticTruckByIdWithRfid(id);
+	}
 }

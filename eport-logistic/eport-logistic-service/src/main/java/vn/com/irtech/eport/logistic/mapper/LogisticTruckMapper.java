@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.mapper;
 
 import java.util.List;
+
 import vn.com.irtech.eport.logistic.domain.LogisticTruck;
 
 /**
@@ -66,4 +67,20 @@ public interface LogisticTruckMapper
     public List<String> selectListTruckNoByDriverId(Long driverId);
     
     public List<String> selectListChassisNoByDriverId(Long driverId); 
+
+	/**
+	 * Select logistic truck list with rfid
+	 * 
+	 * @param logisticTruck
+	 * @return
+	 */
+	public List<LogisticTruck> selectLogisticTruckListWithRfid(LogisticTruck logisticTruck);
+
+	/**
+	 * Select logistic truck by id with rfid
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public LogisticTruck selectLogisticTruckByIdWithRfid(Long id);
 }

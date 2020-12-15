@@ -1,7 +1,9 @@
 package vn.com.irtech.eport.web.controller.container.supplier;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -87,7 +89,12 @@ public class ContSupplyLoadingCargoController extends BaseController {
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
-		shipment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		Map<String, Object> params = shipment.getParams();
+		if (params == null) {
+			params = new HashMap<String, Object>();
+		}
+		params.put("loadingCargoService", true);
+		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.getShipmentListForContSupply(shipment);
 		return getDataTable(shipments);
 	}
@@ -190,13 +197,21 @@ public class ContSupplyLoadingCargoController extends BaseController {
 	@PostMapping("/shipment/comment")
 	@ResponseBody
 	public AjaxResult addNewCommentToSend(@RequestBody ShipmentComment shipmentComment) {
+		if (shipmentComment.getShipmentId() == null) {
+			return error("Không xác định được mã lô!");
+		}
+		Shipment shipment = shipmentService.selectShipmentById(shipmentComment.getShipmentId());
+		if (shipment == null) {
+			return error("Không xác định được mã lô!");
+		}
+
 		SysUser user = ShiroUtils.getSysUser();
 		shipmentComment.setCreateBy(user.getUserName());
 		shipmentComment.setUserId(user.getUserId());
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO);
+		shipmentComment.setServiceType(shipment.getServiceType());
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);

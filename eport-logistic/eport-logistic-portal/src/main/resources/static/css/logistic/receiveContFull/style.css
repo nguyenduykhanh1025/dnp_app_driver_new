@@ -371,3 +371,7 @@ span {
     opacity: 0;
   }
 }
+
+.preview-block {
+  float: left;
+}
