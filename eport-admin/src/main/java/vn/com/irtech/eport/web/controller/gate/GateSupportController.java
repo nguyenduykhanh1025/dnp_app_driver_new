@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +26,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
-import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.GateDetection;
-import vn.com.irtech.eport.logistic.domain.LogisticGroup;
-import vn.com.irtech.eport.logistic.domain.PickupHistory;
-import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IGateDetectionService;
@@ -41,8 +36,6 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.web.dto.DetectionInfomation;
-import vn.com.irtech.eport.web.dto.GateInDataReq;
-import vn.com.irtech.eport.web.dto.GateInTestDataReq;
 import vn.com.irtech.eport.web.dto.GateNotificationCheckInReq;
 import vn.com.irtech.eport.web.dto.SensorResult;
 import vn.com.irtech.eport.web.mqtt.BusinessConsts;
@@ -201,6 +194,8 @@ public class GateSupportController extends BaseController {
 		gateNotificationCheckInReq.setContainerSend1(detectionInfo.getContainerNo1());
 		gateNotificationCheckInReq.setContainerSend2(detectionInfo.getContainerNo2());
 
+		gateNotificationCheckInReq = getContInfo(gateNotificationCheckInReq);
+
 		NotificationReq notificationReq = new NotificationReq();
 		notificationReq.setTitle("ePort: Phát hiện xe tại cổng.");
 		notificationReq.setMsg("Có xe ở cổng đang đợi làm lệnh " + gateNotificationCheckInReq.getTruckNo());
@@ -218,137 +213,274 @@ public class GateSupportController extends BaseController {
 			logger.error("Error when try sending notification request check in for gate: " + e);
 		}
 
+		// Check to get seal no
+		UpdateSealNo(gateNotificationCheckInReq);
+
+		checkQualifiedAutoGate(detectionInfo);
+	}
+
+	private void UpdateSealNo(GateNotificationCheckInReq gateNotificationCheckInReq) {
 		new Thread() {
 			public void run() {
-				// Container is qualified to send gate order request
-				boolean cont1 = false; // Determine container 1 is qualified for directly make gate order
-				boolean cont2 = false; // Determine container 2 is qualified for directly make gate order
-
-				boolean cont1F = false; // Determine container 1 is container full => need check seal no
-				boolean cont2F = false; // Determine container 2 is container full => need check seal no
-
-				boolean wgtQualified = false; // Determine weight is accurate
-
-				// Rule check container qualified
-				// - Have info in catos reserve and job order no
-				// - Is container empty, if full then need to have export seal no
-				// - Except container 2 if empty => default qualified (Case detect 1 container)
-
-				Map<String, ContainerInfoDto> cntrMap = getCntrMapFromCatos(detectionInfo);
-
-				// check container 1 qualified
-				if (StringUtils.isNotEmpty(detectionInfo.getContainerNo1())) {
-					ContainerInfoDto container1 = cntrMap.get(detectionInfo.getContainerNo1());
-					if (container1 != null) {
-						if ("E".equalsIgnoreCase(container1.getFe())
-								&& StringUtils.isNotEmpty(container1.getJobOdrNo())) {
-							// Container 1 qualified
-							cont1 = true;
-						} else {
-							// Still not qualified, case container 1 is full => check seal no
-							cont1F = true;
-						}
-					}
+				boolean cont1 = true;
+				boolean cont2 = true;
+				if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSendFE1())
+						&& "F".equalsIgnoreCase(gateNotificationCheckInReq.getSendFE1())
+						&& StringUtils.isEmpty(gateNotificationCheckInReq.getSealNo1())) {
+					cont1 = true;
 				}
-
-				// check container 2 qualified
-				if (StringUtils.isNotEmpty(detectionInfo.getContainerNo2())) {
-					ContainerInfoDto container2 = cntrMap.get(detectionInfo.getContainerNo2());
-					if (container2 != null) {
-						if ("E".equalsIgnoreCase(container2.getFe())
-								&& StringUtils.isNotEmpty(container2.getJobOdrNo())) {
-							// Container 2 qualified
-							cont2 = true;
-						} else {
-							// Still not qualified, case container 2 is full => check seal no
-							cont2F = true;
-						}
-					}
-				} else {
-					// Container 2 empty => default qualified
+				if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSendFE2())
+						&& "F".equalsIgnoreCase(gateNotificationCheckInReq.getSendFE2())
+						&& StringUtils.isEmpty(gateNotificationCheckInReq.getSealNo2())) {
 					cont2 = true;
 				}
-
-				// Check if weight is qualified
-				Integer oldWgt = getCurrentWgt(detectionInfo.getGateNo());
-				for (int i = 1; i <= RETRY_WAIT_WGT; i++) {
-
-					logger.debug("Wait " + TIME_OUT_WAIT_WGT + " miliseconds");
-					try {
-						Thread.sleep(TIME_OUT_WAIT_WGT);
-					} catch (InterruptedException e) {
-						logger.error("Error sleep to wait weight info: " + e);
-					}
-					Integer wgt = getCurrentWgt(detectionInfo.getGateNo());
-					if (oldWgt == wgt) {
-						wgtQualified = true;
-						break;
-					} else {
-						oldWgt = wgt;
-					}
-				}
-
-				// Repeat check catos database in 2 minute
-				// Stop when time exceed 2 minutes or seal no is input
-				// Check when container 1 or container 2 is full
-				if (cont1F || cont2F) {
-					for (int i = 1; i <= RETRY_WAIT_SEAL; i++) {
-						// Get sensor result from cache
-						// 0 0 0, 1 0 1 => no truck at gate
-						// Clear detection data in cache
-
-						// Get info from catos
-						cntrMap = getCntrMapFromCatos(detectionInfo);
-
-						// If container 1 is full
-						if (cont1F) {
-							// Get info container 1
-							ContainerInfoDto container1 = cntrMap.get(detectionInfo.getContainerNo1());
-							// check if container 1 has job and seal no 3 (export seal no)
-							// => qualified
-							if (container1 != null) {
-								if (StringUtils.isNotEmpty(container1.getJobOdrNo())
-										&& StringUtils.isNotEmpty(container1.getSealNo3())) {
-									cont1 = true;
-								}
-							}
-						}
-
-						// If container is full
-						if (cont2F) {
-							// Get info container 2
-							ContainerInfoDto container2 = cntrMap.get(detectionInfo.getContainerNo2());
-							// check if container 2 has job and seal no 3 (export seal no)
-							// => qualified
-							if (container2 != null) {
-								if (StringUtils.isNotEmpty(container2.getJobOdrNo())
-										&& StringUtils.isNotEmpty(container2.getSealNo3())) {
-									cont2 = true;
-								}
-							}
-						}
-
-						if (cont1 && cont2) {
+				for (int i = 1; i <= RETRY_WAIT_SEAL; i++) {
+					// Get sensor result from cache
+					// 0 0 0, 1 0 1 => no truck at gate
+					// Clear detection data in cache
+					Object sensorObj = CacheUtils.get("sensorInfo_" + gateNotificationCheckInReq.getGateId());
+					SensorResult sensorRes = (SensorResult) sensorObj;
+					List<Integer> sensorList = sensorRes.getSensors();
+					if (CollectionUtils.isNotEmpty(sensorList) && sensorList.size() >= 3) {
+						if ((sensorList.get(0) == 0 && sensorList.get(1) == 0 && sensorList.get(2) == 0)
+								|| (sensorList.get(0) == 1 && sensorList.get(1) == 0 && sensorList.get(2) == 1)) {
 							break;
 						}
-
-						logger.debug("Wait " + TIME_OUT_WAIT_SEAL + " miliseconds");
-						try {
-							Thread.sleep(TIME_OUT_WAIT_SEAL);
-						} catch (InterruptedException e) {
-							logger.error("Error sleep to wait SEAL info: " + e);
-						}
-
 					}
+
+					if (!cont1) {
+						Map<String, ContainerInfoDto> contMap = getContainerInfoMap(gateNotificationCheckInReq.getContainerSend1());
+						ContainerInfoDto cntrInfo = contMap.get(gateNotificationCheckInReq.getContainerSend1());
+						if (cntrInfo != null && StringUtils.isNotEmpty(cntrInfo.getSealNo3())) {
+							cont1 = true;
+							gateNotificationCheckInReq.setSealNo1(cntrInfo.getSealNo3());
+						}
+					}
+					
+					if (!cont2) {
+						Map<String, ContainerInfoDto> contMap = getContainerInfoMap(
+								gateNotificationCheckInReq.getContainerSend2());
+						ContainerInfoDto cntrInfo = contMap.get(gateNotificationCheckInReq.getContainerSend2());
+						if (cntrInfo != null && StringUtils.isNotEmpty(cntrInfo.getSealNo3())) {
+							cont2 = true;
+							gateNotificationCheckInReq.setSealNo2(cntrInfo.getSealNo3());
+						}
+					}
+
+					logger.debug("Wait " + TIME_OUT_WAIT_SEAL + " miliseconds");
+					try {
+						Thread.sleep(TIME_OUT_WAIT_SEAL);
+					} catch (InterruptedException e) {
+						logger.error("Error sleep to wait SEAL info: " + e);
+					}
+
 				}
 
-				if (cont1 && cont2 && wgtQualified) {
+				if (cont1 && cont2) {
 					// Send request make gate order directly
-					mqttService.sendProgressToGate(BusinessConsts.DATA_QUALIFIED, BusinessConsts.BLANK,
-							"Xác nhận data chính xác, trực tiếp làm lênh.", detectionInfo.getGateNo());
+					mqttService.sendProgressToGate(BusinessConsts.DATA_UPDATE, BusinessConsts.BLANK,
+							new Gson().toJson(gateNotificationCheckInReq), gateNotificationCheckInReq.getGateId());
 				}
 			}
 		}.start();
+	}
+
+	/**
+	 * Get container info from catos and set to gate notification check in req
+	 * object
+	 * 
+	 * @param gateNotificationCheckInReq
+	 * @return
+	 */
+	private GateNotificationCheckInReq getContInfo(GateNotificationCheckInReq gateNotificationCheckInReq) {
+		String containerNos = "";
+		if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getContainerSend1())) {
+			containerNos += gateNotificationCheckInReq.getContainerSend1();
+		}
+		if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getContainerSend2())) {
+			containerNos += "," + gateNotificationCheckInReq.getContainerSend2();
+		}
+		Map<String, ContainerInfoDto> contMap = getContainerInfoMap(containerNos);
+		if (StringUtils.isEmpty(contMap)) {
+			return gateNotificationCheckInReq;
+		}
+
+		if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getContainerSend1())) {
+			ContainerInfoDto cntrInfo1 = contMap.get(gateNotificationCheckInReq.getContainerSend1());
+			if (cntrInfo1 != null) {
+				gateNotificationCheckInReq.setSendFE1(cntrInfo1.getFe());
+				gateNotificationCheckInReq.setSendSztp1(cntrInfo1.getSztp());
+				gateNotificationCheckInReq.setSendRemark1(cntrInfo1.getRemark());
+				gateNotificationCheckInReq.setSealNo1(cntrInfo1.getSealNo3());
+			}
+		}
+
+		if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getContainerSend2())) {
+			ContainerInfoDto cntrInfo2 = contMap.get(gateNotificationCheckInReq.getContainerSend2());
+			if (cntrInfo2 != null) {
+				gateNotificationCheckInReq.setSendFE2(cntrInfo2.getFe());
+				gateNotificationCheckInReq.setSendSztp2(cntrInfo2.getSztp());
+				gateNotificationCheckInReq.setSendRemark2(cntrInfo2.getRemark());
+				gateNotificationCheckInReq.setSealNo2(cntrInfo2.getSealNo3());
+			}
+		}
+		return gateNotificationCheckInReq;
+	}
+
+	/**
+	 * Get list container info from catos and convert to cont map object with key is
+	 * container no and value is containre info dto
+	 * 
+	 * @param containerNos
+	 * @return
+	 */
+	private Map<String, ContainerInfoDto> getContainerInfoMap(String containerNos) {
+		List<ContainerInfoDto> containerInfoDtos = catosApiService.getAllContainerInfoDtoByContNos(containerNos);
+		Map<String, ContainerInfoDto> contMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(containerInfoDtos)) {
+			for (ContainerInfoDto cntrInfo : containerInfoDtos) {
+				if (!EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(cntrInfo.getCntrState())
+						&& !EportConstants.CATOS_CONT_STACKING.equalsIgnoreCase(cntrInfo.getCntrState())
+						&& StringUtils.isNotEmpty(cntrInfo.getJobOdrNo())) {
+					contMap.put(cntrInfo.getCntrNo(), cntrInfo);
+				}
+			}
+		}
+		return contMap;
+	}
+
+	private void checkQualifiedAutoGate(GateDetection detectionInfo) {
+//		new Thread() {
+//			public void run() {
+//				// Container is qualified to send gate order request
+//				boolean cont1 = false; // Determine container 1 is qualified for directly make gate order
+//				boolean cont2 = false; // Determine container 2 is qualified for directly make gate order
+//
+//				boolean cont1F = false; // Determine container 1 is container full => need check seal no
+//				boolean cont2F = false; // Determine container 2 is container full => need check seal no
+//
+//				boolean wgtQualified = false; // Determine weight is accurate
+//
+//				// Rule check container qualified
+//				// - Have info in catos reserve and job order no
+//				// - Is container empty, if full then need to have export seal no
+//				// - Except container 2 if empty => default qualified (Case detect 1 container)
+//
+//				Map<String, ContainerInfoDto> cntrMap = getCntrMapFromCatos(detectionInfo);
+//
+//				// check container 1 qualified
+//				if (StringUtils.isNotEmpty(detectionInfo.getContainerNo1())) {
+//					ContainerInfoDto container1 = cntrMap.get(detectionInfo.getContainerNo1());
+//					if (container1 != null) {
+//						if ("E".equalsIgnoreCase(container1.getFe())
+//								&& StringUtils.isNotEmpty(container1.getJobOdrNo())) {
+//							// Container 1 qualified
+//							cont1 = true;
+//						} else {
+//							// Still not qualified, case container 1 is full => check seal no
+//							cont1F = true;
+//						}
+//					}
+//				}
+//
+//				// check container 2 qualified
+//				if (StringUtils.isNotEmpty(detectionInfo.getContainerNo2())) {
+//					ContainerInfoDto container2 = cntrMap.get(detectionInfo.getContainerNo2());
+//					if (container2 != null) {
+//						if ("E".equalsIgnoreCase(container2.getFe())
+//								&& StringUtils.isNotEmpty(container2.getJobOdrNo())) {
+//							// Container 2 qualified
+//							cont2 = true;
+//						} else {
+//							// Still not qualified, case container 2 is full => check seal no
+//							cont2F = true;
+//						}
+//					}
+//				} else {
+//					// Container 2 empty => default qualified
+//					cont2 = true;
+//				}
+//
+//				// Check if weight is qualified
+//				Integer oldWgt = getCurrentWgt(detectionInfo.getGateNo());
+//				for (int i = 1; i <= RETRY_WAIT_WGT; i++) {
+//
+//					logger.debug("Wait " + TIME_OUT_WAIT_WGT + " miliseconds");
+//					try {
+//						Thread.sleep(TIME_OUT_WAIT_WGT);
+//					} catch (InterruptedException e) {
+//						logger.error("Error sleep to wait weight info: " + e);
+//					}
+//					Integer wgt = getCurrentWgt(detectionInfo.getGateNo());
+//					if (oldWgt == wgt) {
+//						wgtQualified = true;
+//						break;
+//					} else {
+//						oldWgt = wgt;
+//					}
+//				}
+//
+//				// Repeat check catos database in 2 minute
+//				// Stop when time exceed 2 minutes or seal no is input
+//				// Check when container 1 or container 2 is full
+//				if (cont1F || cont2F) {
+//					for (int i = 1; i <= RETRY_WAIT_SEAL; i++) {
+//						// Get sensor result from cache
+//						// 0 0 0, 1 0 1 => no truck at gate
+//						// Clear detection data in cache
+//
+//						// Get info from catos
+//						cntrMap = getCntrMapFromCatos(detectionInfo);
+//
+//						// If container 1 is full
+//						if (cont1F) {
+//							// Get info container 1
+//							ContainerInfoDto container1 = cntrMap.get(detectionInfo.getContainerNo1());
+//							// check if container 1 has job and seal no 3 (export seal no)
+//							// => qualified
+//							if (container1 != null) {
+//								if (StringUtils.isNotEmpty(container1.getJobOdrNo())
+//										&& StringUtils.isNotEmpty(container1.getSealNo3())) {
+//									cont1 = true;
+//								}
+//							}
+//						}
+//
+//						// If container is full
+//						if (cont2F) {
+//							// Get info container 2
+//							ContainerInfoDto container2 = cntrMap.get(detectionInfo.getContainerNo2());
+//							// check if container 2 has job and seal no 3 (export seal no)
+//							// => qualified
+//							if (container2 != null) {
+//								if (StringUtils.isNotEmpty(container2.getJobOdrNo())
+//										&& StringUtils.isNotEmpty(container2.getSealNo3())) {
+//									cont2 = true;
+//								}
+//							}
+//						}
+//
+//						if (cont1 && cont2) {
+//							break;
+//						}
+//
+//						logger.debug("Wait " + TIME_OUT_WAIT_SEAL + " miliseconds");
+//						try {
+//							Thread.sleep(TIME_OUT_WAIT_SEAL);
+//						} catch (InterruptedException e) {
+//							logger.error("Error sleep to wait SEAL info: " + e);
+//						}
+//
+//					}
+//				}
+//
+//				if (cont1 && cont2 && wgtQualified) {
+//					// Send request make gate order directly
+//					mqttService.sendProgressToGate(BusinessConsts.DATA_QUALIFIED, BusinessConsts.BLANK,
+//							"Xác nhận data chính xác, trực tiếp làm lênh.", detectionInfo.getGateNo());
+//				}
+//			}
+//		}.start();
 	}
 
 	/**
@@ -396,124 +528,5 @@ public class GateSupportController extends BaseController {
 			}
 		}
 		return cntrMap;
-	}
-
-	@PostMapping("/logistics")
-	@ResponseBody
-	public List<LogisticGroup> getLogisticGroups() {
-		LogisticGroup logisticGroup = new LogisticGroup();
-		logisticGroup.setGroupName("Chọn đơn vị Logistics");
-		logisticGroup.setId(0L);
-		LogisticGroup logisticGroupParam = new LogisticGroup();
-		logisticGroupParam.setDelFlag("0");
-		List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
-		logisticGroups.add(0, logisticGroup);
-		return logisticGroups;
-	}
-
-	@PostMapping("/logistic/{groupId}/drivers")
-	@ResponseBody
-	public List<DriverAccount> getDriverAccounts(@PathVariable("groupId") Long groupId) {
-		DriverAccount driverAccount = new DriverAccount();
-		driverAccount.setLogisticGroupId(groupId);
-		return driverAccountService.selectDriverAccountList(driverAccount);
-	}
-
-	@PostMapping("/gateIn")
-	@ResponseBody
-	public AjaxResult gateIn(@RequestBody GateInDataReq gateInDataReq) {
-		if (StringUtils.isNotEmpty(gateInDataReq.getTruckNo())) {
-			PickupHistory pickupHistory = new PickupHistory();
-			pickupHistory.setTruckNo(gateInDataReq.getTruckNo());
-			pickupHistory.setChassisNo(gateInDataReq.getChassisNo());
-			pickupHistory.setStatus(0);
-			logger.debug("Get pickup history info from " + gateInDataReq.getTruckNo() + " and chassisno "
-					+ gateInDataReq.getChassisNo());
-			;
-			List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistory);
-			if (CollectionUtils.isNotEmpty(pickupHistories)) {
-				// Check if having req option send container
-				if (gateInDataReq.getSendOption()) {
-					// Index of container to send (max = 1, min = 0)
-					for (PickupHistory pickupHistory2 : pickupHistories) {
-						if (StringUtils.isNotEmpty(gateInDataReq.getContainerSend1()) && gateInDataReq
-								.getContainerSend1().equalsIgnoreCase(pickupHistory2.getContainerNo())) {
-							if (StringUtils.isNotEmpty(gateInDataReq.getYardPosition1())) {
-								String[] yardPositionArr = gateInDataReq.getYardPosition1().split("-");
-								if (yardPositionArr.length == 4) {
-									pickupHistory2.setBlock(yardPositionArr[0]);
-									pickupHistory2.setBay(yardPositionArr[1]);
-									pickupHistory2.setLine(yardPositionArr[2]);
-									pickupHistory2.setTier(yardPositionArr[3]);
-									pickupHistoryService.updatePickupHistory(pickupHistory2);
-								}
-							}
-						}
-						if (StringUtils.isNotEmpty(gateInDataReq.getContainerSend2()) && gateInDataReq
-								.getContainerSend2().equalsIgnoreCase(pickupHistory2.getContainerNo())) {
-							if (StringUtils.isNotEmpty(gateInDataReq.getYardPosition2())) {
-								String[] yardPositionArr = gateInDataReq.getYardPosition1().split("-");
-								if (yardPositionArr.length == 4) {
-									pickupHistory2.setBlock(yardPositionArr[0]);
-									pickupHistory2.setBay(yardPositionArr[1]);
-									pickupHistory2.setLine(yardPositionArr[2]);
-									pickupHistory2.setTier(yardPositionArr[3]);
-									pickupHistoryService.updatePickupHistory(pickupHistory2);
-								}
-							}
-						}
-					}
-				}
-
-				// Check if have req option receive container
-				if (gateInDataReq.getReceiveOption()) {
-					// TODO :
-				}
-			}
-		}
-		return success();
-	}
-
-	@GetMapping("/blNo/{blNo}/yardPosition")
-	@ResponseBody
-	public AjaxResult getYardPositionByBlNo(@PathVariable String blNo) {
-		AjaxResult ajaxResult = AjaxResult.success();
-		List<ShipmentDetail> shipmentDetails = catosApiService.getCoordinateOfContainers(blNo);
-		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(blNo, shipmentDetails);
-			ajaxResult.put("bayList", bay);
-			return ajaxResult;
-		}
-		return AjaxResult.warn("Không tìm thấy tọa độ.");
-	}
-
-	@GetMapping("/jobOrder/{jobOrder}/yardPosition")
-	@ResponseBody
-	public AjaxResult getYardPositionByJobOrder(@PathVariable("jobOrder") String jobOrder) {
-		AjaxResult ajaxResult = AjaxResult.success();
-		List<ShipmentDetail> shipmentDetails = catosApiService.getCoordinateOfContainersByJobOrderNo(jobOrder);
-		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(shipmentDetails.get(0).getBlNo(),
-					shipmentDetails);
-			ajaxResult.put("bayList", bay);
-			return ajaxResult;
-		}
-		return AjaxResult.warn("Không tìm thấy tọa độ.");
-	}
-
-	@PostMapping("/pickupList")
-	@ResponseBody
-	public AjaxResult getPickupList(@RequestBody GateInTestDataReq gateInTestDataReq) {
-		if (StringUtils.isNotEmpty(gateInTestDataReq.getTruckNo())) {
-			PickupHistory pickupHistory = new PickupHistory();
-			pickupHistory.setTruckNo(gateInTestDataReq.getTruckNo());
-			pickupHistory.setChassisNo(gateInTestDataReq.getChassisNo());
-			pickupHistory.setStatus(0);
-			List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistory);
-			AjaxResult ajaxResult = AjaxResult.success();
-			ajaxResult.put("pickupList", getDataTable(pickupHistories));
-			return ajaxResult;
-		}
-		return AjaxResult.warn("Bạn chưa nhập truck no.");
 	}
 }
