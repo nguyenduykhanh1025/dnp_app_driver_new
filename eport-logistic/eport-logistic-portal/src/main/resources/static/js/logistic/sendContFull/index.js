@@ -1111,6 +1111,9 @@ function btnDetailRenderer(
     } else if (containerNo && sztp) {
       value = `<button style="width: 85%;" class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i style="margin-right: 3px;" class="fa fa-book"></i> Đặc biệt</button>`;
     }
+    //  else if (containerNo && sztp) {
+    //   value = `<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')">${iElement}Đặc biệt</button>`;
+    // } 
   }
   $(td).html(value);
   cellProperties.readOnly = "true";
