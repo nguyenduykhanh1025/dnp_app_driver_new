@@ -31,13 +31,22 @@
 						<div class="d-inline">
 							<input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
 						</div>
-						<div class="d-inline">
+						<!-- <div class="d-inline">
 							<input id="fromDate" class="easyui-datebox" style="width: 100px"
 								data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser" />
 						</div>
 						<div class="d-inline">
 							<input id="toDate" class="easyui-datebox" style="width: 100px"
 								data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser" />
+						</div> -->
+						<div class="d-inline">
+							<select class="easyui-combobox" name="powerDrawDateStatusSelect"
+								id="powerDrawDateStatusSelect" panelHeight="auto">
+								<option value="">Tất cả</option>
+								<option value="P" selected>Đang chờ gia hạn</option>
+								<option value="S">Đã gia hạn</option>
+								<option value="E">Đã từ chối</option>
+							</select>
 						</div>
 						<div class="d-inline">
 							<button class="btn btn-success" onclick="search()">Tìm kiếm</button>
@@ -57,22 +66,23 @@
 					<table id="dg" style="width: 100%" pageList="[20,50,100,150,200]">
 						<thead>
 							<tr>
-								<th data-options="field:'id', resizable:true, align:'right', fixed:true" sortable="true" width="60">Mã
+								<th data-options="field:'id', resizable:true, align:'right', fixed:true" sortable="true"
+									width="60">Mã
 									Lô</th>
-								<th data-options="field:'blNo', resizable:true, align:'left', fixed:true" sortable="true" width="150">
+								<th data-options="field:'blNo', resizable:true, align:'left', fixed:true"
+									sortable="true" width="150">
 									B/L No</th>
-								<th data-options="field:'opeCode', resizable:true, align:'left', fixed:true" sortable="true" width="50">
+								<th data-options="field:'opeCode', resizable:true, align:'left', fixed:true"
+									sortable="true" width="50">
 									OPR</th>
-								<th data-options="field:'containerAmount', resizable:true, align:'center', fixed:true" sortable="true"
-									width="40">SL</th>
-								<th
-									data-options="field:'logisticName', resizable:true, align:'left', fixed:true, formatter: formatLogistic"
+								<th data-options="field:'containerAmount', resizable:true, align:'center', fixed:true"
+									sortable="true" width="40">SL</th>
+								<th data-options="field:'logisticName', resizable:true, align:'left', fixed:true, formatter: formatLogistic"
 									width="100">Logistics</th>
-								<th
-									data-options="field:'serviceType', resizable:true, align:'center', fixed:true, formatter: formatServiceType"
+								<th data-options="field:'serviceType', resizable:true, align:'center', fixed:true, formatter: formatServiceType"
 									width="120">Dịch vụ</th>
-								<th data-options="field:'createTime', resizable:true, align:'right', fixed:true" sortable="true"
-									width="120">Ngày Tạo</th>
+								<th data-options="field:'createTime', resizable:true, align:'right', fixed:true"
+									sortable="true" width="120">Ngày Tạo</th>
 							</tr>
 						</thead>
 					</table>
@@ -88,14 +98,16 @@
 								<div id="commentList"></div>
 								<div style="text-align: right">
 									<div class="form-group row">
-										<label class="col-md-1 col-sm-2 col-xs-3">Tiêu đề <span style="color: red">*</span>
+										<label class="col-md-1 col-sm-2 col-xs-3">Tiêu đề <span
+												style="color: red">*</span>
 										</label>
 										<div class="col-md-11 col-sm-10 col-xs-9">
 											<input class="easyui-textbox" id="topic" style="width: 100%" />
 										</div>
 									</div>
 									<div class="form-group row">
-										<label class="col-md-1 col-sm-2 col-xs-3">Nội dung <span style="color: red">*</span>
+										<label class="col-md-1 col-sm-2 col-xs-3">Nội dung <span
+												style="color: red">*</span>
 										</label>
 										<div class="col-md-11 col-sm-10 col-xs-9">
 											<textarea class="summernote"></textarea>
@@ -104,7 +116,8 @@
 									<div>
 										<a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
 											<span class="l-btn-left"><span class="l-btn-text">
-													<button id="sendComment" onclick="addComment()" class="btn btn-sm btn-primary">
+													<button id="sendComment" onclick="addComment()"
+														class="btn btn-sm btn-primary">
 														<i class="fa fa-send text-primary"></i> Gửi
 													</button>
 												</span></span>
@@ -121,8 +134,10 @@
 											<td><a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
 													<span class="l-btn-left">
 														<span class="l-btn-text">
-															<button onclick="confirmRequestDocument()" class="btn btn-sm btn-success">
-																<i class="fa fa-check text-primary"></i> Xác Nhận Gia Hạn
+															<button onclick="confirmRequestDocument()"
+																class="btn btn-sm btn-success">
+																<i class="fa fa-check text-primary"></i> Xác Nhận Gia
+																Hạn
 															</button>
 														</span>
 													</span>
@@ -132,14 +147,17 @@
 											<td><a href="javascript:;" class="l-btn l-btn-small l-btn-plain">
 													<span class="l-btn-left">
 														<span class="l-btn-text">
-															<button onclick="rejectRequestDocument()" class="btn btn-sm btn-danger">
-																<i class="fa fa-refresh text-primary"></i> Từ Chối Gia Hạn
+															<button onclick="rejectRequestDocument()"
+																class="btn btn-sm btn-danger">
+																<i class="fa fa-refresh text-primary"></i> Từ Chối Gia
+																Hạn
 															</button>
 														</span>
 													</span>
 												</a>
 											</td>
-											<td style="min-width: 320px"><span style="margin-left: 20px; font-weight: bold"
+											<td style="min-width: 320px"><span
+													style="margin-left: 20px; font-weight: bold"
 													id="shipmentInfo"></span></td>
 										</tr>
 									</table>

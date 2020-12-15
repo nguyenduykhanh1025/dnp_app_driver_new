@@ -733,11 +733,11 @@ function btnDetailRenderer(
 	}
 
 	if (sourceData && sourceData.length > 0) {
-		if (sourceData.length > row && sourceData[row].id && sourceData[row].sztp.substring(0,4).includes("R")) {
+		if (sourceData.length > row && sourceData[row].id && sourceData[row].sztp.substring(0, 4).includes("R")) {
 			sztp = sourceData[row].sztp;
-			value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Lạnh</button>`;
+			value = `<button class="btn btn-success btn-xs" style="width: 85%;" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book" style="margin: 0 3px;"></i>Lạnh</button>`;
 		} else if (containerNo && sztp) {
-			value = `<button class="btn btn-success btn-xs" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book"></i>Lạnh</button>`;
+			value = `<button class="btn btn-success btn-xs" style="width: 85%;" onclick="openDetail('${""}', '${containerNo}', '${sztp}', '${row}','${sourceData[row].cargoType}')"><i class="fa fa-book" style="margin: 0 3px;"></i>Lạnh</button>`;
 		}
 	}
 	$(td).html(value);
@@ -927,12 +927,6 @@ function configHandson() {
 					return "Ngày tàu đến";
 				case 11:
 					return '<span class="required">Cảng Dỡ Hàng</span>';
-				// case 12:
-				// 	return 'Nhiệt Độ';
-				// case 13:
-				// 	return 'Độ Ẩm';
-				// case 14:
-				// 	return 'Thông Gió';
 				case 12:
 					return 'Chi Tiết Container';
 				case 13:
@@ -1624,10 +1618,10 @@ function getDataFromTable(isValidate) {
 		shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
 		shipmentDetail.remark = object["remark"];
 
-		if(detailInformationForContainerSpecial.data[index]) {
+		if (detailInformationForContainerSpecial.data[index]) {
 			shipmentDetail.humidity = detailInformationForContainerSpecial.data[index].humidity;
 			shipmentDetail.temperature = detailInformationForContainerSpecial.data[index].temperature;
-			shipmentDetail.ventilation =  detailInformationForContainerSpecial.data[index].ventilation;
+			shipmentDetail.ventilation = detailInformationForContainerSpecial.data[index].ventilation;
 		}
 
 		if (berthplanList) {

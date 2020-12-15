@@ -15,7 +15,6 @@ $(document).ready(function () {
 });
 
 function initElement() {
-  console.log(shipmentDetail.sztp.includes("R"));
   if (shipmentDetail.sztp.includes("R")) {
     $('#reeferContainer').css('display', 'block');
     $("#tab-1").prop('checked', true);
