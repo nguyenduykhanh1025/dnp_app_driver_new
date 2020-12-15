@@ -1,11 +1,13 @@
 package vn.com.irtech.eport.logistic.domain;
 
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
-import java.util.Date;
 
 /**
  * CFS House Bill Object cfs_house_bill
@@ -331,34 +333,20 @@ public class CfsHouseBill extends BaseEntity
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("logisticGroupId", getLogisticGroupId())
-            .append("shipmentDetailId", getShipmentDetailId())
-            .append("houseBill", getHouseBill())
-            .append("masterBill", getMasterBill())
-            .append("quantity", getQuantity())
-            .append("packagingType", getPackagingType())
-            .append("weight", getWeight())
-            .append("cubicMeter", getCubicMeter())
-            .append("marks", getMarks())
-            .append("forwarderRemark", getForwarderRemark())
-            .append("consignee", getConsignee())
-            .append("createTime", getCreateTime())
-            .append("createBy", getCreateBy())
-            .append("updateTime", getUpdateTime())
-            .append("updateBy", getUpdateBy())
-            .append("status", getStatus())
-            .append("storageFromDate", getStorageFromDate())
-            .append("storageToDate", getStorageToDate())
-            .append("handingMovement", getHandingMovement())
-            .append("serviceType", getServiceType())
-            .append("forwarder", getForwarder())
-            .append("cargoDescription", getCargoDescription())
-            .append("placeReceipt", getPlaceReceipt())
-            .append("shiftReceipt", getShiftReceipt())
-            .append("dateReceipt", getDateReceipt())
-            .append("equipment", getEquipment())
-            .append("storeFromDate", getStoreFromDate())
-            .toString();
+				.append("id", getId()).append("logisticGroupId", getLogisticGroupId())
+				.append("shipmentDetailId", getShipmentDetailId()).append("houseBill", getHouseBill())
+				.append("masterBill", getMasterBill()).append("quantity", getQuantity())
+				.append("packagingType", getPackagingType()).append("weight", getWeight())
+				.append("cubicMeter", getCubicMeter()).append("marks", getMarks())
+				.append("forwarderRemark", getForwarderRemark()).append("consignee", getConsignee())
+				.append("createTime", getCreateTime()).append("createBy", getCreateBy())
+				.append("updateTime", getUpdateTime()).append("updateBy", getUpdateBy()).append("status", getStatus())
+				.append("storageFromDate", getStorageFromDate()).append("storageToDate", getStorageToDate())
+				.append("handingMovement", getHandingMovement()).append("serviceType", getServiceType())
+				.append("forwarder", getForwarder()).append("cargoDescription", getCargoDescription())
+				.append("placeReceipt", getPlaceReceipt()).append("shiftReceipt", getShiftReceipt())
+				.append("dateReceipt", getDateReceipt()).append("equipment", getEquipment())
+				.append("storeFromDate", getStoreFromDate()).append("params", getParams())
+				.toString();
     }
 }

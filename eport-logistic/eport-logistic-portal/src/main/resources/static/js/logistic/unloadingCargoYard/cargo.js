@@ -235,25 +235,6 @@ function statusIconRenderer(instance, td, row, col, prop, value, cellProperties)
   value = '';
   return td;
 }
-function houseBillRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value == null) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).attr('id', 'dateReceipt' + row).addClass("htMiddle").addClass("htCenter");
-  if (value != null && value != '') {
-    if (value.substring(2, 3) != "/") {
-      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-    }
-  } else {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
 function forwarderRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value == null) {
     value = '';
@@ -307,13 +288,6 @@ function cubicMeterRenderer(instance, td, row, col, prop, value, cellProperties)
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
-function marksRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value == null) {
-    value = '';
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
 function forwarderRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value == null) {
     value = '';
@@ -346,20 +320,18 @@ function configHandson() {
           txt += ">";
           return txt;
         case 1:
-          return "Số Lượng";
+          return "Đơn Vị Tính"
         case 2:
-          return "Loại Bao Bì";
+          return "Số Lượng";
         case 3:
           return "Trọng Lượng";
         case 4:
           return "Số Khối";
         case 5:
-          return "Nhãn/Ký hiệu";
-        case 6:
           return "Ghi chú";
       }
     },
-    colWidths: [40, 80, 90, 90, 90, 100, 200],
+    colWidths: [40, 100, 90, 90, 90, 200],
     columns: [
       {
         data: "active",
@@ -368,14 +340,14 @@ function configHandson() {
         renderer: checkBoxRenderer
       },
       {
-        data: "quantity",
-        className: "htCenter",
-        renderer: quantityRenderer
-      },
-      {
         data: "packagingType",
         className: "htCenter",
         renderer: packagingTypeRenderer
+      },
+      {
+        data: "quantity",
+        className: "htCenter",
+        renderer: quantityRenderer
       },
       {
         data: "weight",
@@ -386,11 +358,6 @@ function configHandson() {
         data: "cubicMeter",
         className: "htCenter",
         renderer: cubicMeterRenderer
-      },
-      {
-        data: "marks",
-        className: "htCenter",
-        renderer: marksRenderer
       },
       {
         data: "forwarderRemark",
@@ -418,7 +385,7 @@ function configHandson() {
         // Arrow Right
         case 39:
           selected = hot.getSelected()[0];
-          if (selected[3] == 6) {
+          if (selected[3] == 5) {
             e.stopImmediatePropagation();
           }
           break
@@ -504,12 +471,11 @@ function getDataSelectedFromTable(isValidate) {
   cfsHouseBillList = [];
   $.each(cleanedGridData, function (index, object) {
     let cfsHouseBill = new Object();
-    cfsHouseBill.quantity = object["quantity"];
-    cfsHouseBill.packagingType = object["packagingType"];
-    cfsHouseBill.weight = object["weight"];
-    cfsHouseBill.cubicMeter = object["cubicMeter"];
-    cfsHouseBill.marks = object["marks"];
-    cfsHouseBill.forwarderRemark = object["forwarderRemark"];
+    cfsHouseBill.quantity = object["quantity"]; // So luong
+    cfsHouseBill.packagingType = object["packagingType"]; // Don vi tinh
+    cfsHouseBill.weight = object["weight"]; // Trong luong
+    cfsHouseBill.cubicMeter = object["cubicMeter"]; // So khoi
+    cfsHouseBill.forwarderRemark = object["forwarderRemark"]; // Ghi chu
     cfsHouseBillList.push(cfsHouseBill);
     cfsHouseBillIds += object["id"] + ",";
   });

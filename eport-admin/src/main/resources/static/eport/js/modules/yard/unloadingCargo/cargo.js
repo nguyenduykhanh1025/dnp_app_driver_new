@@ -318,28 +318,34 @@ function configHandson() {
         case 0:
           return "Số Lượng";
         case 1:
-          return "Loại Bao Bì";
+          return "Đơn Vị Tính"
         case 2:
-          return "Trọng Lượng";
+          return "Số Lượng";
         case 3:
-          return "Số Khối";
+          return "Trọng Lượng";
         case 4:
-          return "Nhãn/Ký hiệu";
+          return "Số Khối";
         case 5:
           return "Ghi chú";
       }
     },
-    colWidths: [80, 90, 90, 90, 100, 200],
+    colWidths: [40, 100, 90, 90, 90, 200],
     columns: [
       {
-        data: "quantity",
+        data: "active",
+        type: "checkbox",
         className: "htCenter",
-        renderer: quantityRenderer
+        renderer: checkBoxRenderer
       },
       {
         data: "packagingType",
         className: "htCenter",
         renderer: packagingTypeRenderer
+      },
+      {
+        data: "quantity",
+        className: "htCenter",
+        renderer: quantityRenderer
       },
       {
         data: "weight",
@@ -350,11 +356,6 @@ function configHandson() {
         data: "cubicMeter",
         className: "htCenter",
         renderer: cubicMeterRenderer
-      },
-      {
-        data: "marks",
-        className: "htCenter",
-        renderer: marksRenderer
       },
       {
         data: "forwarderRemark",

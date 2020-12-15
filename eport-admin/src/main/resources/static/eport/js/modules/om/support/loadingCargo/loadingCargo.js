@@ -571,9 +571,9 @@ function specialServiceRenderer(instance, td, row, col, prop, value, cellPropert
   $(td).attr('id', 'specialService' + row).addClass("htMiddle").addClass("htCenter");
   if (value != null) {
     if (6 == value) {
-      value = "Kho"
+      value = "Kho CFS"
     } else if (value == 7) {
-      value = "Bãi";
+      value = "Bãi CFS";
     }
   } else {
     value = '';
@@ -637,9 +637,9 @@ function configHandsond() {
         case 7:
           return '<span class="required">Nơi Đóng Hàng</span>';
         case 8:
-          return "Ngày Đóng Hàng";
+          return "Ngày Đóng Hàng<br>Đăng Ký";
         case 9:
-          return "Ngày Đóng Hàng<br>Thực Tế";
+          return "Ngày Đóng Hàng<br>Xác Nhận";
         case 10:
           return '<span class="required">Kích Thước</span>';
         case 11:
