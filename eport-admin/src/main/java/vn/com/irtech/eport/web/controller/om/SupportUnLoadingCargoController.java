@@ -165,6 +165,7 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
+		shipmentDetail.setUserVerifyStatus("Y");
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;

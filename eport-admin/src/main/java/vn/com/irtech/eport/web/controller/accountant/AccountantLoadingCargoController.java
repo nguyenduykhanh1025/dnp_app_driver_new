@@ -168,7 +168,7 @@ public class AccountantLoadingCargoController extends AdminBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
-
+		shipmentDetail.setProcessStatus("Y");
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;
