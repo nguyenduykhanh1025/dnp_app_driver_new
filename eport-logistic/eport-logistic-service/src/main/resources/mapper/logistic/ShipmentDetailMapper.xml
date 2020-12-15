@@ -301,6 +301,7 @@
 			<if test="dangerous != null and dangerous != ''">and dangerous = #{dangerous}</if>
 			<if test="frozenStatus != null and frozenStatus != ''">and frozen_status = #{frozenStatus}</if>
 			<if test="oversize != null and oversize != ''">and oversize = #{oversize}</if>
+			<if test="supportStatus != null and supportStatus != ''">and support_status = #{supportStatus}</if>
 		</where>
 
 	</select>

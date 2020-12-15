@@ -100,12 +100,13 @@ public class SupportSendContReefer  extends BaseController{
 		return getDataTable(shipments);
 	}
 
-	@GetMapping("/shipment/{shipmentId}/shipment-detail")
+	@GetMapping("/shipment/{shipmentId}/shipment-detail/status/{status}")
 	@ResponseBody
-	public AjaxResult listShipmentDetail(@PathVariable("shipmentId") Long shipmentId) {
+	public AjaxResult listShipmentDetail(@PathVariable("shipmentId") Long shipmentId, @PathVariable("status") String status) {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
+		shipmentDetail.setSupportStatus(status);
 		shipmentDetail.setSztp(keyReefer);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		if (shipmentDetails != null) {

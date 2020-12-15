@@ -147,7 +147,6 @@ function loadTable() {
 		loader: function (param, success, error) {
 			var opts = $(this).datagrid("options");
 			if (!opts.url) return false;
-			console.log(shipment);
 			$.ajax({
 				type: opts.method,
 				url: opts.url,
@@ -165,6 +164,11 @@ function loadTable() {
 					success(JSON.parse(data));
 					$("#dg").datagrid("hideColumn", "id");
 					$("#dg").datagrid("selectRow", 0);
+					if (shipmentSelected) {
+						loadShipmentDetail(shipmentSelected.id);
+					} else {
+						loadShipmentDetail(JSON.parse(data).rows[0].id);
+					}
 				},
 				error: function () {
 					error.apply(this, arguments);
@@ -214,7 +218,6 @@ function clearInput() {
 
 // HANDLE WHEN SELECT A SHIPMENT
 function getSelected() {
-	console.log('ssssssssssssssssss');
 	var row = $("#dg").datagrid("getSelected");
 	if (row) {
 		$("#loCode").text(row.id);
@@ -1171,9 +1174,9 @@ function updateLayout() {
 }
 
 function loadShipmentDetail(id) {
-	console.log('Aloooooooooooooooooooooooooo');
+	const status = shipment.params.supportStatus;
 	$.ajax({
-		url: PREFIX + "/shipment/" + id + "/shipment-detail",
+		url: PREFIX + "/shipment/" + id + "/shipment-detail" + "/status/" + status,
 		method: "GET",
 		success: function (data) {
 			if (data.code == 0) {
@@ -1378,7 +1381,6 @@ function confirmDocument() {
 			checkIds.push(sourceData[i].id);
 		}
 	}
-
 	$.ajax({
 		url: PREFIX + "/confirm",
 		type: "post",
@@ -1387,7 +1389,10 @@ function confirmDocument() {
 		},
 		success: function (res) {
 			$.modal.msgSuccess("Xác nhận thành công.");
-			loadShipmentDetail(shipmentSelected.id);
+			// loadShipmentDetail(shipmentSelected.id);
+			loadTable();
+			// loadShipmentDetail(shipmentSelected.id);
+			// reloadShipmentDetail();
 		},
 	});
 }
