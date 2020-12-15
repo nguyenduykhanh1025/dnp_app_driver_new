@@ -71,7 +71,7 @@ function initTabOversize() {
 
 
   $('#wgt').val(shipmentDetail.wgt); // trọng lượng
-  $('#wgtQK').val(shipmentDetail.wgt); // trọng lượng quá khổ 
+  $('#wgtQK').val(numberWithCommas(shipmentDetail.wgt)); // trọng lượng quá khổ 
   $('#wgtNH').val(shipmentDetail.wgt); // trọng lượng Nguy hiểm  
 
   $('#oversizeTop').val(shipmentDetail.oversizeTop);//  
@@ -525,7 +525,7 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
                           <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
                             <span class="l-btn-left"
                               ><span class="l-btn-text">
-                                <button id="saveShipmentDetailBtn" onclick="paymentDateDrop()" class="btn btn-sm btn-primary"><i class="fa fa-credit-card text-primary"></i>Thanh toán</button></span
+                                <button style="margin: 2px;" id="saveShipmentDetailBtn" onclick="paymentDateDrop()" class="btn btn-sm btn-primary"><i class="fa fa-credit-card text-primary"></i>Thanh toán</button></span
                               ></span
                             >
                           </a>
@@ -537,7 +537,7 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
     <span class="l-btn-left"
       ><span class="l-btn-text">
-        <button id="acceptBtn" onclick="cancelDateDrop(${sourceData[row].id})"  class="btn btn-sm btn-primary" style="background-color: #ef6776;width: 87%;">
+        <button id="acceptBtn" onclick="cancelDateDrop(${sourceData[row].id})"  class="btn btn-sm btn-primary" style="background-color: #ef6776;width: 87%;margin: 2px;">
           <i class="fa fa-close text-primary"></i>Hủy</button></span
       ></span
     >

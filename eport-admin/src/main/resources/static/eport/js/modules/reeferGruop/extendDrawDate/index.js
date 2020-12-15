@@ -149,8 +149,14 @@ $(document).ready(function () {
     },
   });
   $("#opr").combobox("select", "Chọn OPR");
-
   // loadTable();
+});
+
+$("#powerDrawDateStatusSelect").combobox({
+  onChange: function (serviceType) {
+    shipment.params.powerDrawDateStatus = serviceType;
+    search();
+  }
 });
 
 function loadTable() {
@@ -1956,7 +1962,7 @@ function confirmRequestDocument() {
 }
 
 function rejectRequest() {
-  
+
 }
 
 function saveReeferSuccess() {
