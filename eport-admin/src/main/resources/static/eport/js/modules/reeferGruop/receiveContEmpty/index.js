@@ -886,14 +886,19 @@ function logisticInfo(id, logistics) {
 }
 
 function saveData() {
-
     $.modal.loading("Đang xử lý...");
+    let shipmentDetailChooses = [];
+    for(let i = 0; i< checkList.length; ++i) {
+        if(checkList[i] == 1) {
+            shipmentDetailChooses.push(shipmentDetails[i]);
+        }
+    }
     $.ajax({
         url: PREFIX + "/confirm",
         method: "post",
         contentType: "application/json",
         accept: 'text/plain',
-        data: JSON.stringify(shipmentDetails),
+        data: JSON.stringify(shipmentDetailChooses),
         dataType: 'text',
         success: function (data) {
             var result = JSON.parse(data);

@@ -787,31 +787,18 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
   const { sztp, oversizeTop, oversizeRight, oversizeLeft, oversizeFront, oversizeBack } = sourceData[row];
   if (sourceData[row].sztp.includes("R")) {
     textContent = "Lạnh";
+  } else if (sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft) {
+    textContent = "Quá Khổ"
   }
-  // else if(sourceData[row].sztp.includes("P") || sourceData[row].sztp.includes("U")){
-  //   textContent = "Quá Khổ"
-  // }
-   else if (sourceData[row].oversizeTop || sourceData[row].oversizeRight || sourceData[row].oversizeLeft) {
-     textContent = "Quá Khổ"
-  }
-
   $(td).attr('id', 'wgt' + row).addClass("htMiddle").addClass("htCenter");
   let containerNo;
   if (!isDestroy) {
     containerNo = hot.getDataAtCell(row, 2);
-    //sztp = hot.getDataAtCell(row, 8);
   }
   if (sourceData && sourceData.length > 0) {
     if (sourceData.length > row && sourceData[row].id) {
-
-      // if ("G" != sourceData[row].sztp.substring(2, 3)) {
-      //  value = '<button class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-book">' + textContent + '</i></button>';
-      // }
-      // else {
-      //   value = '<button class="btn btn-default btn-xs showHide" disabled ><i class="fa fa-book"></i></button>';
-      // }
       if (textContent) {
-        value = '<button style="width: 69%;" class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-book" style="margin: 0 3px;"></i>' + textContent + '</button>';
+        value = '<button style="width: 85%;" class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-book" style="margin: 0 3px;"></i>' + textContent + '</button>';
       }
     }
   }
@@ -2127,11 +2114,6 @@ function onMessageReceived(payload) {
           message = 'Làm lệnh thành công. <br>Vui lòng mang giấy tờ DO gốc đến nộp tại văn phòng Cảng để có thể nhận container.';
         }
         $.modal.alertSuccess(message);
-
-        // Close loading
-        //$.modal.closeLoading();
-
-        // Close websocket connection 
         $.websocket.disconnect(onDisconnected);
       }, 1000);
     }
@@ -2256,7 +2238,7 @@ function loadListComment(shipmentCommentId) {
     method: "POST",
     contentType: "application/json",
     data: JSON.stringify(req),
-    success: function (data) {  
+    success: function (data) {
       if (data.code == 0) {
         let html = '';
         // set title for panel comment
@@ -2287,7 +2269,7 @@ function loadListComment(shipmentCommentId) {
             // Topic comment
             html += '<div><span><strong>Yêu cầu:</strong> ' + element.topic + '</span></div>';
             // Content comment 
-            if(content){ 
+            if (content) {
               html += '<div><span>' + element.content.replaceAll("#{domain}", domain) + '</span></div>';
             }
 
