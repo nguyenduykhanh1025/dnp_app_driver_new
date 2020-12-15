@@ -562,14 +562,17 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
 }
 
 function extendPowerDrawDate() {
+  let dateDrop = tranferValidatedDate($('#powerDrawDate').val());
+  let dateExtend = tranferValidatedDate($('#extendPowerDrawDate').val());
   let len = sourceData.length - 1;
+  
   if (!$('#extendPowerDrawDate').val()) {
     $.modal.alertError("Quý khách vui lòng điền thông tin gia hạn.");
   }
   else if (!$('#powerDrawDate').val()) {
     $.modal.alertError("Chưa có dữ liệu ngày rút điện.");
   }
-  else if ($('#extendPowerDrawDate').val() < $('#powerDrawDate').val()) {
+  else if (dateDrop.getTime() > dateExtend.getTime()) {
     $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
   }
   else if (shipmentDetail.frozenStatus != 'Y' || shipmentDetail.powerDrawDateStatus == 'P' || (sourceData[len].status && (sourceData[len].paymentStatus != PAYMENT_STATUS.success && sourceData[len].paymentStatus != PAYMENT_STATUS.error))) {
@@ -611,6 +614,13 @@ function extendPowerDrawDate() {
   }
 }
 
+function tranferValidatedDate(dateFromInput) {
+  const dataArr = dateFromInput.split("/");
+  let day = dataArr[0];
+  let month = dataArr[1];
+  let year = dataArr[2];
+  return new Date(`${month}-${day}-${year}`);
+}
 function paymentDateDrop() {
   layer.confirm("Bạn có muốn thanh toán?", {
     icon: 3,
