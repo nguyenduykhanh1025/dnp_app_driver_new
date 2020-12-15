@@ -42,7 +42,7 @@ import vn.com.irtech.eport.web.mqtt.MqttService.NotificationCode;
 @Controller
 @RequestMapping("/reefer-gruop/send-cont-reefer")
 public class SupportSendContReefer  extends BaseController{
-    private final static String PREFIX = "/reeferGruop/sendContReefer";
+    private final static String PREFIX = "reeferGruop/sendContReefer";
 	private final static String keyReefer = "R";
 	@Autowired
 	private IShipmentService shipmentService;
@@ -100,12 +100,13 @@ public class SupportSendContReefer  extends BaseController{
 		return getDataTable(shipments);
 	}
 
-	@GetMapping("/shipment/{shipmentId}/shipment-detail")
+	@GetMapping("/shipment/{shipmentId}/shipment-detail/status/{status}")
 	@ResponseBody
-	public AjaxResult listShipmentDetail(@PathVariable("shipmentId") Long shipmentId) {
+	public AjaxResult listShipmentDetail(@PathVariable("shipmentId") Long shipmentId, @PathVariable("status") String status) {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
+		shipmentDetail.setSupportStatus(status);
 		shipmentDetail.setSztp(keyReefer);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		if (shipmentDetails != null) {

@@ -146,41 +146,30 @@
               </div>
             </div>
 
-            <!-- //////////// add tệp cont lạnh///////-->
-            <!-- <div class="form-group col-sm-12" id="dropzoneL">
-							<div class="col-sm-12 col-xs-12">
-								<button type="button" id="attachButtonL" class="btn btn-sm btn-default">
-									<i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
-								</button>
-							</div>
-							<div class="preview-containerL col-md-12 col-sm-12 col-xs-12"></div>
-						</div> -->
-
           </div>
           <!--////////////////start cont quá khổ -->
           <div class="content-2" id="oversizeContainer">
             <div class="form-horizontal mt10 row">
+              <div class="form-horizontal mt10 row" style="margin-left: 0;margin-right: 0;">
 
-              <!-- <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-								<div class="form-group col-sm-5 row">
-		                              <span class="control-label col-sm-6 col-xs-6"
-		                                 style="text-align: left"><b
-		                                 class="text-black">sealNo:</b></span>
-		                              <div class="col-sm-6 col-xs-6">
-		                                 <input type="text" class="form-control" id="sealNoQK" name="sealNoQK" readonly />
-		                              </div>
-		                           </div>
-								<div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">Phía sau (cm):</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="oversizeBack" name="oversizeBack"
-											readonly />
-									</div>
-								</div> 
-							</div> -->
-              <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-                <div class="form-group col-sm-6 row">
+                <span class="control-label col-sm-2 col-xs-2" style="text-align: left"><b class="text-black">Bên trên
+                    (cm):</b></span>
+                <div class="col-sm-2 col-xs-2">
+                  <input type="text" class="form-control" id="oversizeTop" name="oversizeTop" readonly />
+                </div>
+                <span class="control-label col-sm-2 col-xs-2" style="text-align: left"><b class="text-black">Bên phải
+                    (cm):</b></span>
+                <div class="col-sm-2 col-xs-2">
+                  <input type="text" class="form-control" id="oversizeRight" name="oversizeRight" readonly />
+                </div>
+
+                <span class="control-label col-sm-2 col-xs-2" style="text-align: left"><b class="text-black">Bên trái
+                    (cm):</b></span>
+                <div class="col-sm-2 col-xs-2">
+                  <input type="text" class="form-control" id="oversizeLeft" name="oversizeLeft" readonly />
+                </div>
+
+                <!-- <div class="form-group col-sm-6 row">
                   <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Bên trên
                       (cm):</b></span>
                   <div class="col-sm-8 col-xs-6">
@@ -193,62 +182,39 @@
                   <div class="col-sm-8 col-xs-6">
                     <input type="text" class="form-control" id="oversizeRight" name="oversizeRight" readonly />
                   </div>
-                </div>
+                </div> -->
               </div>
 
-              <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-                <div class="form-group col-sm-6 row">
+              <div class="form-horizontal mt10 row"
+                style="margin-left: 0;margin-right: 0;border-bottom: 1px dashed #ccc;">
+                <!-- <div class="form-group col-sm-6 row">
                   <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Bên trái
                       (cm):</b></span>
                   <div class="col-sm-8 col-xs-6">
                     <input type="text" class="form-control" id="oversizeLeft" name="oversizeLeft" readonly />
                   </div>
+                </div> -->
+
+                <span class="control-label col-sm-2 col-xs-2" style="text-align: left"><b class="text-black">Trọng
+                    lượng (kg):</b></span>
+                <div class="col-sm-2 col-xs-2">
+                  <input type="text" class="form-control" id="wgtQK" name="wgtQK" readonly />
                 </div>
-                <div class="form-group col-sm-6 row">
-                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Trọng
-                      lượng (kg):</b></span>
-                  <div class="col-sm-8 col-xs-6">
-                    <input type="text" class="form-control" id="wgtQK" name="wgtQK" readonly />
-                  </div>
+
+                <span class="control-label col-sm-2 col-xs-2" style="text-align: left"><b class="text-black">Biển số
+                    xe đầu kéo<span style="color: #ff0000;font-weight: bolder;">*</span>:</b></span>
+                <div class="col-sm-2 col-xs-2">
+                  <input type="text" class="form-control" id="truckNo" name="truckNo" />
+                </div>
+
+                <span class="control-label col-sm-2 col-xs-2" style="text-align: left"><b class="text-black">Biển số
+                    xe rơ móc<span style="color: #ff0000;font-weight: bolder;">*</span>:</b></span>
+                <div class="col-sm-2 col-xs-2">
+                  <input type="text" class="form-control" id="chassisNo" name="chassisNo" />
                 </div>
               </div>
-              <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
-                <div class="form-group col-sm-6 row">
-                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Biển số xe đầu kéo:</b></span>
-                  <div class="col-sm-8 col-xs-6">
-                    <input type="text" class="form-control" id="truckNo" name="truckNo" />
-                  </div>
-                </div>
-                <div class="form-group col-sm-6 row">
-                  <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b class="text-black">Biển số xe rơ móc:</b></span>
-                  <div class="col-sm-8 col-xs-6">
-                    <input type="text" class="form-control" id="chassisNo" name="chassisNo" />
-                  </div>
-                </div>
-              </div>
-
-              <!-- <div class="form-group col-sm-6 row">
-									<span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
-											class="text-black">Phía trước (cm):</b></span>
-									<div class="col-sm-8 col-xs-6">
-										<input type="text" class="form-control" id="oversizeFront" name="oversizeFront"
-											readonly />
-									</div>
-								</div> -->
-              <!-- <div class="form-horizontal mt10 row" >
-			                           <div class="form-group col-sm-5 row">
-			                              <span class="control-label col-sm-6 col-xs-6"
-			                                 style="text-align: left"><b
-			                                 class="text-black">Phía sau (cm):</b></span>
-			                              <div class="col-sm-6 col-xs-6">
-			                                 <input type="text" class="form-control" id="oversizeBack" name="oversizeBack" readonly />
-			                              </div>
-			                           </div> 
-			                       </div> -->
-
-
               <!-- //////////// add tệp cont quá khổ///////-->
-              <div class="form-group col-sm-12" id="dropzoneQK">
+              <div class="form-group col-sm-12" id="dropzoneQK" style="margin-top: 5px;">
                 <div class="col-sm-12 col-xs-12">
                   <button type="button" id="attachButtonQK" class="btn btn-sm btn-default">
                     <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
@@ -280,8 +246,6 @@
                   </div>
                 </div>
               </div>
-
-
               <div class="form-horizontal mt10 row" style="border-bottom: 1px dashed #ccc">
                 <div class="form-group col-sm-6 row">
                   <span class="control-label col-sm-4 col-xs-6" style="text-align: left"><b
@@ -354,17 +318,17 @@
     var shipmentDetailId = [[${ shipmentDetailId }]];
     var shipmentDetail = [[${ shipmentDetail }]];
     var shipmentImage = [[${ shipmentImage }]];
-    var shipmentFiles = [[${ shipmentFiles }]]; 
+    var shipmentFiles = [[${ shipmentFiles }]];
     var filePath = [[${ filePath }]];
-    var fileIds = [[${ fileIds }]];  
+    var fileIds = [[${ fileIds }]];
     var powerDropDate = [[${ powerDropDate }]];
     var reeferInfos = [[${ reeferInfos }]];
-    var oprlistBookingCheck = [[${oprlistBookingCheck}]];
+    var oprlistBookingCheck = [[${ oprlistBookingCheck }]];
     var creditFlag = /*[[${creditFlag}]]*/;
-    var billPowers = [[${billPowers}]];
+    var billPowers = [[${ billPowers }]];
   </script>
-  <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=20201212234}"></script>
-  <script th:src="@{/js/logistic/receiveContFull/detail.js?v=20201212234}"></script>
+  <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=20201212235}"></script>
+  <script th:src="@{/js/logistic/receiveContFull/detail.js?v=20201212235}"></script>
 
 
   <script type="text/javascript">

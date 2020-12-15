@@ -5,8 +5,16 @@ sourceData = reeferInfos;
 
 const PAYMENT_STATUS = {
   success: "S",
-  process: "P"
+  process: "P",
+  error: "E"
 }
+
+const CONT_SPECIAL_STATUS = {
+  INIT: "I", // cont đã được lưu
+  REQ: "R", // cont đã được yêu cầu xác nhận
+  YES: "Y", // cont đã được phê duyệt yêu cầu xác nhận
+  CANCEL: "C", // cont đã bị từ chối yêu cầu xác nhận
+};
 
 $(document).ready(function () {
   initElement();
@@ -19,24 +27,19 @@ function initElement() {
   if (shipmentDetail.sztp.includes("R")) {
     $('#reeferContainer').css('display', 'block');
     $("#tab-1").prop('checked', true);
-  } 
-  // check theo trường hợp chỉ cần P với U là hiển thị cont lên
-  else if(shipmentDetail.sztp.includes("P") || shipmentDetail.sztp.includes("U")){
-        if(shipmentDetail.oversize == "Y"){
-          $("#truckNo").attr("disabled", "disabled");
-          $("#chassisNo").attr("disabled", "disabled");
-          
-          //$("truckNo").prop('checked', true);
-        }
- 
-       $('#oversizeContainer').css('display', 'block');
-       $("#tab-2").prop('checked', true);
   }
-  // check theo trường hợp cụ thể. nếu có thì mới hiển thị ra
-  // else if (oversizeTop || oversizeRight || oversizeLeft || oversizeFront || oversizeBack) {
-  //   $('#oversizeContainer').css('display', 'block');
-  //   $("#tab-2").prop('checked', true);
-  // }
+  // check theo trường hợp chỉ cần P với U là hiển thị cont lên
+  else if (shipmentDetail.sztp.includes("P") || shipmentDetail.sztp.includes("U")) {
+    if (shipmentDetail.oversize == "Y") {
+      $("#truckNo").attr("disabled", "disabled");
+      $("#chassisNo").attr("disabled", "disabled");
+
+      //$("truckNo").prop('checked', true);
+    }
+
+    $('#oversizeContainer').css('display', 'block');
+    $("#tab-2").prop('checked', true);
+  }
 }
 
 function initTabReefer() {
@@ -58,10 +61,7 @@ function initTabReefer() {
     $('#extendPowerDrawDateContainer').css('display', 'none');
     $('#tableExtendDateContainer').css('display', 'none');
   }
-
-  //console.log('ssssssssssssssssssssss', shipmentDetail.frozenStatus);
-  if (shipmentDetail.frozenStatus == "S") {
-    //console.log('iiiiiiiiiiiisii');
+  if (shipmentDetail.frozenStatus != "I" && shipmentDetail.frozenStatus != "C") {
     $("#powerDrawDate").attr('disabled', 'disabled');
     $("#btnPowerDrawDate").css('display', 'none');
   }
@@ -71,7 +71,7 @@ function initTabOversize() {
 
 
   $('#wgt').val(shipmentDetail.wgt); // trọng lượng
-  $('#wgtQK').val(shipmentDetail.wgt); // trọng lượng quá khổ 
+  $('#wgtQK').val(numberWithCommas(shipmentDetail.wgt)); // trọng lượng quá khổ 
   $('#wgtNH').val(shipmentDetail.wgt); // trọng lượng Nguy hiểm  
 
   $('#oversizeTop').val(shipmentDetail.oversizeTop);//  
@@ -159,63 +159,39 @@ let typeR = true;// lanh
 let typeO = true;// qua kho
 
 //var checkStatus = shipmentDetail.oversize;
-console.log("oversize"); 
-console.log(oversize);
- 
+
 function confirm() {
   var truckNo = $("#truckNo").val();
-  var chassisNo = $("#chassisNo").val(); 
-  
-  if(shipmentFiles.length <1 && fileIds.length < 1 && !shipmentDetail.sztp.includes("R")){ 
- $.modal.alertWarning("Vui lòng đính kèm file"); 
-  } 
- else  
-if(oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")){ 
-    // if(oversize == "Y"){
-    //   $.modal.alertWarning("Không thể chỉnh sửa biển số xe"); 
-    // }
-
-    //else
-     if(truckNo == null || truckNo == ""){
-      $.modal.alertWarning("Vui lòng nhập vào biển số xe đầu kéo rồi thử lại");
-    }
-    else if(chassisNo == null || chassisNo == "" && !shipmentDetail.sztp.includes("R")){
-      $.modal.alertWarning("Vui lòng nhập vào biển số xe rơ móc rồi thử lại");
-    }
-
-
-    else{ 
-      insertCont();
-      saveFile(); 
-    } 
-  //saveFile();
-} 
-// if(oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")){ 
-//   insertCont();
-//   saveFile();
-// }
- 
-  else{
-    var lengthTemp = shipmentFilePath;
-     if (lengthTemp) {// nếu k có thì vào đây
-       insertCont();
-     }
-    if (!shipmentDetail.sztp.includes("R") && (!lengthTemp)) {// nếu có thì vào đây
-       saveFile();
-    }
-
-    // var lengthTemp = shipmentFilePath;
-    // if (lengthTemp == null || lengthTemp.length == 0) {// nếu k có thì vào đây
-    //   insertCont();
-    // }
-  
-    // if (!shipmentDetail.sztp.includes("R") && (lengthTemp != null || lengthTemp.length != 0)) {// nếu có thì vào đây
-    //   saveFile();
-    // }
-
+  var chassisNo = $("#chassisNo").val();
+  if(shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ) {
+    $.modal.close();
+    return;
   }
 
- 
+  if (shipmentFiles.length < 1 && fileIds.length < 1 && !shipmentDetail.sztp.includes("R")) {
+    $.modal.alertWarning("Vui lòng đính kèm file");
+  }
+  else
+    if (oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")) {
+      if (truckNo == null || truckNo == "") {
+        $.modal.alertWarning("Vui lòng nhập vào biển số xe đầu kéo rồi thử lại");
+      }
+      else if (chassisNo == null || chassisNo == "" && !shipmentDetail.sztp.includes("R")) {
+        $.modal.alertWarning("Vui lòng nhập vào biển số xe rơ móc rồi thử lại");
+      }
+      else {
+        insertCont();
+        saveFile();
+      }
+    } else {
+      var lengthTemp = shipmentFilePath;
+      if (lengthTemp) {// nếu k có thì vào đây
+        insertCont();
+      }
+      if (!shipmentDetail.sztp.includes("R") && (!lengthTemp)) {// nếu có thì vào đây
+        saveFile();
+      }
+    }
 }
 
 
@@ -253,23 +229,15 @@ function insertCont() {
       }
     });
 }
- 
-function saveFile() {
-//console.log("saveFile");
-  //console.log(fileIds);
 
-  // if(oversize == "Y"){
-  //   $.modal.alertWarning("Khồn thể thêm mới file vì đã phê duyệt");
-  //   //break;
-  // }
-  // else{
+function saveFile() {
   $.ajax(
     {
       url: prefix + "/saveFileImage",
       method: "POST",
       data: {
 
-        fileIds : fileIds,
+        fileIds: fileIds,
 
         filePaths: shipmentFilePath,
         shipmentDetailId: shipmentDetail.id,
@@ -279,8 +247,6 @@ function saveFile() {
       },
       success: function (result) {
         if (result.code == 0) {
-          //$.modal.alertError(result.msg);
-          //$.modal.close(); 
           insertCont();
         } else {
           $.modal.close();
@@ -331,38 +297,37 @@ $(document).ready(function () {
 });
 // xóa khi đã lưu có id 
 
- 
 function removeImage(element, fileIndex) {
-if(oversize == "Y"){
-  $.modal.alertWarning("Không thể xóa file ở trạng thái đã phê duyệt");
-}
-else{ 
-  shipmentFiles.forEach(function (value, index) { 
-    if (value == fileIndex) {
-      $.ajax({
-        url: prefix + "/delete_file",
-        method: "DELETE",
-        data: {
-          id: value
-        },
-        beforeSend: function () {
-          $.modal.loading("Đang xử lý, vui lòng chờ...");
-        },
-        success: function (result) {
-          $.modal.closeLoading();
-          if (result.code == 0) {
-            $.modal.msgSuccess("Xóa tệp thành công.");
-            $(element).parent("div.preview-block").remove();
-            shipmentFileIds.splice(index, 1);
-          } else {
-            $.modal.alertWarning("Xóa tệp thất bại.");
+  if (oversize == "Y") {
+    $.modal.alertWarning("Không thể xóa file ở trạng thái đã phê duyệt");
+  }
+  else {
+    shipmentFiles.forEach(function (value, index) {
+      if (value == fileIndex) {
+        $.ajax({
+          url: prefix + "/delete_file",
+          method: "DELETE",
+          data: {
+            id: value
+          },
+          beforeSend: function () {
+            $.modal.loading("Đang xử lý, vui lòng chờ...");
+          },
+          success: function (result) {
+            $.modal.closeLoading();
+            if (result.code == 0) {
+              $.modal.msgSuccess("Xóa tệp thành công.");
+              $(element).parent("div.preview-block").remove();
+              shipmentFileIds.splice(index, 1);
+            } else {
+              $.modal.alertWarning("Xóa tệp thất bại.");
+            }
           }
-        }
-      });
-      return false;
-    }
-  });
-}
+        });
+        return false;
+      }
+    });
+  }
 
 }
 
@@ -442,139 +407,6 @@ function configHandson() {
   };
 
 }
-/*function abc() {*/
-// cont nguy hiểm: trường dangerous khác null
-// cont quá khổ: trường oversize khác null
-
-//if(oversize && dangerous) bắt cả 2 đều có file
-//if(oversize) bắt oversize có file
-//if(dangerous)bắt dangerous có file
-
-//shipmentFiles  fileType
-
-/*if(oversize && dangerous){
-  if(fileType){ 
-    fileType.forEach(function (elementType, index) { 
-        if(elementType == "O"){// cont quá khổ oversize
-          typeO = true;
-         }
-        if(elementType == "D"){// con nguy hiểm Dangerous
-          typeD = true;
-         } 
-    });
-  	
-    shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
-      //alert("vao for 2");
-      if(elementcont.fileType == "O"){// filetype quá khổ
-         contO = true;
-       }
-      if(elementcont.fileType == "D"){// filetype nguy hiểm
-         contD = true;
-       } 
-    });
-  	
-    if(contD == false && typeD == false){ 
-      $.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
-    } 
-    else if(contO == false && typeO == false){
-      $.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
-    }
-    else{ 
-      saveFile();
-    } 
-  } 
-  	
-}*/
-
-
-/*if(oversize && dangerous){
-  if(fileType){ 
-     fileType.forEach(function (elementType, index) { 
-         if(elementType == "O"){// cont quá khổ oversize
-           typeO = true;
-          }
-         if(elementType == "D"){// con nguy hiểm Dangerous
-           typeD = true;
-          } 
-     });
-   	
-     shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
-       //alert("vao for 2");
-       if(elementcont.fileType == "O"){// filetype quá khổ
-          contO = true;
-        }
-       if(elementcont.fileType == "D"){// filetype nguy hiểm
-          contD = true;
-        } 
-     });
-   	
-     if(contD == false && typeD == false){ 
-       $.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
-     } 
-     else if(contO == false && typeO == false){
-       $.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
-     }
-     else{
-       checkSave(); 
-       //saveFile();
-     } 
-   }
-  
-}
-  shipmentFiles fileType
-if(oversize){
-  if(fileType){  
-     fileType.forEach(function (elementType, index) { 
-         if(elementType == "O"){// cont quá khổ oversize
-           typeO = true;
-          }  
-     });
-   	
-     shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
-       //alert("vao for 2");
-       if(elementcont.fileType == "O"){// filetype quá khổ
-          contO = true;
-        }
-        
-     });
-   	
-      if(contO == false && typeO == false){
-       $.modal.alertWarning( "Chưa đính kèm tệp cho container quá khổ. Vui lòng đính kèm file.");
-     }
-     else{
-       checkSave(); 
-       //saveFile();
-     } 
-   }
-}
- 
- if(dangerous){
-   if(fileType){ 
-      fileType.forEach(function (elementType, index) { 
-          if(elementType == "D"){// cont quá khổ oversize
-            typeD = true;
-           }  
-      });
-    	
-      shipmentFiles.forEach(function (elementcont, index) {// kết quả sau khi lưu file type 
-        //alert("vao for 2");
-        if(elementcont.fileType == "D"){// filetype quá khổ
-           contD = true;
-         }
-         
-      });
-    	
-       if(contD == false && typeD == false){
-        $.modal.alertWarning( "Chưa đính kèm tệp cho container nguy hiểm. Vui lòng đính kèm file.");
-      }
-      else{
-        checkSave(); 
-        //saveFile();
-      } 
-    }
-   
- }  	
- */
 
 function statusIconRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (row == reeferInfos.length) {
@@ -591,7 +423,7 @@ function statusIconRenderer(instance, td, row, col, prop, value, cellProperties)
     } else if (value === "S") {
       status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
     } else if (value === "E") {
-      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #ef6776;"></i>';
+      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã bị từ chối xác nhận gia hạn rút điện" aria-hidden="true" style="color: #ef6776;"></i>';
     }
   } else {
     // status
@@ -658,7 +490,6 @@ function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function paymentTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
-  console.log('sssssssssssssssssss');
   if (!value) {
     value = "";
   }
@@ -694,7 +525,7 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
                           <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
                             <span class="l-btn-left"
                               ><span class="l-btn-text">
-                                <button id="saveShipmentDetailBtn" onclick="paymentDateDrop()" class="btn btn-sm btn-primary"><i class="fa fa-credit-card text-primary"></i>Thanh toán</button></span
+                                <button style="margin: 2px;" id="saveShipmentDetailBtn" onclick="paymentDateDrop()" class="btn btn-sm btn-primary"><i class="fa fa-credit-card text-primary"></i>Thanh toán</button></span
                               ></span
                             >
                           </a>
@@ -706,40 +537,45 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     <a href="javascript:;" class="l-btn l-btn-small l-btn-plain" group="" id="">
     <span class="l-btn-left"
       ><span class="l-btn-text">
-        <button id="acceptBtn" onclick="cancelDateDrop(${sourceData[row].id})"  class="btn btn-sm btn-primary" style="background-color: #ef6776;width: 87%;">
+        <button id="acceptBtn" onclick="cancelDateDrop(${sourceData[row].id})"  class="btn btn-sm btn-primary" style="background-color: #ef6776;width: 87%;margin: 2px;">
           <i class="fa fa-close text-primary"></i>Hủy</button></span
       ></span
     >
     </a>
   </td>
   `;
-  if (shipmentDetail.powerDrawDateStatus == "S" && PAYMENT_STATUS.process == sourceData[row].paymentStatus) {
+  if (sourceData[row].paymentStatus == PAYMENT_STATUS.error) {
+    result += "Đã hủy gia hạn"
+  }
+  else if (shipmentDetail.powerDrawDateStatus == "S" && PAYMENT_STATUS.process == sourceData[row].paymentStatus) {
     result += btnPayment;
   } else if (!sourceData[row].id || PAYMENT_STATUS.success == sourceData[row].paymentStatus) {
     result += 'Đã thanh toán';
+  } else if (sourceData.length == 1) {
+    result += 'Đang chờ';
   } else {
     result += btnCancel;
   }
-
-
 
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
 
 function extendPowerDrawDate() {
+  let dateDrop = tranferValidatedDate($('#powerDrawDate').val());
+  let dateExtend = tranferValidatedDate($('#extendPowerDrawDate').val());
   let len = sourceData.length - 1;
-
+  
   if (!$('#extendPowerDrawDate').val()) {
     $.modal.alertError("Quý khách vui lòng điền thông tin gia hạn.");
   }
   else if (!$('#powerDrawDate').val()) {
     $.modal.alertError("Chưa có dữ liệu ngày rút điện.");
   }
-  else if ($('#extendPowerDrawDate').val() < $('#powerDrawDate').val()) {
+  else if (dateDrop.getTime() > dateExtend.getTime()) {
     $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
   }
-  else if (shipmentDetail.frozenStatus != 'S' || shipmentDetail.powerDrawDateStatus != 'S' || (sourceData[len].status && sourceData[len].paymentStatus != PAYMENT_STATUS.success)) {
+  else if (shipmentDetail.frozenStatus != 'Y' || shipmentDetail.powerDrawDateStatus == 'P' || (sourceData[len].status && (sourceData[len].paymentStatus != PAYMENT_STATUS.success && sourceData[len].paymentStatus != PAYMENT_STATUS.error))) {
     $.modal.alertError("Cont chưa thể gia hạn ngày rút điện");
   } else {
 
@@ -778,6 +614,13 @@ function extendPowerDrawDate() {
   }
 }
 
+function tranferValidatedDate(dateFromInput) {
+  const dataArr = dateFromInput.split("/");
+  let day = dataArr[0];
+  let month = dataArr[1];
+  let year = dataArr[2];
+  return new Date(`${month}-${day}-${year}`);
+}
 function paymentDateDrop() {
   layer.confirm("Bạn có muốn thanh toán?", {
     icon: 3,

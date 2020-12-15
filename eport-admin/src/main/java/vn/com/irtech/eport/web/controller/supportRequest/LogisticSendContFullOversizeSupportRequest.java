@@ -45,7 +45,7 @@ import vn.com.irtech.eport.web.controller.AdminBaseController;
 public class LogisticSendContFullOversizeSupportRequest extends AdminBaseController {
 	private static final Logger logger = LoggerFactory.getLogger(LogisticSendContFullOversizeSupportRequest.class);
 
-	private String PREFIX = "/supportRequest/oversize";
+	private String PREFIX = "supportRequest/oversize";
 
 	private final String KEY_OVERSIDE = "P";
 

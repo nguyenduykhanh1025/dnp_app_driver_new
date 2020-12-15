@@ -40,7 +40,7 @@ import java.util.*;
 public class LogisticSendContFullReeferSupportRequest extends AdminBaseController {
 	private static final Logger logger = LoggerFactory.getLogger(LogisticSendContFullReeferSupportRequest.class);
 
-	private String PREFIX = "/supportRequest/reefer";
+	private String PREFIX = "supportRequest/reefer";
 
 	private final String KEY_ICE = "R";
 
@@ -70,10 +70,10 @@ public class LogisticSendContFullReeferSupportRequest extends AdminBaseControlle
 
 	@Autowired
 	private IShipmentDetailHistService shipmentDetailHistService;
-	
+
 	@Autowired
 	private IReeferInfoService reeferInfoService;
-	
+
 	@GetMapping
 	public String getViewDocument(@RequestParam(required = false) Long sId, ModelMap mmap) {
 
@@ -106,7 +106,7 @@ public class LogisticSendContFullReeferSupportRequest extends AdminBaseControlle
 	@PostMapping("/shipments")
 	@ResponseBody
 	public AjaxResult getShipments(@RequestBody PageAble<Shipment> param) {
- 
+
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		AjaxResult ajaxResult = AjaxResult.success();
 		Shipment shipment = param.getData();
@@ -143,7 +143,7 @@ public class LogisticSendContFullReeferSupportRequest extends AdminBaseControlle
 	public String openRejectModel() {
 		return PREFIX + "/reject";
 	}
-	
+
 	@PostMapping("/confirmation")
 	@ResponseBody
 	@Transactional
@@ -151,6 +151,38 @@ public class LogisticSendContFullReeferSupportRequest extends AdminBaseControlle
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_YES);
 		shipmentDetail.setUpdateBy(getUser().getLoginName());
+		shipmentDetail.setPowerDrawDateStatus("S");
+
+		for (String i : shipmentDetailIds.split(",")) {
+			List<ReeferInfo> infos = reeferInfoService.selectReeferInfoListByIdShipmentDetail(Long.parseLong(i));
+			for (ReeferInfo info : infos) {
+				ShipmentDetail shipmentDetailFromDB = shipmentDetailService.selectShipmentDetailById(Long.parseLong(i));
+				info.setStatus("S");
+				info.setUpdateBy(getUser().getUserName());
+
+				// if no da thanh toan
+				boolean isPayment = false;
+				List<SysDictData> sysDictDatas = dictService.getType("opr_list_booking_check");
+				for (SysDictData data : sysDictDatas) {
+					if (data.getDictValue().equals(shipmentDetailFromDB.getOpeCode())) {
+						isPayment = true;
+					}
+				}
+				Long logictistId = shipmentDetailFromDB.getLogisticGroupId();
+				LogisticGroup groupFromDB = this.logisticGroupService.selectLogisticGroupById(logictistId);
+				if (!groupFromDB.getCreditFlag().equals("0")) {
+					isPayment = true;
+				}
+
+				if (isPayment) {
+					info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_SUCCESS);
+				} else {
+					info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
+				}
+
+				this.reeferInfoService.updateReeferInfo(info);
+			}
+		}
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
 
 		return success("Xác nhận thành công.");
@@ -210,33 +242,35 @@ public class LogisticSendContFullReeferSupportRequest extends AdminBaseControlle
 			shipmentImage2.setPath(serverConfig.getUrl() + shipmentImage2.getPath());
 		}
 		mmap.put("shipmentFiles", shipmentImages);
-		
+
 		ShipmentDetailHist shipmentDetailHist = new ShipmentDetailHist();
 		shipmentDetailHist.setDataField("Power Draw Date");
 		shipmentDetailHist.setShipmentDetailId(shipmentDetailId);
 		mmap.put("powerDropDate", shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
-		
+
 		mmap.put("reeferInfos", reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId));
-		
+
 		mmap.put("billPowers", dictService.getType("bill_power"));
 		mmap.put("oprlistBookingCheck", dictService.getType("opr_list_booking_check"));
-		mmap.put("creditFlag", this.logisticGroupService.selectLogisticGroupById(shipmentDetailFromDB.getLogisticGroupId()));
+		mmap.put("creditFlag",
+				this.logisticGroupService.selectLogisticGroupById(shipmentDetailFromDB.getLogisticGroupId()));
 		return PREFIX + "/detail";
 	}
 
 	@PostMapping("/save-reefer")
 	@ResponseBody
 	public AjaxResult saveReeferInfo(@RequestBody List<ReeferInfo> reeferInfos) {
-		for(ReeferInfo reeferInfo : reeferInfos) {
+		for (ReeferInfo reeferInfo : reeferInfos) {
 			reeferInfoService.updateReeferInfo(reeferInfo);
 		}
-		return AjaxResult.success(reeferInfoService.selectReeferInfoListByIdShipmentDetail(reeferInfos.get(0).getShipmentDetailId()));
+		return AjaxResult.success(
+				reeferInfoService.selectReeferInfoListByIdShipmentDetail(reeferInfos.get(0).getShipmentDetailId()));
 	}
-	
+
 	@PostMapping("/confirmation/payment-type")
 	@ResponseBody
 	public AjaxResult confirmationPaymentType(@RequestBody List<ShipmentDetail> shipmentDetailIds) {
-		for(ShipmentDetail detail : shipmentDetailIds) {
+		for (ShipmentDetail detail : shipmentDetailIds) {
 			shipmentDetailService.updateShipmentDetail(detail);
 		}
 		return success("");

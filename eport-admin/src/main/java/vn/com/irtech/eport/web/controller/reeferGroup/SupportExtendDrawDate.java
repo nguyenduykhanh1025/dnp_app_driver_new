@@ -49,7 +49,7 @@ import vn.com.irtech.eport.web.controller.AdminBaseController;
 public class SupportExtendDrawDate extends AdminBaseController {
 	private static final Logger logger = LoggerFactory.getLogger(SupportDateSetupTemperature.class);
 
-	private String PREFIX = "/reeferGruop/extendDrawDate";
+	private String PREFIX = "reeferGruop/extendDrawDate";
 
 	private final String KEY_ICE = "R";
 
@@ -113,6 +113,11 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		return PREFIX + "/index";
 	}
 
+	@GetMapping("/reject")
+	public String openRejectModel() {
+		return PREFIX + "/reject";
+	}
+
 	@PostMapping("/shipments")
 	@ResponseBody
 	public AjaxResult getShipments(@RequestBody PageAble<Shipment> param) {
@@ -145,11 +150,6 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;
-	}
-
-	@GetMapping("/reject")
-	public String openRejectModel() {
-		return PREFIX + "/reject";
 	}
 
 	@PostMapping("/confirmation")
@@ -208,7 +208,8 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		mmap.put("contDangerousImos", dictDataService.getType("cont_dangerous_imo"));
 		mmap.put("contDangerousUnnos", dictDataService.getType("cont_dangerous_unno"));
 
-		mmap.put("shipmentDetail", this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId));
+		ShipmentDetail shipmentDetailFromDB = this.shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		mmap.put("shipmentDetail", shipmentDetailFromDB);
 
 		ShipmentImage shipmentImage = new ShipmentImage();
 		shipmentImage.setShipmentDetailId(shipmentDetailId.toString());
@@ -224,6 +225,11 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		mmap.put("powerDropDate", shipmentDetailHistService.selectShipmentDetailHistList(shipmentDetailHist));
 
 		mmap.put("reeferInfos", reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId));
+
+		mmap.put("reeferInfos", reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId));
+		mmap.put("oprlistBookingCheck", dictService.getType("opr_list_booking_check"));
+		mmap.put("creditFlag", logisticGroupService.selectLogisticGroupById(shipmentDetailFromDB.getLogisticGroupId())
+				.getCreditFlag());
 		mmap.put("billPowers", dictService.getType("bill_power"));
 
 		return PREFIX + "/detail";
@@ -234,42 +240,40 @@ public class SupportExtendDrawDate extends AdminBaseController {
 	public AjaxResult confirmExtendDateDrop(String idShipmentDetails) {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		for (String id : idShipmentDetails.split(",")) {
-			List<ReeferInfo> infos = reeferInfoService.selectReeferInfoListByIdShipmentDetail(Long.parseLong(id));
+			ReeferInfo info = reeferInfoService.selectReeferInfoListByIdShipmentDetail(Long.parseLong(id)).get(0);
 			ShipmentDetail shipmentDetailFromDB = shipmentDetailService.selectShipmentDetailById(Long.parseLong(id));
-			shipmentDetail.setPowerDrawDate(infos.get(0).getDateGetPower());
+			shipmentDetail.setPowerDrawDate(info.getDateGetPower());
 			shipmentDetail.setId(Long.parseLong(id));
 			shipmentDetail.setPowerDrawDateStatus("S");
 			shipmentDetail.setDaySetupTemperature(shipmentDetailFromDB.getPowerDrawDate());
 			shipmentDetailService.updateShipmentDetail(shipmentDetail);
 
-			for (ReeferInfo info : infos) {
-				info.setStatus("S");
-				info.setUpdateBy(getUser().getUserName());
+			info.setStatus("S");
+			info.setUpdateBy(getUser().getUserName());
 
-				// if no da thanh toan
-				boolean isPayment = false;
-				List<SysDictData> sysDictDatas = dictService.getType("opr_list_booking_check");
-				for (SysDictData data : sysDictDatas) {
-					if (data.getDictValue().equals(shipmentDetailFromDB.getOpeCode())) {
-						isPayment = true;
-					}
-				}
-				Long logictistId = shipmentDetailFromDB.getLogisticGroupId();
-				LogisticGroup groupFromDB = this.logisticGroupService.selectLogisticGroupById(logictistId);
-				if (!groupFromDB.getCreditFlag().equals("0")) {
+			// if no da thanh toan
+			boolean isPayment = false;
+			List<SysDictData> sysDictDatas = dictService.getType("opr_list_booking_check");
+			for (SysDictData data : sysDictDatas) {
+				if (data.getDictValue().equals(shipmentDetailFromDB.getOpeCode())) {
 					isPayment = true;
 				}
-
-				if (isPayment) {
-					info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_SUCCESS);
-				} else {
-					info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
-				}
-
-				this.reeferInfoService.updateReeferInfo(info);
 			}
+			Long logictistId = shipmentDetailFromDB.getLogisticGroupId();
+			LogisticGroup groupFromDB = this.logisticGroupService.selectLogisticGroupById(logictistId);
+			if (!groupFromDB.getCreditFlag().equals("0")) {
+				isPayment = true;
+			}
+
+			if (isPayment) {
+				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_SUCCESS);
+			} else {
+				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
+			}
+
+			this.reeferInfoService.updateReeferInfo(info);
+
 		}
-//		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
 		return success();
 	}
 
@@ -278,6 +282,16 @@ public class SupportExtendDrawDate extends AdminBaseController {
 	public AjaxResult rejectExtendDateDrop(String idShipmentDetails) {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setPowerDrawDateStatus("E");
+		for (String id : idShipmentDetails.split(",")) {
+			ReeferInfo info = reeferInfoService.selectReeferInfoListByIdShipmentDetail(Long.parseLong(id)).get(0);
+
+			info.setStatus("E");
+			info.setUpdateBy(getUser().getUserName());
+			info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_ERROR);
+
+			this.reeferInfoService.updateReeferInfo(info);
+
+		}
 		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
 		return success();
 	}
@@ -291,4 +305,5 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		return AjaxResult.success(
 				reeferInfoService.selectReeferInfoListByIdShipmentDetail(reeferInfos.get(0).getShipmentDetailId()));
 	}
+
 }
