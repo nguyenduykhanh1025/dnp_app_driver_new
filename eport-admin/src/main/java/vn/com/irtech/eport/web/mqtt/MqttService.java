@@ -83,7 +83,7 @@ public class MqttService implements MqttCallback {
 
 	@Autowired
 	private RobotResponseHandler robotResponseHandler;
-	
+
 	@Autowired
 	private AutoGateCheckInHandler autoGateCheckInHandler;
 
@@ -92,10 +92,10 @@ public class MqttService implements MqttCallback {
 
 	@Autowired
 	private ICatosApiService catosApiService;
-	
+
 	@Autowired
 	private IProcessOrderService processOrderService;
-	
+
 	@Autowired
 	private ISysRobotService robotService;
 
@@ -311,7 +311,7 @@ public class MqttService implements MqttCallback {
 		// Get list container need to check terminal hold
 		ContainerHoldInfo containerHoldInfo = new ContainerHoldInfo();
 		containerHoldInfo.setContainers(Convert.toStrArray(containers));
-		containerHoldInfo.setHoldChk("Y");
+//		containerHoldInfo.setHoldChk("Y");
 		containerHoldInfo.setHoldCode(EportConstants.HOLD_CODE_DO);
 		containerHoldInfo.setHoldType(EportConstants.HOLD_TYPE_TERMINAL);
 		if (serviceType == EportConstants.SERVICE_PICKUP_FULL) {
@@ -339,13 +339,13 @@ public class MqttService implements MqttCallback {
 			processOrder.setServiceType(EportConstants.SERVICE_TERMINAL_CUSTOM_HOLD);
 			processOrder.setRunnable(true);
 			processOrderService.insertProcessOrder(processOrder);
-			
+
 			// parse data from process data
 			ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
 			Map<String, Object> params = new HashMap<>();
 			params.put("containers", processJsonData.getContainers());
 			processOrder.setParams(params);
-			
+
 			logger.debug("Find robot terminal hold available.");
 			SysRobot sysRobot = new SysRobot();
 			sysRobot.setIsChangeTerminalCustomHold(true);
@@ -367,12 +367,11 @@ public class MqttService implements MqttCallback {
 				processOrder.setRobotUuid(sysRobot.getUuId()); // robot uuid in charge of process order
 				processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_PROCESSING); // on progress
 				processOrderService.updateProcessOrder(processOrder);
-			}	
+			}
 		}
 	}
 
-	public void publicOrderToDemandRobot(ProcessOrder payLoad, String uuid)
-			throws MqttException {
+	public void publicOrderToDemandRobot(ProcessOrder payLoad, String uuid) throws MqttException {
 		SysRobot sysRobot = new SysRobot();
 		sysRobot.setUuId(uuid);
 		sysRobot.setStatus(EportConstants.ROBOT_STATUS_BUSY);
