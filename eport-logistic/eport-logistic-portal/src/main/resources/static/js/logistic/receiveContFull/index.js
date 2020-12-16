@@ -589,6 +589,9 @@ function getIconContFollowIndex(index) {
 
 
 function getStatusContFollowIndex(index) {
+ console.log("vao");
+console.log(sourceData[index]);
+
   if (
     !sourceData[index].oversize &&
     //!sourceData[index].dangerous &&

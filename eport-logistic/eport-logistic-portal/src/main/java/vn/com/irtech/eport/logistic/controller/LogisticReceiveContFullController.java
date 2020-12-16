@@ -1465,16 +1465,18 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		reeferInfo.setDateSetPower(shipmentDetail.getDaySetupTemperature());
 		reeferInfo.setShipmentDetailId(shipmentDetail.getId());
 		reeferInfo.setStatus("S");
-
-		if (shipmentDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_YES)) {
-			reeferInfoService.insertReeferInfo(reeferInfo);
-		} else {
-			ReeferInfo reeferInfoFromDB = this.reeferInfoService
-					.selectReeferInfoListByIdShipmentDetail(shipmentDetail.getId()).get(0);
-			reeferInfo.setId(reeferInfoFromDB.getId());
-			reeferInfo.setUpdateBy(getUser().getUserName());
-			reeferInfoService.updateReeferInfo(reeferInfo);
-		}
+        if("R".equalsIgnoreCase(shipmentDetail.getSztp())) {
+        	if (shipmentDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_YES)) {
+    			reeferInfoService.insertReeferInfo(reeferInfo);
+    		} else {
+    			ReeferInfo reeferInfoFromDB = this.reeferInfoService
+    					.selectReeferInfoListByIdShipmentDetail(shipmentDetail.getId()).get(0);
+    			reeferInfo.setId(reeferInfoFromDB.getId());
+    			reeferInfo.setUpdateBy(getUser().getUserName());
+    			reeferInfoService.updateReeferInfo(reeferInfo);
+    		}
+        }
+        	 
 
 //		}
 
