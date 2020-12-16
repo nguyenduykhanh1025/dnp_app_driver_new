@@ -1,4 +1,4 @@
-const PREFIX = ctx + "reefer-gruop/send-cont-reefer";
+const PREFIX = ctx + "reefer-group/send-cont-reefer";
 const greenBlackColor = "rgb(104 241 131)";
 var rowAmount = 0;
 var allChecked = false;

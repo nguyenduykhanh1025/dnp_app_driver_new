@@ -45,11 +45,11 @@ import vn.com.irtech.eport.system.service.IShipmentDetailHistService;
 import vn.com.irtech.eport.web.controller.AdminBaseController;
 
 @Controller
-@RequestMapping("/reefer-gruop/extend-draw-date")
+@RequestMapping("/reefer-group/extend-draw-date")
 public class SupportExtendDrawDate extends AdminBaseController {
 	private static final Logger logger = LoggerFactory.getLogger(SupportDateSetupTemperature.class);
 
-	private String PREFIX = "reeferGruop/extendDrawDate";
+	private String PREFIX = "reeferGroup/extendDrawDate";
 
 	private final String KEY_ICE = "R";
 
@@ -140,13 +140,14 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		return ajaxResult;
 	}
 
-	@GetMapping("/shipment/{shipmentId}/shipmentDetails")
+	@GetMapping("/shipment/{shipmentId}/shipmentDetails/status/{status}")
 	@ResponseBody
-	public AjaxResult getShipmentDetails(@PathVariable("shipmentId") Long shipmentId) {
+	public AjaxResult getShipmentDetails(@PathVariable("shipmentId") Long shipmentId, @PathVariable("status") String status) {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
 		shipmentDetail.setSztp(KEY_ICE);
+		shipmentDetail.setPowerDrawDateStatus(status);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;

@@ -30,11 +30,11 @@ import vn.com.irtech.eport.web.controller.AdminBaseController;
 import java.util.*;
 
 @Controller
-@RequestMapping("/reefer-gruop/date-setup-temperature")
+@RequestMapping("/reefer-group/date-setup-temperature")
 public class SupportDateSetupTemperature extends AdminBaseController {
 	private static final Logger logger = LoggerFactory.getLogger(SupportDateSetupTemperature.class);
 
-	private String PREFIX = "reeferGruop/dateSetupTemperature";
+	private String PREFIX = "reeferGroup/dateSetupTemperature";
 
 	private final String KEY_ICE = "R";
 

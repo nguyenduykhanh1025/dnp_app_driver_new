@@ -1,4 +1,4 @@
-const PREFIX = ctx + "reefer-gruop/date-setup-temperature";
+const PREFIX = ctx + "reefer-group/date-setup-temperature";
 const DANGEROUS_STATUS = {
   yet: "T", // là cont dangerous
   pending: "2", // là cont danger đang chờ xét duyết
