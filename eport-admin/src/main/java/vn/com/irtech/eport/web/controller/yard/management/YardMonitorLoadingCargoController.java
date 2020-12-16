@@ -126,7 +126,7 @@ public class YardMonitorLoadingCargoController extends AdminBaseController {
 			}
 			mmap.put("shipmentImages", shipmentImages);
 		}
-		return PREFIX + "/houseBill";
+		return PREFIX + "/cargo";
 	}
 
 	@GetMapping("/reject")
@@ -148,8 +148,6 @@ public class YardMonitorLoadingCargoController extends AdminBaseController {
 			params = new HashMap<String, Object>();
 		}
 		params.put("paymentStatus", "Y");
-		params.put("specialService", EportConstants.SPECIAL_SERVICE_LOAD_YARD);
-		shipment.setParams(params);
 		shipment.setParams(params);
 		shipment.setServiceType(EportConstants.SERVICE_LOADING_CARGO_YARD);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
@@ -163,7 +161,7 @@ public class YardMonitorLoadingCargoController extends AdminBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
-
+		shipmentDetail.setPaymentStatus("Y");
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;

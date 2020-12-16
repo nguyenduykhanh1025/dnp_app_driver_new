@@ -163,7 +163,7 @@ let typeO = true;// qua kho
 function confirm() {
   var truckNo = $("#truckNo").val();
   var chassisNo = $("#chassisNo").val();
-  if(shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ) {
+  if (shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ) {
     $.modal.close();
     return;
   }
@@ -351,9 +351,9 @@ function configHandson() {
         case 0:
           return "Trạng Thái";
         case 1:
-          return "Ngày Gia Hạn Cắm Điện";
+          return "Ngày Cắm Điện";
         case 2:
-          return "Ngày Gia Hạn Rút Điện";
+          return "Ngày Rút Điện";
         case 3:
           return "Số Giờ (h)";
         case 4:
@@ -419,11 +419,11 @@ function statusIconRenderer(instance, td, row, col, prop, value, cellProperties)
   if (row == 0) {
     value = shipmentDetail.powerDrawDateStatus;
     if (value == "P") {
-      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đang chờ xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #f8ac59;"></i>';
+      status = '<i id="status" class="fa fa-check  easyui-tooltip" title="Container đang chờ xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #f8ac59;"></i>';
     } else if (value === "S") {
-      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
+      status = '<i id="status" class="fa fa-check  easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
     } else if (value === "E") {
-      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã bị từ chối xác nhận gia hạn rút điện" aria-hidden="true" style="color: #ef6776;"></i>';
+      status = '<i id="status" class="fa fa-check  easyui-tooltip" title="Container đã bị từ chối xác nhận gia hạn rút điện" aria-hidden="true" style="color: #ef6776;"></i>';
     }
   } else {
     // status
@@ -464,6 +464,10 @@ function dateGetPower(instance, td, row, col, prop, value, cellProperties) {
   return td;
 }
 function numberHoursRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (isBookingCheckPayment()) {
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + '' + '</div>');
+    return td;
+  }
   if (!value) {
     value = '';
   }
@@ -473,6 +477,10 @@ function numberHoursRenderer(instance, td, row, col, prop, value, cellProperties
 }
 
 function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (isBookingCheckPayment()) {
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + '' + '</div>');
+    return td;
+  }
   if (!value) {
     value = '';
   }
@@ -550,7 +558,9 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
   else if (shipmentDetail.powerDrawDateStatus == "S" && PAYMENT_STATUS.process == sourceData[row].paymentStatus) {
     result += btnPayment;
   } else if (!sourceData[row].id || PAYMENT_STATUS.success == sourceData[row].paymentStatus) {
-    result += 'Đã thanh toán';
+    if (!isBookingCheckPayment()) {
+      result += 'Đã thanh toán';
+    }
   } else if (sourceData.length == 1) {
     result += 'Đang chờ';
   } else {
@@ -565,7 +575,7 @@ function extendPowerDrawDate() {
   let dateDrop = tranferValidatedDate($('#powerDrawDate').val());
   let dateExtend = tranferValidatedDate($('#extendPowerDrawDate').val());
   let len = sourceData.length - 1;
-  
+
   if (!$('#extendPowerDrawDate').val()) {
     $.modal.alertError("Quý khách vui lòng điền thông tin gia hạn.");
   }
@@ -576,7 +586,14 @@ function extendPowerDrawDate() {
     $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
   }
   else if (shipmentDetail.frozenStatus != 'Y' || shipmentDetail.powerDrawDateStatus == 'P' || (sourceData[len].status && (sourceData[len].paymentStatus != PAYMENT_STATUS.success && sourceData[len].paymentStatus != PAYMENT_STATUS.error))) {
-    $.modal.alertError("Cont chưa thể gia hạn ngày rút điện");
+    if (shipmentDetail.powerDrawDateStatus == 'P') {
+      $.modal.alertError("Không thể yếu cầu gia hạn do container chưa được xác nhận yêu cầu gia hạn rút điện.");
+    } else if (shipmentDetail.frozenStatus != 'Y') {
+      $.modal.alertError("Không thể yếu cầu gia hạn do Container đang được xét duyệt từ tổ lạnh.");
+    } else if (sourceData[len].status && (sourceData[len].paymentStatus != PAYMENT_STATUS.success && sourceData[len].paymentStatus != PAYMENT_STATUS.error)) {
+      $.modal.alertError("Container Chưa được thanh toán.");
+    }
+
   } else {
 
     let date = $('#extendPowerDrawDate').val();
@@ -692,7 +709,8 @@ function isBookingCheckPayment() {
 
 function getBetweenTwoDate(date1, date2) {
   const diffTime = Math.abs(date2 - date1);
-  return Math.ceil(diffTime / (1000 * 60 * 60));
+
+  return (diffTime / (1000 * 60 * 60)).toFixed(1);
 }
 
 function getBetweenTwoDateInSourceData(row) {

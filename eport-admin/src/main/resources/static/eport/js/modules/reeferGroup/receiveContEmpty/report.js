@@ -1,4 +1,4 @@
-const PREFIX = ctx + "reefer-gruop/receive-cont-empty";
+const PREFIX = ctx + "reefer-group/receive-cont-empty";
 var shipmentDetail = new Object();
 
 $(function () {

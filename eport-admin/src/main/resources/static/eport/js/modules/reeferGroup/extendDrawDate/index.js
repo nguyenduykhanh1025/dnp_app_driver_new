@@ -1,4 +1,4 @@
-const PREFIX = ctx + "reefer-gruop/extend-draw-date";
+const PREFIX = ctx + "reefer-group/extend-draw-date";
 const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var dogrid = document.getElementById("container-grid"),
@@ -1070,6 +1070,7 @@ configHandson();
 hot = new Handsontable(dogrid, config);
 
 function loadShipmentDetails(id) {
+  const statusPowerDrawDate = shipment.params.powerDrawDateStatus;
   if (id) {
     $.modal.loading("Đang xử lý ...");
     $.ajax({
@@ -1077,7 +1078,7 @@ function loadShipmentDetails(id) {
         PREFIX +
         "/shipment/" +
         id +
-        "/shipmentDetails",
+        "/shipmentDetails" + "/status/" + statusPowerDrawDate,
       method: "GET",
       success: function (res) {
         $.modal.closeLoading();

@@ -21,7 +21,7 @@
                   <div class="form-group">
                     <label class="sr-only" for="search-All">Seacrh All</label>
                     <div class="input-group">
-                      <input class="form-control" type="text" name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
+                      <input class="form-control" type="text" name="searchAll" id="searchAll" placeholder="TÃ¬m kiáº¿m" />
                     </div>
                   </div>
                 </li>
@@ -30,7 +30,7 @@
                     <label class="sr-only" for="from-Date">From Date</label>
                     <div class="input-group">
                       <input class="time-input" id="fromDate" name="fromDate" onchange="changeFromDate()"
-                        placeholder="Từ ngày" />
+                        placeholder="Tá»« ngÃ y" />
                     </div>
                   </div>
                 </li>
@@ -39,13 +39,13 @@
                     <label class="sr-only" for="to-Date">To Date</label>
                     <div class="input-group">
                       <input class="time-input" id="toDate" name="toDate" onchange="changeToDate()"
-                        placeholder="Đến ngày" />
+                        placeholder="Ä�áº¿n ngÃ y" />
                     </div>
                   </div>
                 </li>
                 <li>
                   <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i
-                      class="glyphicon glyphicon-search"></i> Tìm Kiếm</a></li>
+                      class="glyphicon glyphicon-search"></i> TÃ¬m Kiáº¿m</a></li>
                 </li>
               </ul>
             </div>
@@ -56,49 +56,49 @@
             <thead>
               <tr>
                 <th data-options="field:'updateTime',align:'left'" width="140">
-                  Ngày cấp
+                  NgÃ y cáº¥p
                 </th>
                 <th data-options="field:'opeCode',align:'left'" width="140">
-                  Hãng tàu <br> (OPR)
+                  HÃ£ng tÃ u <br> (OPR)
                 </th>
                 <th data-options="field:'containerNo',align:'left'" width="170">
-                  Số cont
+                  Sá»‘ cont
                 </th>
                 <th data-options="field:'sztp',align:'left'" width="140">
                   Size/type
                 </th>
                 <th data-options="field:'cargoType',align:'left'" width="140">
-                  Loại hàng
+                  Loáº¡i hÃ ng
                 </th>
                 <th data-options="field:'bookingNo',align:'left'" width="140">
-                  Số book
+                  Sá»‘ book
                 </th>
                 <th data-options="field:'shellQuality',align:'left'" width="200">
-                  Yêu cầu chất <br> lượng vỏ cont
+                  YÃªu cáº§u cháº¥t <br> lÆ°á»£ng vá»� cont
                 </th>
                 <th data-options="field:'consignee',align:'left'" width="140">
-                  Chủ hàng
+                  Chá»§ hÃ ng
                 </th>
                 <th data-options="field:'takeTime',align:'left'" width="170">
-                  Dự kiến thời <br> gian bốc cont
+                  Dá»± kiáº¿n thá»�i <br> gian bá»‘c cont
                 </th>
                 <th data-options="field:'createTime',align:'left'" width="140">
-                  Ngày yêu <br> cầu
+                  NgÃ y yÃªu <br> cáº§u
                 </th>
                 <th data-options="field:'vslNm',align:'left'" width="140">
-                  Tên tàu
+                  TÃªn tÃ u
                 </th>
                 <th data-options="field:'voyNo',align:'left'" width="140">
-                  Chuyến
+                  Chuyáº¿n
                 </th>
                 <th data-options="field:'dischargePort',align:'left'" width="140">
-                  Cảng dỡ
+                  Cáº£ng dá»¡
                 </th>
                 <th data-options="field:'updateBy',align:'left'" width="140">
-                  Người cấp
+                  NgÆ°á»�i cáº¥p
                 </th>
                 <th data-options="field:'remark',align:'left'" width="200">
-                  Ghi chú
+                  Ghi chÃº
                 </th>
               </tr>
             </thead>
@@ -109,7 +109,7 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
     <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
-    <script th:src="@{/eport/js/modules/reeferGruop/receiveContEmpty/report.js?v=20201029}"></script>
+    <script th:src="@{/eport/js/modules/reeferGroup/receiveContEmpty/report.js?v=20201029}"></script>
 
 </body>
 </html>

@@ -41,6 +41,10 @@ public interface IShipmentDetailService {
 	 */
 	public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail);
 	
+	public List<ShipmentDetail> selectShipmentDetailListReceive(ShipmentDetail shipmentDetail);
+	
+	
+	
 	/**
 	 * Get Shipment Details List Not Like Cont Reefer
 	 * 

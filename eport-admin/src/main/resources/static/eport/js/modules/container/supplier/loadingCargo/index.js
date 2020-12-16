@@ -754,9 +754,9 @@ function getDataSelectedFromTable() {
     $.each(cleanedGridData, function (index, object) {
         var shipmentDetail = new Object();
         shipmentDetail.containerNo = object["containerNo"];
+        shipmentDetail.location = object["location"];
         shipmentDetail.contSupplyRemark = object["contSupplyRemark"];
         shipmentDetail.contSupplyStatus = object["contSupplyStatus"];
-        shipmentDetail.location = object["location"];
         shipmentDetail.containerRemark = object["containerRemark"];
         shipmentDetail.id = object["id"];
         shipmentDetailIds += object["id"] + ',';

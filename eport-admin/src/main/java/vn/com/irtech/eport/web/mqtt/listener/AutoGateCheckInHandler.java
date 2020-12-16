@@ -110,6 +110,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 			gateDetection.setTotalWgt(Long.parseLong(gateNotificationCheckInReq.getWeight().toString()));
 			gateDetection.setDeduct(Long.parseLong(gateNotificationCheckInReq.getDeduct().toString()));
 			gateDetection.setGateNo(gateNotificationCheckInReq.getGateId());
+			gateDetection.setRemark(gateNotificationCheckInReq.getRemark());
 			gateDetection.setStatus("P");
 
 			// Get container info from catos
@@ -216,6 +217,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 				ProcessOrder processOrder = new ProcessOrder();
 				processOrder.setServiceType(EportConstants.SERVICE_GATE_IN);
 				processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_NEW);
+				processOrder.setRemark(gateDetection.getRemark());
 				processOrderService.insertProcessOrder(processOrder);
 
 				gateInFormData.setGateId(gateDetection.getGateNo());

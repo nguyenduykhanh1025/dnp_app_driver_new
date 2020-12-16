@@ -186,7 +186,6 @@ public class YardMonitorUnLoadingCargoController extends AdminBaseController {
 	public AjaxResult confirmDo(String shipmentDetailIds) {
 		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
 		shipmentDetailUpdate.setDoStatus("Y");
-		shipmentDetailUpdate.setFinishStatus("Y");
 		shipmentDetailUpdate.setDoReceivedTime(new Date());
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
 		return success();

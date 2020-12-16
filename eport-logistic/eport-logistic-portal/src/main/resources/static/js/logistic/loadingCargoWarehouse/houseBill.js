@@ -350,20 +350,18 @@ function configHandson() {
                 case 2:
                     return "Forwarder";
                 case 3:
-                    return "Số Lượng";
+                    return "Đơn Vị Tính"
                 case 4:
-                    return "Loại Bao Bì";
+                    return "Số Lượng";
                 case 5:
                     return "Trọng Lượng";
                 case 6:
                     return "Số Khối";
                 case 7:
-                    return "Nhãn/Ký hiệu";
-                case 8:
                     return "Ghi chú";
             }
         },
-        colWidths: [40, 100, 150, 80, 90, 90, 90, 100, 200],
+        colWidths: [40, 100, 150, 100, 90, 90, 90, 200],
         columns: [
             {
                 data: "active",
@@ -382,14 +380,14 @@ function configHandson() {
                 renderer: forwarderRenderer
             },
             {
-                data: "quantity",
-                className: "htCenter",
-                renderer: quantityRenderer
-            },
-            {
                 data: "packagingType",
                 className: "htCenter",
                 renderer: packagingTypeRenderer
+            },
+            {
+                data: "quantity",
+                className: "htCenter",
+                renderer: quantityRenderer
             },
             {
                 data: "weight",
@@ -400,11 +398,6 @@ function configHandson() {
                 data: "cubicMeter",
                 className: "htCenter",
                 renderer: cubicMeterRenderer
-            },
-            {
-                data: "marks",
-                className: "htCenter",
-                renderer: marksRenderer
             },
             {
                 data: "forwarderRemark",
@@ -432,7 +425,7 @@ function configHandson() {
                 // Arrow Right
                 case 39:
                     selected = hot.getSelected()[0];
-                    if (selected[3] == 8) {
+                    if (selected[3] == 7) {
                         e.stopImmediatePropagation();
                     }
                     break
@@ -524,7 +517,6 @@ function getDataSelectedFromTable(isValidate) {
         cfsHouseBill.packagingType = object["packagingType"];
         cfsHouseBill.weight = object["weight"];
         cfsHouseBill.cubicMeter = object["cubicMeter"];
-        cfsHouseBill.marks = object["marks"];
         cfsHouseBill.forwarderRemark = object["forwarderRemark"];
         cfsHouseBillList.push(cfsHouseBill);
         cfsHouseBillIds += object["id"] + ",";

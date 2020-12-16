@@ -478,11 +478,10 @@ public class LogisticLoadingCargoWarehouseController extends LogisticBaseControl
 						shipmentDetailReference.setEta(inputDetail.getEta());
 						shipmentDetailReference.setEtd(inputDetail.getEtd());
 						shipmentDetailReference.setDischargePort(inputDetail.getDischargePort());
-
+						shipmentDetailReference.setDateReceipt(inputDetail.getDateReceipt());
 					}
 					shipmentDetailReference.setRemark(inputDetail.getRemark());
 					shipmentDetailReference.setUpdateBy(user.getFullName());
-					shipmentDetailReference.setDateReceipt(inputDetail.getDateReceipt());
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetailReference) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetailReference.getContainerNo());
 					}
@@ -497,6 +496,7 @@ public class LogisticLoadingCargoWarehouseController extends LogisticBaseControl
 					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setUserVerifyStatus("N");
 					shipmentDetail.setContSupplyStatus("N");
+					shipmentDetail.setDateReceiptStatus("N");
 					shipmentDetail.setFe("E");
 					shipmentDetail.setFinishStatus("N");
 					shipmentDetail.setDoStatus("N");
@@ -772,6 +772,9 @@ public class LogisticLoadingCargoWarehouseController extends LogisticBaseControl
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getContainerNo())) {
 				return error("Hàng " + (i + 1) + ": Chưa nhập số container!");
 			}
+			if (shipmentDetails.get(i).getDateReceipt() == null) {
+				return error("Hàng " + (i + 1) + ": Chưa đăng ký ngày đóng hàng!");
+			}
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getSztp())) {
 				return error("Hàng " + (i + 1) + ": Vui lòng chọn kích thước!");
 			}
@@ -812,7 +815,12 @@ public class LogisticLoadingCargoWarehouseController extends LogisticBaseControl
 			List<CfsHouseBill> cfsHouseBills = cfsHouseBillService
 					.selectCfsHouseBillByIdShipmentDetail(shipmentDetails.get(i).getId());
 			if (CollectionUtils.isEmpty(cfsHouseBills)) {
-				return error("Chưa nhập house bill cho container " + shipmentDetails.get(i).getContainerNo() + ".");
+				ShipmentImage shipmentImageParam = new ShipmentImage();
+				shipmentImageParam.setShipmentDetailId(shipmentDetails.get(i).getId().toString());
+				List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImageParam);
+				if (CollectionUtils.isEmpty(shipmentImages)) {
+					return error("Chưa nhập house bill cho container " + shipmentDetails.get(i).getContainerNo() + ".");
+				}
 			}
 		}
 
