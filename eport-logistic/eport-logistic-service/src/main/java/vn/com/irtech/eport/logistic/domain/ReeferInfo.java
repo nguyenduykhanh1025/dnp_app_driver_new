@@ -42,7 +42,7 @@ public class ReeferInfo extends BaseEntity
 
     /** Số tiền trả */
     @Excel(name = "Số tiền trả")
-    private Long moneyNumber;
+    private Float moneyNumber;
 
     /** Trạng thái */
     @Excel(name = "Trạng thái")
@@ -113,12 +113,12 @@ public class ReeferInfo extends BaseEntity
     {
         return payerType;
     }
-    public void setMoneyNumber(Long moneyNumber) 
+    public void setMoneyNumber(Float moneyNumber) 
     {
         this.moneyNumber = moneyNumber;
     }
 
-    public Long getMoneyNumber() 
+    public Float getMoneyNumber() 
     {
         return moneyNumber;
     }

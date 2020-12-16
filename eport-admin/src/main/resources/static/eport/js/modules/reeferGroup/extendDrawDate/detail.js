@@ -1,4 +1,4 @@
-const PREFIX = ctx + "reefer-gruop/extend-draw-date";
+const PREFIX = ctx + "reefer-group/extend-draw-date";
 var dogrid = document.getElementById("container-grid"), hot;
 var checkList = [];
 var sourceData = reeferInfos;

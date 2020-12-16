@@ -302,6 +302,7 @@
 			<if test="frozenStatus != null and frozenStatus != ''">and frozen_status = #{frozenStatus}</if>
 			<if test="oversize != null and oversize != ''">and oversize = #{oversize}</if>
 			<if test="supportStatus != null and supportStatus != ''">and support_status = #{supportStatus}</if>
+			<if test="powerDrawDateStatus != null and powerDrawDateStatus != ''">and power_draw_date_status = #{powerDrawDateStatus}</if>
 		</where>
 
 	</select>
@@ -485,7 +486,7 @@
 		status, remark, create_by, create_time, update_by,
 		update_time,frozen_status,
 		dangerous,oversize,date_receipt,date_receipt_status,
-		oversize_top,oversize_right,oversize_left,oversize_front,oversize_back
+		oversize_top,oversize_right,oversize_left,oversize_front,oversize_back, power_draw_date_status
 		from
 		shipment_detail
 		<where>

@@ -536,7 +536,6 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
 
 function getRequestConfigIcon(row) {
   const statusResult = getStatusContFollowIndex(row);
-
   if (!statusResult) {
     return "";
   } else if (statusResult == CONT_SPECIAL_STATUS.YES) {
@@ -800,8 +799,9 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
   }
   if (sourceData && sourceData.length > 0) {
     if (sourceData.length > row && sourceData[row].id) {
+      const iEmlement = renderIEmlementForExtendPowerDrawDateStatus(row);
       if (textContent) {
-        value = '<button style="width: 85%;" class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-book" style="margin: 0 3px;"></i>' + textContent + '</button>';
+        value = '<button ' + renderStyleForExtendPowerDrawDateStatus(row) + ' class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')">' + iEmlement + textContent + '</button>';
       }
     }
   }
@@ -986,7 +986,7 @@ function configHandson() {
           return "Ghi Chú";
       }
     },
-    colWidths: [40, 150, 100, 100, 80, 150, 150, 120, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200, 100],
+    colWidths: [40, 120, 100, 100, 80, 150, 150, 120, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200, 100],
     filter: "true",
     columns: [
       {
@@ -1434,6 +1434,7 @@ function loadShipmentDetail(id) {
     url: prefix + "/shipment/" + id + "/shipment-detail",
     method: "GET",
     success: function (data) {
+      console.log(data);
       $.modal.closeLoading();
       if (data.code == 0) {
         sourceData = data.shipmentDetails;
@@ -2402,4 +2403,26 @@ function openFormRemarkBeforeReqCancelOrder() {
       return true;
     }
   });
+}
+
+function renderIEmlementForExtendPowerDrawDateStatus(row) {
+  if (sourceData[row].powerDrawDateStatus == "P") {
+    return '<i class="fa fa-clock-o" style="margin: 0 3px;" title="Yêu cầu gia hạn rút điện đang được duyệt"></i>';
+  } else if (sourceData[row].powerDrawDateStatus == "S") {
+    return '<i class="fa fa-clock-o" style="margin: 0 3px;" title="Yêu cầu gia hạn rút điện đã được duyệt"></i>';
+  } else if (sourceData[row].powerDrawDateStatus == "E") {
+    return '<i class="fa fa-clock-o" style="margin: 0 3px;" title="Yêu cầu gia hạn rút điện bị từ chối"></i>';
+  }
+  return '<i class="fa fa-book" style="margin: 0 3px;"></i>';
+}
+function renderStyleForExtendPowerDrawDateStatus(row) {
+  // console.log(alo);
+  if (sourceData[row].powerDrawDateStatus == "P") {
+    return `style="width: 85%;background-color: #f8ac59;"`;
+  } else if (sourceData[row].powerDrawDateStatus == "S") {
+    return `style="width: 85%;background-color: #1ab394;"`;
+  } else if (sourceData[row].powerDrawDateStatus == "E") {
+    return `style="width: 85%;background-color: #ff0000;"`;
+  }
+  return `style="width: 85%;"`;
 }
