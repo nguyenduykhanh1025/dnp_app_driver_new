@@ -562,6 +562,16 @@ function statusIconsRenderer(
         }
         break;
     }
+    // do status
+    let doStatus = '<i id="doStatus" class="fa fa-file-text easyui-tooltip" title="Chưa Nộp Đầy Đủ Chứng Từ" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
+    switch (sourceData[row].doStatus) {
+      case 'N':
+        doStatus = '<i id="doStatus" class="fa fa-file-text easyui-tooltip" title="Chưa Nộp Đầy Đủ Chứng Từ" aria-hidden="true" style="margin-left: 8px; color : #3498db;"></i>';
+        break;
+      case 'Y':
+        doStatus = '<i id="doStatus" class="fa fa-file-text easyui-tooltip" title="Đã Nộp Đầy Đủ Chứng Từ" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+    }
     // Date receipt status
     let dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Chưa đăng ký ngày đóng hàng" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
     switch (sourceData[row].dateReceiptStatus) {
@@ -582,7 +592,7 @@ function statusIconsRenderer(
     if (sourceData[row].loadingPort.substring(0, 2) != "VN") {
       content += customs;
     }
-    content += process + payment + dateReceipt;
+    content += process + payment + doStatus + dateReceipt;
     content += "</div>";
     $(td).html(content);
   }
@@ -1166,9 +1176,9 @@ function configHandson() {
         case 4:
           return '<span class="required">Hạn Lệnh</span>';
         case 5:
-          return 'Ngày Rút Hàng';
+          return 'Ngày Rút Hàng<br>Đăng Ký';
         case 6:
-          return 'Ngày Rút Hàng<br>Thực Tế';
+          return 'Ngày Rút Hàng<br>Xác Nhận';
         case 7:
           return "Ngày Miễn<br>Lưu Bãi";
         case 8:

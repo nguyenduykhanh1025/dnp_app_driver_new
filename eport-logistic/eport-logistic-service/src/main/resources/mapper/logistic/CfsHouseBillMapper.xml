@@ -104,6 +104,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="shiftReceipt != null  and shiftReceipt != ''"> and shift_receipt = #{shiftReceipt}</if>
 			<if test="dateReceipt != null "> and date_receipt = #{dateReceipt}</if>
 			<if test="equipment != null  and equipment != ''"> and equipment = #{equipment}</if>
+			<if test="params.ids != null ">
+				and id in 
+				<foreach item="cfsHouseBillId" collection="params.ids" open="(" separator="," close=")">
+					#{cfsHouseBillId}
+				</foreach>
+			</if>
 		</where>
 	</select>
 

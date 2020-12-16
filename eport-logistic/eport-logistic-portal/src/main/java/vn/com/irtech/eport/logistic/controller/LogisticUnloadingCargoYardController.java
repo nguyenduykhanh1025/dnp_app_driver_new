@@ -428,8 +428,11 @@ public class LogisticUnloadingCargoYardController extends LogisticBaseController
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setUserVerifyStatus("N");
 					shipmentDetail.setProcessStatus("N");
+					shipmentDetail.setDoStatus("N");
 					if (EportConstants.DO_TYPE_CARRIER_DO.equals(shipment.getEdoFlg())) {
 						shipmentDetail.setDoStatus("N");
+					} else {
+						shipmentDetail.setDoStatus("Y");
 					}
 					shipmentDetail.setPreorderPickup("N");
 					shipmentDetail.setFinishStatus("N");
@@ -1067,6 +1070,16 @@ public class LogisticUnloadingCargoYardController extends LogisticBaseController
 	@ResponseBody
 	public AjaxResult saveHouseBill(@RequestBody List<CfsHouseBill> cfsHouseBills,
 			@PathVariable("shipmentDetailId") Long shipmentDetailId) {
+		if (shipmentDetailId == null) {
+			return error("Không xác định được thông tin container.");
+		}
+		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		if (shipmentDetail == null) {
+			return error("Không xác định được thông tin container.");
+		}
+		if ("Y".equalsIgnoreCase(shipmentDetail.getUserVerifyStatus())) {
+			return error("Container đã được xác nhận làm lệnh, không thể chỉnh sửa thông tin chi tiết.");
+		}
 		if (CollectionUtils.isNotEmpty(cfsHouseBills)) {
 			LogisticAccount user = getUser();
 			for (CfsHouseBill inputHouseBill : cfsHouseBills) {
@@ -1093,7 +1106,26 @@ public class LogisticUnloadingCargoYardController extends LogisticBaseController
 	@ResponseBody
 	public AjaxResult deleteHouseBills(String houseBillIds) {
 		if (houseBillIds != null) {
-			cfsHouseBillService.deleteCfsHouseBillByIds(houseBillIds);
+			CfsHouseBill cfsHouseBillParam = new CfsHouseBill();
+			Map<String, Object> params = new HashMap<>();
+			params.put("ids", Convert.toStrArray(houseBillIds));
+			cfsHouseBillParam.setParams(params);
+			cfsHouseBillParam.setLogisticGroupId(getUser().getGroupId());
+			List<CfsHouseBill> cfsHouseBills = cfsHouseBillService.selectCfsHouseBillList(cfsHouseBillParam);
+			if (CollectionUtils.isNotEmpty(cfsHouseBills)) {
+				Long currentShipmentDetailId = cfsHouseBills.get(0).getShipmentDetailId();
+				houseBillIds = "";
+				for (CfsHouseBill cfsHouseBill : cfsHouseBills) {
+					if (!cfsHouseBill.getShipmentDetailId().equals(currentShipmentDetailId)) {
+						return error("Không thể xóa thông tin chi tiết của nhiều container cùng 1 lúc.");
+					}
+					houseBillIds += cfsHouseBill.getId() + ",";
+				}
+			}
+			if (StringUtils.isEmpty(houseBillIds)) {
+				return error("Không tìm thấy thông tin chi tiết nào cần xóa.");
+			}
+			cfsHouseBillService.deleteCfsHouseBillByIds(houseBillIds.substring(0, houseBillIds.length() - 1));
 			return success("Lưu khai báo thành công");
 		}
 		return error("Lưu khai báo thất bại");

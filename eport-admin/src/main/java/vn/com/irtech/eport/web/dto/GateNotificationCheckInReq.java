@@ -44,6 +44,22 @@ public class GateNotificationCheckInReq  implements Serializable {
 	
 	private String gateId;
 
+	private String sendFE1;
+
+	private String sendFE2;
+
+	private String sendSztp1;
+
+	private String sendSztp2;
+
+	private String sendRemark1;
+
+	private String sendRemark2;
+
+	private String sealNo1;
+
+	private String sealNo2;
+
 	public Long getId() {
 		return id;
 	}
@@ -194,6 +210,70 @@ public class GateNotificationCheckInReq  implements Serializable {
 
 	public void setGateId(String gateId) {
 		this.gateId = gateId;
+	}
+
+	public String getSendFE1() {
+		return sendFE1;
+	}
+
+	public void setSendFE1(String sendFE1) {
+		this.sendFE1 = sendFE1;
+	}
+
+	public String getSendFE2() {
+		return sendFE2;
+	}
+
+	public void setSendFE2(String sendFE2) {
+		this.sendFE2 = sendFE2;
+	}
+
+	public String getSendSztp1() {
+		return sendSztp1;
+	}
+
+	public void setSendSztp1(String sendSztp1) {
+		this.sendSztp1 = sendSztp1;
+	}
+
+	public String getSendSztp2() {
+		return sendSztp2;
+	}
+
+	public void setSendSztp2(String sendSztp2) {
+		this.sendSztp2 = sendSztp2;
+	}
+
+	public String getSendRemark1() {
+		return sendRemark1;
+	}
+
+	public void setSendRemark1(String sendRemark1) {
+		this.sendRemark1 = sendRemark1;
+	}
+
+	public String getSendRemark2() {
+		return sendRemark2;
+	}
+
+	public void setSendRemark2(String sendRemark2) {
+		this.sendRemark2 = sendRemark2;
+	}
+
+	public String getSealNo1() {
+		return sealNo1;
+	}
+
+	public void setSealNo1(String sealNo1) {
+		this.sealNo1 = sealNo1;
+	}
+
+	public String getSealNo2() {
+		return sealNo2;
+	}
+
+	public void setSealNo2(String sealNo2) {
+		this.sealNo2 = sealNo2;
 	}
 	
 }
