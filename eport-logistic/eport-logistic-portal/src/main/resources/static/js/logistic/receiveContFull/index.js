@@ -589,8 +589,8 @@ function getIconContFollowIndex(index) {
 
 
 function getStatusContFollowIndex(index) {
- console.log("vao");
-console.log(sourceData[index]);
+ //console.log("vao");
+//console.log(sourceData[index]);
 
   if (
     !sourceData[index].oversize &&
@@ -986,7 +986,7 @@ function configHandson() {
           return "Ghi Chú";
       }
     },
-    colWidths: [40, 150, 100, 100, 80, 150, 150, 120, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200, 100],
+    colWidths: [40, 120, 100, 100, 80, 150, 150, 120, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200, 100],
     filter: "true",
     columns: [
       {

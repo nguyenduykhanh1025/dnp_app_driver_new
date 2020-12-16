@@ -136,7 +136,11 @@ public class LogisticSendContFullOversizeSupportRequest extends AdminBaseControl
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
 		shipmentDetail.setOversize(constSpecialStatus);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		//List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailListReceive(shipmentDetail);
+		
+		
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;
 	}
