@@ -347,4 +347,15 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 
 		return success();
 	}
+
+	@PostMapping("/do/confirm")
+	@ResponseBody
+	@Transactional
+	public AjaxResult confirmDo(String shipmentDetailIds) {
+		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
+		shipmentDetailUpdate.setDoStatus("Y");
+		shipmentDetailUpdate.setDoReceivedTime(new Date());
+		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
+		return success();
+	}
 }

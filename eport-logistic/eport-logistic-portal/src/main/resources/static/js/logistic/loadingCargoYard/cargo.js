@@ -1,21 +1,58 @@
-const PREFIX = ctx + "om/support/unloading-cargo";
+const PREFIX = ctx + "logistic/loading-cargo-yard";
 var onlyDigitReg = /^[0-9]*$/gm;
 var onlyFloatReg = /^[+-]?([0-9]*[.|,])?[0-9]+$/gm;
 var dogrid = document.getElementById("container-grid"), hot;
 var minRowAmount = 1, sourceData;
+var allChecked, checkList, cfsHouseBillList, cfsHouseBillIds;
 
 $(document).ready(function () {
 
-  if (shipmentImages.length > 0) {
-    shipmentImages.forEach(shipmentImage => {
-      let html = `<div class="preview-block">
-        <a href="${shipmentImage.path}" target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" style="width: 30px; height: 29px;"/></a>
-        <span aria-hidden="true">&times;</span>
-        </button>
-        </div>`;
-      $('.preview-container').append(html);
-    });
-  }
+  // if (shipmentImages.length > 0) {
+  //   shipmentImages.forEach(shipmentImage => {
+  //     let html = `<div class="preview-block">
+  //       <a href="${shipmentImage.path}" target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" style="width: 30px; height: 29px;"/></a>
+  //       <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + shipmentImage.id + `)" >
+  //       <span aria-hidden="true">&times;</span>
+  //       </button>
+  //       </div>`;
+  //     $('.preview-container').append(html);
+  //   });
+  // }
+
+  // let previewTemplate = '<span data-dz-name></span>';
+  // // Attach house bill
+  // myDropzone = new Dropzone("#dropzone", {
+  //   url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/file",
+  //   method: "post",
+  //   paramName: "file",
+  //   maxFiles: 5,
+  //   maxFilesize: 10, //MB
+  //   // autoProcessQueue: false,
+  //   previewTemplate: previewTemplate,
+  //   previewsContainer: ".preview-container", // Define the container to display the previews
+  //   clickable: "#attachButton", // Define the element that should be used as click trigger to select files.
+  //   init: function () {
+  //     this.on("maxfilesexceeded", function (file) {
+  //       $.modal.alertError("Số lượng tệp đính kèm vượt số lượng cho phép.");
+  //       this.removeFile(file);
+  //     });
+  //   },
+  //   success: function (file, response) {
+  //     if (response.code == 0) {
+  //       $.modal.msgSuccess("Đính kèm tệp thành công.");
+  //       let shipmentImage = response.shipmentFile
+  //       let html = `<div class="preview-block">
+  //         <a href="${shipmentImage.path}" target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" style="width: 30px; height: 29px;"/></a>
+  //         <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + shipmentImage.id + `)" >
+  //         <span aria-hidden="true">&times;</span>
+  //         </button>
+  //         </div>`;
+  //       $('.preview-container').append(html);
+  //     } else {
+  //       $.modal.alertError("Đính kèm tệp thất bại, vui lòng thử lại sau.");
+  //     }
+  //   }
+  // });
 
   $("#houseBillNumber").on("input", function () {
     if ($("#houseBillNumber").val()) {
@@ -52,10 +89,34 @@ $(document).ready(function () {
   });
 
   // RENDER HANSONTABLE FIRST TIME
+  checkList = Array(minRowAmount).fill(0);
+  allChecked = false;
   configHandson();
   hot = new Handsontable(dogrid, config);
   loadHouseBill();
 });
+
+// function removeImage(element, fileId) {
+//   $.ajax({
+//     url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/file",
+//     method: "DELETE",
+//     data: {
+//       id: fileId
+//     },
+//     beforeSend: function () {
+//       $.modal.loading("Đang xử lý, vui lòng chờ...");
+//     },
+//     success: function (result) {
+//       $.modal.closeLoading();
+//       if (result.code == 0) {
+//         $.modal.msgSuccess("Xóa tệp thành công.");
+//         $(element).parent("div.preview-block").remove();
+//       } else {
+//         $.modal.msgError("Xóa tệp thất bại.");
+//       }
+//     }
+//   });
+// }
 
 // LOAD SHIPMENT DETAIL LIST
 function loadHouseBill() {
@@ -76,6 +137,8 @@ function loadHouseBill() {
             $('#houseBillNumber').val(minRowAmount);
           }
         }
+        checkList = Array(minRowAmount).fill(0);
+        allChecked = false;
         hot.destroy();
         configHandson();
         hot = new Handsontable(dogrid, config);
@@ -90,31 +153,29 @@ function loadHouseBill() {
 }
 
 function saveHouseBill() {
-  if (getDataFromTable(true)) {
-    if (cfsHouseBillList.length > 0) {
-      $.modal.loading("Đang xử lý...");
-      $.ajax({
-        url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bills",
-        method: "post",
-        contentType: "application/json",
-        data: JSON.stringify(cfsHouseBillList),
-        success: function (res) {
-          if (res.code == 0) {
-            $.modal.alertSuccess(res.msg);
-            loadHouseBill();
-          } else {
-            $.modal.alertError(res.msg);
-          }
-          $.modal.closeLoading();
-        },
-        error: function (res) {
-          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau.");
-          $.modal.closeLoading();
-        },
-      });
-    } else {
-      $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
-    }
+  const payload = getDataFromTable();
+  if (payload) {
+
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+      url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bills",
+      method: "post",
+      contentType: "application/json",
+      data: JSON.stringify(payload),
+      success: function (res) {
+        if (res.code == 0) {
+          $.modal.alertSuccess(res.msg);
+          loadHouseBill();
+        } else {
+          $.modal.alertError(res.msg);
+        }
+        $.modal.closeLoading();
+      },
+      error: function (res) {
+        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng thử lại sau.");
+        $.modal.closeLoading();
+      },
+    });
   }
 }
 
@@ -174,14 +235,9 @@ function statusIconRenderer(instance, td, row, col, prop, value, cellProperties)
   value = '';
   return td;
 }
-
 function forwarderRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value == null) {
     value = '';
-  }
-  if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
   }
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
@@ -196,20 +252,12 @@ function quantityRenderer(instance, td, row, col, prop, value, cellProperties) {
   } else {
     value = '';
   }
-  if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
-  }
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 function packagingTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value == null) {
     value = '';
-  }
-  if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
   }
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
@@ -224,10 +272,6 @@ function weightRenderer(instance, td, row, col, prop, value, cellProperties) {
   } else {
     value = '';
   }
-  if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
-  }
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
@@ -241,21 +285,6 @@ function cubicMeterRenderer(instance, td, row, col, prop, value, cellProperties)
   } else {
     value = '';
   }
-  if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-function marksRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value == null) {
-    value = '';
-  }
-  if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
-  }
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
@@ -263,37 +292,7 @@ function forwarderRemarkRenderer(instance, td, row, col, prop, value, cellProper
   if (value == null) {
     value = '';
   }
-  if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
-  }
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-
-function houseBillRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value == null) {
-    value = '';
-  }
-  if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
-
-function storageFromDateRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value || value == null) {
-    value = '';
-  }
-  if (value != null && value != '') {
-    if (value.substring(2, 3) != "/") {
-      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-    }
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 
@@ -301,7 +300,7 @@ function storageFromDateRenderer(instance, td, row, col, prop, value, cellProper
 function configHandson() {
   config = {
     stretchH: "all",
-    height: $(document).height() - 100,
+    height: $(document).height() - 140,
     minRows: $('#houseBillNumber').val(),
     maxRows: $('#houseBillNumber').val(),
     width: "100%",
@@ -316,19 +315,30 @@ function configHandson() {
     colHeaders: function (col) {
       switch (col) {
         case 0:
-          return "Đơn Vị Tính"
+          let txt = "<input type='checkbox' class='checker' ";
+          txt += "onclick='checkAll()' ";
+          txt += ">";
+          return txt;
         case 1:
-          return "Số Lượng";
+          return "Đơn Vị Tính"
         case 2:
-          return "Trọng Lượng";
+          return "Số Lượng";
         case 3:
-          return "Số Khối";
+          return "Trọng Lượng";
         case 4:
+          return "Số Khối";
+        case 5:
           return "Ghi chú";
       }
     },
-    colWidths: [100, 90, 90, 90, 200],
+    colWidths: [40, 100, 90, 90, 90, 200],
     columns: [
+      {
+        data: "active",
+        type: "checkbox",
+        className: "htCenter",
+        renderer: checkBoxRenderer
+      },
       {
         data: "packagingType",
         className: "htCenter",
@@ -375,7 +385,7 @@ function configHandson() {
         // Arrow Right
         case 39:
           selected = hot.getSelected()[0];
-          if (selected[3] == 4) {
+          if (selected[3] == 5) {
             e.stopImmediatePropagation();
           }
           break
@@ -393,6 +403,121 @@ function configHandson() {
   };
 }
 
+// TRIGGER CHECK ALL SHIPMENT DETAIL
+function checkAll() {
+  if (!allChecked) {
+    allChecked = true
+    checkList = Array(minRowAmount).fill(0);
+    for (let i = 0; i < checkList.length; i++) {
+      checkList[i] = 1;
+      $('#check' + i).prop('checked', true);
+    }
+  } else {
+    allChecked = false;
+    checkList = Array(minRowAmount).fill(0);
+    for (let i = 0; i < checkList.length; i++) {
+      $('#check' + i).prop('checked', false);
+    }
+  }
+  let tempCheck = allChecked;
+  updateLayout();
+  hot.render();
+  allChecked = tempCheck;
+  $('.checker').prop('checked', tempCheck);
+}
+function check(id) {
+  if (sourceData[id].id != null) {
+    if (checkList[id] == 0) {
+      $('#check' + id).prop('checked', true);
+      checkList[id] = 1;
+    } else {
+      $('#check' + id).prop('checked', false);
+      checkList[id] = 0;
+    }
+    hot.render();
+    updateLayout();
+  }
+}
+function updateLayout() {
+  allChecked = true;
+  for (let i = 0; i < checkList.length; i++) {
+    let cellStatus = sourceData[i].id;
+    if (cellStatus != null) {
+      if (checkList[i] != 1) {
+        allChecked = false;
+      }
+    }
+  }
+  $('.checker').prop('checked', allChecked);
+}
+
 function closeForm() {
   $.modal.close();
+}
+
+// GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
+function getDataSelectedFromTable(isValidate) {
+  let myTableData = hot.getSourceData();
+  let errorFlg = false;
+  let cleanedGridData = [];
+  for (let i = 0; i < checkList.length; i++) {
+    if (Object.keys(myTableData[i]).length > 0) {
+      if (checkList[i] == 1) {
+        cleanedGridData.push(myTableData[i]);
+      }
+    }
+  }
+  cfsHouseBillIds = "";
+  cfsHouseBillList = [];
+  $.each(cleanedGridData, function (index, object) {
+    let cfsHouseBill = new Object();
+    cfsHouseBill.quantity = object["quantity"]; // So luong
+    cfsHouseBill.packagingType = object["packagingType"]; // Don vi tinh
+    cfsHouseBill.weight = object["weight"]; // Trong luong
+    cfsHouseBill.cubicMeter = object["cubicMeter"]; // So khoi
+    cfsHouseBill.forwarderRemark = object["forwarderRemark"]; // Ghi chu
+    cfsHouseBillList.push(cfsHouseBill);
+    cfsHouseBillIds += object["id"] + ",";
+  });
+
+  // Get result in "selectedList" variable
+  if (cfsHouseBillList.length == 0 && isValidate) {
+    $.modal.alert("Bạn chưa chọn house bill.");
+    errorFlg = true;
+  } else {
+    cfsHouseBillIds = cfsHouseBillIds.substring(0, cfsHouseBillIds.length - 1);
+  }
+
+  if (errorFlg) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+function getDataFromTable() {
+  const dataTable = hot.getSourceData();
+  let results = [];
+  for (let i = 0; i < dataTable.length; ++i) {
+    let dataItemTable = dataTable[i];
+    if (dataTable[i].quantity ||
+      dataTable[i].packagingType ||
+      dataTable[i].weight ||
+      dataTable[i].cubicMeter ||
+      dataTable[i].marks ||
+      dataTable[i].forwarderRemark) {
+      results.push(dataItemTable);
+    }
+  }
+  if (results.length == 0) {
+    $.modal.alertWarning("Vui lòng nhập vào thông tin.");
+    return false;
+  }
+  return results;
+}
+
+function formatDateToSendServer(date) {
+  let expiredDem = new Date(date.substring(6, 10) + "-" + date.substring(3, 5) + "-" + date.substring(0, 2));
+  expiredDem.setHours(23, 59, 59);
+  return expiredDem.getTime();
 }

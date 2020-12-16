@@ -1,4 +1,4 @@
-const PREFIX = ctx + "om/support/loading-cargo";
+const PREFIX = ctx + "yard/monitor/loading-cargo";
 const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 const containerCol = 7;
@@ -90,22 +90,40 @@ $(document).ready(function () {
   $("#finishStatus").combobox({
     valueField: 'finishValue',
     textField: 'finishKey',
-    data: [{
-      "finishValue": 'N',
-      "finishKey": "chưa hoàn thành",
-      "selected": true
-    }, {
-      "finishValue": 'Y',
-      "finishKey": "Đã hoàn thành"
-    }, {
-      "finishValue": 'null',
-      "finishKey": "Tất cả"
+    data: [
+      {
+        "finishValue": 'N',
+        "finishKey": "Chưa xác nhận ngày đóng",
+        "selected": true
+      },
+      {
+        "finishValue": 'M',
+        "finishKey": "Đã xác nhận ngày đóng",
+      }, {
+        "finishValue": 'Y',
+        "finishKey": "Đã hoàn thành"
+      }, {
+        "finishValue": 'null',
+        "finishKey": "Tất cả"
     }],
     onSelect: function (finishStatus) {
-      if (finishStatus.finishValue != 'null') {
-        shipment.params.finishStatus = finishStatus.finishValue;
-      } else {
-        shipment.params.finishStatus = null;
+      switch (finishStatus.finishValue) {
+        case 'null':
+          shipment.params.finishStatus = null;
+          shipment.params.dateReceiptStatus = null;
+          break;
+        case 'N':
+          shipment.params.finishStatus = 'N';
+          shipment.params.dateReceiptStatus = 'W';
+          break;
+        case 'M':
+          shipment.params.finishStatus = 'N';
+          shipment.params.dateReceiptStatus = 'Y';
+          break;
+        case 'Y':
+          shipment.params.finishStatus = 'Y';
+          shipment.params.dateReceiptStatus = null;
+          break;
       }
       loadTable();
     }
@@ -391,9 +409,18 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
         dateReceipt = '<i id="dateReceiptRegister" class="fa fa-clock-o easyui-tooltip" title="Ngày đăng ký đóng hàng đã được xác nhận" aria-hidden="true" style="margin-left: 8px; color: #1ab394"></i>';
         break;
     }
-
+    // finish
+    let finish = '<i id="finishStatus" class="fa fa-flag-checkered easyui-tooltip" title="Chưa hoàn thành" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
+    switch (sourceData[row].finishStatus) {
+      case 'N':
+        finish = '<i id="finishStatus" class="fa fa-flag-checkered easyui-tooltip" title="Chờ hoàn thành" aria-hidden="true" style="margin-left: 8px; color: #3498db"></i>';
+        break;
+      case 'Y':
+        finish = '<i id="finishStatus" class="fa fa-flag-checkered easyui-tooltip" title="Đã hoàn thành" aria-hidden="true" style="margin-left: 8px; color: #1ab394"></i>';
+        break;
+    }
     // Return the content
-    let content = '<div>' + contSupply + process + payment + dateReceipt + '</div>';
+    let content = '<div>' + contSupply + process + payment + dateReceipt + finish + '</div>';
     $(td).html(content);
   }
   return td;
@@ -560,7 +587,7 @@ function houseBillBtnRenderer(instance, td, row, col, prop, value, cellPropertie
     shipmentDetailId = sourceData[row].id;
   }
   if (shipmentDetailId != null) {
-    value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>House Bill</button>';
+    value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
     $(td).html(value);
   }
   cellProperties.readOnly = 'true';
@@ -638,7 +665,7 @@ function configHandsond() {
         case 5:
           return "Container No";
         case 6:
-          return "House Bill";
+          return "Chi Tiết";
         case 7:
           return 'Nơi Đóng Hàng';
         case 8:
@@ -675,7 +702,7 @@ function configHandsond() {
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 105, 130, 100, 100, 150, 120, 120, 120, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200],
+    colWidths: [23, 21, 21, 135, 130, 100, 100, 150, 120, 120, 120, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200],
     filter: "true",
     columns: [
       {
@@ -921,9 +948,9 @@ function loadShipmentDetails(id) {
           sourceData = res.shipmentDetails;
           sourceData.forEach(function (element, index) {
             element.vslNm = element.vslNm + ' - ' + element.voyNo;
-            if (!element.actualDateReceipt) {
-              element.actualDateReceipt = element.dateReceipt;
-            }
+            // if (!element.actualDateReceipt) {
+            //   element.actualDateReceipt = element.dateReceipt;
+            // }
           });
           hot.destroy();
           currentConsigneeList = consigneeList;
@@ -1317,7 +1344,7 @@ function openHouseBillForm(shipmentDetailId) {
     $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
     return;
   }
-  $.modal.openCustomForm("Thông tin house bill", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
+  $.modal.openCustomForm("Thông tin hàng hóa container", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
 }
 
 function confirmDateReceipt() {

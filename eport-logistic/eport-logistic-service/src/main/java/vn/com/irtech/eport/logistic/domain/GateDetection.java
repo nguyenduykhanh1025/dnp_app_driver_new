@@ -131,6 +131,8 @@ public class GateDetection extends BaseEntity
 	/** FE 2 */
 	private String fe2;
 
+	private String remark;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -418,6 +420,14 @@ public class GateDetection extends BaseEntity
 		this.fe2 = fe2;
 	}
 
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -436,6 +446,6 @@ public class GateDetection extends BaseEntity
 				.append("wgt1", getWgt2()).append("wgt2", getWgt2()).append("location1", getLocation1())
 				.append("location2", getLocation2()).append("processOrderId", getProcessOrderId())
 				.append("gatepass", getGatepass()).append("updateTime", getUpdateTime()).append("fe1", getFe1())
-				.append("params", getParams()).append("fe2", getFe2()).toString();
+				.append("params", getParams()).append("fe2", getFe2()).append("remark", getRemark()).toString();
     }
 }

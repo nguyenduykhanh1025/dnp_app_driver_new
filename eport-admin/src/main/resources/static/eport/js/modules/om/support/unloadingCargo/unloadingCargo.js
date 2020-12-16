@@ -590,7 +590,15 @@ function houseBillBtnRenderer(instance, td, row, col, prop, value, cellPropertie
     shipmentDetailId = sourceData[row].id;
   }
   if (shipmentDetailId != null) {
-    value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>House Bill</button>';
+    let service = sourceData[row].specialService;
+    let title = "Thông tin hàng hóa container";
+    let buttonTitle= "Chi tiết";
+    if (4 == service) {
+      // Kho cfs
+      title = "Thông tin house bill"
+      buttonTitle = "House bill";
+    }
+    value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ',\''+ title +'\')"><i class="fa fa-check-circle"></i>'+buttonTitle+'</button>';
     $(td).html(value);
   }
   cellProperties.readOnly = 'true';
@@ -658,7 +666,7 @@ function specialServiceRenderer(instance, td, row, col, prop, value, cellPropert
     if (4 == value) {
       value = "Kho CFS"
     } else if (value == 5) {
-      value = "Bãi CFS";
+      value = "Bãi Cảng";
     }
   } else {
     value = '';
@@ -718,7 +726,7 @@ function configHandsond() {
         case 5:
           return '<span class="required">Container No</span>';
         case 6:
-          return "House Bill";
+          return "Chi Tiết";
         case 7:
           return '<span class="required">Hạn Lệnh</span>';
         case 8:
@@ -1373,12 +1381,12 @@ function openHistoryFormEport(row) {
   }
 }
 
-function openHouseBillForm(shipmentDetailId) {
+function openHouseBillForm(shipmentDetailId, title) {
   if (shipmentDetailId == null) {
     $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
     return;
   }
-  $.modal.openCustomForm("Thông tin house bill", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
+  $.modal.openCustomForm(title, PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
 }
 
 function rejectOrder() {
@@ -1431,4 +1439,30 @@ function rejectOrderReq(index, layero) {
       $.modal.closeLoading();
     }
   });
+}
+
+function confirmDo() {
+  if (getDataSelectedFromTable()) {
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+      url: PREFIX + "/do/confirm",
+      method: "POST",
+      data: {
+        shipmentDetailIds: shipmentDetailIds
+      },
+      success: function (result) {
+        if (result.code == 0) {
+          $.modal.alertSuccess(result.msg);
+          reloadShipmentDetail();
+        } else {
+          $.modal.alertError(result.msg);
+        }
+        $.modal.closeLoading();
+      },
+      error: function (result) {
+        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+        $.modal.closeLoading();
+      },
+    });
+  }
 }

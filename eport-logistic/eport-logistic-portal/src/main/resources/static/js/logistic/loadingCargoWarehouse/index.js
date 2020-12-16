@@ -829,7 +829,7 @@ function configHandson() {
                 case 3:
                     return "House Bill";
                 case 4:
-                    return "Ngày Đóng Hàng<br>Đăng Ký";
+                    return '<span class="required">Ngày Đóng Hàng<br>Đăng Ký</span>';
                 case 5:
                     return "Ngày Đóng Hàng<br>Xác Nhận";
                 case 6:

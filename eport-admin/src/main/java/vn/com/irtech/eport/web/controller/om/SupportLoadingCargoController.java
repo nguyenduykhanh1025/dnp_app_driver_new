@@ -127,6 +127,9 @@ public class SupportLoadingCargoController extends OmBaseController {
 			}
 			mmap.put("shipmentImages", shipmentImages);
 		}
+		if (EportConstants.SPECIAL_SERVICE_LOAD_YARD == shipmentDetail.getSpecialService()) {
+			return PREFIX + "/cargo";
+		}
 		return PREFIX + "/houseBill";
 	}
 
