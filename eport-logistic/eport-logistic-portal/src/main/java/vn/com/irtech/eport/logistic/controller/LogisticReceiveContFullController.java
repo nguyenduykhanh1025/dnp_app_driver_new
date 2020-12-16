@@ -1455,9 +1455,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			// Date powerDrawDate
 			@RequestBody ShipmentDetail detail) throws IOException, InvalidExtensionException {
 		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(detail.getId());
+		Date powerDrawDateOldFromDB = shipmentDetail.getPowerDrawDate();
 		String shipmentDetailId = detail.getId().toString();
 
-//		if(shipmentDetail.getPowerDrawDate() == null) {
 		shipmentDetail.setPowerDrawDate(detail.getPowerDrawDate());
 
 		ReeferInfo reeferInfo = new ReeferInfo();
@@ -1466,7 +1466,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		reeferInfo.setShipmentDetailId(shipmentDetail.getId());
 		reeferInfo.setStatus("S");
 
-		if (shipmentDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_YES)) {
+		if (powerDrawDateOldFromDB == null
+				|| shipmentDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_YES)) {
 			reeferInfoService.insertReeferInfo(reeferInfo);
 		} else {
 			ReeferInfo reeferInfoFromDB = this.reeferInfoService
@@ -1475,8 +1476,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			reeferInfo.setUpdateBy(getUser().getUserName());
 			reeferInfoService.updateReeferInfo(reeferInfo);
 		}
-
-//		}
 
 		shipmentDetail.setTruckNo(detail.getTruckNo());
 		shipmentDetail.setChassisNo(detail.getChassisNo());

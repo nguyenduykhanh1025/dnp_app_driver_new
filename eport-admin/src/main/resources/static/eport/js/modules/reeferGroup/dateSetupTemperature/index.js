@@ -1,4 +1,4 @@
-const PREFIX = ctx + "reefer-gruop/date-setup-temperature";
+const PREFIX = ctx + "reefer-group/date-setup-temperature";
 const HIST_PREFIX = ctx + "om/controlling";
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var dogrid = document.getElementById("container-grid"),
