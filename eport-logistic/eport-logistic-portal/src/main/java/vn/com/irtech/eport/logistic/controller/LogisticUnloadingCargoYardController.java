@@ -428,6 +428,7 @@ public class LogisticUnloadingCargoYardController extends LogisticBaseController
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setUserVerifyStatus("N");
 					shipmentDetail.setProcessStatus("N");
+					shipmentDetail.setDateReceiptStatus("N");
 					shipmentDetail.setDoStatus("N");
 					if (EportConstants.DO_TYPE_CARRIER_DO.equals(shipment.getEdoFlg())) {
 						shipmentDetail.setDoStatus("N");
@@ -899,6 +900,9 @@ public class LogisticUnloadingCargoYardController extends LogisticBaseController
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getContainerNo())) {
 				return error("Hàng " + (i + 1) + ": Chưa nhập số container!");
 			}
+			if (shipmentDetails.get(i).getDateReceipt() == null) {
+				return error("Hàng " + (i + 1) + ": Chưa đăng ký ngày rút hàng!");
+			}
 			if (shipmentDetailReference.getExpiredDem() == null) {
 				return error("Hàng " + (i + 1) + ": Chưa nhập hạn lệnh!");
 			}
@@ -919,9 +923,12 @@ public class LogisticUnloadingCargoYardController extends LogisticBaseController
 
 			containerNos += shipmentDetails.get(i).getContainerNo() + ",";
 
-			// validate if house bill is exists
-			if (cfsHouseBillService.selectCfsHouseBillByIdShipmentDetail(shipmentDetails.get(i).getId()).size() < 1) {
-				return error("Bạn chưa khai báo house bill!");
+			// Check house bill
+			List<CfsHouseBill> cfsHouseBills = cfsHouseBillService
+					.selectCfsHouseBillByIdShipmentDetail(shipmentDetails.get(i).getId());
+			if (CollectionUtils.isEmpty(cfsHouseBills)) {
+				return error(
+						"Chưa nhập thông tin hàng hóa cho container " + shipmentDetails.get(i).getContainerNo() + ".");
 			}
 		}
 		// trim last ','

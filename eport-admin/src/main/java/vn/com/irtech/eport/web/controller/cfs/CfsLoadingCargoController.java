@@ -149,7 +149,6 @@ public class CfsLoadingCargoController extends AdminBaseController {
 		}
 		params.put("paymentStatus", "Y");
 		shipment.setParams(params);
-		shipment.setParams(params);
 		shipment.setServiceType(EportConstants.SERVICE_LOADING_CARGO_WAREHOUSE);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
@@ -162,7 +161,7 @@ public class CfsLoadingCargoController extends AdminBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
-
+		shipmentDetail.setPaymentStatus("Y");
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;

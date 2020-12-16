@@ -756,6 +756,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="params.processStatus != null and params.processStatus != ''">and sh.process_status = #{params.processStatus}</if>
             <if test="params.paymentStatus != null and params.paymentStatus != ''">and sh.payment_status = #{params.paymentStatus}</if>
             <if test="params.userVerifyStatus != null and params.userVerifyStatus != ''">and sh.user_verify_status = #{params.userVerifyStatus}</if>
+            <if test="params.dateReceiptStatus != null and params.dateReceiptStatus != ''">and sh.date_receipt_status = #{params.dateReceiptStatus}</if>
             <if test="params.specialService != null">and sh.special_service = #{params.specialService}</if>
             <if test="params.loadingCargoService != null">and (s.service_type = 15 or s.service_type = 16)</if>
             <if test="params.unloadingCargoService != null">and (s.service_type = 18 or s.service_type = 19)</if>

@@ -320,20 +320,18 @@ function configHandson() {
                 case 1:
                     return "Forwarder";
                 case 2:
-                    return "Số Lượng";
+                    return "Đơn Vị Tính"
                 case 3:
-                    return "Loại Bao Bì";
+                    return "Số Lượng";
                 case 4:
                     return "Trọng Lượng";
                 case 5:
                     return "Số Khối";
                 case 6:
-                    return "Nhãn/Ký hiệu";
-                case 7:
                     return "Ghi chú";
             }
         },
-        colWidths: [100, 150, 80, 90, 90, 90, 100, 200],
+        colWidths: [100, 150, 100, 90, 90, 90, 200],
         columns: [
             {
                 data: "houseBill",
@@ -346,14 +344,14 @@ function configHandson() {
                 renderer: forwarderRenderer
             },
             {
-                data: "quantity",
-                className: "htCenter",
-                renderer: quantityRenderer
-            },
-            {
                 data: "packagingType",
                 className: "htCenter",
                 renderer: packagingTypeRenderer
+            },
+            {
+                data: "quantity",
+                className: "htCenter",
+                renderer: quantityRenderer
             },
             {
                 data: "weight",
@@ -364,11 +362,6 @@ function configHandson() {
                 data: "cubicMeter",
                 className: "htCenter",
                 renderer: cubicMeterRenderer
-            },
-            {
-                data: "marks",
-                className: "htCenter",
-                renderer: marksRenderer
             },
             {
                 data: "forwarderRemark",
@@ -396,7 +389,7 @@ function configHandson() {
                 // Arrow Right
                 case 39:
                     selected = hot.getSelected()[0];
-                    if (selected[3] == 8) {
+                    if (selected[3] == 6) {
                         e.stopImmediatePropagation();
                     }
                     break

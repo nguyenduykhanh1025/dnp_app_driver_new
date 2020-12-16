@@ -1176,7 +1176,7 @@ function configHandson() {
         case 4:
           return '<span class="required">Hạn Lệnh</span>';
         case 5:
-          return 'Ngày Rút Hàng<br>Đăng Ký';
+          return '<span class="required">Ngày Rút Hàng<br>Đăng Ký</span>';
         case 6:
           return 'Ngày Rút Hàng<br>Xác Nhận';
         case 7:

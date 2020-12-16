@@ -164,6 +164,7 @@ public class CfsUnLoadingCargoController extends AdminBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
+		shipmentDetail.setPaymentStatus("Y");
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;
@@ -185,7 +186,6 @@ public class CfsUnLoadingCargoController extends AdminBaseController {
 	public AjaxResult confirmDo(String shipmentDetailIds) {
 		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
 		shipmentDetailUpdate.setDoStatus("Y");
-		shipmentDetailUpdate.setFinishStatus("Y");
 		shipmentDetailUpdate.setDoReceivedTime(new Date());
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
 		return success();

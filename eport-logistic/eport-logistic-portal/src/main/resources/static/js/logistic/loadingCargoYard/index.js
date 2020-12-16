@@ -827,9 +827,9 @@ function configHandson() {
                 case 2:
                     return "Container No";
                 case 3:
-                    return "House Bill";
+                    return "Chi tiết";
                 case 4:
-                    return "Ngày Đóng Hàng<br>Đăng Ký";
+                    return '<span class="required">Ngày Đóng Hàng<br>Đăng Ký</span>';
                 case 5:
                     return "Ngày Đóng Hàng<br>Xác Nhận";
                 case 6:
@@ -2008,7 +2008,7 @@ function openHouseBillForm(shipmentDetailId) {
         $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
         return;
     }
-    $.modal.openCustomForm("Khai báo house bill", prefix + "/shipment-detail/" + shipmentDetailId + "/house-bill", 1000, 700);
+    $.modal.openCustomForm("Khai báo chi tiết thông tin hàng hóa", prefix + "/shipment-detail/" + shipmentDetailId + "/house-bill", 1000, 700);
 }
 
 function formatDateToSendServer(date) {

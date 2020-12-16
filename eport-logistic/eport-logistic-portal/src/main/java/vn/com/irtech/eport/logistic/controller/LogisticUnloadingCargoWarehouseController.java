@@ -427,6 +427,7 @@ public class LogisticUnloadingCargoWarehouseController extends LogisticBaseContr
 					shipmentDetail.setFe("F");
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setUserVerifyStatus("N");
+					shipmentDetail.setDateReceiptStatus("N");
 					shipmentDetail.setProcessStatus("N");
 					if (EportConstants.DO_TYPE_CARRIER_DO.equals(shipment.getEdoFlg())) {
 						shipmentDetail.setDoStatus("N");
@@ -899,6 +900,9 @@ public class LogisticUnloadingCargoWarehouseController extends LogisticBaseContr
 			if (StringUtils.isEmpty(shipmentDetails.get(i).getContainerNo())) {
 				return error("Hàng " + (i + 1) + ": Chưa nhập số container!");
 			}
+			if (shipmentDetails.get(i).getDateReceipt() == null) {
+				return error("Hàng " + (i + 1) + ": Chưa đăng ký ngày rút hàng!");
+			}
 			if (shipmentDetailReference.getExpiredDem() == null) {
 				return error("Hàng " + (i + 1) + ": Chưa nhập hạn lệnh!");
 			}
@@ -923,7 +927,12 @@ public class LogisticUnloadingCargoWarehouseController extends LogisticBaseContr
 			List<CfsHouseBill> cfsHouseBills = cfsHouseBillService
 					.selectCfsHouseBillByIdShipmentDetail(shipmentDetails.get(i).getId());
 			if (CollectionUtils.isEmpty(cfsHouseBills)) {
-				return error("Chưa nhập house bill cho container " + shipmentDetails.get(i).getContainerNo() + ".");
+				ShipmentImage shipmentImageParam = new ShipmentImage();
+				shipmentImageParam.setShipmentDetailId(shipmentDetails.get(i).getId().toString());
+				List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImageList(shipmentImageParam);
+				if (CollectionUtils.isEmpty(shipmentImages)) {
+					return error("Chưa nhập house bill cho container " + shipmentDetails.get(i).getContainerNo() + ".");
+				}
 			}
 		}
 		// trim last ','

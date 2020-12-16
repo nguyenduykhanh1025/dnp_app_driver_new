@@ -1,4 +1,4 @@
-const PREFIX = ctx + "om/support/unloading-cargo";
+const PREFIX = ctx + "yard/monitor/loading-cargo";
 var onlyDigitReg = /^[0-9]*$/gm;
 var onlyFloatReg = /^[+-]?([0-9]*[.|,])?[0-9]+$/gm;
 var dogrid = document.getElementById("container-grid"), hot;
@@ -375,7 +375,7 @@ function configHandson() {
         // Arrow Right
         case 39:
           selected = hot.getSelected()[0];
-          if (selected[3] == 4) {
+          if (selected[3] == 5) {
             e.stopImmediatePropagation();
           }
           break

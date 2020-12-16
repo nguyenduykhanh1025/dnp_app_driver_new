@@ -227,12 +227,12 @@ public class GateSupportController extends BaseController {
 				if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSendFE1())
 						&& "F".equalsIgnoreCase(gateNotificationCheckInReq.getSendFE1())
 						&& StringUtils.isEmpty(gateNotificationCheckInReq.getSealNo1())) {
-					cont1 = true;
+					cont1 = false;
 				}
 				if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSendFE2())
 						&& "F".equalsIgnoreCase(gateNotificationCheckInReq.getSendFE2())
 						&& StringUtils.isEmpty(gateNotificationCheckInReq.getSealNo2())) {
-					cont2 = true;
+					cont2 = false;
 				}
 				for (int i = 1; i <= RETRY_WAIT_SEAL; i++) {
 					// Get sensor result from cache

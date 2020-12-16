@@ -60,6 +60,8 @@ public class GateNotificationCheckInReq  implements Serializable {
 
 	private String sealNo2;
 
+	private String remark;
+
 	public Long getId() {
 		return id;
 	}
@@ -275,5 +277,12 @@ public class GateNotificationCheckInReq  implements Serializable {
 	public void setSealNo2(String sealNo2) {
 		this.sealNo2 = sealNo2;
 	}
-	
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 }
