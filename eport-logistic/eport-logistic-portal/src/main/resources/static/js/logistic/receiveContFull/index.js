@@ -588,6 +588,9 @@ function getIconContFollowIndex(index) {
 
 
 function getStatusContFollowIndex(index) {
+ console.log("vao");
+console.log(sourceData[index]);
+
   if (
     !sourceData[index].oversize &&
     //!sourceData[index].dangerous &&
@@ -2418,7 +2421,7 @@ function renderStyleForExtendPowerDrawDateStatus(row) {
     return `style="width: 85%;background-color: #f8ac59;"`;
   } else if (sourceData[row].powerDrawDateStatus == "S") {
     return `style="width: 85%;background-color: #1ab394;"`;
-  } else if (sourceData[row].powerDrawDateStatus == "S") {
+  } else if (sourceData[row].powerDrawDateStatus == "E") {
     return `style="width: 85%;background-color: #ff0000;"`;
   }
   return `style="width: 85%;"`;

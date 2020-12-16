@@ -392,8 +392,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				return error(String.format("Không tìm thấy chủ hàng '%s', <br/>Vui lòng chọn chủ hàng từ danh sách.",
 						firstDetail.getConsignee()));
 			}
-//			ShipmentDetail catosSearch = new ShipmentDetail();
-//			catosSearch.setBlNo(shipment.getBlNo());
+			// ShipmentDetail catosSearch = new ShipmentDetail();
+			// catosSearch.setBlNo(shipment.getBlNo());
 			// create to search infor from catos
 
 			// Get container list for BL from catos
@@ -844,9 +844,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				return error(
 						"Mã hãng tàu:" + shipCatos.getOpeCode() + " không có trong hệ thống. Vui lòng liên hệ Cảng!");
 			}
-//			if(edoFlg.equals("1")){
-//				return error("Bill này là eDO nhưng không có dữ liệu trong eport. Vui lòng liên hệ Cảng!");
-//			}
+			// if(edoFlg.equals("1")){
+			// return error("Bill này là eDO nhưng không có dữ liệu trong eport. Vui lòng
+			// liên hệ Cảng!");
+			// }
 			shipment.setEdoFlg(edoFlg);
 			ajaxResult = success();
 			shipment.setOpeCode(shipCatos.getOpeCode());
@@ -1177,25 +1178,29 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					getUser().getGroupId());
 			// flag mapping custom No
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-//				boolean customsNoMappingFlg = "1".equals(configService.selectConfigByKey(SystemConstants.ACCIS_CUSTOM_MAPPING_FLG_KEY));
+				// boolean customsNoMappingFlg =
+				// "1".equals(configService.selectConfigByKey(SystemConstants.ACCIS_CUSTOM_MAPPING_FLG_KEY));
 				for (ShipmentDetail shipmentDetail : shipmentDetails) {
 					// Save declareNoList to shipment detail
 					shipmentDetail.setCustomsNo(declareNoList);
 					shipmentDetail.setCustomScanTime(new Date());
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					// Neu bat buoc check to khai thi phai goi lai acciss
-//					if (!customsNoMappingFlg && catosApiService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
-//						if (shipmentDetail.getStatus() == 1) {
-//							shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
-//						}
-//						shipmentDetail.setCustomStatus("R");
-//						shipmentDetailService.updateShipmentDetail(shipmentDetail);
-//						AjaxResult ajaxResult = AjaxResult.success();
-//						ajaxResult.put("shipmentDetail", shipmentDetail);
-//						webSocketService.sendMessage("/" + shipmentDetail.getContainerNo() + "/response", ajaxResult);
-//					} else {
+					// if (!customsNoMappingFlg &&
+					// catosApiService.checkCustomStatus(shipmentDetail.getContainerNo(),
+					// shipmentDetail.getVoyNo())) {
+					// if (shipmentDetail.getStatus() == 1) {
+					// shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+					// }
+					// shipmentDetail.setCustomStatus("R");
+					// shipmentDetailService.updateShipmentDetail(shipmentDetail);
+					// AjaxResult ajaxResult = AjaxResult.success();
+					// ajaxResult.put("shipmentDetail", shipmentDetail);
+					// webSocketService.sendMessage("/" + shipmentDetail.getContainerNo() +
+					// "/response", ajaxResult);
+					// } else {
 					customQueueService.offerShipmentDetail(shipmentDetail);
-//					}
+					// }
 				}
 				return success();
 			}
@@ -1465,16 +1470,17 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		reeferInfo.setDateSetPower(shipmentDetail.getDaySetupTemperature());
 		reeferInfo.setShipmentDetailId(shipmentDetail.getId());
 		reeferInfo.setStatus("S");
-
-		if (powerDrawDateOldFromDB == null
-				|| shipmentDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_YES)) {
-			reeferInfoService.insertReeferInfo(reeferInfo);
-		} else {
-			ReeferInfo reeferInfoFromDB = this.reeferInfoService
-					.selectReeferInfoListByIdShipmentDetail(shipmentDetail.getId()).get(0);
-			reeferInfo.setId(reeferInfoFromDB.getId());
-			reeferInfo.setUpdateBy(getUser().getUserName());
-			reeferInfoService.updateReeferInfo(reeferInfo);
+		if ("R".equalsIgnoreCase(shipmentDetail.getSztp().substring(2, 3))) {
+			if (powerDrawDateOldFromDB == null
+					|| shipmentDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_YES)) {
+				reeferInfoService.insertReeferInfo(reeferInfo);
+			} else {
+				ReeferInfo reeferInfoFromDB = this.reeferInfoService
+						.selectReeferInfoListByIdShipmentDetail(shipmentDetail.getId()).get(0);
+				reeferInfo.setId(reeferInfoFromDB.getId());
+				reeferInfo.setUpdateBy(getUser().getUserName());
+				reeferInfoService.updateReeferInfo(reeferInfo);
+			}
 		}
 
 		shipmentDetail.setTruckNo(detail.getTruckNo());

@@ -115,7 +115,8 @@ public class LogisticSendContFullOversizeSupportRequest extends AdminBaseControl
 		Map<String, Object> params = shipment.getParams();
 		if (params == null) {
 			params = new HashMap<>();
-		}
+		} 
+		
 		shipment.setParams(params);
 		//List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment); 
 		//List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
