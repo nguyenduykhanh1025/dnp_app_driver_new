@@ -507,8 +507,30 @@ public class ShipmentDetail extends BaseEntity {
 	private Date dateReceipt;
 	
 	private String truckNo;
-	private String chassisNo;
+	private String chassisNo; 
+	private String path;  
+	private String fileType;
+	
+	
+	
+	
 	 
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+
 	public String getTruckNo() {
 		return truckNo;
 	}

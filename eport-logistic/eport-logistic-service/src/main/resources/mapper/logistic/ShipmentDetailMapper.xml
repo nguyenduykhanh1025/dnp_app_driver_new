@@ -124,6 +124,11 @@
 		<result property="humidity" column="humidity" />
 		<result property="ventilation" column="ventilation" />
 		<result property="supportStatus" column="support_status" />
+		
+		<result property="path" column="path" />
+		<result property="fileType" column="file_type" />
+		
+		
 	</resultMap>
 
 	<!-- <resultMap type="ShipmentDetailExtend" id="ShipmentDetailResult" extends="ShipmentDetail"> 
@@ -1348,6 +1353,62 @@
 
 	</select>
 	<!-- end yêu cầu xác nhận Nhatlv -->
+	
+	
+	<sql id="selectShipmentDetailVoJoin">
+		select dt.id, dt.shipment_id, dt.logistic_group_id,
+		dt.process_order_id, dt.register_no,
+		dt.container_no, dt.container_status, dt.sztp,
+		dt.sztp_define, dt.temperature,dt.day_setup_temperature, dt.fe, dt.booking_no, dt.bl_no,
+		dt.seal_no,
+		dt.consignee, dt.expired_dem, dt.empty_expired_dem, dt.wgt,
+		dt.vsl_name,
+		dt.vsl_nm, dt.voy_no, dt.voy_carrier, dt.ope_code, dt.carrier_name, dt.loading_port,
+		dt.discharge_port, dt.transport_type,
+		dt.empty_depot, dt.empty_depot_location,
+		dt.cargo_type,
+		dt.vgm_chk,dt.vgm_inspection_department,dt.vgm_max_gross,
+		dt.frozen_status,
+		dt.oversize, dt.oversize_type, dt.oversize_top, dt.oversize_right,
+		dt.oversize_left,dt.oversize_front, dt.oversize_back,
+		dt.dangerous, dt.dangerous_imo,
+		dt.dangerous_unno,dt.dangerous_name_product,
+		dt.dangerous_packing,
+		dt.vgm,
+		dt.vgm_person_info, dt.preorder_pickup,
+		dt.pre_pickup_payment_status,
+		dt.custom_status, dt.payment_status, dt.process_status, dt.do_status,
+		dt.do_received_time,
+		dt.user_verify_status, dt.finish_status, dt.status, dt.order_no,
+		dt.tax_code, dt.consignee_by_tax_code,
+		dt.cont_supply_status,
+		dt.planning_date,
+		dt.quality_requirement, dt.cont_supply_remark, dt.cont_supplier_name, dt.remark,
+		dt.pay_type, dt.payer, dt.payer_name,
+		dt.customs_no,
+		dt.custom_scan_time,
+		dt.delivery_address, dt.delivery_mobile, dt.delivery_remark, dt.eta, dt.etd,
+		dt.container_remark, dt.det_free_time,
+		dt.create_by, dt.create_time, dt.update_by,
+		dt.date_receipt, dt.actual_date_receipt,
+		dt.update_time, dt.date_receipt_status,
+		dt.special_service, dt.truck_no,dt.chassis_no,dt.humidity, dt.ventilation,
+		dt.power_draw_date_status, dt.power_draw_date, dt.support_status,si.path,si.file_type from
+		shipment_detail dt left join shipment_image si on dt.id = si.shipment_detail_id
+	</sql>
+	
+	<select id="selectConfirmShipmentDetailByshipmentDetailIds"
+		resultMap="ShipmentDetailResult">
+		<include refid="selectShipmentDetailVoJoin" />
+		where dt.id in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+
+	</select>
+	
+	
 
 
 

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.mapper.ShipmentImageMapper;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
@@ -90,6 +91,14 @@ public class ShipmentImageServiceImpl implements IShipmentImageService {
     public ShipmentImage selectShipmentImageById(ShipmentImage shipmentImage) {
     	return shipmentImageMapper.selectShipmentImageById(shipmentImage);
     }
+    
+    
+    
+    
+    @Override
+	public List<ShipmentImage> selectShipmentImagesByshipmentDetailIds(String shipmentDetailIds) {
+		return shipmentImageMapper.selectShipmentImagesByshipmentDetailIds(Convert.toStrArray(shipmentDetailIds));
+	}
     
     /**
      * Delete shipment image by id

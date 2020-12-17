@@ -1545,7 +1545,7 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
     if (object["registerNo"] != null && !regiterNos.includes(object["registerNo"])) {
       regiterNos.push(object["registerNo"]);
     }
-    shipmentDetailIds += object["id"] + ",";
+    shipmentDetailIds += object["id"] + ","; 
   });
 
   let temProcessOrderIds = [];
@@ -1874,7 +1874,7 @@ function CheckShipmentDetail() {
           $.modal.closeLoading();
         },
         error: function (result) {
-          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại sau.");
+          $.modal.alertError("result.msg");
           $.modal.closeLoading();
         },
       });

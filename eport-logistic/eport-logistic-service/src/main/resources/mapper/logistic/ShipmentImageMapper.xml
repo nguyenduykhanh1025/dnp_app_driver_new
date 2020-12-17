@@ -14,12 +14,41 @@
 		<result property="updateBy" column="update_by" />
 		<result property="updateTime" column="update_time" />
 		<result property="shipmentDetailId" column="shipment_detail_id" />
-
 		<result property="fileType" column="file_type" />
-
-
-
+		
+		<result property="sztp" column="sztp" />
+		<result property="oversizeTop" column="oversize_top" />
+		<result property="oversizeRight" column="oversize_right" />
+		<result property="oversizeLeft" column="oversize_left" />
+		<result property="truckNo" column="truck_no" />
+		<result property="chassisNo" column="chassis_no" />
 	</resultMap>
+	
+	
+	<!-- <resultMap type="ShipmentImageExtend" id="ShipmentImageResult" extends="ShipmentImage"> -->
+		
+	<!-- </resultMap> -->
+	
+	<sql id="selectShipmentImageVoJoin"> 
+		select sm.id, sm.shipment_id, sm.path, sm.create_by, sm.create_time, sm.update_by,
+		sm.update_time,sm.shipment_detail_id, sm.file_type,sd.sztp, sd.oversize_left,sd.oversize_right,sd.oversize_top,sd.truck_no,sd.chassis_no
+         from shipment_image sm inner join shipment_detail sd on sm.shipment_detail_id = sd.id
+	</sql>
+	
+	
+	<!-- Nhat -->
+	<select id="selectShipmentImagesByshipmentDetailIds"
+		resultMap="ShipmentImageResult">
+		<include refid="selectShipmentImageVoJoin" />
+		where sm.shipment_detail_id in
+		<foreach item="shipment_detail_id" collection="array" open="(" separator=","
+			close=")">
+			#{shipment_detail_id}
+		</foreach>
+
+	</select>
+	
+	
 
 	<sql id="selectShipmentImageVo">
 		select id, shipment_id, path, create_by, create_time, update_by,
@@ -162,7 +191,8 @@
 		</where>
 		fetch next 1 rows only
 	</select>
-
+	
+	  
 	<delete id="deleteShipmentImageById" parameterType="Long">
 		delete from shipment_image where id = #{id}
 	</delete>
