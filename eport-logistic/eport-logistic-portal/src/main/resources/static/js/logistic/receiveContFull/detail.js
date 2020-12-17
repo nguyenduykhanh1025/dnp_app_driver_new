@@ -163,10 +163,11 @@ let typeO = true;// qua kho
 function confirm() {
   var truckNo = $("#truckNo").val();
   var chassisNo = $("#chassisNo").val();
-  if (shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ) {
-    $.modal.close();
-    return;
-  }
+  ////???????
+  // if (shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ) {
+  //   $.modal.close();
+  //   return;
+  // }
 
   if (shipmentFiles.length < 1 && fileIds.length < 1 && !shipmentDetail.sztp.includes("R")) {
     $.modal.alertWarning("Vui lòng đính kèm file");

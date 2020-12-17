@@ -1218,35 +1218,38 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult CheckShipmentDetail(String shipmentDetailIds) {
 		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
-
-		// CheckShipmentDetail
-
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService
-				.selectConfirmShipmentDetailByIds(shipmentDetailIds);
-
-		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+ 
+		//List<ShipmentDetail> shipmentDetails = shipmentDetailService .selectConfirmShipmentDetailByIds(shipmentDetailIds); 
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService .selectConfirmShipmentDetailByshipmentDetailIds(shipmentDetailIds); 
+		//List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImagesByshipmentDetailIds (shipmentDetailIds) ;
+		 
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {  
+			if(!"R".equalsIgnoreCase(shipmentDetail.getSztp().substring(2, 3))) {
+				if(shipmentDetail.getPath() == "" || shipmentDetail.getPath() == null) {
+					return error("Bạn chưa đính kèm file. Vui lòng đính kèm file trước khi yê cầu xác nhận");
+				}
+				if(StringUtils.isNotEmpty(shipmentDetail.getChassisNo())) {
+					return error("Bạn chưa khai báo biển số xe rơ móc");
+				}
+				if(StringUtils.isNotEmpty(shipmentDetail.getTruckNo())) {
+					return error("Bạn chưa khai báo biển số xe đầu kéo");
+				}
+			}
+			 
 			// cont lanh
 			if ("R".equalsIgnoreCase(shipmentDetail.getSztp().substring(2, 3))) {
 				shipmentDetailUpdate.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_REQ); // R
 			}
 			// cont qua kho
-			if (StringUtils.isNotEmpty(shipmentDetail.getOversizeBack())
-					|| StringUtils.isNotEmpty(shipmentDetail.getOversizeFront())
-					|| StringUtils.isNotEmpty(shipmentDetail.getOversizeLeft())
+			if (StringUtils.isNotEmpty(shipmentDetail.getOversizeLeft())
 					|| StringUtils.isNotEmpty(shipmentDetail.getOversizeRight())
 					|| StringUtils.isNotEmpty(shipmentDetail.getOversizeTop())) {
 				shipmentDetailUpdate.setOversize(EportConstants.CONT_SPECIAL_STATUS_REQ);// R
-			}
-			// cont nguy hiem
-			/*
-			 * if (StringUtils.isNotEmpty(shipmentDetail.getDangerousImo())||
-			 * StringUtils.isNotEmpty(shipmentDetail.getDangerousUnno())) {
-			 * shipmentDetailUpdate.setDangerous(EportConstants.CONT_SPECIAL_STATUS_REQ);//
-			 * R }
-			 */
+			} 
 
 			shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
 		}
+		
 		return success("Yêu cầu xác nhận thành công");
 	}
 

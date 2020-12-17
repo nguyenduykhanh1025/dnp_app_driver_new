@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.mapper;
 
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 
 import java.util.List;
@@ -52,6 +53,13 @@ public interface ShipmentImageMapper {
      * @return ShipmentImage
      */
     public ShipmentImage selectShipmentImageById(ShipmentImage shipmentImage);
+    
+    
+    
+    public List<ShipmentImage> selectShipmentImagesByshipmentDetailIds(String[] shipmentDetailIds);
+    
+    
+    
     
     /**
      * Delete shipment image by id
