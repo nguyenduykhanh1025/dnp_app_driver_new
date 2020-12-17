@@ -6,7 +6,17 @@ const PAYMENT_STATUS = {
   success: "S",
   process: "P"
 }
-console.log(shipmentDetail);
+const PAYER_TYPE = {
+  customer: 'Customer',
+  carriers: 'Carriers'
+}
+
+const PAY_TYPE = {
+  credit: 'Credit',
+  cash: 'Cash'
+}
+const objectPaymentList = ["Hãng tàu", "Chủ hàng trả trước", "Chủ hàng trả sau"];
+
 $(document).ready(function () {
   initElement();
   initTabReefer();
@@ -40,8 +50,23 @@ function initTabReefer() {
   $('#temperature').val(shipmentDetail.temperature);// nhiệt độ 
   $('#temperature').val(shipmentDetail.humidity);
   $('#temperature').val(shipmentDetail.ventilation);
+  initFileReefer();
 }
 
+function initFileReefer() {
+  if (shipmentFiles != null) {// hiển thị hình ảnh
+    let htmlInit = '';
+    shipmentFiles.forEach(function (element, index) {
+      shipmentFiles.push(element.id);
+      if (element.fileType == "R" || element.fileType == "r") {
+        htmlInit = `<div class="preview-block" style="float: left;">
+                <a href=${element.path} target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" /></a>
+            </div>`;
+        $('.preview-container-reefer').append(htmlInit);
+      }
+    });
+  }
+}
 function initTabOversize() {
 
 
@@ -134,19 +159,41 @@ let typeD = true;// nguy hiem
 let typeR = true;// lanh
 let typeO = true;// qua kho
 
+function getPayType(data) {
+  if (data.paymentTypeRenderer == objectPaymentList[0]) {
+    // hãng tàu thanh toán
+    return null;
+  } else if (data.paymentTypeRenderer == objectPaymentList[1]) {
+    // là chủ hàng trả rước
+    return "Credit";
+  } else {
+    // là chủ hàng trả sau
+    return "Cash"
+  }
+}
+
+function getPayerType(data) {
+  if (data.paymentTypeRenderer == objectPaymentList[0]) {
+    // hãng tàu thanh toán
+    return PAYER_TYPE.carriers;
+  } else {
+    return PAYER_TYPE.customer;
+  }
+}
 // confirm
 function insertCont() {
   const payload = sourceData.map(item => {
-    return {
-      id: item.id,
-      hourNumber: item.hourNumber,
-      moneyNumber: item.moneyNumber,
-      shipmentDetailId: item.shipmentDetailId
+    if (item.paymentTypeRenderer) {
+      return {
+        id: item.id,
+        payType: getPayType(item),
+        payerType: getPayerType(item)
+      }
     }
   })
   $.ajax(
     {
-      url: PREFIX + "/save-reefer",
+      url: PREFIX + "/save-reefer-info",
       method: "post",
       contentType: "application/json",
       accept: "text/plain",
@@ -321,10 +368,12 @@ function configHandson() {
         readOnly: true
       },
       {
-        data: "moneyTypeNumber",
-        renderer: paymentTypeRenderer,
-        readOnly: true
+        data: "paymentTypeRenderer",
+        type: "autocomplete",
+        source: objectPaymentList,
+        renderer: paymentTypeRenderer
       },
+
     ],
   };
 
@@ -398,8 +447,8 @@ function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
     value = '';
   }
   let billNumber = 0;
-  for(let i = 0; i< billPowers.length; ++i) {
-    if(contsztp.substring(0, 2) == billPowers[i].dictLabel) {
+  for (let i = 0; i < billPowers.length; ++i) {
+    if (contsztp.substring(0, 2) == billPowers[i].dictLabel) {
       billNumber = billPowers[i].dictValue;
       break;
     }
@@ -409,29 +458,37 @@ function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
   return td;
 }
 function paymentTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
+  $(td).attr('id', 'consignee' + row).addClass("htMiddle");
+
   if (!value) {
-    value = "";
-  }
-  //isBookingCheckPayment
-  if (sourceData[row] && sourceData[row].id) {
-    if (isBookingCheckPayment()) {
-      value = "Hãng tàu thanh toán";
+    value = '';
+    if (!sourceData[row]) {
+      return;
+    }
+    if (sourceData[row].payerType == PAYER_TYPE.carriers) {
+      value += 'Hãng tàu';
     } else {
-      if ('0' == creditFlag) {
-        value = "Khách hàng trả trước";
+      value += 'Chủ hàng';
+      if (sourceData[row].payType == PAY_TYPE.credit) {
+        value += ' trả trước';
       } else {
-        value = "Khách hàng trả sau";
+        value += ' trả sau';
       }
     }
+  } else {
+    if (value != null && value != '') {
+      if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
+      }
+    }
+    if (!value) {
+      value = '';
+    }
   }
-
-  $(td).html(
-    '<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' +
-    value +
-    "</div>"
-  );
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
+
 }
 
 function extendPowerDrawDate() {

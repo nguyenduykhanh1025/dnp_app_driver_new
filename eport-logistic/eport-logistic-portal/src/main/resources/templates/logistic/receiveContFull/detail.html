@@ -115,9 +115,8 @@
 
               <div class="form-group col-sm-6 row" id="extendPowerDrawDateContainer">
 
-                <span class="input-group date col-sm-10 col-xs-8" id="datetimepicker2" style="    float: left;
-    width: 240px;
-    margin: 0 29px;">
+                <span class="input-group date col-sm-10 col-xs-8" id="datetimepicker2"
+                  style="float: left;width: 240px;margin: 0 29px;">
                   <input type="text" class="form-control" name="extendPowerDrawDate" id="extendPowerDrawDate" />
                   <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
@@ -128,6 +127,15 @@
                   <button id="saveShipmentDetailBtn" onclick="extendPowerDrawDate()" class="btn btn-success"><i
                       class="fa fa-clock-o text-primary"></i>Gia hạn</button>
                 </span>
+              </div>
+
+              <div class="form-group col-sm-12" id="dropzoneReefer" style="margin-top: 5px;">
+                <div class="col-sm-12 col-xs-12">
+                  <button type="button" id="attachButtonReefer" class="btn btn-sm btn-default">
+                    <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+                  </button>
+                </div>
+                <div class="preview-container-reefer col-md-12 col-sm-12 col-xs-12"></div>
               </div>
 
             </div>
@@ -326,9 +334,10 @@
     var oprlistBookingCheck = [[${ oprlistBookingCheck }]];
     var creditFlag = /*[[${creditFlag}]]*/;
     var billPowers = [[${ billPowers }]];
+    var shipment = [[${ shipment }]];
   </script>
-  <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=20201212235}"></script>
-  <script th:src="@{/js/logistic/receiveContFull/detail.js?v=20201212235}"></script>
+  <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=20201212236}"></script>
+  <script th:src="@{/js/logistic/receiveContFull/detail.js?v=20201212236}"></script>
 
 
   <script type="text/javascript">

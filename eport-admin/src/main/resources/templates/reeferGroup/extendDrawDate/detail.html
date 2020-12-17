@@ -65,17 +65,13 @@
 		<div class="col-sm-12 text-black">
 			<!-- checked="checked" -->
 			<section class="tabs">
-				<!-- <input id="tab-1" type="radio" name="radio-set" class="tab-selector-1" />
-				<label for="tab-1" class="tab-label-1" style="display: none;">Cont lạnh</label>
-				<input id="tab-2" type="radio" name="radio-set" class="tab-selector-2" />
-				<label for="tab-2" class="tab-label-2" style="display: none;">Cont quá khổ</label> -->
-				<!-- <input id="tab-3" type="radio" name="radio-set" class="tab-selector-3" />
-				<label for="tab-3" class="tab-label-3">Cont nguy hiểm</label> -->
 				<div class="clear"></div>
 				<div class="content">
-
-					<!--////////////// start cont lạnh ///////////////start cont lạnh-->
-
+					<div class="form-horizontal mt10 row">
+						<div class="form-group col-sm-12" id="dropzoneReefer" style="margin-top: 5px;">
+							<div class="preview-container-reefer col-md-12 col-sm-12 col-xs-12"></div>
+						</div>
+					</div>
 					<div class="content-1" id="reeferContainer">
 						<div class="form-horizontal mt10 row">
 							<div class="form-group col-sm-12 row" style="max-height: 120px;">
@@ -89,53 +85,7 @@
 								</div>
 								<div id="container-grid" class="hot handsontable htColumnHeaders"></div>
 							</div>
-
-							<!-- <div class="form-group col-sm-12 row">
-								<div class="form-group col-sm-6">
-									<span class="control-label col-sm-4 col-xs-4" style="text-align: left">
-										<b class="text-black">Ngày rút điện:</b>
-									</span>
-									<span class="input-group date col-sm-8 col-xs-8" id="dtpkPowerDrawDateInterrupted">
-										<input type="text" class="form-control" name="powerDrawDateInterrupted"
-											id="powerDrawDateInterrupted" />
-										<span class="input-group-addon">
-											<span class="glyphicon glyphicon-calendar"></span>
-										</span>
-									</span>
-								</div>
-
-							</div>
-							<div class="form-group col-sm-12 row">
-								<div class="form-group col-sm-6">
-									<span class="control-label col-sm-4 col-xs-4" style="text-align: left">
-										<b class="text-black">Ngày đóng điện:</b>
-									</span>
-									<span class="input-group date col-sm-8 col-xs-8" id="dtpkPowerDrawDateInterrupted">
-										<input type="text" class="form-control" name="powerDrawDateInterrupted"
-											id="powerDrawDateInterrupted" />
-										<span class="input-group-addon">
-											<span class="glyphicon glyphicon-calendar"></span>
-										</span>
-									</span>
-								</div>
-								<div class="form-group col-sm-6">
-									<button style="margin-left: 35px;" onclick="confirmRequestDocument()" class="btn btn-sm btn-success">
-										<i class="fa fa-check text-primary"></i> Thêm gia hạn ngắt quãng
-									</button>
-								</div>
-
-							</div> -->
 						</div>
-						<!-- //////////// add tệp cont lạnh///////-->
-						<!-- <div class="form-group col-sm-12" id="dropzoneL">
-							<div class="col-sm-12 col-xs-12">
-								<button type="button" id="attachButtonL" class="btn btn-sm btn-default">
-									<i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
-								</button>
-							</div>
-							<div class="preview-containerL col-md-12 col-sm-12 col-xs-12"></div>
-						</div> -->
-
 					</div>
 				</div>
 
@@ -168,7 +118,7 @@
 		var oprlistBookingCheck = [[${ oprlistBookingCheck }]];
 		var creditFlag = /*[[${creditFlag}]]*/;
 	</script>
-	<script th:src="@{/eport/js/modules/reeferGroup/extendDrawDate/detail.js?v=20201029}"></script>
+	<script th:src="@{/eport/js/modules/reeferGroup/extendDrawDate/detail.js?v=20201032}"></script>
 
 
 	<script type="text/javascript">
