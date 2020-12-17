@@ -255,6 +255,12 @@ public class LogisticLoadingCargoYardController extends LogisticBaseController {
 		return PREFIX + "/paymentForm";
 	}
 
+	@GetMapping("/row/{rowIndex}/calendar")
+	public String getCalendarInputForm(@PathVariable("rowIndex") Integer rowIndex, ModelMap mmap) {
+		mmap.put("rowIndex", rowIndex);
+		return PREFIX + "/calendar";
+	}
+
 	// CHECK BOOKING NO IS UNIQUE
 	@PostMapping("/unique/booking-no")
 	@ResponseBody
@@ -817,6 +823,16 @@ public class LogisticLoadingCargoYardController extends LogisticBaseController {
 			if (CollectionUtils.isEmpty(cfsHouseBills)) {
 				return error(
 						"Chưa nhập thông tin hàng hóa cho container " + shipmentDetails.get(i).getContainerNo() + ".");
+			}
+
+			Date now = new Date();
+			Date registerDate = shipmentDetails.get(0).getDateReceipt();
+			// register date - now < 9.5 hours
+			long restrictedMilliSeconds = ((9 * 60 * 60) + (30 * 60)) * 1000; // 9.5 h to milliseconds
+			long periodMilliSeconds = 6 * 60 * 60 * 1000; // 6h to milliseconds
+			long diffInMillies = Math.abs(registerDate.getTime() - now.getTime());
+			if (diffInMillies < restrictedMilliSeconds) {
+
 			}
 		}
 
