@@ -74,6 +74,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.logistic.service.impl.ReeferInfoServiceImpl;
 import vn.com.irtech.eport.system.domain.ShipmentDetailHist;
+import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.service.IShipmentDetailHistService;
 import vn.com.irtech.eport.system.service.ISysConfigService;
@@ -1340,6 +1341,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		shipmentImage.setFileType(fileType);
 		shipmentImageService.insertShipmentImage(shipmentImage);
 		AjaxResult ajaxResult = AjaxResult.success();
+		
 		ajaxResult.put("shipmentFileId", shipmentImage.getId());
 		ajaxResult.put("file", filePath);
 		ajaxResult.put("fileType", fileType);
@@ -1386,6 +1388,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		mmap.put("creditFlag", getGroup().getCreditFlag());
 		mmap.put("billPowers", dictService.getType("bill_power"));
 
+		mmap.put("shipment", shipmentService.selectShipmentById(shipmentDetailFromDB.getShipmentId()));
+		
 		return PREFIX + "/detail";
 	}
 	// save file in detail
@@ -1505,6 +1509,26 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		reeferInfo.setDateSetPower(detailFromDB.getPowerDrawDate());
 		reeferInfo.setShipmentDetailId(detail.getId());
 		reeferInfo.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
+
+		List<SysDictData> oprListBookingCheck = dictService.getType("opr_list_booking_check");
+		String creditFlag = getGroup().getCreditFlag();
+
+		// la khach hàng trả
+		if (creditFlag.equals("0")) {
+			reeferInfo.setPayerType("Customer");
+			reeferInfo.setPayType("Credit");
+		} else {
+			reeferInfo.setPayerType("Customer");
+			reeferInfo.setPayType("Cash");
+		}
+
+		for (SysDictData sysDictData : oprListBookingCheck) {
+			// la hang tau thanh toan
+			if (detailFromDB.getOpeCode().equals(sysDictData.getDictValue())) {
+				reeferInfo.setPayerType("Carriers");
+			}
+		}
+
 		detail.setUpdateBy(getUser().getFullName());
 		detail.setPowerDrawDateStatus("P");
 		detail.setPowerDrawDate(null);
@@ -1524,5 +1548,26 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		detail.setPowerDrawDateStatus("S");
 		shipmentDetailService.updateShipmentDetailByIds(detail.getId().toString(), detail);
 		return AjaxResult.success(reeferInfoService.selectReeferInfoListByIdShipmentDetail(info.getShipmentDetailId()));
+	}
+	
+	@PostMapping("/reefer-info/file")
+	@ResponseBody
+	public AjaxResult saveContSpecialeFile(MultipartFile file) throws IOException, InvalidExtensionException {
+		String basePath = String.format("%s/%s", Global.getUploadPath() + "/reeferInfo", getUser().getGroupId());
+		String now = DateUtils.dateTimeNow();
+		String fileName = String.format("file%s.%s", now, FileUploadUtils.getExtension(file));
+		String filePath = FileUploadUtils.upload(basePath, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+
+		ShipmentImage shipmentImage = new ShipmentImage();
+		shipmentImage.setPath(filePath);
+		shipmentImage.setCreateTime(DateUtils.getNowDate());
+		shipmentImage.setCreateBy(getUser().getFullName());
+		shipmentImageService.insertShipmentImage(shipmentImage);
+
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipmentFileId", shipmentImage.getId());
+
+		ajaxResult.put("file", filePath);
+		return ajaxResult;
 	}
 }

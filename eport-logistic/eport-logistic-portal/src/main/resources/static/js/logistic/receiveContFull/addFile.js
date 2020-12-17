@@ -17,41 +17,42 @@ const SPECIAL_STATUS = {
 $(document).ready(function () { 
     let previewTemplate = '<span data-dz-name></span>'; 
 //////////////// frozen/////
-    // myDropzone = new Dropzone("#dropzoneL", {
-    //     url: prefix + "/file/file-type/R",
-    //     method: "post",
-    //     paramName: "file",
-    //     maxFiles: 5,
-    //     maxFilesize: 10, //MB
-    //     // autoProcessQueue: false,
-    //     previewTemplate: previewTemplate,
-    //     previewsContainer: ".preview-containerL", // Define the container to display the previews
-    //     clickable: "#attachButtonL", // Define the element that should be used as click trigger to select files.
-    //     init: function () {
-    //         this.on("maxfilesexceeded", function (file) {
-    //             $.modal.alertError("Số lượng tệp đính kèm vượt số lượng cho phép.");
-    //             this.removeFile(file);
-    //         });
-    //     },
-    //     success: function (file, response) {
-    //         if (response.code == 0) { 
-    //             $.modal.msgSuccess("Đính kèm tệp thành công.");  
-    //             shipmentFileIds.push(response.shipmentFileId); 
-    //             shipmentFilePath.push(response.file); 
-    //             shipmentDetailId.push(response.id);  
-    //             fileType.push(response.fileType);     
-    //             let html = `<div class="preview-block">
-    //                 <img src="` + ctx + `img/document.png" alt="Tài liệu" />
-    //                 <button type="button" class="close" aria-label="Close" onclick="removeImage1(this, '${response.file}')" >
-    //                 <span aria-hidden="true">&times;</span>
-    //                 </button>
-    //             </div>`
-    //             $('.preview-containerL').append(html);
-    //         } else {
-    //             $.modal.alertError("Đính kèm tệp thất bại, vui lòng thử lại sau.");
-    //         }
-    //     }
-    // });
+    myDropzone = new Dropzone("#dropzoneReefer", {
+        url: prefix + "/file/file-type/R",
+        method: "post",
+        paramName: "file",
+        maxFiles: 5,
+        maxFilesize: 10, //MB
+        // autoProcessQueue: false,
+        previewTemplate: previewTemplate,
+        previewsContainer: ".preview-container-reefer", // Define the container to display the previews
+        clickable: "#attachButtonReefer", // Define the element that should be used as click trigger to select files.
+        init: function () {
+            this.on("maxfilesexceeded", function (file) {
+                $.modal.alertError("Số lượng tệp đính kèm vượt số lượng cho phép.");
+                this.removeFile(file);
+            });
+        },
+        success: function (file, response) {
+            if (response.code == 0) { 
+                $.modal.msgSuccess("Đính kèm tệp thành công.");  
+                shipmentFileIds.push(response.shipmentFileId); 
+                shipmentFilePath.push(response.file); 
+                shipmentDetailId.push(response.id);
+                fileIds.push(response.fileId);
+                fileType.push(response.fileType);     
+                let html = `<div class="preview-block">
+                    <img src="` + ctx + `img/document.png" alt="Tài liệu" />
+                    <button type="button" class="close" aria-label="Close" onclick="removeImage1(this, '${response.file}')" >
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>`
+                $('.preview-container-reefer').append(html);
+            } else {
+                $.modal.alertError("Đính kèm tệp thất bại, vui lòng thử lại sau.");
+            }
+        }
+    });
 //////////////// oversize//////
     myDropzone = new Dropzone("#dropzoneQK", {
         url: prefix + "/file/file-type/O",
