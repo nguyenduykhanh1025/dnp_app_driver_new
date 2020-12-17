@@ -223,6 +223,13 @@ function getSelected() {
 		$("#loCode").text(row.id);
 		$("#quantity").text(row.containerAmount);
 		$("#bookingNo").text(row.bookingNo);
+
+		if (row.edoFlg == "0") {
+			$("#edoFlg").text("DO");
+		} else {
+			$("#edoFlg").text("eDO");
+		}
+
 		rowAmount = row.containerAmount;
 		shipmentSelected = row;
 		checkList = Array(rowAmount).fill(0);

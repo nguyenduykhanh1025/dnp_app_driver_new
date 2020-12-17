@@ -76,9 +76,9 @@ function initTabReefer() {
   }
 
   // là loai lệnh eDo nên ko cần add file
-  // if (shipment.edoFlg != "0") {
-  //   $("#dropzoneReefer").css("display", "none");
-  // }
+  if (shipment.edoFlg != "0") {
+    $("#dropzoneReefer").css("display", "none");
+  }
 
 }
 

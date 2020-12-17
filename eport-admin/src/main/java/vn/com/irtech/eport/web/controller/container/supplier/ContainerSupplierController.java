@@ -2,6 +2,7 @@ package vn.com.irtech.eport.web.controller.container.supplier;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -89,6 +90,17 @@ public class ContainerSupplierController extends BaseController {
 		}
 		shipment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
 		List<Shipment> shipments = shipmentService.getShipmentListForContSupply(shipment);
+		
+		shipments = shipments.stream().filter(c -> {
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setShipmentId(c.getId());
+			// not have cont sztp Reefer
+			shipmentDetail.setSztp("R");
+			if(shipmentDetailService.selectShipmentDetailListNotHaveContReefer(shipmentDetail).size() > 0) {
+				return true;
+			}
+			return false;
+		}).collect(Collectors.toList());
 		return getDataTable(shipments);
 	}
 

@@ -299,6 +299,15 @@ function getSelected(index, row) {
     let title = "";
     title += "Mã Lô: " + row.id + " - ";
     title += "SL: " + row.containerAmount + " - ";
+
+    if (row.edoFlg == "0") {
+      title += 'Loại lệnh: DO - ';
+      $("#deleteBtn").show();
+    } else {
+      title += 'Loại lệnh: eDO - ';
+      $("#deleteBtn").hide();
+    }
+
     title += "B/L No: ";
     if (row.blNo != null) {
       title += row.blNo;
