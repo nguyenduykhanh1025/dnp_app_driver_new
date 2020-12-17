@@ -359,7 +359,7 @@ function configHandson() {
         case 4:
           return "Thành Tiền (vnd)";
         case 5:
-          return "Hình Thức Thanh Toán";
+          return "Đối Tượng Thanh Toán";
         case 6:
           return "Action";
 
