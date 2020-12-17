@@ -1137,7 +1137,6 @@ function rejectSupplyReqSendInformation(index, layero) {
 
 }
 
-
 function deleteSupplyReq(index, layero) {
 	let childLayer = layero.find("iframe")[0].contentWindow.document;
 	$.modal.loading("Đang xử lý ...");

@@ -254,23 +254,30 @@ public class SupportExtendDrawDate extends AdminBaseController {
 			info.setUpdateBy(getUser().getUserName());
 
 			// if no da thanh toan
-			boolean isPayment = false;
-			List<SysDictData> sysDictDatas = dictService.getType("opr_list_booking_check");
-			for (SysDictData data : sysDictDatas) {
-				if (data.getDictValue().equals(shipmentDetailFromDB.getOpeCode())) {
-					isPayment = true;
-				}
-			}
-			Long logictistId = shipmentDetailFromDB.getLogisticGroupId();
-			LogisticGroup groupFromDB = this.logisticGroupService.selectLogisticGroupById(logictistId);
-			if (!groupFromDB.getCreditFlag().equals("0")) {
-				isPayment = true;
-			}
-
-			if (isPayment) {
-				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_SUCCESS);
-			} else {
+//			boolean isPayment = false;
+//			List<SysDictData> sysDictDatas = dictService.getType("opr_list_booking_check");
+//			for (SysDictData data : sysDictDatas) {
+//				if (data.getDictValue().equals(shipmentDetailFromDB.getOpeCode())) {
+//					isPayment = true;
+//				}
+//			}
+//			Long logictistId = shipmentDetailFromDB.getLogisticGroupId();
+//			LogisticGroup groupFromDB = this.logisticGroupService.selectLogisticGroupById(logictistId);
+//			if (!groupFromDB.getCreditFlag().equals("0")) {
+//				isPayment = true;
+//			}
+//
+//			if (isPayment) {
+//				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_SUCCESS);
+//			} else {
+//				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
+//			}
+			// no tra sau
+			System.out.println(info.toString());
+			if (info.getPayType().equals("Credit")) {
 				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
+			} else {
+				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_SUCCESS);
 			}
 
 			this.reeferInfoService.updateReeferInfo(info);
