@@ -129,13 +129,20 @@ public class ReceiveContReeferEmpty extends AdminBaseController {
 		List<Shipment> shipments = shipmentService.getShipmentListForContSupply(shipment);
 		return getDataTable(shipments);
 	}
+	
+	@GetMapping("/shipments/{id}")
+	@ResponseBody
+	public AjaxResult getShipmentById(@PathVariable("id") Long id) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("shipment", this.shipmentService.selectShipmentById(id));
+		return ajaxResult;
+	}
 
 	@GetMapping("/shipment/{shipmentId}/shipment-detail")
 	@ResponseBody
 	public AjaxResult listShipmentDetail(@PathVariable("shipmentId") Long shipmentId) {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
-//		shipmentDetail.setShipmentId(shipmentId);
 		shipmentDetail.setSztp(keyReefer);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		if (shipmentDetails != null) {
