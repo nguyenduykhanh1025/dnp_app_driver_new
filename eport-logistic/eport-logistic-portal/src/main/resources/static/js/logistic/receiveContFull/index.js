@@ -1434,7 +1434,6 @@ function loadShipmentDetail(id) {
     url: prefix + "/shipment/" + id + "/shipment-detail",
     method: "GET",
     success: function (data) {
-      console.log(data);
       $.modal.closeLoading();
       if (data.code == 0) {
         sourceData = data.shipmentDetails;

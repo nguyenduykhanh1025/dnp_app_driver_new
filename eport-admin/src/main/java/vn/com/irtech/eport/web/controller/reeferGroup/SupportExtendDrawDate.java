@@ -142,7 +142,8 @@ public class SupportExtendDrawDate extends AdminBaseController {
 
 	@GetMapping("/shipment/{shipmentId}/shipmentDetails/status/{status}")
 	@ResponseBody
-	public AjaxResult getShipmentDetails(@PathVariable("shipmentId") Long shipmentId, @PathVariable("status") String status) {
+	public AjaxResult getShipmentDetails(@PathVariable("shipmentId") Long shipmentId,
+			@PathVariable("status") String status) {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
@@ -297,14 +298,21 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		return success();
 	}
 
-	@PostMapping("/save-reefer")
+	@PostMapping("/save-reefer-info")
 	@ResponseBody
 	public AjaxResult saveReeferInfo(@RequestBody List<ReeferInfo> reeferInfos) {
 		for (ReeferInfo reeferInfo : reeferInfos) {
-			reeferInfoService.updateReeferInfo(reeferInfo);
+			if (reeferInfo != null) {
+				ReeferInfo infoNew = new ReeferInfo();
+				infoNew.setId(reeferInfo.getId());
+				infoNew.setPayerType(reeferInfo.getPayerType());
+				infoNew.setPayType(reeferInfo.getPayType());
+				infoNew.setUpdateBy(getUser().getUserName());
+				System.out.println(infoNew.toString());
+				reeferInfoService.updateReeferInfo(infoNew);
+			}
 		}
-		return AjaxResult.success(
-				reeferInfoService.selectReeferInfoListByIdShipmentDetail(reeferInfos.get(0).getShipmentDetailId()));
+		return AjaxResult.success("Lưu thành công");
 	}
 
 }

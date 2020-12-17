@@ -5,7 +5,6 @@ $(document).ready(function () {
   initTabReefer();
   initDateTime();
 });
-console.log(billPowers);
 function initDateTime() {
   let dayDrop = new Date(shipmentDetail.powerDrawDate);
   let daySetup = new Date(shipmentDetail.daySetupTemperature);
@@ -15,7 +14,6 @@ function initDateTime() {
   $("#daySetupTemperature").val(formatDate(daySetup));
 }
 
-console.log(reeferInfos);
 function initTabReefer() {
   if (shipmentDetail.sztp.includes("R")) {
     $('#reeferContainer').css('display', 'block');
@@ -41,6 +39,8 @@ function initTabReefer() {
 
   $('#numberHours').val(getBetweenTwoDateInSourceData());
   $('#moneyNumber').val(getCountNumber());
+
+  initFileReefer();
 }
 
 function initTabOversize() {
@@ -88,8 +88,20 @@ function initTabDangerous() {
     focusCleanup: true,
   });
 }
-
-
+function initFileReefer() {
+  if (shipmentFiles != null) {// hiển thị hình ảnh
+    let htmlInit = '';
+    shipmentFiles.forEach(function (element, index) {
+      shipmentFiles.push(element.id);
+      if (element.fileType == "R" || element.fileType == "r") {
+        htmlInit = `<div class="preview-block" style="float: left;">
+                <a href=${element.path} target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" /></a>
+            </div>`;
+        $('.preview-container-reefer').append(htmlInit);
+      }
+    });
+  }
+}
 
 var dangerousIMO = shipmentDetail.dangerousImo;
 var dangerousUNNO = shipmentDetail.dangerousUnno;
