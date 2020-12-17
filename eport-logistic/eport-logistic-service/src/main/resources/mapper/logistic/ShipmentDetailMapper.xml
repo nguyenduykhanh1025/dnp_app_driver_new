@@ -1214,7 +1214,7 @@
 			<if test="specialService != null">special_service = #{specialService},</if>
 			<if test="powerDrawDateStatus != null">power_draw_date_status = #{powerDrawDateStatus},</if>
 			<if test="powerDrawDate != null">power_draw_date = #{powerDrawDate},</if>
-			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>  
 			update_time = sysdate
 		</trim>
 		<where>

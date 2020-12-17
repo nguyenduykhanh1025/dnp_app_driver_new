@@ -1226,16 +1226,15 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {  
 			if(!"R".equalsIgnoreCase(shipmentDetail.getSztp().substring(2, 3))) {
 				if(shipmentDetail.getPath() == "" || shipmentDetail.getPath() == null) {
-					return error("Bạn chưa đính kèm file. Vui lòng đính kèm file trước khi yê cầu xác nhận");
+					return error("Bạn chưa đính kèm file. Vui lòng đính kèm file trước khi yê cầu xác nhận"); 
 				}
-				if(StringUtils.isNotEmpty(shipmentDetail.getChassisNo())) {
+				if(shipmentDetail.getChassisNo() == "" || shipmentDetail.getChassisNo() == null) {
 					return error("Bạn chưa khai báo biển số xe rơ móc");
 				}
-				if(StringUtils.isNotEmpty(shipmentDetail.getTruckNo())) {
+				if(shipmentDetail.getTruckNo() == "" || shipmentDetail.getTruckNo() == null) {
 					return error("Bạn chưa khai báo biển số xe đầu kéo");
 				}
-			}
-			 
+			} 
 			// cont lanh
 			if ("R".equalsIgnoreCase(shipmentDetail.getSztp().substring(2, 3))) {
 				shipmentDetailUpdate.setFrozenStatus(EportConstants.CONT_SPECIAL_STATUS_REQ); // R
@@ -1246,8 +1245,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					|| StringUtils.isNotEmpty(shipmentDetail.getOversizeTop())) {
 				shipmentDetailUpdate.setOversize(EportConstants.CONT_SPECIAL_STATUS_REQ);// R
 			} 
-
-			shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
+			shipmentDetailUpdate.setId(shipmentDetail.getId()); 
+			//shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
+			shipmentDetailService.updateShipmentDetail(shipmentDetailUpdate);
 		}
 		
 		return success("Yêu cầu xác nhận thành công");

@@ -1434,7 +1434,7 @@ function loadShipmentDetail(id) {
     url: prefix + "/shipment/" + id + "/shipment-detail",
     method: "GET",
     success: function (data) {
-      console.log(data);
+      //console.log(data);
       $.modal.closeLoading();
       if (data.code == 0) {
         sourceData = data.shipmentDetails;
@@ -1908,9 +1908,11 @@ function verify() {
               }
             }
           },
-          error: function (err) {
+          error: function (err) { 
             $.modal.closeLoading();
             $.modal.alertWarning("Có lỗi xảy ra trong quá trình thực hiện, xin vui lòng thử lại sau.");
+            
+           // $.modal.alertError(err.msg);
           }
         });
       } else {
