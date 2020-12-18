@@ -114,22 +114,36 @@
               </div>
 
               <div class="form-group col-sm-6 row" id="extendPowerDrawDateContainer">
-
-                <span class="input-group date col-sm-10 col-xs-8" id="datetimepicker2" style="    float: left;
-    width: 240px;
-    margin: 0 29px;">
+                <span class="control-label col-sm-4 col-xs-6" style="text-align: left">
+                  <b class="text-black">Ngày gia hạn:</b>
+                </span>
+                <span class="input-group date col-sm-10 col-xs-8" id="datetimepicker2"
+                  style="float: left;width: 240px;">
                   <input type="text" class="form-control" name="extendPowerDrawDate" id="extendPowerDrawDate" />
                   <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                   </span>
                 </span>
-
-                <span class="control-label col-sm-2 col-xs-4" style="padding: 0;">
-                  <button id="saveShipmentDetailBtn" onclick="extendPowerDrawDate()" class="btn btn-success"><i
-                      class="fa fa-clock-o text-primary"></i>Gia hạn</button>
-                </span>
               </div>
 
+              <div class="form-horizontal mt10 row">
+                <div class="form-group col-sm-6 row">
+                  <div class="form-group col-sm-12" id="dropzoneReefer" style="margin-top: 5px;">
+                    <div class="col-sm-12 col-xs-12">
+                      <button type="button" id="attachButtonReefer" class="btn btn-sm btn-default">
+                        <i class="fa fa-paperclip text-primary"></i> Đính kèm tệp
+                      </button>
+                    </div>
+                    <div class="preview-container-reefer col-md-12 col-sm-12 col-xs-12"></div>
+                  </div>
+                </div>
+                <div class="form-group col-sm-6 row">
+                  <span class="control-label col-sm-2 col-xs-4" style="padding: 0;float: right;margin-right: 40px;">
+                    <button id="saveShipmentDetailBtn" onclick="extendPowerDrawDate()" class="btn btn-success"><i
+                        class="fa fa-clock-o text-primary"></i>Gia hạn</button>
+                  </span>
+                </div>
+              </div>
             </div>
             <div class="form-horizontal mt10 row" style id="tableExtendDateContainer">
               <div class="form-group col-sm-12 row">
@@ -142,10 +156,8 @@
                   </table>
                 </div>
                 <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
-
               </div>
             </div>
-
           </div>
           <!--////////////////start cont quá khổ -->
           <div class="content-2" id="oversizeContainer">
@@ -326,9 +338,10 @@
     var oprlistBookingCheck = [[${ oprlistBookingCheck }]];
     var creditFlag = /*[[${creditFlag}]]*/;
     var billPowers = [[${ billPowers }]];
+    var shipment = [[${ shipment }]];
   </script>
-  <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=20201212235}"></script>
-  <script th:src="@{/js/logistic/receiveContFull/detail.js?v=20201212235}"></script>
+  <script th:src="@{/js/logistic/receiveContFull/addFile.js?v=20201212236}"></script>
+  <script th:src="@{/js/logistic/receiveContFull/detail.js?v=20201212236}"></script>
 
 
   <script type="text/javascript">

@@ -99,7 +99,9 @@ public interface ShipmentDetailMapper {
 	
 	
 	public List<ShipmentDetail> selectConfirmShipmentDetailByIds(String[] shipmentDetailIds);
-	 
+	
+	public List<ShipmentDetail> selectConfirmShipmentDetailByshipmentDetailIds(String[] shipmentDetailIds);
+	
 
 	public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
 

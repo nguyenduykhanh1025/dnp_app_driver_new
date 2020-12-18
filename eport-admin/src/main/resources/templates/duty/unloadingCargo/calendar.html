@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:include="include :: header('Calendar')" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+
+    <style>
+        .datetimepicker.datetimepicker-dropdown-bottom-right.dropdown-menu {
+            margin-left: 24px;
+            background-color: white;
+        }
+    </style>
+</head>
+
+<body style="overflow-y: hidden; text-align: center;">
+    <input type="text" class="formcontrol" name="calendar" onchange="changeDate()" id="calendar" hidden/>
+</body>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: datetimepicker-js" />
+<script type="text/javascript" th:inline="javascript">
+    var rowIndex = [[${ rowIndex }]];
+
+    $(document).ready(function () {
+        $("#calendar").datetimepicker({
+            format: 'dd/mm/yyyy hh:ii',
+            language: "vi_VN",
+            autoclose: true,
+            minuteStep: 30,
+            todayBtn: false,
+            startDate: new Date()
+        });
+
+        $('#calendar').datetimepicker('show');
+    });
+
+    function changeDate() {
+        parent.changeDate(rowIndex, $('#calendar').val());
+        $.modal.close();
+    }
+</script>
+
+</html>

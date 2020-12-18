@@ -452,12 +452,14 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 		boolean sameVessel = false;
 		String container1 = gateDetection.getContainerNo1();
 		String container2 = gateDetection.getContainerNo2();
-		if (StringUtils.isNotEmpty(container1) && StringUtils.isNotEmpty(gateDetection.getLocation1())) {
+		if (StringUtils.isNotEmpty(container1) && StringUtils.isNotEmpty(gateDetection.getSendResult1())
+				&& "SUCCESS".equalsIgnoreCase(gateDetection.getSendResult1())) {
 			// Container 1 has position => no need to send request position to mc
 			// set blank to exclude
 			container1 = "";
 		}
-		if (StringUtils.isNotEmpty(container2) && StringUtils.isNotEmpty(gateDetection.getLocation2())) {
+		if (StringUtils.isNotEmpty(container2) && StringUtils.isNotEmpty(gateDetection.getSendResult2())
+				&& "SUCCESS".equalsIgnoreCase(gateDetection.getSendResult2())) {
 			// Container 1 has position => no need to send request position to mc
 			// set blank to exclude
 			container2 = "";
@@ -613,8 +615,10 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 			// Check if container need update yard position is container 1
 			if (pickupRobotResult.getContainerNo().equalsIgnoreCase(gateDetection.getContainerNo1())) {
 				gateDetection.setLocation1(pickupRobotResult.getYardPosition());
+				gateDetection.setSendResult1(pickupRobotResult.getResult());
 			} else if (pickupRobotResult.getContainerNo().equalsIgnoreCase(gateDetection.getContainerNo2())) {
 				gateDetection.setLocation2(pickupRobotResult.getYardPosition());
+				gateDetection.setSendResult2(pickupRobotResult.getResult());
 			}
 		}
 		return gateDetection;

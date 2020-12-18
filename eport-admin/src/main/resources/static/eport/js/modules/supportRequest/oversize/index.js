@@ -511,7 +511,7 @@ function btnDetailRenderer(
         "'," +
         "'" +
         sztp +
-        '\')"><i class="fa fa-book"></i>Cont đặc biệt</button>';
+        '\')"><i class="fa fa-book"></i>Quá khổ</button>';
     } 
     // else {
     //   value =
@@ -540,7 +540,7 @@ function openDetail(id, containerNo, sztp, row) {
   $.modal.openCustomForm(
     "Khai báo chi tiết",
     `${PREFIX}/shipment-detail/${id}/cont/${containerNo}/sztp/${sztp}/detail`,
-    800,
+    850,
     460
   );
 }
