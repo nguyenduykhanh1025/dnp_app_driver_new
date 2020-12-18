@@ -127,7 +127,7 @@
 		
 		<result property="path" column="path" />
 		<result property="fileType" column="file_type" />
-		
+		<result property="userMobilePhone" column="user_mobile_phone" />
 		
 	</resultMap>
 
@@ -173,7 +173,7 @@
 		date_receipt, actual_date_receipt,
 		update_time, date_receipt_status,
 		special_service, truck_no,chassis_no,humidity, ventilation,
-		power_draw_date_status, power_draw_date, support_status from
+		power_draw_date_status, power_draw_date, support_status, user_mobile_phone from
 		shipment_detail
 	</sql>
 	<select id="countShipmentDetailList"
@@ -232,7 +232,6 @@
 			<if test="orderNo != null and orderNo != ''">and order_no = #{orderNo}</if>
 		</where>
 	</select>
-	
 	
 	<select id="selectShipmentDetailListReceive"
 		parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
@@ -1214,6 +1213,7 @@
 			<if test="specialService != null">special_service = #{specialService},</if>
 			<if test="powerDrawDateStatus != null">power_draw_date_status = #{powerDrawDateStatus},</if>
 			<if test="powerDrawDate != null">power_draw_date = #{powerDrawDate},</if>
+			<if test="userMobilePhone != null and userMobilePhone != ''">user_mobile_phone = #{userMobilePhone},</if>
 			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>  
 			update_time = sysdate
 		</trim>

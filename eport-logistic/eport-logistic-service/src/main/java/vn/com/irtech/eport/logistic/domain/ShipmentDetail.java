@@ -561,6 +561,8 @@ public class ShipmentDetail extends BaseEntity {
 	
 	private String supportStatus;
 	
+	private String userMobilePhone;
+
 	public Long getId() {
 		return id;
 	}
@@ -1450,6 +1452,14 @@ public class ShipmentDetail extends BaseEntity {
 		this.supportStatus = supportStatus;
 	}
 
+	public String getUserMobilePhone() {
+		return userMobilePhone;
+	}
+
+	public void setUserMobilePhone(String userMobilePhone) {
+		this.userMobilePhone = userMobilePhone;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -1494,13 +1504,10 @@ public class ShipmentDetail extends BaseEntity {
 				.append("dangerousPacking", getDangerousPacking()).append("contSpecialStatus", getContSpecialStatus())
 				.append("frozenStatus", getFrozenStatus()).append("dateReceiptStatus", getDateReceiptStatus())
 				.append("dateReceipt", getDateReceipt()).append("specialService", getSpecialService())
-				.append("actualDateReceipt", getActualDateReceipt())
-				.append("dateReceipt", getDateReceipt())
-				.append("humidity", getHumidity())
-				.append("ventilation", getVentilation())
-				.append("powerDrawDate", getPowerDrawDate())
-				.append("powerDrawDateStatus", getPowerDrawDateStatus())
-				.append("supportStatus", getSupportStatus()).toString();
+				.append("actualDateReceipt", getActualDateReceipt()).append("dateReceipt", getDateReceipt())
+				.append("humidity", getHumidity()).append("ventilation", getVentilation())
+				.append("powerDrawDate", getPowerDrawDate()).append("powerDrawDateStatus", getPowerDrawDateStatus())
+				.append("supportStatus", getSupportStatus()).append("userMobilePhone", getUserMobilePhone()).toString();
 		
 	}
 }

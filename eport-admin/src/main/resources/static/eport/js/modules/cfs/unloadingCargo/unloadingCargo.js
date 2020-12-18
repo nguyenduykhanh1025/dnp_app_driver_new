@@ -405,7 +405,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
         payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa ráp đơn giá" aria-hidden="true" style="margin-left: 8px; color: #f8ac59;"></i>';
         break;
       case 'N':
-        if (value > 1) {
+        if (sourceData[row].processStatus == 'Y') {
           payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
         }
         break;
@@ -688,7 +688,14 @@ function specialServiceRenderer(instance, td, row, col, prop, value, cellPropert
   );
   return td;
 }
-
+function userMobilePhoneRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
 function actualDateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (value != null && value != '') {
@@ -780,10 +787,12 @@ function configHandsond() {
         case 24:
           return "Người Thanh Toán";
         case 25:
+          return 'Số điện thoại<br>người đăng ký';
+        case 26:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 135, 130, 100, 100, 100, 120, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200],
+    colWidths: [23, 21, 21, 135, 130, 100, 100, 100, 120, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 130, 200],
     filter: "true",
     columns: [
       {
@@ -914,6 +923,10 @@ function configHandsond() {
         renderer: payerNameRenderer,
       },
       {
+        data: "userMobilePhone",
+        renderer: userMobilePhoneRenderer
+      },
+      {
         data: "remark",
         renderer: remarkRenderer,
       },
@@ -935,7 +948,7 @@ function configHandsond() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 25) {
+          if (selected[3] == 26) {
             e.stopImmediatePropagation();
           }
           break
