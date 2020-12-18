@@ -178,8 +178,10 @@ let typeO = true;// qua kho
 function confirm() {
   var truckNo = $("#truckNo").val();
   var chassisNo = $("#chassisNo").val();
-  if (shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ) {
+ 
+ if (shipmentDetail.sztp.includes("R") && (shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ)) {
     saveFile();
+    //insertCont();
     $.modal.close();
     return;
   }
@@ -285,7 +287,7 @@ $(document).ready(function () {
       if (element.fileType == "R" || element.fileType == "r") {
         htmlInit = `<div class="preview-block">
                 <a href=${element.path} target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" /></a>
-                <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + element.id + `)" >  
+                <button type="button" class="close" aria-label="Close" onclick="removeImageOversize(this, ` + element.id + `)" >  
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>`;
@@ -294,7 +296,7 @@ $(document).ready(function () {
       if (element.fileType == "D" || element.fileType == "d") {
         htmlInit = `<div class="preview-block">
         		<a href=${element.path} target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" /></a>
-                <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + element.id + `)" >
+                <button type="button" class="close" aria-label="Close" onclick="removeImageOversize(this, ` + element.id + `)" >
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>`;
@@ -303,7 +305,7 @@ $(document).ready(function () {
       if (element.fileType == "O" || element.fileType == "o") {
         htmlInit = `<div class="preview-block">
         		<a href=${element.path} target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" /></a>
-                <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + element.id + `)" >
+                <button type="button" class="close" aria-label="Close" onclick="removeImageOversize(this, ` + element.id + `)" >
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>`;
@@ -314,7 +316,7 @@ $(document).ready(function () {
 });
 // xóa khi đã lưu có id 
 
-function removeImage(element, fileIndex) {
+function removeImageOversize(element, fileIndex) {
   if (oversize == "Y") {
     $.modal.alertWarning("Không thể xóa file ở trạng thái đã phê duyệt");
   }
@@ -839,6 +841,7 @@ function removeImage(element, fileIndex) {
   } else {
     $.ajax({
       url: PREFIX + "/cont-special/file/" + fileIndex,
+      //url: PREFIX + "/delete_file",  
       method: "DELETE",
       beforeSend: function () {
         $.modal.loading("Đang xử lý, vui lòng chờ...");

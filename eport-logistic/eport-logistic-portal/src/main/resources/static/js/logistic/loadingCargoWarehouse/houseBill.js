@@ -307,14 +307,21 @@ function cubicMeterRenderer(instance, td, row, col, prop, value, cellProperties)
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
-function marksRenderer(instance, td, row, col, prop, value, cellProperties) {
+function forwarderRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value == null) {
         value = '';
     }
     $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
     return td;
 }
-function forwarderRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
+function cargoDescriptionRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value == null) {
+        value = '';
+    }
+    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    return td;
+}
+function equipmentRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value == null) {
         value = '';
     }
@@ -350,18 +357,22 @@ function configHandson() {
                 case 2:
                     return "Forwarder";
                 case 3:
-                    return "Đơn Vị Tính"
+                    return "Loại Hàng";
                 case 4:
-                    return "Số Lượng";
+                    return "Đơn Vị Tính";
                 case 5:
-                    return "Trọng Lượng";
+                    return "Số Lượng";
                 case 6:
-                    return "Số Khối";
+                    return "Trọng Lượng";
                 case 7:
+                    return "Chi Tiết<br>(Dài x Rộng x Cao)";
+                case 8:
+                    return "Phương tiện";
+                case 9:
                     return "Ghi chú";
             }
         },
-        colWidths: [40, 100, 150, 100, 90, 90, 90, 200],
+        colWidths: [40, 100, 150, 100, 100, 90, 90, 120, 100, 200],
         columns: [
             {
                 data: "active",
@@ -378,6 +389,11 @@ function configHandson() {
                 data: "forwarder",
                 className: "htCenter",
                 renderer: forwarderRenderer
+            },
+            {
+                data: "cargoDescription",
+                className: "htCenter",
+                renderer: cargoDescriptionRenderer
             },
             {
                 data: "packagingType",
@@ -398,6 +414,11 @@ function configHandson() {
                 data: "cubicMeter",
                 className: "htCenter",
                 renderer: cubicMeterRenderer
+            },
+            {
+                data: "equipment",
+                className: "htCenter",
+                renderer: equipmentRenderer
             },
             {
                 data: "forwarderRemark",
@@ -425,7 +446,7 @@ function configHandson() {
                 // Arrow Right
                 case 39:
                     selected = hot.getSelected()[0];
-                    if (selected[3] == 7) {
+                    if (selected[3] == 9) {
                         e.stopImmediatePropagation();
                     }
                     break
@@ -513,11 +534,13 @@ function getDataSelectedFromTable(isValidate) {
         let cfsHouseBill = new Object();
         cfsHouseBill.houseBill = object["houseBill"];
         cfsHouseBill.forwarder = object["forwarder"];
-        cfsHouseBill.quantity = object["quantity"];
-        cfsHouseBill.packagingType = object["packagingType"];
-        cfsHouseBill.weight = object["weight"];
-        cfsHouseBill.cubicMeter = object["cubicMeter"];
-        cfsHouseBill.forwarderRemark = object["forwarderRemark"];
+        cfsHouseBill.quantity = object["quantity"]; // So luong
+        cfsHouseBill.packagingType = object["packagingType"]; // Don vi tinh
+        cfsHouseBill.weight = object["weight"]; // Trong luong
+        cfsHouseBill.cargoDescription = object["cargoDescription"]; // Trong luong
+        cfsHouseBill.equipment = object["equipment"]; // Phuong tien
+        cfsHouseBill.cubicMeter = object["cubicMeter"]; // Chi tiet (dai x rong x cao)
+        cfsHouseBill.forwarderRemark = object["forwarderRemark"]; // Ghi chu
         cfsHouseBillList.push(cfsHouseBill);
         cfsHouseBillIds += object["id"] + ",";
     });
@@ -543,16 +566,26 @@ function getDataFromTable() {
     let houseBills = [];
     for (let i = 0; i < dataTable.length; ++i) {
         let dataItemTable = dataTable[i];
-        if (!dataTable[i].houseBill) {
-            $.modal.alertWarning("House bill không được để trống.");
-            return false;
+        if (dataTable[i].quantity ||
+            dataTable[i].packagingType ||
+            dataTable[i].weight ||
+            dataTable[i].cubicMeter ||
+            dataTable[i].cargoDescription ||
+            dataTable[i].houseBill ||
+            dataTable[i].forwarder ||
+            dataTable[i].equipment ||
+            dataTable[i].forwarderRemark) {
+            if (!dataTable[i].houseBill) {
+                $.modal.alertWarning("House bill không được để trống.");
+                return false;
+            }
+            if (houseBills.includes(dataTable[i].houseBill)) {
+                $.modal.alertWarning("House bill không được trùng nhau.");
+                return false;
+            }
+            houseBills.push(dataTable[i].houseBill)
+            results.push(dataItemTable);
         }
-        if (houseBills.includes(dataTable[i].houseBill)) {
-            $.modal.alertWarning("House bill không được trùng nhau.");
-            return false;
-        }
-        houseBills.push(dataTable[i].houseBill)
-        results.push(dataItemTable);
     }
     return results;
 }

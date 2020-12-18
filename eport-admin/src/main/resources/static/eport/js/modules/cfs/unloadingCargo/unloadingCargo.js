@@ -75,22 +75,40 @@ $(document).ready(function () {
   $("#finishStatus").combobox({
     valueField: 'finishValue',
     textField: 'finishKey',
-    data: [{
-      "finishValue": 'N',
-      "finishKey": "chưa hoàn thành",
-      "selected": true
-    }, {
-      "finishValue": 'Y',
-      "finishKey": "Đã hoàn thành"
-    }, {
-      "finishValue": 'null',
-      "finishKey": "Tất cả"
-    }],
+    data: [
+      {
+        "finishValue": 'N',
+        "finishKey": "Chưa xác nhận ngày đóng",
+        "selected": true
+      },
+      {
+        "finishValue": 'M',
+        "finishKey": "Đã xác nhận ngày đóng",
+      }, {
+        "finishValue": 'Y',
+        "finishKey": "Đã hoàn thành"
+      }, {
+        "finishValue": 'null',
+        "finishKey": "Tất cả"
+      }],
     onSelect: function (finishStatus) {
-      if (finishStatus.finishValue != 'null') {
-        shipment.params.finishStatus = finishStatus.finishValue;
-      } else {
-        shipment.params.finishStatus = null;
+      switch (finishStatus.finishValue) {
+        case 'null':
+          shipment.params.finishStatus = null;
+          shipment.params.dateReceiptStatus = null;
+          break;
+        case 'N':
+          shipment.params.finishStatus = 'N';
+          shipment.params.dateReceiptStatus = 'W';
+          break;
+        case 'M':
+          shipment.params.finishStatus = 'N';
+          shipment.params.dateReceiptStatus = 'Y';
+          break;
+        case 'Y':
+          shipment.params.finishStatus = 'Y';
+          shipment.params.dateReceiptStatus = null;
+          break;
       }
       loadTable();
     }
@@ -685,7 +703,8 @@ function actualDateReceiptRenderer(instance, td, row, col, prop, value, cellProp
   } else {
     value = '';
   }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  cellProperties.readOnly = 'true';
+  $(td).html(`<div onclick="chooseDateReceipt(` + row + `)" style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">` + value + ` <a class="fa fa-calendar"></a></div>`);
   return td;
 }
 
@@ -1492,5 +1511,29 @@ function formatDateToSendServer(date) {
   // set seconds
   dateReceipt.setSeconds(0);
   return dateReceipt.getTime();
+}
+
+function chooseDateReceipt(rowIndex) {
+  layer.open({
+    type: 2,
+    area: [250 + 'px', 380 + 'px'],
+    fix: true,
+    maxmin: true,
+    shade: 0.3,
+    title: 'Chọn ngày rút hàng',
+    content: PREFIX + "/row/" + rowIndex + "/calendar",
+    btn: ["Đóng"],
+    shadeClose: false,
+    yes: function (index, layero) {
+      layer.close(index);
+    },
+    cancel: function (index) {
+      return true;
+    }
+  });
+}
+
+function changeDate(rowIndex, date) {
+  hot.setDataAtCell(rowIndex, 10, date)
 }
 

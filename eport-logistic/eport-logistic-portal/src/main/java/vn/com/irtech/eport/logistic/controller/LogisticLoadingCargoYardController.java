@@ -255,6 +255,12 @@ public class LogisticLoadingCargoYardController extends LogisticBaseController {
 		return PREFIX + "/paymentForm";
 	}
 
+	@GetMapping("/row/{rowIndex}/calendar")
+	public String getCalendarInputForm(@PathVariable("rowIndex") Integer rowIndex, ModelMap mmap) {
+		mmap.put("rowIndex", rowIndex);
+		return PREFIX + "/calendar";
+	}
+
 	// CHECK BOOKING NO IS UNIQUE
 	@PostMapping("/unique/booking-no")
 	@ResponseBody
@@ -818,6 +824,11 @@ public class LogisticLoadingCargoYardController extends LogisticBaseController {
 				return error(
 						"Chưa nhập thông tin hàng hóa cho container " + shipmentDetails.get(i).getContainerNo() + ".");
 			}
+
+			if (!checkRegisterTime(shipmentDetails.get(i).getDateReceipt())) {
+				return error("Hàng " + (i + 1)
+						+ ": Thời gian đăng ký đóng hàng hiện tại không hợp lệ, quý khách vui lòng chọn thời gian đăng ký đóng hàng khác. ");
+			}
 		}
 
 		// Valide vslnm and voy no exist in catos
@@ -1157,5 +1168,43 @@ public class LogisticLoadingCargoYardController extends LogisticBaseController {
 			shipmentImageService.deleteShipmentImageById(id);
 		}
 		return success();
+	}
+
+	private Boolean checkRegisterTime(Date registerDate) {
+		long registerTimeMillis = ((registerDate.getHours() * 60 * 60) + (registerDate.getMinutes() * 60)) * 1000;
+		long timeShift1 = 6 * 60 * 60 * 1000;
+		long timeShift2 = 12 * 60 * 60 * 1000;
+		long timeShift3 = 18 * 60 * 60 * 1000;
+		long timeShift4 = 24 * 60 * 60 * 1000;
+		long limitTimeMillis = ((8 * 60 * 60) + (30 * 60)) * 1000;
+		Date now = new Date();
+		long extraBeforeShiftMillis = 30 * 60 * 1000 * 3;
+		long currentTimeMillis = ((now.getHours() * 60 * 60) + (now.getMinutes() * 60)) * 1000;
+		long diffInMillies = Math.abs(registerDate.getTime() - now.getTime());
+		if (diffInMillies < 0) {
+			return false;
+		}
+
+		if (diffInMillies < limitTimeMillis) {
+			if (registerTimeMillis < timeShift1) {
+				if (currentTimeMillis <= timeShift1 || timeShift4 - currentTimeMillis < extraBeforeShiftMillis) {
+					return false;
+				}
+			} else if (registerTimeMillis < timeShift2) {
+				if (timeShift1 - currentTimeMillis < extraBeforeShiftMillis) {
+					return false;
+				}
+
+			} else if (registerTimeMillis < timeShift3) {
+				if (timeShift2 - currentTimeMillis < extraBeforeShiftMillis) {
+					return false;
+				}
+			} else if (registerTimeMillis < timeShift4) {
+				if (timeShift3 - currentTimeMillis < extraBeforeShiftMillis) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }

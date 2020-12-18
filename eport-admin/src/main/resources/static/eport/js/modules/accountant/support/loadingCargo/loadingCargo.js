@@ -564,7 +564,15 @@ function houseBillBtnRenderer(instance, td, row, col, prop, value, cellPropertie
     shipmentDetailId = sourceData[row].id;
   }
   if (shipmentDetailId != null) {
-    value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>House Bill</button>';
+    let service = sourceData[row].specialService;
+    let title = "Thông tin hàng hóa container";
+    let buttonTitle = "Chi tiết";
+    if (6 == service) {
+      // Kho cfs
+      title = "Thông tin house bill"
+      buttonTitle = "House bill";
+    }
+    value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ',\'' + title + '\')"><i class="fa fa-check-circle"></i>' + buttonTitle + '</button>';
     $(td).html(value);
   }
   cellProperties.readOnly = 'true';
@@ -1303,12 +1311,12 @@ function openHistoryFormEport(row) {
   }
 }
 
-function openHouseBillForm(shipmentDetailId) {
+function openHouseBillForm(shipmentDetailId, title) {
   if (shipmentDetailId == null) {
     $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
     return;
   }
-  $.modal.openCustomForm("Thông tin house bill", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
+  $.modal.openCustomForm(title, PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
 }
 
 function applyPrice() {

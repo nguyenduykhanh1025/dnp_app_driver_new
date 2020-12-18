@@ -132,6 +132,10 @@ public class GateDetection extends BaseEntity
 	private String fe2;
 
 	private String remark;
+	
+	private String sendResult1;
+
+	private String sendResult2;
 
     public void setId(Long id) 
     {
@@ -426,6 +430,22 @@ public class GateDetection extends BaseEntity
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public String getSendResult1() {
+		return sendResult1;
+	}
+
+	public void setSendResult1(String sendResult1) {
+		this.sendResult1 = sendResult1;
+	}
+
+	public String getSendResult2() {
+		return sendResult2;
+	}
+
+	public void setSendResult2(String sendResult2) {
+		this.sendResult2 = sendResult2;
 	}
 
 	@Override

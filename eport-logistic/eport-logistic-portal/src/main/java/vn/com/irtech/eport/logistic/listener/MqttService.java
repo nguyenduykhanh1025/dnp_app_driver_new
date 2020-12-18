@@ -410,9 +410,11 @@ public class MqttService implements MqttCallback {
 		case NOTIFICATION_CONT:
 			notificationReq.setType(EportConstants.APP_USER_TYPE_CONT);
 			topic = NOTIFICATION_CONT_TOPIC;
+			break;
 		case NOTIFICATION_CFS:
 			notificationReq.setType(EportConstants.APP_USER_TYPE_CFS);
 			topic = NOTIFICATION_CFS_TOPIC;
+			break;
 		}
 		String msg = new Gson().toJson(notificationReq);
 		publish(topic, new MqttMessage(msg.getBytes()));

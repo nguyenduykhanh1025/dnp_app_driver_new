@@ -7,52 +7,52 @@ var allChecked, checkList, cfsHouseBillList, cfsHouseBillIds;
 
 $(document).ready(function () {
 
-  // if (shipmentImages.length > 0) {
-  //   shipmentImages.forEach(shipmentImage => {
-  //     let html = `<div class="preview-block">
-  //       <a href="${shipmentImage.path}" target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" style="width: 30px; height: 29px;"/></a>
-  //       <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + shipmentImage.id + `)" >
-  //       <span aria-hidden="true">&times;</span>
-  //       </button>
-  //       </div>`;
-  //     $('.preview-container').append(html);
-  //   });
-  // }
+  if (shipmentImages.length > 0) {
+    shipmentImages.forEach(shipmentImage => {
+      let html = `<div class="preview-block">
+        <a href="${shipmentImage.path}" target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" style="width: 30px; height: 29px;"/></a>
+        <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + shipmentImage.id + `)" >
+        <span aria-hidden="true">&times;</span>
+        </button>
+        </div>`;
+      $('.preview-container').append(html);
+    });
+  }
 
-  // let previewTemplate = '<span data-dz-name></span>';
-  // // Attach house bill
-  // myDropzone = new Dropzone("#dropzone", {
-  //   url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/file",
-  //   method: "post",
-  //   paramName: "file",
-  //   maxFiles: 5,
-  //   maxFilesize: 10, //MB
-  //   // autoProcessQueue: false,
-  //   previewTemplate: previewTemplate,
-  //   previewsContainer: ".preview-container", // Define the container to display the previews
-  //   clickable: "#attachButton", // Define the element that should be used as click trigger to select files.
-  //   init: function () {
-  //     this.on("maxfilesexceeded", function (file) {
-  //       $.modal.alertError("Số lượng tệp đính kèm vượt số lượng cho phép.");
-  //       this.removeFile(file);
-  //     });
-  //   },
-  //   success: function (file, response) {
-  //     if (response.code == 0) {
-  //       $.modal.msgSuccess("Đính kèm tệp thành công.");
-  //       let shipmentImage = response.shipmentFile
-  //       let html = `<div class="preview-block">
-  //         <a href="${shipmentImage.path}" target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" style="width: 30px; height: 29px;"/></a>
-  //         <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + shipmentImage.id + `)" >
-  //         <span aria-hidden="true">&times;</span>
-  //         </button>
-  //         </div>`;
-  //       $('.preview-container').append(html);
-  //     } else {
-  //       $.modal.alertError("Đính kèm tệp thất bại, vui lòng thử lại sau.");
-  //     }
-  //   }
-  // });
+  let previewTemplate = '<span data-dz-name></span>';
+  // Attach house bill
+  myDropzone = new Dropzone("#dropzone", {
+    url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/file",
+    method: "post",
+    paramName: "file",
+    maxFiles: 5,
+    maxFilesize: 10, //MB
+    // autoProcessQueue: false,
+    previewTemplate: previewTemplate,
+    previewsContainer: ".preview-container", // Define the container to display the previews
+    clickable: "#attachButton", // Define the element that should be used as click trigger to select files.
+    init: function () {
+      this.on("maxfilesexceeded", function (file) {
+        $.modal.alertError("Số lượng tệp đính kèm vượt số lượng cho phép.");
+        this.removeFile(file);
+      });
+    },
+    success: function (file, response) {
+      if (response.code == 0) {
+        $.modal.msgSuccess("Đính kèm tệp thành công.");
+        let shipmentImage = response.shipmentFile
+        let html = `<div class="preview-block">
+          <a href="${shipmentImage.path}" target="_blank"><img src="` + ctx + `img/document.png" alt="Tài liệu" style="width: 30px; height: 29px;"/></a>
+          <button type="button" class="close" aria-label="Close" onclick="removeImage(this, ` + shipmentImage.id + `)" >
+          <span aria-hidden="true">&times;</span>
+          </button>
+          </div>`;
+        $('.preview-container').append(html);
+      } else {
+        $.modal.alertError("Đính kèm tệp thất bại, vui lòng thử lại sau.");
+      }
+    }
+  });
 
   $("#houseBillNumber").on("input", function () {
     if ($("#houseBillNumber").val()) {
@@ -96,27 +96,27 @@ $(document).ready(function () {
   loadHouseBill();
 });
 
-// function removeImage(element, fileId) {
-//   $.ajax({
-//     url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/file",
-//     method: "DELETE",
-//     data: {
-//       id: fileId
-//     },
-//     beforeSend: function () {
-//       $.modal.loading("Đang xử lý, vui lòng chờ...");
-//     },
-//     success: function (result) {
-//       $.modal.closeLoading();
-//       if (result.code == 0) {
-//         $.modal.msgSuccess("Xóa tệp thành công.");
-//         $(element).parent("div.preview-block").remove();
-//       } else {
-//         $.modal.msgError("Xóa tệp thất bại.");
-//       }
-//     }
-//   });
-// }
+function removeImage(element, fileId) {
+  $.ajax({
+    url: PREFIX + "/shipment-detail/" + shipmentDetailId + "/file",
+    method: "DELETE",
+    data: {
+      id: fileId
+    },
+    beforeSend: function () {
+      $.modal.loading("Đang xử lý, vui lòng chờ...");
+    },
+    success: function (result) {
+      $.modal.closeLoading();
+      if (result.code == 0) {
+        $.modal.msgSuccess("Xóa tệp thành công.");
+        $(element).parent("div.preview-block").remove();
+      } else {
+        $.modal.msgError("Xóa tệp thất bại.");
+      }
+    }
+  });
+}
 
 // LOAD SHIPMENT DETAIL LIST
 function loadHouseBill() {
@@ -288,6 +288,20 @@ function cubicMeterRenderer(instance, td, row, col, prop, value, cellProperties)
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
+function cargoDescriptionRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (value == null) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
+function equipmentRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (value == null) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
 function forwarderRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value == null) {
     value = '';
@@ -320,24 +334,33 @@ function configHandson() {
           txt += ">";
           return txt;
         case 1:
-          return "Đơn Vị Tính"
+          return "Loại Hàng";
         case 2:
-          return "Số Lượng";
+          return "Đơn Vị Tính";
         case 3:
-          return "Trọng Lượng";
+          return "Số Lượng";
         case 4:
-          return "Số Khối";
+          return "Trọng Lượng";
         case 5:
+          return "Chi Tiết<br>(Dài x Rộng x Cao)";
+        case 6:
+          return "Phương tiện";
+        case 7:
           return "Ghi chú";
       }
     },
-    colWidths: [40, 100, 90, 90, 90, 200],
+    colWidths: [40, 100, 100, 90, 90, 120, 100, 200],
     columns: [
       {
         data: "active",
         type: "checkbox",
         className: "htCenter",
         renderer: checkBoxRenderer
+      },
+      {
+        data: "cargoDescription",
+        className: "htCenter",
+        renderer: cargoDescriptionRenderer
       },
       {
         data: "packagingType",
@@ -358,6 +381,11 @@ function configHandson() {
         data: "cubicMeter",
         className: "htCenter",
         renderer: cubicMeterRenderer
+      },
+      {
+        data: "equipment",
+        className: "htCenter",
+        renderer: equipmentRenderer
       },
       {
         data: "forwarderRemark",
@@ -385,7 +413,7 @@ function configHandson() {
         // Arrow Right
         case 39:
           selected = hot.getSelected()[0];
-          if (selected[3] == 5) {
+          if (selected[3] == 7) {
             e.stopImmediatePropagation();
           }
           break
@@ -474,7 +502,9 @@ function getDataSelectedFromTable(isValidate) {
     cfsHouseBill.quantity = object["quantity"]; // So luong
     cfsHouseBill.packagingType = object["packagingType"]; // Don vi tinh
     cfsHouseBill.weight = object["weight"]; // Trong luong
-    cfsHouseBill.cubicMeter = object["cubicMeter"]; // So khoi
+    cfsHouseBill.cargoDescription = object["cargoDescription"]; // Trong luong
+    cfsHouseBill.equipment = object["equipment"]; // Phuong tien
+    cfsHouseBill.cubicMeter = object["cubicMeter"]; // Chi tiet (dai x rong x cao)
     cfsHouseBill.forwarderRemark = object["forwarderRemark"]; // Ghi chu
     cfsHouseBillList.push(cfsHouseBill);
     cfsHouseBillIds += object["id"] + ",";
@@ -504,7 +534,8 @@ function getDataFromTable() {
       dataTable[i].packagingType ||
       dataTable[i].weight ||
       dataTable[i].cubicMeter ||
-      dataTable[i].marks ||
+      dataTable[i].cargoDescription ||
+      dataTable[i].equipment ||
       dataTable[i].forwarderRemark) {
       results.push(dataItemTable);
     }
