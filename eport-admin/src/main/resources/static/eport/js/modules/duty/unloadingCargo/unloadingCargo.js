@@ -684,7 +684,14 @@ function specialServiceRenderer(instance, td, row, col, prop, value, cellPropert
   );
   return td;
 }
-
+function userMobilePhoneRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
 function actualDateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (value != null && value != '') {
@@ -776,10 +783,12 @@ function configHandsond() {
         case 24:
           return "Người Thanh Toán";
         case 25:
+          return 'Số điện thoại<br>người đăng ký';
+        case 26:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 170, 130, 100, 100, 100, 120, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 200],
+    colWidths: [23, 21, 21, 170, 130, 100, 100, 100, 120, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 130, 200],
     filter: "true",
     columns: [
       {
@@ -913,6 +922,10 @@ function configHandsond() {
         data: "remark",
         renderer: remarkRenderer,
       },
+      {
+        data: "userMobilePhone",
+        renderer: userMobilePhoneRenderer
+      },
     ],
     beforeKeyDown: function (e) {
       let selected = hot.getSelected()[0];
@@ -931,7 +944,7 @@ function configHandsond() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 25) {
+          if (selected[3] == 26) {
             e.stopImmediatePropagation();
           }
           break

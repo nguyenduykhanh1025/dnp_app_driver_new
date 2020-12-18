@@ -652,7 +652,8 @@ public class LogisticUnloadingCargoYardController extends LogisticBaseController
 			}
 
 			// Create list req for order receive cont empty
-			shipmentDetailService.makeOrderUnloadingCargo(shipmentDetails, shipment, taxCode, creditFlag);
+			shipmentDetailService.makeOrderUnloadingCargo(shipmentDetails, shipment, taxCode, creditFlag,
+					getUser().getMobile());
 			return success();
 		}
 

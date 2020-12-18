@@ -479,6 +479,14 @@ function orderNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
+function userMobilePhoneRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).addClass("htMiddle").addClass("htCenter");
+  if (!value) {
+    value = '';
+  }
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+  return td;
+}
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (!value) {
@@ -645,7 +653,7 @@ function configHandsond() {
         case 5:
           return "Container No";
         case 6:
-          return "House Bill";
+          return "Chi Tiết";
         case 7:
           return '<span class="required">Nơi Đóng Hàng</span>';
         case 8:
@@ -679,10 +687,12 @@ function configHandsond() {
         case 22:
           return 'Người Thanh Toán';
         case 23:
+          return 'Số điện thoại<br>người đăng ký';
+        case 24:
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 105, 130, 100, 100, 150, 120, 120, 120, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 200],
+    colWidths: [23, 21, 21, 105, 130, 100, 100, 150, 120, 120, 120, 100, 200, 100, 80, 150, 150, 100, 120, 150, 100, 130, 130, 130, 200],
     filter: "true",
     columns: [
       {
@@ -804,6 +814,10 @@ function configHandsond() {
         renderer: payerNameRenderer
       },
       {
+        data: "userMobilePhone",
+        renderer: userMobilePhoneRenderer
+      },
+      {
         data: "remark",
         renderer: remarkRenderer
       }
@@ -825,7 +839,7 @@ function configHandsond() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 23) {
+          if (selected[3] == 24) {
             e.stopImmediatePropagation();
           }
           break
