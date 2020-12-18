@@ -134,6 +134,12 @@ public class CfsLoadingCargoController extends AdminBaseController {
 		return PREFIX + "/confirmation";
 	}
 
+	@GetMapping("/row/{rowIndex}/calendar")
+	public String getCalendarInputForm(@PathVariable("rowIndex") Integer rowIndex, ModelMap mmap) {
+		mmap.put("rowIndex", rowIndex);
+		return PREFIX + "/calendar";
+	}
+
 	@PostMapping("/shipments")
 	@ResponseBody
 	public AjaxResult getShipments(@RequestBody PageAble<Shipment> param) {

@@ -1867,7 +1867,15 @@ function getDataFromTable(isValidate) {
     shipmentDetail.processStatus = shipmentSelected.taxCode;
     shipmentDetail.customStatus = shipmentSelected.groupName;
     shipmentDetail.tier = shipmentSelected.containerAmount;
-    shipmentDetail.dateReceipt = formatDateToSendServer(object["dateReceipt"]);
+    let receiptDate = formatDateToSendServer(object["dateReceipt"]);
+        if (receiptDate) {
+            if (!checkRegisterDate(receiptDate)) {
+                $.modal.alertError("Hàng " + (index + 1) + ": Thời gian đăng ký rút hàng của quý khách quá sớm so với thời điểm hiện tại, vui lòng chọn thời gian khác.");
+                errorFlg = true;
+                return false;
+            }
+            shipmentDetail.dateReceipt = receiptDate.getTime();
+        }
     shipmentDetails.push(shipmentDetail);
     let now = new Date();
     now.setHours(0, 0, 0);
@@ -2535,7 +2543,44 @@ function formatDateToSendServer(date) {
 
   // set seconds
   dateReceipt.setSeconds(0);
-  return dateReceipt.getTime();
+  return dateReceipt;
+}
+
+function checkRegisterDate(registerDate) {
+  let registerTimeMillis = ((registerDate.getHours() * 60 * 60) + (registerDate.getMinutes() * 60)) * 1000;
+  let timeShift1 = 6 * 60 * 60 * 1000;
+  let timeShift2 = 12 * 60 * 60 * 1000;
+  let timeShift3 = 18 * 60 * 60 * 1000;
+  let timeShift4 = 24 * 60 * 60 * 1000;
+  let limitTimeMillis = ((8 * 60 * 60) + (30 * 60)) * 1000;
+  let now = new Date();
+  let extraBeforeShiftMillis = 30 * 60 * 1000 * 3;
+  let currentTimeMillis = ((now.getHours() * 60 * 60) + (now.getMinutes() * 60)) * 1000;
+  let diffInMillies = Math.abs(registerDate.getTime() - now.getTime());
+  if (diffInMillies < 0) {
+      return false;
+  }
+  if (diffInMillies < limitTimeMillis) {
+      if (registerTimeMillis < timeShift1) {
+          if (currentTimeMillis <= timeShift1 || timeShift4 - currentTimeMillis < extraBeforeShiftMillis) {
+              return false;
+          }
+      } else if (registerTimeMillis < timeShift2) {
+          if (timeShift1 - currentTimeMillis < extraBeforeShiftMillis) {
+              return false;
+          }
+
+      } else if (registerTimeMillis < timeShift3) {
+          if (timeShift2 - currentTimeMillis < extraBeforeShiftMillis) {
+              return false;
+          }
+      } else if (registerTimeMillis < timeShift4) {
+          if (timeShift3 - currentTimeMillis < extraBeforeShiftMillis) {
+              return false;
+          }
+      }
+  }
+  return true;
 }
 
 function chooseDateReceipt(rowIndex) {
