@@ -178,8 +178,10 @@ let typeO = true;// qua kho
 function confirm() {
   var truckNo = $("#truckNo").val();
   var chassisNo = $("#chassisNo").val();
-  if (shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ) {
+ 
+ if (shipmentDetail.sztp.includes("R") && (shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ)) {
     saveFile();
+    //insertCont();
     $.modal.close();
     return;
   }
