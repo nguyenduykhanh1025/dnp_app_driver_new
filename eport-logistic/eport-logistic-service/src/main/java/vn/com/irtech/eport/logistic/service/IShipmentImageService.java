@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.service;
 
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 
 import java.util.List;
@@ -54,6 +55,9 @@ public interface IShipmentImageService {
      * @return ShipmentImage
      */
     public ShipmentImage selectShipmentImageById(ShipmentImage shipmentImage);
+    
+    
+    public List<ShipmentImage> selectShipmentImagesByshipmentDetailIds(String shipmentDetailIds);
     
     /**
      * Delete shipment image by id

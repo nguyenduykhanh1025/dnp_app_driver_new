@@ -25,8 +25,69 @@ public class ShipmentImage extends BaseEntity {
     private String shipmentDetailId;
     
     private String fileType;
+    
+    private String sztp;
+    
+    private String oversizeTop;
+    
+    private String oversizeRight;
+    
+    private String oversizeLeft;
+    
+    private String truckNo;
+    
+	private String chassisNo;
      
-    public String getFileType() {
+	
+    public String getTruckNo() {
+		return truckNo;
+	}
+
+	public void setTruckNo(String truckNo) {
+		this.truckNo = truckNo;
+	}
+
+	public String getChassisNo() {
+		return chassisNo;
+	}
+
+	public void setChassisNo(String chassisNo) {
+		this.chassisNo = chassisNo;
+	}
+
+	public String getSztp() {
+		return sztp;
+	}
+
+	public void setSztp(String sztp) {
+		this.sztp = sztp;
+	}
+
+	public String getOversizeTop() {
+		return oversizeTop;
+	}
+
+	public void setOversizeTop(String oversizeTop) {
+		this.oversizeTop = oversizeTop;
+	}
+
+	public String getOversizeRight() {
+		return oversizeRight;
+	}
+
+	public void setOversizeRight(String oversizeRight) {
+		this.oversizeRight = oversizeRight;
+	}
+
+	public String getOversizeLeft() {
+		return oversizeLeft;
+	}
+
+	public void setOversizeLeft(String oversizeLeft) {
+		this.oversizeLeft = oversizeLeft;
+	}
+
+	public String getFileType() {
 		return fileType;
 	}
 

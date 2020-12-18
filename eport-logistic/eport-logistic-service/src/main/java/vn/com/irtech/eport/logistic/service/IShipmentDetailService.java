@@ -104,9 +104,8 @@ public interface IShipmentDetailService {
 	
 	public List<ShipmentDetail> selectConfirmShipmentDetailByIds(String shipmentDetailIds);
 	
+	public List<ShipmentDetail> selectConfirmShipmentDetailByshipmentDetailIds(String shipmentDetailIds);
 	 
-	
-
 	public long countShipmentDetailList(ShipmentDetail shipmentDetail);
 
 	/**
