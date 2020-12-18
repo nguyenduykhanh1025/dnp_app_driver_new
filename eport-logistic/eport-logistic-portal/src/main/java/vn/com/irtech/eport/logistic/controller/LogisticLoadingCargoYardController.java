@@ -825,14 +825,9 @@ public class LogisticLoadingCargoYardController extends LogisticBaseController {
 						"Chưa nhập thông tin hàng hóa cho container " + shipmentDetails.get(i).getContainerNo() + ".");
 			}
 
-			Date now = new Date();
-			Date registerDate = shipmentDetails.get(0).getDateReceipt();
-			// register date - now < 9.5 hours
-			long restrictedMilliSeconds = ((9 * 60 * 60) + (30 * 60)) * 1000; // 9.5 h to milliseconds
-			long periodMilliSeconds = 6 * 60 * 60 * 1000; // 6h to milliseconds
-			long diffInMillies = Math.abs(registerDate.getTime() - now.getTime());
-			if (diffInMillies < restrictedMilliSeconds) {
-
+			if (!checkRegisterTime(shipmentDetails.get(i).getDateReceipt())) {
+				return error("Hàng " + (i + 1)
+						+ ": Thời gian đăng ký đóng hàng hiện tại không hợp lệ, quý khách vui lòng chọn thời gian đăng ký đóng hàng khác. ");
 			}
 		}
 
@@ -1173,5 +1168,10 @@ public class LogisticLoadingCargoYardController extends LogisticBaseController {
 			shipmentImageService.deleteShipmentImageById(id);
 		}
 		return success();
+	}
+
+	private Boolean checkRegisterTime(Date registerDate) {
+		// TODO : check register time
+		return true;
 	}
 }

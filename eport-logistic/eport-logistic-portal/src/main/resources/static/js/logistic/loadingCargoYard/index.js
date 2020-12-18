@@ -594,8 +594,9 @@ function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties
     } else {
         value = '';
     }
-    $(td).html(`<div onclick="chooseDateReceipt(` + row + `)" style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">` + value 
-    + `</div>`);
+    cellProperties.readOnly = 'true';
+    $(td).html(`<div onclick="chooseDateReceipt(` + row + `)" style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">` + value
+        + ` <a class="fa fa-calendar"></a></div>`);
     return td;
 }
 

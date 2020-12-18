@@ -248,17 +248,6 @@ function cubicMeterRenderer(instance, td, row, col, prop, value, cellProperties)
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
-function marksRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value == null) {
-    value = '';
-  }
-  if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
-  return td;
-}
 function forwarderRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value == null) {
     value = '';
@@ -270,30 +259,18 @@ function forwarderRemarkRenderer(instance, td, row, col, prop, value, cellProper
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
-
-function houseBillRenderer(instance, td, row, col, prop, value, cellProperties) {
+function cargoDescriptionRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value == null) {
     value = '';
-  }
-  if (row.dateReceiptStatus && 'L' == row.dateReceiptStatus) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
   }
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
-
-function storageFromDateRenderer(instance, td, row, col, prop, value, cellProperties) {
-  $(td).addClass("htMiddle").addClass("htCenter");
-  if (!value || value == null) {
+function equipmentRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (value == null) {
     value = '';
   }
-  if (value != null && value != '') {
-    if (value.substring(2, 3) != "/") {
-      value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
-    }
-  }
-  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis;">' + value + '</div>');
+  $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
   return td;
 }
 
@@ -316,26 +293,27 @@ function configHandson() {
     colHeaders: function (col) {
       switch (col) {
         case 0:
-          return "Số Lượng";
+          return "Loại Hàng";
         case 1:
-          return "Đơn Vị Tính"
+          return "Đơn Vị Tính";
         case 2:
           return "Số Lượng";
         case 3:
           return "Trọng Lượng";
         case 4:
-          return "Số Khối";
+          return "Chi Tiết<br>(Dài x Rộng x Cao)";
         case 5:
+          return "Phương tiện";
+        case 6:
           return "Ghi chú";
       }
     },
-    colWidths: [40, 100, 90, 90, 90, 200],
+    colWidths: [100, 100, 90, 90, 120, 100, 200],
     columns: [
       {
-        data: "active",
-        type: "checkbox",
+        data: "cargoDescription",
         className: "htCenter",
-        renderer: checkBoxRenderer
+        renderer: cargoDescriptionRenderer
       },
       {
         data: "packagingType",
@@ -356,6 +334,11 @@ function configHandson() {
         data: "cubicMeter",
         className: "htCenter",
         renderer: cubicMeterRenderer
+      },
+      {
+        data: "equipment",
+        className: "htCenter",
+        renderer: equipmentRenderer
       },
       {
         data: "forwarderRemark",
@@ -383,7 +366,7 @@ function configHandson() {
         // Arrow Right
         case 39:
           selected = hot.getSelected()[0];
-          if (selected[3] == 5) {
+          if (selected[3] == 6) {
             e.stopImmediatePropagation();
           }
           break
