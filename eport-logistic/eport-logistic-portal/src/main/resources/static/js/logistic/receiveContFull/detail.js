@@ -435,13 +435,13 @@ function statusIconRenderer(instance, td, row, col, prop, value, cellProperties)
   let status = "";
   // if (row == 0) {
   //   value = shipmentDetail.powerDrawDateStatus;
-    if (value == "P") {
-      status = '<i id="status" class="fa fa-check  easyui-tooltip" title="Container đang chờ xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #f8ac59;"></i>';
-    } else if (value === "S") {
-      status = '<i id="status" class="fa fa-check  easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
-    } else if (value === "E") {
-      status = '<i id="status" class="fa fa-check  easyui-tooltip" title="Container đã bị từ chối xác nhận gia hạn rút điện" aria-hidden="true" style="color: #ef6776;"></i>';
-    }
+  if (value == "P") {
+    status = '<i id="status" class="fa fa-check  easyui-tooltip" title="Container đang chờ xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #f8ac59;"></i>';
+  } else if (value === "S") {
+    status = '<i id="status" class="fa fa-check  easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
+  } else if (value === "E") {
+    status = '<i id="status" class="fa fa-check  easyui-tooltip" title="Container đã bị từ chối xác nhận gia hạn rút điện" aria-hidden="true" style="color: #ef6776;"></i>';
+  }
   // } else {
   //   // status
   //   status = '<i id="status" class="fa fa-clock-ofa-flip-horizontal easyui-tooltip" title="Container đã được xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
@@ -574,11 +574,12 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     result += btnCancel;
   } else if (sourceData[row].status == "E") {
     result += "Đã bị từ chối"
-  }
-  else if (!isDisplayInformationPayment(row)) {
+  } else if (!isDisplayInformationPayment(row)) {
     result += 'Thanh toán sau';
   } else if (shipmentDetail.powerDrawDateStatus == "S" && PAYMENT_STATUS.process == sourceData[row].paymentStatus) {
     result += btnPayment;
+  } else if (sourceData[row].paymentStatus == PAYMENT_STATUS.success) {
+    result += "Đã thanh toán"
   }
   // if (sourceData[row].paymentStatus == PAYMENT_STATUS.error) {
   //   result += "Đã hủy gia hạn"
@@ -615,9 +616,9 @@ function extendPowerDrawDate() {
   }
   else if (shipmentDetail.frozenStatus != 'Y' || shipmentDetail.powerDrawDateStatus == 'P' || sourceData[0].paymentStatus == PAYMENT_STATUS.process) {
     if (shipmentDetail.powerDrawDateStatus == 'P') {
-      $.modal.alertError("Không thể yếu cầu gia hạn do container chưa được xác nhận yêu cầu gia hạn rút điện.");
+      $.modal.alertError("Không thể yêu cầu gia hạn do container chưa được xác nhận yêu cầu gia hạn rút điện.");
     } else if (shipmentDetail.frozenStatus != 'Y') {
-      $.modal.alertError("Không thể yếu cầu gia hạn do Container đang được xét duyệt từ tổ lạnh.");
+      $.modal.alertError("Không thể yêu cầu gia hạn do Container chưa được xét duyệt từ tổ lạnh.");
     } else if (sourceData[0].paymentStatus == PAYMENT_STATUS.process) {
       $.modal.alertError("Container gia hạn chưa được thanh toán.");
     }
