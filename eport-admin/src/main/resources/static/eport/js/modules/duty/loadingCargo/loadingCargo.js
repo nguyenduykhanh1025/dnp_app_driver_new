@@ -106,7 +106,7 @@ $(document).ready(function () {
           shipment.params.dateReceiptStatus = null;
           break;
         case 'N':
-          shipment.params.dateReceiptStatus = 'N';
+          shipment.params.dateReceiptStatus = 'W';
           break;
         case 'Y':
           shipment.params.dateReceiptStatus = 'Y';

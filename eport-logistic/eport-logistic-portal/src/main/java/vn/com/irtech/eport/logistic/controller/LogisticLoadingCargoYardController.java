@@ -1171,7 +1171,40 @@ public class LogisticLoadingCargoYardController extends LogisticBaseController {
 	}
 
 	private Boolean checkRegisterTime(Date registerDate) {
-		// TODO : check register time
+		long registerTimeMillis = ((registerDate.getHours() * 60 * 60) + (registerDate.getMinutes() * 60)) * 1000;
+		long timeShift1 = 6 * 60 * 60 * 1000;
+		long timeShift2 = 12 * 60 * 60 * 1000;
+		long timeShift3 = 18 * 60 * 60 * 1000;
+		long timeShift4 = 24 * 60 * 60 * 1000;
+		long limitTimeMillis = ((8 * 60 * 60) + (30 * 60)) * 1000;
+		Date now = new Date();
+		long extraBeforeShiftMillis = 30 * 60 * 1000 * 3;
+		long currentTimeMillis = ((now.getHours() * 60 * 60) + (now.getMinutes() * 60)) * 1000;
+		long diffInMillies = Math.abs(registerDate.getTime() - now.getTime());
+		if (diffInMillies < 0) {
+			return false;
+		}
+
+		if (diffInMillies < limitTimeMillis) {
+			if (registerTimeMillis < timeShift1) {
+				if (currentTimeMillis <= timeShift1 || timeShift4 - currentTimeMillis < extraBeforeShiftMillis) {
+					return false;
+				}
+			} else if (registerTimeMillis < timeShift2) {
+				if (timeShift1 - currentTimeMillis < extraBeforeShiftMillis) {
+					return false;
+				}
+
+			} else if (registerTimeMillis < timeShift3) {
+				if (timeShift2 - currentTimeMillis < extraBeforeShiftMillis) {
+					return false;
+				}
+			} else if (registerTimeMillis < timeShift4) {
+				if (timeShift3 - currentTimeMillis < extraBeforeShiftMillis) {
+					return false;
+				}
+			}
+		}
 		return true;
 	}
 }
