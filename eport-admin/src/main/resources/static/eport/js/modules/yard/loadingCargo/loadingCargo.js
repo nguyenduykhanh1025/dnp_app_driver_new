@@ -93,36 +93,25 @@ $(document).ready(function () {
     data: [
       {
         "finishValue": 'N',
-        "finishKey": "Chưa xác nhận ngày đóng",
+        "finishKey": "Chưa hoàn thành",
         "selected": true
-      },
-      {
-        "finishValue": 'M',
-        "finishKey": "Đã xác nhận ngày đóng",
       }, {
         "finishValue": 'Y',
         "finishKey": "Đã hoàn thành"
       }, {
         "finishValue": 'null',
         "finishKey": "Tất cả"
-    }],
+      }],
     onSelect: function (finishStatus) {
       switch (finishStatus.finishValue) {
         case 'null':
           shipment.params.finishStatus = null;
-          shipment.params.dateReceiptStatus = null;
           break;
         case 'N':
           shipment.params.finishStatus = 'N';
-          shipment.params.dateReceiptStatus = 'W';
-          break;
-        case 'M':
-          shipment.params.finishStatus = 'N';
-          shipment.params.dateReceiptStatus = 'Y';
           break;
         case 'Y':
           shipment.params.finishStatus = 'Y';
-          shipment.params.dateReceiptStatus = null;
           break;
       }
       loadTable();
@@ -600,7 +589,7 @@ function specialServiceRenderer(instance, td, row, col, prop, value, cellPropert
     if (6 == value) {
       value = "Kho CFS"
     } else if (value == 7) {
-      value = "Bãi CFS";
+      value = "Bãi Cảng";
     }
   } else {
     value = '';
@@ -616,13 +605,8 @@ function specialServiceRenderer(instance, td, row, col, prop, value, cellPropert
 function actualDateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (value != null && value != '') {
-    if (value.substring(2, 3) != "/") {
+    if (value.length >= 16) {
       value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4) + " " + value.substring(10, 16);
-    } else {
-      if (value.length <= 10) {
-        value += " 00:00";
-        hot.setDataAtCell(row, 9, value);
-      }
     }
   } else {
     value = '';

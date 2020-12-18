@@ -147,7 +147,7 @@ public class YardMonitorLoadingCargoController extends AdminBaseController {
 		if (params == null) {
 			params = new HashMap<String, Object>();
 		}
-		params.put("paymentStatus", "Y");
+		params.put("dateReceiptStatus", "Y");
 		shipment.setParams(params);
 		shipment.setServiceType(EportConstants.SERVICE_LOADING_CARGO_YARD);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
@@ -161,7 +161,7 @@ public class YardMonitorLoadingCargoController extends AdminBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setPaymentStatus("Y");
+		shipmentDetail.setDateReceiptStatus("Y");
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;
@@ -286,24 +286,5 @@ public class YardMonitorLoadingCargoController extends AdminBaseController {
 		ajaxResult.put("oprList", oprCodeList);
 
 		return ajaxResult;
-	}
-
-	@PostMapping("/date-receipt")
-	@ResponseBody
-	@Transactional
-	public AjaxResult confirmDateReceipt(String shipmentDetailIds) {
-		// Get all shipment detail
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
-		if (CollectionUtils.isEmpty(shipmentDetails)) {
-			return error("Không tìm thấy container cần xác nhận, vui lòng kiểm tra lại.");
-		}
-		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			if (shipmentDetail.getActualDateReceipt() == null) {
-				shipmentDetail.setActualDateReceipt(shipmentDetail.getDateReceipt());
-			}
-			shipmentDetail.setDateReceiptStatus("Y");
-			shipmentDetailService.updateShipmentDetail(shipmentDetail);
-		}
-		return success();
 	}
 }

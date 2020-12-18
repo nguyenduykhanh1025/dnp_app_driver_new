@@ -230,6 +230,12 @@ public class LogisticUnloadingCargoWarehouseController extends LogisticBaseContr
 		return PREFIX + "/confirmRequestCancel";
 	}
 
+	@GetMapping("/row/{rowIndex}/calendar")
+	public String getCalendarInputForm(@PathVariable("rowIndex") Integer rowIndex, ModelMap mmap) {
+		mmap.put("rowIndex", rowIndex);
+		return PREFIX + "/calendar";
+	}
+
 	@Log(title = "Thêm Lô Bốc Hàng", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment")
 	@Transactional
@@ -934,6 +940,11 @@ public class LogisticUnloadingCargoWarehouseController extends LogisticBaseContr
 					return error("Chưa nhập house bill cho container " + shipmentDetails.get(i).getContainerNo() + ".");
 				}
 			}
+
+			if (!checkRegisterTime(shipmentDetails.get(i).getDateReceipt())) {
+				return error("Hàng " + (i + 1)
+						+ ": Thời gian đăng ký rút hàng hiện tại không hợp lệ, quý khách vui lòng chọn thời gian đăng ký rút hàng khác. ");
+			}
 		}
 		// trim last ','
 		if (containerNos.length() > 0) {
@@ -1188,5 +1199,10 @@ public class LogisticUnloadingCargoWarehouseController extends LogisticBaseContr
 			shipmentImageService.deleteShipmentImageById(id);
 		}
 		return success();
+	}
+
+	private Boolean checkRegisterTime(Date registerDate) {
+		// TODO : check register time
+		return true;
 	}
 }

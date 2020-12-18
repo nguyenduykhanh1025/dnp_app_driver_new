@@ -28,11 +28,7 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.GateDetection;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
-import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IGateDetectionService;
-import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
-import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
-import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.web.dto.DetectionInfomation;
@@ -55,26 +51,10 @@ public class GateSupportController extends BaseController {
 
 	private static final Long TIME_OUT_WAIT_SEAL = 3000L;
 
-	private static final Long TIME_OUT_WAIT_WGT = 3000L;
-
 	private static final Integer RETRY_WAIT_SEAL = 100;
-
-	private static final Integer RETRY_WAIT_WGT = 3;
 
 	@Autowired
 	private WebSocketService webSocketService;
-
-	@Autowired
-	private ILogisticGroupService logisticGroupService;
-
-	@Autowired
-	private IDriverAccountService driverAccountService;
-
-	@Autowired
-	private IShipmentDetailService shipmentDetailService;
-
-	@Autowired
-	private IPickupHistoryService pickupHistoryService;
 
 	@Autowired
 	private ICatosApiService catosApiService;
@@ -215,7 +195,6 @@ public class GateSupportController extends BaseController {
 
 		// Check to get seal no
 		UpdateSealNo(gateNotificationCheckInReq);
-
 		checkQualifiedAutoGate(detectionInfo);
 	}
 
@@ -227,11 +206,15 @@ public class GateSupportController extends BaseController {
 				if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSendFE1())
 						&& "F".equalsIgnoreCase(gateNotificationCheckInReq.getSendFE1())
 						&& StringUtils.isEmpty(gateNotificationCheckInReq.getSealNo1())) {
+					logger.debug(
+							"Container " + gateNotificationCheckInReq.getContainerSend1() + " need to check seal no");
 					cont1 = false;
 				}
 				if (StringUtils.isNotEmpty(gateNotificationCheckInReq.getSendFE2())
 						&& "F".equalsIgnoreCase(gateNotificationCheckInReq.getSendFE2())
 						&& StringUtils.isEmpty(gateNotificationCheckInReq.getSealNo2())) {
+					logger.debug(
+							"Container " + gateNotificationCheckInReq.getContainerSend2() + " need to check seal no");
 					cont2 = false;
 				}
 				for (int i = 1; i <= RETRY_WAIT_SEAL; i++) {
@@ -244,6 +227,7 @@ public class GateSupportController extends BaseController {
 					if (CollectionUtils.isNotEmpty(sensorList) && sensorList.size() >= 3) {
 						if ((sensorList.get(0) == 0 && sensorList.get(1) == 0 && sensorList.get(2) == 0)
 								|| (sensorList.get(0) == 1 && sensorList.get(1) == 0 && sensorList.get(2) == 1)) {
+							logger.debug("Truck pass gate, stop update seal!");
 							break;
 						}
 					}
