@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Khai báo chung</title>
+	<th:block th:include="include :: header('Khai báo chung')" />
+	<th:block th:include="include :: datetimepicker-css" />
+	<link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
+	<link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+	<th:block th:include="include :: handsontable-css" />
+	<th:block th:include="include :: dropzone-css" />
+</head>
+
+<style>
+	img {
+		max-width: 40px;
+	}
+
+	.form-horizontal.mt10.row {
+		height: 47px !important;
+	}
+
+	content-2 {
+		height: 20px !important;
+	}
+
+	.preview-block {
+		float: left;
+	}
+
+	.tabs {
+		position: relative;
+		margin: 5px auto;
+	}
+
+	.datetimepicker {
+		background-color: #ffff !important;
+	}
+</style>
+
+
+<body>
+	<div class="container-fluid">
+		<div class="col-sm-12 text-black">
+			<!-- checked="checked" -->
+			<section class="tabs">
+				<div class="clear"></div>
+				<div class="content">
+
+					<div class="content-1" id="reeferContainer">
+						<div class="form-horizontal mt10 row">
+							<div class="form-group col-sm-6 row">
+								<span class="control-label col-sm-4 col-xs-6" style="text-align: left">
+									<b class="text-black">Ngày cắm điện<span style="color: #ff0000;font-weight: bolder;">*</span>:</b>
+								</span>
+								<div class="input-group date col-sm-8 col-xs-6" id="datetimepickerPowerSetupDate" >
+									<input type="text" class="form-control" name="powerSetupDate" id="powerSetupDate" />
+									<span class="input-group-addon" id="btnPowerSetupDate" >
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+
+							<div class="form-group col-sm-6 row" id="extendPowerDrawDateContainer">
+								<span class="control-label col-sm-4 col-xs-6" style="text-align: left">
+									<b class="text-black">Ngày gia hạn<span style="color: #ff0000;font-weight: bolder;">*</span>:</b>
+								</span>
+								<span class="input-group date col-sm-8 col-xs-6" id="datetimepickerPowerDrawDate" style="float: left;">
+									<input type="text" class="form-control" name="powerDrawDate" id="powerDrawDate" />
+									<span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</span>
+							</div>
+
+							<div class="form-group col-sm-6 row" id="extendPowerDrawDateContainer">
+								<span class="control-label col-sm-4 col-xs-6" style="text-align: left">
+									<b class="text-black">Đối tượng thanh toán<span
+											style="color: #ff0000;font-weight: bolder;">*</span>:</b>
+								</span>
+								<span class="input-group date col-sm-8 col-xs-6" style="float: left;">
+									<select class="form-control" id="slPaymentInformation">
+									</select>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</section>
+		</div>
+		<div class="col-sm-12 layui-layer-btn footer"
+			style="z-index: 1000; bottom: 0px;height: 50px;position: fixed;width: 100%;">
+			<a class="layui-layer-btn0" onclick="confirm()">Thêm</a>
+			<a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
+		</div>
+
+		<!-- </form> -->
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: datetimepicker-js" />
+	<th:block th:include="include :: dropzone-js" />
+	<th:block th:include="include :: handsontable-js" />
+	<script type="text/javascript" th:inline="javascript">
+		/**
+		 * Data load from server
+		*/
+		var shipmentDetailId = [[${ shipmentDetailId }]];
+
+	</script>
+	<script th:src="@{/eport/js/modules/reeferGroup/extendDrawDate/extendPowerInterrupted.js?v=20201034}"></script>
+</body>
+
+</html>

@@ -67,12 +67,26 @@
 			<section class="tabs">
 				<div class="clear"></div>
 				<div class="content">
-					<div class="form-horizontal mt10 row">
+					<div class="form-horizontal mt10 row" id="file-container">
 						<div class="form-group col-sm-12" id="dropzoneReefer" style="margin-top: 5px;">
 							<div class="preview-container-reefer col-md-12 col-sm-12 col-xs-12"></div>
 						</div>
 					</div>
 					<div class="content-1" id="reeferContainer">
+						<div class="form-horizontal mt10 row">
+							<div class="form-group col-sm-6 row">
+								<span class="control-label col-sm-2 col-xs-4"
+									style="padding: 0;margin-right: 40px;">
+									<button id="saveShipmentDetailBtn" onclick="extendPowerDrawDateInterrupted()"
+										class="btn btn-success"><i class="fa fa-plus text-primary" style="margin-right: 3px;"></i>Thêm Gia
+										Hạn</button>
+								</span>
+							</div>
+							<div class="form-group col-sm-6 row">
+
+							</div>
+						</div>
+
 						<div class="form-horizontal mt10 row">
 							<div class="form-group col-sm-12 row" style="max-height: 120px;">
 								<div class="datagrid-toolbar">
@@ -95,8 +109,6 @@
 			<a class="layui-layer-btn0" onclick="confirm()">Lưu</a>
 			<a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
 		</div>
-
-		<!-- </form> -->
 	</div>
 	<th:block th:include="include :: footer" />
 	<th:block th:include="include :: datetimepicker-js" />
@@ -117,8 +129,9 @@
 		var billPowers = [[${ billPowers }]];
 		var oprlistBookingCheck = [[${ oprlistBookingCheck }]];
 		var creditFlag = /*[[${creditFlag}]]*/;
+		var shipment = [[${ shipment }]];
 	</script>
-	<script th:src="@{/eport/js/modules/reeferGroup/extendDrawDate/detail.js?v=20201032}"></script>
+	<script th:src="@{/eport/js/modules/reeferGroup/extendDrawDate/detail.js?v=20201033}"></script>
 
 
 	<script type="text/javascript">

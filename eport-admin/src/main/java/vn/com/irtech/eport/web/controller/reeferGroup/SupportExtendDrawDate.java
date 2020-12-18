@@ -233,8 +233,52 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		mmap.put("creditFlag", logisticGroupService.selectLogisticGroupById(shipmentDetailFromDB.getLogisticGroupId())
 				.getCreditFlag());
 		mmap.put("billPowers", dictService.getType("bill_power"));
+		mmap.put("shipment", shipmentService.selectShipmentById(shipmentDetailFromDB.getShipmentId()));
 
 		return PREFIX + "/detail";
+	}
+
+	@GetMapping("/shipment-detail/{shipmentDetailId}/extend-power-interrupted")
+	public String getExtendInterruptedInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
+			ModelMap mmap) {
+		mmap.put("shipmentDetailId", shipmentDetailId);
+		return PREFIX + "/extendPowerInterrupted";
+	}
+
+	@PostMapping("/shipment-detail/{shipmentDetailId}/extend-power-interrupted")
+	@ResponseBody
+	public AjaxResult getExtendInterruptedInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
+			@RequestBody ReeferInfo reeferInfo) {
+		// validate
+		ReeferInfo reeferInfoOldFromDB = this.reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId)
+				.get(0);
+		if (!reeferInfoOldFromDB.getStatus().equals("S") && !reeferInfoOldFromDB.getStatus().equals("E")) {
+			return AjaxResult.error("Không thể gia hạn do thời gian gia hạn trước vấn chưa được chấp thuận");
+		} else if (reeferInfoOldFromDB.getPayType() != null && reeferInfoOldFromDB.getPayType().equals("Credit")
+				&& !reeferInfoOldFromDB.getPaymentStatus().equals("S")) {
+			return AjaxResult.error("Không thể gia hạn do thời gian gia hạn trước vấn chưa được thanh toán.");
+		} else if (reeferInfo.getDateGetPower().compareTo(reeferInfo.getDateSetPower()) < 0) {
+			return AjaxResult.error("Không thể gia hạn do thời gian cắm điện không thể lớn hơn thời gian rút điện.");
+		} else if (reeferInfo.getDateSetPower().compareTo(reeferInfoOldFromDB.getDateGetPower()) < 0) {
+			return AjaxResult
+					.error("Không thể gia hạn do thời gian cắm điện hiện tại nhỏ hơn thời gian rút điện trước đó.");
+		}
+
+		reeferInfo.setShipmentDetailId(shipmentDetailId);
+		reeferInfo.setStatus("S");
+		reeferInfo.setPaymentStatus("P");
+		reeferInfo.setUpdateBy(getUser().getUserName());
+
+		ShipmentDetail shipmentDetailFromDB = this.shipmentDetailService
+				.selectShipmentDetailByDetailId(shipmentDetailId.toString());
+		shipmentDetailFromDB.setDaySetupTemperature(reeferInfo.getDateSetPower());
+		shipmentDetailFromDB.setDaySetupTemperature(reeferInfo.getDateGetPower());
+		shipmentDetailFromDB.setPowerDrawDateStatus("S");
+		shipmentDetailFromDB.setUpdateBy(getUser().getUserName());
+
+		this.shipmentDetailService.updateShipmentDetail(shipmentDetailFromDB);
+		this.reeferInfoService.insertReeferInfo(reeferInfo);
+		return AjaxResult.success(reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId));
 	}
 
 	@PostMapping("/shipmentDetail/confirm")
@@ -273,12 +317,7 @@ public class SupportExtendDrawDate extends AdminBaseController {
 //				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
 //			}
 			// no tra sau
-			System.out.println(info.toString());
-			if (info.getPayType().equals("Credit")) {
-				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
-			} else {
-				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_SUCCESS);
-			}
+			info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
 
 			this.reeferInfoService.updateReeferInfo(info);
 
@@ -315,7 +354,6 @@ public class SupportExtendDrawDate extends AdminBaseController {
 				infoNew.setPayerType(reeferInfo.getPayerType());
 				infoNew.setPayType(reeferInfo.getPayType());
 				infoNew.setUpdateBy(getUser().getUserName());
-				System.out.println(infoNew.toString());
 				reeferInfoService.updateReeferInfo(infoNew);
 			}
 		}
