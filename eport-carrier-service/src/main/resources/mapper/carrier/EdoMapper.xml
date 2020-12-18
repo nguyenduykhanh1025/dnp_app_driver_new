@@ -329,9 +329,15 @@
   </select>
 
   <select id="selectEdoListByBillNo" parameterType="Edo" resultMap="EdoResult">
-    SELECT bill_of_lading, carrier_code, vessel, voy_no,(SELECT create_time from edo e2 where
-    e1.bill_of_lading = e2.bill_of_lading ORDER BY create_time DESC FETCH NEXT 1 ROWS ONLY ) as create_time, (SELECT
-    COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading and del_flg = 0) AS number_container from edo e1
+    SELECT bill_of_lading,
+         carrier_code,
+         vessel,
+         voy_no,
+         MIN (create_time)
+             AS create_time,
+         COUNT (CASE WHEN del_flg = 0 THEN 1 ELSE 0 END)
+             AS number_container
+    FROM edo
     <where>
       <if test="params.groupCode != null">
         and carrier_code in
