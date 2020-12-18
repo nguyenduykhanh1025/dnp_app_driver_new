@@ -68,6 +68,7 @@ function initTabReefer() {
 
   if (!$('#powerDrawDate').val()) {
     $('#extendPowerDrawDateContainer').css('display', 'none');
+    $('#saveShipmentDetailBtn').css('display', 'none');
     $('#tableExtendDateContainer').css('display', 'none');
   }
   if (shipmentDetail.frozenStatus != "I" && shipmentDetail.frozenStatus != "C") {
@@ -432,8 +433,8 @@ function statusIconRenderer(instance, td, row, col, prop, value, cellProperties)
   cellProperties.readOnly = 'true';
   $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
   let status = "";
-  if (row == 0) {
-    value = shipmentDetail.powerDrawDateStatus;
+  // if (row == 0) {
+  //   value = shipmentDetail.powerDrawDateStatus;
     if (value == "P") {
       status = '<i id="status" class="fa fa-check  easyui-tooltip" title="Container đang chờ xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #f8ac59;"></i>';
     } else if (value === "S") {
@@ -441,13 +442,13 @@ function statusIconRenderer(instance, td, row, col, prop, value, cellProperties)
     } else if (value === "E") {
       status = '<i id="status" class="fa fa-check  easyui-tooltip" title="Container đã bị từ chối xác nhận gia hạn rút điện" aria-hidden="true" style="color: #ef6776;"></i>';
     }
-  } else {
-    // status
-    status = '<i id="status" class="fa fa-clock-ofa-flip-horizontal easyui-tooltip" title="Container đã được xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
-    if (value && value == 'L') {
-      status = '<i id="finish" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã bị khóa không thể chỉnh sửa" aria-hidden="true" style="color: #f8ac59;"></i>';
-    }
-  }
+  // } else {
+  //   // status
+  //   status = '<i id="status" class="fa fa-clock-ofa-flip-horizontal easyui-tooltip" title="Container đã được xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
+  //   if (value && value == 'L') {
+  //     status = '<i id="finish" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã bị khóa không thể chỉnh sửa" aria-hidden="true" style="color: #f8ac59;"></i>';
+  //   }
+  // }
 
   // Return the content
   let content = '<div style="font-size: 25px">' + status + '</div>';
@@ -569,20 +570,30 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     </a>
   </td>
   `;
-  if (sourceData[row].paymentStatus == PAYMENT_STATUS.error) {
-    result += "Đã hủy gia hạn"
-  }
-  else if (shipmentDetail.powerDrawDateStatus == "S" && PAYMENT_STATUS.process == sourceData[row].paymentStatus) {
-    result += btnPayment;
-  } else if (!sourceData[row].id || PAYMENT_STATUS.success == sourceData[row].paymentStatus) {
-    if (!isBookingCheckPayment()) {
-      result += 'Đã thanh toán';
-    }
-  } else if (sourceData.length == 1) {
-    result += 'Đang chờ';
-  } else {
+  if (PAYMENT_STATUS.process == sourceData[row].paymentStatus && shipmentDetail.powerDrawDateStatus != "S") {
     result += btnCancel;
+  } else if (sourceData[row].status == "E") {
+    result += "Đã bị từ chối"
   }
+  else if (!isDisplayInformationPayment(row)) {
+    result += 'Thanh toán sau';
+  } else if (shipmentDetail.powerDrawDateStatus == "S" && PAYMENT_STATUS.process == sourceData[row].paymentStatus) {
+    result += btnPayment;
+  }
+  // if (sourceData[row].paymentStatus == PAYMENT_STATUS.error) {
+  //   result += "Đã hủy gia hạn"
+  // } else if (shipmentDetail.powerDrawDateStatus == "S" && PAYMENT_STATUS.process == sourceData[row].paymentStatus) {
+  //   result += btnPayment;
+  // } else if (sourceData[row].id && PAYMENT_STATUS.success == sourceData[row].paymentStatus) {
+  //   result += 'Đã thanh toán';
+  // } else if(!isDisplayInformationPayment(row)) {
+  //   result += 'Thanh toán sau';
+  // }
+  // else if (sourceData.length == 1) {
+  //   result += 'Đang chờ';
+  // } else {
+  //   result += btnCancel;
+  // }
 
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
@@ -602,17 +613,16 @@ function extendPowerDrawDate() {
   else if (dateDrop.getTime() > dateExtend.getTime()) {
     $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
   }
-  else if (shipmentDetail.frozenStatus != 'Y' || shipmentDetail.powerDrawDateStatus == 'P' || (sourceData[len].status && (sourceData[len].paymentStatus != PAYMENT_STATUS.success && sourceData[len].paymentStatus != PAYMENT_STATUS.error))) {
+  else if (shipmentDetail.frozenStatus != 'Y' || shipmentDetail.powerDrawDateStatus == 'P' || sourceData[0].paymentStatus == PAYMENT_STATUS.process) {
     if (shipmentDetail.powerDrawDateStatus == 'P') {
       $.modal.alertError("Không thể yếu cầu gia hạn do container chưa được xác nhận yêu cầu gia hạn rút điện.");
     } else if (shipmentDetail.frozenStatus != 'Y') {
       $.modal.alertError("Không thể yếu cầu gia hạn do Container đang được xét duyệt từ tổ lạnh.");
-    } else if (sourceData[len].status && (sourceData[len].paymentStatus != PAYMENT_STATUS.success && sourceData[len].paymentStatus != PAYMENT_STATUS.error)) {
-      $.modal.alertError("Container Chưa được thanh toán.");
+    } else if (sourceData[0].paymentStatus == PAYMENT_STATUS.process) {
+      $.modal.alertError("Container gia hạn chưa được thanh toán.");
     }
 
   } else {
-
     let date = $('#extendPowerDrawDate').val();
     let arrDate = date.split("/");
     const tempDate = arrDate[1];
