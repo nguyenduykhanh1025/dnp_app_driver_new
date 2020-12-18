@@ -151,8 +151,7 @@ public class YardMonitorUnLoadingCargoController extends AdminBaseController {
 		if (params == null) {
 			params = new HashMap<String, Object>();
 		}
-		params.put("paymentStatus", "Y");
-		params.put("specialService", EportConstants.SPECIAL_SERVICE_UNLOAD_YARD);
+		params.put("dateReceiptStatus", "Y");
 		shipment.setParams(params);
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
 		ajaxResult.put("shipments", getDataTable(shipments));
@@ -165,6 +164,7 @@ public class YardMonitorUnLoadingCargoController extends AdminBaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
+		shipmentDetail.setDateReceiptStatus("Y");
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;
@@ -176,17 +176,6 @@ public class YardMonitorUnLoadingCargoController extends AdminBaseController {
 	public AjaxResult confirmOrder(String shipmentDetailIds) {
 		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
 		shipmentDetailUpdate.setFinishStatus("Y");
-		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
-		return success();
-	}
-
-	@PostMapping("/do/confirm")
-	@ResponseBody
-	@Transactional
-	public AjaxResult confirmDo(String shipmentDetailIds) {
-		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
-		shipmentDetailUpdate.setDoStatus("Y");
-		shipmentDetailUpdate.setDoReceivedTime(new Date());
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
 		return success();
 	}
@@ -300,24 +289,5 @@ public class YardMonitorUnLoadingCargoController extends AdminBaseController {
 		ajaxResult.put("oprList", oprCodeList);
 
 		return ajaxResult;
-	}
-
-	@PostMapping("/date-receipt")
-	@ResponseBody
-	@Transactional
-	public AjaxResult confirmDateReceipt(String shipmentDetailIds) {
-		// Get all shipment detail
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
-		if (CollectionUtils.isEmpty(shipmentDetails)) {
-			return error("Không tìm thấy container cần xác nhận, vui lòng kiểm tra lại.");
-		}
-		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			if (shipmentDetail.getActualDateReceipt() == null) {
-				shipmentDetail.setActualDateReceipt(shipmentDetail.getDateReceipt());
-			}
-			shipmentDetail.setDateReceiptStatus("Y");
-			shipmentDetailService.updateShipmentDetail(shipmentDetail);
-		}
-		return success();
 	}
 }

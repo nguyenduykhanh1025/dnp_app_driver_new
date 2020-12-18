@@ -594,7 +594,9 @@ function dateReceiptRenderer(instance, td, row, col, prop, value, cellProperties
     } else {
         value = '';
     }
-    $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + value + '</div>');
+    cellProperties.readOnly = 'true';
+    $(td).html(`<div onclick="chooseDateReceipt(` + row + `)" style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">` + value
+        + ` <a class="fa fa-calendar"></a></div>`);
     return td;
 }
 
@@ -2026,4 +2028,28 @@ function formatDateToSendServer(date) {
     // set seconds
     dateReceipt.setSeconds(0);
     return dateReceipt.getTime();
+}
+
+function chooseDateReceipt(rowIndex) {
+    layer.open({
+        type: 2,
+        area: [250 + 'px', 380 + 'px'],
+        fix: true,
+        maxmin: true,
+        shade: 0.3,
+        title: 'Chọn ngày đóng hàng',
+        content: prefix + "/row/" + rowIndex + "/calendar",
+        btn: ["Đóng"],
+        shadeClose: false,
+        yes: function (index, layero) {
+            layer.close(index);
+        },
+        cancel: function (index) {
+            return true;
+        }
+    });
+}
+
+function changeDate(rowIndex, date) {
+    hot.setDataAtCell(rowIndex, 4, date)
 }

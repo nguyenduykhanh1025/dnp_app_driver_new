@@ -78,36 +78,25 @@ $(document).ready(function () {
     data: [
       {
         "finishValue": 'N',
-        "finishKey": "Chưa xác nhận ngày đóng",
+        "finishKey": "Chưa hoàn thành",
         "selected": true
-      },
-      {
-        "finishValue": 'M',
-        "finishKey": "Đã xác nhận ngày đóng",
       }, {
         "finishValue": 'Y',
         "finishKey": "Đã hoàn thành"
       }, {
         "finishValue": 'null',
         "finishKey": "Tất cả"
-    }],
+      }],
     onSelect: function (finishStatus) {
       switch (finishStatus.finishValue) {
         case 'null':
           shipment.params.finishStatus = null;
-          shipment.params.dateReceiptStatus = null;
           break;
         case 'N':
           shipment.params.finishStatus = 'N';
-          shipment.params.dateReceiptStatus = 'W';
-          break;
-        case 'M':
-          shipment.params.finishStatus = 'N';
-          shipment.params.dateReceiptStatus = 'Y';
           break;
         case 'Y':
           shipment.params.finishStatus = 'Y';
-          shipment.params.dateReceiptStatus = null;
           break;
       }
       loadTable();
@@ -617,7 +606,7 @@ function houseBillBtnRenderer(instance, td, row, col, prop, value, cellPropertie
     shipmentDetailId = sourceData[row].id;
   }
   if (shipmentDetailId != null) {
-    value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>House Bill</button>';
+    value = '<button class="btn btn-success btn-xs" id="detailBtn ' + row + '" onclick="openHouseBillForm(' + shipmentDetailId + ')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
     $(td).html(value);
   }
   cellProperties.readOnly = 'true';
@@ -685,7 +674,7 @@ function specialServiceRenderer(instance, td, row, col, prop, value, cellPropert
     if (4 == value) {
       value = "Kho CFS"
     } else if (value == 5) {
-      value = "Bãi CFS";
+      value = "Bãi Cảng";
     }
   } else {
     value = '';
@@ -701,13 +690,8 @@ function specialServiceRenderer(instance, td, row, col, prop, value, cellPropert
 function actualDateReceiptRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle").addClass("htCenter");
   if (value != null && value != '') {
-    if (value.substring(2, 3) != "/") {
+    if (value.length >= 16) {
       value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4) + " " + value.substring(10, 16);
-    } else {
-      if (value.length <= 10) {
-        value += " 00:00";
-        hot.setDataAtCell(row, 10, value);
-      }
     }
   } else {
     value = '';
@@ -750,7 +734,7 @@ function configHandsond() {
         case 5:
           return 'Container No';
         case 6:
-          return "House Bill";
+          return "Chi Tiết";
         case 7:
           return 'Hạn Lệnh';
         case 8:
@@ -1414,7 +1398,7 @@ function openHouseBillForm(shipmentDetailId) {
     $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
     return;
   }
-  $.modal.openCustomForm("Thông tin house bill", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
+  $.modal.openCustomForm("Thông tin hàng hóa container", PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
 }
 
 function confirmDateReceipt() {
