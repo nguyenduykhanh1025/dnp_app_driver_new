@@ -46,6 +46,8 @@ public interface EportConstants {
 	public static final int SERVICE_UNLOADING_CARGO_YARD = 18;
 	/** Rut hang tai kho */
 	public static final int SERVICE_UNLOADING_CARGO_WAREHOUSE = 19;
+	/** Remark cont qua kho */
+	public static final int SERVICE_OVERSIZE_REMARK_ORDER = 20;
 	/** Update booking */
 	public static final int BOOKING_UPDATE = 1;
 	/** Update booking */

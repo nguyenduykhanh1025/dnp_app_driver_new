@@ -3,6 +3,7 @@ package vn.com.irtech.eport.web.controller.om;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +21,27 @@ import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.EportConstants;
+import vn.com.irtech.eport.common.constant.SystemConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.CustomsCheckResultDto;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.ICustomCheckService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysUser;
+import vn.com.irtech.eport.system.dto.PartnerInfoDto;
+import vn.com.irtech.eport.system.service.ISysConfigService;
 
 @Controller
 @RequestMapping("/om/support/custom-send-full")
@@ -56,6 +64,15 @@ public class SupportCustomSendFullController extends OmBaseController{
     @Autowired
     private ServerConfig serverConfig;
     
+	@Autowired
+	private ICustomCheckService customerCheckServie;
+
+	@Autowired
+	private ICatosApiService catosApiService;
+
+	@Autowired
+	private ISysConfigService configService;
+
     @GetMapping("/view")
     public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap)
     {
@@ -154,5 +171,54 @@ public class SupportCustomSendFullController extends OmBaseController{
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentCommentId", shipmentComment.getId());
 		return ajaxResult;
+	}
+
+	@PostMapping("/sync")
+	@ResponseBody
+	public AjaxResult syncCustomStatusWithAcciss(String shipmentDetailIds) {
+		if (StringUtils.isEmpty(shipmentDetailIds)) {
+			return error("Không tìm thấy container cần đồng bộ hải quan.");
+		}
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+		if (CollectionUtils.isEmpty(shipmentDetails)) {
+			return error("Không tìm thấy container cần đồng bộ hải quan.");
+		}
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			CustomsCheckResultDto result = customerCheckServie.checkCustomStatus(
+					shipmentDetail.getVslNm() + shipmentDetail.getVoyNo(), shipmentDetail.getContainerNo());
+			boolean releasedFlg = false;
+			logger.debug(">>>>> ACCISS RETURN:\n" + result);
+			if (result != null && result.isReleased()) {
+				// Neu lenh BocHang -> 2, HaHang -> 4 //FIXME
+				// Kiem tra số tờ khai có mapping với khai báo
+				boolean mappingFlg = "1"
+						.equals(configService.selectConfigByKey(SystemConstants.ACCIS_CUSTOM_MAPPING_FLG_KEY));
+				// da released
+				releasedFlg = true;
+				// neu check them so to khai
+				if (mappingFlg) {
+					String customsNo = shipmentDetail.getCustomsNo(); // .split(","); // split by comma (1,2,3)
+					String returnCustomsNo = result.getCustomsAppNo(); // .split(",");
+					releasedFlg = customsNo != null && customsNo.equalsIgnoreCase(returnCustomsNo);
+				}
+			}
+			if (releasedFlg) {
+				shipmentDetail.setStatus(shipmentDetail.getStatus() + 1); // Set status thong quan
+				if (!StringUtils.isBlank(result.getTaxCode())) {
+					shipmentDetail.setTaxCode(result.getTaxCode());
+					// update lai theo catos
+					PartnerInfoDto consignee = catosApiService.getConsigneeNameByTaxCode(result.getTaxCode());
+					if (consignee != null && !StringUtils.isBlank(consignee.getGroupName())) {
+						shipmentDetail.setConsigneeByTaxCode(consignee.getGroupName());
+					}
+				}
+				shipmentDetail.setCustomStatus("R");
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			} else {
+				shipmentDetail.setCustomStatus("Y");
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+		}
+		return success();
 	}
 }

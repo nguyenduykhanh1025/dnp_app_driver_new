@@ -73,6 +73,9 @@ public class SysRobot extends BaseEntity {
 	@Excel(name = "Extension Det Order")
 	private Boolean isExtensionDetOrder;
 
+	@Excel(name = "Oversize remark order")
+	private Boolean isOverSizeRemarkOrder;
+
 	/** ip address */
 	@Excel(name = "ip address")
 	private String ipAddress;
@@ -252,6 +255,14 @@ public class SysRobot extends BaseEntity {
 		this.isExtensionDetOrder = isExtensionDetOrder;
 	}
 
+	public Boolean getIsOverSizeRemarkOrder() {
+		return isOverSizeRemarkOrder;
+	}
+
+	public void setIsOverSizeRemarkOrder(Boolean isOverSizeRemarkOrder) {
+		this.isOverSizeRemarkOrder = isOverSizeRemarkOrder;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -262,18 +273,16 @@ public class SysRobot extends BaseEntity {
 				.append("isSendContEmptyOrder", getIsSendContEmptyOrder())
 				.append("isShiftingContOrder", getIsShiftingContOrder())
 				.append("isChangeVesselOrder", getIsChangeVesselOrder())
-				.append("isCreateBookingOrder", getIsCreateBookingOrder())
-				.append("isGateInOrder", getIsGateInOrder())
+				.append("isCreateBookingOrder", getIsCreateBookingOrder()).append("isGateInOrder", getIsGateInOrder())
 				.append("isExtensionDateOrder", getIsExtensionDateOrder())
 				.append("isChangeTerminalCustomHold", getIsChangeTerminalCustomHold())
 				.append("isCancelSendContFullOrder", getIsCancelSendContFullOrder())
 				.append("isCancelReceiveContEmptyOrder", getIsCancelReceiveContEmptyOrder())
-				.append("isExportReceipt", getIsExportReceipt())
-				.append("isExtensionDetOrder", getIsExtensionDetOrder())
-				.append("ipAddress", getIpAddress())
-				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
-				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("remark", getRemark())
-				.append("responseTime", getResponseTime())
+				.append("isExportReceipt", getIsExportReceipt()).append("isExtensionDetOrder", getIsExtensionDetOrder())
+				.append("ipAddress", getIpAddress()).append("createBy", getCreateBy())
+				.append("createTime", getCreateTime()).append("updateBy", getUpdateBy())
+				.append("updateTime", getUpdateTime()).append("remark", getRemark())
+				.append("responseTime", getResponseTime()).append("isOverSizeRemarkOrder", getIsOverSizeRemarkOrder())
 				.toString();
 	}
 }

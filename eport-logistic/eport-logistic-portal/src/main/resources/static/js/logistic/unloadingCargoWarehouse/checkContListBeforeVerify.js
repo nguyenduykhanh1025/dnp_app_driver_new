@@ -16,9 +16,9 @@ async function confirm() {
                 $.modal.alertWarning("Quý khách không có quyền trả sau cho mã số thuế đã chọn.");
             }
         } else {
-        	$.modal.alertWarning("Chưa hỗ trợ thanh toán trả trước (cash).");
-            //parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $("#taxCode").val(), $('#credit').prop('checked'), isSendContEmpty);
-            //$.modal.close();
+        	// $.modal.alertWarning("Chưa hỗ trợ thanh toán trả trước (cash).");
+            parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $("#taxCode").val(), $('#credit').prop('checked'), isSendContEmpty);
+            $.modal.close();
         }
         
     }

@@ -394,7 +394,7 @@ public interface IShipmentDetailService {
 	 * @return List<ServiceSendFullRobotReq>
 	 */
 	public List<ServiceSendFullRobotReq> makeOrderLoadingCargo(List<ShipmentDetail> shipmentDetails, Shipment shipment,
-			String taxCode, boolean creditFlag);
+			String taxCode, boolean creditFlag, String mobilePhone);
 	
 	/**
 	 * Make order loading cargo
@@ -406,7 +406,7 @@ public interface IShipmentDetailService {
 	 * @return List<ServiceSendFullRobotReq>
 	 */
 	public List<ServiceSendFullRobotReq> makeOrderUnloadingCargo(List<ShipmentDetail> shipmentDetails, Shipment shipment,
-			String taxCode, boolean creditFlag);
+			String taxCode, boolean creditFlag, String mobilePhone);
 
 	/**
 	 * Make order special service
