@@ -229,7 +229,6 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		sysRobot.setIsCancelReceiveContEmptyOrder(isCancelReceiveContEmptyOrder);
 		sysRobot.setIsExportReceipt(isExportReceipt);
 		sysRobot.setIsExtensionDetOrder(isExtensionDetOrder);
-		sysRobot.(isExtensionDetOrder);
 
 		// check if robot is exists but be disabled then just update robot infor but not validate or assign new order to robot
 		SysRobot robotExist = robotService.selectRobotByUuId(uuId);
