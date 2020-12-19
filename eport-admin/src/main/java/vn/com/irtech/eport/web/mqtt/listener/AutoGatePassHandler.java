@@ -179,11 +179,12 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 				// => need to reverse data between 2 container to mapping with catos
 				gateDetection = reverseData(gateDetection);
 
-				String message = "Chưa có tọa độ, đang thực hiện yêu cầu mc cấp tọa độ.";
+				String containers = sendRequestToMc(gateDetection);
+
+				String message = "Các container " + containers
+						+ " chưa có tọa độ, đang thực hiện yêu cầu mc cấp tọa độ.";
 				mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, message,
 						gateInFormData.getGateId());
-
-				sendRequestToMc(gateDetection);
 
 				// Gate detection reference to check if location is updated by mc
 				GateDetection gateDetectionRef = null;
@@ -447,7 +448,7 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 	 * 
 	 * @param gateDetection
 	 */
-	private void sendRequestToMc(GateDetection gateDetection) {
+	private String sendRequestToMc(GateDetection gateDetection) {
 		// Check case 2 container in same vessel and voyage
 		boolean sameVessel = false;
 		String container1 = gateDetection.getContainerNo1();
@@ -587,6 +588,14 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 				}
 			}
 		}
+		String containers = "";
+		if (StringUtils.isNotEmpty(container1)) {
+			containers += container1;
+		}
+		if (StringUtils.isNotEmpty(container2)) {
+			containers += "," + container2;
+		}
+		return containers;
 	}
 
 	/**
