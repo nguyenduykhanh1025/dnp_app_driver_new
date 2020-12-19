@@ -167,6 +167,9 @@ function robotServiceFormater(value, row, index) {
   if (row.isExtensionDetOrder) {
     content += '<span class="badge badge-primary">Gia hạn detention</span><span> </span>';
   }
+  if (row.isOverSizeRemarkOrder) {
+    content += '<span class="badge badge-primary">Remark cont quá khổ</span><span> </span>';
+  }
   return content;
 }
 

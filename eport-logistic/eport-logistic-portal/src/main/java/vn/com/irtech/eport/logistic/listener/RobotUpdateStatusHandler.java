@@ -153,6 +153,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		Boolean isExtensionDetOrder = "1"
 				.equals(map.get("isExtensionDetOrder") == null ? null : map.get("isExtensionDetOrder").toString());
 
+		Boolean isOverSizeRemarkOrder = "1"
+				.equals(map.get("isOverSizeRemarkOrder") == null ? null : map.get("isOverSizeRemarkOrder").toString());
+
 		// Check Service robot support anh make into a string split by comma for query db
 		String serviceTypes = "";
 		if (isReceiveContFullOrder) {

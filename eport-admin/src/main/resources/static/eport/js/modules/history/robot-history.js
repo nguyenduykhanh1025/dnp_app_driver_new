@@ -77,6 +77,8 @@ function formatServiceType(value, row) {
       return 'Xuất hóa đơn';
     case 14:
       return 'Gia hạn detension';
+    case 20:
+      return 'Remark cont quá khổ';
   }
 }
 
