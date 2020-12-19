@@ -181,7 +181,6 @@ function confirm() {
 
   if (shipmentDetail.sztp.includes("R") && (shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ)) {
     saveFile();
-    //insertCont();
     $.modal.close();
     return;
   }
@@ -319,6 +318,10 @@ $(document).ready(function () {
 function removeImageOversize(element, fileIndex) {
   if (oversize == "Y") {
     $.modal.alertWarning("Không thể xóa file ở trạng thái đã phê duyệt");
+  } else if (shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES) {
+    $.modal.alertWarning(
+      "Container đang hoặc đã yêu cầu xác nhận, không thể xóa tệp đã đính kèm."
+    );
   }
   else {
     shipmentFiles.forEach(function (value, index) {
@@ -467,7 +470,7 @@ function dateSetPower(instance, td, row, col, prop, value, cellProperties) {
   }
   const dateResult = new Date(value);
   const month = dateResult.getMonth() == 12 ? '01' : dateResult.getMonth() + 1;
-  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()} ${dateResult.getHours()}:${dateResult.getMinutes()}`;
+  const result = `${getTwoDigitFormat(dateResult.getDate())}/${getTwoDigitFormat(month)}/${dateResult.getFullYear()} ${getTwoDigitFormat(dateResult.getHours())}:${getTwoDigitFormat(dateResult.getMinutes())}`;
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
@@ -478,7 +481,7 @@ function dateGetPower(instance, td, row, col, prop, value, cellProperties) {
   }
   const dateResult = new Date(value);
   const month = dateResult.getMonth() == 12 ? '00' : dateResult.getMonth() + 1;
-  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()} ${dateResult.getHours()}:${dateResult.getMinutes()}`;
+  const result = `${getTwoDigitFormat(dateResult.getDate())}/${getTwoDigitFormat(month)}/${dateResult.getFullYear()} ${getTwoDigitFormat(dateResult.getHours())}:${getTwoDigitFormat(dateResult.getMinutes())}`;
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
@@ -572,7 +575,9 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     </a>
   </td>
   `;
-  if (PAYMENT_STATUS.process == sourceData[row].paymentStatus && shipmentDetail.powerDrawDateStatus != "S") {
+  if (PAYMENT_STATUS.process == sourceData[row].paymentStatus 
+    && shipmentDetail.powerDrawDateStatus != "S"
+    && sourceData[row].status != "S") {
     result += btnCancel;
   } else if (sourceData[row].status == "E") {
     result += "Đã bị từ chối"
@@ -616,12 +621,14 @@ function extendPowerDrawDate() {
   else if (dateDrop.getTime() > dateExtend.getTime()) {
     $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
   }
-  else if (shipmentDetail.frozenStatus != 'Y' || shipmentDetail.powerDrawDateStatus == 'P' || sourceData[0].paymentStatus == PAYMENT_STATUS.process) {
+  else if (shipmentDetail.frozenStatus != 'Y' 
+    || shipmentDetail.powerDrawDateStatus == 'P' 
+    || (sourceData[0].paymentStatus == PAYMENT_STATUS.process && sourceData[0].payType == PAY_TYPE.credit)) {
     if (shipmentDetail.powerDrawDateStatus == 'P') {
       $.modal.alertError("Không thể yêu cầu gia hạn do container chưa được xác nhận yêu cầu gia hạn rút điện.");
     } else if (shipmentDetail.frozenStatus != 'Y') {
       $.modal.alertError("Không thể yêu cầu gia hạn do Container chưa được xét duyệt từ tổ lạnh.");
-    } else if (sourceData[0].paymentStatus == PAYMENT_STATUS.process) {
+    } else if (sourceData[0].paymentStatus == PAYMENT_STATUS.process && sourceData[0].payType == PAY_TYPE.credit) {
       $.modal.alertError("Container gia hạn chưa được thanh toán.");
     }
 
@@ -668,8 +675,8 @@ function tranferValidatedDate(dateFromInput) {
   let year = dataArr[2];
   return new Date(`${month}-${day}-${year}`);
 }
+
 function paymentDateDrop(id) {
-  console.log('id', id);
   layer.confirm("Bạn có muốn thanh toán?", {
     icon: 3,
     title: "Xác Nhận",
@@ -759,6 +766,10 @@ function getBetweenTwoDateInSourceData(row) {
 
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function getTwoDigitFormat(data) {
+  return ("0" + data).slice(-2);
 }
 
 // function initDropzone(

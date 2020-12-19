@@ -80,6 +80,9 @@ public class ContainerInfoEntity extends BaseEntity
     /** Days */
     private int days;
     
+    /** Set Temperature catos SET_TEMP */
+	private Long setTemp;
+	
     public int getDays()
     {
         return this.days;
@@ -431,8 +434,15 @@ public class ContainerInfoEntity extends BaseEntity
          return vesselName;
      }
 
+	public Long getSetTemp() {
+		return setTemp;
+	}
 
-    @Override
+	public void setSetTemp(Long setTemp) {
+		this.setTemp = setTemp;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("cntrId", getCntrId())
@@ -465,6 +475,7 @@ public class ContainerInfoEntity extends BaseEntity
             .append("pod", getPol())
             .append("payerIn", getPayerIn())
             .append("payerOut", getPayerOut())
+            .append("setTemp", getSetTemp())
             .toString();
     }
 }
