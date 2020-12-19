@@ -1509,7 +1509,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	 */
 	@Override
 	public List<ServiceSendFullRobotReq> makeOrderLoadingCargo(List<ShipmentDetail> shipmentDetails, Shipment shipment,
-			String taxCode, boolean creditFlag) {
+			String taxCode, boolean creditFlag, String mobilePhone) {
 		if (shipmentDetails.size() > 0) {
 			List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
 			Collections.sort(shipmentDetails, new SztpComparator());
@@ -1518,14 +1518,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				if (!sztp.equals(shipmentDetail.getSztp())) {
 					serviceRobotReq.add(groupShipmentDetailByLoadingCargoOrder(shipmentDetails.get(0).getId(),
-							shipmentOrderList, shipment, taxCode, creditFlag));
+							shipmentOrderList, shipment, taxCode, creditFlag, mobilePhone));
 					sztp = shipmentDetail.getSztp();
 					shipmentOrderList = new ArrayList<>();
 				}
 				shipmentOrderList.add(shipmentDetail);
 			}
 			serviceRobotReq.add(groupShipmentDetailByLoadingCargoOrder(shipmentDetails.get(0).getId(),
-					shipmentOrderList, shipment, taxCode, creditFlag));
+					shipmentOrderList, shipment, taxCode, creditFlag, mobilePhone));
 			return serviceRobotReq;
 		}
 		return null;
@@ -1533,7 +1533,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
 	@Transactional
 	private ServiceSendFullRobotReq groupShipmentDetailByLoadingCargoOrder(Long registerNo,
-			List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag) {
+			List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag,
+			String mobilePhone) {
 		ShipmentDetail detail = shipmentDetails.get(0);
 		ProcessOrder processOrder = new ProcessOrder();
 		processOrder.setModee("Pickup By Booking");
@@ -1596,6 +1597,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			}
 			shipmentDetail.setUserVerifyStatus("Y");
 			shipmentDetail.setProcessStatus("W");
+			shipmentDetail.setUserMobilePhone(mobilePhone);
 			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 		}
 		return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
@@ -1638,13 +1640,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
 	@Override
 	public List<ServiceSendFullRobotReq> makeOrderUnloadingCargo(List<ShipmentDetail> shipmentDetails,
-			Shipment shipment, String taxCode, boolean creditFlag) {
+			Shipment shipment, String taxCode, boolean creditFlag, String mobilePhone) {
 		if (shipmentDetails.size() > 0) {
 			List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
 			if (checkMakeOrderByBl(shipment.getBlNo(), shipmentDetails.size(),
 					"1".equalsIgnoreCase(shipment.getEdoFlg()))) {
 				serviceRobotReq.add(groupShipmentDetailByUnLoadingCargoOrder(shipmentDetails.get(0).getId(),
-						shipmentDetails, shipment, taxCode, creditFlag, true));
+						shipmentDetails, shipment, taxCode, creditFlag, true, mobilePhone));
 			} else {
 				Collections.sort(shipmentDetails, new SztpComparator());
 				String sztp = shipmentDetails.get(0).getSztp();
@@ -1652,14 +1654,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 				for (ShipmentDetail shipmentDetail : shipmentDetails) {
 					if (!sztp.equals(shipmentDetail.getSztp())) {
 						serviceRobotReq.add(groupShipmentDetailByUnLoadingCargoOrder(shipmentDetails.get(0).getId(),
-								shipmentOrderList, shipment, taxCode, creditFlag, false));
+								shipmentOrderList, shipment, taxCode, creditFlag, false, mobilePhone));
 						sztp = shipmentDetail.getSztp();
 						shipmentOrderList = new ArrayList<>();
 					}
 					shipmentOrderList.add(shipmentDetail);
 				}
 				serviceRobotReq.add(groupShipmentDetailByUnLoadingCargoOrder(shipmentDetails.get(0).getId(),
-						shipmentOrderList, shipment, taxCode, creditFlag, false));
+						shipmentOrderList, shipment, taxCode, creditFlag, false, mobilePhone));
 			}
 			return serviceRobotReq;
 		}
@@ -1669,7 +1671,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	@Transactional
 	private ServiceSendFullRobotReq groupShipmentDetailByUnLoadingCargoOrder(Long registerNo,
 			List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag,
-			boolean orderByBl) {
+			boolean orderByBl, String mobilePhone) {
 		ShipmentDetail detail = shipmentDetails.get(0);
 		ProcessOrder processOrder = new ProcessOrder();
 		if (orderByBl) {
@@ -1730,6 +1732,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			}
 			shipmentDetail.setUserVerifyStatus("Y");
 			shipmentDetail.setProcessStatus("W");
+			shipmentDetail.setUserMobilePhone(mobilePhone);
 			shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
 		}
 		return new ServiceSendFullRobotReq(processOrder, shipmentDetails);

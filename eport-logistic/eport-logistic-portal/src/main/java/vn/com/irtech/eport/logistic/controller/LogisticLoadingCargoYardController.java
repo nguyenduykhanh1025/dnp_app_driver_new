@@ -1026,7 +1026,8 @@ public class LogisticLoadingCargoYardController extends LogisticBaseController {
 			}
 
 			// Create list req for order receive cont empty
-			shipmentDetailService.makeOrderLoadingCargo(shipmentDetails, shipment, taxCode, creditFlag);
+			shipmentDetailService.makeOrderLoadingCargo(shipmentDetails, shipment, taxCode, creditFlag,
+					getUser().getMobile());
 
 			// Request manual order for om
 			String title = "Yêu cầu làm lệnh bốc rỗng đóng hàng cfs";

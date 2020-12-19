@@ -2,8 +2,8 @@ const PREFIX = ctx + "om/support/custom-receive-full";
 const HIST_PREFIX = ctx + "om/controlling";
 const containerCol = 2;
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
-var bill;
-var shipmentDetails = new Object();
+var bill, checkList, allChecked, shipmentDetailIds;
+var shipmentDetails;
 var currentLeftWidth = $(".table-left").width();
 var currentRightWidth = $(".table-right").width();
 var dogrid = document.getElementById("container-grid"), hot;
@@ -185,6 +185,16 @@ function loadTable() {
 loadTableByContainer();
 
 //FORMAT HANDSONTABLE COLUMN
+function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
+  let content = '';
+  if (checkList[row] == 1) {
+    content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')" checked></div>';
+  } else {
+    content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')"></div>';
+  }
+  $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
+  return td;
+}
 function historyRenderer(instance, td, row, col, prop, value, cellProperties) {
   let historyIcon = '<a id="custom" onclick="openHistoryFormCatos(' + row + ')" class="fa fa-window-restore easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
   $(td).addClass("htCenter").addClass("htMiddle").html(historyIcon);
@@ -282,7 +292,7 @@ function configHandson() {
     width: "100%",
     minSpareRows: 0,
     rowHeights: 30,
-    fixedColumnsLeft: 3,
+    fixedColumnsLeft: 4,
     manualColumnResize: true,
     manualRowResize: true,
     renderAllRows: true,
@@ -291,40 +301,50 @@ function configHandson() {
     colHeaders: function (col) {
       switch (col) {
         case 0:
-          return '<a class="fa fa-window-restore easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
+          var txt = "<input type='checkbox' class='checker' ";
+          txt += "onclick='checkAll()' ";
+          txt += ">";
+          return txt;
         case 1:
-          return '<a class="fa fa-history easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
+          return '<a class="fa fa-window-restore easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
         case 2:
-          return "Số Container";
+          return '<a class="fa fa-history easyui-tooltip" title="Lịch Sử Catos" aria-hidden="true" style="color: #3498db;"></a>';
         case 3:
-          return "Sztp";
+          return "Số Container";
         case 4:
-          return "Số Tờ Khai HQ";
+          return "Sztp";
         case 5:
-          return "T.T.T.Quan";
+          return "Số Tờ Khai HQ";
         case 6:
-          return "Hạn Lệnh";
+          return "T.T.T.Quan";
         case 7:
-          return "Nơi Trả Vỏ";
+          return "Hạn Lệnh";
         case 8:
-          return "Ngày <br> Miễn <br>Lưu";
+          return "Nơi Trả Vỏ";
         case 9:
-          return "Chủ hàng";
+          return "Ngày <br> Miễn <br>Lưu";
         case 10:
-          return "Tàu - Chuyến";
+          return "Chủ hàng";
         case 11:
-          return "Trọng lượng";
+          return "Tàu - Chuyến";
         case 12:
-          return "Loại hàng";
+          return "Trọng lượng";
         case 13:
-          return "Cảng Dở Hàng";
+          return "Loại hàng";
         case 14:
+          return "Cảng Dở Hàng";
+        case 15:
           return "Ghi Chú";
       }
     },
-    colWidths: [21, 21, 100, 50, 100, 100, 150, 200, 70, 200, 250, 100, 100, 100, 150],
+    colWidths: [23, 21, 21, 100, 50, 100, 100, 150, 200, 70, 200, 250, 100, 100, 100, 150],
     filter: "true",
     columns: [
+      {
+        data: "active",
+        type: "checkbox",
+        renderer: checkBoxRenderer
+      },
       {
         data: "historyCatos",
         readOnly: true,
@@ -406,7 +426,7 @@ function configHandson() {
           break;
         // Arrow Right
         case 39:
-          if (selected[3] == 14) {
+          if (selected[3] == 15) {
             e.stopImmediatePropagation();
           }
           break
@@ -438,6 +458,48 @@ function beforeCopy(data, coords) {
   }
 }
 
+function checkAll() {
+  if (!allChecked) {
+    allChecked = true;
+    for (let i = 0; i < checkList.length; i++) {
+      checkList[i] = 1;
+      $('#check' + i).prop('checked', true);
+    }
+  } else {
+    allChecked = false;
+    checkList = Array(rowAmount).fill(0);
+    for (let i = 0; i < checkList.length; i++) {
+      $('#check' + i).prop('checked', false);
+    }
+  }
+  let tempCheck = allChecked;
+  hot.render();
+  allChecked = tempCheck;
+  $('.checker').prop('checked', tempCheck);
+}
+function check(id) {
+  if (sourceData[id].id != null) {
+    if (checkList[id] == 0) {
+      $('#check' + id).prop('checked', true);
+      checkList[id] = 1;
+    } else {
+      $('#check' + id).prop('checked', false);
+      checkList[id] = 0;
+    }
+    hot.render();
+    updateLayout();
+  }
+}
+function updateLayout() {
+  allChecked = true;
+  for (let i = 0; i < checkList.length; i++) {
+    if (checkList[i] != 1) {
+      allChecked = false;
+    }
+  }
+  $('.checker').prop('checked', allChecked);
+}
+
 function loadTableByContainer(shipmentId) {
   $.modal.loading("Đang xử lý ...");
   $.ajax({
@@ -446,6 +508,12 @@ function loadTableByContainer(shipmentId) {
     success: function (data) {
       $.modal.closeLoading();
       if (data.code == 0) {
+        checkList = Array(rowAmount).fill(0);
+        allChecked = false;
+        $('.checker').prop('checked', false);
+        for (let i = 0; i < checkList.length; i++) {
+          $('#check' + i).prop('checked', false);
+        }
         sourceData = data.shipmentDetails;
         if (sourceData) {
           for (let i = 0; i < sourceData.length; i++) {
@@ -468,7 +536,6 @@ function getSelectedRow(index, row) {
   if (row) {
     shipmentSelected = row;
     rowAmount = shipmentSelected.contAmount;
-    shipmentDetails.shipmentId = row.id;
     $('#checkCustomStatusByProcessOrderId').attr("disabled", false);
     loadTableByContainer(row.id);
     loadListComment();
@@ -501,6 +568,76 @@ function logisticInfo(id, logistics) {
 
 function notifyResult() {
   $.modal.open("Xác nhận", PREFIX + "/confirm-result-notification/shipmentId/" + shipmentSelected.id, 430, 330);
+}
+
+function getDataSelectedFromTable() {
+  let myTableData = hot.getSourceData();
+  let errorFlg = false;
+  if (myTableData && checkList) {
+    let cleanedGridData = [];
+    for (let i = 0; i < checkList.length; i++) {
+      if (Object.keys(myTableData[i]).length > 0) {
+        if (checkList[i] == 1) {
+          cleanedGridData.push(myTableData[i]);
+        }
+      }
+    }
+    shipmentDetailIds = "";
+    $.each(cleanedGridData, function (index, object) {
+      shipmentDetailIds += object["id"] + ",";
+    });
+
+    if (shipmentDetailIds.length == 0) {
+      $.modal.alertWarning("Bạn chưa chọn container nào.")
+      errorFlg = true;
+    } else {
+      shipmentDetailIds = shipmentDetailIds.substring(0, shipmentDetailIds.length - 1);
+    }
+  } else {
+    $.modal.alertWarning("Bạn chưa chọn lô.");
+    errorFlg = true;
+  }
+
+  if (errorFlg) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+function syncCustomStatus() {
+  if (getDataSelectedFromTable()) {
+    layer.confirm("Xác nhận đồng bộ hải quan?", {
+      icon: 3,
+      title: "Xác Nhận",
+      btn: ['Xác Nhận', 'Hủy Bỏ']
+    }, function () {
+      $.ajax({
+        url: PREFIX + "/sync",
+        method: "POST",
+        data: {
+          shipmentDetailIds: shipmentDetailIds,
+          shipmentId: shipmentSelected.id
+        },
+        success: function (result) {
+          if (result.code == 0) {
+            $.modal.alertSuccess(result.msg);
+            loadTable();
+          } else {
+            $.modal.alertError(result.msg);
+          }
+          $.modal.closeLoading();
+        },
+        error: function (result) {
+          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+          $.modal.closeLoading();
+        },
+      });
+      layer.close(layer.index);
+    }, function () {
+      // do nothing
+    });
+  }
 }
 
 function msgSuccess(msg) {

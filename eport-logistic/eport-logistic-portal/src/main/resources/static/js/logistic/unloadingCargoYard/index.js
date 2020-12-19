@@ -557,7 +557,7 @@ function statusIconsRenderer(
         payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa ráp đơn giá" aria-hidden="true" style="margin-left: 8px; color: #f8ac59;"></i>';
         break;
       case 'N':
-        if (value > 1) {
+        if (sourceData[row].processStatus == 'Y') {
           payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
         }
         break;
@@ -2020,7 +2020,7 @@ function verify() {
         errorMsg += "Container quý khách vừa chọn chưa được thông quan, không thể xác nhận làm lệnh.";
         break;
       }
-      if (shipmentDetail.verifyStatus == "Y") {
+      if (shipmentDetail.userVerifyStatus == "Y") {
         errorMsg += "Container quý khách vừa chọn đã được xác thực, không thể xác thực lại nữa.";
         break;
       }

@@ -31,6 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sendContEmptyType"    column="send_cont_empty_type"    />
         <result property="consignee"    column="consignee"    />
         <result property="sztp"    column="sztp"    />
+        <result property="customScanTime"    column="custom_scan_time"    />
         
     </resultMap>
     <sql id="selectShipmentVo">
@@ -950,7 +951,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no, s.ope_code, 
         s.container_amount,s.edo_flg, s.specific_cont_flg, s.cont_supply_status, s.status, s.remark, s.order_number, 
         s.house_bill, s.create_by, s.create_time, s.update_by, s.update_time,
-        (SELECT MIN(CUSTOM_SCAN_TIME) FROM SHIPMENT_DETAIL SH WHERE SH.SHIPMENT_ID = S.ID AND CUSTOM_STATUS = 'Y' AND SH.CUSTOM_SCAN_TIME IS NOT NULL) as customScanTime,
+        (SELECT MIN(CUSTOM_SCAN_TIME) FROM SHIPMENT_DETAIL SH WHERE SH.SHIPMENT_ID = S.ID AND CUSTOM_STATUS = 'Y' AND SH.CUSTOM_SCAN_TIME IS NOT NULL) as custom_scan_time,
         (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as "logistic_name"
         from shipment S right join shipment_detail sh on s.id = sh.shipment_id
         <where>  
