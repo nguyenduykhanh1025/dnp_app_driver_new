@@ -579,8 +579,8 @@ function getDataFromTable() {
                 $.modal.alertWarning("House bill không được để trống.");
                 return false;
             }
-            if (houseBills.includes(dataTable[i].houseBill)) {
-                $.modal.alertWarning("House bill không được trùng nhau.");
+            if (dataTable[i].quantity && !onlyDigitReg.test(dataTable[i].quantity)) {
+                $.modal.alertWarning("Số lượng không hợp lệ, quý khách vui lòng nhập số lượng ở dạng số.");
                 return false;
             }
             houseBills.push(dataTable[i].houseBill)

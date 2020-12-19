@@ -537,6 +537,10 @@ function getDataFromTable() {
       dataTable[i].cargoDescription ||
       dataTable[i].equipment ||
       dataTable[i].forwarderRemark) {
+      if (dataTable[i].quantity && !onlyDigitReg.test(dataTable[i].quantity)) {
+          $.modal.alertWarning("Số lượng không hợp lệ, quý khách vui lòng nhập số lượng ở dạng số.");
+          return false;
+      }
       results.push(dataItemTable);
     }
   }

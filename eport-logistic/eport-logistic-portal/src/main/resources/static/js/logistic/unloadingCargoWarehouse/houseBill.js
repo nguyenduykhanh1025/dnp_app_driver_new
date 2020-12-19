@@ -571,6 +571,10 @@ function getDataFromTable() {
         $.modal.alertWarning("House bill không được trùng nhau.");
         return false;
       }
+      if (dataTable[i].quantity && !onlyDigitReg.test(dataTable[i].quantity)) {
+        $.modal.alertWarning("Số lượng không hợp lệ, quý khách vui lòng nhập số lượng ở dạng số.");
+        return false;
+      }
       houseBills.push(dataTable[i].houseBill)
       results.push(dataItemTable);
     }

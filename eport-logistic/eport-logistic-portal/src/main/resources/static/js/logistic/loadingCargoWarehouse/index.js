@@ -1960,7 +1960,7 @@ function verify() {
                 errorMsg += "Container quý khách vừa chọn chưa được cấp container.";
                 break;
             }
-            if (shipmentDetail.verifyStatus == "Y") {
+            if (shipmentDetail.userVerifyStatus == "Y") {
                 errorMsg += "Container quý khách vừa chọn đã được xác thực, không thể xác thực lại nữa.";
                 break;
             }
