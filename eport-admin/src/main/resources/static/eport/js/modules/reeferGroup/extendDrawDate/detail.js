@@ -423,7 +423,7 @@ function dateSetPower(instance, td, row, col, prop, value, cellProperties) {
   }
   const dateResult = new Date(value);
   const month = dateResult.getMonth() == 12 ? '00' : dateResult.getMonth() + 1;
-  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()} ${dateResult.getHours()}:${dateResult.getMinutes()}`;
+  const result = `${getTwoDigitFormat(dateResult.getDate())}/${getTwoDigitFormat(month)}/${dateResult.getFullYear()} ${getTwoDigitFormat(dateResult.getHours())}:${getTwoDigitFormat(dateResult.getMinutes())}`;
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
@@ -434,7 +434,7 @@ function dateGetPower(instance, td, row, col, prop, value, cellProperties) {
   }
   const dateResult = new Date(value);
   const month = dateResult.getMonth() == 12 ? '00' : dateResult.getMonth() + 1;
-  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()} ${dateResult.getHours()}:${dateResult.getMinutes()}`;
+  const result = `${getTwoDigitFormat(dateResult.getDate())}/${getTwoDigitFormat(month)}/${dateResult.getFullYear()} ${getTwoDigitFormat(dateResult.getHours())}:${getTwoDigitFormat(dateResult.getMinutes())}`;
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
@@ -540,7 +540,7 @@ function extendPowerDrawDate() {
 
 function getBetweenTwoDate(date1, date2) {
   const diffTime = Math.abs(date2 - date1);
-  return Math.ceil(diffTime / (1000 * 60 * 60));
+  return (diffTime / (1000 * 60 * 60)).toFixed(1);
 }
 
 function getBetweenTwoDateInSourceData(row) {
@@ -578,4 +578,8 @@ function submitDataFromExtendPowerInterruptedModal(data) {
   hot.loadData(sourceData);
 
   $.modal.alertSuccess("Thêm gia hạn ngày rút điện thành công.");
+}
+
+function getTwoDigitFormat(data) {
+  return ("0" + data).slice(-2);
 }

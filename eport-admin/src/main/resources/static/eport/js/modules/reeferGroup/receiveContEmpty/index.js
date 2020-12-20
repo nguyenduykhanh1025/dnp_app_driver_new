@@ -675,8 +675,8 @@ function configHandson() {
 						}).done(function (res) {
 							if (res.code == 0) {
 								let shipmentDetail = res.shipmentDetailResult;
-								hot.setDataAtCell(change[0], 5, shipmentDetail.location); // location
-								hot.setDataAtCell(change[0], 6, shipmentDetail.containerRemark); // container remark
+								hot.setDataAtCell(change[0], 12, shipmentDetail.location); // location
+								hot.setDataAtCell(change[0], 13, shipmentDetail.containerRemark); // container remark
 
 								if (res.isOrder) {
 									containerOrderList += change[3] + ',';
@@ -684,8 +684,8 @@ function configHandson() {
 							}
 						});
 					} else {
-						hot.setDataAtCell(change[0], 5, ''); // location
-						hot.setDataAtCell(change[0], 6, ''); // container remark
+						hot.setDataAtCell(change[0], 12, ''); // location
+						hot.setDataAtCell(change[0], 13, ''); // container remark
 					}
 				}
 			});

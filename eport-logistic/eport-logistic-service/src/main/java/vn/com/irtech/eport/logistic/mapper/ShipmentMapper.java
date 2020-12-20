@@ -92,6 +92,14 @@ public interface ShipmentMapper
     public List<Shipment> getShipmentListForContSupply(Shipment shipment);
     
     /**
+     * Get shipment list with logistic name for cont supplier not include sztp
+     * 
+     * @param shipment
+     * @return List shipment
+     */
+    public List<Shipment> getShipmentListForContSupplyNotIncludeContSztp(Shipment shipment);
+    
+    /**
      * Select shipment list with searching field form both shipment and shipment detail
      * including vslnm, voyno, container no , do status,... from shipment detail
      * 

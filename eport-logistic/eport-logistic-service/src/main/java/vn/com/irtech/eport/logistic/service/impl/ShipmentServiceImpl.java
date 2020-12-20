@@ -135,84 +135,88 @@ public class ShipmentServiceImpl implements IShipmentService {
 	}
 
 	/**
-     * Get shipment list with logistic name for cont supplier
-     * 
-     * @param shipment
-     * @return List shipment
-     */
+	 * Get shipment list with logistic name for cont supplier
+	 * 
+	 * @param shipment
+	 * @return List shipment
+	 */
 	@Override
-    public List<Shipment> getShipmentListForContSupply(Shipment shipment) {
+	public List<Shipment> getShipmentListForContSupply(Shipment shipment) {
 		return shipmentMapper.getShipmentListForContSupply(shipment);
 	}
-	
+
 	/**
-     * Select shipment list with searching field form both shipment and shipment detail
-     * including vslnm, voyno, container no , do status,... from shipment detail
-     * 
-     * @param shipment
-     * @return List shipment object
-     */
+	 * Get shipment list with logistic name for cont supplier not include sztp
+	 * 
+	 * @param shipment
+	 * @return List shipment
+	 */
 	@Override
-    public List<Shipment> selectShipmentListByWithShipmentDetailFilter(Shipment shipment) {
+	public List<Shipment> getShipmentListForContSupplyNotIncludeContSztp(Shipment shipment) {
+		return shipmentMapper.getShipmentListForContSupplyNotIncludeContSztp(shipment);
+	}
+
+	/**
+	 * Select shipment list with searching field form both shipment and shipment
+	 * detail including vslnm, voyno, container no , do status,... from shipment
+	 * detail
+	 * 
+	 * @param shipment
+	 * @return List shipment object
+	 */
+	@Override
+	public List<Shipment> selectShipmentListByWithShipmentDetailFilter(Shipment shipment) {
 		return shipmentMapper.selectShipmentListByWithShipmentDetailFilter(shipment);
 	}
-	
+
 	@Override
-    public List<Shipment> selectShipmentListByWithShipmentDetailFilterContReefer(Shipment shipment) {
+	public List<Shipment> selectShipmentListByWithShipmentDetailFilterContReefer(Shipment shipment) {
 		return shipmentMapper.selectShipmentListByWithShipmentDetailFilterContReefer(shipment);
 	}
-	
+
 	@Override
-    public List<Shipment> selectShipmentListByWithShipmentDetailFilterReceive(Shipment shipment) {
+	public List<Shipment> selectShipmentListByWithShipmentDetailFilterReceive(Shipment shipment) {
 		return shipmentMapper.selectShipmentListByWithShipmentDetailFilterReceive(shipment);
 	}
-	
-	
-	
+
 	@Override
-    public List<Shipment> selectShipmentListByWithShipmentDetailFilterApply(Shipment shipment) {
+	public List<Shipment> selectShipmentListByWithShipmentDetailFilterApply(Shipment shipment) {
 		return shipmentMapper.selectShipmentListByWithShipmentDetailFilterApply(shipment);
 	}
-	
+
 	@Override
-    public List<Shipment> selectShipmentListByWithShipmentContR(Shipment shipment) {
+	public List<Shipment> selectShipmentListByWithShipmentContR(Shipment shipment) {
 		return shipmentMapper.selectShipmentListByWithShipmentContR(shipment);
 	}
-	
-	
-	
+
 	@Override
-    public List<Shipment> selectShipmentListByWithShipmentDetailDangerous(Shipment shipment) {
+	public List<Shipment> selectShipmentListByWithShipmentDetailDangerous(Shipment shipment) {
 		return shipmentMapper.selectShipmentListByWithShipmentDetailDangerous(shipment);
 	}
-	
+
 	@Override
-    public List<Shipment> selectShipmentListByWithShipmentOverSize(Shipment shipment) {
+	public List<Shipment> selectShipmentListByWithShipmentOverSize(Shipment shipment) {
 		return shipmentMapper.selectShipmentListByWithShipmentOverSize(shipment);
 	}
-	
-	
-	
-	
-	
-	
-    /**
-     * input: serviceType(bat buoc)
-     * getShipmentsForSupportCustomBy in OM SupportCustomReceiveFull, SupportCustomSendFull
-     */
+
+	/**
+	 * input: serviceType(bat buoc) getShipmentsForSupportCustomBy in OM
+	 * SupportCustomReceiveFull, SupportCustomSendFull
+	 */
 	@Override
 	public List<Shipment> getShipmentsForSupportCustom(Shipment shipment) {
 		return shipmentMapper.getShipmentsForSupportCustom(shipment);
 	}
-	
+
 	/**
-     * Select list shipment where shipment detail is exists with condition for extension date
-     * 
-     * @param shipment
-     * @return List shipment object
-     */
+	 * Select list shipment where shipment detail is exists with condition for
+	 * extension date
+	 * 
+	 * @param shipment
+	 * @return List shipment object
+	 */
 	@Override
-    public List<Shipment> selectShipmentListForExtensionDate(Shipment shipment) {
+	public List<Shipment> selectShipmentListForExtensionDate(Shipment shipment) {
 		return shipmentMapper.selectShipmentListForExtensionDate(shipment);
 	}
 }
