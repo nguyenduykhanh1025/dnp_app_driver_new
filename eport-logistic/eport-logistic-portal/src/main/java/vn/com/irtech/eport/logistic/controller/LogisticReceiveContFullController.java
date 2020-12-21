@@ -2,6 +2,8 @@ package vn.com.irtech.eport.logistic.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -54,6 +56,7 @@ import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ReeferInfo;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentComment;
@@ -229,18 +232,44 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return PREFIX + "/paymentForm";
 	}
 
-	@GetMapping("/paymentPowerDropForm/{processOrderIds}")
-	public String paymentPowerDropForm(@PathVariable("processOrderIds") String processOrderIds, ModelMap mmap) {
-		String shipmentDetailIds = "";
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderIds);
-		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-			shipmentDetailIds += shipmentDetail.getId() + ",";
+	@GetMapping("/paymentPowerDropForm/{reeferInfoId}")
+	public String paymentPowerDropForm(@PathVariable("reeferInfoId") Long reeferInfoId, ModelMap mmap) {
+
+		ReeferInfo reeferInfo = this.reeferInfoService.selectReeferInfoById(reeferInfoId);
+		ShipmentDetail shipmentDetailFromDB = this.shipmentDetailService
+				.selectShipmentDetailByDetailId(reeferInfo.getShipmentDetailId().toString());
+
+		ProcessBill processBill = new ProcessBill();
+		processBill.setShipmentId(shipmentDetailFromDB.getShipmentId());
+		processBill.setLogisticGroupId(shipmentDetailFromDB.getLogisticGroupId());
+		processBill.setProcessOrderId(shipmentDetailFromDB.getProcessOrderId());
+		processBill.setServiceType(shipmentDetailFromDB.getServiceType());
+		processBill.setSztp(shipmentDetailFromDB.getSztp());
+		processBill.setContainerNo(shipmentDetailFromDB.getContainerNo());
+		processBill.setBlNo(shipmentDetailFromDB.getBlNo());
+		processBill.setBookingNo(shipmentDetailFromDB.getBookingNo());
+		processBill.setPayType(reeferInfo.getPayerType());
+		processBill.setPaymentStatus("N");
+		processBill.setShipmentDetailId(shipmentDetailFromDB.getId());
+
+		Long diff = (reeferInfo.getDateGetPower().getTime() - reeferInfo.getDateSetPower().getTime())
+				/ (1000 * 60 * 60);
+		Long billPowerNumber = 0L;
+		List<SysDictData> billPowers = dictService.getType("bill_power");
+		for (SysDictData billPower : billPowers) {
+			if (billPower.getDictLabel().equals(shipmentDetailFromDB.getSztp().substring(0, 2))) {
+				billPowerNumber = Long.parseLong(billPower.getDictValue());
+				break;
+			}
 		}
-		if (!"".equalsIgnoreCase(shipmentDetailIds)) {
-			shipmentDetailIds.substring(0, shipmentDetailIds.length() - 1);
-		}
-		mmap.put("shipmentDetailIds", shipmentDetailIds);
-		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
+		processBill.setVatAfterFee(billPowerNumber * diff);
+		processBill.setExchangeFee(0L);
+
+		List<ProcessBill> processBillsResult = new ArrayList<>();
+		processBillsResult.add(processBill);
+		mmap.put("processBills", processBillsResult);
+		mmap.put("shipmentDetailIds", shipmentDetailFromDB.getId());
+
 		return PREFIX + "/paymentPowerDropForm";
 	}
 
@@ -1164,6 +1193,24 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	}
 
+	@DeleteMapping("/cont-special/file/{id}")
+	@ResponseBody
+	public AjaxResult deleteSendContFullFile(@PathVariable("id") Long id) throws IOException {
+		if (id != 0) {
+			ShipmentImage shipmentImageParam = new ShipmentImage();
+			shipmentImageParam.setId(id);
+			ShipmentImage shipmentImage = shipmentImageService.selectShipmentImageById(shipmentImageParam);
+			String[] fileArr = shipmentImage.getPath().split("/");
+			File file = new File(Global.getUploadPath() + "/reeferInfo/" + getUser().getGroupId() + "/"
+					+ fileArr[fileArr.length - 1]);
+			if (file.delete()) {
+				shipmentImageService.deleteShipmentImageById(id);
+			}
+			return success();
+		}
+		return error();
+	}
+
 	/**
 	 * @param declareNoList
 	 * @param shipmentDetailIds
@@ -1288,6 +1335,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			Map<String, ContainerInfoDto> catosDetailMap = getCatosShipmentDetail(shipment.getBlNo());
 			// Get opecode, sealNo, wgt, pol, pod
 			ContainerInfoDto catos = null;
+
 			for (ShipmentDetail detail : shipmentDetails) {
 				catos = catosDetailMap.get(detail.getContainerNo());
 				if (catos != null) {
@@ -1370,6 +1418,17 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			@PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
 
 		ShipmentDetail shipmentDetailFromDB = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		Map<String, ContainerInfoDto> catosDetailMap = getCatosShipmentDetail(shipmentDetailFromDB.getBlNo());
+
+		// get temp
+		ContainerInfoDto catos = catosDetailMap.get(shipmentDetailFromDB.getContainerNo());
+		if (catos != null) {
+			if (StringUtils.isEmpty(shipmentDetailFromDB.getTemperature())) {
+				shipmentDetailFromDB.setTemperature(catos.getSetTemp().toString());
+				shipmentDetailService.updateShipmentDetail(shipmentDetailFromDB);
+			}
+		}
+
 		mmap.put("containerNo", containerNo);
 		mmap.put("sztp", sztp);
 		mmap.put("shipmentDetailId", shipmentDetailId);
@@ -1382,7 +1441,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		mmap.put("shipmentFiles", shipmentImages);
 
-		// TODO: chuan bi xoa
 		ShipmentDetailHist shipmentDetailHist = new ShipmentDetailHist();
 		shipmentDetailHist.setDataField("Power Draw Date");
 		shipmentDetailHist.setShipmentDetailId(shipmentDetailId);
@@ -1485,7 +1543,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 		List<SysDictData> oprListBookingCheck = dictService.getType("opr_list_booking_check");
 		String creditFlag = getGroup().getCreditFlag();
-		
+
 		// la khach hàng trả
 		if (creditFlag.equals("0")) {
 			reeferInfo.setPayerType("Customer");
@@ -1502,13 +1560,14 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			}
 		}
 
+		List<ReeferInfo> infosFromDB = this.reeferInfoService
+				.selectReeferInfoListByIdShipmentDetail(shipmentDetail.getId());
+		
 		if ("R".equalsIgnoreCase(shipmentDetail.getSztp().substring(2, 3))) {
-			if (powerDrawDateOldFromDB == null
-					|| shipmentDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_YES)) {
+			if (powerDrawDateOldFromDB == null && infosFromDB.size() == 0) {
 				reeferInfoService.insertReeferInfo(reeferInfo);
 			} else {
-				ReeferInfo reeferInfoFromDB = this.reeferInfoService
-						.selectReeferInfoListByIdShipmentDetail(shipmentDetail.getId()).get(0);
+				ReeferInfo reeferInfoFromDB = infosFromDB.get(0);
 				reeferInfo.setId(reeferInfoFromDB.getId());
 				reeferInfo.setUpdateBy(getUser().getUserName());
 				reeferInfoService.updateReeferInfo(reeferInfo);

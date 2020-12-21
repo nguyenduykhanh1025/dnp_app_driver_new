@@ -16,6 +16,10 @@
     img {
       max-width: 40px;
     }
+
+    .datetimepicker {
+      background-color: #ffff !important;
+    }
   </style>
 </head>
 
@@ -76,11 +80,10 @@
                   <b class="text-black">Ngày cắm:</b>
                 </span>
                 <div class="input-group date col-sm-8 col-xs-6" id="datetimepickerSet">
-                  <input type="text" class="form-control" name="daySetupTemperature" id="daySetupTemperature"
-                    readonly />
-                  <!-- <span class="input-group-addon">
+                  <input type="text" class="form-control" name="daySetupTemperature" id="daySetupTemperature" />
+                  <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
-                  </span> -->
+                  </span>
                 </div>
               </div>
 
@@ -116,6 +119,18 @@
                 <div class="input-group date col-sm-8 col-xs-6">
                   <input type="text" class="form-control" id="moneyNumber" name="paymentPerson" readonly />
                 </div>
+              </div>
+            </div>
+
+            <div class="form-horizontal mt10 row">
+              <div class="form-group col-sm-6 row" id="extendPowerDrawDateContainer">
+                <span class="control-label col-sm-4 col-xs-6" style="text-align: left">
+                  <b class="text-black">Đối tượng thanh toán:</b>
+                </span>
+                <span class="input-group date col-sm-8 col-xs-6" style="float: left;">
+                  <select class="form-control" id="slPaymentInformation">
+                  </select>
+                </span>
               </div>
             </div>
 
@@ -309,7 +324,7 @@
       var oversizeBack = shipmentDetail.oversizeBack;
     });
   </script>
-  <script th:src="@{/eport/js/modules/supportRequest/reefer/detail.js?v=20201029}"></script>
+  <script th:src="@{/eport/js/modules/supportRequest/reefer/detail.js?v=20201030}"></script>
 </body>
 
 </html>

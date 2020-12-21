@@ -1,7 +1,9 @@
 package vn.com.irtech.eport.web.controller.container.supplier;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -84,23 +86,24 @@ public class ContainerSupplierController extends BaseController {
 	@ResponseBody
 	public TableDataInfo listShipment(@RequestBody PageAble<Shipment> param) {
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+
 		Shipment shipment = param.getData();
 		if (shipment == null) {
 			shipment = new Shipment();
 		}
+
+		Map<String, Object> params = shipment.getParams();
+		if (params == null) {
+			params = new HashMap<>();
+		}
+		// not have cont have size include R
+		params.put("sztp", "R");
+		shipment.setParams(params);
+
 		shipment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
-		List<Shipment> shipments = shipmentService.getShipmentListForContSupply(shipment);
-		
-		shipments = shipments.stream().filter(c -> {
-			ShipmentDetail shipmentDetail = new ShipmentDetail();
-			shipmentDetail.setShipmentId(c.getId());
-			// not have cont sztp Reefer
-			shipmentDetail.setSztp("R");
-			if(shipmentDetailService.selectShipmentDetailListNotHaveContReefer(shipmentDetail).size() > 0) {
-				return true;
-			}
-			return false;
-		}).collect(Collectors.toList());
+
+		List<Shipment> shipments = shipmentService.getShipmentListForContSupplyNotIncludeContSztp(shipment);
+
 		return getDataTable(shipments);
 	}
 
@@ -112,7 +115,8 @@ public class ContainerSupplierController extends BaseController {
 		shipmentDetail.setShipmentId(shipmentId);
 		// not have cont sztp Reefer
 		shipmentDetail.setSztp("R");
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailListNotHaveContReefer(shipmentDetail);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService
+				.selectShipmentDetailListNotHaveContReefer(shipmentDetail);
 		if (shipmentDetails != null) {
 			ajaxResult.put("shipmentDetails", shipmentDetails);
 		} else {

@@ -510,7 +510,7 @@ public class ShipmentDetail extends BaseEntity {
 	private String chassisNo; 
 	private String path;  
 	private String fileType;
-	
+	private Long setTemp;
 	
 	
 	
@@ -1460,6 +1460,14 @@ public class ShipmentDetail extends BaseEntity {
 		this.userMobilePhone = userMobilePhone;
 	}
 
+	public Long getSetTemp() {
+		return setTemp;
+	}
+
+	public void setSetTemp(Long setTemp) {
+		this.setTemp = setTemp;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -1507,7 +1515,8 @@ public class ShipmentDetail extends BaseEntity {
 				.append("actualDateReceipt", getActualDateReceipt()).append("dateReceipt", getDateReceipt())
 				.append("humidity", getHumidity()).append("ventilation", getVentilation())
 				.append("powerDrawDate", getPowerDrawDate()).append("powerDrawDateStatus", getPowerDrawDateStatus())
-				.append("supportStatus", getSupportStatus()).append("userMobilePhone", getUserMobilePhone()).toString();
+				.append("supportStatus", getSupportStatus()).append("userMobilePhone", getUserMobilePhone())
+				.append("setTemp", getSetTemp()).toString();
 		
 	}
 }

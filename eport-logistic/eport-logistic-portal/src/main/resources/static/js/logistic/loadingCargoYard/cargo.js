@@ -1,5 +1,7 @@
 const PREFIX = ctx + "logistic/loading-cargo-yard";
-var onlyDigitReg = /^[0-9]*$/gm;
+//var onlyDigitReg = /^[0-9]*$/gm;
+
+var onlyDigitReg = /^\d+$/;
 var onlyFloatReg = /^[+-]?([0-9]*[.|,])?[0-9]+$/gm;
 var dogrid = document.getElementById("container-grid"), hot;
 var minRowAmount = 1, sourceData;
@@ -112,7 +114,8 @@ function removeImage(element, fileId) {
         $.modal.msgSuccess("Xóa tệp thành công.");
         $(element).parent("div.preview-block").remove();
       } else {
-        $.modal.msgError("Xóa tệp thất bại.");
+        //$.modal.msgError("Xóa tệp thất bại."); 
+        $.modal.msgError(result.msg);
       }
     }
   });

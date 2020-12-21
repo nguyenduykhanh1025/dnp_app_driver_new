@@ -50,6 +50,11 @@ function initTabReefer() {
   $('#temperature').val(shipmentDetail.temperature);// nhiệt độ 
   $('#temperature').val(shipmentDetail.humidity);
   $('#temperature').val(shipmentDetail.ventilation);
+
+  if (shipment.edoFlg != "0") {
+    $("#file-container").css("display", "none");
+  }
+
   initFileReefer();
 }
 
@@ -387,21 +392,21 @@ function statusIconRenderer(instance, td, row, col, prop, value, cellProperties)
   cellProperties.readOnly = 'true';
   $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
   let status = "";
-  if (row == 0) {
-    if (value == "P") {
-      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đang chờ xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #f8ac59;"></i>';
-    } else if (value === "S") {
-      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
-    } else if (value === "E") {
-      status = '<i id="status" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #ef6776;"></i>';
-    }
-  } else {
-    // status
-    status = '<i id="status" class="fa fa-clock-ofa-flip-horizontal easyui-tooltip" title="Container đã được xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
-    if (value && value == 'L') {
-      status = '<i id="finish" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã bị khóa không thể chỉnh sửa" aria-hidden="true" style="color: #f8ac59;"></i>';
-    }
+  // if (row == 0) {
+  if (value == "P") {
+    status = '<i id="status" class="fa fa-check easyui-tooltip" title="Container đang chờ xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #f8ac59;"></i>';
+  } else if (value === "S") {
+    status = '<i id="status" class="fa fa-check easyui-tooltip" title="Container đã được xác nhận gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
+  } else if (value === "E") {
+    status = '<i id="status" class="fa fa-check easyui-tooltip" title="Container đã bị từ chối gia hạn rút điện" aria-hidden="true" style="color: #ef6776;"></i>';
   }
+  // } else {
+  //   // status
+  //   status = '<i id="status" class="fa fa-clock-ofa-flip-horizontal easyui-tooltip" title="Container đã được xét duyệt yêu cầu gia hạn rút điện" aria-hidden="true" style="color: #1ab394;"></i>';
+  //   if (value && value == 'L') {
+  //     status = '<i id="finish" class="fa fa-clock-o fa-flip-horizontal easyui-tooltip" title="Container đã bị khóa không thể chỉnh sửa" aria-hidden="true" style="color: #f8ac59;"></i>';
+  //   }
+  // }
 
   // Return the content
   let content = '<div style="font-size: 25px">' + status + '</div>';
@@ -418,7 +423,7 @@ function dateSetPower(instance, td, row, col, prop, value, cellProperties) {
   }
   const dateResult = new Date(value);
   const month = dateResult.getMonth() == 12 ? '00' : dateResult.getMonth() + 1;
-  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()} ${dateResult.getHours()}:${dateResult.getMinutes()}`;
+  const result = `${getTwoDigitFormat(dateResult.getDate())}/${getTwoDigitFormat(month)}/${dateResult.getFullYear()} ${getTwoDigitFormat(dateResult.getHours())}:${getTwoDigitFormat(dateResult.getMinutes())}`;
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
@@ -429,7 +434,7 @@ function dateGetPower(instance, td, row, col, prop, value, cellProperties) {
   }
   const dateResult = new Date(value);
   const month = dateResult.getMonth() == 12 ? '00' : dateResult.getMonth() + 1;
-  const result = `${dateResult.getDate()}/${month}/${dateResult.getFullYear()} ${dateResult.getHours()}:${dateResult.getMinutes()}`;
+  const result = `${getTwoDigitFormat(dateResult.getDate())}/${getTwoDigitFormat(month)}/${dateResult.getFullYear()} ${getTwoDigitFormat(dateResult.getHours())}:${getTwoDigitFormat(dateResult.getMinutes())}`;
   $(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: center;text-align: center;">' + result + '</div>');
   return td;
 }
@@ -535,7 +540,7 @@ function extendPowerDrawDate() {
 
 function getBetweenTwoDate(date1, date2) {
   const diffTime = Math.abs(date2 - date1);
-  return Math.ceil(diffTime / (1000 * 60 * 60));
+  return (diffTime / (1000 * 60 * 60)).toFixed(1);
 }
 
 function getBetweenTwoDateInSourceData(row) {
@@ -559,4 +564,22 @@ function isBookingCheckPayment() {
     }
   }
   return result;
+}
+
+function extendPowerDrawDateInterrupted() {
+  $.modal.openCustomForm("Thêm thông tin gia hạn ngắt quãng", PREFIX + "/shipment-detail/" + shipmentDetailId + "/extend-power-interrupted", 600, 300);
+}
+
+function submitDataFromExtendPowerInterruptedModal(data) {
+  data = JSON.parse(data);
+  sourceData = data.data;
+  configHandson();
+  hot = new Handsontable(dogrid, config);
+  hot.loadData(sourceData);
+
+  $.modal.alertSuccess("Thêm gia hạn ngày rút điện thành công.");
+}
+
+function getTwoDigitFormat(data) {
+  return ("0" + data).slice(-2);
 }

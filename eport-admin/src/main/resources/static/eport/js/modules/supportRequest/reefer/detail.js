@@ -1,17 +1,66 @@
 const PREFIX = ctx + "support-request/reefer";
 var dogrid = document.getElementById("container-grid"), hot;
 var checkList = [];
+const objectPaymentList = ["Chủ hàng trả trước", "Chủ hàng trả sau", "Hãng tàu"];
+const PAYER_TYPE = {
+  customer: 'Customer',
+  carriers: 'Carriers'
+}
+const PAY_TYPE = {
+  credit: 'Credit',
+  cash: 'Cash'
+}
+
 $(document).ready(function () {
+  initSelection();
   initTabReefer();
   initDateTime();
 });
+
+$("#datetimepickerSet").datetimepicker({
+  format: 'dd/mm/yyyy hh:ii',
+  language: "vi_VN",
+  //minView: "month",
+  autoclose: true,
+  minuteStep: 30,
+  todayBtn: true,
+  startDate: new Date()
+});
+
+function initSelection() {
+  let data = '';
+  if (reeferInfos[0].payerType == PAYER_TYPE.carriers) {
+    data += 'Hãng tàu';
+  } else {
+    data += 'Chủ hàng';
+    if (reeferInfos[0].payType == PAY_TYPE.credit) {
+      data += ' trả trước';
+    } else {
+      data += ' trả sau';
+    }
+  }
+
+  for (let i = 0; i < objectPaymentList.length; ++i) {
+    $("#slPaymentInformation").append(new Option(objectPaymentList[i], objectPaymentList[i]));
+    $('#slPaymentInformation option').each(function () {
+      if ($(this).val() == data) {
+        $(this).prop("selected", true);
+      }
+    });
+  }
+}
 function initDateTime() {
   let dayDrop = new Date(shipmentDetail.powerDrawDate);
   let daySetup = new Date(shipmentDetail.daySetupTemperature);
+  console.log(shipmentDetail);
 
-
+  if (daySetup.getFullYear() != 1970) {
+    $("#daySetupTemperature").val(formatDate(daySetup));
+  } else {
+    $("#daySetupTemperature").val(null);
+  }
   $("#powerDrawDate").val(formatDate(dayDrop));
-  $("#daySetupTemperature").val(formatDate(daySetup));
+
 }
 
 function initTabReefer() {
@@ -126,57 +175,46 @@ let typeO = true;// qua kho
 
 // confirm
 function insertCont() {
-  const payload = reeferInfos.map(item => {
-    return {
-      id: item.id,
-      hourNumber: $('#numberHours').val(),
-      moneyNumber: $('#moneyNumber').val(),
-      shipmentDetailId: item.shipmentDetailId,
-      // payType: getPayType(),
-      // payerType: getPayerType()
+  let validate = true;
+  let valuePaymentInformation = $('#slPaymentInformation').val();
+  let payType = getPayType(valuePaymentInformation);
+  let payerType = getPayerType(valuePaymentInformation);
+  let dateSetup = new Date(formatDateToServer($("#daySetupTemperature").val())).getTime();
+  let dateDrop = new Date(formatDateToServer($("#powerDrawDate").val())).getTime();
+  //validate
+  if (dateSetup > dateDrop) {
+    validate = false;
+    $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
+  }
+  // chỉ update reeferInfos đầu tiên
+  if (validate) {
+    const payload = {
+      id: reeferInfos[0].id,
+      payType: payType,
+      payerType: payerType,
+      dateSetPower: dateSetup,
+      shipmentDetailId: reeferInfos[0].shipmentDetailId
     }
-  })
-  $.ajax(
-    {
-      url: PREFIX + "/save-reefer",
-      method: "post",
-      contentType: "application/json",
-      accept: "text/plain",
-      data: JSON.stringify(payload),
-      dataType: "text",
-      success: function (result) {
-        $.modal.close();
-      }
-    });
+
+    $.ajax(
+      {
+        url: PREFIX + "/save-reefer",
+        method: "post",
+        contentType: "application/json",
+        accept: "text/plain",
+        data: JSON.stringify(payload),
+        dataType: "text",
+        success: function (result) {
+          $.modal.close();
+        }
+      });
+  }
+
 }
 
-function getPayType() {
-  const data = $('input[name="optradio"]:checked').val();
-  console.log(data);
-  let result = '';
-  if (data == 'paymentType_1') {
-    result = 'B';
-  } else if (data == 'paymentType_2') {
-    result = 'A';
-  }
-  return result;
-}
-
-function getPayerType() {
-  const data = $('#optradio').val();
-  let result = '';
-  if (data == 'paymentType_0') {
-    result = 'P';
-  } else {
-    result = 'Q';
-  }
-  return result;
-}
 function confirm() {
   insertCont();
 }
-
-
 
 function saveFile() {
   $.ajax(
@@ -281,7 +319,12 @@ function getDifferenceBetween(date1, date2) {
 function formatDate(data) {
   let date = new Date(data);
   const month = date.getMonth() == 12 ? '00' : date.getMonth() + 1;
-  return `${date.getDate()}/${month}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
+  return `${getTwoDigitFormat(date.getDate())}/${getTwoDigitFormat(month)}/${date.getFullYear()} ${getTwoDigitFormat(date.getHours())}:${getTwoDigitFormat(date.getMinutes())}`
+}
+
+function formatDateToServer(data) {
+  let dateArr = data.split("/");
+  return `${dateArr[1]}/${dateArr[0]}/${dateArr[2]}`;
 }
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -317,4 +360,30 @@ function getCountNumber() {
     }
   }
   return data = numberWithCommas(billNumber * getBetweenTwoDateInSourceData());
+}
+
+function getTwoDigitFormat(data) {
+  return ("0" + data).slice(-2);
+}
+
+function getPayType(data) {
+  if (data == objectPaymentList[2]) {
+    // hãng tàu thanh toán
+    return null;
+  } else if (data == objectPaymentList[0]) {
+    // là chủ hàng trả rước
+    return "Credit";
+  } else {
+    // là chủ hàng trả sau
+    return "Cash"
+  }
+}
+
+function getPayerType(data) {
+  if (data == objectPaymentList[2]) {
+    // hãng tàu thanh toán
+    return PAYER_TYPE.carriers;
+  } else {
+    return PAYER_TYPE.customer;
+  }
 }
