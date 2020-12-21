@@ -2525,7 +2525,7 @@ function openHouseBillForm(shipmentDetailId) {
   }
   $.modal.openCustomForm(
     "Khai báo house bill",
-    prefix + "/shipment-detail/" + shipmentDetailId + "/house-bill"
+    prefix + "/shipment-detail/" + shipmentDetailId + "/house-bill",1000, 500
   );
 }
 

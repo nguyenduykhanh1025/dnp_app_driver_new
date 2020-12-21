@@ -1,5 +1,7 @@
 const PREFIX = ctx + "logistic/unloading-cargo-yard";
-var onlyDigitReg = /^[0-9]*$/gm;
+//var onlyDigitReg = /^[0-9]*$/gm;
+
+var onlyDigitReg = /^\d+$/;
 var onlyFloatReg = /^[+-]?([0-9]*[.|,])?[0-9]+$/gm;
 var dogrid = document.getElementById("container-grid"), hot;
 var minRowAmount = 1, sourceData;

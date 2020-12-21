@@ -1158,6 +1158,13 @@ public class LogisticLoadingCargoYardController extends LogisticBaseController {
 	public AjaxResult deleteShipmentDetailFile(Long id, @PathVariable("shipmentDetailId") Long shipmentDetailId)
 			throws IOException {
 		// TODO: Validate permission before delete file
+		
+		
+		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		
+		if ("Y".equalsIgnoreCase(shipmentDetail.getUserVerifyStatus())) {
+			return error("Container đã được xác nhận làm lệnh, không thể xóa file.");
+		}
 
 		ShipmentImage shipmentImageParam = new ShipmentImage();
 		shipmentImageParam.setId(id);
