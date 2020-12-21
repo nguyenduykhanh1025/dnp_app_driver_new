@@ -2018,7 +2018,7 @@ function openHouseBillForm(shipmentDetailId) {
         $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
         return;
     }
-    $.modal.openCustomForm("Khai báo house bill", prefix + "/shipment-detail/" + shipmentDetailId + "/house-bill", 1000, 700);
+    $.modal.openCustomForm("Khai báo house bill", prefix + "/shipment-detail/" + shipmentDetailId + "/house-bill", 1000, 500);
 }
 
 function formatDateToSendServer(date) {
