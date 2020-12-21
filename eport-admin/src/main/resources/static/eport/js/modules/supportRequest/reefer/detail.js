@@ -49,11 +49,10 @@ function initSelection() {
     });
   }
 }
-console.log('aloo');
 function initDateTime() {
   let dayDrop = new Date(shipmentDetail.powerDrawDate);
   let daySetup = new Date(shipmentDetail.daySetupTemperature);
-
+  console.log(shipmentDetail);
 
   if (daySetup.getFullYear() != 1970) {
     $("#daySetupTemperature").val(formatDate(daySetup));
@@ -193,7 +192,7 @@ function insertCont() {
       id: reeferInfos[0].id,
       payType: payType,
       payerType: payerType,
-      dateGetPower: dateSetup,
+      dateSetPower: dateSetup,
       shipmentDetailId: reeferInfos[0].shipmentDetailId
     }
 

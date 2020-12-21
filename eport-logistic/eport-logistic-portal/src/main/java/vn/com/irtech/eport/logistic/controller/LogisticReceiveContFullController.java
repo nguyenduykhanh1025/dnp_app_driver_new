@@ -1560,12 +1560,14 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			}
 		}
 
+		List<ReeferInfo> infosFromDB = this.reeferInfoService
+				.selectReeferInfoListByIdShipmentDetail(shipmentDetail.getId());
+		
 		if ("R".equalsIgnoreCase(shipmentDetail.getSztp().substring(2, 3))) {
-			if (powerDrawDateOldFromDB == null) {
+			if (powerDrawDateOldFromDB == null && infosFromDB.size() == 0) {
 				reeferInfoService.insertReeferInfo(reeferInfo);
 			} else {
-				ReeferInfo reeferInfoFromDB = this.reeferInfoService
-						.selectReeferInfoListByIdShipmentDetail(shipmentDetail.getId()).get(0);
+				ReeferInfo reeferInfoFromDB = infosFromDB.get(0);
 				reeferInfo.setId(reeferInfoFromDB.getId());
 				reeferInfo.setUpdateBy(getUser().getUserName());
 				reeferInfoService.updateReeferInfo(reeferInfo);

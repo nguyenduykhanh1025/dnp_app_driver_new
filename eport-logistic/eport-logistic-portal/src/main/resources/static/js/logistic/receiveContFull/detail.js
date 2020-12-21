@@ -180,6 +180,7 @@ function confirm() {
   var chassisNo = $("#chassisNo").val();
 
   if (shipmentDetail.sztp.includes("R") && (shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ)) {
+    console.log('0');
     saveFile();
     $.modal.close();
     return;
@@ -190,6 +191,7 @@ function confirm() {
   }
   else
     if (oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")) {
+      console.log('1');
       if (truckNo == null || truckNo == "") {
         $.modal.alertWarning("Vui lòng nhập vào biển số xe đầu kéo rồi thử lại");
       }
@@ -201,6 +203,8 @@ function confirm() {
         saveFile();
       }
     } else {
+      
+
       var lengthTemp = shipmentFilePath;
       if (lengthTemp) {// nếu k có thì vào đây
         insertCont();

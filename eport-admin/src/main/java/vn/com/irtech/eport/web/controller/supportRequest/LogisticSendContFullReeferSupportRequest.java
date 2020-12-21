@@ -266,9 +266,9 @@ public class LogisticSendContFullReeferSupportRequest extends AdminBaseControlle
 		// chua tim ra ngày cam dien
 		ShipmentDetail shipmentDetailFromDB = shipmentDetailService
 				.selectShipmentDetailById(reeferInfo.getShipmentDetailId());
-		shipmentDetailFromDB.setDaySetupTemperature(reeferInfo.getDateGetPower());
+		shipmentDetailFromDB.setDaySetupTemperature(reeferInfo.getDateSetPower());
 		shipmentDetailService.updateShipmentDetail(shipmentDetailFromDB);
-
+		
 		return AjaxResult.success("Thành công");
 	}
 
