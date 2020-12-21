@@ -1320,7 +1320,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
-		
+
 		// auto load containers detail for eDO for first time
 		if ("1".equals(shipment.getEdoFlg()) && shipmentDetails.size() == 0) {
 			if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
@@ -1335,7 +1335,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			Map<String, ContainerInfoDto> catosDetailMap = getCatosShipmentDetail(shipment.getBlNo());
 			// Get opecode, sealNo, wgt, pol, pod
 			ContainerInfoDto catos = null;
-			
+
 			for (ShipmentDetail detail : shipmentDetails) {
 				catos = catosDetailMap.get(detail.getContainerNo());
 				if (catos != null) {
@@ -1419,13 +1419,16 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 		ShipmentDetail shipmentDetailFromDB = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
 		Map<String, ContainerInfoDto> catosDetailMap = getCatosShipmentDetail(shipmentDetailFromDB.getBlNo());
+
+		// get temp
 		ContainerInfoDto catos = catosDetailMap.get(shipmentDetailFromDB.getContainerNo());
-		System.out.println("BBBBBBBBBBBBBBBBBBBB");
-		if(catos != null) {
-			System.out.println("AAAAAAAAAAAAAAAAAAAA");
-			System.out.println(catos.getSetTemp());
+		if (catos != null) {
+			if (StringUtils.isEmpty(shipmentDetailFromDB.getTemperature())) {
+				shipmentDetailFromDB.setTemperature(catos.getSetTemp().toString());
+				shipmentDetailService.updateShipmentDetail(shipmentDetailFromDB);
+			}
 		}
-		
+
 		mmap.put("containerNo", containerNo);
 		mmap.put("sztp", sztp);
 		mmap.put("shipmentDetailId", shipmentDetailId);
