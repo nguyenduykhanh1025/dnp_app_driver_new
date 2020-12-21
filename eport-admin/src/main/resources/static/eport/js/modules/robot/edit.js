@@ -28,6 +28,7 @@ function edit() {
     isCancelReceiveContEmptyOrder: $("input[name='isCancelReceiveContEmptyOrder']").is(':checked') == true,
     isExportReceipt: $("input[name='isExportReceipt']").is(':checked') == true,
     isExtensionDetOrder: $("input[name='isExtensionDetOrder']").is(':checked') == true,
+    isOverSizeRemarkOrder: $("input[name='isOverSizeRemarkOrder']").is(':checked') == true,
     remark: $("textarea[name='remark']").val()
   }
   $.ajax({
