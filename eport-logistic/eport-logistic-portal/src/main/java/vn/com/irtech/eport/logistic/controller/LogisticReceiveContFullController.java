@@ -252,7 +252,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		processBill.setPaymentStatus("N");
 		processBill.setShipmentDetailId(shipmentDetailFromDB.getId());
 
-		Long diff = (reeferInfo.getDateGetPower().getTime() - reeferInfo.getDateSetPower().getTime()) / (1000 * 60 * 60);
+		Long diff = (reeferInfo.getDateGetPower().getTime() - reeferInfo.getDateSetPower().getTime())
+				/ (1000 * 60 * 60);
 		Long billPowerNumber = 0L;
 		List<SysDictData> billPowers = dictService.getType("bill_power");
 		for (SysDictData billPower : billPowers) {
@@ -263,7 +264,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		processBill.setVatAfterFee(billPowerNumber * diff);
 		processBill.setExchangeFee(0L);
-		
+
 		List<ProcessBill> processBillsResult = new ArrayList<>();
 		processBillsResult.add(processBill);
 		mmap.put("processBills", processBillsResult);
@@ -1319,7 +1320,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
-
+		
 		// auto load containers detail for eDO for first time
 		if ("1".equals(shipment.getEdoFlg()) && shipmentDetails.size() == 0) {
 			if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
@@ -1334,6 +1335,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			Map<String, ContainerInfoDto> catosDetailMap = getCatosShipmentDetail(shipment.getBlNo());
 			// Get opecode, sealNo, wgt, pol, pod
 			ContainerInfoDto catos = null;
+			
 			for (ShipmentDetail detail : shipmentDetails) {
 				catos = catosDetailMap.get(detail.getContainerNo());
 				if (catos != null) {
@@ -1416,6 +1418,14 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			@PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
 
 		ShipmentDetail shipmentDetailFromDB = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		Map<String, ContainerInfoDto> catosDetailMap = getCatosShipmentDetail(shipmentDetailFromDB.getBlNo());
+		ContainerInfoDto catos = catosDetailMap.get(shipmentDetailFromDB.getContainerNo());
+		
+		if(catos != null) {
+			System.out.println("AAAAAAAAAAAAAAAAAAAA");
+			System.out.println(catos.getSetTemp());
+		}
+		
 		mmap.put("containerNo", containerNo);
 		mmap.put("sztp", sztp);
 		mmap.put("shipmentDetailId", shipmentDetailId);
@@ -1428,7 +1438,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		mmap.put("shipmentFiles", shipmentImages);
 
-		// TODO: chuan bi xoa
 		ShipmentDetailHist shipmentDetailHist = new ShipmentDetailHist();
 		shipmentDetailHist.setDataField("Power Draw Date");
 		shipmentDetailHist.setShipmentDetailId(shipmentDetailId);
@@ -1549,8 +1558,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 
 		if ("R".equalsIgnoreCase(shipmentDetail.getSztp().substring(2, 3))) {
-			if (powerDrawDateOldFromDB == null
-					|| shipmentDetail.getFrozenStatus().equals(EportConstants.CONT_SPECIAL_STATUS_YES)) {
+			if (powerDrawDateOldFromDB == null) {
 				reeferInfoService.insertReeferInfo(reeferInfo);
 			} else {
 				ReeferInfo reeferInfoFromDB = this.reeferInfoService
