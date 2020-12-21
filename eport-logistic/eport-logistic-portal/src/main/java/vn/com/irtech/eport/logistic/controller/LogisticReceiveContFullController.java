@@ -1420,7 +1420,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ShipmentDetail shipmentDetailFromDB = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
 		Map<String, ContainerInfoDto> catosDetailMap = getCatosShipmentDetail(shipmentDetailFromDB.getBlNo());
 		ContainerInfoDto catos = catosDetailMap.get(shipmentDetailFromDB.getContainerNo());
-		
+		System.out.println("BBBBBBBBBBBBBBBBBBBB");
 		if(catos != null) {
 			System.out.println("AAAAAAAAAAAAAAAAAAAA");
 			System.out.println(catos.getSetTemp());
