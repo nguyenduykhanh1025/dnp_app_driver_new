@@ -189,6 +189,9 @@ public class ShipmentDetailEntity extends BaseEntity
 	/** Oversize catos OS_STBD */
 	private String osStbd;
 
+	/** Oversize catos SET_TEMP */
+	private String setTemp;
+	
     public void setCargoType(String cargoType) {
         this.cargoType = cargoType;
     }
@@ -693,6 +696,14 @@ public class ShipmentDetailEntity extends BaseEntity
 	public void setOsStbd(String osStbd) {
 		this.osStbd = osStbd;
 	}
+	
+	public String getSetTemp() {
+		return setTemp;
+	}
+
+	public void setSetTemp(String setTemp) {
+		this.setTemp = setTemp;
+	}
 
 	@Override
     public String toString() {
@@ -721,6 +732,7 @@ public class ShipmentDetailEntity extends BaseEntity
 				.append("dangerousUnno", getDangerousUnno()).append("ovHeight", getOvHeight())
 				.append("ovFore", getOvFore()).append("ovAft", getOvAft()).append("ovPort", getOvPort())
 				.append("ovStbd", getOvStbd()).append("osHeight", getOsHeight()).append("osPort", getOsPort())
-				.append("osStbd", getOsStbd()).append("containerRemark", getContainerRemark()).toString();
+				.append("osStbd", getOsStbd()).append("containerRemark", getContainerRemark())
+				.append("setTemp", getSetTemp()).toString();
     }
 }

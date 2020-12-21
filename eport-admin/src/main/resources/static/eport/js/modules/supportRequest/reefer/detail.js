@@ -17,6 +17,16 @@ $(document).ready(function () {
   initDateTime();
 });
 
+$("#datetimepickerSet").datetimepicker({
+  format: 'dd/mm/yyyy hh:ii',
+  language: "vi_VN",
+  //minView: "month",
+  autoclose: true,
+  minuteStep: 30,
+  todayBtn: true,
+  startDate: new Date()
+});
+
 function initSelection() {
   let data = '';
   if (reeferInfos[0].payerType == PAYER_TYPE.carriers) {
@@ -39,14 +49,18 @@ function initSelection() {
     });
   }
 }
-
 function initDateTime() {
   let dayDrop = new Date(shipmentDetail.powerDrawDate);
   let daySetup = new Date(shipmentDetail.daySetupTemperature);
+  console.log(shipmentDetail);
 
-
+  if (daySetup.getFullYear() != 1970) {
+    $("#daySetupTemperature").val(formatDate(daySetup));
+  } else {
+    $("#daySetupTemperature").val(null);
+  }
   $("#powerDrawDate").val(formatDate(dayDrop));
-  $("#daySetupTemperature").val(formatDate(daySetup));
+
 }
 
 function initTabReefer() {
@@ -161,31 +175,41 @@ let typeO = true;// qua kho
 
 // confirm
 function insertCont() {
-
+  let validate = true;
   let valuePaymentInformation = $('#slPaymentInformation').val();
-
   let payType = getPayType(valuePaymentInformation);
   let payerType = getPayerType(valuePaymentInformation);
-
+  let dateSetup = new Date(formatDateToServer($("#daySetupTemperature").val())).getTime();
+  let dateDrop = new Date(formatDateToServer($("#powerDrawDate").val())).getTime();
+  //validate
+  if (dateSetup > dateDrop) {
+    validate = false;
+    $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
+  }
   // chỉ update reeferInfos đầu tiên
-  const payload = {
-    id: reeferInfos[0].id,
-    payType: payType,
-    payerType: payerType,
+  if (validate) {
+    const payload = {
+      id: reeferInfos[0].id,
+      payType: payType,
+      payerType: payerType,
+      dateSetPower: dateSetup,
+      shipmentDetailId: reeferInfos[0].shipmentDetailId
+    }
+
+    $.ajax(
+      {
+        url: PREFIX + "/save-reefer",
+        method: "post",
+        contentType: "application/json",
+        accept: "text/plain",
+        data: JSON.stringify(payload),
+        dataType: "text",
+        success: function (result) {
+          $.modal.close();
+        }
+      });
   }
 
-  $.ajax(
-    {
-      url: PREFIX + "/save-reefer",
-      method: "post",
-      contentType: "application/json",
-      accept: "text/plain",
-      data: JSON.stringify(payload),
-      dataType: "text",
-      success: function (result) {
-        $.modal.close();
-      }
-    });
 }
 
 function confirm() {
@@ -296,6 +320,11 @@ function formatDate(data) {
   let date = new Date(data);
   const month = date.getMonth() == 12 ? '00' : date.getMonth() + 1;
   return `${getTwoDigitFormat(date.getDate())}/${getTwoDigitFormat(month)}/${date.getFullYear()} ${getTwoDigitFormat(date.getHours())}:${getTwoDigitFormat(date.getMinutes())}`
+}
+
+function formatDateToServer(data) {
+  let dateArr = data.split("/");
+  return `${dateArr[1]}/${dateArr[0]}/${dateArr[2]}`;
 }
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

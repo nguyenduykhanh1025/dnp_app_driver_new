@@ -1207,7 +1207,6 @@ function openDetail(id, containerNo, sztp, row, cargoType) {
 		);
 	}
 	else {
-		// detailInformationForContainerSpecial.indexSelected = row;
 		$.modal.openCustomForm(
 			"Khai báo chi tiết",
 			`${PREFIX}/shipment-detail/${id}/cont/${containerNo}/sztp/${sztp}/detail`,
