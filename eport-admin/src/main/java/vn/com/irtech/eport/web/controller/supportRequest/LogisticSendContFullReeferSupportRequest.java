@@ -159,26 +159,26 @@ public class LogisticSendContFullReeferSupportRequest extends AdminBaseControlle
 				ShipmentDetail shipmentDetailFromDB = shipmentDetailService.selectShipmentDetailById(Long.parseLong(i));
 				info.setStatus("S");
 				info.setUpdateBy(getUser().getUserName());
-
+				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
 				// if no da thanh toan
-				boolean isPayment = false;
-				List<SysDictData> sysDictDatas = dictService.getType("opr_list_booking_check");
-				for (SysDictData data : sysDictDatas) {
-					if (data.getDictValue().equals(shipmentDetailFromDB.getOpeCode())) {
-						isPayment = true;
-					}
-				}
-				Long logictistId = shipmentDetailFromDB.getLogisticGroupId();
-				LogisticGroup groupFromDB = this.logisticGroupService.selectLogisticGroupById(logictistId);
-				if (!groupFromDB.getCreditFlag().equals("0")) {
-					isPayment = true;
-				}
-
-				if (isPayment) {
-					info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_SUCCESS);
-				} else {
-					info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
-				}
+//				boolean isPayment = false;
+//				List<SysDictData> sysDictDatas = dictService.getType("opr_list_booking_check");
+//				for (SysDictData data : sysDictDatas) {
+//					if (data.getDictValue().equals(shipmentDetailFromDB.getOpeCode())) {
+//						isPayment = true;
+//					}
+//				}
+//				Long logictistId = shipmentDetailFromDB.getLogisticGroupId();
+//				LogisticGroup groupFromDB = this.logisticGroupService.selectLogisticGroupById(logictistId);
+//				if (!groupFromDB.getCreditFlag().equals("0")) {
+//					isPayment = true;
+//				}
+//
+//				if (isPayment) {
+//					info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_SUCCESS);
+//				} else {
+//					info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
+//				}
 
 				this.reeferInfoService.updateReeferInfo(info);
 			}
@@ -259,12 +259,17 @@ public class LogisticSendContFullReeferSupportRequest extends AdminBaseControlle
 
 	@PostMapping("/save-reefer")
 	@ResponseBody
-	public AjaxResult saveReeferInfo(@RequestBody List<ReeferInfo> reeferInfos) {
-		for (ReeferInfo reeferInfo : reeferInfos) {
-			reeferInfoService.updateReeferInfo(reeferInfo);
-		}
-		return AjaxResult.success(
-				reeferInfoService.selectReeferInfoListByIdShipmentDetail(reeferInfos.get(0).getShipmentDetailId()));
+	public AjaxResult saveReeferInfo(@RequestBody ReeferInfo reeferInfo) {
+
+		reeferInfoService.updateReeferInfo(reeferInfo);
+
+		// chua tim ra ngày cam dien
+		ShipmentDetail shipmentDetailFromDB = shipmentDetailService
+				.selectShipmentDetailById(reeferInfo.getShipmentDetailId());
+		shipmentDetailFromDB.setDaySetupTemperature(reeferInfo.getDateSetPower());
+		shipmentDetailService.updateShipmentDetail(shipmentDetailFromDB);
+		
+		return AjaxResult.success("Thành công");
 	}
 
 	@PostMapping("/confirmation/payment-type")

@@ -517,10 +517,10 @@ function btnDetailRenderer(
 
   if (sourceData && sourceData.length > 0) {
     if (sourceData.length > row && sourceData[row].id) {
-      value = `<button class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-book" style="margin: 0 3px;"></i>Lạnh</button>`;
+      value = `<button style="width: 90%;" class="btn btn-success btn-xs" onclick="openDetail('${sourceData[row].id}', '${containerNo}', '${sztp}', '${row}')"><i class="fa fa-book" style="margin: 0 3px;"></i>Lạnh</button>`;
     } else if (containerNo && sztp) {
       value =
-        '<button class="btn btn-success btn-xs" id="detailBtn ' +
+        '<button style="width: 90%;" class="btn btn-success btn-xs" id="detailBtn ' +
         row +
         '" onclick="openDetail(' +
         null +
@@ -792,7 +792,7 @@ function configHandson() {
       21,
       130,
       100,
-      150,
+      130,
       60,
       200,
       100,

@@ -1219,7 +1219,7 @@ function configHandson() {
       100,  // 2
       100,  // 3
       100,  // 4
-      100,  // 5
+      120,  // 5
       100,  // 6
       80, // 7
       150,  // 8
@@ -2525,7 +2525,7 @@ function openHouseBillForm(shipmentDetailId) {
   }
   $.modal.openCustomForm(
     "Khai báo chi tiết thông tin hàng hóa",
-    prefix + "/shipment-detail/" + shipmentDetailId + "/house-bill"
+    prefix + "/shipment-detail/" + shipmentDetailId + "/house-bill",1000, 500
   );
 }
 

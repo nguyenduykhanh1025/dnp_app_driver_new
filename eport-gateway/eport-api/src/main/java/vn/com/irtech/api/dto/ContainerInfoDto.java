@@ -158,6 +158,9 @@ public class ContainerInfoDto implements Serializable {
 	/** Oversize catos OS_STBD */
 	private String osStbd;
 
+	/** Oversize catos SET_TEMP */
+	private String setTemp;
+	
 	public String getCntrNo() {
 		return cntrNo;
 	}
@@ -517,4 +520,13 @@ public class ContainerInfoDto implements Serializable {
 	public void setOsStbd(String osStbd) {
 		this.osStbd = osStbd;
 	}
+
+	public String getSetTemp() {
+		return setTemp;
+	}
+
+	public void setSetTemp(String setTemp) {
+		this.setTemp = setTemp;
+	}
+	
 }

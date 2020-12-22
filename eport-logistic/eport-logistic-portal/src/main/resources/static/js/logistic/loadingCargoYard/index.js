@@ -2014,7 +2014,7 @@ function openHouseBillForm(shipmentDetailId) {
         $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
         return;
     }
-    $.modal.openCustomForm("Khai báo chi tiết thông tin hàng hóa", prefix + "/shipment-detail/" + shipmentDetailId + "/house-bill", 1000, 700);
+    $.modal.openCustomForm("Khai báo chi tiết thông tin hàng hóa", prefix + "/shipment-detail/" + shipmentDetailId + "/house-bill", 1000, 500);
 }
 
 function formatDateToSendServer(date) {
