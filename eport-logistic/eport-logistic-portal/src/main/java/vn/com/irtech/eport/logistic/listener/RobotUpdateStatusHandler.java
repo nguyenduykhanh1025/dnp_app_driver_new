@@ -200,6 +200,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		if (isExtensionDetOrder) {
 			serviceTypes += EportConstants.SERVICE_EXTEND_DET + ",";
 		}
+		if (isOverSizeRemarkOrder) {
+			serviceTypes += EportConstants.SERVICE_OVERSIZE_REMARK_ORDER + ",";
+		}
 		
 		if (serviceTypes.length() > 0) {
 			serviceTypes = serviceTypes.substring(0, serviceTypes.length()-1);

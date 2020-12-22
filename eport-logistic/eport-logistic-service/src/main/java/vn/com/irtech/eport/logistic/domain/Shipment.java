@@ -113,7 +113,7 @@ public class Shipment extends BaseEntity
     
     /** Thời gian quét hải quan bi loi som nhat*/
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date customsScanTime;
+	private Date customsScanTime;
     
     /** send cont empty type 0 ha vao cang, 1 ha len tau */
     private String sendContEmptyType;

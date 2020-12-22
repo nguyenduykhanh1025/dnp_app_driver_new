@@ -596,10 +596,10 @@ $("#logistic").combobox({
 });
 
 function formatUpdateTime(value, row, index) {
-  if (!row.customScanTime) {
+  if (!row.customsScanTime) {
     return null
   }
-  let customScanTime = new Date(row.customScanTime);
+  let customScanTime = new Date(row.customsScanTime);
   let now = new Date();
   let offset = now.getTime() - customScanTime.getTime();
   let totalMinutes = Math.round(offset / 1000 / 60);

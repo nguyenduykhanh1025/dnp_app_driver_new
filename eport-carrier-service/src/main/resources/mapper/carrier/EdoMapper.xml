@@ -313,7 +313,7 @@
   <select id="getOpeCodeByBlNo" parameterType="String" resultType="String">
     select business_unit
     from edo
-    where bill_of_lading = #{blNo} and house_bill_id is null
+    where carrier_code = #{blNo} and house_bill_id is null
     group by business_unit
     fetch next 1 rows only
   </select>
