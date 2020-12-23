@@ -178,6 +178,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 				case EportConstants.SERVICE_EXTEND_DET:
 					this.updateExtensionDetOrder(result, receiptId, uuId);
 					break;
+				case EportConstants.SERVICE_OVERSIZE_REMARK_ORDER:
+					this.updateOversizeRemarkOrder(result, receiptId, uuId);
+					break;
 				default:
 					break;
 				}
@@ -288,9 +291,11 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
 				// SET RESULT FOR HISTORY SUCCESS
 				historyResult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
-				if (EportConstants.SERVICE_PICKUP_FULL == processOrder.getServiceType()
-						&& EportConstants.DO_TYPE_CARRIER_DO.equals(shipment.getEdoFlg())) {
-					this.sendProcessOrderHoldTerminal(processOrder, shipmentDetails);
+				if (EportConstants.SERVICE_PICKUP_FULL == processOrder.getServiceType()) {
+					this.checkRemarkOversizeContainer(successShipmentDetails, orderNo);
+					if (EportConstants.DO_TYPE_CARRIER_DO.equals(shipment.getEdoFlg())) {
+						this.sendProcessOrderHoldTerminal(processOrder, shipmentDetails);
+					}
 				}
 			} else {
 				result = "error";
@@ -515,6 +520,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		if (robot.getIsExtensionDetOrder()) {
 			serviceTypes += EportConstants.SERVICE_EXTEND_DET + ",";
 		}
+		if (robot.getIsOverSizeRemarkOrder()) {
+			serviceTypes += EportConstants.SERVICE_OVERSIZE_REMARK_ORDER + ",";
+		}
 		if (serviceTypes.length() > 0) {
 			serviceTypes = serviceTypes.substring(0, serviceTypes.length() - 1);
 		}
@@ -572,6 +580,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
 				break;
 			case EportConstants.SERVICE_EXTEND_DET:
 				sendExtendDetOrderToRobot(reqProcessOrder, robot.getUuId());
+				break;
+			case EportConstants.SERVICE_OVERSIZE_REMARK_ORDER:
+				sendOversizeRemarkOrderToRobot(reqProcessOrder, robot.getUuId());
 				break;
 			}
 			return "1";
@@ -829,6 +840,44 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		updateHistory(processOrderId, uuId, EportConstants.SERVICE_EXTEND_DET, hresult);
 	}
 
+	private void updateOversizeRemarkOrder(String result, String receiptId, String uuId) {
+		// INIT PROCESS HISTORY
+		Long processOrderId = Long.parseLong(receiptId);
+		String hresult = null;
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
+		ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+
+		if ("success".equalsIgnoreCase(result)) {
+			processOrder.setStatus(2); // FINISH
+			processOrder.setResult("S"); // RESULT SUCESS
+			processOrderService.updateProcessOrder(processOrder);
+			hresult = EportConstants.PROCESS_HISTORY_RESULT_SUCCESS;
+		} else {
+
+			// INIT PROCESS ORDER TO UPDATE
+			processOrder.setResult("F"); // RESULT FAILED
+			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			processOrder.setRunnable(false);
+			processOrderService.updateProcessOrder(processOrder);
+
+			// SET RESULT FOR HISTORY FAILED
+			hresult = EportConstants.PROCESS_HISTORY_RESULT_FAILED;
+
+			// Send error notification to om
+			String title = "Lỗi cập nhật remark container quá khổ " + uuId + ".";
+			String content = "Lỗi cập nhật remark container quá khổ cho job order no " + processOrder.getOrderNo()
+					+ " của các container " + processJsonData.getContainers() + ".";
+			// Send notification for om
+			try {
+				mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, content,
+						configService.getKey("domain.admin.name"), EportConstants.NOTIFICATION_PRIORITY_LOW);
+			} catch (Exception e) {
+				logger.warn(e.getMessage());
+			}
+		}
+		updateHistory(processOrderId, uuId, EportConstants.SERVICE_EXTEND_DET, hresult);
+	}
+
 	/**
 	 * Update terminal custom hold status
 	 * 
@@ -997,6 +1046,25 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			mqttService.publicMessageToDemandRobot(req, EServiceRobot.EXTENSION_DATE, uuid);
 		} catch (MqttException e) {
 			logger.error("Error when send waiting extend date order to robot: " + e);
+		}
+	}
+
+	/**
+	 * Send oversize remark order to robot
+	 * 
+	 * @param processOrder
+	 * @param uuid
+	 */
+	public void sendOversizeRemarkOrderToRobot(ProcessOrder processOrder, String uuid) {
+		ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+		Map<String, Object> params = new HashMap<>();
+		params.put("containers", processJsonData.getContainers());
+		processOrder.setParams(params);
+		ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(processOrder, processJsonData.getShipmentDetails());
+		try {
+			mqttService.publicMessageToDemandRobot(req, EServiceRobot.OVERSIZE_REMARK, uuid);
+		} catch (MqttException e) {
+			logger.error("Error when send waiting oversize remark order to robot: " + e);
 		}
 	}
 
@@ -1264,6 +1332,76 @@ public class RobotResponseHandler implements IMqttMessageListener {
 			mqttService.publicOrderToDemandRobot(processOrder, EServiceRobot.TERMINAL_CUSTOM_HOLD, robot.getUuId());
 		} catch (MqttException e) {
 			logger.error("Error when send pickup empty to robot: " + e);
+		}
+	}
+
+	/**
+	 * Check list cont oversize and remark truck no chassis no to catos
+	 * 
+	 * @param shipmentDetails
+	 */
+	private void checkRemarkOversizeContainer(List<ShipmentDetail> shipmentDetails, String orderNo) {
+		String containerNos = "";
+		List<ShipmentDetail> shipmentDetailRemarks = new ArrayList<>();
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			if (StringUtils.isNotEmpty(shipmentDetail.getOversize())) {
+				containerNos += shipmentDetail.getContainerNo() + ",";
+				ShipmentDetail shipmentDetailRemark = new ShipmentDetail();
+				shipmentDetailRemark.setTruckNo(shipmentDetail.getTruckNo());
+				shipmentDetailRemark.setChassisNo(shipmentDetail.getChassisNo());
+				shipmentDetailRemark.setContainerNo(shipmentDetail.getContainerNo());
+				shipmentDetailRemarks.add(shipmentDetailRemark);
+			}
+		}
+		if (StringUtils.isNotEmpty(containerNos)) {
+			containerNos = containerNos.substring(0, containerNos.length() - 1);
+			// Get list info remark from catos
+			List<ContainerInfoDto> cntrInfos = catosApiService.getAllContainerInfoDtoByContNos(containerNos);
+			Map<String, ContainerInfoDto> cntrMap = new HashMap<>();
+			if (CollectionUtils.isNotEmpty(cntrInfos)) {
+				for (ContainerInfoDto cntr : cntrInfos) {
+					if (!EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(cntr.getCntrState())
+							&& "F".equalsIgnoreCase(cntr.getFe()) && StringUtils.isNotEmpty(cntr.getJobOdrNo2())) {
+						cntrMap.put(cntr.getCntrNo(), cntr);
+					}
+				}
+			}
+
+			for (ShipmentDetail shipmentDetail : shipmentDetailRemarks) {
+				ContainerInfoDto cntr = cntrMap.get(shipmentDetail.getContainerNo());
+				String remark = "";
+				if (cntr != null) {
+					if (StringUtils.isNotEmpty(cntr.getRemark())) {
+						remark = cntr.getRemark();
+					}
+				}
+				remark += " " + shipmentDetail.getTruckNo() + " MOOC " + shipmentDetail.getChassisNo();
+				shipmentDetail.setRemark(remark);
+			}
+
+			// Create process order
+			ProcessOrder processOrder = new ProcessOrder();
+			processOrder.setServiceType(EportConstants.SERVICE_OVERSIZE_REMARK_ORDER);
+			processOrder.setOrderNo(orderNo);
+			processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_NEW);
+			processOrder.setResult(EportConstants.PROCESS_ORDER_RESULT_WAITING);
+			processOrder.setRunnable(true);
+			processOrder.setContNumber(shipmentDetailRemarks.size());
+			ProcessJsonData processJsonData = new ProcessJsonData();
+			processJsonData.setShipmentDetails(shipmentDetailRemarks);
+			processJsonData.setContainers(containerNos);
+			processOrder.setProcessData(new Gson().toJson(processJsonData));
+			Map<String, Object> params = new HashMap<>();
+			params.put("containers", containerNos);
+			processOrder.setParams(params);
+			processOrderService.insertProcessOrder(processOrder);
+			ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(processOrder,
+					processJsonData.getShipmentDetails());
+			try {
+				mqttService.publishMessageToRobot(req, EServiceRobot.OVERSIZE_REMARK);
+			} catch (MqttException e) {
+				logger.debug("Failed to send oversize remark request to robot: " + e);
+			}
 		}
 	}
 }

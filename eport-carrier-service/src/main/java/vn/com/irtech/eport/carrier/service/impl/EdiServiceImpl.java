@@ -17,7 +17,9 @@ import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysSyncQueue;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.service.ISysDictDataService;
@@ -39,6 +41,9 @@ public class EdiServiceImpl implements IEdiService {
 
 	@Autowired
 	private ISysSyncQueueService sysSyncQueueService;
+
+	@Autowired
+	private IShipmentDetailService shipmentDetailService;
 
 	@Autowired
 	private ISysDictDataService dictDataService;
@@ -246,10 +251,16 @@ public class EdiServiceImpl implements IEdiService {
 		}
 		// Check status attribute get from shipment detail eport
 		// If status is not blank or null => edo has already been declared in eport
-		if (StringUtils.isNotEmpty(edoUpdate.getStatus())) {
-			throw new BusinessException(String.format(
-					"Edo to delete has already been declared on eport (containerNo='%s', billOfLading=%s)",
-					ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
+		if (StringUtils
+				.isNotEmpty(edoUpdate.getContainerNumber()) && StringUtils.isNotEmpty(edoUpdate.getBillOfLading())) {
+			ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+			shipmentDetailParam.setBlNo(edoUpdate.getBillOfLading());
+			shipmentDetailParam.setContainerNo(edoUpdate.getContainerNumber());
+			if (CollectionUtils.isNotEmpty(shipmentDetailService.selectShipmentDetailList(shipmentDetailParam))) {
+				throw new BusinessException(String.format(
+						"Edo to delete has already been declared on eport (containerNo='%s', billOfLading=%s)",
+						ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
+			}
 		}
 
 		// Get info of edo in catos
@@ -264,10 +275,7 @@ public class EdiServiceImpl implements IEdiService {
 					"Edo to delete has already been made order at Da Nang port (containerNo='%s', billOfLading=%s)",
 					ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
 		}
-
-		edoUpdate.setDelFlg(1);
-		edoUpdate.setUpdateBy(partnerCode);
-		return edoService.updateEdo(edoUpdate);
+		return edoService.deleteEdoById(edoUpdate.getId());
 	}
 
 	private void settingEdoData(Edo edo, EdiDataReq ediDataReq, String partnerCode, String transactionId) {

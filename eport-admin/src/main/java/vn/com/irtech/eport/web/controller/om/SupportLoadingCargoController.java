@@ -171,26 +171,49 @@ public class SupportLoadingCargoController extends OmBaseController {
 		return ajaxResult;
 	}
 
+//	@PostMapping("/order/confirm")
+//	@ResponseBody
+//	@Transactional
+//	public AjaxResult confirmOrder(String shipmentDetailIds) {
+//		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+//		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+//			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+//				
+//				//shipmentDetail.setOrderNo(orderNo);
+//				shipmentDetail.setProcessStatus("Y");
+//				if ("Credit".equalsIgnoreCase(shipmentDetail.getPayType())) {
+//					shipmentDetail.setPaymentStatus("Y");
+//					shipmentDetail.setDateReceiptStatus("W");
+//				} else {
+//					shipmentDetail.setPaymentStatus("W");
+//				}
+//				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+//			}
+//		}
+//		return success();
+//	}
+	
 	@PostMapping("/order/confirm")
 	@ResponseBody
 	@Transactional
-	public AjaxResult confirmOrder(String shipmentDetailIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
-		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				shipmentDetail.setProcessStatus("Y");
-				if ("Credit".equalsIgnoreCase(shipmentDetail.getPayType())) {
-					shipmentDetail.setPaymentStatus("Y");
-					shipmentDetail.setDateReceiptStatus("W");
-				} else {
-					shipmentDetail.setPaymentStatus("W");
-				}
-				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+	public AjaxResult confirmOrder(@RequestBody List<ShipmentDetail> shipmentDetails) { 
+		for (ShipmentDetail shipmentDetail : shipmentDetails) { 
+			shipmentDetail.setProcessStatus("Y");
+			if ("Credit".equalsIgnoreCase(shipmentDetail.getPayType())) {
+				shipmentDetail.setPaymentStatus("Y");
+				shipmentDetail.setDateReceiptStatus("W");
+			} else {
+				shipmentDetail.setPaymentStatus("W");
 			}
+			 
+			if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
+				return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
+			} 
 		}
 		return success();
 	}
-
+	
+	 
 	@PostMapping("/shipment-detail")
 	@ResponseBody
 	@Transactional

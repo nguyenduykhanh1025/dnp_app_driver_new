@@ -296,6 +296,14 @@ public class GateSupportController extends BaseController {
 				gateNotificationCheckInReq.setSendSztp1(cntrInfo1.getSztp());
 				gateNotificationCheckInReq.setSendRemark1(cntrInfo1.getRemark());
 				gateNotificationCheckInReq.setSealNo1(cntrInfo1.getSealNo3());
+				gateNotificationCheckInReq.setCargoType1(cntrInfo1.getCargoType());
+				if ("E".equalsIgnoreCase(cntrInfo1.getFe())) {
+					ContainerInfoDto cntrInfoFull = contMap.get(cntrInfo1.getCntrNo() + "F");
+					if (cntrInfoFull != null) {
+						gateNotificationCheckInReq.setGateOutDate1(cntrInfoFull.getOutDate());
+					}
+				}
+
 			}
 		}
 
@@ -306,6 +314,13 @@ public class GateSupportController extends BaseController {
 				gateNotificationCheckInReq.setSendSztp2(cntrInfo2.getSztp());
 				gateNotificationCheckInReq.setSendRemark2(cntrInfo2.getRemark());
 				gateNotificationCheckInReq.setSealNo2(cntrInfo2.getSealNo3());
+				gateNotificationCheckInReq.setCargoType2(cntrInfo2.getCargoType());
+				if ("E".equalsIgnoreCase(cntrInfo2.getFe())) {
+					ContainerInfoDto cntrInfoFull = contMap.get(cntrInfo2.getCntrNo() + "F");
+					if (cntrInfoFull != null) {
+						gateNotificationCheckInReq.setGateOutDate2(cntrInfoFull.getOutDate());
+					}
+				}
 			}
 		}
 		return gateNotificationCheckInReq;
@@ -327,6 +342,10 @@ public class GateSupportController extends BaseController {
 						&& !EportConstants.CATOS_CONT_STACKING.equalsIgnoreCase(cntrInfo.getCntrState())
 						&& StringUtils.isNotEmpty(cntrInfo.getJobOdrNo())) {
 					contMap.put(cntrInfo.getCntrNo(), cntrInfo);
+				}
+				if ("F".equalsIgnoreCase(cntrInfo.getFe())
+						&& EportConstants.CATOS_CONT_DELIVERED.equalsIgnoreCase(cntrInfo.getCntrState())) {
+					contMap.put(cntrInfo.getCntrNo() + "F", cntrInfo);
 				}
 			}
 		}
