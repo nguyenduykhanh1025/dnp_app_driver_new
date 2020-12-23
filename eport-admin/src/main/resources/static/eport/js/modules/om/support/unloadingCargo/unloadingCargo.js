@@ -1313,7 +1313,33 @@ function updateShipmentDetail() {
   }
 }
 
+
 function confirmOrder() {
+  if (getDataSelectedFromTable()) {
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+      url: PREFIX + "/order/confirm",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(shipmentDetails),
+      success: function (result) {
+        if (result.code == 0) {
+          $.modal.alertSuccess(result.msg);
+          reloadShipmentDetail();
+        } else {
+          $.modal.alertError(result.msg);
+        }
+        $.modal.closeLoading();
+      },
+      error: function (result) {
+        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+        $.modal.closeLoading();
+      },
+    });
+  }
+}
+
+/*function confirmOrder() {
   if (getDataSelectedFromTable()) {
     $.modal.loading("Đang xử lý...");
     $.ajax({
@@ -1337,7 +1363,7 @@ function confirmOrder() {
       },
     });
   }
-}
+}*/
 
 function openHistoryFormCatos(row) {
   let containerInfo = sourceData[row];
@@ -1394,13 +1420,42 @@ function openHistoryFormEport(row) {
   }
 }
 
-function openHouseBillForm(shipmentDetailId, title) {
+/*function openHouseBillForm(shipmentDetailId, title) {
   if (shipmentDetailId == null) {
     $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
     return;
   }
-  $.modal.openCustomForm(title, PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
+  
+  
+  
+    layer.open({
+      type: 2,
+      area: [900 + 'px', 500 + 'px'],
+      fix: true,
+      maxmin: true,
+      shade: 0.3,
+      title: title,
+      content: PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill",
+      btn: ["Đóng"],
+      shadeClose: false,
+      yes: function (index, layero) {
+        layer.close(index);
+      }
+    });
+  //$.modal.openCustomForm(title, PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill");
+}*/
+
+
+function openHouseBillForm(shipmentDetailId, title) {
+  if (shipmentDetailId == null) {
+    $.modal.alertWarning('Quý khách chưa khai báo container cần làm lệnh!');
+    return;
+  } 
+  $.modal.openCustomForm(title, PREFIX + "/shipment-detail/" + shipmentDetailId + "/house-bill",850,500);
 }
+
+
+
 
 function rejectOrder() {
   if (getDataSelectedFromTable()) {
@@ -1453,6 +1508,7 @@ function rejectOrderReq(index, layero) {
     }
   });
 }
+ 
 
 function confirmDo() {
   if (getDataSelectedFromTable()) {
@@ -1479,3 +1535,32 @@ function confirmDo() {
     });
   }
 }
+
+
+function Recall() {
+  if (getDataSelectedFromTable()) {
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+      url: PREFIX + "/do/recall",
+      method: "POST",
+      data: {
+        shipmentDetailIds: shipmentDetailIds
+      },
+      success: function (result) {
+        if (result.code == 0) {
+          $.modal.alertSuccess(result.msg);
+          reloadShipmentDetail();
+        } else {
+          $.modal.alertError(result.msg);
+        }
+        $.modal.closeLoading();
+      },
+      error: function (result) {
+        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
+        $.modal.closeLoading();
+      },
+    });
+  }
+}
+
+
