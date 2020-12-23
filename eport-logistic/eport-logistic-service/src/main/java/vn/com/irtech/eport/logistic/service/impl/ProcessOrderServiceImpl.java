@@ -189,6 +189,16 @@ public class ProcessOrderServiceImpl implements IProcessOrderService {
     }
 	
 	/**
+     * Get number of order error need for cont reefer support for each service type
+     * 
+     * @return Map<String, Long>
+     */
+	@Override
+    public Map<String, Long> getSupportNumberReportForContReefer() {
+    	return processOrderMapper.getSupportNumberReportForContReefer();
+    }
+	
+	/**
      * Select process order list by ids
      * 
      * @param processOrderIds

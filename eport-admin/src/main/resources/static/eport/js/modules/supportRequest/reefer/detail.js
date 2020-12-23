@@ -16,7 +16,6 @@ $(document).ready(function () {
   initTabReefer();
   initDateTime();
 });
-
 $("#datetimepickerSet").datetimepicker({
   format: 'dd/mm/yyyy hh:ii',
   language: "vi_VN",
@@ -24,7 +23,7 @@ $("#datetimepickerSet").datetimepicker({
   autoclose: true,
   minuteStep: 30,
   todayBtn: true,
-  startDate: new Date()
+  endDate : new Date(shipmentDetail.powerDrawDate)
 });
 
 function initSelection() {
@@ -52,7 +51,6 @@ function initSelection() {
 function initDateTime() {
   let dayDrop = new Date(shipmentDetail.powerDrawDate);
   let daySetup = new Date(shipmentDetail.daySetupTemperature);
-  console.log(shipmentDetail);
 
   if (daySetup.getFullYear() != 1970) {
     $("#daySetupTemperature").val(formatDate(daySetup));

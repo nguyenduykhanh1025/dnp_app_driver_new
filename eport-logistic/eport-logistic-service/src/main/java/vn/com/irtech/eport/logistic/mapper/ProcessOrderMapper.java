@@ -121,6 +121,13 @@ public interface ProcessOrderMapper
     public Map<String, Long> getSupportNumberReportForOm();
     
     /**
+     * Get number of order error need for cont reefer support for each service type
+     * 
+     * @return Map<String, Long>
+     */
+    public Map<String, Long> getSupportNumberReportForContReefer();
+    
+    /**
      * Select process order list by ids
      * 
      * @param processOrderIds

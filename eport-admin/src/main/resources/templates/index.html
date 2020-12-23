@@ -47,107 +47,131 @@
             </li>
             <li class="dropdown user-menu">
               <a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
-                <span class="hidden-xs">[[${#strings.defaultString(user.userName, '-')}]]</span
-                  >
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="mt5">
-                    <a th:href="@{/system/user/profile}" class="menuItem">
-                      <i class="fa fa-user"></i> Hồ sơ</a
-                    >
-                  </li>
-                  <li>
-                    <a onclick="resetPwd()">
-                      <i class="fa fa-key"></i> Thay đổi mật khẩu</a
-                    >
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a th:href="@{/logout}">
-                      <i class="fa fa-sign-out"></i> Đăng xuất</a
-                    >
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            <ul class="nav navbar-top-links navbar-left welcome-message" id="side-menu" style="display: flex; position: relative;">
-              <li>
-                <a title="ePort CND" class="menuItem" id="main-logo">
-                  <div style="display: flex; justify-content: space-between; padding-right: 50px">
-                    <img th:src="@{/img/CDN.png}" width="40px" height="40px" id="logo-img"/>
-                    <div class="text" style="display: flex; flex-direction: column; text-align: center;">
-                      <span>Admin Portal</span>
-                      <span style="font-size: 10px;">CẢNG ĐÀ NẴNG</span>
-                    </div>
+                <span class="hidden-xs">[[${#strings.defaultString(user.userName, '-')}]]</span>
+              </a>
+              <ul class="dropdown-menu">
+                <li class="mt5">
+                  <a th:href="@{/system/user/profile}" class="menuItem">
+                    <i class="fa fa-user"></i> Hồ sơ</a>
+                </li>
+                <li>
+                  <a onclick="resetPwd()">
+                    <i class="fa fa-key"></i> Thay đổi mật khẩu</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a th:href="@{/logout}">
+                    <i class="fa fa-sign-out"></i> Đăng xuất</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <ul class="nav navbar-top-links navbar-left welcome-message" id="side-menu"
+            style="display: flex; position: relative;">
+            <li>
+              <a title="ePort CND" class="menuItem" id="main-logo">
+                <div style="display: flex; justify-content: space-between; padding-right: 50px">
+                  <img th:src="@{/img/CDN.png}" width="40px" height="40px" id="logo-img" />
+                  <div class="text" style="display: flex; flex-direction: column; text-align: center;">
+                    <span>Admin Portal</span>
+                    <span style="font-size: 10px;">CẢNG ĐÀ NẴNG</span>
                   </div>
-                </a>
-              </li>
-              <li th:each="menu, iterator : ${menus}">
-                <a
-                  th:if="${iterator.count &lt; 7}"
-                  th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
-                  th:href="@{${menu.url == ''} ? |#| : ${menu.url}}"
-                  th:id="${menu.menuId}"
-                > 
-                  
-                  <i class="fa fa-bar-chart-o" th:class="${menu.icon}"></i>
-                  <span class="nav-label" th:text="${menu.menuName}"
-                    >Top Menu</span
-                  >
-                  <!-- <span
+                </div>
+              </a>
+            </li>
+            <li th:each="menu, iterator : ${menus}">
+              <a th:if="${iterator.count &lt; 7}" th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
+                th:href="@{${menu.url == ''} ? |#| : ${menu.url}}" th:id="${menu.menuId}">
+
+                <i class="fa fa-bar-chart-o" th:class="${menu.icon}"></i>
+                <span class="nav-label" th:text="${menu.menuName}">Top Menu</span>
+                <!-- <span
                     th:class="${menu.url == '' || menu.url == '#'} ? |fa arrow|"
                   ></span> -->
+              </a>
+              <ul class="nav nav-second-level dropdown-menu">
+                <li th:each="cmenu : ${menu.children}">
+                  <a th:if="${#lists.isEmpty(cmenu.children)}"
+                    th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}" th:href="@{${cmenu.url}}"
+                    th:id="${cmenu.menuId}">
+                    <i class="fa fa-bar-chart-o" th:class="${cmenu.icon}"></i>
+                    <span class="nav-label" th:text="${cmenu.menuName}">2nd Menu</span>
+                  </a>
+                  <a th:if="${not #lists.isEmpty(cmenu.children)}" href="#">
+                    <i class="fa fa-bar-chart-o" th:class="${cmenu.icon}"></i>
+                    <span class="nav-label">[[${cmenu.menuName}]]</span>
+                    <span class="fa arrow" style="float: unset;"></span>
+                  </a>
+                  <ul th:if="${not #lists.isEmpty(cmenu.children)}" class="nav nav-third-level">
+                    <li th:each="emenu : ${cmenu.children}">
+                      <a th:if="${#lists.isEmpty(emenu.children)}"
+                        th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}" th:href="@{${emenu.url}}"
+                        th:id="${emenu.menuId}">
+                        <i class="fa fa-bar-chart-o" style="margin-left: 4px;margin-right: 8px;"
+                          th:class="${emenu.icon}"></i>
+                        <span class="nav-label" th:text="${emenu.menuName}">3rd Menu</span>
+                      </a>
+                      <a th:if="${not #lists.isEmpty(emenu.children)}" href="#">[[${emenu.menuName}]]
+                        <!-- <span class="fa arrow"></span> -->
+                      </a>
+                      <ul th:if="${not #lists.isEmpty(emenu.children)}" class="nav nav-four-level">
+                        <li th:each="fmenu : ${emenu.children}">
+                          <a th:if="${#lists.isEmpty(fmenu.children)}"
+                            th:class="${fmenu.target == ''} ? |menuItem| : ${fmenu.target}" th:text="${fmenu.menuName}"
+                            th:href="@{${fmenu.url}}" th:id="${fmenu.menuId}">4th Menu</a>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li th:if="${#lists.size(menus) &gt; 6}" class="show-more-menu">
+              <a href="javascript:void(0)">
+                <i class="fa fa-chevron-right"></i>
+              </a>
+            </li>
+
+            <div class="more-menu">
+              <li th:each="menu, iterator : ${menus}" style="position: relative;">
+                <a th:unless="${iterator.count &lt; 7}"
+                  th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
+                  th:href="@{${menu.url == ''} ? |#| : ${menu.url}}" style="color: #fff" th:id="${menu.menuId}">
+
+                  <i class="fa fa-bar-chart-o" th:class="${menu.icon}"></i>
+                  <span class="nav-label" th:text="${menu.menuName}">Top Menu</span>
+                  <span th:class="${menu.url == '' || menu.url == '#'} ? |fa arrow|"></span>
                 </a>
-                <ul class="nav nav-second-level dropdown-menu">
-                  <li th:each="cmenu : ${menu.children}">
-                    <a
-                      th:if="${#lists.isEmpty(cmenu.children)}"
-                      th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}"
-                      th:href="@{${cmenu.url}}"
-                      th:id="${cmenu.menuId}"
-                      >
+                <ul class="nav nav-second-level dropdown-menu" style="position: static; width: 100%;">
+                  <li th:each="cmenu : ${menu.children}" style="padding-left: 20px;">
+                    <a th:if="${#lists.isEmpty(cmenu.children)}"
+                      th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}" th:href="@{${cmenu.url}}"
+                      th:id="${cmenu.menuId}">
                       <i class="fa fa-bar-chart-o" th:class="${cmenu.icon}"></i>
-	                  <span class="nav-label" th:text="${cmenu.menuName}"
-	                    >2nd Menu</span>
+                      <span class="nav-label" th:text="${cmenu.menuName}">2nd Menu</span>
                     </a>
-                    <a th:if="${not #lists.isEmpty(cmenu.children)}" href="#"
-                      >
+                    <a th:if="${not #lists.isEmpty(cmenu.children)}" href="#">
                       <i class="fa fa-bar-chart-o" th:class="${cmenu.icon}"></i>
-                      <span class = "nav-label">[[${cmenu.menuName}]]</span>
+                      <span class="nav-label">[[${cmenu.menuName}]]</span>
                       <span class="fa arrow" style="float: unset;"></span>
                     </a>
-                    <ul
-                      th:if="${not #lists.isEmpty(cmenu.children)}"
-                      class="nav nav-third-level"
-                    >
+                    <ul th:if="${not #lists.isEmpty(cmenu.children)}" class="nav nav-third-level">
                       <li th:each="emenu : ${cmenu.children}">
-                        <a
-                          th:if="${#lists.isEmpty(emenu.children)}"
-                          th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}"
-                          th:href="@{${emenu.url}}"
-                          th:id="${emenu.menuId}"
-                          >
-                          <i class="fa fa-bar-chart-o" style="margin-left: 4px;margin-right: 8px;" th:class="${emenu.icon}"></i>
-	                      <span class="nav-label" th:text="${emenu.menuName}"
-	                      >3rd Menu</span>
+                        <a th:if="${#lists.isEmpty(emenu.children)}"
+                          th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}" th:href="@{${emenu.url}}"
+                          th:id="${emenu.menuId}">
+                          <i class="fa fa-bar-chart-o" style="margin-left: 4px;margin-right: 8px;"
+                            th:class="${emenu.icon}"></i>
+                          <span class="nav-label" th:text="${emenu.menuName}">3rd Menu</span>
                         </a>
-                        <a th:if="${not #lists.isEmpty(emenu.children)}" href="#"
-                          >[[${emenu.menuName}]]
+                        <a th:if="${not #lists.isEmpty(emenu.children)}" href="#">[[${emenu.menuName}]]
                           <!-- <span class="fa arrow"></span> -->
                         </a>
-                        <ul
-                          th:if="${not #lists.isEmpty(emenu.children)}"
-                          class="nav nav-four-level"
-                        >
+                        <ul th:if="${not #lists.isEmpty(emenu.children)}" class="nav nav-four-level">
                           <li th:each="fmenu : ${emenu.children}">
-                            <a
-                              th:if="${#lists.isEmpty(fmenu.children)}"
+                            <a th:if="${#lists.isEmpty(fmenu.children)}"
                               th:class="${fmenu.target == ''} ? |menuItem| : ${fmenu.target}"
-                              th:text="${fmenu.menuName}"
-                              th:href="@{${fmenu.url}}"
-                              th:id="${fmenu.menuId}"
-                              >4th Menu</a
-                            >
+                              th:text="${fmenu.menuName}" th:id="${fmenu.menuId}" th:href="@{${fmenu.url}}">4th Menu</a>
                           </li>
                         </ul>
                       </li>
@@ -155,313 +179,241 @@
                   </li>
                 </ul>
               </li>
-              <li th:if="${#lists.size(menus) &gt; 6}" class="show-more-menu">
-                <a href="javascript:void(0)">
-                  <i class="fa fa-chevron-right"></i>
-                </a>
-              </li>
-              
-              <div class="more-menu">
-                <li th:each="menu, iterator : ${menus}"  style="position: relative;">
-                  <a
-                    th:unless="${iterator.count &lt; 7}"
-                    th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
-                    th:href="@{${menu.url == ''} ? |#| : ${menu.url}}"
-                    style="color: #fff"
-                    th:id="${menu.menuId}"
-                  > 
-                    
-                    <i class="fa fa-bar-chart-o" th:class="${menu.icon}"></i>
-                    <span class="nav-label" th:text="${menu.menuName}"
-                      >Top Menu</span
-                    >
-                    <span
-                      th:class="${menu.url == '' || menu.url == '#'} ? |fa arrow|"
-                    ></span>
-                  </a>
-                  <ul class="nav nav-second-level dropdown-menu" style="position: static; width: 100%;">
-                    <li th:each="cmenu : ${menu.children}" style="padding-left: 20px;">
-                      <a
-                        th:if="${#lists.isEmpty(cmenu.children)}"
-                        th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}"
-                        th:href="@{${cmenu.url}}"
-                        th:id="${cmenu.menuId}"
-                        >
-                        <i class="fa fa-bar-chart-o" th:class="${cmenu.icon}"></i>
-                      <span class="nav-label" th:text="${cmenu.menuName}"
-                        >2nd Menu</span>
-                      </a>
-                      <a th:if="${not #lists.isEmpty(cmenu.children)}" href="#"
-                        >
-                        <i class="fa fa-bar-chart-o" th:class="${cmenu.icon}"></i>
-                        <span class = "nav-label">[[${cmenu.menuName}]]</span>
-                        <span class="fa arrow" style="float: unset;"></span>
-                      </a>
-                      <ul
-                        th:if="${not #lists.isEmpty(cmenu.children)}"
-                        class="nav nav-third-level"
-                      >
-                        <li th:each="emenu : ${cmenu.children}">
-                          <a
-                            th:if="${#lists.isEmpty(emenu.children)}"
-                            th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}"
-                            th:href="@{${emenu.url}}"
-                            th:id="${emenu.menuId}"
-                            >
-                            <i class="fa fa-bar-chart-o" style="margin-left: 4px;margin-right: 8px;" th:class="${emenu.icon}"></i>
-                          <span class="nav-label" th:text="${emenu.menuName}"
-                          >3rd Menu</span>
-                          </a>
-                          <a th:if="${not #lists.isEmpty(emenu.children)}" href="#"
-                            >[[${emenu.menuName}]]
-                            <!-- <span class="fa arrow"></span> -->
-                          </a>
-                          <ul
-                            th:if="${not #lists.isEmpty(emenu.children)}"
-                            class="nav nav-four-level"
-                          >
-                            <li th:each="fmenu : ${emenu.children}">
-                              <a
-                                th:if="${#lists.isEmpty(fmenu.children)}"
-                                th:class="${fmenu.target == ''} ? |menuItem| : ${fmenu.target}"
-                                th:text="${fmenu.menuName}"
-                                th:id="${fmenu.menuId}"
-                                th:href="@{${fmenu.url}}"
-                                >4th Menu</a
-                              >
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-              </div>
-            </ul>
-          </nav>
-        </div>
-        <div class="row content-tabs">
-          <button class="roll-nav roll-left tabLeft">
-            <i class="fa fa-backward"></i>
-          </button>
-          <nav class="page-tabs menuTabs">
-            <div class="page-tabs-content">
-              <a
-                href="javascript:;"
-                class="active menuTab"
-                data-id="/system/main"
-                >Home</a
-              >
             </div>
-          </nav>
-          <button class="roll-nav roll-right tabRight">
-            <i class="fa fa-forward"></i>
-          </button>
-          <a href="javascript:void(0);" class="roll-nav roll-right tabReload"
-            ><i class="fa fa-refresh"></i>
-          </a>
-        </div>
-
-        <a
-          id="ax_close_max"
-          class="ax_close_max"
-          href="#"
-          title="Close Full Screen"
-        >
-          <i class="fa fa-times-circle-o"></i>
+          </ul>
+        </nav>
+      </div>
+      <div class="row content-tabs">
+        <button class="roll-nav roll-left tabLeft">
+          <i class="fa fa-backward"></i>
+        </button>
+        <nav class="page-tabs menuTabs">
+          <div class="page-tabs-content">
+            <a href="javascript:;" class="active menuTab" data-id="/system/main">Home</a>
+          </div>
+        </nav>
+        <button class="roll-nav roll-right tabRight">
+          <i class="fa fa-forward"></i>
+        </button>
+        <a href="javascript:void(0);" class="roll-nav roll-right tabReload"><i class="fa fa-refresh"></i>
         </a>
+      </div>
 
-        <div class="row mainContent" id="content-main">
-          <iframe
-            class="eport_iframe"
-            name="iframe0"
-            width="100%"
-            height="100%"
-            data-id="/system/main"
-            th:src="@{/system/main}"
-            frameborder="0"
-            seamless
-          ></iframe>
-        </div>
-        <div class="footer">
-          <div class="pull-right">[[${appName}]] v[[${appVersion}]]</div>
-        </div>
+      <a id="ax_close_max" class="ax_close_max" href="#" title="Close Full Screen">
+        <i class="fa fa-times-circle-o"></i>
+      </a>
+
+      <div class="row mainContent" id="content-main">
+        <iframe class="eport_iframe" name="iframe0" width="100%" height="100%" data-id="/system/main"
+          th:src="@{/system/main}" frameborder="0" seamless></iframe>
+      </div>
+      <div class="footer">
+        <div class="pull-right">[[${appName}]] v[[${appVersion}]]</div>
       </div>
     </div>
+  </div>
 
-    <script th:src="@{/js/jquery.min.js}"></script>
-    <script th:src="@{/js/bootstrap.min.js}"></script>
-    <script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
-    <script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
-    <script th:src="@{/js/jquery.contextMenu.min.js}"></script>
-    <script th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
-    <script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
-    <script th:src="@{/eport/js/common.js}"></script>
-    <script th:src="@{/eport/js/eport.js}"></script>
-    <script th:src="@{/eport/index.js}"></script>
-    <script th:src="@{/ajax/libs/fullscreen/jquery.fullscreen.js}"></script>
-    <script th:inline="javascript">
-      var ctx = [[@{/}]];
-      var skin = storage.get("skin");
-      var mode = "history";
-      var historyPath = storage.get("historyPath");
-      var currentPage = 1, pageSize = 5, notiCount = 0, total = 0, currentAmount = 0;
-      var report = /*[[${report}]]*/;
+  <script th:src="@{/js/jquery.min.js}"></script>
+  <script th:src="@{/js/bootstrap.min.js}"></script>
+  <script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
+  <script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
+  <script th:src="@{/js/jquery.contextMenu.min.js}"></script>
+  <script th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
+  <script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+  <script th:src="@{/eport/js/common.js}"></script>
+  <script th:src="@{/eport/js/eport.js}"></script>
+  <script th:src="@{/eport/index.js}"></script>
+  <script th:src="@{/ajax/libs/fullscreen/jquery.fullscreen.js}"></script>
+  <script th:inline="javascript">
+    var ctx = [[@{/}]];
+    var skin = storage.get("skin");
+    var mode = "history";
+    var historyPath = storage.get("historyPath");
+    var currentPage = 1, pageSize = 5, notiCount = 0, total = 0, currentAmount = 0;
+    var report = /*[[${report}]]*/;
+    var reportReefer = /*[[${reportReefer}]]*/;
 
-      $(document).ready(function () {
-        $('#2047').append(' <span id="total" class="round-notify-count">' + (
-          report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER + report.CANCELORDERREQ
-        ) + '</span>');
-        if (report.RECEIVEFULLORDER > 0) {
-          $('#2205').append(' <span id="receiveFullOrder" class="round-notify-count">' + report.RECEIVEFULLORDER + '</span>');
-        } else {
-          $('#2205').append(' <span id="receiveFullOrder"></span>');
-        }
-        if (report.RECEIVEEMPTYORDER > 0) {
-          $('#3045').append(' <span id="receiveEmptyOrder" class="round-notify-count">' + report.RECEIVEEMPTYORDER + '</span>');
-        } else {
-          $('#3045').append(' <span id="receiveEmptyOrder"></span>');
-        }
-        if (report.SENDEMPTYORDER > 0) {
-          $('#2245').append(' <span id="sendEmptyOrder" class="round-notify-count">' + report.SENDEMPTYORDER + '</span>');
-        } else {
-          $('#2245').append(' <span id="sendEmptyOrder"></span>');
-        }
-        if (report.SENDFULLORDER > 0) {
-          $('#2365').append(' <span id="sendFullOrder" class="round-notify-count">' + report.SENDFULLORDER + '</span>');
-        } else {
-          $('#2365').append(' <span id="sendFullOrder"></span>');
-        }
-        if (report.SENDCUSTOM > 0) {
-          $('#2465').append(' <span id="sendCustom" class="round-notify-count">' + report.SENDCUSTOM + '</span>');
-        } else {
-          $('#2465').append(' <span id="sendCustom"></span>');
-        }
-        if (report.RECEIVECUSTOM > 0) {
-          $('#2425').append(' <span id="receiveCustom" class="round-notify-count">' + report.RECEIVECUSTOM + '</span>');
-        } else {
-          $('#2425').append(' <span id="receiveCustom"></span>');
-        }
-        if (report.CANCELORDERREQ > 0) {
-          $('#2605').append(' <span id="cancelOrderReq" class="round-notify-count">' + report.CANCELORDERREQ + '</span>');
-        } else {
-          $('#2605').append(' <span id="cancelOrderReq"></span>');
-        }
-        $('#2047').click(updateReportNumberOm);
+    var user = /*[[${user}]]*/;
 
-        // Set inteval to update number of notify
-        var interval = setInterval(() => {
-          updateReportNumberOm();
-        }, 90000);
-      });
 
-      if ($.common.isNotEmpty(skin)) {
-        $("body").addClass(skin.split('|')[0]);
-        $("body").addClass(skin.split('|')[1]);
+    $(document).ready(function () {
+      $('#2047').append(' <span id="total" class="round-notify-count">' + (
+        report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER + report.CANCELORDERREQ
+      ) + '</span>');
+      if (report.RECEIVEFULLORDER > 0) {
+        $('#2205').append(' <span id="receiveFullOrder" class="round-notify-count">' + report.RECEIVEFULLORDER + '</span>');
       } else {
-        $("body").addClass([[${ sideTheme }]]);
-        $("body").addClass([[${ skinName }]]);
+        $('#2205').append(' <span id="receiveFullOrder"></span>');
       }
-      function resetPwd() {
-        var url = ctx + 'system/user/profile/resetPwd';
-        $.modal.open("Reset Password", url, '770', '380');
+      if (report.RECEIVEEMPTYORDER > 0) {
+        $('#3045').append(' <span id="receiveEmptyOrder" class="round-notify-count">' + report.RECEIVEEMPTYORDER + '</span>');
+      } else {
+        $('#3045').append(' <span id="receiveEmptyOrder"></span>');
       }
-      function switchSkin() {
-        layer.open({
-          type: 2,
-          shadeClose: true,
-          title: "Thay đổi nền",
-          area: ["530px", "386px"],
-          content: [ctx + "system/switchSkin", 'no']
-        })
+      if (report.SENDEMPTYORDER > 0) {
+        $('#2245').append(' <span id="sendEmptyOrder" class="round-notify-count">' + report.SENDEMPTYORDER + '</span>');
+      } else {
+        $('#2245').append(' <span id="sendEmptyOrder"></span>');
       }
-      function applyPath(url) {
-        $('a[href$="' + decodeURI(url) + '"]').click();
-        $('a[href$="' + url + '"]').parent("li").addClass("selected").parents("li :not(.user-panel)").addClass("active").end().parents("ul").addClass("in");
+      if (report.SENDFULLORDER > 0) {
+        $('#2365').append(' <span id="sendFullOrder" class="round-notify-count">' + report.SENDFULLORDER + '</span>');
+      } else {
+        $('#2365').append(' <span id="sendFullOrder"></span>');
       }
+      if (report.SENDCUSTOM > 0) {
+        $('#2465').append(' <span id="sendCustom" class="round-notify-count">' + report.SENDCUSTOM + '</span>');
+      } else {
+        $('#2465').append(' <span id="sendCustom"></span>');
+      }
+      if (report.RECEIVECUSTOM > 0) {
+        $('#2425').append(' <span id="receiveCustom" class="round-notify-count">' + report.RECEIVECUSTOM + '</span>');
+      } else {
+        $('#2425').append(' <span id="receiveCustom"></span>');
+      }
+      if (report.CANCELORDERREQ > 0) {
+        $('#2605').append(' <span id="cancelOrderReq" class="round-notify-count">' + report.CANCELORDERREQ + '</span>');
+      } else {
+        $('#2605').append(' <span id="cancelOrderReq"></span>');
+      }
+      // report for cont reefer
+      if (reportReefer.SENDCONTFULLREEFER > 0) {
+        $('#3245').append(' <span id="sendContFullReefer" class="round-notify-count">' + reportReefer.SENDCONTFULLREEFER + '</span>');
+      } else {
+        $('#3245').append(' <span id="sendContFullReefer"></span>');
+      }
+      if (reportReefer.RECEIVECONTEMPTYREEFER > 0) {
+        $('#3246').append(' <span id="receiveContEmptyReefer" class="round-notify-count">' + reportReefer.RECEIVECONTEMPTYREEFER + '</span>');
+      } else {
+        $('#3246').append(' <span id="receiveContEmptyReefer"></span>');
+      }
+      if (reportReefer.EXTENDPOWERCONTREEFER > 0) {
+        $('#3247').append(' <span id="extendPowerContReefer" class="round-notify-count">' + reportReefer.EXTENDPOWERCONTREEFER + '</span>');
+      } else {
+        $('#3247').append(' <span id="extendPowerContReefer"></span>');
+      }
+      if (reportReefer.RECEIVECONTFULLREEFER > 0) {
+        $('#3248').append(' <span id="receiveContFullReefer" class="round-notify-count">' + reportReefer.RECEIVECONTFULLREEFER + '</span>');
+      } else {
+        $('#3248').append(' <span id="receiveContFullReefer"></span>');
+      }
+      $('#2047').click(updateReportNumberOm);
 
-      $(function () {
-        if ($.common.equals("history", mode) && window.performance.navigation.type == 1) {
-          var url = storage.get('publicPath');
-          if ($.common.isNotEmpty(url)) {
-            applyPath(url);
-          }
-        } else {
-          var hash = location.hash;
-          if ($.common.isNotEmpty(hash)) {
-            var url = hash.substring(1, hash.length);
-            applyPath(url);
-          }
+      // Set inteval to update number of notify
+      var interval = setInterval(() => {
+        updateReportNumberOm();
+      }, 90000);
+      
+      //Set inteval to update number for cont reefer of notify
+      let roles = user.roles.filter(item => item.roleKey == "reefer");
+      if (roles && roles.length) {
+        var intervalContReefer = setInterval(() => {
+          updateReportNumberContReefer();
+        }, 90000);
+      }
+    });
+
+    if ($.common.isNotEmpty(skin)) {
+      $("body").addClass(skin.split('|')[0]);
+      $("body").addClass(skin.split('|')[1]);
+    } else {
+      $("body").addClass([[${ sideTheme }]]);
+      $("body").addClass([[${ skinName }]]);
+    }
+    function resetPwd() {
+      var url = ctx + 'system/user/profile/resetPwd';
+      $.modal.open("Reset Password", url, '770', '380');
+    }
+    function switchSkin() {
+      layer.open({
+        type: 2,
+        shadeClose: true,
+        title: "Thay đổi nền",
+        area: ["530px", "386px"],
+        content: [ctx + "system/switchSkin", 'no']
+      })
+    }
+    function applyPath(url) {
+      $('a[href$="' + decodeURI(url) + '"]').click();
+      $('a[href$="' + url + '"]').parent("li").addClass("selected").parents("li :not(.user-panel)").addClass("active").end().parents("ul").addClass("in");
+    }
+
+    $(function () {
+      if ($.common.equals("history", mode) && window.performance.navigation.type == 1) {
+        var url = storage.get('publicPath');
+        if ($.common.isNotEmpty(url)) {
+          applyPath(url);
         }
-      });
-
-      function showMenu() {
-        $(".more-menu").css("display", "flex");
-      }
-
-      $(function () {
-        if ($.common.equals("history", mode) && window.performance.navigation.type == 1) {
-          var url = storage.get('publicPath');
-          if ($.common.isNotEmpty(url)) {
-            applyPath(url);
-          }
-        } else {
-          var hash = location.hash;
-          if ($.common.isNotEmpty(hash)) {
-            var url = hash.substring(1, hash.length);
-            applyPath(url);
-          }
-        }
-      });
-
-      function openListComment() {
-        if ($('.notification-list').is(':visible')) {
-          $('.notification-list').hide();
-        } else {
-          loadNotification();
+      } else {
+        var hash = location.hash;
+        if ($.common.isNotEmpty(hash)) {
+          var url = hash.substring(1, hash.length);
+          applyPath(url);
         }
       }
+    });
 
-      window.addEventListener('click', function (e) {
-        if (!document.getElementById('notification-list').contains(e.target) && !document.getElementById('notification').contains(e.target)) {
-          $('.notification-list').hide();
+    function showMenu() {
+      $(".more-menu").css("display", "flex");
+    }
+
+    $(function () {
+      if ($.common.equals("history", mode) && window.performance.navigation.type == 1) {
+        var url = storage.get('publicPath');
+        if ($.common.isNotEmpty(url)) {
+          applyPath(url);
         }
-      });
+      } else {
+        var hash = location.hash;
+        if ($.common.isNotEmpty(hash)) {
+          var url = hash.substring(1, hash.length);
+          applyPath(url);
+        }
+      }
+    });
 
-      $(window).blur(function (e) {
+    function openListComment() {
+      if ($('.notification-list').is(':visible')) {
         $('.notification-list').hide();
-      });
+      } else {
+        loadNotification();
+      }
+    }
 
-      function loadNotification() {
-        $('#loadMore').removeClass('disabled');
-        $('#loadAll').removeClass('disabled');
-        $('#loadMore').html('Xem thêm...');
-        currentPage = 1;
-        currentAmount = 0;
-        total = 0;
-        $('.notification-list').show();
-        $('.loading').css('top', ($('.notifications').height() / 2) + 10);
-        $('.loading').show();
-        $.ajax({
-          url: ctx + "shipment-comment/list",
-          method: "GET",
-          data: {
-            pageNum: currentPage,
-            pageSize: pageSize
-          },
-          success: function (data) {
-            if (data.code == 0) {
-              if (data.shipmentComments != null && data.shipmentComments.length > 0) {
-                let html = '<div class="loading"><div class="loader"></div><div>Đang xử lý</div></div>' + getNotificationIntoView(data.shipmentComments);
-                $('.notifications').html(html);
-                currentAmount = data.shipmentComments.length;
-                total = data.total;
-                if (currentAmount >= total) {
-                  $('#loadMore').addClass('disabled');
-                  $('#loadMore').html('Hết thông báo');
-                  $('#loadAll').addClass('disabled');
-                }
-              } else {
+    window.addEventListener('click', function (e) {
+      if (!document.getElementById('notification-list').contains(e.target) && !document.getElementById('notification').contains(e.target)) {
+        $('.notification-list').hide();
+      }
+    });
+
+    $(window).blur(function (e) {
+      $('.notification-list').hide();
+    });
+
+    function loadNotification() {
+      $('#loadMore').removeClass('disabled');
+      $('#loadAll').removeClass('disabled');
+      $('#loadMore').html('Xem thêm...');
+      currentPage = 1;
+      currentAmount = 0;
+      total = 0;
+      $('.notification-list').show();
+      $('.loading').css('top', ($('.notifications').height() / 2) + 10);
+      $('.loading').show();
+      $.ajax({
+        url: ctx + "shipment-comment/list",
+        method: "GET",
+        data: {
+          pageNum: currentPage,
+          pageSize: pageSize
+        },
+        success: function (data) {
+          if (data.code == 0) {
+            if (data.shipmentComments != null && data.shipmentComments.length > 0) {
+              let html = '<div class="loading"><div class="loader"></div><div>Đang xử lý</div></div>' + getNotificationIntoView(data.shipmentComments);
+              $('.notifications').html(html);
+              currentAmount = data.shipmentComments.length;
+              total = data.total;
+              if (currentAmount >= total) {
                 $('#loadMore').addClass('disabled');
                 $('#loadMore').html('Hết thông báo');
                 $('#loadAll').addClass('disabled');
@@ -471,177 +423,224 @@
               $('#loadMore').html('Hết thông báo');
               $('#loadAll').addClass('disabled');
             }
-            $('.loading').hide();
-          }
-        });
-      }
-
-      function loadMore() {
-        currentPage++;
-        $('.loading').css('top', ($('.notifications').height() / 2) + 10);
-        $('.loading').show();
-        $.ajax({
-          url: ctx + "shipment-comment/list",
-          method: "GET",
-          data: {
-            pageNum: currentPage,
-            pageSize: pageSize
-          },
-          success: function (data) {
-            if (data.code == 0) {
-              if (data.shipmentComments != null && data.shipmentComments.length > 0) {
-                let html = getNotificationIntoView(data.shipmentComments);
-                $('.notifications').append(html);
-                currentAmount += data.shipmentComments.length;
-                if (currentAmount >= total) {
-                  $('#loadMore').addClass('disabled');
-                  $('#loadMore').html('Hết thông báo');
-                  $('#loadAll').addClass('disabled');
-                }
-              } else {
-                $('#loadMore').addClass('disabled');
-                $('#loadMore').html('Hết thông báo');
-                $('#loadAll').addClass('disabled');
-              }
-            }
-            $('.loading').hide();
-          }
-        });
-      }
-
-      function getNotificationIntoView(shipmentComments) {
-        let html = '';
-        shipmentComments.forEach(function (element, index) {
-          if (element.seenFlg) {
-            html += '<div class="message-box" onclick="goToMessageDetail(' + element.serviceType + ',' + element.shipmentId + ')">';
-            html += '<div><i class="fa fa-bell-o bell-icon"></i></div>';
           } else {
-            html += '<div class="message-box bg-unseen" onclick="goToMessageDetail(' + element.serviceType + ',' + element.shipmentId + ')">';
-            html += '<div><i class="fa fa-bell bell-icon"></i></div>';
+            $('#loadMore').addClass('disabled');
+            $('#loadMore').html('Hết thông báo');
+            $('#loadAll').addClass('disabled');
           }
-          html += '<div class="message-body"><div class="message-title">';
-          html += element.topic + '</div><div class="message-content">';
-          html += element.content + '</div><div class="message-create-date">';
-          let createTime = element.createTime;
-          let date = '';
-          let time = '';
-          if (createTime) {
-            date = createTime.substring(8, 10) + "/" + createTime.substring(5, 7) + "/" + createTime.substring(0, 4);
-            time = createTime.substring(10, 19);
-          }
-          html += date + ' at ' + time;
-          html += '</div></div></div>';
-        });
-        return html;
-      }
-
-      function goToMessageDetail(serviceType, shipmentId) {
-        $('.notification-list').hide();
-        if (notiCount > 0) {
-          notiCount--;
+          $('.loading').hide();
         }
-        $('.badge').text(notiCount);
-        let url = ctx + 'om/controlling';
-        $('#2445').attr("href", url + "?sId=" + shipmentId);
-        $('#2445').trigger("click");
-        $('#2445').attr("href", url);
-      }
-
-      $(function () {
-        $.ajax({
-          url: ctx + "shipment-comment/amount",
-          method: "GET",
-          success: function (data) {
-            if (data.code == 0) {
-              notiCount = data.shipmentCommentAmount;
-              $('.badge').text(notiCount);
-            }
-          }
-        });
       });
+    }
 
-      function viewAll() {
-        $('.loading').css('top', ($('.notifications').height() / 2) + 10);
-        $('.loading').show();
-        $.ajax({
-          url: ctx + "shipment-comment/list/all",
-          method: "GET",
-          success: function (data) {
-            if (data.code == 0) {
-              if (data.shipmentComments != null && data.shipmentComments.length > 0) {
-                let html = '<div class="loading"><div class="loader"></div><div>Đang xử lý</div></div>' + getNotificationIntoView(data.shipmentComments);
-                $('.notifications').html(html);
+    function loadMore() {
+      currentPage++;
+      $('.loading').css('top', ($('.notifications').height() / 2) + 10);
+      $('.loading').show();
+      $.ajax({
+        url: ctx + "shipment-comment/list",
+        method: "GET",
+        data: {
+          pageNum: currentPage,
+          pageSize: pageSize
+        },
+        success: function (data) {
+          if (data.code == 0) {
+            if (data.shipmentComments != null && data.shipmentComments.length > 0) {
+              let html = getNotificationIntoView(data.shipmentComments);
+              $('.notifications').append(html);
+              currentAmount += data.shipmentComments.length;
+              if (currentAmount >= total) {
                 $('#loadMore').addClass('disabled');
-                $('#loadAll').addClass('disabled');
                 $('#loadMore').html('Hết thông báo');
+                $('#loadAll').addClass('disabled');
               }
+            } else {
+              $('#loadMore').addClass('disabled');
+              $('#loadMore').html('Hết thông báo');
+              $('#loadAll').addClass('disabled');
             }
-            $('.loading').hide();
           }
-        });
-      }
+          $('.loading').hide();
+        }
+      });
+    }
 
-      function updateReportNumberOm() {
-        $.ajax({
-          url: ctx + "report/count",
-          method: "GET",
-          success: function (data) {
-            if (data.code == 0) {
-              let report = data.report;
-              $('#total').html(report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER + report.CANCELORDERREQ);
-              if (report.RECEIVEFULLORDER > 0) {
-                $('#receiveFullOrder').html(report.RECEIVEFULLORDER);
-                $('#receiveFullOrder').addClass('round-notify-count');
-              } else {
-                $('#receiveFullOrder').html('');
-                $('#receiveFullOrder').removeClass('round-notify-count');
-              }
-              if (report.RECEIVEEMPTYORDER > 0) {
-                $('#receiveEmptyOrder').html(report.RECEIVEEMPTYORDER);
-                $('#receiveEmptyOrder').addClass('round-notify-count');
-              } else {
-                $('#receiveEmptyOrder').html('');
-                $('#receiveEmptyOrder').removeClass('round-notify-count');
-              }
-              if (report.SENDEMPTYORDER > 0) {
-                $('#sendEmptyOrder').html(report.SENDEMPTYORDER);
-                $('#sendEmptyOrder').addClass('round-notify-count');
-              } else {
-                $('#sendEmptyOrder').html('');
-                $('#sendEmptyOrder').removeClass('round-notify-count');
-              }
-              if (report.SENDFULLORDER > 0) {
-                $('#sendFullOrder').html(report.SENDFULLORDER);
-                $('#sendFullOrder').addClass('round-notify-count');
-              } else {
-                $('#sendFullOrder').html('');
-                $('#sendFullOrder').removeClass('round-notify-count');
-              }
-              if (report.SENDCUSTOM > 0) {
-                $('#sendCustom').html(report.SENDCUSTOM);
-                $('#sendCustom').addClass('round-notify-count');
-              } else {
-                $('#sendCustom').html('');
-                $('#sendCustom').removeClass('round-notify-count');
-              }
-              if (report.RECEIVECUSTOM > 0) {
-                $('#receiveCustom').html(report.RECEIVECUSTOM);
-                $('#receiveCustom').addClass('round-notify-count');
-              } else {
-                $('#receiveCustom').html('');
-                $('#receiveCustom').removeClass('round-notify-count');
-              }
-              if (report.CANCELORDERREQ > 0) {
-                $('#cancelOrderReq').html(report.CANCELORDERREQ);
-                $('#cancelOrderReq').addClass('round-notify-count');
-              } else {
-                $('#cancelOrderReq').html('');
-                $('#cancelOrderReq').removeClass('round-notify-count');
-              }
+    function getNotificationIntoView(shipmentComments) {
+      let html = '';
+      shipmentComments.forEach(function (element, index) {
+        if (element.seenFlg) {
+          html += '<div class="message-box" onclick="goToMessageDetail(' + element.serviceType + ',' + element.shipmentId + ')">';
+          html += '<div><i class="fa fa-bell-o bell-icon"></i></div>';
+        } else {
+          html += '<div class="message-box bg-unseen" onclick="goToMessageDetail(' + element.serviceType + ',' + element.shipmentId + ')">';
+          html += '<div><i class="fa fa-bell bell-icon"></i></div>';
+        }
+        html += '<div class="message-body"><div class="message-title">';
+        html += element.topic + '</div><div class="message-content">';
+        html += element.content + '</div><div class="message-create-date">';
+        let createTime = element.createTime;
+        let date = '';
+        let time = '';
+        if (createTime) {
+          date = createTime.substring(8, 10) + "/" + createTime.substring(5, 7) + "/" + createTime.substring(0, 4);
+          time = createTime.substring(10, 19);
+        }
+        html += date + ' at ' + time;
+        html += '</div></div></div>';
+      });
+      return html;
+    }
+
+    function goToMessageDetail(serviceType, shipmentId) {
+      $('.notification-list').hide();
+      if (notiCount > 0) {
+        notiCount--;
+      }
+      $('.badge').text(notiCount);
+      let url = ctx + 'om/controlling';
+      $('#2445').attr("href", url + "?sId=" + shipmentId);
+      $('#2445').trigger("click");
+      $('#2445').attr("href", url);
+    }
+
+    $(function () {
+      $.ajax({
+        url: ctx + "shipment-comment/amount",
+        method: "GET",
+        success: function (data) {
+          if (data.code == 0) {
+            notiCount = data.shipmentCommentAmount;
+            $('.badge').text(notiCount);
+          }
+        }
+      });
+    });
+
+    function viewAll() {
+      $('.loading').css('top', ($('.notifications').height() / 2) + 10);
+      $('.loading').show();
+      $.ajax({
+        url: ctx + "shipment-comment/list/all",
+        method: "GET",
+        success: function (data) {
+          if (data.code == 0) {
+            if (data.shipmentComments != null && data.shipmentComments.length > 0) {
+              let html = '<div class="loading"><div class="loader"></div><div>Đang xử lý</div></div>' + getNotificationIntoView(data.shipmentComments);
+              $('.notifications').html(html);
+              $('#loadMore').addClass('disabled');
+              $('#loadAll').addClass('disabled');
+              $('#loadMore').html('Hết thông báo');
             }
           }
-        });
-      }
-    </script>
-  </body>
+          $('.loading').hide();
+        }
+      });
+    }
+
+    function updateReportNumberOm() {
+      $.ajax({
+        url: ctx + "report/count",
+        method: "GET",
+        success: function (data) {
+          if (data.code == 0) {
+            let report = data.report;
+            $('#total').html(report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER + report.CANCELORDERREQ);
+            if (report.RECEIVEFULLORDER > 0) {
+              $('#receiveFullOrder').html(report.RECEIVEFULLORDER);
+              $('#receiveFullOrder').addClass('round-notify-count');
+            } else {
+              $('#receiveFullOrder').html('');
+              $('#receiveFullOrder').removeClass('round-notify-count');
+            }
+            if (report.RECEIVEEMPTYORDER > 0) {
+              $('#receiveEmptyOrder').html(report.RECEIVEEMPTYORDER);
+              $('#receiveEmptyOrder').addClass('round-notify-count');
+            } else {
+              $('#receiveEmptyOrder').html('');
+              $('#receiveEmptyOrder').removeClass('round-notify-count');
+            }
+            if (report.SENDEMPTYORDER > 0) {
+              $('#sendEmptyOrder').html(report.SENDEMPTYORDER);
+              $('#sendEmptyOrder').addClass('round-notify-count');
+            } else {
+              $('#sendEmptyOrder').html('');
+              $('#sendEmptyOrder').removeClass('round-notify-count');
+            }
+            if (report.SENDFULLORDER > 0) {
+              $('#sendFullOrder').html(report.SENDFULLORDER);
+              $('#sendFullOrder').addClass('round-notify-count');
+            } else {
+              $('#sendFullOrder').html('');
+              $('#sendFullOrder').removeClass('round-notify-count');
+            }
+            if (report.SENDCUSTOM > 0) {
+              $('#sendCustom').html(report.SENDCUSTOM);
+              $('#sendCustom').addClass('round-notify-count');
+            } else {
+              $('#sendCustom').html('');
+              $('#sendCustom').removeClass('round-notify-count');
+            }
+            if (report.RECEIVECUSTOM > 0) {
+              $('#receiveCustom').html(report.RECEIVECUSTOM);
+              $('#receiveCustom').addClass('round-notify-count');
+            } else {
+              $('#receiveCustom').html('');
+              $('#receiveCustom').removeClass('round-notify-count');
+            }
+            if (report.CANCELORDERREQ > 0) {
+              $('#cancelOrderReq').html(report.CANCELORDERREQ);
+              $('#cancelOrderReq').addClass('round-notify-count');
+            } else {
+              $('#cancelOrderReq').html('');
+              $('#cancelOrderReq').removeClass('round-notify-count');
+            }
+          }
+        }
+      });
+    }
+
+
+    function updateReportNumberContReefer() {
+      $.ajax({
+        url: ctx + "report-reefer/count",
+        method: "GET",
+        success: function (data) {
+          if (data.code == 0) {
+            let reportReefer = data.reportReefer;
+            if (reportReefer.SENDCONTFULLREEFER > 0) {
+              $('#sendContFullReefer').html(reportReefer.SENDCONTFULLREEFER);
+              $('#sendContFullReefer').addClass('round-notify-count');
+            } else {
+              $('#sendContFullReefer').html('');
+              $('#sendContFullReefer').removeClass('round-notify-count');
+            }
+            if (reportReefer.RECEIVECONTEMPTYREEFER > 0) {
+              $('#receiveContEmptyReefer').html(reportReefer.RECEIVECONTEMPTYREEFER);
+              $('#receiveContEmptyReefer').addClass('round-notify-count');
+            } else {
+              $('#receiveContEmptyReefer').html('');
+              $('#receiveContEmptyReefer').removeClass('round-notify-count');
+            }
+            if (reportReefer.EXTENDPOWERCONTREEFER > 0) {
+              $('#extendPowerContReefer').html(reportReefer.EXTENDPOWERCONTREEFER);
+              $('#extendPowerContReefer').addClass('round-notify-count');
+            } else {
+              $('#extendPowerContReefer').html('');
+              $('#extendPowerContReefer').removeClass('round-notify-count');
+            }
+            if (reportReefer.RECEIVECONTFULLREEFER > 0) {
+              $('#receiveContFullReefer').html(reportReefer.RECEIVECONTFULLREEFER);
+              $('#receiveContFullReefer').addClass('round-notify-count');
+            } else {
+              $('#receiveContFullReefer').html('');
+              $('#receiveContFullReefer').removeClass('round-notify-count');
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+
 </html>

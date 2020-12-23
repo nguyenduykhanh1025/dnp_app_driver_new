@@ -61,6 +61,9 @@ public class SysIndexController extends BaseController
         Map<String, Long> report = processOrderService.getSupportNumberReportForOm();
         mmap.put("report", report);
         
+        Map<String, Long> reportReefer = processOrderService.getSupportNumberReportForContReefer();
+        mmap.put("reportReefer", reportReefer);
+        
         return "index";
     }
     
@@ -71,6 +74,16 @@ public class SysIndexController extends BaseController
     	AjaxResult ajaxResult = AjaxResult.success();
     	Map<String, Long> report = processOrderService.getSupportNumberReportForOm();
     	ajaxResult.put("report", report);
+    	return ajaxResult;
+    }
+    
+    // Get report number for cont reefer
+    @GetMapping("/report-reefer/count")
+    @ResponseBody
+    public AjaxResult getReportNumberForContReefer() {
+    	AjaxResult ajaxResult = AjaxResult.success();
+    	Map<String, Long> reportReefer = processOrderService.getSupportNumberReportForContReefer();
+    	ajaxResult.put("reportReefer", reportReefer);
     	return ajaxResult;
     }
 

@@ -1424,8 +1424,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ContainerInfoDto catos = catosDetailMap.get(shipmentDetailFromDB.getContainerNo());
 		if (catos != null) {
 			if (StringUtils.isEmpty(shipmentDetailFromDB.getTemperature())) {
-				shipmentDetailFromDB.setTemperature(catos.getSetTemp().toString());
-				shipmentDetailService.updateShipmentDetail(shipmentDetailFromDB);
+				if (catos.getSetTemp() != null) {
+					shipmentDetailFromDB.setTemperature(catos.getSetTemp().toString());
+					shipmentDetailService.updateShipmentDetail(shipmentDetailFromDB);
+				}
 			}
 		}
 
@@ -1562,7 +1564,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 		List<ReeferInfo> infosFromDB = this.reeferInfoService
 				.selectReeferInfoListByIdShipmentDetail(shipmentDetail.getId());
-		
+
 		if ("R".equalsIgnoreCase(shipmentDetail.getSztp().substring(2, 3))) {
 			if (powerDrawDateOldFromDB == null && infosFromDB.size() == 0) {
 				reeferInfoService.insertReeferInfo(reeferInfo);
