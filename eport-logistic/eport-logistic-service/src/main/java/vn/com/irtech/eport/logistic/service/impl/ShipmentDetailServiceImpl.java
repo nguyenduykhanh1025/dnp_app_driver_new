@@ -552,6 +552,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	private ServiceSendFullRobotReq groupShipmentDetailByReceiveContFullOrder(Long registerNo,
 			List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag,
 			boolean orderByBl) {
+		String processRemark = "";
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			// is oversize
+			if (StringUtils.isNotEmpty(shipmentDetail.getOversize())) {
+				// get remark truck no chassis no
+				processRemark += shipmentDetail.getTruckNo() + " MOOC " + shipmentDetail.getChassisNo() + " ";
+			}
+		}
 		ShipmentDetail detail = shipmentDetails.get(0);
 		ProcessOrder processOrder = new ProcessOrder();
 		if (orderByBl) {
@@ -590,6 +598,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		processOrder.setContNumber(shipmentDetails.size());
 		processOrder.setShipmentId(shipment.getId());
 		processOrder.setServiceType(1);
+		processOrder.setRemark(processRemark);
 		processOrderService.insertProcessOrder(processOrder);
 		String payer = taxCode;
 		String payerName = "";

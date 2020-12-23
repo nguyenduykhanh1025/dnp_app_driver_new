@@ -331,43 +331,34 @@ function getSelected(index, row) {
   loadListComment();
   let serviceType = shipmentSelected.serviceType;
   let html = '';
-  if (shipmentSelected.serviceType == 3) {
-    $.ajax({
-      type: "GET",
-      url: PREFIX + "/shipments/" + shipmentSelected.id + "/shipment-images",
-      contentType: "application/json",
-      success: function (data) {
-        if (serviceType == 1 || serviceType == 2) {
-          html += `<span>Mã lô: ` + shipmentSelected.id + ` - B/L No: ` + shipmentSelected.blNo + `</span>`;
-        } else {
-          html += `<span>Mã lô: ` + shipmentSelected.id + ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`
-        }
-        if (data.code == 0) {
-          if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
-            data.shipmentFiles.forEach(function (element, index) {
-              html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
-            });
-          }
-        }
-        $('#shipment-info').html(html);
-      },
-      error: function (err) {
-        if (serviceType == 1 || serviceType == 2) {
-          html += `<span>Mã lô: ` + shipmentSelected.id + ` - B/L No: ` + shipmentSelected.blNo + `</span>`;
-        } else {
-          html += `<span>Mã lô: ` + shipmentSelected.id + ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`
-        }
-        $('#shipment-info').html(html);
+  $.ajax({
+    type: "GET",
+    url: PREFIX + "/shipments/" + shipmentSelected.id + "/shipment-images",
+    contentType: "application/json",
+    success: function (data) {
+      if (serviceType == 1 || serviceType == 2) {
+        html += `<span>Mã lô: ` + shipmentSelected.id + ` - B/L No: ` + shipmentSelected.blNo + `</span>`;
+      } else {
+        html += `<span>Mã lô: ` + shipmentSelected.id + ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`
       }
-    });
-  } else {
-    if (serviceType == 1 || serviceType == 2) {
-      html += `<span>Mã lô: ` + shipmentSelected.id + ` - B/L No: ` + shipmentSelected.blNo + `</span>`;
-    } else {
-      html += `<span>Mã lô: ` + shipmentSelected.id + ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`
+      if (data.code == 0) {
+        if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
+          data.shipmentFiles.forEach(function (element, index) {
+            html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
+          });
+        }
+      }
+      $('#shipment-info').html(html);
+    },
+    error: function (err) {
+      if (serviceType == 1 || serviceType == 2) {
+        html += `<span>Mã lô: ` + shipmentSelected.id + ` - B/L No: ` + shipmentSelected.blNo + `</span>`;
+      } else {
+        html += `<span>Mã lô: ` + shipmentSelected.id + ` - Booking No: ` + shipmentSelected.bookingNo + `</span>`
+      }
+      $('#shipment-info').html(html);
     }
-    $('#shipment-info').html(html);
-  }
+  });
   if (serviceType == 4) {
     $('#exportPackingListBtn').show();
   } else {
