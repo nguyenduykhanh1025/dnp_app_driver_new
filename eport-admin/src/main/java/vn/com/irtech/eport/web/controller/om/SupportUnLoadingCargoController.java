@@ -171,25 +171,64 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		return ajaxResult;
 	}
 
+//	@PostMapping("/order/confirm")
+//	@ResponseBody
+//	@Transactional
+//	public AjaxResult confirmOrder(String shipmentDetailIds) {
+//		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+//		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+//			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+//				shipmentDetail.setProcessStatus("Y");
+//				if ("Credit".equalsIgnoreCase(shipmentDetail.getPayType())) {
+//					shipmentDetail.setPaymentStatus("Y");
+//					shipmentDetail.setDateReceiptStatus("W");
+//				} else {
+//					shipmentDetail.setPaymentStatus("W");
+//				}
+//				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+//			}
+//		}
+//		return success();
+//	}
+	
+//	@PostMapping("/order/confirm")
+//	@ResponseBody
+//	@Transactional
+//	public AjaxResult confirmOrder(@RequestBody List<ShipmentDetail> shipmentDetails) {
+//		
+//		
+//		
+//		
+//		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+//			if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
+//				return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
+//			}
+//		}
+//		return success();
+//	}
+	
 	@PostMapping("/order/confirm")
 	@ResponseBody
 	@Transactional
-	public AjaxResult confirmOrder(String shipmentDetailIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
-		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				shipmentDetail.setProcessStatus("Y");
-				if ("Credit".equalsIgnoreCase(shipmentDetail.getPayType())) {
-					shipmentDetail.setPaymentStatus("Y");
-					shipmentDetail.setDateReceiptStatus("W");
-				} else {
-					shipmentDetail.setPaymentStatus("W");
-				}
-				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+	public AjaxResult confirmOrder(@RequestBody List<ShipmentDetail> shipmentDetails) { 
+		for (ShipmentDetail shipmentDetail : shipmentDetails) { 
+			shipmentDetail.setProcessStatus("Y");
+			if ("Credit".equalsIgnoreCase(shipmentDetail.getPayType())) {
+				shipmentDetail.setPaymentStatus("Y");
+				shipmentDetail.setDateReceiptStatus("W");
+			} else {
+				shipmentDetail.setPaymentStatus("W");
 			}
+			 
+			if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
+				return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
+			} 
 		}
 		return success();
 	}
+	
+	
+	
 
 	@PostMapping("/shipment-detail")
 	@ResponseBody
@@ -358,4 +397,30 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetailUpdate);
 		return success();
 	}
+	
+	
+	@PostMapping("/do/recall")
+	@ResponseBody
+	@Transactional
+	public AjaxResult Recall(String shipmentDetailIds) {
+		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail(); 
+		// chưa thanh toán trường hợp trả trước k. còn trả sau thì k cần check thoải mái  
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			for (ShipmentDetail shipmentDetail : shipmentDetails) { 
+				if ("Cash".equalsIgnoreCase(shipmentDetail.getPayType())) {
+					shipmentDetailUpdate.setProcessStatus("W"); 
+				} 
+				if("Credit".equalsIgnoreCase(shipmentDetail.getPayType())) { 
+					if("Y".equalsIgnoreCase(shipmentDetail.getPaymentStatus())) {
+						return error("Không thể thu hồi lệnh vì đã thanh toán");
+					} 
+				}
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+		} 
+		return success(); 
+	}
+	
+	 
 }
