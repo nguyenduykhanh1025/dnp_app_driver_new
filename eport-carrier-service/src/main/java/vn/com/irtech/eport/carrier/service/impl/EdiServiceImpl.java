@@ -264,10 +264,7 @@ public class EdiServiceImpl implements IEdiService {
 					"Edo to delete has already been made order at Da Nang port (containerNo='%s', billOfLading=%s)",
 					ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
 		}
-
-		edoUpdate.setDelFlg(1);
-		edoUpdate.setUpdateBy(partnerCode);
-		return edoService.updateEdo(edoUpdate);
+		return edoService.deleteEdoById(edoUpdate.getId());
 	}
 
 	private void settingEdoData(Edo edo, EdiDataReq ediDataReq, String partnerCode, String transactionId) {
