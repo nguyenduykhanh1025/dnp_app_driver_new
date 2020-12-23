@@ -402,21 +402,20 @@ public class SupportUnLoadingCargoController extends OmBaseController {
 	@PostMapping("/do/recall")
 	@ResponseBody
 	@Transactional
-	public AjaxResult Recall(String shipmentDetailIds) {
+	public AjaxResult Recall(String shipmentDetailIds){
 		ShipmentDetail shipmentDetailUpdate = new ShipmentDetail(); 
 		// chưa thanh toán trường hợp trả trước k. còn trả sau thì k cần check thoải mái  
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			for (ShipmentDetail shipmentDetail : shipmentDetails) { 
-				if ("Cash".equalsIgnoreCase(shipmentDetail.getPayType())) {
-					shipmentDetailUpdate.setProcessStatus("W"); 
-				} 
-				if("Credit".equalsIgnoreCase(shipmentDetail.getPayType())) { 
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {  
+				if("Cash".equalsIgnoreCase(shipmentDetail.getPayType())) { // trả sau
 					if("Y".equalsIgnoreCase(shipmentDetail.getPaymentStatus())) {
 						return error("Không thể thu hồi lệnh vì đã thanh toán");
 					} 
-				}
-				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+				} 
+				shipmentDetailUpdate.setProcessStatus("W"); 
+				shipmentDetailUpdate.setId(Long.parseLong(shipmentDetailIds));
+				shipmentDetailService.updateShipmentDetail(shipmentDetailUpdate);
 			}
 		} 
 		return success(); 
