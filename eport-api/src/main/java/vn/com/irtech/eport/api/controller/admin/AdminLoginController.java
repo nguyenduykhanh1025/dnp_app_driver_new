@@ -1,7 +1,9 @@
 package vn.com.irtech.eport.api.controller.admin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.gson.Gson;
 
 import vn.com.irtech.eport.api.domain.EportUserType;
 import vn.com.irtech.eport.api.form.LoginReq;
@@ -115,6 +119,17 @@ public class AdminLoginController extends BaseController {
 			logger.error("Failed to get list area from catos: " + e);
 			areasFull = new ArrayList<>();
 		}
+
+		// Get block custom info from dictionary
+		Map<String, Object> blockCustomData = new HashMap<>();
+		List<SysDictData> blockCustomDatas = sysDictDataService.selectDictDataByType("block_custom_info");
+		if (CollectionUtils.isNotEmpty(blockCustomDatas)) {
+			for (SysDictData blockCustom : blockCustomDatas) {
+				blockCustomData.put(blockCustom.getDictValue(),
+						new Gson().fromJson(blockCustom.getDictLabel(), Object.class));
+			}
+		}
+		ajaxResult.put("blockCustomData", blockCustomData);
 		ajaxResult.put("areas", areasFull);
 		return ajaxResult;
 	}
