@@ -203,6 +203,7 @@ function insertCont() {
         data: JSON.stringify(payload),
         dataType: "text",
         success: function (result) {
+          parent.submitFromDetailModal();
           $.modal.close();
         }
       });
@@ -228,8 +229,6 @@ function saveFile() {
       },
       success: function (result) {
         if (result.code == 0) {
-          //$.modal.alertError(result.msg);
-          //$.modal.close(); 
           insertCont();
         } else {
           $.modal.close();

@@ -302,10 +302,10 @@
       var interval = setInterval(() => {
         updateReportNumberOm();
       }, 90000);
-      
+
       //Set inteval to update number for cont reefer of notify
-      let roles = user.roles.filter(item => item.roleKey == "reefer");
-      if (roles && roles.length) {
+      let rolesReefer = user.roles.filter(item => item.roleKey == "reefer");
+      if (rolesReefer && rolesReefer.length) {
         var intervalContReefer = setInterval(() => {
           updateReportNumberContReefer();
         }, 90000);

@@ -1424,8 +1424,17 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ContainerInfoDto catos = catosDetailMap.get(shipmentDetailFromDB.getContainerNo());
 		if (catos != null) {
 			if (StringUtils.isEmpty(shipmentDetailFromDB.getTemperature())) {
+				boolean isChange = false;
 				if (catos.getSetTemp() != null) {
-					shipmentDetailFromDB.setTemperature(catos.getSetTemp().toString());
+					isChange = true;
+					shipmentDetailFromDB.setTemperature(catos.getSetTemp());
+				}
+				if(catos.getAirvent() != null) {
+					isChange = true;
+					shipmentDetailFromDB.setVentilation(catos.getAirvent());
+				}
+				
+				if(isChange) {
 					shipmentDetailService.updateShipmentDetail(shipmentDetailFromDB);
 				}
 			}
@@ -1580,7 +1589,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		shipmentDetail.setChassisNo(detail.getChassisNo());
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailId, shipmentDetail);
 
-		return success();
+		return AjaxResult.success(shipmentDetail);
 	}
 
 	@PostMapping("/extendPowerDrawDate")

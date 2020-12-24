@@ -1050,6 +1050,8 @@ function getDataSelectedFromTable() {
 }
 
 function search() {
+  shipment.blNo = $('#blNo').val();
+  shipment.params.containerNo = $('#containerNo').val();
   loadTable();
 }
 
@@ -1783,4 +1785,8 @@ function isBookingCheckPayment() {
     }
   }
   return result;
+}
+
+function submitFromDetailModal() {
+  $.modal.msgSuccess("Lưu thành công.");
 }
