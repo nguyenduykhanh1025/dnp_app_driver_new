@@ -1338,12 +1338,6 @@
 	</select>
 
 
-
-	<!-- <select id="selectConfirmShipmentDetailByIds" resultMap="ShipmentDetailResult"> 
-		<include refid="selectShipmentDetailVo" /> where id in <foreach item="id" 
-		collection="shipmentDetailIds" open="(" separator="," close=")"> #{shipmentDetailIds} 
-		</foreach> </select> -->
-
 	<!-- start yêu cầu xác nhận Nhatlv -->
 	<select id="selectConfirmShipmentDetailByIds"
 		resultMap="ShipmentDetailResult">
@@ -1410,12 +1404,6 @@
 		</foreach>
 
 	</select>
-	
-	
-
-
-
-
 
 	<resultMap id="ShipmentWaitExecResult"
 		type="vn.com.irtech.eport.logistic.dto.ShipmentWaitExec">

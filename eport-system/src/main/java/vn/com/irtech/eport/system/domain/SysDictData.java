@@ -1,8 +1,11 @@
 package vn.com.irtech.eport.system.domain;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.annotation.Excel.ColumnType;
 import vn.com.irtech.eport.common.constant.UserConstants;
@@ -64,7 +67,7 @@ public class SysDictData extends BaseEntity
     }
 
     @NotBlank(message = "Dictionary tag cannot be empty")
-    @Size(min = 0, max = 100, message = "Dictionary label length cannot exceed 100 chars")
+	@Size(min = 0, max = 500, message = "Dictionary label length cannot exceed 500 chars")
     public String getDictLabel()
     {
         return dictLabel;

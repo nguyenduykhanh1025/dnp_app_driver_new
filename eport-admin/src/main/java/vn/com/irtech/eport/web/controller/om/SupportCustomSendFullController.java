@@ -219,6 +219,6 @@ public class SupportCustomSendFullController extends OmBaseController{
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
 		}
-		return success();
+		return success("Hoàn thành đồng bộ.");
 	}
 }

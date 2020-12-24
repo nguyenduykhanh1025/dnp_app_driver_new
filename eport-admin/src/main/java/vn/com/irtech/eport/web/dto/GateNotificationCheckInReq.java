@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.web.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class GateNotificationCheckInReq  implements Serializable {
 
@@ -59,6 +60,14 @@ public class GateNotificationCheckInReq  implements Serializable {
 	private String sealNo1;
 
 	private String sealNo2;
+
+	private Date gateOutDate1;
+
+	private Date gateOutDate2;
+
+	private String cargoType1;
+
+	private String cargoType2;
 
 	private String remark;
 
@@ -276,6 +285,38 @@ public class GateNotificationCheckInReq  implements Serializable {
 
 	public void setSealNo2(String sealNo2) {
 		this.sealNo2 = sealNo2;
+	}
+
+	public Date getGateOutDate1() {
+		return gateOutDate1;
+	}
+
+	public void setGateOutDate1(Date gateOutDate1) {
+		this.gateOutDate1 = gateOutDate1;
+	}
+
+	public Date getGateOutDate2() {
+		return gateOutDate2;
+	}
+
+	public void setGateOutDate2(Date gateOutDate2) {
+		this.gateOutDate2 = gateOutDate2;
+	}
+
+	public String getCargoType1() {
+		return cargoType1;
+	}
+
+	public void setCargoType1(String cargoType1) {
+		this.cargoType1 = cargoType1;
+	}
+
+	public String getCargoType2() {
+		return cargoType2;
+	}
+
+	public void setCargoType2(String cargoType2) {
+		this.cargoType2 = cargoType2;
 	}
 
 	public String getRemark() {

@@ -200,6 +200,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		if (isExtensionDetOrder) {
 			serviceTypes += EportConstants.SERVICE_EXTEND_DET + ",";
 		}
+		if (isOverSizeRemarkOrder) {
+			serviceTypes += EportConstants.SERVICE_OVERSIZE_REMARK_ORDER + ",";
+		}
 		
 		if (serviceTypes.length() > 0) {
 			serviceTypes = serviceTypes.substring(0, serviceTypes.length()-1);
@@ -207,9 +210,6 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 				
 		SysRobot sysRobot = new SysRobot();
 		sysRobot.setUuId(uuId);
-		
-		
-		
 		sysRobot.setStatus(status);
 		sysRobot.setIpAddress(ipAddress);
 		sysRobot.setIsReceiveContFullOrder(isReceiveContFullOrder);
@@ -226,6 +226,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		sysRobot.setIsCancelReceiveContEmptyOrder(isCancelReceiveContEmptyOrder);
 		sysRobot.setIsExportReceipt(isExportReceipt);
 		sysRobot.setIsExtensionDetOrder(isExtensionDetOrder);
+		sysRobot.setIsOverSizeRemarkOrder(isOverSizeRemarkOrder);
 
 		// check if robot is exists but be disabled then just update robot infor but not validate or assign new order to robot
 		SysRobot robotExist = robotService.selectRobotByUuId(uuId);
@@ -352,6 +353,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 								break;
 							case EportConstants.SERVICE_EXTEND_DET:
 								sendExtendDetOrderToRobot(reqProcessOrder, uuId);
+								break;
+							case EportConstants.SERVICE_OVERSIZE_REMARK_ORDER:
+								sendOversizeRemarkToRobot(reqProcessOrder, uuId);
 								break;
 						}
 					}
@@ -499,6 +503,25 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 			mqttService.publicMessageToDemandRobot(req, EServiceRobot.EXTENSION_DET, uuid);
 		} catch (MqttException e) {
 			logger.error("Error when send waiting extend det order to robot: " + e);
+		}
+	}
+
+	/**
+	 * Send oversize remark order to robot
+	 * 
+	 * @param processOrder
+	 * @param uuid
+	 */
+	public void sendOversizeRemarkToRobot(ProcessOrder processOrder, String uuid) {
+		ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+		Map<String, Object> params = new HashMap<>();
+		params.put("containers", processJsonData.getContainers());
+		processOrder.setParams(params);
+		ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(processOrder, processJsonData.getShipmentDetails());
+		try {
+			mqttService.publicMessageToDemandRobot(req, EServiceRobot.OVERSIZE_REMARK, uuid);
+		} catch (MqttException e) {
+			logger.error("Error when send waiting oversize remark order to robot: " + e);
 		}
 	}
 

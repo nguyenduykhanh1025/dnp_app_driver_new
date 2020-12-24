@@ -210,7 +210,8 @@ public class MqttService implements MqttCallback {
 		CANCEL_DROP_FULL, // Cancel drop full
 		CANCEL_PICKUP_EMPTY, // Cancel pickup empty
 		EXPORT_RECEIPT, // Export receipt
-		EXTENSION_DET // update detention days
+		EXTENSION_DET, // update detention days
+		OVERSIZE_REMARK // update remark for oversize container
 	}
 
 	@Transactional
@@ -334,6 +335,11 @@ public class MqttService implements MqttCallback {
 		case EXPORT_RECEIPT:
 			sysRobot.setIsExportReceipt(true);
 			break;
+		case EXTENSION_DET:
+			sysRobot.setIsExtensionDetOrder(true);
+			break;
+		case OVERSIZE_REMARK:
+			sysRobot.setIsOverSizeRemarkOrder(true);
 		}
 		sysRobot.setDisabled(false);
 		return robotService.findFirstRobot(sysRobot);

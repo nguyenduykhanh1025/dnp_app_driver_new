@@ -443,13 +443,14 @@ function loadTableByContainer(shipmentId) {
     success: function (data) {
       $.modal.closeLoading();
       if (data.code == 0) {
+        sourceData = data.shipmentDetails;
+        rowAmount = sourceData.length;
         checkList = Array(rowAmount).fill(0);
         allChecked = false;
         $('.checker').prop('checked', false);
         for (let i = 0; i < checkList.length; i++) {
           $('#check' + i).prop('checked', false);
         }
-        sourceData = data.shipmentDetails;
         if (sourceData) {
           for (let i = 0; i < sourceData.length; i++) {
             sourceData[i].vslNm = sourceData[i].vslNm + " - " + sourceData[i].vslName + " - " + sourceData[i].voyCarrier;
@@ -542,6 +543,7 @@ function syncCustomStatus() {
       title: "Xác Nhận",
       btn: ['Xác Nhận', 'Hủy Bỏ']
     }, function () {
+      $.modal.loading("Đang xử lý...");
       $.ajax({
         url: PREFIX + "/sync",
         method: "POST",
@@ -596,10 +598,10 @@ $("#logistic").combobox({
 });
 
 function formatUpdateTime(value, row, index) {
-  if (!row.customScanTime) {
+  if (!row.customsScanTime) {
     return null
   }
-  let customScanTime = new Date(row.customScanTime);
+  let customScanTime = new Date(row.customsScanTime);
   let now = new Date();
   let offset = now.getTime() - customScanTime.getTime();
   let totalMinutes = Math.round(offset / 1000 / 60);

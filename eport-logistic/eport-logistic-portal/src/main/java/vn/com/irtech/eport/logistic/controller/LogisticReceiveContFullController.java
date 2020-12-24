@@ -1483,7 +1483,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult uploadFile(@RequestParam(value = "filePaths[]", required = false) String[] filePaths,
 			@RequestParam(value = "fileType[]", required = false) String[] fileType,
-			@RequestParam(value = "fileIds[]") String[] fileIds, String shipmentDetailId, Long shipmentId,
+			@RequestParam(value = "fileIds[]",required = false) String[] fileIds, String shipmentDetailId, Long shipmentId,
 			String shipmentSztp) throws IOException, InvalidExtensionException {
 
 		if (filePaths.length > 0) {
@@ -1522,18 +1522,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	 * @throws IOException
 	 * @throws InvalidExtensionException
 	 */
-	/*
-	 * @PostMapping("/saveDate")
-	 * 
-	 * @ResponseBody public AjaxResult saveDate( String shipmentDetailId, Long
-	 * shipmentId, String shipmentSztp, Date powerDrawDate) throws
-	 * IOException,InvalidExtensionException { ShipmentDetail shipmentDetail = new
-	 * ShipmentDetail(); if("R".equalsIgnoreCase(shipmentSztp.substring(2,3))){
-	 * shipmentDetail.setPowerDrawDate(powerDrawDate);
-	 * shipmentDetailService.updateShipmentDetailByIds(shipmentDetailId,
-	 * shipmentDetail); } return success(); }
-	 */
-
+	 
 	@PostMapping("/saveDate")
 	@ResponseBody
 	public AjaxResult saveDate(
