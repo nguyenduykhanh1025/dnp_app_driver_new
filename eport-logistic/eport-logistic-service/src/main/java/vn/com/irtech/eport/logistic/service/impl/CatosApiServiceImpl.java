@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.common.config.Global;
-import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
@@ -1243,19 +1242,42 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	 * @return List<EirGateDto>
 	 */
 	@Override
-	public TableDataInfo getEirGateReport(EirGateDto eirGate) {
+	public List<EirGateDto> getEirGateReport(EirGateDto eirGate) {
 		try {
 			String url = Global.getApiUrl() + "/eir-gate/report";
 			logger.debug("Call CATOS API get eir gate report :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			HttpEntity<EirGateDto> httpEntity = new HttpEntity<EirGateDto>(eirGate);
-			ResponseEntity<TableDataInfo> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
-					TableDataInfo.class);
-			TableDataInfo eirGateDtos = response.getBody();
+			ResponseEntity<List<EirGateDto>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
+					new ParameterizedTypeReference<List<EirGateDto>>() {
+					});
+			List<EirGateDto> eirGateDtos = response.getBody();
 			return eirGateDtos;
 		} catch (Exception e) {
 			logger.error("Error while call CATOS Api get eir gate report", e);
-			return new TableDataInfo();
+			return new ArrayList<>();
+		}
+	}
+
+	/**
+	 * Get container eir gate report
+	 * 
+	 * @param eirGate
+	 * @return Long
+	 */
+	@Override
+	public Long getEirGateReportTotal(EirGateDto eirGate) {
+		try {
+			String url = Global.getApiUrl() + "/eir-gate/report/total";
+			logger.debug("Call CATOS API get eir gate report total :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity<EirGateDto> httpEntity = new HttpEntity<EirGateDto>(eirGate);
+			ResponseEntity<Long> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, Long.class);
+			Long total = response.getBody();
+			return total;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api get eir gate report total", e);
+			return null;
 		}
 	}
 }

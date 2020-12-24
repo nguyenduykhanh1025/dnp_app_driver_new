@@ -28,4 +28,15 @@ public class ApiEirGateController {
 	public List<EirGateEntity> getEirGateReport(@RequestBody EirGateEntity eirGate) {
 		return eirGateDao.getEirGateReport(eirGate);
 	}
+
+	/**
+	 * Get eir gate report total
+	 * 
+	 * @param eirGate
+	 * @return Long
+	 */
+	@PostMapping("/eir-gate/report/total")
+	public Long getEirGateReportTotal(@RequestBody EirGateEntity eirGate) {
+		return eirGateDao.totalEirGateReport(eirGate);
+	}
 }

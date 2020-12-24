@@ -5,6 +5,7 @@ package vn.com.irtech.eport.logistic.dto;
 
 import java.util.Date;
 
+import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
 /**
@@ -16,66 +17,87 @@ public class EirGateDto extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	/** Container No */
+	@Excel(name = "Container No")
 	private String containerNo;
 
 	/** Activity */
+	@Excel(name = "Hoạt Động")
 	private String activity;
 
 	/** Checked In */
+	@Excel(name = "Ngày Vào Cổng")
 	private Date checkedIn;
 
 	/** Checked Out */
+	@Excel(name = "Ngày Ra Cổng")
 	private Date checkedOut;
 
 	/** Vsl Nm */
+	@Excel(name = "Tàu")
 	private String vslNm;
 
 	/** Voyage */
+	@Excel(name = "Chuyến")
 	private String voyage;
 
 	/** Sztp */
+	@Excel(name = "Kích Thước")
 	private String sztp;
 
 	/** Cntr Type */
+	@Excel(name = "Loại Container")
 	private String cntrType;
 
 	/** Operator */
+	@Excel(name = "Operator")
 	private String operator;
 
 	/** Cont Status */
+	@Excel(name = "Trạng Thái Container")
 	private String contStatus;
 
 	/** Reference */
+	@Excel(name = "Tham Chiếu")
 	private String reference;
 
 	/** Position */
+	@Excel(name = "Vị Trí")
 	private String position;
 
 	/** Area */
+	@Excel(name = "Khu Vực")
 	private String area;
 
 	/** Cargo Type */
+	@Excel(name = "Loại Hàng")
 	private String cargoType;
 
 	/** Imdg */
+	@Excel(name = "Imdg")
 	private String imdg;
 
 	/** Seal1 */
+	@Excel(name = "Seal 1")
 	private String seal1;
 
 	/** Seal2 */
+	@Excel(name = "Seal 2")
 	private String seal2;
 
 	/** Truck No */
+	@Excel(name = "Biển Số Xe")
 	private String truckNo;
 
 	/** Trucker Tax No */
+	@Excel(name = "Mã Số Thuế Trucker")
 	private String truckerTaxNo;
 
 	/** Payer Tax No */
+	@Excel(name = "Mã Số Thuế Payer")
 	private String payerTaxNo;
 
 	/** Remark */
+	@Excel(name = "Ghi Chú")
 	private String remark;
 
 	public String getContainerNo() {

@@ -3,7 +3,6 @@ package vn.com.irtech.eport.logistic.service;
 import java.util.List;
 import java.util.Map;
 
-import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -346,7 +345,15 @@ public interface ICatosApiService {
 	 * Get container eir gate report
 	 * 
 	 * @param eirGate
-	 * @return TableDataInfo
+	 * @return List<EirGateDto>
 	 */
-	public TableDataInfo getEirGateReport(EirGateDto eirGate);
+	public List<EirGateDto> getEirGateReport(EirGateDto eirGate);
+
+	/**
+	 * Get container eir gate report
+	 * 
+	 * @param eirGate
+	 * @return Long
+	 */
+	public Long getEirGateReportTotal(EirGateDto eirGate);
 }

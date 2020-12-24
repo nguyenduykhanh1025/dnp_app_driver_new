@@ -18,5 +18,7 @@ public interface EirGateDao extends BaseMapper<EirGateEntity> {
 	 * @return List<EirGateEntity>
 	 */
 	public List<EirGateEntity> getEirGateReport(EirGateEntity eirGate);
+
+	public Long totalEirGateReport(EirGateEntity eirGate);
 }
 

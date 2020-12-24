@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Eir Gate Report')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/logistic/report/report.css}" rel="stylesheet" />
+    <link th:href="@{/eport/css/common/style.css?v=1406}" rel="stylesheet" />
+  </head>
+  <body class="grey-background">
+    <div class="main-body">
+      <span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+      <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+      <div class="main-body__search-wrapper mb-2">
+        <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+          <div class="flex__left w-20">
+            <h3 class="mt-10">Báo Cáo Eir Gate</h3>
+          </div>
+          <div class="flex__right w-80 justify-content-start align-items-center d-flex">
+            <div id="ff">
+              <div class="d-inline">
+                <input class="easyui-textbox" name="containerNo" id="containerNo" data-options="prompt: 'Container No' " />
+              </div>
+              <div class="d-inline">
+                <input class="easyui-datebox from-date" id="fromDate" style="width: 150px" data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser" />
+              </div>
+              <div class="d-inline">
+                <input class="easyui-datebox to-date" id="toDate" style="width: 150px" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser" />
+              </div>
+              <div class="d-inline">
+                <button class="btn btn-success btn-customs" onclick="loadTable()" id="searchBtn">Tìm kiếm</button>
+              </div>
+              <div class="d-inline">
+                <button class="btn btn-success btn-outline btn-customs" onclick="refresh()" id="resethBtn">Làm mới</button>
+              </div>
+              <div class="d-inline">
+                <button class="btn btn-primary btn-customs" onclick="exportExcel()" id="exportBtn">Xuất Excel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="main-body__table-wrapper">
+        <table id="dg" style="width: 100%" pageList="[20,50,100,150,200]">
+          <thead>
+            <tr>
+              <th data-options="field:'containerNo', align:'center', halign:'center', resizable:true, fixed:true" width="103">Container No</th>
+              <th data-options="field:'activity', align:'center', halign:'center', resizable:true, fixed:true" width="92">Hoạt Động</th>
+              <th data-options="field:'checkedIn', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate" width="140">Ngày Vào Cổng</th>
+              <th data-options="field:'checkedOut', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate" width="140">Ngày Ra Cổng</th>
+              <th data-options="field:'vslNm', align:'left', halign:'center', resizable:true, fixed:true" width="160">Tàu</th>
+              <th data-options="field:'voyage', align:'left', halign:'center', resizable:true, fixed:true" width="170">Chuyến</th>
+              <th data-options="field:'sztp', align:'center', halign:'center', resizable:true, fixed:true" width="90">Kích Thước</th>
+              <th data-options="field:'cntrType', align:'center', halign:'center', resizable:true, fixed:true" width="110">Loại Container</th>
+              <th data-options="field:'operator', align:'left', halign:'center', resizable:true, fixed:true" width="200">Operator</th>
+              <th data-options="field:'contStatus', align:'left', halign:'center', resizable:true, fixed:true" width="140">Trạng Thái Container</th>
+              <th data-options="field:'reference', align:'center', halign:'center', resizable:true, fixed:true" width="110">Tham Chiếu</th>
+              <th data-options="field:'position', align:'left', halign:'center', resizable:true, fixed:true" width="105">Vị Trí</th>
+              <th data-options="field:'area', align:'left', halign:'center', resizable:true, fixed:true" width="70">Khu Vực</th>
+              <th data-options="field:'cargoType', align:'left', halign:'center', resizable:true, fixed:true" width="90">Loại Hàng</th>
+              <th data-options="field:'imdg', align:'left', halign:'center', resizable:true, fixed:true" width="60">Imdg</th>
+              <th data-options="field:'seal1', align:'left', halign:'center', resizable:true, fixed:true" width="120">Seal 1</th>
+              <th data-options="field:'seal2', align:'left', halign:'center', resizable:true, fixed:true" width="120">Seal 2</th>
+              <th data-options="field:'truckNo', align:'left', halign:'center', resizable:true, fixed:true" width="90">Biển Số Xe</th>
+              <th data-options="field:'truckerTaxNo', align:'left', halign:'center', resizable:true, fixed:true" width="130">Mã Số Thuế Trucker</th>
+              <th data-options="field:'payerTaxNo', align:'left', halign:'center', resizable:true, fixed:true" width="120">Mã Số Thuế Payer</th>
+              <th data-options="field:'remark', align:'left', halign:'center', resizable:true, fixed:true" width="300">Ghi Chú</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script type="text/javascript" th:inline="javascript">
+      $(".main-body").height($(document).height() - 10);
+      $(".easyui-layout").height($(".main-body").height() - 40);
+    </script>
+    <script th:src="@{/js/logistic/eirGate/layout.js}"></script>
+    <script th:src="@{/js/logistic/eirGate/report.js?v=20201224}"></script>
+  </body>
+</html>
