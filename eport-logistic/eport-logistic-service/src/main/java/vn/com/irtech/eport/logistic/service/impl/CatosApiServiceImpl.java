@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.common.config.Global;
+import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
@@ -25,6 +26,7 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.BerthPlanInfo;
 import vn.com.irtech.eport.logistic.dto.ContainerHistoryDto;
 import vn.com.irtech.eport.logistic.dto.ContainerHoldInfo;
+import vn.com.irtech.eport.logistic.dto.EirGateDto;
 import vn.com.irtech.eport.logistic.form.BookingInfo;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
@@ -1231,6 +1233,29 @@ public class CatosApiServiceImpl implements ICatosApiService {
 		} catch (Exception e) {
 			logger.error("Error while call CATOS Api get container under shifting", e);
 			return new ArrayList<>();
+		}
+	}
+
+	/**
+	 * Get container eir gate report
+	 * 
+	 * @param eirGate
+	 * @return List<EirGateDto>
+	 */
+	@Override
+	public TableDataInfo getEirGateReport(EirGateDto eirGate) {
+		try {
+			String url = Global.getApiUrl() + "/eir-gate/report";
+			logger.debug("Call CATOS API get eir gate report :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity<EirGateDto> httpEntity = new HttpEntity<EirGateDto>(eirGate);
+			ResponseEntity<TableDataInfo> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity,
+					TableDataInfo.class);
+			TableDataInfo eirGateDtos = response.getBody();
+			return eirGateDtos;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api get eir gate report", e);
+			return new TableDataInfo();
 		}
 	}
 }
