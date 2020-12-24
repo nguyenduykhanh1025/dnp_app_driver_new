@@ -1215,6 +1215,8 @@ function getDataSelectedFromTable() {
 }
 
 function search() {
+  shipment.blNo = $('#blNo').val();
+  shipment.params.containerNo = $('#containerNo').val();
   loadTable();
 }
 
@@ -1977,4 +1979,8 @@ function rejectRequest() {
 
 function saveReeferSuccess() {
   $.modal.alertSuccess("Lưu thông tin thành công.");
+}
+
+function submitFromDetailModal() {
+  $.modal.msgSuccess("Lưu thành công.");
 }

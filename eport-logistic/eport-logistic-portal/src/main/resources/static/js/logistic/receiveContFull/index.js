@@ -2428,3 +2428,7 @@ function renderStyleForExtendPowerDrawDateStatus(row) {
   }
   return `style="width: 85%;"`;
 }
+
+function confirmFromDetailModal() {
+  $.modal.msgSuccess("Lưu thông tin thành công.");
+}

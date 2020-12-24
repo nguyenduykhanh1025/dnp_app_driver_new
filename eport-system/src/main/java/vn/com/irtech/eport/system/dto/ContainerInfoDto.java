@@ -160,7 +160,10 @@ public class ContainerInfoDto implements Serializable {
 	private String osStbd;
 	
 	/** Set Temperature catos SET_TEMP */
-	private Long setTemp;
+	private String setTemp;
+	
+	/** Airvent catos AIRVENT */
+	private String airvent;
 	
 	public String getCntrNo() {
 		return cntrNo;
@@ -522,12 +525,20 @@ public class ContainerInfoDto implements Serializable {
 		this.osStbd = osStbd;
 	}
 
-	public Long getSetTemp() {
+	public String getSetTemp() {
 		return setTemp;
 	}
 
-	public void setSetTemp(Long setTemp) {
+	public void setSetTemp(String setTemp) {
 		this.setTemp = setTemp;
+	}
+
+	public String getAirvent() {
+		return airvent;
+	}
+
+	public void setAirvent(String airvent) {
+		this.airvent = airvent;
 	}
 	
 }

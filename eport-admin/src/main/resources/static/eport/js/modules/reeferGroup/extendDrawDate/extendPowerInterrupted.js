@@ -16,8 +16,24 @@ $(document).ready(function () {
 });
 
 function initSelection() {
+	let data = '';
+	if (reeferInfos[0].payerType == PAYER_TYPE.carriers) {
+		data += 'Hãng tàu';
+	} else {
+		data += 'Chủ hàng';
+		if (reeferInfos[0].payType == PAY_TYPE.credit) {
+			data += ' trả trước';
+		} else {
+			data += ' trả sau';
+		}
+	}
 	for (let i = 0; i < objectPaymentList.length; ++i) {
 		$("#slPaymentInformation").append(new Option(objectPaymentList[i], objectPaymentList[i]));
+		$('#slPaymentInformation option').each(function () {
+			if ($(this).val() == data) {
+			  $(this).prop("selected", true);
+			}
+		  });
 	}
 }
 

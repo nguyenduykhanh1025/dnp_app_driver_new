@@ -158,8 +158,11 @@ public class ContainerInfoDto implements Serializable {
 	/** Oversize catos OS_STBD */
 	private String osStbd;
 
-	/** Oversize catos SET_TEMP */
+	/** Set Temperate catos SET_TEMP */
 	private String setTemp;
+	
+	/** Airvent catos AIRVENT */
+	private String airvent;
 	
 	public String getCntrNo() {
 		return cntrNo;
@@ -527,6 +530,14 @@ public class ContainerInfoDto implements Serializable {
 
 	public void setSetTemp(String setTemp) {
 		this.setTemp = setTemp;
+	}
+
+	public String getAirvent() {
+		return airvent;
+	}
+
+	public void setAirvent(String airvent) {
+		this.airvent = airvent;
 	}
 	
 }
