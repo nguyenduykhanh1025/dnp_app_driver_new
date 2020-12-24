@@ -242,6 +242,7 @@ public class SupportExtendDrawDate extends AdminBaseController {
 	public String getExtendInterruptedInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
 			ModelMap mmap) {
 		mmap.put("shipmentDetailId", shipmentDetailId);
+		mmap.put("reeferInfos", reeferInfoService.selectReeferInfoListByIdShipmentDetail(shipmentDetailId));
 		return PREFIX + "/extendPowerInterrupted";
 	}
 

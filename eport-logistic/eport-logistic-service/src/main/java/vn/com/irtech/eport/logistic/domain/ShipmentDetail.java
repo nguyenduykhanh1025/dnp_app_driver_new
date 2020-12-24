@@ -510,9 +510,7 @@ public class ShipmentDetail extends BaseEntity {
 	private String chassisNo; 
 	private String path;  
 	private String fileType;
-	private Long setTemp;
-	
-	
+	private String edoFlg;
 	
 	 
 	public String getPath() {
@@ -1459,13 +1457,13 @@ public class ShipmentDetail extends BaseEntity {
 	public void setUserMobilePhone(String userMobilePhone) {
 		this.userMobilePhone = userMobilePhone;
 	}
-
-	public Long getSetTemp() {
-		return setTemp;
+	
+	public String getEdoFlg() {
+		return edoFlg;
 	}
 
-	public void setSetTemp(Long setTemp) {
-		this.setTemp = setTemp;
+	public void setEdoFlg(String edoFlg) {
+		this.edoFlg = edoFlg;
 	}
 
 	@Override
@@ -1516,7 +1514,7 @@ public class ShipmentDetail extends BaseEntity {
 				.append("humidity", getHumidity()).append("ventilation", getVentilation())
 				.append("powerDrawDate", getPowerDrawDate()).append("powerDrawDateStatus", getPowerDrawDateStatus())
 				.append("supportStatus", getSupportStatus()).append("userMobilePhone", getUserMobilePhone())
-				.append("setTemp", getSetTemp()).toString();
+				.append("edoFlg", getEdoFlg()).toString();
 		
 	}
 }

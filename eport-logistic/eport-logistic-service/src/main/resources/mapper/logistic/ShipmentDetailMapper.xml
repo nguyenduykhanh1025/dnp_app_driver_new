@@ -128,6 +128,7 @@
 		<result property="path" column="path" />
 		<result property="fileType" column="file_type" />
 		<result property="userMobilePhone" column="user_mobile_phone" />
+		<result property="edoFlg" column="edo_flg" />
 		
 	</resultMap>
 
@@ -840,8 +841,10 @@
 		sd.power_draw_date_status,
 		sd.power_draw_date,
 		sd.support_status,
+		(select listagg(si.PATH, ',')  within group (order by id) from shipment_image si where si.SHIPMENT_ID = sd.SHIPMENT_ID) as "path",
 		s.booking_no,
 		s.bl_no,
+		s.edo_flg,
 		sd.cont_supply_status
 		from
 		shipment_detail sd inner join shipment s on

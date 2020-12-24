@@ -492,6 +492,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from process_order
         FETCH NEXT 1 ROWS ONLY
 	</select>
+	
+	<select id="getSupportNumberReportForContReefer" parameterType="String" resultType="hashmap">
+		SELECT
+  			(SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh left join shipment s on sh.shipment_id = s.id where sh.support_status = 'P' and s.service_type = 4 and sh.sztp  like concat(concat('%', 'R'), '%')) AS sendContFullReefer,
+  			(SELECT COUNT(*) FROM shipment_detail sh left join shipment s on sh.shipment_id = s.id where sh.cont_supply_status = 'R' and s.service_type = 3 and sh.sztp  like concat(concat('%', 'R'), '%')) AS receiveContEmptyReefer,
+		    (SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh left join shipment s on sh.shipment_id = s.id where sh.power_draw_date_status = 'P' and s.service_type = 1 and sh.sztp  like concat(concat('%', 'R'), '%')) AS extendPowerContReefer,
+		  	(SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh left join shipment s on sh.shipment_id = s.id where sh.frozen_status = 'R' and s.service_type = 1 and sh.sztp  like concat(concat('%', 'R'), '%')) AS receiveContFullReefer
+		from process_order
+		FETCH NEXT 1 ROWS ONLY
+	</select>
 
     <select id="selectProcessOrderListByIds" resultMap="ProcessOrderResult">
         select * from process_order

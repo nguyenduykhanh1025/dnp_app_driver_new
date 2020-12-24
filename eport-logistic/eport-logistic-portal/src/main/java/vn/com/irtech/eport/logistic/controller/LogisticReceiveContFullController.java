@@ -1424,8 +1424,19 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ContainerInfoDto catos = catosDetailMap.get(shipmentDetailFromDB.getContainerNo());
 		if (catos != null) {
 			if (StringUtils.isEmpty(shipmentDetailFromDB.getTemperature())) {
-				shipmentDetailFromDB.setTemperature(catos.getSetTemp().toString());
-				shipmentDetailService.updateShipmentDetail(shipmentDetailFromDB);
+				boolean isChange = false;
+				if (catos.getSetTemp() != null) {
+					isChange = true;
+					shipmentDetailFromDB.setTemperature(catos.getSetTemp());
+				}
+				if(catos.getAirvent() != null) {
+					isChange = true;
+					shipmentDetailFromDB.setVentilation(catos.getAirvent());
+				}
+				
+				if(isChange) {
+					shipmentDetailService.updateShipmentDetail(shipmentDetailFromDB);
+				}
 			}
 		}
 
@@ -1551,7 +1562,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 		List<ReeferInfo> infosFromDB = this.reeferInfoService
 				.selectReeferInfoListByIdShipmentDetail(shipmentDetail.getId());
-		
+
 		if ("R".equalsIgnoreCase(shipmentDetail.getSztp().substring(2, 3))) {
 			if (powerDrawDateOldFromDB == null && infosFromDB.size() == 0) {
 				reeferInfoService.insertReeferInfo(reeferInfo);
@@ -1567,7 +1578,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		shipmentDetail.setChassisNo(detail.getChassisNo());
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailId, shipmentDetail);
 
-		return success();
+		return AjaxResult.success(shipmentDetail);
 	}
 
 	@PostMapping("/extendPowerDrawDate")

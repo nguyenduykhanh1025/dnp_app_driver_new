@@ -58,7 +58,6 @@ $(document).ready(function () {
 function initTabs() {
   var keySize = shipmentDetail.sztp.substring(2, 3);
   var cargoType = shipmentDetail.cargoType;
-  //console.log(shipmentDetail.sztp.includes("R"));
   if (keySize == "R") {
     $(".tab-label-2").css("display", 'none');
     $(".tab-label-3").css("display", 'none');  
