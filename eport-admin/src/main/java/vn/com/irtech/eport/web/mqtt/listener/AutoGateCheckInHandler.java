@@ -67,6 +67,8 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 				} catch (Exception e) {
 					logger.error("Error while process mq message", e);
 					e.printStackTrace();
+					mqttService.sendProgressToGate(BusinessConsts.FINISH, BusinessConsts.FAIL,
+							"Có lỗi xảy ra khi làm lệnh gate in.", topic.split("/")[3]);
 				}
 			}
 		});

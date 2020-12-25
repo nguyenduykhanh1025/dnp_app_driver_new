@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -243,6 +244,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		LogisticAccount user = getUser();
 		if (StringUtils.isNotEmpty(shipment.getBookingNo())) {
 			shipment.setBookingNo(shipment.getBookingNo().toUpperCase());
+
+			Pattern p = Pattern.compile("\\w*");
+			if (!p.matcher(shipment.getBookingNo()).matches()) {
+				return error("Booking không được chứa ký tự đặc biệt, quý khách vui lòng kiểm tra lại.");
+			}
 		}
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
@@ -321,8 +327,19 @@ public class LogisticSendContFullController extends LogisticBaseController {
 				shipment.setOpeCode(input.getOpeCode());
 				if (StringUtils.isNotEmpty(input.getBookingNo())) {
 					shipment.setBookingNo(input.getBookingNo().toUpperCase());
+					Pattern p = Pattern.compile("\\w*");
+					if (!p.matcher(shipment.getBookingNo()).matches()) {
+						return error("Booking không được chứa ký tự đặc biệt, quý khách vui lòng kiểm tra lại.");
+					}
 				}
 			} else if (shipment.getStatus().equals(EportConstants.SHIPMENT_STATUS_SAVE)) {
+				if (StringUtils.isNotEmpty(input.getBookingNo())) {
+					shipment.setBookingNo(input.getBookingNo().toUpperCase());
+					Pattern p = Pattern.compile("\\w*");
+					if (!p.matcher(shipment.getBookingNo()).matches()) {
+						return error("Booking không được chứa ký tự đặc biệt, quý khách vui lòng kiểm tra lại.");
+					}
+				}
 				if (!shipment.getOpeCode().equals(input.getOpeCode())
 						|| !shipment.getBookingNo().equalsIgnoreCase(input.getBookingNo())) {
 					// Get shipment detail to update ope code
@@ -338,7 +355,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					}
 					ShipmentDetail shipmentDetailUpdate = new ShipmentDetail();
 					shipmentDetailUpdate.setOpeCode(input.getOpeCode());
-					shipmentDetailUpdate.setBlNo(input.getBookingNo().toUpperCase());
+					shipmentDetailUpdate.setBookingNo(input.getBookingNo().toUpperCase());
 					shipmentDetailService.updateShipmentDetailByIds(shipmentDtIds, shipmentDetailUpdate);
 				}
 				shipment.setOpeCode(input.getOpeCode());
