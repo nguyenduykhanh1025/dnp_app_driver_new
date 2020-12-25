@@ -104,8 +104,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             and date_finish &gt;= sysdate
             and date_start &lt;= sysdate
+            and (notice_type = 'A'
+            <if test="noticeType != null and noticeType != ''"> or notice_type = #{noticeType}</if>)
             <if test="noticeTitle != null and noticeTitle != ''"> and upper(notice_title) like concat('%', concat(upper(#{noticeTitle}), '%'))</if>
-            <if test="noticeType != null and noticeType != ''"> and notice_type = #{noticeType}</if>
             <if test="active != null"> and active = #{active}</if>
             <if test="dateStart != null"> and date_start = #{dateStart}</if>
             <if test="dateFinish != null"> and date_finish = #{dateFinish}</if>
