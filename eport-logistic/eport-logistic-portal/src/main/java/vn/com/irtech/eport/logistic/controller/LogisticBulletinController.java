@@ -41,6 +41,7 @@ public class LogisticBulletinController extends LogisticBaseController {
 			sysNoticeParam = new SysNotice();
 		}
 		sysNoticeParam.setActive(EportConstants.BULLETIN_RELEASE);
+		sysNoticeParam.setNoticeType(EportConstants.NOTICE_TYPE_LOGISTIC);
 		List<SysNotice> sysNotices = sysNoticeService.selectBulletinList(sysNoticeParam);
 		if (CollectionUtils.isEmpty(sysNotices)) {
 			sysNotices = new ArrayList<>();
