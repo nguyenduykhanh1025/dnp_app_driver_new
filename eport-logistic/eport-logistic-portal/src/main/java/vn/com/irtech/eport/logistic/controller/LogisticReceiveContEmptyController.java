@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -65,7 +66,6 @@ import vn.com.irtech.eport.logistic.service.IShipmentCommentService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
-import vn.com.irtech.eport.system.domain.ShipmentDetailHist;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @Controller
@@ -256,6 +256,12 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 				|| shipment.getContainerAmount() == 0) {
 			return error("Hãy nhập các trường bắt buộc.");
 		}
+
+		Pattern p = Pattern.compile("\\w*");
+		if (!p.matcher(shipment.getBookingNo()).matches()) {
+			return error("Booking không được chứa ký tự đặc biệt, quý khách vui lòng kiểm tra lại.");
+		}
+
 		LogisticAccount user = getUser();
 		Shipment newShipment = new Shipment();
 		newShipment.setLogisticAccountId(user.getId());
@@ -301,6 +307,12 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 				|| shipment.getContainerAmount() == 0) {
 			return error("Hãy nhập các trường bắt buộc.");
 		}
+
+		Pattern p = Pattern.compile("\\w*");
+		if (!p.matcher(shipment.getBookingNo()).matches()) {
+			return error("Booking không được chứa ký tự đặc biệt, quý khách vui lòng kiểm tra lại.");
+		}
+
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (!verifyPermission(referenceShipment.getLogisticGroupId())) {
 			return error("Không tim thấy lô");

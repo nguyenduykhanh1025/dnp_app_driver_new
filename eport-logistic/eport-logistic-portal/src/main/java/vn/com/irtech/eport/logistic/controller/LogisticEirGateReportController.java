@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +83,26 @@ public class LogisticEirGateReportController extends LogisticBaseController {
 		Map<String, Object> params = eirGate.getParams();
 		if (params == null) {
 			params = new HashMap<>();
+		}
+
+		String fromDate = params.get("variableStart").toString();
+		String toDate = params.get("variableEnd").toString();
+		Date dateStart = null;
+		Date dateEnd = null;
+		try {
+			dateStart = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(fromDate);
+			dateEnd = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(toDate);
+		} catch (ParseException e) {
+			logger.error("Failed to parse string to date: " + e);
+		}
+
+		if (dateStart == null || dateEnd == null) {
+			return error("Từ ngày và đến ngày không được để trống.");
+		}
+
+		long fortyDays = 40l * 24l * 60l * 60l * 1000l;
+		if (Math.abs(dateEnd.getTime() - dateStart.getTime()) > fortyDays) {
+			return error("Không thể xuất báo cáo trong khoảng lớn hơn 40 ngày!");
 		}
 
 		if (params.get("variableYear") == null) {
