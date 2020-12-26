@@ -1885,6 +1885,7 @@ function CheckShipmentDetail() {
 
 function verify() {
   $.modal.loading("Đang xử lý...");
+  
   getDataSelectedFromTable(true, true);
   $.ajax({
     url: prefix + "/shipment/" + shipmentSelected.id + "/delegate/permission",

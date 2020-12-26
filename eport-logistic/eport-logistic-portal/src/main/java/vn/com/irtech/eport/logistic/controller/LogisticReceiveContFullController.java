@@ -1052,6 +1052,16 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						"Kích thước " + shipmentDetails.get(i).getSztp() + " không được phép làm lệnh trên eport.");
 			}
 
+			if (shipmentDetails.get(i).getSztp().substring(2, 3).equals("R")) {
+				ShipmentDetail shipmentDetailCurent = shipmentDetails.get(i);
+				List<ReeferInfo> reeferInfosFromDB = reeferInfoService
+						.selectReeferInfoListByIdShipmentDetail(shipmentDetailCurent.getId());
+				if (reeferInfosFromDB.get(0).getPayType().equals("Credit") && !reeferInfosFromDB.get(0)
+						.getPaymentStatus().equals(EportConstants.CONT_REEFER_PAYMENT_SUCCESS)) {
+					return error("Không thể làm lệnh do tiền điện chưa được thanh toán trả trước.");
+				}
+			}
+
 			containerNos += shipmentDetails.get(i).getContainerNo() + ",";
 		}
 		// trim last ','
@@ -1429,12 +1439,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					isChange = true;
 					shipmentDetailFromDB.setTemperature(catos.getSetTemp());
 				}
-				if(catos.getAirvent() != null) {
+				if (catos.getAirvent() != null) {
 					isChange = true;
 					shipmentDetailFromDB.setVentilation(catos.getAirvent());
 				}
-				
-				if(isChange) {
+
+				if (isChange) {
 					shipmentDetailService.updateShipmentDetail(shipmentDetailFromDB);
 				}
 			}
@@ -1483,8 +1493,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult uploadFile(@RequestParam(value = "filePaths[]", required = false) String[] filePaths,
 			@RequestParam(value = "fileType[]", required = false) String[] fileType,
-			@RequestParam(value = "fileIds[]",required = false) String[] fileIds, String shipmentDetailId, Long shipmentId,
-			String shipmentSztp) throws IOException, InvalidExtensionException {
+			@RequestParam(value = "fileIds[]", required = false) String[] fileIds, String shipmentDetailId,
+			Long shipmentId, String shipmentSztp) throws IOException, InvalidExtensionException {
 
 		if (filePaths.length > 0) {
 			for (int i = 0; i < filePaths.length; i++) {
@@ -1522,7 +1532,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	 * @throws IOException
 	 * @throws InvalidExtensionException
 	 */
-	 
+
 	@PostMapping("/saveDate")
 	@ResponseBody
 	public AjaxResult saveDate(

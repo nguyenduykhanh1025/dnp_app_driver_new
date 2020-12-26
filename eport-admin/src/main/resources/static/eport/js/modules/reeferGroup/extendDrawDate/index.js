@@ -1960,11 +1960,13 @@ function confirmRequestDocument() {
         dataType: 'text',
         success: function (data) {
           loadTable();
+          $.modal.closeLoading();
         },
         error: function (result) {
           $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
           $.modal.closeLoading();
         },
+
       });
     },
     function () {
@@ -1972,7 +1974,7 @@ function confirmRequestDocument() {
     }
   );
 }
-
+console.log('aloo');
 function rejectRequest() {
 
 }

@@ -329,10 +329,10 @@ public class SupportExtendDrawDate extends AdminBaseController {
 	@PostMapping("/shipmentDetail/reject")
 	@ResponseBody
 	public AjaxResult rejectExtendDateDrop(String idShipmentDetails) {
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setPowerDrawDateStatus("E");
+
 		for (String id : idShipmentDetails.split(",")) {
-			ReeferInfo info = reeferInfoService.selectReeferInfoListByIdShipmentDetail(Long.parseLong(id)).get(0);
+			List<ReeferInfo> infosFromDB = reeferInfoService.selectReeferInfoListByIdShipmentDetail(Long.parseLong(id));
+			ReeferInfo info = infosFromDB.get(0);
 
 			info.setStatus("E");
 			info.setUpdateBy(getUser().getUserName());
@@ -340,8 +340,20 @@ public class SupportExtendDrawDate extends AdminBaseController {
 
 			this.reeferInfoService.updateReeferInfo(info);
 
+			for (int i = 0; i < infosFromDB.size(); ++i) {
+				if (infosFromDB.get(i).getStatus().equals("S")) {
+					ShipmentDetail shipmentDetail = new ShipmentDetail();
+					shipmentDetail.setPowerDrawDateStatus("E");
+					shipmentDetail.setId(Long.parseLong(id));
+					shipmentDetail.setPowerDrawDate(infosFromDB.get(i).getDateGetPower());
+					shipmentDetailService.updateShipmentDetail(shipmentDetail);
+					break;
+				}
+			}
+
 		}
-		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
+		// shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails,
+		// shipmentDetail);
 		return success();
 	}
 
