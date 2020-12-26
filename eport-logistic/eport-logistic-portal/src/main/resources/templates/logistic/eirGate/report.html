@@ -26,6 +26,9 @@
                 <input class="easyui-textbox" name="containerNo" id="containerNo" data-options="prompt: 'Container No' " />
               </div>
               <div class="d-inline">
+                <select id="callYear" class="easyui-combobox" panelHeight="auto" editable="false" style="width: 80px"></select>
+              </div>
+              <div class="d-inline">
                 <input class="easyui-datebox from-date" id="fromDate" style="width: 150px" data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser" />
               </div>
               <div class="d-inline">
@@ -80,6 +83,6 @@
       $(".easyui-layout").height($(".main-body").height() - 40);
     </script>
     <script th:src="@{/js/logistic/eirGate/layout.js}"></script>
-    <script th:src="@{/js/logistic/eirGate/report.js?v=20201224}"></script>
+    <script th:src="@{/js/logistic/eirGate/report.js?v=20201226}"></script>
   </body>
 </html>
