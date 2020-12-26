@@ -10,9 +10,13 @@ async function submitHandler() {
         if ($("#opeCode option:selected").text() == 'Chọn OPR') {
             $.modal.alertError("Hãy chọn mã OPR.");
         } else if (shipmentFileIds.length > 0) {
-            let res = await getBookingNoUnique();
-            if (res.code == 0) {
-                save(prefix + "/shipment");
+            if (/\W/.test($('#bookingNo').val())) {
+                $.modal.alertWarning('Booking không được chứa ký tự đặc biệt, quý khách vui lòng kiểm tra lại.');
+            } else {
+                let res = await getBookingNoUnique();
+                if (res.code == 0) {
+                    save(prefix + "/shipment");
+                }
             }
         } else {
             $.modal.alertError("Hãy đính kèm tệp booking hoặc lệnh cấp vỏ container.");

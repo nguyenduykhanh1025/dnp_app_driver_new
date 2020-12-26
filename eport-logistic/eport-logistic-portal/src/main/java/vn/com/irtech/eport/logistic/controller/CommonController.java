@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,17 +34,16 @@ public class CommonController
 
 
      
-    @GetMapping("common/download/{nameFile}")
-    public void fileDownload(@PathVariable("nameFile") String nameFile,String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request)
+	@GetMapping("common/download")
+	public void fileDownload(String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request)
     {
-        //fileName = "DanhSachContainer_"+ fileName;
         try
         {
             if (!FileUtils.isValidFilename(fileName))
             {
-                throw new Exception(StringUtils.format("Tên file ko hợp lệ !  ", fileName));
+				throw new Exception(StringUtils.format("Tên file ko hợp lệ ! ", fileName));
             }
-            String realFileName = nameFile + System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
+			String realFileName = System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
             String filePath = Global.getDownloadPath() + fileName;
 
             response.setCharacterEncoding("utf-8");

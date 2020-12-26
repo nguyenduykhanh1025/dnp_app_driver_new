@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vn.com.irtech.eport.logistic.controller;
+package vn.com.irtech.eport.carrier.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +26,8 @@ import vn.com.irtech.eport.system.service.ISysNoticeService;
  *
  */
 @Controller
-@RequestMapping("/logistic/bulletin")
-public class LogisticBulletinController extends LogisticBaseController {
+@RequestMapping("/carrier/bulletin")
+public class CarrierBulletinController extends CarrierBaseController {
 
 	@Autowired
 	private ISysNoticeService sysNoticeService;
@@ -41,7 +41,7 @@ public class LogisticBulletinController extends LogisticBaseController {
 			sysNoticeParam = new SysNotice();
 		}
 		sysNoticeParam.setActive(EportConstants.BULLETIN_RELEASE);
-		sysNoticeParam.setNoticeType(EportConstants.NOTICE_TYPE_LOGISTIC);
+		sysNoticeParam.setNoticeType(EportConstants.NOTICE_TYPE_CARRIER);
 		List<SysNotice> sysNotices = sysNoticeService.selectBulletinList(sysNoticeParam);
 		if (CollectionUtils.isEmpty(sysNotices)) {
 			sysNotices = new ArrayList<>();

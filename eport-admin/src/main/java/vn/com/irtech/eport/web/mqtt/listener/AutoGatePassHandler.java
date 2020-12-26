@@ -413,7 +413,7 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 					logger.debug("Send request to robot: " + sysRobot.getUuId() + ", content: " + msg);
 					mqttService.sendMessageToRobot(msg, sysRobot.getUuId());
 
-					String message = "Đang thực hiện làm lệnh gate in";
+					String message = "Đã có tọa độ đầy đủ, đang thực hiện làm lệnh gate in";
 					mqttService.sendProgressToGate(BusinessConsts.IN_PROGRESS, BusinessConsts.BLANK, message,
 							gateInFormData.getGateId());
 				} else {

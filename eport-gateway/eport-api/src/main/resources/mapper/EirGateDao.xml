@@ -1,0 +1,1031 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="vn.com.irtech.api.dao.EirGateDao">
+	<select id="getEirGateReport" parameterType="vn.com.irtech.api.entity.EirGateEntity" resultType="vn.com.irtech.api.entity.EirGateEntity">
+        SELECT * FROM ( 
+            SELECT TMP_PAGE.*, ROWNUM ROW_ID FROM (
+                SELECT
+                    m.cntr_no AS CONTAINER_NO,
+                    m.gjob_type AS ACTIVITY,
+                    m.g_in_date AS CHECKED_IN,
+                    m.g_out_date AS CHECKED_OUT,
+                    V.vsl_nm,
+                    CASE
+                        WHEN
+                            b.in_voy || '/' || b.out_voy = '/' 
+                        THEN
+                            NULL 
+                        ELSE
+                            b.in_voy || '/' || b.out_voy 
+                    END
+                    AS VOYAGE, m.sztp, SUBSTR (m.sztp2, 3, 2) AS cntr_type, 
+                    (
+                        SELECT DISTINCT
+                            ptnr_code || ': ' || eng_lnm 
+                        FROM
+                            DNP_PROD.tb_ptnr 
+                        WHERE
+                            ptnr_code = m.ptnr_code 
+                            AND ptnr_type = 'SHP'
+                    )
+                    AS OPERATOR,
+                    CASE
+                        WHEN
+                            m.fe = 'F' 
+                        THEN
+                            'FULL' 
+                        WHEN
+                            m.fe = 'E' 
+                        THEN
+                            'EMPTY' 
+                    END
+                    AS CONT_STATUS, 
+                    CASE
+                        WHEN
+                            gjob_type = 'In' 
+                        THEN
+                            TO_CHAR (m.job_odr_no) 
+                        WHEN
+                            gjob_type = 'Out' 
+                        THEN
+                            TO_CHAR (m.job_odr_no2) 
+                        ELSE
+                            NULL 
+                    END
+                    AS REFERENCE, TO_CHAR (m.BLOCK) || '-' || TO_CHAR (m.bay) || '-' || TO_CHAR (m.roww) || '-' || TO_CHAR (m.TIER) AS POSITION, TO_CHAR (m.area) AS area, 
+                    CASE
+                        WHEN
+                            m.cargo_type = 'GP' 
+                        THEN
+                            'GENERAL' 
+                        WHEN
+                            m.cargo_type = 'MT' 
+                        THEN
+                            'EMPTY' 
+                        WHEN
+                            m.cargo_type = 'RF' 
+                        THEN
+                            'REEFER' 
+                        WHEN
+                            m.cargo_type = 'DG' 
+                        THEN
+                            'DANGEROUS' 
+                        WHEN
+                            m.cargo_type = 'ED' 
+                        THEN
+                            'DANGEROUS EMPTY' 
+                        WHEN
+                            m.cargo_type = 'DR' 
+                        THEN
+                            <![CDATA['REEFER & DG']]> 
+                        WHEN
+                            m.cargo_type = 'BN' 
+                        THEN
+                            'BUNDLE' 
+                        WHEN
+                            m.cargo_type = 'BB' 
+                        THEN
+                            'BREAK BULK' 
+                        WHEN
+                            m.cargo_type = 'AK' 
+                        THEN
+                            'OVER DIMENSION' 
+                        WHEN
+                            m.cargo_type = 'FR' 
+                        THEN
+                            'FRAGILE' 
+                        ELSE
+                            m.cargo_type 
+                    END
+                    AS CARGO_TYPE, m.imdg AS imdg, m.seal_no1 AS SEAL1, m.seal_no3 AS SEAL2, m.truck_no, m.trucker AS trucker_tax_no, p.reg_no AS payer_tax_no, m.remark 
+                FROM
+                    (
+                        SELECT
+                            m.cntr_id,
+                            CASE
+                                WHEN
+                                    g.head_no IS NULL 
+                                THEN
+                                    'N' 
+                                ELSE
+                                    'Y' 
+                            END
+                            real_chk, m.vsl_cd, m.call_year, m.call_seq, m.user_voy, m.cntr_no, m.cntr_seq, m.prev_vsl, m.prev_year, m.prev_seq, m.prev_user_voy, m.in_lane, m.out_lane, m.sztp, m.sztp2, m.fe, m.ptnr_code, m.remark, m.shift_acc, m.OWNER, m.ix_cd, m.cntr_state, m.BLOCK, m.bay, m.roww, m.TIER, m.area, m.delv, m.trans_type, m.trans_type2, m.por, m.pol, m.pod, m.fpod, m.fdest, m.domestic_chk, m.wgt, m.cargo_type, m.set_temp, m.imdg, m.unno, m.handle_instr, m.yhandle_instr, m.abs_const, m.seal_no1, m.seal_no2, m.seal_no3, m.booking_no, m.bl_no, m.consignee, m.so_no, m.custom_app_no, m.return_rsn, 'In' gjob_type, m.in_tmnl_date AS in_date, m.out_date, m.airvent, NVL (g.gatedate, m.in_tmnl_date) gate_time, NVL (g.trailer_no, g.head_no) truck_no, NVL (g.trucker, m.trucker) trucker, 
+                            CASE
+                                m.ix_cd 
+                                WHEN
+                                    'X' 
+                                THEN
+                                    NVL (m.rehandle_code, 'U') 
+                                ELSE
+                                    NULL 
+                            END
+                            rehandle_code, g.worker_cd, g.ingate_no, g.outgate_no, m.dispatch_mode, m.gate_odr_no, m.job_odr_no, m.job_odr_no2, g.reject_code, g.tag_no, o.ov_height, o.ov_fore, o.ov_aft, o.ov_port, o.ov_stbd, o.os_port, o.os_stbd, o.os_height, m.vgm, m.airvent_unit, m.commodity, m.commodity_desc, m.consignee_nm, g.dmg_cond, m.chassis_no, g.g_in_date, g.g_out_date, m.from_depot, m.to_depot, g.worker_s_cd, g.weight_scale_chk, g.sic_no, g.visit_code, g.read_wgt truck_gross_wgt, p.payment_type, p.payer_type, p.payer 
+                        FROM
+                            (
+                                SELECT
+                                    cntr_id,
+                                    vsl_cd,
+                                    call_year,
+                                    call_seq,
+                                    user_voy,
+                                    cntr_no,
+                                    '0' cntr_seq,
+                                    prev_vsl,
+                                    prev_year,
+                                    prev_seq,
+                                    prev_user_voy,
+                                    in_lane,
+                                    out_lane,
+                                    sztp,
+                                    sztp2,
+                                    fe,
+                                    ptnr_code,
+                                    remark,
+                                    shift_acc,
+                                    OWNER,
+                                    ix_cd,
+                                    cntr_state,
+                                    BLOCK,
+                                    bay,
+                                    roww,
+                                    TIER,
+                                    area,
+                                    delv,
+                                    trans_type,
+                                    trans_type2,
+                                    por,
+                                    pol,
+                                    pod,
+                                    fpod,
+                                    fdest,
+                                    domestic_chk,
+                                    wgt,
+                                    cargo_type,
+                                    set_temp,
+                                    imdg,
+                                    unno,
+                                    handle_instr,
+                                    yhandle_instr,
+                                    abs_const,
+                                    seal_no1,
+                                    seal_no2,
+                                    seal_no3,
+                                    booking_no,
+                                    bl_no,
+                                    consignee,
+                                    so_no,
+                                    custom_app_no,
+                                    return_rsn,
+                                    in_tmnl_date,
+                                    out_date,
+                                    airvent,
+                                    truck_no,
+                                    trucker,
+                                    rehandle_code,
+                                    dispatch_mode,
+                                    gate_odr_no,
+                                    job_odr_no,
+                                    job_odr_no2,
+                                    vgm,
+                                    airvent_unit,
+                                    commodity,
+                                    commodity_desc,
+                                    consignee_nm,
+                                    chassis_no,
+                                    from_depot,
+                                    to_depot,
+                                    job_odr_seq 
+                                FROM
+                                    DNP_PROD.tb_inventory 
+                                <where>
+                                    trans_type = 'T' 
+                                    <if test="params.variableYear != null">
+                                        AND CALL_YEAR IN 
+                                        (
+                                            #{params.variableYear},
+                                            '0000'
+                                        )
+                                    </if>
+                                </where>
+                                UNION ALL
+                                SELECT
+                                    cntr_id,
+                                    vsl_cd,
+                                    call_year,
+                                    call_seq,
+                                    user_voy,
+                                    cntr_no,
+                                    cntr_seq,
+                                    prev_vsl,
+                                    prev_year,
+                                    prev_seq,
+                                    prev_user_voy,
+                                    in_lane,
+                                    out_lane,
+                                    sztp,
+                                    sztp2,
+                                    fe,
+                                    ptnr_code,
+                                    remark,
+                                    shift_acc,
+                                    OWNER,
+                                    ix_cd,
+                                    cntr_state,
+                                    BLOCK,
+                                    bay,
+                                    roww,
+                                    TIER,
+                                    area,
+                                    delv,
+                                    trans_type,
+                                    trans_type2,
+                                    por,
+                                    pol,
+                                    pod,
+                                    fpod,
+                                    fdest,
+                                    domestic_chk,
+                                    wgt,
+                                    cargo_type,
+                                    set_temp,
+                                    imdg,
+                                    unno,
+                                    handle_instr,
+                                    yhandle_instr,
+                                    abs_const,
+                                    seal_no1,
+                                    seal_no2,
+                                    seal_no3,
+                                    booking_no,
+                                    bl_no,
+                                    consignee,
+                                    so_no,
+                                    custom_app_no,
+                                    return_rsn,
+                                    in_tmnl_date,
+                                    out_date,
+                                    airvent,
+                                    truck_no,
+                                    trucker,
+                                    rehandle_code,
+                                    dispatch_mode,
+                                    gate_odr_no,
+                                    job_odr_no,
+                                    job_odr_no2,
+                                    vgm,
+                                    airvent_unit,
+                                    commodity,
+                                    commodity_desc,
+                                    consignee_nm,
+                                    chassis_no,
+                                    from_depot,
+                                    to_depot,
+                                    job_odr_seq 
+                                FROM
+                                    DNP_PROD.tb_master 
+                                <where>
+                                    trans_type = 'T' 
+                                    <if test="params.variableYear != null">
+                                        AND CALL_YEAR IN 
+                                        (
+                                            #{params.variableYear},
+                                            '0000'
+                                        )
+                                    </if>
+                                    AND NVL (trans_type2, 'NULL') <![CDATA[ <> ]]> 'M'
+                                </where>
+                            )
+                            M,
+                            (
+                                SELECT
+                                    g.head_no,
+                                    g.cntr_id,
+                                    g.cntr_no,
+                                    g.trucker,
+                                    g.worker_cd,
+                                    g.ingate_no,
+                                    g.outgate_no,
+                                    g.reject_code,
+                                    NVL (SUBSTR (t.truck_no, 3, 4), g.tag_no) tag_no,
+                                    g.in_date gatedate,
+                                    g.trailer_no,
+                                    g.dmg_cond,
+                                    g.in_date g_in_date,
+                                    g.out_date g_out_date,
+                                    g.worker_s_cd,
+                                    g.weight_scale_chk,
+                                    g.read_wgt,
+                                    g.sic_no,
+                                    g.visit_code 
+                                FROM
+                                    (
+                                        SELECT
+                                            head_no,
+                                            cntr_id,
+                                            cntr_no,
+                                            trucker,
+                                            worker_cd,
+                                            ingate_no,
+                                            outgate_no,
+                                            reject_code,
+                                            tag_no,
+                                            in_date,
+                                            out_date,
+                                            dumy_chk,
+                                            gjob_type,
+                                            cancel_chk,
+                                            trailer_no,
+                                            dmg_cond,
+                                            worker_s_cd,
+                                            weight_scale_chk,
+                                            read_wgt,
+                                            sic_no,
+                                            visit_code 
+                                        FROM
+                                            DNP_PROD.tb_gate_tran 
+                                        <where>
+                                            NVL (cancel_chk, 'N') <![CDATA[ <> ]]> 'Y' 
+                                            AND gjob_type = 'GF' 
+                                            AND NVL (dumy_chk, 'N') <![CDATA[ <> ]]> 'Y'  
+                                            <if test="params.variableStart != null">
+                                                AND in_date >= TO_DATE (#{params.variableStart}, 'DD-MM-YYYY HH24:MI:SS')
+                                            </if>
+                                            <if test="params.variableEnd != null">
+                                                AND in_date <![CDATA[ <= ]]> TO_DATE (#{params.variableEnd}, 'DD-MM-YYYY HH24:MI:SS')
+                                            </if>
+                                        </where>
+                                        UNION ALL
+                                        SELECT
+                                            head_no,
+                                            cntr_id,
+                                            cntr_no,
+                                            trucker,
+                                            worker_cd,
+                                            ingate_no,
+                                            outgate_no,
+                                            reject_code,
+                                            tag_no,
+                                            in_date,
+                                            out_date,
+                                            dumy_chk,
+                                            gjob_type,
+                                            cancel_chk,
+                                            trailer_no,
+                                            dmg_cond,
+                                            worker_s_cd,
+                                            weight_scale_chk,
+                                            read_wgt,
+                                            sic_no,
+                                            visit_code 
+                                        FROM
+                                            DNP_PROD.tb_gatetran_backup 
+                                        <where>
+                                            NVL (cancel_chk, 'N') <![CDATA[ <> ]]> 'Y' 
+                                            AND gjob_type = 'GF' 
+                                            AND NVL (dumy_chk, 'N') <![CDATA[ <> ]]> 'Y' 
+                                            <if test="params.variableStart != null">
+                                                AND in_date >= TO_DATE (#{params.variableStart}, 'DD-MM-YYYY HH24:MI:SS')
+                                            </if>
+                                            <if test="params.variableEnd != null">
+                                                AND in_date <![CDATA[ <= ]]> TO_DATE (#{params.variableEnd}, 'DD-MM-YYYY HH24:MI:SS')
+                                            </if>
+                                        </where>
+                                    )
+                                    G,
+                                    DNP_PROD.tb_truck T 
+                                WHERE
+                                    g.tag_no = t.tag_no( + )
+                            )
+                            G,
+                            DNP_PROD.tb_oversize o,
+                            DNP_PROD.tb_positioning P 
+                        WHERE
+                            1 = 1 
+                            AND m.cntr_id = g.cntr_id 
+                            AND m.cntr_id = o.cntr_id( + ) 
+                            AND m.job_odr_no = p.job_odr_no( + ) 
+                            AND NVL (m.job_odr_seq, 1) = p.job_odr_seq( + ) 
+                        UNION ALL
+                        SELECT
+                            m.cntr_id,
+                            CASE
+                                WHEN
+                                    g.head_no IS NULL 
+                                THEN
+                                    'N' 
+                                ELSE
+                                    'Y' 
+                            END
+                            real_chk, m.vsl_cd, m.call_year, m.call_seq, m.user_voy, m.cntr_no, m.cntr_seq, m.prev_vsl, m.prev_year, m.prev_seq, m.prev_user_voy, m.in_lane, m.out_lane, m.sztp, m.sztp2, m.fe, m.ptnr_code, m.remark, m.shift_acc, m.OWNER, m.ix_cd, m.cntr_state, m.BLOCK, m.bay, m.roww, m.TIER, m.area, m.delv, m.trans_type, m.trans_type2, m.por, m.pol, m.pod, m.fpod, m.fdest, m.domestic_chk, m.wgt, m.cargo_type, m.set_temp, m.imdg, m.unno, m.handle_instr, m.yhandle_instr, m.abs_const, m.seal_no1, m.seal_no2, m.seal_no3, m.booking_no, m.bl_no, m.consignee, m.so_no, m.custom_app_no, m.return_rsn, 'Out' gjob_type, m.in_tmnl_date AS in_date, m.out_date, m.airvent, NVL (g.gatedate, m.out_date) gate_time, NVL (g.trailer_no, g.head_no) truck_no, NVL (g.trucker, m.trucker2) trucker, 
+                            CASE
+                                m.ix_cd 
+                                WHEN
+                                    'X' 
+                                THEN
+                                    NVL (m.rehandle_code, 'U') 
+                                ELSE
+                                    NULL 
+                            END
+                            rehandle_code, g.worker_cd, g.ingate_no, g.outgate_no, m.dispatch_mode2 dispatch_mode, m.gate_odr_no2 gate_odr_no, m.job_odr_no, m.job_odr_no2, g.reject_code, g.tag_no, o.ov_height, o.ov_fore, o.ov_aft, o.ov_port, o.ov_stbd, o.os_port, o.os_stbd, o.os_height, m.vgm, m.airvent_unit, m.commodity, m.commodity_desc, m.consignee_nm, g.dmg_cond, m.chassis_no, g.in_date g_in_date, g.out_date g_out_date, m.from_depot, m.to_depot, g.worker_s_cd, g.weight_scale_chk, g.sic_no, g.visit_code, g.read_wgt2 truck_gross_wgt, p.payment_type, payer_type, payer 
+                        FROM
+                            DNP_PROD.tb_master M, DNP_PROD.tb_oversize o, DNP_PROD.tb_positioning P, 
+                            (
+                                SELECT
+                                    g.head_no,
+                                    g.cntr_id,
+                                    g.vsl_cd,
+                                    g.call_year,
+                                    g.call_seq,
+                                    g.cntr_no,
+                                    g.cntr_seq,
+                                    g.trucker,
+                                    g.worker_cd,
+                                    g.ingate_no,
+                                    g.outgate_no,
+                                    g.reject_code,
+                                    NVL (SUBSTR (t.truck_no, 3, 4), g.tag_no) tag_no,
+                                    g.out_date gatedate,
+                                    g.trailer_no,
+                                    g.dmg_cond,
+                                    g.in_date,
+                                    g.out_date,
+                                    g.worker_s_cd,
+                                    g.weight_scale_chk,
+                                    g.read_wgt2,
+                                    g.sic_no,
+                                    g.visit_code 
+                                FROM
+                                    DNP_PROD.tb_gatetran_backup G,
+                                    DNP_PROD.tb_truck T 
+                                <where>
+                                    NVL (g.cancel_chk, 'N') <![CDATA[ <> ]]> 'Y' 
+                                    AND g.gjob_type = 'GO' 
+                                    <if test="params.variableStart != null">
+                                        AND out_date >= TO_DATE (#{params.variableStart}, 'DD-MM-YYYY HH24:MI:SS')
+                                    </if>
+                                    <if test="params.variableEnd != null">
+                                        AND out_date <![CDATA[ <= ]]> TO_DATE (#{params.variableEnd}, 'DD-MM-YYYY HH24:MI:SS') 
+                                    </if>
+                                    AND g.tag_no = t.tag_no( + )
+                                </where>
+                            )
+                            G 
+                        <where>
+                            m.trans_type2 = 'T' 
+                            <if test="params.callYear != null">
+                                AND m.CALL_YEAR IN 
+                                (
+                                    #{params.callYear},
+                                    '0000'
+                                )
+                            </if>
+                            AND m.cntr_id = g.cntr_id 
+                            AND m.cntr_id = o.cntr_id( + ) 
+                            AND m.job_odr_no2 = p.job_odr_no( + ) 
+                            AND NVL (m.job_odr_seq2, 1) = p.job_odr_seq( + )
+                        </where>
+                    )
+                    M,
+                    DNP_PROD.tb_berthplan b,
+                    DNP_PROD.tb_ptnr P,
+                    DNP_PROD.tb_vsl V 
+                <where>
+                    m.vsl_cd = b.vsl_cd 
+                    AND V.vsl_cd = m.vsl_cd 
+                    AND m.call_year = b.call_year 
+                    AND m.call_seq = b.call_seq 
+                    AND m.payer_type = p.ptnr_type( + ) 
+                    AND m.payer = p.ptnr_code( + ) 
+                    <if test="params.variableTax != null"> AND 
+                        (
+                            p.reg_no = #{params.variableTax} 
+                            OR m.trucker = #{params.variableTax}
+                        )
+                    </if>
+                    <if test="containerNo != null and containerNo != ''"> AND m.cntr_no like concat('%', concat(#{containerNo}, '%'))</if>
+                </where> 
+                ORDER BY
+                    m.gate_time DESC
+            )
+        TMP_PAGE 
+        <where>
+            <if test="params.rowNum != null"> AND ROWNUM <![CDATA[ <= ]]> #{params.rowNum} </if>
+        </where>
+        ) 
+        <where>
+            <if test="params.rowId != null"> AND ROW_ID > #{params.rowId} </if>
+        </where>
+    </select>
+    
+    <select id="totalEirGateReport" parameterType="vn.com.irtech.api.entity.EirGateEntity" resultType="Long">
+        SELECT count(0)
+        FROM
+            (
+                SELECT
+                    m.cntr_no AS CONTAINER_NO,
+                    m.gjob_type AS ACTIVITY,
+                    m.g_in_date AS CHECKED_IN,
+                    m.g_out_date AS CHECKED_OUT,
+                    V.vsl_nm,
+                    CASE
+                        WHEN
+                            b.in_voy || '/' || b.out_voy = '/' 
+                        THEN
+                            NULL 
+                        ELSE
+                            b.in_voy || '/' || b.out_voy 
+                    END
+                    AS VOYAGE, m.sztp, SUBSTR (m.sztp2, 3, 2) AS cntr_type, 
+                    (
+                        SELECT DISTINCT
+                            ptnr_code || ': ' || eng_lnm 
+                        FROM
+                            DNP_PROD.tb_ptnr 
+                        WHERE
+                            ptnr_code = m.ptnr_code 
+                            AND ptnr_type = 'SHP'
+                    )
+                    AS OPERATOR,
+                    CASE
+                        WHEN
+                            m.fe = 'F' 
+                        THEN
+                            'FULL' 
+                        WHEN
+                            m.fe = 'E' 
+                        THEN
+                            'EMPTY' 
+                    END
+                    AS CONT_STATUS, 
+                    CASE
+                        WHEN
+                            gjob_type = 'In' 
+                        THEN
+                            TO_CHAR (m.job_odr_no) 
+                        WHEN
+                            gjob_type = 'Out' 
+                        THEN
+                            TO_CHAR (m.job_odr_no2) 
+                        ELSE
+                            NULL 
+                    END
+                    AS REFERENCE, TO_CHAR (m.BLOCK) || '-' || TO_CHAR (m.bay) || '-' || TO_CHAR (m.roww) || '-' || TO_CHAR (m.TIER) AS POSITION, TO_CHAR (m.area) AS area, 
+                    CASE
+                        WHEN
+                            m.cargo_type = 'GP' 
+                        THEN
+                            'GENERAL' 
+                        WHEN
+                            m.cargo_type = 'MT' 
+                        THEN
+                            'EMPTY' 
+                        WHEN
+                            m.cargo_type = 'RF' 
+                        THEN
+                            'REEFER' 
+                        WHEN
+                            m.cargo_type = 'DG' 
+                        THEN
+                            'DANGEROUS' 
+                        WHEN
+                            m.cargo_type = 'ED' 
+                        THEN
+                            'DANGEROUS EMPTY' 
+                        WHEN
+                            m.cargo_type = 'DR' 
+                        THEN
+                            'REEFER <![CDATA[ & ]]> DG' 
+                        WHEN
+                            m.cargo_type = 'BN' 
+                        THEN
+                            'BUNDLE' 
+                        WHEN
+                            m.cargo_type = 'BB' 
+                        THEN
+                            'BREAK BULK' 
+                        WHEN
+                            m.cargo_type = 'AK' 
+                        THEN
+                            'OVER DIMENSION' 
+                        WHEN
+                            m.cargo_type = 'FR' 
+                        THEN
+                            'FRAGILE' 
+                        ELSE
+                            m.cargo_type 
+                    END
+                    AS CARGO_TYPE, m.imdg AS imdg, m.seal_no1 AS SEAL1, m.seal_no3 AS SEAL2, m.truck_no, m.trucker AS trucker_tax_no, p.reg_no AS payer_tax_no, m.remark 
+                FROM
+                    (
+                        SELECT
+                            m.cntr_id,
+                            CASE
+                                WHEN
+                                    g.head_no IS NULL 
+                                THEN
+                                    'N' 
+                                ELSE
+                                    'Y' 
+                            END
+                            real_chk, m.vsl_cd, m.call_year, m.call_seq, m.user_voy, m.cntr_no, m.cntr_seq, m.prev_vsl, m.prev_year, m.prev_seq, m.prev_user_voy, m.in_lane, m.out_lane, m.sztp, m.sztp2, m.fe, m.ptnr_code, m.remark, m.shift_acc, m.OWNER, m.ix_cd, m.cntr_state, m.BLOCK, m.bay, m.roww, m.TIER, m.area, m.delv, m.trans_type, m.trans_type2, m.por, m.pol, m.pod, m.fpod, m.fdest, m.domestic_chk, m.wgt, m.cargo_type, m.set_temp, m.imdg, m.unno, m.handle_instr, m.yhandle_instr, m.abs_const, m.seal_no1, m.seal_no2, m.seal_no3, m.booking_no, m.bl_no, m.consignee, m.so_no, m.custom_app_no, m.return_rsn, 'In' gjob_type, m.in_tmnl_date AS in_date, m.out_date, m.airvent, NVL (g.gatedate, m.in_tmnl_date) gate_time, NVL (g.trailer_no, g.head_no) truck_no, NVL (g.trucker, m.trucker) trucker, 
+                            CASE
+                                m.ix_cd 
+                                WHEN
+                                    'X' 
+                                THEN
+                                    NVL (m.rehandle_code, 'U') 
+                                ELSE
+                                    NULL 
+                            END
+                            rehandle_code, g.worker_cd, g.ingate_no, g.outgate_no, m.dispatch_mode, m.gate_odr_no, m.job_odr_no, m.job_odr_no2, g.reject_code, g.tag_no, o.ov_height, o.ov_fore, o.ov_aft, o.ov_port, o.ov_stbd, o.os_port, o.os_stbd, o.os_height, m.vgm, m.airvent_unit, m.commodity, m.commodity_desc, m.consignee_nm, g.dmg_cond, m.chassis_no, g.g_in_date, g.g_out_date, m.from_depot, m.to_depot, g.worker_s_cd, g.weight_scale_chk, g.sic_no, g.visit_code, g.read_wgt truck_gross_wgt, p.payment_type, p.payer_type, p.payer 
+                        FROM
+                            (
+                                SELECT
+                                    cntr_id,
+                                    vsl_cd,
+                                    call_year,
+                                    call_seq,
+                                    user_voy,
+                                    cntr_no,
+                                    '0' cntr_seq,
+                                    prev_vsl,
+                                    prev_year,
+                                    prev_seq,
+                                    prev_user_voy,
+                                    in_lane,
+                                    out_lane,
+                                    sztp,
+                                    sztp2,
+                                    fe,
+                                    ptnr_code,
+                                    remark,
+                                    shift_acc,
+                                    OWNER,
+                                    ix_cd,
+                                    cntr_state,
+                                    BLOCK,
+                                    bay,
+                                    roww,
+                                    TIER,
+                                    area,
+                                    delv,
+                                    trans_type,
+                                    trans_type2,
+                                    por,
+                                    pol,
+                                    pod,
+                                    fpod,
+                                    fdest,
+                                    domestic_chk,
+                                    wgt,
+                                    cargo_type,
+                                    set_temp,
+                                    imdg,
+                                    unno,
+                                    handle_instr,
+                                    yhandle_instr,
+                                    abs_const,
+                                    seal_no1,
+                                    seal_no2,
+                                    seal_no3,
+                                    booking_no,
+                                    bl_no,
+                                    consignee,
+                                    so_no,
+                                    custom_app_no,
+                                    return_rsn,
+                                    in_tmnl_date,
+                                    out_date,
+                                    airvent,
+                                    truck_no,
+                                    trucker,
+                                    rehandle_code,
+                                    dispatch_mode,
+                                    gate_odr_no,
+                                    job_odr_no,
+                                    job_odr_no2,
+                                    vgm,
+                                    airvent_unit,
+                                    commodity,
+                                    commodity_desc,
+                                    consignee_nm,
+                                    chassis_no,
+                                    from_depot,
+                                    to_depot,
+                                    job_odr_seq 
+                                FROM
+                                    DNP_PROD.tb_inventory 
+                                <where>
+                                    trans_type = 'T' 
+                                    <if test="params.variableYear != null">
+                                        AND CALL_YEAR IN 
+                                        (
+                                            #{params.variableYear},
+                                            '0000'
+                                        )
+                                    </if>
+                                </where>
+                                UNION ALL
+                                SELECT
+                                    cntr_id,
+                                    vsl_cd,
+                                    call_year,
+                                    call_seq,
+                                    user_voy,
+                                    cntr_no,
+                                    cntr_seq,
+                                    prev_vsl,
+                                    prev_year,
+                                    prev_seq,
+                                    prev_user_voy,
+                                    in_lane,
+                                    out_lane,
+                                    sztp,
+                                    sztp2,
+                                    fe,
+                                    ptnr_code,
+                                    remark,
+                                    shift_acc,
+                                    OWNER,
+                                    ix_cd,
+                                    cntr_state,
+                                    BLOCK,
+                                    bay,
+                                    roww,
+                                    TIER,
+                                    area,
+                                    delv,
+                                    trans_type,
+                                    trans_type2,
+                                    por,
+                                    pol,
+                                    pod,
+                                    fpod,
+                                    fdest,
+                                    domestic_chk,
+                                    wgt,
+                                    cargo_type,
+                                    set_temp,
+                                    imdg,
+                                    unno,
+                                    handle_instr,
+                                    yhandle_instr,
+                                    abs_const,
+                                    seal_no1,
+                                    seal_no2,
+                                    seal_no3,
+                                    booking_no,
+                                    bl_no,
+                                    consignee,
+                                    so_no,
+                                    custom_app_no,
+                                    return_rsn,
+                                    in_tmnl_date,
+                                    out_date,
+                                    airvent,
+                                    truck_no,
+                                    trucker,
+                                    rehandle_code,
+                                    dispatch_mode,
+                                    gate_odr_no,
+                                    job_odr_no,
+                                    job_odr_no2,
+                                    vgm,
+                                    airvent_unit,
+                                    commodity,
+                                    commodity_desc,
+                                    consignee_nm,
+                                    chassis_no,
+                                    from_depot,
+                                    to_depot,
+                                    job_odr_seq 
+                                FROM
+                                    DNP_PROD.tb_master 
+                                <where>
+                                    trans_type = 'T' 
+                                    <if test="params.variableYear != null">
+                                        AND CALL_YEAR IN 
+                                        (
+                                            #{params.variableYear},
+                                            '0000'
+                                        )
+                                    </if>
+                                    AND NVL (trans_type2, 'NULL') <![CDATA[ <> ]]> 'M'
+                                </where>
+                            )
+                            M,
+                            (
+                                SELECT
+                                    g.head_no,
+                                    g.cntr_id,
+                                    g.cntr_no,
+                                    g.trucker,
+                                    g.worker_cd,
+                                    g.ingate_no,
+                                    g.outgate_no,
+                                    g.reject_code,
+                                    NVL (SUBSTR (t.truck_no, 3, 4), g.tag_no) tag_no,
+                                    g.in_date gatedate,
+                                    g.trailer_no,
+                                    g.dmg_cond,
+                                    g.in_date g_in_date,
+                                    g.out_date g_out_date,
+                                    g.worker_s_cd,
+                                    g.weight_scale_chk,
+                                    g.read_wgt,
+                                    g.sic_no,
+                                    g.visit_code 
+                                FROM
+                                    (
+                                        SELECT
+                                            head_no,
+                                            cntr_id,
+                                            cntr_no,
+                                            trucker,
+                                            worker_cd,
+                                            ingate_no,
+                                            outgate_no,
+                                            reject_code,
+                                            tag_no,
+                                            in_date,
+                                            out_date,
+                                            dumy_chk,
+                                            gjob_type,
+                                            cancel_chk,
+                                            trailer_no,
+                                            dmg_cond,
+                                            worker_s_cd,
+                                            weight_scale_chk,
+                                            read_wgt,
+                                            sic_no,
+                                            visit_code 
+                                        FROM
+                                            DNP_PROD.tb_gate_tran 
+                                        <where>
+                                            NVL (cancel_chk, 'N') <![CDATA[ <> ]]> 'Y' 
+                                            AND gjob_type = 'GF' 
+                                            AND NVL (dumy_chk, 'N') <![CDATA[ <> ]]> 'Y'  
+                                            <if test="params.variableStart != null">
+                                                AND in_date >= TO_DATE (#{params.variableStart}, 'DD-MM-YYYY HH24:MI:SS')
+                                            </if>
+                                            <if test="params.variableEnd != null">
+                                                AND in_date <![CDATA[ <= ]]> TO_DATE (#{params.variableEnd}, 'DD-MM-YYYY HH24:MI:SS')
+                                            </if>
+                                        </where>
+                                        UNION ALL
+                                        SELECT
+                                            head_no,
+                                            cntr_id,
+                                            cntr_no,
+                                            trucker,
+                                            worker_cd,
+                                            ingate_no,
+                                            outgate_no,
+                                            reject_code,
+                                            tag_no,
+                                            in_date,
+                                            out_date,
+                                            dumy_chk,
+                                            gjob_type,
+                                            cancel_chk,
+                                            trailer_no,
+                                            dmg_cond,
+                                            worker_s_cd,
+                                            weight_scale_chk,
+                                            read_wgt,
+                                            sic_no,
+                                            visit_code 
+                                        FROM
+                                            DNP_PROD.tb_gatetran_backup 
+                                        <where>
+                                            NVL (cancel_chk, 'N') <![CDATA[ <> ]]> 'Y' 
+                                            AND gjob_type = 'GF' 
+                                            AND NVL (dumy_chk, 'N') <![CDATA[ <> ]]> 'Y' 
+                                            <if test="params.variableStart != null">
+                                                AND in_date >= TO_DATE (#{params.variableStart}, 'DD-MM-YYYY HH24:MI:SS')
+                                            </if>
+                                            <if test="params.variableEnd != null">
+                                                AND in_date <![CDATA[ <= ]]> TO_DATE (#{params.variableEnd}, 'DD-MM-YYYY HH24:MI:SS')
+                                            </if>
+                                        </where>
+                                    )
+                                    G,
+                                    DNP_PROD.tb_truck T 
+                                WHERE
+                                    g.tag_no = t.tag_no( + )
+                            )
+                            G,
+                            DNP_PROD.tb_oversize o,
+                            DNP_PROD.tb_positioning P 
+                        WHERE
+                            1 = 1 
+                            AND m.cntr_id = g.cntr_id 
+                            AND m.cntr_id = o.cntr_id( + ) 
+                            AND m.job_odr_no = p.job_odr_no( + ) 
+                            AND NVL (m.job_odr_seq, 1) = p.job_odr_seq( + ) 
+                        UNION ALL
+                        SELECT
+                            m.cntr_id,
+                            CASE
+                                WHEN
+                                    g.head_no IS NULL 
+                                THEN
+                                    'N' 
+                                ELSE
+                                    'Y' 
+                            END
+                            real_chk, m.vsl_cd, m.call_year, m.call_seq, m.user_voy, m.cntr_no, m.cntr_seq, m.prev_vsl, m.prev_year, m.prev_seq, m.prev_user_voy, m.in_lane, m.out_lane, m.sztp, m.sztp2, m.fe, m.ptnr_code, m.remark, m.shift_acc, m.OWNER, m.ix_cd, m.cntr_state, m.BLOCK, m.bay, m.roww, m.TIER, m.area, m.delv, m.trans_type, m.trans_type2, m.por, m.pol, m.pod, m.fpod, m.fdest, m.domestic_chk, m.wgt, m.cargo_type, m.set_temp, m.imdg, m.unno, m.handle_instr, m.yhandle_instr, m.abs_const, m.seal_no1, m.seal_no2, m.seal_no3, m.booking_no, m.bl_no, m.consignee, m.so_no, m.custom_app_no, m.return_rsn, 'Out' gjob_type, m.in_tmnl_date AS in_date, m.out_date, m.airvent, NVL (g.gatedate, m.out_date) gate_time, NVL (g.trailer_no, g.head_no) truck_no, NVL (g.trucker, m.trucker2) trucker, 
+                            CASE
+                                m.ix_cd 
+                                WHEN
+                                    'X' 
+                                THEN
+                                    NVL (m.rehandle_code, 'U') 
+                                ELSE
+                                    NULL 
+                            END
+                            rehandle_code, g.worker_cd, g.ingate_no, g.outgate_no, m.dispatch_mode2 dispatch_mode, m.gate_odr_no2 gate_odr_no, m.job_odr_no, m.job_odr_no2, g.reject_code, g.tag_no, o.ov_height, o.ov_fore, o.ov_aft, o.ov_port, o.ov_stbd, o.os_port, o.os_stbd, o.os_height, m.vgm, m.airvent_unit, m.commodity, m.commodity_desc, m.consignee_nm, g.dmg_cond, m.chassis_no, g.in_date g_in_date, g.out_date g_out_date, m.from_depot, m.to_depot, g.worker_s_cd, g.weight_scale_chk, g.sic_no, g.visit_code, g.read_wgt2 truck_gross_wgt, p.payment_type, payer_type, payer 
+                        FROM
+                            DNP_PROD.tb_master M, DNP_PROD.tb_oversize o, DNP_PROD.tb_positioning P, 
+                            (
+                                SELECT
+                                    g.head_no,
+                                    g.cntr_id,
+                                    g.vsl_cd,
+                                    g.call_year,
+                                    g.call_seq,
+                                    g.cntr_no,
+                                    g.cntr_seq,
+                                    g.trucker,
+                                    g.worker_cd,
+                                    g.ingate_no,
+                                    g.outgate_no,
+                                    g.reject_code,
+                                    NVL (SUBSTR (t.truck_no, 3, 4), g.tag_no) tag_no,
+                                    g.out_date gatedate,
+                                    g.trailer_no,
+                                    g.dmg_cond,
+                                    g.in_date,
+                                    g.out_date,
+                                    g.worker_s_cd,
+                                    g.weight_scale_chk,
+                                    g.read_wgt2,
+                                    g.sic_no,
+                                    g.visit_code 
+                                FROM
+                                    DNP_PROD.tb_gatetran_backup G,
+                                    DNP_PROD.tb_truck T 
+                                <where>
+                                    NVL (g.cancel_chk, 'N') <![CDATA[ <> ]]> 'Y' 
+                                    AND g.gjob_type = 'GO' 
+                                    <if test="params.variableStart != null">
+                                        AND out_date >= TO_DATE (#{params.variableStart}, 'DD-MM-YYYY HH24:MI:SS')
+                                    </if>
+                                    <if test="params.variableEnd != null">
+                                        AND out_date <![CDATA[ <= ]]> TO_DATE (#{params.variableEnd}, 'DD-MM-YYYY HH24:MI:SS') 
+                                    </if>
+                                    AND g.tag_no = t.tag_no( + )
+                                </where>
+                            )
+                            G 
+                        <where>
+                            m.trans_type2 = 'T' 
+                            <if test="params.callYear != null">
+                                AND m.CALL_YEAR IN 
+                                (
+                                    #{params.callYear},
+                                    '0000'
+                                )
+                            </if>
+                            AND m.cntr_id = g.cntr_id 
+                            AND m.cntr_id = o.cntr_id( + ) 
+                            AND m.job_odr_no2 = p.job_odr_no( + ) 
+                            AND NVL (m.job_odr_seq2, 1) = p.job_odr_seq( + )
+                        </where>
+                    )
+                    M,
+                    DNP_PROD.tb_berthplan b,
+                    DNP_PROD.tb_ptnr P,
+                    DNP_PROD.tb_vsl V 
+                <where>
+                    m.vsl_cd = b.vsl_cd 
+                    AND V.vsl_cd = m.vsl_cd 
+                    AND m.call_year = b.call_year 
+                    AND m.call_seq = b.call_seq 
+                    AND m.payer_type = p.ptnr_type( + ) 
+                    AND m.payer = p.ptnr_code( + ) 
+                    <if test="params.variableTax != null"> AND 
+                        (
+                            p.reg_no = #{params.variableTax} 
+                            OR m.trucker = #{params.variableTax}
+                        )
+                    </if>
+                    <if test="containerNo != null and containerNo != ''"> AND m.cntr_no like concat('%', concat(#{containerNo}, '%'))</if>
+                </where> 
+                ORDER BY
+                    m.gate_time DESC
+            )
+    </select>
+</mapper>

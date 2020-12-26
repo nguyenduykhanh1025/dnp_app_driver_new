@@ -58,15 +58,19 @@ $("#form-add-shipment").validate({
 
 async function submitHandler() {
     if ($.validate.form()) {
-        if ($("#opeCode option:selected").text() == 'Chọn OPR') {
-            $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
-        } else if (shipmentFileIds.length > 0 || !bookingAttach) {
-            let res = await getBookingNoUnique();
-            if (res.code == 0) {
-                save(prefix + "/shipment");
-            }
+        if (/\W/.test($('#bookingNo').val())) {
+            $.modal.alertWarning('Booking không được chứa ký tự đặc biệt, quý khách vui lòng kiểm tra lại.');
         } else {
-            $.modal.alertError("Hãy đính kèm tệp booking.");
+            if ($("#opeCode option:selected").text() == 'Chọn OPR') {
+                $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
+            } else if (shipmentFileIds.length > 0 || !bookingAttach) {
+                let res = await getBookingNoUnique();
+                if (res.code == 0) {
+                    save(prefix + "/shipment");
+                }
+            } else {
+                $.modal.alertError("Hãy đính kèm tệp booking.");
+            }
         }
     }
 }
