@@ -56,6 +56,11 @@ public class MqttService implements MqttCallback {
 	private static final String NOTIFICATION_OM_TOPIC = BASE + "/notification/om";
 	private static final String NOTIFICATION_IT_TOPIC = BASE + "/notification/it";
 	private static final String NOTIFICATION_CONT_TOPIC = BASE + "/notification/cont";
+	private static final String NOTIFICATION_CFS_TOPIC = BASE + "/notification/cfs";
+	private static final String NOTIFICATION_YARD_TOPIC = BASE + "/notification/yard";
+	private static final String NOTIFICATION_DUTY_TOPIC = BASE + "/notification/duty";
+	private static final String NOTIFICATION_ACCOUNTANT_TOPIC = BASE + "/notification/accountant";
+	private static final String NOTIFICATION_REEFER_TOPIC = BASE + "/notification/reefer";
 	private static final String ROBOT_CONNECTION_REQUEST = ROBOT_BASE + "/connection/+/request";
 	private static final String ROBOT_CONNECTION_RESPONSE = ROBOT_BASE + "/connection/+/response";
 	/** Topic receive result accept or reject request gate in */
@@ -235,7 +240,8 @@ public class MqttService implements MqttCallback {
 	}
 
 	public enum NotificationCode {
-		NOTIFICATION_OM, NOTIFICATION_IT, NOTIFICATION_CONT
+		NOTIFICATION_OM, NOTIFICATION_IT, NOTIFICATION_CONT, NOTIFICATION_CFS, NOTIFICATION_ACCOUNTANT,
+		NOTIFICATION_YARD, NOTIFICATION_DUTY, NOTIFICATION_REEFER
 	}
 
 	/**
@@ -302,6 +308,27 @@ public class MqttService implements MqttCallback {
 		case NOTIFICATION_CONT:
 			notificationReq.setType(EportConstants.APP_USER_TYPE_CONT);
 			topic = NOTIFICATION_CONT_TOPIC;
+			break;
+		case NOTIFICATION_CFS:
+			notificationReq.setType(EportConstants.APP_USER_TYPE_CFS);
+			topic = NOTIFICATION_CFS_TOPIC;
+			break;
+		case NOTIFICATION_YARD:
+			notificationReq.setType(EportConstants.APP_USER_TYPE_YARD);
+			topic = NOTIFICATION_YARD_TOPIC;
+			break;
+		case NOTIFICATION_DUTY:
+			notificationReq.setType(EportConstants.APP_USER_TYPE_DUTY);
+			topic = NOTIFICATION_DUTY_TOPIC;
+			break;
+		case NOTIFICATION_ACCOUNTANT:
+			notificationReq.setType(EportConstants.APP_USER_TYPE_ACCOUNTANT);
+			topic = NOTIFICATION_ACCOUNTANT_TOPIC;
+			break;
+		case NOTIFICATION_REEFER:
+			notificationReq.setType(EportConstants.APP_USER_TYPE_REEFER);
+			topic = NOTIFICATION_REEFER_TOPIC;
+			break;
 		}
 		String msg = new Gson().toJson(notificationReq);
 		publish(topic, new MqttMessage(msg.getBytes()));

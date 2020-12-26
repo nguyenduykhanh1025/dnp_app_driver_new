@@ -229,6 +229,12 @@ public class ContSupplyLoadingCargoController extends BaseController {
 			return error("Invalid input!");
 		}
 
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+		if (CollectionUtils.isEmpty(shipmentDetails)) {
+			return error("Không tìm thấy container, vui lòng kiểm tra lại.");
+		}
+		ShipmentDetail shipmentDetailRef = shipmentDetails.get(0);
+
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_HOLD);
 		shipmentDetailService.updateShipmentDetailByIds(shipmentDetailIds, shipmentDetail);
@@ -244,7 +250,11 @@ public class ContSupplyLoadingCargoController extends BaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
+		if (EportConstants.SPECIAL_SERVICE_LOAD_WAREHOUSE == shipmentDetailRef.getSpecialService()) {
+			shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO_WAREHOUSE);
+		} else if (EportConstants.SPECIAL_SERVICE_LOAD_YARD == shipmentDetailRef.getSpecialService()) {
+			shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO_YARD);
+		}
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
@@ -274,6 +284,13 @@ public class ContSupplyLoadingCargoController extends BaseController {
 	@PostMapping("/delete")
 	@ResponseBody
 	public AjaxResult deleteSupply(String content, String shipmentDetailIds, Long shipmentId, Long logisticGroupId) {
+
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, null);
+		if (CollectionUtils.isEmpty(shipmentDetails)) {
+			return error("Không tìm thấy container, vui lòng kiểm tra lại.");
+		}
+		ShipmentDetail shipmentDetailRef = shipmentDetails.get(0);
+
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setProcessStatus(EportConstants.PROCESS_STATUS_SHIPMENT_DETAIL_DELETE);
 		shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_HOLD);
@@ -290,7 +307,11 @@ public class ContSupplyLoadingCargoController extends BaseController {
 		shipmentComment.setUserType(EportConstants.COMMENTOR_DNP_STAFF);
 		shipmentComment.setUserAlias(user.getDept().getDeptName());
 		shipmentComment.setUserName(user.getUserName());
-		shipmentComment.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
+		if (EportConstants.SPECIAL_SERVICE_LOAD_WAREHOUSE == shipmentDetailRef.getSpecialService()) {
+			shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO_WAREHOUSE);
+		} else if (EportConstants.SPECIAL_SERVICE_LOAD_YARD == shipmentDetailRef.getSpecialService()) {
+			shipmentComment.setServiceType(EportConstants.SERVICE_LOADING_CARGO_YARD);
+		}
 		shipmentComment.setCommentTime(new Date());
 		shipmentComment.setResolvedFlg(true);
 		shipmentCommentService.insertShipmentComment(shipmentComment);
