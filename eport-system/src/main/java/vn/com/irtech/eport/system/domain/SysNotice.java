@@ -26,8 +26,8 @@ public class SysNotice extends BaseEntity
     @Excel(name = "Announcement title")
     private String noticeTitle;
 
-    /** Announcement type (1 notification 2 announcement) */
-	@Excel(name = "Announcement type (1 information 2 warning)")
+	/** Announcement type (C carrier L logistic A all) */
+	@Excel(name = "Announcement type (C information L warning A all)")
     private String noticeType;
 
 	/** Active */

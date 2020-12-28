@@ -11,6 +11,7 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.BerthPlanInfo;
 import vn.com.irtech.eport.logistic.dto.ContainerHistoryDto;
 import vn.com.irtech.eport.logistic.dto.ContainerHoldInfo;
+import vn.com.irtech.eport.logistic.dto.EirGateDto;
 import vn.com.irtech.eport.logistic.form.BookingInfo;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.dto.PartnerInfoDto;
@@ -339,4 +340,20 @@ public interface ICatosApiService {
 	 * @return
 	 */
 	public List<ContainerInfoDto> getContainerUnderShifting(Map<String, String> containerInfo);
+
+	/**
+	 * Get container eir gate report
+	 * 
+	 * @param eirGate
+	 * @return List<EirGateDto>
+	 */
+	public List<EirGateDto> getEirGateReport(EirGateDto eirGate);
+
+	/**
+	 * Get container eir gate report
+	 * 
+	 * @param eirGate
+	 * @return Long
+	 */
+	public Long getEirGateReportTotal(EirGateDto eirGate);
 }

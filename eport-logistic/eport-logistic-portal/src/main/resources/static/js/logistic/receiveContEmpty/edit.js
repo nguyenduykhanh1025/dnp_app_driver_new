@@ -26,15 +26,19 @@ $("#form-edit-shipment").validate({
 
 async function submitHandler() {
     if ($.validate.form()) {
-        if ($("#opeCode option:selected").text() == 'Chọn OPR') {
-            $.modal.alertWarning("Hãy chưa chọn mã OPR.");
-        } else if ($("#bookingNo").val() != currentBooking) {
-            let res = await getBookingNoUnique();
-            if (res.code == 0) {
-                edit(prefix + "/shipment/" + shipment.id)
-            }
+        if (/\W/.test($('#bookingNo').val())) {
+            $.modal.alertWarning('Booking không được chứa ký tự đặc biệt, quý khách vui lòng kiểm tra lại.');
         } else {
-            edit(prefix + "/shipment/" + shipment.id);
+            if ($("#opeCode option:selected").text() == 'Chọn OPR') {
+                $.modal.alertWarning("Hãy chưa chọn mã OPR.");
+            } else if ($("#bookingNo").val() != currentBooking) {
+                let res = await getBookingNoUnique();
+                if (res.code == 0) {
+                    edit(prefix + "/shipment/" + shipment.id)
+                }
+            } else {
+                edit(prefix + "/shipment/" + shipment.id);
+            }
         }
     }
 }

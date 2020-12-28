@@ -24,18 +24,22 @@ $("#form-edit-shipment").validate({
 
 async function submitHandler() {
     if ($.validate.form()) {
-        if ($("#opeCode option:selected").text() == 'Chọn OPR') {
-            $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
-        } else if (!$("#containerAmount").val()) {
-            $.modal.alertWarning("Số lượng container cập nhật không hợp lệ.");
+        if (/\W/.test($('#bookingNo').val())) {
+            $.modal.alertWarning('Booking không được chứa ký tự đặc biệt, quý khách vui lòng kiểm tra lại.');
         } else {
-            if ($("#bookingNo").val() != currentBooking) {
-                let res = await getBookingNoUnique();
-                if (res.code == 0) {
+            if ($("#opeCode option:selected").text() == 'Chọn OPR') {
+                $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
+            } else if (!$("#containerAmount").val()) {
+                $.modal.alertWarning("Số lượng container cập nhật không hợp lệ.");
+            } else {
+                if ($("#bookingNo").val() != currentBooking) {
+                    let res = await getBookingNoUnique();
+                    if (res.code == 0) {
+                        edit(prefix + "/shipment/" + $('#id').val());
+                    }
+                } else {
                     edit(prefix + "/shipment/" + $('#id').val());
                 }
-            } else {
-                edit(prefix + "/shipment/" + $('#id').val());
             }
         }
     }

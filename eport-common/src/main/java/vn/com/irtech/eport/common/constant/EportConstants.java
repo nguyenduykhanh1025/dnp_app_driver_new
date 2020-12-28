@@ -208,6 +208,14 @@ public interface EportConstants {
 	public static final String APP_USER_TYPE_CONT = "cont";
 	/** User type cfs in app notification */
 	public static final String APP_USER_TYPE_CFS = "cfs";
+	/** User type yard in app notification */
+	public static final String APP_USER_TYPE_YARD = "yard";
+	/** User type duty in app notification */
+	public static final String APP_USER_TYPE_DUTY = "duty";
+	/** User type accountant in app notification */
+	public static final String APP_USER_TYPE_ACCOUNTANT = "accountant";
+	/** User type reefer in app notification */
+	public static final String APP_USER_TYPE_REEFER = "reefer";
 
 	// Domain web eport
 	/** Url to mc provide yard position */
@@ -388,4 +396,11 @@ public interface EportConstants {
 	public static final String CONT_REEFER_PAYMENT_PROCESS = "P";
 	/** status payment of bill cont reefer (trang thai loi thanh toan chua cua cont lanh khi gia han) */
 	public static final String CONT_REEFER_PAYMENT_ERROR = "E";
+
+	/** Notice type carrier */
+	public static final String NOTICE_TYPE_CARRIER = "C";
+	/** Notice type logistic */
+	public static final String NOTICE_TYPE_LOGISTIC = "L";
+	/** Notice type all */
+	public static final String NOTICE_TYPE_ALL = "A";
 }

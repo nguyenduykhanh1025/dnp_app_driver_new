@@ -1,0 +1,29 @@
+.notice-box {
+    background: #ffffff;
+    color: #333333;
+    position: relative;
+    padding: 5px 2px 3px 10px;
+}
+
+.notice-box-title {
+    margin: .1em 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #003eff;
+    font-weight: bold;
+    padding: .4em .5em;
+    font-size: 14px;
+}
+
+.notice-box-content {
+    margin: .1em 0;
+    padding: .4em .5em;
+    font-size: 13px;
+}
+
+.notice-date {
+    color: red;
+    line-height: 100%;
+    font-family: times new roman,serif;
+}
