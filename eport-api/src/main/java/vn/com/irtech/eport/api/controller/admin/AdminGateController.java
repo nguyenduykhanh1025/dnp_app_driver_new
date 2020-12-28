@@ -18,23 +18,28 @@ import vn.com.irtech.eport.api.form.RfidTruckInfoRes;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.GateDetection;
+import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.RfidTruck;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IGateDetectionService;
+import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IRfidTruckService;
+import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 
 @RestController
 @RequestMapping("/admin")
-public class AdminOmController extends BaseController {
+public class AdminGateController extends BaseController {
 
-	private static final Logger logger = LoggerFactory.getLogger(AdminOmController.class);
+	private static final Logger logger = LoggerFactory.getLogger(AdminGateController.class);
 
 	@Autowired
 	private IPickupHistoryService pickupHistoryService;
@@ -47,6 +52,12 @@ public class AdminOmController extends BaseController {
 
 	@Autowired
 	private IRfidTruckService rfidTruckService;
+
+	@Autowired
+	private IShipmentDetailService shipmentDetailService;
+
+	@Autowired
+	private IPickupAssignService pickupAssignService;
 
 	@PostMapping("/pickup/yard-position")
 	public AjaxResult updateYardPosition(@RequestBody List<PickupHistory> pickupHistories) {
@@ -96,6 +107,12 @@ public class AdminOmController extends BaseController {
 							+ pickupHistory.getLine() + "-" + pickupHistory.getTier());
 				}
 				gateDetectionService.updateGateDetection(gateDetectionUpdate);
+			} else if (postFixId == 3) {
+				// Case pre request position container 1
+
+			} else if (postFixId == 4) {
+				// Case pre request position container 2
+
 			}
 		}
 		return success();
@@ -218,5 +235,61 @@ public class AdminOmController extends BaseController {
 			}
 		}
 		return contMap;
+	}
+
+	@PostMapping("/rfid/entrance")
+	public AjaxResult getRfidFromEntrance(@RequestBody List<String> rfids) {
+		if (CollectionUtils.isEmpty(rfids)) {
+			throw new BusinessException("Thông tin rfid không được trống.");
+		}
+
+		String truckNo = "";
+		String chassisNo = "";
+		Long logisticId = null;
+
+		for (String rfid : rfids) {
+			// Get info plate number from rfid
+			RfidTruck rfidTruckParam = new RfidTruck();
+			rfidTruckParam.setRfid(rfid);
+			rfidTruckParam.setDisabled(false);
+			List<RfidTruck> rfidTruckNos = rfidTruckService.selectRfidTruckList(rfidTruckParam);
+			if (CollectionUtils.isNotEmpty(rfidTruckNos)) {
+				RfidTruck rfidTruck = rfidTruckNos.get(0);
+				logisticId = rfidTruck.getLogisticGroupId();
+				// Truck no
+				if ("T".equalsIgnoreCase(rfidTruck.getTruckType())) {
+					truckNo = rfidTruck.getPlateNumber();
+				} else if ("C".equalsIgnoreCase(rfidTruck.getTruckType())) {
+					// Chassis no
+					chassisNo = rfidTruck.getPlateNumber();
+				}
+			}
+		}
+		
+		PickupAssign pickupAssignParam = new PickupAssign();
+		pickupAssignParam.setTruckNo(truckNo);
+		pickupAssignParam.setChassisNo(chassisNo);
+		pickupAssignParam.setLogisticGroupId(logisticId);
+		pickupAssignParam.setStatus(EportConstants.PICKUP_ASSIGN_STATUS_INIT);
+		Map<String, Object> params = new HashMap<>();
+		String serviceTypes = EportConstants.SERVICE_DROP_EMPTY+"," +EportConstants.SERVICE_DROP_FULL;
+		params.put("serviceTypes", Convert.toStrArray(serviceTypes));
+		pickupAssignParam.setParams(params);
+		List<PickupAssign> pickupAssigns = pickupAssignService.selectPickupAssignList(pickupAssignParam);
+
+		if (CollectionUtils.isNotEmpty(pickupAssigns)) {
+			String shipmentDetailIds = "";
+			for (PickupAssign pickupAssign : pickupAssigns) {
+				shipmentDetailIds += pickupAssign.getShipmentDetailId() + ",";
+			}
+			shipmentDetailIds = shipmentDetailIds.substring(0, shipmentDetailIds.length() - 1);
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds,
+					null);
+			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+
+			}
+		}
+
+		return success();
 	}
 }
