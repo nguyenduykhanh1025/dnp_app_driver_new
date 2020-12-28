@@ -7,9 +7,9 @@ var ready = false;
 $(document).ready(function () {
 
     let date = new Date();
-    fromDate = new Date(date.getFullYear(), date.getMonth(), 1);
+    fromDate = new Date();
     fromDate.setHours(0, 0, 0);
-    toDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    toDate = new Date();
     toDate.setHours(23, 59, 59);
     eirGate.params.variableStart = dateToString(fromDate);
     eirGate.params.variableEnd = dateToString(toDate);
@@ -172,6 +172,28 @@ function formatDate(value) {
         return value.substring(8, 10) + '/' + value.substring(5, 7) + '/' + value.substring(0, 4) + value.substring(10, 19).replace('T', ' ');
     }
     return value;
+}
+
+function formatCheckedIn(value, row) {
+    let result = '';
+    if (row && row.activity && value) {
+        result = value.substring(8, 10) + '/' + value.substring(5, 7) + '/' + value.substring(0, 4) + value.substring(10, 19).replace('T', ' ');
+        if ('In' == row.activity) {
+            return '<b>' + result + '</b>';
+        }
+    }
+    return result;
+}
+
+function formatCheckedOut(value, row) {
+    let result = '';
+    if (row && row.activity && value) {
+        result = value.substring(8, 10) + '/' + value.substring(5, 7) + '/' + value.substring(0, 4) + value.substring(10, 19).replace('T', ' ');
+        if ('Out' == row.activity) {
+            return '<b>' + result + '</b>';
+        }
+    }
+    return result;
 }
 
 function exportExcel() {
