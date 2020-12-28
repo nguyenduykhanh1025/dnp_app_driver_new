@@ -154,6 +154,7 @@ $(document).ready(function () {
 
 $("#powerDrawDateStatusSelect").combobox({
   onChange: function (serviceType) {
+    
     shipment.params.powerDrawDateStatus = serviceType;
     search();
   }
@@ -1974,7 +1975,6 @@ function confirmRequestDocument() {
     }
   );
 }
-console.log('aloo');
 function rejectRequest() {
 
 }

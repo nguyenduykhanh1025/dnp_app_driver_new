@@ -133,7 +133,10 @@ public class LogisticSendContFullReeferSupportRequest extends AdminBaseControlle
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
 		shipmentDetail.setSztp(KEY_ICE);
-		shipmentDetail.setFrozenStatus(constSpecialStatus);
+		if(!constSpecialStatus.equals("null")) {
+			shipmentDetail.setFrozenStatus(constSpecialStatus);
+		}
+		
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;

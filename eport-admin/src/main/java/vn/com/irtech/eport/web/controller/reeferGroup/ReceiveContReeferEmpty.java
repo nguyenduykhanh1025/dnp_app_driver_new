@@ -98,6 +98,28 @@ public class ReceiveContReeferEmpty extends AdminBaseController {
 		return ajaxResult;
 	}
 
+	@PostMapping("/shipment-details-ver2")
+	@ResponseBody
+	public AjaxResult getShipmentDetailsVer2(@RequestBody PageAble<ShipmentDetail> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		
+		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAA");
+		System.out.println(param.getPageSize());
+		AjaxResult ajaxResult = AjaxResult.success();
+
+		ShipmentDetail shipmentDetail = param.getData();
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService
+				.getShipmentDetailListInnerJoinToShipment(shipmentDetail);
+		if (shipmentDetails != null) {
+			ajaxResult.put("shipmentDetails", shipmentDetails);
+		} else {
+			ajaxResult = AjaxResult.error();
+		}
+		ajaxResult.put("shipmentDetails", getDataTable(shipmentDetails));
+		return ajaxResult;
+	}
+
+	
 	@GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail")
 	public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId,
 			@PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
