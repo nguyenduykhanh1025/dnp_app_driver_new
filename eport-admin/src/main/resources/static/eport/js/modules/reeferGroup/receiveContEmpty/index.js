@@ -491,7 +491,7 @@ function configHandson() {
 		width: "100%",
 		minSpareRows: 0,
 		rowHeights: 30,
-		fixedColumnsLeft: 3,
+		// fixedColumnsLeft: 0,
 		manualColumnResize: true,
 		manualRowResize: false,
 		renderAllRows: true,
