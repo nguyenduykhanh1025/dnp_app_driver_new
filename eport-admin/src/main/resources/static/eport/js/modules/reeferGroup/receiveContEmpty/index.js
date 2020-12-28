@@ -1201,6 +1201,7 @@ function loadShipmentDetails() {
 }
 
 function loadShipmentDetailsVer2() {
+	$.modal.loading("Đang xử lý ...");
 	$("#dg").datagrid({
 		url: PREFIX + "/shipment-details-ver2",
 		height: $('.main-body').height() - 40,
@@ -1257,9 +1258,11 @@ function loadShipmentDetailsVer2() {
 						html += '<div style="text-align: center; margin-top: 10px;"><span>Không có dữ liệu</span></div>';
 					}
 					$('.datagrid-body').html(html);
+					$.modal.closeLoading();
 				},
 				error: function () {
 					error.apply(this, arguments);
+					$.modal.closeLoading();
 				},
 			});
 		},

@@ -103,8 +103,6 @@ public class ReceiveContReeferEmpty extends AdminBaseController {
 	public AjaxResult getShipmentDetailsVer2(@RequestBody PageAble<ShipmentDetail> param) {
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		
-		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAA");
-		System.out.println(param.getPageSize());
 		AjaxResult ajaxResult = AjaxResult.success();
 
 		ShipmentDetail shipmentDetail = param.getData();
