@@ -26,7 +26,7 @@
             <div class="d-inline">
               <select class="easyui-combobox" onchange="changeBatchStatus()" name="batchStatus" id="batchStatus"
                 panelHeight="auto">
-                <option value="" >Tất Cả</option>
+                <option value="">Tất Cả</option>
                 <option value="R" selected>Chưa Cấp Container</option>
                 <option value="Y">Đã Cấp Container</option>
               </select>
@@ -50,29 +50,6 @@
     </div>
     <div class="main-body__table-wrapper">
       <div class="easyui-layout" id="main-layout" style="width:100%">
-        <!-- <div class="left-side" data-options="region:'west',split:true, collapsible:false" title="Danh sách lô"
-          style="width:30%;">
-          <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
-          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
-            <thead>
-              <tr>
-                <th data-options="field:'id', fixed:true" width="1"></th>
-                <th data-options="field:'updateTime', lign:'right', halign:'center'" sortable="true" width="130">Ngày
-                  Yêu Cầu</th>
-                <th data-options="field:'bookingNo', halign:'center', resizable:true" width="120">Booking No</th>
-                <th data-options="field:'containerAmount', align:'center', halign:'center'" width="50">SL</th>
-                <th
-                  data-options="field:'logisticName', halign: 'center', align: 'left', resizable: true, formatter: formatLogistic"
-                  width="120" sortable="true">Logistics</th>
-                <th
-                  data-options="field:'specificContFlg', align:'left', halign:'center', formatter: formatSpecificContFlg"
-                  width="100">Loại</th>
-                <th data-options="field:'remark', align:'left', halign:'center', formatter: formatRemark" width="150">
-                  Ghi chú</th>
-              </tr>
-            </thead>
-          </table>
-        </div> -->
         <div class="right-side" data-options="region:'center'" style="width:100%;">
           <div class="easyui-layout" id="right-layout" data-options="fit:true" style="position: relative;">
             <div style="height: 50%;" data-options="region:'south', split:true">
@@ -136,11 +113,14 @@
                   </div>
                 </div>
               </div>
+              
               <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+
             </div>
           </div>
         </div>
       </div>
+     
     </div>
   </div>
   <th:block th:include="include :: footer" />

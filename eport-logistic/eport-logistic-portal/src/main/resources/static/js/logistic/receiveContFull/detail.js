@@ -180,9 +180,9 @@ function confirm() {
   var chassisNo = $("#chassisNo").val();
 
   if (shipmentDetail.sztp.includes("R") && (shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.YES || shipmentDetail.frozenStatus == CONT_SPECIAL_STATUS.REQ)) {
-    console.log('0');
     saveFile();
     $.modal.close();
+    parent.confirmFromDetailModal();
     return;
   }
 
@@ -191,7 +191,6 @@ function confirm() {
   }
   else
     if (oversizeTop || oversizeRight || oversizeLeft && !shipmentDetail.sztp.includes("R")) {
-      console.log('1');
       if (truckNo == null || truckNo == "") {
         $.modal.alertWarning("Vui lòng nhập vào biển số xe đầu kéo rồi thử lại");
       }
@@ -203,8 +202,6 @@ function confirm() {
         saveFile();
       }
     } else {
-      
-
       var lengthTemp = shipmentFilePath;
       if (lengthTemp) {// nếu k có thì vào đây
         insertCont();
@@ -241,12 +238,12 @@ function insertCont() {
       data: JSON.stringify(detail),
       dataType: "text",
       success: function (result) {
-        if (result.code == 0) {
-          //$.modal.alertError(result.msg);
+        const data = JSON.parse(result);
+        if (data.code == 0) {
+          parent.confirmFromDetailModal();
           $.modal.close();
-          //insertFile();  
         } else {
-          $.modal.close();
+          $.modal.alertError(result.msg);
         }
       }
     });
@@ -579,7 +576,7 @@ function btnActionRenderer(instance, td, row, col, prop, value, cellProperties) 
     </a>
   </td>
   `;
-  if (PAYMENT_STATUS.process == sourceData[row].paymentStatus 
+  if (PAYMENT_STATUS.process == sourceData[row].paymentStatus
     && shipmentDetail.powerDrawDateStatus != "S"
     && sourceData[row].status != "S") {
     result += btnCancel;
@@ -625,8 +622,8 @@ function extendPowerDrawDate() {
   else if (dateDrop.getTime() > dateExtend.getTime()) {
     $.modal.alertError("Ngày gia hạn tiếp theo không thể nhỏ hơn ngày rút điện hiện tại.");
   }
-  else if (shipmentDetail.frozenStatus != 'Y' 
-    || shipmentDetail.powerDrawDateStatus == 'P' 
+  else if (shipmentDetail.frozenStatus != 'Y'
+    || shipmentDetail.powerDrawDateStatus == 'P'
     || (sourceData[0].paymentStatus == PAYMENT_STATUS.process && sourceData[0].payType == PAY_TYPE.credit)) {
     if (shipmentDetail.powerDrawDateStatus == 'P') {
       $.modal.alertError("Không thể yêu cầu gia hạn do container chưa được xác nhận yêu cầu gia hạn rút điện.");

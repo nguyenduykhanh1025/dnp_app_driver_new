@@ -282,47 +282,46 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
 
 function edoFlagRenderer(instance, td, row, col, prop, value, cellProperties) {
 	$(td).attr('id', 'filePath' + row).addClass("htMiddle").addClass("htCenter");
-	$.ajax({
-		type: "GET",
-		url: PREFIX + "/shipments/" + sourceData[row].shipmentId,
-		contentType: "application/json",
-		success: function (data) {
-			if (data.code == 0) {
-				if (data.shipment) {
-					let html = '';
-					if (data.shipment.edoFlg == "0") {
-						html += "DO"
-					} else {
-						html += "eDO"
-					}
-					$(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + html + '</div>');
-					return td;
-				}
-			}
-		}
-	});
+	if (!value) {
+		value = '';
+	}
+
+	let html = '';
+	if (value == "0") {
+		html += "DO"
+	} else {
+		html += "eDO"
+	}
+	$(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + html + '</div>');
+	return td;
+	// $.ajax({
+	// 	type: "GET",
+	// 	url: PREFIX + "/shipments/" + sourceData[row].shipmentId,
+	// 	contentType: "application/json",
+	// 	success: function (data) {
+	// 		if (data.code == 0) {
+	// 			if (data.shipment) {
+
+	// 			}
+	// 		}
+	// 	}
+	// });
 }
 
 function filePathRenderer(instance, td, row, col, prop, value, cellProperties) {
 	$(td).attr('id', 'filePath' + row).addClass("htMiddle").addClass("htCenter");
-	$.ajax({
-		type: "GET",
-		url: PREFIX + "/shipments/" + sourceData[row].shipmentId + "/shipment-images",
-		contentType: "application/json",
-		success: function (data) {
-			if (data.code == 0) {
-				if (data.shipmentFiles != null && data.shipmentFiles.length > 0) {
-					let html = '';
-					data.shipmentFiles.forEach(function (element, index) {
-						html += ' <a href="' + element.path + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
-					});
-					// $('#attachFile').html(html);
-					$(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + html + '</div>');
-					return td;
-				}
-			}
-		}
+	if (!value) {
+		value = '';
+	}
+
+	const pathArr = value.split(',');
+	let html = '';
+	pathArr.forEach(function (element, index) {
+		html += ' <a href="' + domain + element + '" target="_blank"><i class="fa fa-paperclip" style="font-size: 18px;"></i> ' + (index + 1) + '</a>';
 	});
+	$(td).attr('id', 'contSupplyRemark' + row).addClass("htMiddle").addClass("htCenter");
+	$(td).html('<div style="width: 100%; white-space: nowrap; text-overflow: ellipsis; text-overflow: ellipsis;">' + html + '</div>');
+	return td;
 }
 function contSupplyRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (!value) {
@@ -568,11 +567,11 @@ function configHandson() {
 				renderer: containerNoRenderer
 			},
 			{
-				data: "edoFlag",
+				data: "edoFlg",
 				renderer: edoFlagRenderer
 			},
 			{
-				data: "filePaths",
+				data: "path",
 				renderer: filePathRenderer
 			},
 			{
@@ -1177,7 +1176,7 @@ function reloadShipmentDetail() {
 }
 
 function loadShipmentDetails() {
-
+	$.modal.loading("Đang xử lý ...");
 	$.ajax({
 		url: PREFIX + "/shipment-details",
 		method: "POST",
@@ -1196,6 +1195,7 @@ function loadShipmentDetails() {
 				hot.loadData(sourceData);
 				hot.render();
 			}
+			$.modal.closeLoading();
 		}
 	});
 }
