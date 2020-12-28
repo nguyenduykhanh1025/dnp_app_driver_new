@@ -747,9 +747,9 @@ function configHandsond() {
         case 8:
           return '<span class="required">Nơi Rút Hàng</span>';
         case 9:
-          return 'Ngày Rút Hàng<br>Đăng ký';
+          return 'Ngày Rút Hàng<br>Đăng ký'; 
         case 10:
-          return 'Ngày Rút Hàng<br>Xác Nhận';
+          return 'Ngày Rút Hàng<br> trực ban Xác Nhận';
         case 11:
           return "Ngày Miễn<br>Lưu Bãi";
         case 12:
@@ -784,7 +784,7 @@ function configHandsond() {
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 170, 130, 100, 100, 100, 120, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 130, 200],
+    colWidths: [23, 21, 21, 170, 130, 100, 100, 100, 120, 100, 150, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 130, 200],
     filter: "true",
     columns: [
       {

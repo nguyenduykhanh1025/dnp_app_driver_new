@@ -127,6 +127,8 @@ public interface ProcessOrderMapper
      */
     public Map<String, Long> getSupportNumberReportForContReefer();
     
+    public Map<String, Long> getReportNumberForDutyLoadingCago(); 
+    
     /**
      * Select process order list by ids
      * 

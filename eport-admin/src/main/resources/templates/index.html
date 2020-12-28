@@ -231,14 +231,18 @@
     var historyPath = storage.get("historyPath");
     var currentPage = 1, pageSize = 5, notiCount = 0, total = 0, currentAmount = 0;
     var report = /*[[${report}]]*/;
-    var reportReefer = /*[[${reportReefer}]]*/;
+    var reportReefer = /*[[${reportReefer}]]*/; 
+    var dutyLoadingCago = /*[[${dutyLoadingCago}]]*/;
+    
+    console.log(dutyLoadingCago);
 
     var user = /*[[${user}]]*/;
 
 
     $(document).ready(function () {
       $('#2047').append(' <span id="total" class="round-notify-count">' + (
-        report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER + report.CANCELORDERREQ
+        report.RECEIVECUSTOM + report.RECEIVEEMPTYORDER + report.RECEIVEFULLORDER + report.SENDCUSTOM + report.SENDEMPTYORDER + report.SENDFULLORDER + report.CANCELORDERREQ + 
+        dutyLoadingCago.OMLOADING + dutyLoadingCago.OMUNLOADING
       ) + '</span>');
       if (report.RECEIVEFULLORDER > 0) {
         $('#2205').append(' <span id="receiveFullOrder" class="round-notify-count">' + report.RECEIVEFULLORDER + '</span>');
@@ -275,6 +279,58 @@
       } else {
         $('#2605').append(' <span id="cancelOrderReq"></span>');
       }
+      
+// duty 3266
+      if (dutyLoadingCago.LOADINGCAGO > 0) {
+        $('#3266').append(' <span id="dutyLoading" class="round-notify-count">' + dutyLoadingCago.LOADINGCAGO + '</span>');
+      } else {
+        $('#3266').append(' <span id="dutyLoading"></span>');
+      }
+      if (dutyLoadingCago.UNLOADINGCAGO > 0) {
+          $('#3267').append(' <span id="dutyUnLoading" class="round-notify-count">' + dutyLoadingCago.UNLOADINGCAGO + '</span>');
+        } else {
+          $('#3267').append(' <span id="dutyUnLoading"></span>');
+        }
+      
+      if (dutyLoadingCago.YARDLOADING > 0) {
+          $('#3251').append(' <span id="yardLoading" class="round-notify-count">' + dutyLoadingCago.YARDLOADING + '</span>');
+        } else {
+          $('#3251').append(' <span id="yardLoading"></span>');
+        }
+      if (dutyLoadingCago.YARDLOADING > 0) {
+          $('#3252').append(' <span id="yardUnLoading" class="round-notify-count">' + dutyLoadingCago.YARDUNLOADING + '</span>');
+        } else {
+          $('#3252').append(' <span id="yardUnLoading"></span>');
+        }
+      if (dutyLoadingCago.CFSLOADING > 0) {
+          $('#3228').append(' <span id="cfsLoading" class="round-notify-count">' + dutyLoadingCago.CFSLOADING + '</span>');
+        } else {
+          $('#3228').append(' <span id="cfsLoading"></span>');
+        }
+      if (dutyLoadingCago.CFSUNLOADING > 0) {
+          $('#3250').append(' <span id="cfsUnLoading" class="round-notify-count">' + dutyLoadingCago.CFSUNLOADING + '</span>');
+        } else {
+          $('#3250').append(' <span id="cfsUnLoading"></span>');
+        }
+      if (dutyLoadingCago.OMLOADING > 0) {
+          $('#2350').append(' <span id="omLoading" class="round-notify-count">' + dutyLoadingCago.OMLOADING + '</span>');
+        } else {
+          $('#2350').append(' <span id="omLoading"></span>');
+        }
+      if (dutyLoadingCago.OMUNLOADING > 0) {
+          $('#2965').append(' <span id="omUnLoading" class="round-notify-count">' + dutyLoadingCago.OMUNLOADING + '</span>');
+        } else {
+          $('#2965').append(' <span id="omUnLoading"></span>');
+        }
+      
+      if (dutyLoadingCago.OVERSIZELOADING > 0) {
+          $('#3226').append(' <span id="overSizeLoading" class="round-notify-count">' + dutyLoadingCago.OVERSIZELOADING + '</span>');
+        } else {
+          $('#3226').append(' <span id="overSizeLoading"></span>');
+        }
+      
+      
+
       // report for cont reefer
       if (reportReefer.SENDCONTFULLREEFER > 0) {
         $('#3245').append(' <span id="sendContFullReefer" class="round-notify-count">' + reportReefer.SENDCONTFULLREEFER + '</span>');
@@ -310,6 +366,16 @@
           updateReportNumberContReefer();
         }, 90000);
       }
+
+      //Set inteval to update number for dutyLoadingCago of notify
+      let rolesDuty = user.roles.filter(item => item.roleKey == "duty");
+      if (rolesDuty && rolesDuty.length) {
+        var intervalContDuty = setInterval(() => {
+          updateReportNumberDutyLoadingCago();
+        }, 90000);
+      }
+      // end
+
     });
 
     if ($.common.isNotEmpty(skin)) {
@@ -640,6 +706,87 @@
         }
       });
     }
+
+// add count đóng rút hàng 
+
+    function updateReportNumberDutyLoadingCago() {
+      $.ajax({
+        url: ctx + "report-dutyLoadingCago/count",
+        method: "GET",
+        success: function (data) {
+          if (data.code == 0) {
+            let dutyLoadingCago = data.dutyLoadingCago;
+            if (dutyLoadingCago.LOADINGCAGO > 0) {
+              $('#dutyLoading').html(dutyLoadingCago.LOADINGCAGO);
+              $('#dutyLoading').addClass('round-notify-count');
+            } else {
+              $('#dutyLoading').html('');
+              $('#dutyLoading').removeClass('round-notify-count');
+            } 
+            
+            if (dutyLoadingCago.UNLOADINGCAGO > 0) {
+                $('#dutyUnLoading').html(dutyLoadingCago.UNLOADINGCAGO);
+                $('#dutyUnLoading').addClass('round-notify-count');
+              } else {
+                $('#dutyUnLoading').html('');
+                $('#dutyUnLoading').removeClass('round-notify-count');
+              } 
+            if (dutyLoadingCago.YARDLOADING > 0) {
+                $('#yardLoading').html(dutyLoadingCago.YARDLOADING);
+                $('#yardLoading').addClass('round-notify-count');
+              } else {
+                $('#yardLoading').html('');
+                $('#yardLoading').removeClass('round-notify-count');
+              } 
+            
+            if (dutyLoadingCago.YARDUNLOADING > 0) {
+                $('#yardUnLoading').html(dutyLoadingCago.YARDUNLOADING);
+                $('#yardUnLoading').addClass('round-notify-count');
+              } else {
+                $('#yardUnLoading').html('');
+                $('#yardUnLoading').removeClass('round-notify-count');
+              }
+            if (dutyLoadingCago.CFSLOADING > 0) {
+                $('#cfsLoading').html(dutyLoadingCago.CFSLOADING);
+                $('#cfsLoading').addClass('round-notify-count');
+              } else {
+                $('#cfsLoading').html('');
+                $('#cfsLoading').removeClass('round-notify-count');
+              }
+            if (dutyLoadingCago.CFSUNLOADING > 0) {
+                $('#cfsUnLoading').html(dutyLoadingCago.CFSUNLOADING);
+                $('#cfsUnLoading').addClass('round-notify-count');
+              } else {
+                $('#cfsUnLoading').html('');
+                $('#cfsUnLoading').removeClass('round-notify-count');
+              }
+            if (dutyLoadingCago.OMLOADING > 0) {
+                $('#omLoading').html(dutyLoadingCago.OMLOADING);
+                $('#omLoading').addClass('round-notify-count');
+              } else {
+                $('#omLoading').html('');
+                $('#omLoading').removeClass('round-notify-count');
+              }
+            if (dutyLoadingCago.OMUNLOADING > 0) {
+                $('#omUnLoading').html(dutyLoadingCago.OMUNLOADING);
+                $('#omUnLoading').addClass('round-notify-count');
+              } else {
+                $('#omUnLoading').html('');
+                $('#omUnLoading').removeClass('round-notify-count');
+              }
+            if (dutyLoadingCago.OVERSIZELOADING > 0) {
+                $('#overSizeLoading').html(dutyLoadingCago.OVERSIZELOADING);
+                $('#overSizeLoading').addClass('round-notify-count');
+              } else {
+                $('#overSizeLoading').html('');
+                $('#overSizeLoading').removeClass('round-notify-count');
+              }
+             
+          }
+        }
+      });
+    }
+     
   </script>
 </body>
 

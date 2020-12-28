@@ -788,7 +788,7 @@ function configHandsond() {
           return "Ghi Chú";
       }
     },
-    colWidths: [23, 21, 21, 170, 130, 100, 100, 100, 120, 100, 100, 80, 150, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 130, 200],
+    colWidths: [23, 21, 21, 170, 130, 100, 100, 100, 120, 130, 130, 80, 160, 100, 80, 100, 120, 70, 80, 120, 120, 100, 100, 130, 130, 130, 200],
     filter: "true",
     columns: [
       {
@@ -919,13 +919,14 @@ function configHandsond() {
         renderer: payerNameRenderer,
       },
       {
-        data: "remark",
-        renderer: remarkRenderer,
-      },
-      {
         data: "userMobilePhone",
         renderer: userMobilePhoneRenderer
       },
+      {
+        data: "remark",
+        renderer: remarkRenderer,
+      },
+      
     ],
     beforeKeyDown: function (e) {
       let selected = hot.getSelected()[0];
