@@ -25,11 +25,11 @@ public class EirGateDto extends BaseEntity {
 	private String activity;
 
 	/** Checked In */
-	@Excel(name = "Ngày Vào Cổng")
+	@Excel(name = "Checked In")
 	private Date checkedIn;
 
 	/** Checked Out */
-	@Excel(name = "Ngày Ra Cổng")
+	@Excel(name = "Checked Out")
 	private Date checkedOut;
 
 	/** Vsl Nm */
