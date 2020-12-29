@@ -654,6 +654,18 @@ public class LogisticUnloadingCargoWarehouseController extends LogisticBaseContr
 			// Create list req for order receive cont empty
 			shipmentDetailService.makeOrderUnloadingCargo(shipmentDetails, shipment, taxCode, creditFlag,
 					getUser().getMobile());
+
+			// Request manual order for om
+			String title = "Yêu cầu làm lệnh bốc hàng rút ruột cfs";
+			String msg = "Yêu cầu bốc hàng rút ruột cho container B/L No " + shipment.getBlNo();
+			try {
+				mqttService.sendNotificationApp(NotificationCode.NOTIFICATION_OM, title, msg,
+						configService.selectConfigByKey("domain.admin.name") + EportConstants.URL_OM_UNLOADING_CARGO,
+						EportConstants.NOTIFICATION_PRIORITY_HIGH);
+			} catch (MqttException e) {
+				logger.error("Error when push request make unloading cargo order: " + e);
+			}
+
 			return success();
 		}
 

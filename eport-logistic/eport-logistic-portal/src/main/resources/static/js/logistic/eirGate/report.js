@@ -7,9 +7,9 @@ var ready = false;
 $(document).ready(function () {
 
     let date = new Date();
-    fromDate = new Date(date.getFullYear(), date.getMonth(), 1);
+    fromDate = new Date();
     fromDate.setHours(0, 0, 0);
-    toDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    toDate = new Date();
     toDate.setHours(23, 59, 59);
     eirGate.params.variableStart = dateToString(fromDate);
     eirGate.params.variableEnd = dateToString(toDate);
@@ -17,16 +17,18 @@ $(document).ready(function () {
     $('#fromDate').datebox({
         onSelect: function (date) {
             date.setHours(0, 0, 0);
-            fromDate = date;
+            let fortyDays = 40 * 24 *60 * 60 * 1000;
             if (toDate != null && date.getTime() > toDate.getTime()) {
                 $.modal.alertWarning("Từ ngày không được lớn hơn đến ngày.");
+            } else if (Math.abs(toDate.getTime() - date.getTime()) > fortyDays) {
+                $.modal.alertWarning("Không thể lọc báo cáo trong khoảng lớn hơn 40 ngày.");
             } else {
+                fromDate = date;
                 eirGate.params.variableStart = dateToString(date);
                 if (ready) {
                     loadTable();
                 }
             }
-            return date;
         }
     });
 
@@ -34,14 +36,39 @@ $(document).ready(function () {
     $('#toDate').datebox({
         onSelect: function (date) {
             date.setHours(23, 59, 59);
-            toDate = date;
+            let fortyDays = 40 * 24 *60 * 60 * 1000;
             if (fromDate != null && date.getTime() < fromDate.getTime()) {
                 $.modal.alertWarning("Đến ngày không được thấp hơn từ ngày.");
+            } else if (Math.abs(date.getTime() - fromDate.getTime()) > fortyDays) {
+                $.modal.alertWarning("Không thể lọc báo cáo trong khoảng lớn hơn 40 ngày.");
             } else {
+                toDate = date;
                 eirGate.params.variableEnd = dateToString(date);
                 if (ready) {
                     loadTable();
                 }
+            }
+        }
+    });
+
+    let currentYear = new Date().getFullYear();
+    $("#callYear").combobox({
+        valueField: 'yearValue',
+        textField: 'yearKey',
+        data: [
+            {
+                "yearValue": currentYear,
+                "yearKey": currentYear,
+                "selected": true
+            },
+            {
+                "yearValue": currentYear - 1,
+                "yearKey": currentYear - 1
+            }],
+        onSelect: function (callYear) {
+            eirGate.params.variableYear = callYear.yearValue;
+            if (ready) {
+                loadTable();
             }
         }
     });
@@ -145,6 +172,28 @@ function formatDate(value) {
         return value.substring(8, 10) + '/' + value.substring(5, 7) + '/' + value.substring(0, 4) + value.substring(10, 19).replace('T', ' ');
     }
     return value;
+}
+
+function formatCheckedIn(value, row) {
+    let result = '';
+    if (row && row.activity && value) {
+        result = value.substring(8, 10) + '/' + value.substring(5, 7) + '/' + value.substring(0, 4) + value.substring(10, 19).replace('T', ' ');
+        if ('In' == row.activity) {
+            return '<b>' + result + '</b>';
+        }
+    }
+    return result;
+}
+
+function formatCheckedOut(value, row) {
+    let result = '';
+    if (row && row.activity && value) {
+        result = value.substring(8, 10) + '/' + value.substring(5, 7) + '/' + value.substring(0, 4) + value.substring(10, 19).replace('T', ' ');
+        if ('Out' == row.activity) {
+            return '<b>' + result + '</b>';
+        }
+    }
+    return result;
 }
 
 function exportExcel() {

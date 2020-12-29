@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,8 @@ import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.service.ISysConfigService;
+import vn.com.irtech.eport.web.mqtt.MqttService;
+import vn.com.irtech.eport.web.mqtt.MqttService.NotificationCode;
 
 @Controller
 @RequestMapping("/om/support/loading-cargo")
@@ -80,6 +83,9 @@ public class SupportLoadingCargoController extends OmBaseController {
 
 	@Autowired
 	private ServerConfig serverConfig;
+
+	@Autowired
+	private MqttService mqttService;
 
 	@GetMapping("/view")
 	public String getViewSupportReceiveFull(@RequestParam(required = false) Long sId, ModelMap mmap) {
@@ -197,6 +203,15 @@ public class SupportLoadingCargoController extends OmBaseController {
 	@ResponseBody
 	@Transactional
 	public AjaxResult confirmOrder(@RequestBody List<ShipmentDetail> shipmentDetails) { 
+
+		// Get one shipment detail for reference
+		if (CollectionUtils.isEmpty(shipmentDetails)) {
+			return error("Vui lòng chọn container để xác nhận đã làm lệnh.");
+		}
+		ShipmentDetail shipmentDetailRef = shipmentDetailService
+				.selectShipmentDetailById(shipmentDetails.get(0).getId());
+		boolean isCash = false;
+
 		for (ShipmentDetail shipmentDetail : shipmentDetails) { 
 			shipmentDetail.setProcessStatus("Y");
 			if ("Credit".equalsIgnoreCase(shipmentDetail.getPayType())) {
@@ -209,6 +224,34 @@ public class SupportLoadingCargoController extends OmBaseController {
 			if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
 				return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 			} 
+		}
+
+		String topic = "";
+		String content = "";
+		NotificationCode type = null;
+
+		if (isCash) {
+			// Send to accountant
+			type = NotificationCode.NOTIFICATION_ACCOUNTANT;
+			topic = "ePort: Yêu cầu ráp đơn giá dịch vụ đóng hàng cfs.";
+			content = "Yêu cầu ráp đơn giá cho lô " + shipmentDetailRef.getShipmentId();
+		} else {
+			topic = "ePort: Yêu cầu xác nhận ngày đóng hàng.";
+			content = "Yêu cầu xác nhận ngày đóng hàng cho lô " + shipmentDetailRef.getShipmentId();
+			if (EportConstants.SPECIAL_SERVICE_LOAD_WAREHOUSE == shipmentDetailRef.getSpecialService()) {
+				// Send to cfs
+				type = NotificationCode.NOTIFICATION_CFS;
+			} else if (EportConstants.SPECIAL_SERVICE_LOAD_YARD == shipmentDetailRef.getSpecialService()) {
+				// Send to yard
+				type = NotificationCode.NOTIFICATION_YARD;
+			}
+		}
+
+		// Send notification to om
+		try {
+			mqttService.sendNotificationApp(type, topic, content, "", EportConstants.NOTIFICATION_PRIORITY_MEDIUM);
+		} catch (MqttException e) {
+			logger.error("Fail to send message notification app: " + e);
 		}
 		return success();
 	}

@@ -23,13 +23,16 @@
           <div class="flex__right w-80 justify-content-start align-items-center d-flex">
             <div id="ff">
               <div class="d-inline">
-                <input class="easyui-textbox" name="containerNo" id="containerNo" data-options="prompt: 'Container No' " />
+                <input class="easyui-textbox" name="containerNo" id="containerNo" data-options="prompt: 'Container No' " style="width: 100px"/>
               </div>
               <div class="d-inline">
-                <input class="easyui-datebox from-date" id="fromDate" style="width: 150px" data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser" />
+                <select id="callYear" class="easyui-combobox" panelHeight="auto" editable="false" style="width: 67px"></select>
               </div>
               <div class="d-inline">
-                <input class="easyui-datebox to-date" id="toDate" style="width: 150px" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser" />
+                <input class="easyui-datebox from-date" id="fromDate" style="width: 98px" data-options="prompt:'Từ Ngày', formatter:dateformatter, parser:dateparser" />
+              </div>
+              <div class="d-inline">
+                <input class="easyui-datebox to-date" id="toDate" style="width: 98px" data-options="prompt:'Đến Ngày', formatter:dateformatter, parser:dateparser" />
               </div>
               <div class="d-inline">
                 <button class="btn btn-success btn-customs" onclick="loadTable()" id="searchBtn">Tìm kiếm</button>
@@ -48,8 +51,8 @@
             <tr>
               <th data-options="field:'containerNo', align:'center', halign:'center', resizable:true, fixed:true" width="103">Container No</th>
               <th data-options="field:'activity', align:'center', halign:'center', resizable:true, fixed:true" width="92">Hoạt Động</th>
-              <th data-options="field:'checkedIn', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate" width="140">Ngày Vào Cổng</th>
-              <th data-options="field:'checkedOut', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate" width="140">Ngày Ra Cổng</th>
+              <th data-options="field:'checkedIn', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatCheckedIn" width="140">Checked In</th>
+              <th data-options="field:'checkedOut', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatCheckedOut" width="140">Checked Out</th>
               <th data-options="field:'vslNm', align:'left', halign:'center', resizable:true, fixed:true" width="160">Tàu</th>
               <th data-options="field:'voyage', align:'left', halign:'center', resizable:true, fixed:true" width="170">Chuyến</th>
               <th data-options="field:'sztp', align:'center', halign:'center', resizable:true, fixed:true" width="90">Kích Thước</th>
@@ -80,6 +83,6 @@
       $(".easyui-layout").height($(".main-body").height() - 40);
     </script>
     <script th:src="@{/js/logistic/eirGate/layout.js}"></script>
-    <script th:src="@{/js/logistic/eirGate/report.js?v=20201224}"></script>
+    <script th:src="@{/js/logistic/eirGate/report.js?v=20201226}"></script>
   </body>
 </html>

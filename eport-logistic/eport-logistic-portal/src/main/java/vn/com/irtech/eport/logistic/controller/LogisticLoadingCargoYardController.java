@@ -655,7 +655,7 @@ public class LogisticLoadingCargoYardController extends LogisticBaseController {
 			}
 
 			// Set up data to send app notificaton
-			String title = "ePort: Yêu cầu cấp container rỗng.";
+			String title = "ePort: Yêu cầu cấp container rỗng đóng hàng.";
 			String msg = "Có yêu cầu cấp rỗng cho Booking: " + shipment.getBookingNo() + ", Hãng tàu: "
 					+ shipment.getOpeCode() + ", Trucker: " + getGroup().getGroupName() + ", Chủ hàng: "
 					+ shipmentDetails.get(0).getConsignee();
