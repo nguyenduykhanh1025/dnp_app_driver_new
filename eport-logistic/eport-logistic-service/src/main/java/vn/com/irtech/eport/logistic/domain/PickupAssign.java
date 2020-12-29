@@ -71,6 +71,22 @@ public class PickupAssign extends BaseEntity
     @Excel(name = "Số điện thoại giao")
     private String deliveryPhoneNumber;
 
+	/** Service type */
+	@Excel(name = "Service type")
+	private Integer serviceType;
+
+	/** Position */
+	@Excel(name = "Position")
+	private String position;
+
+	/** Status 1: Init, 2: position, 3: complete */
+	@Excel(name = "Status")
+	private Integer status;
+
+	/** Container no */
+	@Excel(name = "Container no")
+	private String containerNo;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -198,29 +214,51 @@ public class PickupAssign extends BaseEntity
 		this.deliveryPhoneNumber = deliveryPhoneNumber;
 	}
 
+	public Integer getServiceType() {
+		return serviceType;
+	}
+
+	public void setServiceType(Integer serviceType) {
+		this.serviceType = serviceType;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public String getContainerNo() {
+		return containerNo;
+	}
+
+	public void setContainerNo(String containerNo) {
+		this.containerNo = containerNo;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("logisticGroupId", getLogisticGroupId())
-            .append("shipmentId", getShipmentId())
-            .append("driverId", getDriverId())
-            .append("shipmentDetailId", getShipmentDetailId())
-            .append("externalFlg", getExternalFlg())
-            .append("externalSecretCode", getExternalSecretCode())
-            .append("driverOwner", getDriverOwner())
-            .append("phoneNumber", getPhoneNumber())
-            .append("fullName", getFullName())
-            .append("truckNo", getTruckNo())
-            .append("chassisNo", getChassisNo())
-            .append("remark", getRemark())
-            .append("deliveryAddress", getDeliveryAddress())
-            .append("deliveryPhoneNumber", getDeliveryPhoneNumber())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-				.append("params", getParams())
-            .toString();
+				.append("id", getId()).append("logisticGroupId", getLogisticGroupId())
+				.append("shipmentId", getShipmentId()).append("driverId", getDriverId())
+				.append("shipmentDetailId", getShipmentDetailId()).append("externalFlg", getExternalFlg())
+				.append("externalSecretCode", getExternalSecretCode()).append("driverOwner", getDriverOwner())
+				.append("phoneNumber", getPhoneNumber()).append("fullName", getFullName())
+				.append("truckNo", getTruckNo()).append("chassisNo", getChassisNo()).append("remark", getRemark())
+				.append("deliveryAddress", getDeliveryAddress()).append("deliveryPhoneNumber", getDeliveryPhoneNumber())
+				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
+				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("params", getParams())
+				.append("serviceType", getServiceType()).append("position", getPosition()).append("status", getStatus())
+				.append("containerNo", getContainerNo()).toString();
     }
 }

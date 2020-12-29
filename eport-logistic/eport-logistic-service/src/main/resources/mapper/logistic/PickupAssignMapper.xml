@@ -20,13 +20,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark"    column="remark"    />
         <result property="deliveryAddress"    column="delivery_address"    />
         <result property="deliveryPhoneNumber"    column="delivery_phone_number"    />
+        <result property="serviceType"    column="service_type"    />
+        <result property="position"    column="position"    />
+        <result property="status"    column="status"    />
+        <result property="containerNo"    column="container_no"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
     <sql id="selectPickupAssignVo">
-        select id, logistic_group_id, shipment_id, driver_id, shipment_detail_id, external_flg, external_secret_code, driver_owner, phone_number, full_name, truck_no, chassis_no, remark, delivery_address, delivery_phone_number, create_by, create_time, update_by, update_time from pickup_assign
+        select id, logistic_group_id, shipment_id, driver_id, shipment_detail_id, external_flg, external_secret_code, driver_owner, phone_number, full_name, truck_no, chassis_no, remark, delivery_address, delivery_phone_number, service_type, position, status, container_no, create_by, create_time, update_by, update_time from pickup_assign
     </sql>
 
     <select id="selectPickupAssignList" parameterType="PickupAssign" resultMap="PickupAssignResult">
@@ -43,12 +47,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="position != null and position != ''"> and position = #{position}</if>
+            <if test="status != null"> and status = #{status}</if>
+            <if test="containerNo != null and containerNo != ''"> and container_no = #{containerNo}</if>
             <if test="params.shipmentDetailIdNull != null"> and shipment_detail_id is null</if>
             <if test="params.shipmentDetailIds != null">
                 and shipment_detail_id in
                 <foreach item="shipmentDetailId" collection="params.shipmentDetailIds" open="(" separator="," close=")">
                     #{shipmentDetailId}
                 </foreach>
+            </if>
+            <if test="params.serviceTypes != null">
+            	and service_type in
+            	<foreach item="serviceType" collection="params.serviceTypes" open="(" separator="," close=")">
+		            #{serviceType}
+		        </foreach>
+            	
             </if>
         </where>
     </select>
@@ -79,6 +94,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="deliveryAddress != null  and deliveryAddress != ''">delivery_address,</if>
             <if test="deliveryPhoneNumber != null  and deliveryPhoneNumber != ''">delivery_phone_number,</if>
+            <if test="serviceType != null">service_type,</if>
+            <if test="position != null and position != ''">position,</if>
+            <if test="status != null">status,</if>
+            <if test="containerNo != null and containerNo != ''">container_no,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
          </trim>
@@ -98,6 +117,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="deliveryAddress != null  and deliveryAddress != ''">#{deliveryAddress},</if>
             <if test="deliveryPhoneNumber != null  and deliveryPhoneNumber != ''">#{deliveryPhoneNumber},</if>
+            <if test="serviceType != null">#{serviceType},</if>
+            <if test="position != null and position != ''">#{position},</if>
+            <if test="status != null">#{status},</if>
+            <if test="containerNo != null and containerNo != ''">#{containerNo},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
          </trim>
@@ -120,6 +143,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="deliveryAddress != null  and deliveryAddress != ''">delivery_address = #{deliveryAddress},</if>
             <if test="deliveryPhoneNumber != null  and deliveryPhoneNumber != ''">delivery_phone_number = #{deliveryPhoneNumber},</if>
+            <if test="serviceType != null">service_type = #{serviceType},</if>
+            <if test="position != null and position != ''">position = #{position},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="containerNo != null and containerNo != ''">container_no = #{containerNo},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
         </trim>
@@ -158,6 +185,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="position != null and position != ''"> and position = #{position}</if>
+            <if test="status != null"> and status = #{status}</if>
+            <if test="containerNo != null and containerNo != ''"> and container_no = #{containerNo}</if>
         </where>
         group by driver_owner
     </select>
@@ -175,6 +206,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="position != null and position != ''"> and position = #{position}</if>
+            <if test="status != null"> and status = #{status}</if>
+            <if test="containerNo != null and containerNo != ''"> and container_no = #{containerNo}</if>
         </where>
         group by phone_number
     </select>
@@ -192,6 +227,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="position != null and position != ''"> and position = #{position}</if>
+            <if test="status != null"> and status = #{status}</if>
+            <if test="containerNo != null and containerNo != ''"> and container_no = #{containerNo}</if>
         </where>
         ORDER BY create_Time DESC
         OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
@@ -223,6 +262,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="position != null and position != ''"> and position = #{position}</if>
+            <if test="status != null"> and status = #{status}</if>
+            <if test="containerNo != null and containerNo != ''"> and container_no = #{containerNo}</if>
             and shipment_detail_id is null
         </where>
         OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
@@ -242,6 +285,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="position != null and position != ''"> and position = #{position}</if>
+            <if test="status != null"> and status = #{status}</if>
+            <if test="containerNo != null and containerNo != ''"> and container_no = #{containerNo}</if>
         </where>
         OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
     </select>
@@ -260,6 +307,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="position != null and position != ''"> and position = #{position}</if>
+            <if test="status != null"> and status = #{status}</if>
+            <if test="containerNo != null and containerNo != ''"> and container_no = #{containerNo}</if>
         </where>
         OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
     </select>
@@ -278,6 +329,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="position != null and position != ''"> and position = #{position}</if>
+            <if test="status != null"> and status = #{status}</if>
+            <if test="containerNo != null and containerNo != ''"> and container_no = #{containerNo}</if>
         </where>
     </select>
 
@@ -295,6 +350,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+            <if test="serviceType != null"> and service_type = #{serviceType}</if>
+            <if test="position != null and position != ''"> and position = #{position}</if>
+            <if test="status != null"> and status = #{status}</if>
+            <if test="containerNo != null and containerNo != ''"> and container_no = #{containerNo}</if>
             <if test="params.shipmentDetailIds != null">
                 and shipment_detail_id in
                 <foreach item="shipmentDetailId" collection="params.shipmentDetailIds" open="(" separator="," close=")">

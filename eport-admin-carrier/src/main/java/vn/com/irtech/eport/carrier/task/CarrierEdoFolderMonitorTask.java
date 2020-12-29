@@ -322,7 +322,7 @@ public class CarrierEdoFolderMonitorTask {
 						// Carrier need update det free time
 						// Check det free time is updated
 						if (edoUpdate.getDetFreeTime() != null && edoCheck.getDetFreeTime() != null
-								&& edoCheck.getDetFreeTime().compareTo(edoUpdate.getDetFreeTime()) != 0) {
+								&& !edoCheck.getDetFreeTime().equalsIgnoreCase(edoUpdate.getDetFreeTime())) {
 							if (cntrEmty == null || StringUtils.isEmpty(cntrEmty.getJobOdrNo())) {
 								// Get old request if exist, update else insert new request
 								SysSyncQueue sysSyncQueueParam = new SysSyncQueue();

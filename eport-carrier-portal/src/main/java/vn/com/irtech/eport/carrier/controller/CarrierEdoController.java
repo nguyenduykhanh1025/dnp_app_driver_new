@@ -308,7 +308,7 @@ public class CarrierEdoController extends CarrierBaseController {
 					// Carrier need update det free time
 					// Check if det free time has update
 					if (StringUtils.isNotEmpty(edoInput.getDetFreeTime())
-							&& edoInput.getDetFreeTime().equals(edo.getDetFreeTime())) {
+							&& !edoInput.getDetFreeTime().equals(edo.getDetFreeTime())) {
 						// has update
 						// Check condition drop empty container order has been made
 						if (cntrEmty != null && StringUtils.isNotEmpty(cntrEmty.getJobOdrNo())) {

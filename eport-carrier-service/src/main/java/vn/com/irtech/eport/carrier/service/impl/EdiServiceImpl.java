@@ -173,7 +173,7 @@ public class EdiServiceImpl implements IEdiService {
 			// if true (old != new) check container condition to update (container has not
 			// dropped cont empty yet)
 			if (StringUtils.isNotEmpty(oldEdo.getDetFreeTime()) && StringUtils.isNotEmpty(edoUpdate.getDetFreeTime())
-					&& oldEdo.getDetFreeTime().equalsIgnoreCase(edoUpdate.getDetFreeTime())) {
+					&& !oldEdo.getDetFreeTime().equalsIgnoreCase(edoUpdate.getDetFreeTime())) {
 				if (cntrEmty != null && StringUtils.isNotEmpty(cntrEmty.getJobOdrNo())) {
 					// Get old request if exist, update else insert new request
 					SysSyncQueue sysSyncQueueParam = new SysSyncQueue();

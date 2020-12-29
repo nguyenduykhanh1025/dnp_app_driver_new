@@ -403,4 +403,11 @@ public interface EportConstants {
 	public static final String NOTICE_TYPE_LOGISTIC = "L";
 	/** Notice type all */
 	public static final String NOTICE_TYPE_ALL = "A";
+
+	/** Pickup assign status init */
+	public static final Integer PICKUP_ASSIGN_STATUS_INIT = 1;
+	/** Pickup assign status position */
+	public static final Integer PICKUP_ASSIGN_STATUS_POSITION = 2;
+	/** Pickup assign status complete */
+	public static final Integer PICKUP_ASSIGN_STATUS_COMPLETE = 3;
 }
