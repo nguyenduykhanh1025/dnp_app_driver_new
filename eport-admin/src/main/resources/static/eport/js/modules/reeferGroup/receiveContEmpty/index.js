@@ -105,7 +105,7 @@ function search() {
 	shipmentDetailSearch.containerNo = $("#containerNo").textbox('getText').toUpperCase();
 	shipmentDetailSearch.contSupplyStatus = $('#batchStatus').combobox('getValue');
 	// loadTable();
-	loadShipmentDetails();
+	loadShipmentDetailsVer2();
 }
 
 function handleCollapse(status) {
@@ -169,8 +169,8 @@ function clearInput() {
 }
 
 function getSelectedForShipmentDetails(index, row) {
-	loadShipmentDetails();
-	// loadListComment();
+	// loadShipmentDetails();
+	loadShipmentDetailsVer2();
 }
 
 function toggleAttachIcon(shipmentId) {
@@ -491,7 +491,7 @@ function configHandson() {
 		width: "100%",
 		minSpareRows: 0,
 		rowHeights: 30,
-		fixedColumnsLeft: 3,
+		// fixedColumnsLeft: 0,
 		manualColumnResize: true,
 		manualRowResize: false,
 		renderAllRows: true,
@@ -934,7 +934,7 @@ function saveData() {
 			if (result.code == 0) {
 				$.modal.msgSuccess(result.msg);
 				// loadShipmentDetail(shipmentSelected.id);
-				loadShipmentDetails();
+				loadShipmentDetailsVer2();
 			} else {
 				$.modal.msgError(result.msg);
 			}
@@ -1105,7 +1105,7 @@ function rejectSupplyReq(index, layero) {
 		data: JSON.stringify(payload),
 		success: function (data) {
 			layer.close(index);
-			loadShipmentDetails();
+			loadShipmentDetailsVer2();
 			$.modal.closeLoading();
 
 			rejectSupplyReqSendInformation(index, layero);
@@ -1149,7 +1149,7 @@ function deleteSupplyReq(index, layero) {
 		success: function (res) {
 			$.modal.closeLoading();
 			layer.close(index);
-			loadShipmentDetails();
+			loadShipmentDetailsVer2();
 			if (res.code == 0) {
 				$.modal.alertSuccess(res.msg);
 			} else {
@@ -1158,7 +1158,7 @@ function deleteSupplyReq(index, layero) {
 		},
 		error: function (data) {
 			layer.close(index);
-			loadShipmentDetails();
+			loadShipmentDetailsVer2();
 			// $.modal.closeLoading();
 		}
 	});
@@ -1197,6 +1197,75 @@ function loadShipmentDetails() {
 			}
 			$.modal.closeLoading();
 		}
+	});
+}
+
+function loadShipmentDetailsVer2() {
+	$.modal.loading("Đang xử lý ...");
+	$("#dg").datagrid({
+		url: PREFIX + "/shipment-details-ver2",
+		height: $('.main-body').height() - 40,
+		method: 'post',
+		pagination: true,
+		pageSize: 20,
+		loadMsg: " Đang xử lý...",
+		loader: function (param, success, error) {
+			var opts = $(this).datagrid("options");
+			if (!opts.url) return false;
+			$.ajax({
+				type: opts.method,
+				url: opts.url,
+				contentType: "application/json",
+				data: JSON.stringify({
+					pageNum: param.page,
+					pageSize: param.rows,
+					orderByColumn: param.sort,
+					isAsc: param.order,
+					data: shipmentDetailSearch
+				}),
+				success: function (res) {
+					let html = '';
+					
+					// let tableElement = document.createElement("div");
+					// tableElement.id = 'container-grid';
+					// tableElement.className = 'hot handsontable htColumnHeaders';
+
+
+					if (res.code == 0) {
+
+
+						console.log('coi thu');
+						console.log(res.shipmentDetails.rows);
+						success(res.shipmentDetails);
+
+						rowAmount = res.shipmentDetails.rows.length;
+						checkList = Array(rowAmount).fill(res.shipmentDetails.rows.length);
+						allChecked = false;
+						sourceData = res.shipmentDetails.rows;
+						hot.destroy();
+						configHandson();
+						hot = new Handsontable(dogrid, config);
+						hot.loadData(sourceData);
+						hot.render();
+
+						
+						
+						
+						html += '';
+					}
+					else {
+						success([]);
+						html += '<div style="text-align: center; margin-top: 10px;"><span>Không có dữ liệu</span></div>';
+					}
+					$('.datagrid-body').html(html);
+					$.modal.closeLoading();
+				},
+				error: function () {
+					error.apply(this, arguments);
+					$.modal.closeLoading();
+				},
+			});
+		},
 	});
 }
 

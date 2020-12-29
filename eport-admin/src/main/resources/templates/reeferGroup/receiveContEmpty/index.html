@@ -10,6 +10,23 @@
   <th:block th:include="include :: summernote-css" />
   <link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
   <link th:href="@{/eport/css/container/supplier/index.css}" rel="stylesheet" />
+  <style>
+    .datagrid-view {
+      height: max-content !important;
+    }
+
+    .datagrid-wrap {
+      height: max-content !important;
+    }
+
+    .layout-hide {
+      height: max-content !important;
+    }
+
+    #container-grid {
+      overflow: auto !important;
+    }
+  </style>
 </head>
 
 <body class="grey-background">
@@ -113,14 +130,20 @@
                   </div>
                 </div>
               </div>
-              
-              <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
 
+
+              <hr style="margin: 0;">
+              <div class="main-body__table-wrapper">
+                <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+                <div class="easyui-layout layout-hide" id="main-layout" style="width: 100%;height: max-content;">
+                  <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]"></table>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-     
+
     </div>
   </div>
   <th:block th:include="include :: footer" />

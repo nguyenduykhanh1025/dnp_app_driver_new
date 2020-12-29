@@ -133,6 +133,9 @@ public class SupportExtendDrawDate extends AdminBaseController {
 			params = new HashMap<>();
 		}
 		params.put("sztp", KEY_ICE);
+		if(params.get("powerDrawDateStatus").equals("ALL")) {
+			params.put("powerDrawDateStatus", "");
+		}
 		shipment.setParams(params);
 
 		List<Shipment> shipments = shipmentService.selectShipmentListByWithShipmentDetailFilter(shipment);
@@ -148,7 +151,10 @@ public class SupportExtendDrawDate extends AdminBaseController {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
 		shipmentDetail.setSztp(KEY_ICE);
-		shipmentDetail.setPowerDrawDateStatus(status);
+		if(!status.equals("ALL")) {
+			shipmentDetail.setPowerDrawDateStatus(status);
+		}
+		
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;
@@ -297,27 +303,6 @@ public class SupportExtendDrawDate extends AdminBaseController {
 
 			info.setStatus("S");
 			info.setUpdateBy(getUser().getUserName());
-
-			// if no da thanh toan
-//			boolean isPayment = false;
-//			List<SysDictData> sysDictDatas = dictService.getType("opr_list_booking_check");
-//			for (SysDictData data : sysDictDatas) {
-//				if (data.getDictValue().equals(shipmentDetailFromDB.getOpeCode())) {
-//					isPayment = true;
-//				}
-//			}
-//			Long logictistId = shipmentDetailFromDB.getLogisticGroupId();
-//			LogisticGroup groupFromDB = this.logisticGroupService.selectLogisticGroupById(logictistId);
-//			if (!groupFromDB.getCreditFlag().equals("0")) {
-//				isPayment = true;
-//			}
-//
-//			if (isPayment) {
-//				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_SUCCESS);
-//			} else {
-//				info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
-//			}
-			// no tra sau
 			info.setPaymentStatus(EportConstants.CONT_REEFER_PAYMENT_PROCESS);
 
 			this.reeferInfoService.updateReeferInfo(info);
@@ -329,10 +314,10 @@ public class SupportExtendDrawDate extends AdminBaseController {
 	@PostMapping("/shipmentDetail/reject")
 	@ResponseBody
 	public AjaxResult rejectExtendDateDrop(String idShipmentDetails) {
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setPowerDrawDateStatus("E");
+
 		for (String id : idShipmentDetails.split(",")) {
-			ReeferInfo info = reeferInfoService.selectReeferInfoListByIdShipmentDetail(Long.parseLong(id)).get(0);
+			List<ReeferInfo> infosFromDB = reeferInfoService.selectReeferInfoListByIdShipmentDetail(Long.parseLong(id));
+			ReeferInfo info = infosFromDB.get(0);
 
 			info.setStatus("E");
 			info.setUpdateBy(getUser().getUserName());
@@ -340,8 +325,18 @@ public class SupportExtendDrawDate extends AdminBaseController {
 
 			this.reeferInfoService.updateReeferInfo(info);
 
+			for (int i = 0; i < infosFromDB.size(); ++i) {
+				if (infosFromDB.get(i).getStatus().equals("S")) {
+					ShipmentDetail shipmentDetail = new ShipmentDetail();
+					shipmentDetail.setPowerDrawDateStatus("E");
+					shipmentDetail.setId(Long.parseLong(id));
+					shipmentDetail.setPowerDrawDate(infosFromDB.get(i).getDateGetPower());
+					shipmentDetailService.updateShipmentDetail(shipmentDetail);
+					break;
+				}
+			}
+
 		}
-		shipmentDetailService.updateShipmentDetailByIds(idShipmentDetails, shipmentDetail);
 		return success();
 	}
 

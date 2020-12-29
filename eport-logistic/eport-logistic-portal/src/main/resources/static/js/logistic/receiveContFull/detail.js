@@ -137,17 +137,16 @@ $("#datetimepicker1").datetimepicker({
   todayBtn: true,
   startDate: new Date()
 });
-
+console.log('coso');
 $("#datetimepicker2").datetimepicker({
   format: 'dd/mm/yyyy hh:ii',
   language: "vi_VN",
   //minView: "month",
   autoclose: true,
-  minuteStep: 30,
+  minuteStep: 5,
   todayBtn: true,
-  startDate: new Date(shipmentDetail.daySetupTemperature)
+  startDate: new Date(shipmentDetail.daySetupTemperature),
 });
-
 //$("#datetimepicker1").datetimepicker('getDate').getTime();
 
 let daySetup = new Date(shipmentDetail.powerDrawDate);
