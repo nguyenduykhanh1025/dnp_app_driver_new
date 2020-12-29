@@ -83,6 +83,10 @@ public class PickupAssign extends BaseEntity
 	@Excel(name = "Status")
 	private Integer status;
 
+	/** Container no */
+	@Excel(name = "Container no")
+	private String containerNo;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -234,6 +238,14 @@ public class PickupAssign extends BaseEntity
 		this.status = status;
 	}
 
+	public String getContainerNo() {
+		return containerNo;
+	}
+
+	public void setContainerNo(String containerNo) {
+		this.containerNo = containerNo;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -247,6 +259,6 @@ public class PickupAssign extends BaseEntity
 				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
 				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("params", getParams())
 				.append("serviceType", getServiceType()).append("position", getPosition()).append("status", getStatus())
-				.toString();
+				.append("containerNo", getContainerNo()).toString();
     }
 }
