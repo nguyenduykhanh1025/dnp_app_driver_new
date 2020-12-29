@@ -154,6 +154,7 @@ $(document).ready(function () {
 
 $("#powerDrawDateStatusSelect").combobox({
   onChange: function (serviceType) {
+    
     shipment.params.powerDrawDateStatus = serviceType;
     search();
   }
@@ -1960,11 +1961,13 @@ function confirmRequestDocument() {
         dataType: 'text',
         success: function (data) {
           loadTable();
+          $.modal.closeLoading();
         },
         error: function (result) {
           $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
           $.modal.closeLoading();
         },
+
       });
     },
     function () {
@@ -1972,7 +1975,6 @@ function confirmRequestDocument() {
     }
   );
 }
-
 function rejectRequest() {
 
 }

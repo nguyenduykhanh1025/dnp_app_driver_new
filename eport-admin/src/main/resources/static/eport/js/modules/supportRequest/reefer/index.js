@@ -87,7 +87,7 @@ $(document).ready(function () {
     data: [
       {
         alias: "",
-        text: "Trạng thái",
+        text: "Tất cả",
       },
 
       {
