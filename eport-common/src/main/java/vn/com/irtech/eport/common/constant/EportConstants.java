@@ -48,6 +48,8 @@ public interface EportConstants {
 	public static final int SERVICE_UNLOADING_CARGO_WAREHOUSE = 19;
 	/** Remark cont qua kho */
 	public static final int SERVICE_OVERSIZE_REMARK_ORDER = 20;
+	/** Gate out */
+	public static final int SERVICE_GATE_OUT = 21;
 	/** Update booking */
 	public static final int BOOKING_UPDATE = 1;
 	/** Update booking */

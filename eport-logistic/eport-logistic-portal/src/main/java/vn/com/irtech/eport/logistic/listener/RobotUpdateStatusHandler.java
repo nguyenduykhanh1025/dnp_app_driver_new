@@ -44,6 +44,8 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 	
 	private static final String GATE_ROBOT_REQ_TOPIC = "eport/robot/gate/+/request";
 
+	private static final String GATE_OUT_ROBOT_REQ_TOPIC = "eport/robot/gate/out/+/request";
+
 	@Autowired
 	private ISysRobotService robotService;
 
@@ -156,6 +158,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		Boolean isOverSizeRemarkOrder = "1"
 				.equals(map.get("isOverSizeRemarkOrder") == null ? null : map.get("isOverSizeRemarkOrder").toString());
 
+		Boolean isGateOutOrder = "1"
+				.equals(map.get("isGateOutOrder") == null ? null : map.get("isGateOutOrder").toString());
+
 		// Check Service robot support anh make into a string split by comma for query db
 		String serviceTypes = "";
 		if (isReceiveContFullOrder) {
@@ -203,6 +208,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		if (isOverSizeRemarkOrder) {
 			serviceTypes += EportConstants.SERVICE_OVERSIZE_REMARK_ORDER + ",";
 		}
+		if (isOverSizeRemarkOrder) {
+			serviceTypes += EportConstants.SERVICE_GATE_OUT + ",";
+		}
 		
 		if (serviceTypes.length() > 0) {
 			serviceTypes = serviceTypes.substring(0, serviceTypes.length()-1);
@@ -227,6 +235,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		sysRobot.setIsExportReceipt(isExportReceipt);
 		sysRobot.setIsExtensionDetOrder(isExtensionDetOrder);
 		sysRobot.setIsOverSizeRemarkOrder(isOverSizeRemarkOrder);
+		sysRobot.setIsGateOutOrder(isGateOutOrder);
 
 		// check if robot is exists but be disabled then just update robot infor but not validate or assign new order to robot
 		SysRobot robotExist = robotService.selectRobotByUuId(uuId);
@@ -357,6 +366,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 							case EportConstants.SERVICE_OVERSIZE_REMARK_ORDER:
 								sendOversizeRemarkToRobot(reqProcessOrder, uuId);
 								break;
+							case EportConstants.SERVICE_GATE_OUT:
+								sendGateOutOrderToRobot(reqProcessOrder, sysRobot.getUuId());
+								break;
 						}
 					}
 				}
@@ -453,6 +465,22 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		}
 	}
 	
+	/**
+	 * Send gate in roder to robot when robot is available The info to send gate out
+	 * order is stored in process data under json string
+	 * 
+	 * @param processOrder
+	 * @param uuid
+	 */
+	private void sendGateOutOrderToRobot(ProcessOrder processOrder, String uuid) {
+		try {
+			mqttService.publish(GATE_OUT_ROBOT_REQ_TOPIC.replace("+", uuid),
+					new MqttMessage(processOrder.getProcessData().getBytes()));
+		} catch (MqttException e) {
+			logger.error("Error when send order gate out: " + e);
+		}
+	}
+
 	/**
 	 * Send shifting order to robot
 	 * 

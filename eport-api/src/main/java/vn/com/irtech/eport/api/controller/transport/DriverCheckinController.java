@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.api.controller.transport;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -8,6 +9,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,7 @@ import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.logistic.domain.LogisticTruck;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
+import vn.com.irtech.eport.logistic.dto.PickedContAvailableDto;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 
@@ -62,6 +65,12 @@ public class DriverCheckinController extends BaseController  {
 	@ResponseBody
 	public AjaxResult checkin(@Valid @RequestBody QrCodeReq req) throws Exception{
 		
+		// Update pickup history
+		List<PickupHistory> pickupHistories = req.getPickupHistories();
+		for (PickupHistory pickupHistory : pickupHistories) {
+			pickupHistoryService.updatePickupHistory(pickupHistory);
+		}
+
 		AjaxResult ajaxResult = AjaxResult.success();
 		
 		String sessionId = getSession().getId();
@@ -189,5 +198,45 @@ public class DriverCheckinController extends BaseController  {
 			}
 		}
 		queueService.offerCheckInReq(gateNotificationCheckInReq);
+	}
+
+	@GetMapping("/cont-available")
+	public AjaxResult getListContainerAvailable() {
+		Long driverId;
+		List<PickedContAvailableDto> pickedContAvailableDtos = new ArrayList<>();
+//		PickedContAvailableDto pickedContAvailableDto1 = new PickedContAvailableDto();
+//		pickedContAvailableDto1.setPickupHistoryId(12L);
+//		pickedContAvailableDto1.setContainerNo("ABCD1231231");
+//		pickedContAvailableDto1.setSztp("22G0");
+//		pickedContAvailableDto1.setShipmentDetailId(3L);
+//		pickedContAvailableDto1.setChecked(true);
+//		pickedContAvailableDto1.setJobOrderNo("KJKJK34234");
+//		pickedContAvailableDto1.setBlock("A");
+//		pickedContAvailableDto1.setBay("03");
+//		pickedContAvailableDto1.setRow(3);
+//		pickedContAvailableDto1.setTier(2);
+//		pickedContAvailableDtos.add(pickedContAvailableDto1);
+//		PickedContAvailableDto pickedContAvailableDt2 = new PickedContAvailableDto();
+//		BeanUtils.copyBeanProp(pickedContAvailableDt2, pickedContAvailableDto1);
+//		pickedContAvailableDt2.setPickupHistoryId(13L);
+//		pickedContAvailableDt2.setTier(3);
+//		pickedContAvailableDtos.add(pickedContAvailableDt2);
+//		PickedContAvailableDto pickedContAvailableDt3 = new PickedContAvailableDto();
+//		BeanUtils.copyBeanProp(pickedContAvailableDt3, pickedContAvailableDto1);
+//		pickedContAvailableDt3.setPickupHistoryId(14L);
+//		pickedContAvailableDt3.setTier(4);
+//		pickedContAvailableDt3.setRow(4);
+//		pickedContAvailableDt3.setChecked(false);
+//		pickedContAvailableDtos.add(pickedContAvailableDt3);
+//		PickedContAvailableDto pickedContAvailableDt4 = new PickedContAvailableDto();
+//		BeanUtils.copyBeanProp(pickedContAvailableDt4, pickedContAvailableDto1);
+//		pickedContAvailableDt4.setPickupHistoryId(15L);
+//		pickedContAvailableDt4.setTier(3);
+//		pickedContAvailableDt4.setRow(4);
+//		pickedContAvailableDt4.setChecked(false);
+//		pickedContAvailableDtos.add(pickedContAvailableDt4);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("listContAvailable", pickedContAvailableDtos);
+		return ajaxResult;
 	}
 }

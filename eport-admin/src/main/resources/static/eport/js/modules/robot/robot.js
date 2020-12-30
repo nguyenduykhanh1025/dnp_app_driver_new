@@ -170,6 +170,9 @@ function robotServiceFormater(value, row, index) {
   if (row.isOverSizeRemarkOrder) {
     content += '<span class="badge badge-primary">Remark cont quá khổ</span><span> </span>';
   }
+  if (row.isGateOutOrder) {
+    content += '<span class="badge badge-primary">Gate out</span><span> </span>';
+  }
   return content;
 }
 

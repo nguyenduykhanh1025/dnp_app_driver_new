@@ -24,7 +24,6 @@ import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
-import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
@@ -280,12 +279,20 @@ public class AdminGateController extends BaseController {
 		pickupHistoryParam.setTruckNo(truckNo);
 		pickupHistoryParam.setChassisNo(chassisNo);
 		pickupHistoryParam.setLogisticGroupId(logisticId);
+		pickupHistoryParam.setEntranceScan(false);
 		pickupHistoryParam.setStatus(EportConstants.PICKUP_HISTORY_STATUS_WAITING);
-		Map<String, Object> params = new HashMap<>();
-		String serviceTypes = EportConstants.SERVICE_DROP_EMPTY + "," + EportConstants.SERVICE_DROP_FULL;
-		params.put("serviceTypes", Convert.toStrArray(serviceTypes));
-		pickupHistoryParam.setParams(params);
-		List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
+		List<PickupHistory> pickupHistoriesTemp = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
+		List<PickupHistory> pickupHistories = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(pickupHistoriesTemp)) {
+			for (PickupHistory pickupHistory : pickupHistoriesTemp) {
+				if (EportConstants.SERVICE_DROP_EMPTY == pickupHistory.getServiceType()
+						|| EportConstants.SERVICE_DROP_FULL == pickupHistory.getServiceType()) {
+					pickupHistories.add(pickupHistory);
+				}
+				pickupHistory.setEntranceScan(true);
+				pickupHistoryService.updatePickupHistory(pickupHistory);
+			}
+		}
 
 		// If exists pickup history -> get container stacking in catos
 		// -> request to mc
