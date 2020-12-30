@@ -39,11 +39,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="createTime" column="create_time" />
 		<result property="updateBy" column="update_by" />
 		<result property="updateTime" column="update_time" />
+		<result property="serviceType" column="service_type" />
 		<association property="shipment" column="shipment_id" javaType="Shipment" select="selectShipment" />
 		<association property="shipmentDetail" column="shipment_detail_id" javaType="ShipmentDetail" select="selectShipmentDetail" />
 		<association property="logisticGroup" column="logistic_group_id" javaType="LogisticGroup" select="selectLogisticGroup" />
 		<association property="driver" column="driver_id" javaType="DriverAccount" select="selectDriverAccount" />
-		<association property="pickupAssign" column="pickup_assign_id" javaType="PickupAssign" select="selectPickupAssign" />
+		<association property="pickupAssign" column="pickup_assign_id" javaType="PickupAssign" select="selectPickupAssign" /> 
+		
+		
 	</resultMap>
 
 	<sql id="selectPickupHistoryVo">
@@ -75,6 +78,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="planningDate != null "> and planning_date = #{planningDate}</if>
             <if test="fromDate != null ">and (gatein_date = #{fromDate} OR gatein_date > #{fromDate})</if>
             <if test="toDate != null ">and (gatein_date = #{toDate} OR gatein_date &lt; #{toDate})</if>
+            
+            <if test="params.fromDate != null and params.fromDate != ''">and create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDate != null and params.toDate != ''">and create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if> 
+            <if test='params.cardIn == "I"'> and service_type in (1,3) </if>  
+            <if test='params.cardOut == "O"'> and service_type in (2,4) </if> 
             <if test="processOrderId != null ">and process_order_id = #{processOrderId}</if>
 		</where>
 	</select>

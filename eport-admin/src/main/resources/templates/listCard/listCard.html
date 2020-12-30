@@ -28,6 +28,17 @@
 								<option value="1">Phát hành</option>
 							</select>
 						</div>
+						
+						
+						<div  class="d-inline" >
+							<select id="inOut" class="easyui-combobox" panelHeight="auto" editable="false"
+								style="width: 130px"> 
+								<option value="" selected>Tất cả</option>
+								<option value="I">Xe vào</option><!--  2,4 -->
+								<option value="O">Xe ra</option> <!-- 1,3 -->
+							</select>
+						</div>
+						
 						<div class="d-inline">
 							<input id="fromDate" class="easyui-datebox" style="width: 100px"
 								data-options="prompt:'Từ ngày', formatter:dateformatter, parser:dateparser" />
@@ -52,11 +63,15 @@
 				<table id="dg" style="width: 100%" pageList="[20,50,100,150,200]" fitColumn="true">
 					<thead>
 						<tr>
-							<th field="ck" checkbox="true"></th>
-							<th data-options="field:'fullName', align:'left', halign:'center', resizable:true, fixed:true"
-								width="300">Tên đầy đủ</th>
-							<th data-options="field:'phoneNumber', align:'center', halign:'center', resizable:true, fixed:true"
-								width="150">Số điện thoại</th>
+							<!-- <th field="ck" checkbox="true"></th> -->
+							<th data-options="field:'containerNo', align:'left', halign:'center', resizable:true, fixed:true"
+								width="150">Container No</th>
+							<th data-options="field:'sztp', align:'left', halign:'center', resizable:true, fixed:true"
+								width="100">Kích thước</th>
+							<th data-options="field:'gateinDate', align:'center', halign:'center', resizable:true, fixed:true,formatter: formatDate"
+								width="150">Thời gian vào</th>
+							<th data-options="field:'gateoutDate', align:'center', halign:'center', resizable:true, fixed:true,formatter: formatDate"
+								width="150">Thời gian ra</th>
 							<!-- <th data-options="field:'createBy', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate" -->
 							<th data-options="field:'createBy', align:'center', halign:'center', resizable:true, fixed:true"
 								width="150" sortable="true">Người tạo</th>
@@ -64,8 +79,12 @@
 								width="150" sortable="true">Số xe đầu kéo</th>
 							<th data-options="field:'chassisNo', align:'center', halign:'center', resizable:true, fixed:true"
 								width="150" sortable="true">Số xe rơ móc</th>
+							<th data-options="field:'createTime', align:'center', halign:'center', resizable:true, fixed:true,formatter: formatDate"
+								width="150" sortable="true">Thời gian tạo</th>
 							<!-- <th data-options="field:'action', align:'center', halign:'center', resizable:true, formatter: formatActionBtn"
 								width="150">Hành động</th> -->
+								 
+								
 						</tr> 
 					</thead>
 				</table>

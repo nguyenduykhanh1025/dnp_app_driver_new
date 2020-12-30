@@ -2,7 +2,7 @@
 const FREFIX = ctx + "listCard/InOut"; 
 var noticeSearch = new Object();
 noticeSearch.params = new Object();
-var fromDate, toDate;
+var fromDate, toDate,inOut;
 
 var toolbar = [
 //    {
@@ -68,6 +68,45 @@ $( document ).ready(function () {
             loadTable();
         }
     });
+    
+    $("#inOut").combobox({
+        onSelect: function (option) { 
+            noticeSearch.params.inOut = option.value;
+            loadTable();
+        }
+    });
+    
+    
+//    $("#finishStatus").combobox({
+//    valueField: 'finishValue',
+//    textField: 'finishKey',
+//    data: [
+//      {
+//        "finishValue": 'N',
+//        "finishKey": "Chưa xác nhận ngày đóng",
+//        "selected": true
+//      },
+//      {
+//        "finishValue": 'Y',
+//        "finishKey": "Đã xác nhận ngày đóng",
+//      }],
+//    onSelect: function (finishStatus) {
+//      switch (finishStatus.finishValue) {
+//        case 'null':
+//          shipment.params.dateReceiptStatus = null;
+//          break;
+//        case 'N':
+//          shipment.params.dateReceiptStatus = 'W';
+//          break;
+//        case 'Y':
+//          shipment.params.dateReceiptStatus = 'Y';
+//          break;
+//      }
+//      loadTable();
+//    }
+//  });
+    
+    
 
     $('#fromDate').datebox({
         onSelect: function (date) {
@@ -269,6 +308,8 @@ function removeList() {
 
 function search() {
     //noticeSearch.noticeTitle = $("#noticeTitle").textbox('getText').toUpperCase();
+    //noticeSearch.params.inOut =  inOut;
+    
     loadTable();
 }
 
@@ -277,6 +318,8 @@ function clearInput() {
     $("#active").combobox('setValue', '');
     $('#fromDate').datebox('setValue', '');
     $('#toDate').datebox('setValue', '');
+     $('#inOut').combobox('setValue', '');
+     
     noticeSearch = new Object();
     noticeSearch.params = new Object();
     fromDate = null;
