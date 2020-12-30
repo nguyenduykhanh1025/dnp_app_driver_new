@@ -44,6 +44,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
             <if test="params.shipmentDetailIdNull != null"> and shipment_detail_id is null</if>
+            
+            <if test="params.fromDate != null and params.fromDate != ''">and create_time &gt;= to_date(#{params.fromDate},'dd/MM/yyyy HH24:mi:ss')</if>
+            <if test="params.toDate != null and params.toDate != ''">and create_time &lt;= to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')</if>
+                
             <if test="params.shipmentDetailIds != null">
                 and shipment_detail_id in
                 <foreach item="shipmentDetailId" collection="params.shipmentDetailIds" open="(" separator="," close=")">

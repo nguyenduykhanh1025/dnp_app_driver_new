@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vn.com.irtech.eport.common.core.text.Convert;
-import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.common.utils.DateUtils; 
 import vn.com.irtech.eport.system.domain.SysNotice;
 import vn.com.irtech.eport.system.mapper.SysNoticeMapper;
 import vn.com.irtech.eport.system.service.ISysNoticeService;
@@ -45,7 +45,7 @@ public class SysNoticeServiceImpl implements ISysNoticeService
     public List<SysNotice> selectSysNoticeList(SysNotice sysNotice)
     {
         return sysNoticeMapper.selectSysNoticeList(sysNotice);
-    }
+    } 
 
     /**
      * Add Notification form
