@@ -10,7 +10,7 @@ import {
     Detail1,
     Detail11,
     Detail2,
-    ResultReturn,
+    ResultReturn
 } from '@/screens/home';
 import ListNotification from '@/screens/notification/list';
 import ListHistory from '@/screens/history/list';

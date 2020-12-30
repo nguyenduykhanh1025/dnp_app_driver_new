@@ -6,7 +6,6 @@ import Detail1 from './detail1';
 import Detail11 from './detail1.1';
 import Detail2 from './detail2';
 import ResultReturn from './result-returns';
-
 export {
     Home,
     Detail,

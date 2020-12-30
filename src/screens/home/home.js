@@ -13,6 +13,7 @@ import {
   Alert,
   RefreshControl,
   ActivityIndicator,
+  Modal
 } from 'react-native';
 import { connect } from 'react-redux';
 import NavigationService from '@/utils/navigation';
@@ -43,7 +44,9 @@ import { getToken, saveUpEnable, saveDownEnable } from '@/stores';
 import { hasSystemFeature } from 'react-native-device-info';
 import Toast from 'react-native-tiny-toast';
 import { update } from 'immutable';
-import { DropDownProfile, ProfileModal } from '@/components'
+import { DropDownProfile, ProfileModal } from '@/components';
+import { ContainerCheckinList } from '@/components/containerCheckin';
+
 const icUser = require('@/assets/icons/account/user.png')
 const icCont1 = require('@/assets/icons/cont2_icon.png')
 const icCont2 = require('@/assets/icons/cont3_icon.png')
@@ -72,6 +75,7 @@ class HomeScreen extends Component {
       userName: 'Họ và tên',
       token: '',
       refreshing: false,
+      visibleModalCheckin: false
     };
     this.subs = [
       this.props.navigation.addListener('didFocus', this.componentDidMount),
@@ -217,30 +221,41 @@ class HomeScreen extends Component {
   )
 
   onGoCheckIn = async () => {
-    Toast.showLoading('Đang lấy dữ liệu check in!')
-    var pickupHistoryIds = [];
-    this.state.PickupList.map((item, index) => {
-      pickupHistoryIds = pickupHistoryIds.concat(item.pickupId)
+    // NavigationService.navigate(mainStack.containerCheckin);
+    this.setState({
+      visibleModalCheckin: true
     })
-    const params = {
-      api: 'checkin',
-      param: {
-        pickupHistoryIds: pickupHistoryIds
-      },
-      token: this.token,
-      method: 'POST'
-    }
-    var result = undefined;
-    result = await callApi(params);
-    // console.log('resultonGoCheckIn', result)
-    if (result.code == 0) {
-      Toast.hide()
-      NavigationService.navigate(mainStack.qr_code, { dataQR: result })
-    }
-    else {
-      Toast.hide()
-      Alert.alert('Thông báo!', result.msg)
-    }
+
+    // Toast.showLoading('Đang lấy dữ liệu check in!')
+    // var pickupHistoryIds = [];
+    // this.state.PickupList.map((item, index) => {
+    //   pickupHistoryIds = pickupHistoryIds.concat(item.pickupId)
+    // })
+    // const params = {
+    //   api: 'checkin',
+    //   param: {
+    //     pickupHistoryIds: pickupHistoryIds
+    //   },
+    //   token: this.token,
+    //   method: 'POST'
+    // }
+    // var result = undefined;
+    // result = await callApi(params);
+    // // console.log('resultonGoCheckIn', result)
+    // if (result.code == 0) {
+    //   Toast.hide()
+    //   NavigationService.navigate(mainStack.qr_code, { dataQR: result })
+    // }
+    // else {
+    //   Toast.hide()
+    //   Alert.alert('Thông báo!', result.msg)
+    // }
+  }
+
+  hideModalCheckin = () => {
+    this.setState({
+      visibleModalCheckin: false
+    })
   }
 
   render() {
@@ -474,8 +489,8 @@ class HomeScreen extends Component {
             </View>
             {
               this.state.HistoryList.length == 0 ?
-                <View style={{ height: hs(425), width: '100%', justifyContent: 'center', alignItems: 'center'}}>
-                  <ActivityIndicator size='large' color={Colors.mainColor}/>
+                <View style={{ height: hs(425), width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                  <ActivityIndicator size='large' color={Colors.mainColor} />
                 </View>
                 :
                 <FlatList
@@ -497,10 +512,13 @@ class HomeScreen extends Component {
             />
           </View>
         </ScrollView>
-        <ProfileModal 
+        <ProfileModal
           visible={this.state.profileVisible}
-          onClose={()=> this.setState({ profileVisible: false })}
+          onClose={() => this.setState({ profileVisible: false })}
         />
+        <Modal visible={this.state.visibleModalCheckin} onDismiss={this.hideModalCheckin} contentContainerStyle={styles.containerStyleModal}>
+          <ContainerCheckinList onClose={this.hideModalCheckin} />
+        </Modal>
       </View>
     )
   }
@@ -812,4 +830,7 @@ const styles = StyleSheet.create({
   DropdownItemText: {
     fontSize: fs(16)
   },
+  containerStyleModal: {
+    backgroundColor: 'white', padding: 20,
+  }
 })

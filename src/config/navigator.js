@@ -25,7 +25,6 @@ export const mainStack = {
     history: 'historyScreen',
     notification: 'notificationScreen',
     profile: 'profileScreen',
-
 };
 
 export const homeTab = {
