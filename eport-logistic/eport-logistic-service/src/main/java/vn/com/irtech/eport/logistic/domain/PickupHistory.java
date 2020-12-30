@@ -546,7 +546,6 @@ public class PickupHistory extends BaseEntity {
 				.append("driverPhoneNumber", getDriverPhoneNumber()).append("logisticGroupName", getLogisticGroupName())
 				.append("processOrderId", getProcessOrderId()).append("gatePass",getGatePass())
 				.append("jobOrderNo", getJobOrderNo()).append("jobOrderFlg",getJobOrderFlg())
-				.append("loadableWgt", getLoadableWgt())
-				.toString();
+				.append("loadableWgt", getLoadableWgt()).append("params", getParams()).toString();
 	}
 }

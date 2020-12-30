@@ -251,9 +251,9 @@ public interface EportConstants {
 	/** High priority notificaiton app window */
 	public static final Integer NOTIFICATION_PRIORITY_HIGH = 1;
 	/** Medium priority notificaiton app window */
-	public static final Integer NOTIFICATION_PRIORITY_MEDIUM = 3;
+	public static final Integer NOTIFICATION_PRIORITY_MEDIUM = 2;
 	/** Low priority notificaiton app window */
-	public static final Integer NOTIFICATION_PRIORITY_LOW = 2;
+	public static final Integer NOTIFICATION_PRIORITY_LOW = 3;
 
 	// plate number type for logistic truck type
 	/** loai xe dau keo */
