@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.system.service;
 
 import java.util.List;
-
+ 
 import vn.com.irtech.eport.system.domain.SysNotice;
 
 /**
@@ -26,7 +26,7 @@ public interface ISysNoticeService
      * @param sysNotice Notification form
      * @return Notification form List
      */
-    public List<SysNotice> selectSysNoticeList(SysNotice sysNotice);
+    public List<SysNotice> selectSysNoticeList(SysNotice sysNotice); 
 
     /**
      * Add Notification form

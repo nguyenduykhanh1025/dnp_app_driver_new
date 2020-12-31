@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.system.mapper;
 
 import java.util.List;
-
+ 
 import vn.com.irtech.eport.system.domain.SysNotice;
 
 /**
@@ -26,7 +26,8 @@ public interface SysNoticeMapper
      * @param sysNotice Notification form
      * @return Notification form List
      */
-    public List<SysNotice> selectSysNoticeList(SysNotice sysNotice);
+    public List<SysNotice> selectSysNoticeList(SysNotice sysNotice); 
+    
 
     /**
      * Add Notification form

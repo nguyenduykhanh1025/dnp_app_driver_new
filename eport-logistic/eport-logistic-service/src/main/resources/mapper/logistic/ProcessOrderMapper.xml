@@ -502,6 +502,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from process_order
 		FETCH NEXT 1 ROWS ONLY
 	</select>
+	
+	<select id="getReportNumberForDutyLoadingCago" parameterType="String" resultType="hashmap">
+		SELECT
+  			(SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh full outer join shipment s on sh.shipment_id = s.id where s.service_type = '15' and sh.payment_status = 'Y' and sh.date_receipt_status = 'W')AS LOADINGCAGO,
+  			(SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh full outer join shipment s on sh.shipment_id = s.id where s.service_type = '18' and sh.payment_status = 'Y' and sh.date_receipt_status = 'W')AS UNLOADINGCAGO,
+  			(SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh full outer join shipment s on sh.shipment_id = s.id where s.service_type = '15'  and sh.date_receipt_status = 'Y' and sh.finish_status = 'N')AS YARDLOADING,
+  			(SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh full outer join shipment s on sh.shipment_id = s.id where s.service_type = '18'  and sh.date_receipt_status = 'Y' and sh.finish_status = 'N')AS YARDUNLOADING,
+  			(SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh full outer join shipment s on sh.shipment_id = s.id where s.service_type = '16' and sh.payment_status = 'Y' and sh.date_receipt_status = 'W')AS CFSLOADING,
+  			(SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh full outer join shipment s on sh.shipment_id = s.id where s.service_type = '19' and sh.payment_status = 'Y' and sh.finish_status = 'N' and sh.date_receipt_status = 'W')AS CFSUNLOADING,
+  			(SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh full outer join shipment s on sh.shipment_id = s.id where sh.process_status = 'W' AND sh.user_verify_status = 'Y' and (s.service_type = 15 or s.service_type = '16'))AS OMLOADING,
+  			(SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh full outer join shipment s on sh.shipment_id = s.id where sh.process_status = 'W' AND sh.user_verify_status = 'Y' and (s.service_type = '18' or s.service_type = '19'))AS OMUNLOADING,
+  			(SELECT COUNT(DISTINCT sh.shipment_id) FROM shipment_detail sh full outer join shipment s on sh.shipment_id = s.id where s.service_type = '1' and sh.oversize = 'R')AS OVERSIZELOADING    
+		from process_order
+		FETCH NEXT 1 ROWS ONLY
+	</select>
+	
+	
+	
+	
+	
 
     <select id="selectProcessOrderListByIds" resultMap="ProcessOrderResult">
         select * from process_order

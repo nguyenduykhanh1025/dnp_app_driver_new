@@ -198,6 +198,13 @@ public class ProcessOrderServiceImpl implements IProcessOrderService {
     	return processOrderMapper.getSupportNumberReportForContReefer();
     }
 	
+	@Override
+    public Map<String, Long> getReportNumberForDutyLoadingCago() {
+    	return processOrderMapper.getReportNumberForDutyLoadingCago();
+    }
+	
+	
+	
 	/**
      * Select process order list by ids
      * 

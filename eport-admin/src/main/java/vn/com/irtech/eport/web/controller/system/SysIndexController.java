@@ -64,6 +64,10 @@ public class SysIndexController extends BaseController
         Map<String, Long> reportReefer = processOrderService.getSupportNumberReportForContReefer();
         mmap.put("reportReefer", reportReefer);
         
+        
+        Map<String, Long> dutyLoadingCago = processOrderService.getReportNumberForDutyLoadingCago();
+        mmap.put("dutyLoadingCago", dutyLoadingCago);
+        
         return "index";
     }
     
@@ -86,7 +90,17 @@ public class SysIndexController extends BaseController
     	ajaxResult.put("reportReefer", reportReefer);
     	return ajaxResult;
     }
-
+    
+    // DutyLoadingcago
+    @GetMapping("/report-dutyLoadingCago/count")
+    @ResponseBody
+    public AjaxResult getReportNumberForDutyLoadingCago() {
+    	AjaxResult ajaxResult = AjaxResult.success(); 
+    	Map<String, Long> dutyLoadingCago = processOrderService.getReportNumberForDutyLoadingCago();
+    	ajaxResult.put("dutyLoadingCago", dutyLoadingCago);
+    	return ajaxResult;
+    }
+     
     // switch theme
     @GetMapping("/system/switchSkin")
     public String switchSkin(ModelMap mmap)
