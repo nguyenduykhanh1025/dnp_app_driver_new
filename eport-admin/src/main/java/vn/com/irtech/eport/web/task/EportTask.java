@@ -238,7 +238,6 @@ public class EportTask {
 			for (SysNotificationReceiver sysNotificationReceiver2 : notificationReceivers) {
 				SysUserToken sysUserToken = new SysUserToken();
 				sysUserToken.setUserId(sysNotificationReceiver2.getUserId());
-				;
 				sysNotificationReceiver2.setSentFlg(true);
 				sysNotificationReceiverService.updateSysNotificationReceiver(sysNotificationReceiver2);
 				List<String> sysUserTokens = sysUserTokenService

@@ -34,6 +34,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="sztp" column="sztp" />
 		<result property="distance" column="distance" />
 		<result property="updateLocationTime" column="update_location_time" />
+		<result property="serviceType" column="service_type" />
+		<result property="entranceScan" column="entrance_scan" />
 		<result property="remark" column="remark" />
 		<result property="createBy" column="create_by" />
 		<result property="createTime" column="create_time" />
@@ -84,6 +86,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test='params.cardIn == "I"'> and service_type in (1,3) </if>  
             <if test='params.cardOut == "O"'> and service_type in (2,4) </if> 
             <if test="processOrderId != null ">and process_order_id = #{processOrderId}</if>
+            <if test="serviceType != null ">and service_type = #{serviceType}</if>
+            <if test="entranceScan != null ">and entrance_scan = #{entranceScan}</if>
+            <if test="params.serviceTypes != null">
+            	and service_type in
+            	<foreach item="serviceType" collection="params.serviceTypes" open="(" separator="," close=")">
+		            #{serviceType}
+		        </foreach>
+            	
+            </if>
+            <if test="params.containerNos != null">
+            	and container_no in
+            	<foreach item="containerNo" collection="params.containerNos" open="(" separator="," close=")">
+		            #{containerNo}
+		        </foreach>
+            	
+            </if>
 		</where>
 	</select>
 	
@@ -187,6 +205,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="sztp != null and sztp != ''">sztp,</if>
 			<if test="distance != null">distance,</if>
 			<if test="updateLocationTime != null">update_location_time,</if>
+			<if test="serviceType != null">service_type,</if>
+			<if test="entranceScan != null ">entrance_scan,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -220,6 +240,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="sztp != null and sztp != ''">#{sztp},</if>
 			<if test="distance != null">#{distance},</if>
 			<if test="updateLocationTime != null">#{update_location_time},</if>
+			<if test="serviceType != null">#{serviceType},</if>
+			<if test="entranceScan != null ">#{entranceScan},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -256,6 +278,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="sztp != null and sztp != ''">sztp = #{sztp},</if>
 			<if test="distance != null">distance = #{distance},</if>
 			<if test="updateLocationTime != null">update_location_time = #{updateLocationTime},</if>
+			<if test="serviceType != null">service_type = #{serviceType},</if>
+			<if test="entranceScan != null ">entrance_scan = #{entranceScan},</if>
 			<if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate

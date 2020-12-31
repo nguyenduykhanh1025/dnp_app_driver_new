@@ -17,87 +17,87 @@ public class EirGateDto extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	/** Container No */
-	@Excel(name = "Container No")
+	@Excel(name = "Số Container (Container No)")
 	private String containerNo;
 
 	/** Activity */
-	@Excel(name = "Hoạt Động")
+	@Excel(name = "Hoạt Động (Activity)")
 	private String activity;
 
 	/** Checked In */
-	@Excel(name = "Checked In")
+	@Excel(name = "Ngày Vào Cổng (Checked In)")
 	private Date checkedIn;
 
 	/** Checked Out */
-	@Excel(name = "Checked Out")
+	@Excel(name = "Ngày Ra Cổng (Checked Out)")
 	private Date checkedOut;
 
 	/** Vsl Nm */
-	@Excel(name = "Tàu")
+	@Excel(name = "Tàu (Vsl Nm)")
 	private String vslNm;
 
 	/** Voyage */
-	@Excel(name = "Chuyến")
+	@Excel(name = "Chuyến (Voyage)")
 	private String voyage;
 
 	/** Sztp */
-	@Excel(name = "Kích Thước")
+	@Excel(name = "Kích Thước (Sztp)")
 	private String sztp;
 
 	/** Cntr Type */
-	@Excel(name = "Loại Container")
+	@Excel(name = "Loại Container (Cntr Type)")
 	private String cntrType;
 
 	/** Operator */
-	@Excel(name = "Operator")
+	@Excel(name = "Operator (Operator)")
 	private String operator;
 
 	/** Cont Status */
-	@Excel(name = "Trạng Thái Container")
+	@Excel(name = "Trạng Thái Container (Cont Status)")
 	private String contStatus;
 
 	/** Reference */
-	@Excel(name = "Tham Chiếu")
+	@Excel(name = "Tham Chiếu (Reference)")
 	private String reference;
 
 	/** Position */
-	@Excel(name = "Vị Trí")
+	@Excel(name = "Vị Trí (Position)")
 	private String position;
 
 	/** Area */
-	@Excel(name = "Khu Vực")
+	@Excel(name = "Khu Vực (Area)")
 	private String area;
 
 	/** Cargo Type */
-	@Excel(name = "Loại Hàng")
+	@Excel(name = "Loại Hàng (Cargo Type)")
 	private String cargoType;
 
 	/** Imdg */
-	@Excel(name = "Imdg")
+	@Excel(name = "Imdg (Imdg)")
 	private String imdg;
 
 	/** Seal1 */
-	@Excel(name = "Seal 1")
+	@Excel(name = "Seal 1 (Seal 1)")
 	private String seal1;
 
 	/** Seal2 */
-	@Excel(name = "Seal 2")
+	@Excel(name = "Seal 2 (Seal 2)")
 	private String seal2;
 
 	/** Truck No */
-	@Excel(name = "Biển Số Xe")
+	@Excel(name = "Biển Số Xe (Truck No)")
 	private String truckNo;
 
 	/** Trucker Tax No */
-	@Excel(name = "Mã Số Thuế Trucker")
+	@Excel(name = "Mã Số Thuế Trucker (Trucker Tax No)")
 	private String truckerTaxNo;
 
 	/** Payer Tax No */
-	@Excel(name = "Mã Số Thuế Payer")
+	@Excel(name = "Mã Số Thuế Payer (Payer Tax No)")
 	private String payerTaxNo;
 
 	/** Remark */
-	@Excel(name = "Ghi Chú")
+	@Excel(name = "Ghi Chú (Remark)")
 	private String remark;
 
 	public String getContainerNo() {

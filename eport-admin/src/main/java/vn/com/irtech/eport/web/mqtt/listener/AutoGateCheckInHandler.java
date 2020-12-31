@@ -18,12 +18,14 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 
 import vn.com.irtech.eport.common.constant.EportConstants;
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.GateDetection;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IGateDetectionService;
+import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
@@ -52,6 +54,9 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 
 	@Autowired
 	private IGateDetectionService gateDetectionService;
+
+	@Autowired
+	private IPickupHistoryService pickupHistoryService;
 
 	@Autowired
 	@Qualifier("threadPoolTaskExecutor")
@@ -192,6 +197,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 			// Set type gate in form data is beginning
 			gateInFormData.setType(EportConstants.GATE_REQ_TYPE_BEGIN);
 			List<PickupHistory> pickupIn = new ArrayList<>();
+			String containerNos = "";
 
 			// Container 1
 			if (StringUtils.isNotEmpty(gateDetection.getContainerNo1())) {
@@ -202,6 +208,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 				pickupHistory.setArea("");
 				pickupHistory.setLocationUpdate(false);
 				pickupIn.add(pickupHistory);
+				containerNos += gateDetection.getContainerNo1();
 			}
 
 			// Container 2
@@ -213,6 +220,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 				pickupHistory.setArea("");
 				pickupHistory.setLocationUpdate(false);
 				pickupIn.add(pickupHistory);
+				containerNos += "," + gateDetection.getContainerNo2();
 			}
 
 			if (CollectionUtils.isNotEmpty(pickupIn)) {
@@ -238,6 +246,8 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 				gateInFormData.setWgt(gross.toString());
 				gateInFormData.setGateId(gateDetection.getGateNo());
 				gateInFormData.setReceiptId(processOrder.getId());
+				gateInFormData
+						.setIsPrint(checkPrint(containerNos, gateDetection.getTruckNo(), gateDetection.getChassisNo()));
 
 				String msg = new Gson().toJson(gateInFormData);
 				SysRobot robot = new SysRobot();
@@ -264,5 +274,22 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 		} catch (Exception e) {
 			logger.error("Error when send order gate in: " + e);
 		}
+	}
+
+	private boolean checkPrint(String containerNos, String truckNo, String chassisNo) {
+		PickupHistory pickupHistoryParam = new PickupHistory();
+		pickupHistoryParam.setTruckNo(truckNo);
+		pickupHistoryParam.setChassisNo(chassisNo);
+		pickupHistoryParam.setStatus(EportConstants.PICKUP_HISTORY_STATUS_WAITING);
+		Map<String, Object> params = new HashMap<>();
+		String serviceTypes = EportConstants.SERVICE_DROP_EMPTY + "," + EportConstants.SERVICE_DROP_FULL;
+		params.put("serviceTypes", Convert.toStrArray(serviceTypes));
+		params.put("containerNos", Convert.toStrArray(containerNos));
+		pickupHistoryParam.setParams(params);
+		List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
+		if (CollectionUtils.isNotEmpty(pickupHistories)) {
+			return false;
+		}
+		return true;
 	}
 }

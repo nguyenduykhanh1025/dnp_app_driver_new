@@ -161,6 +161,8 @@ public class PickupHistory extends BaseEntity {
 
 	private Boolean locationUpdate;
 
+	private Boolean entranceScan;
+
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -529,6 +531,14 @@ public class PickupHistory extends BaseEntity {
 		this.locationUpdate = locationUpdate;
 	}
 
+	public Boolean getEntranceScan() {
+		return entranceScan;
+	}
+
+	public void setEntranceScan(Boolean entranceScan) {
+		this.entranceScan = entranceScan;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -546,7 +556,7 @@ public class PickupHistory extends BaseEntity {
 				.append("driverPhoneNumber", getDriverPhoneNumber()).append("logisticGroupName", getLogisticGroupName())
 				.append("processOrderId", getProcessOrderId()).append("gatePass",getGatePass())
 				.append("jobOrderNo", getJobOrderNo()).append("jobOrderFlg",getJobOrderFlg())
-				.append("loadableWgt", getLoadableWgt())
-				.toString();
+				.append("loadableWgt", getLoadableWgt()).append("params", getParams())
+				.append("entranceScan", getEntranceScan()).toString();
 	}
 }

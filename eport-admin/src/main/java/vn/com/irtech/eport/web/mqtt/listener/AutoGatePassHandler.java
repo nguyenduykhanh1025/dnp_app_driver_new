@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.web.mqtt.listener;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,22 +20,32 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.messaging.BatchResponse;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.SendResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import vn.com.irtech.eport.common.constant.EportConstants;
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.framework.firebase.service.FirebaseService;
+import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.GateDetection;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IGateDetectionService;
+import vn.com.irtech.eport.logistic.service.IOtpCodeService;
+import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 import vn.com.irtech.eport.system.service.ISysRobotService;
+import vn.com.irtech.eport.system.service.ISysUserTokenService;
 import vn.com.irtech.eport.web.dto.GateInFormData;
 import vn.com.irtech.eport.web.dto.PickupRobotResult;
 import vn.com.irtech.eport.web.mqtt.BusinessConsts;
@@ -64,6 +75,21 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 
 	@Autowired
 	private MqttService mqttService;
+
+	@Autowired
+	private IPickupHistoryService pickupHistoryService;
+
+	@Autowired
+	private IDriverAccountService driverAccountService;
+
+	@Autowired
+	private IOtpCodeService otpCodeService;
+
+	@Autowired
+	private FirebaseService firebaseService;
+
+	@Autowired
+	private ISysUserTokenService sysUserTokenService;
 
 	@Autowired
 	@Qualifier("threadPoolTaskExecutor")
@@ -161,6 +187,9 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 			try {
 				gateDetection.setStatus("S");
 				gateDetectionService.updateGateDetection(gateDetection);
+
+				// Update pickup history and send result to driver if exist
+				updateResultForDriver(gateInFormData, gateDetection);
 
 				// Send result to gate app
 				String message = "Làm lệnh vào cổng thành công.";
@@ -680,5 +709,87 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 			gateDetectionService.updateGateDetection(gateDetection);
 		}
 		return gateDetection;
+	}
+
+	private void updateResultForDriver(GateInFormData gateInFormData, GateDetection gateDetection) {
+		Map<String, String> locationMap = new HashMap<>();
+		if (StringUtils.isNotEmpty(gateDetection.getLocation1())) {
+			locationMap.put(gateDetection.getContainerNo1(), gateDetection.getLocation1());
+		}
+		if (StringUtils.isNotEmpty(gateDetection.getLocation2())) {
+			locationMap.put(gateDetection.getContainerNo2(), gateDetection.getLocation2());
+		}
+
+		String containerNos = "";
+		for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
+			containerNos += pickupHistory.getContainerNo() + ",";
+		}
+		if (StringUtils.isNotEmpty(containerNos)) {
+			containerNos.substring(0, containerNos.length() - 1);
+			PickupHistory pickupHistoryParam = new PickupHistory();
+			pickupHistoryParam.setTruckNo(gateInFormData.getTruckNo());
+			pickupHistoryParam.setChassisNo(gateInFormData.getChassisNo());
+			pickupHistoryParam.setStatus(EportConstants.PICKUP_HISTORY_STATUS_WAITING);
+			Map<String, Object> params = new HashMap<>();
+			String serviceTypes = EportConstants.SERVICE_DROP_EMPTY + "," + EportConstants.SERVICE_DROP_FULL;
+			params.put("serviceTypes", Convert.toStrArray(serviceTypes));
+			params.put("containerNos", Convert.toStrArray(containerNos));
+			pickupHistoryParam.setParams(params);
+			List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
+			Long driverId = null;
+			String content = "(Danang port) Toa do hạ container: ";
+			if (CollectionUtils.isNotEmpty(pickupHistories)) {
+				for (PickupHistory pickupHistory : pickupHistories) {
+					// Get driver id
+					driverId = pickupHistory.getDriverId();
+					String location = locationMap.get(pickupHistory.getContainerNo());
+					if (StringUtils.isNotEmpty(location)) {
+						content += pickupHistory.getContainerNo() + " " + location + " ";
+						String[] locationArr = location.split("-");
+						if (locationArr.length >= 4) {
+							pickupHistory.setBlock(locationArr[0]);
+							pickupHistory.setBay(locationArr[1]);
+							pickupHistory.setLine(locationArr[2]);
+							pickupHistory.setTier(locationArr[3]);
+						}
+						pickupHistory.setStatus(EportConstants.PICKUP_HISTORY_STATUS_GATE_IN);
+						pickupHistoryService.updatePickupHistory(pickupHistory);
+					}
+				}
+
+				if (driverId != null) {
+					// Send sms yard position result to driver
+					DriverAccount driverAccount = driverAccountService.selectDriverAccountById(driverId);
+					try {
+						otpCodeService.postOtpMessage(driverAccount.getMobileNumber(), content);
+					} catch (IOException e) {
+						logger.error("Error when send yard position result to driver: " + e);
+					}
+
+					// Send firebase
+					List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(driverId);
+					if (CollectionUtils.isNotEmpty(sysUserTokens)) {
+						try {
+							BatchResponse response = firebaseService.sendNotification(
+									"Kết quả tọa độ hạ container xuống bãi cảng", content, sysUserTokens);
+							if (response.getFailureCount() > 0) {
+								List<SendResponse> responses = response.getResponses();
+								List<String> failedTokens = new ArrayList<>();
+								for (int i = 0; i < responses.size(); i++) {
+									if (!responses.get(i).isSuccessful()) {
+										// The order of responses corresponds to the order of the registration tokens.
+										failedTokens.add(sysUserTokens.get(i));
+									}
+								}
+
+								logger.error("List of tokens that caused failures: " + failedTokens);
+							}
+						} catch (FirebaseMessagingException e) {
+							logger.error("Error send notification: " + e);
+						}
+					}
+				}
+			}
+		}
 	}
 }

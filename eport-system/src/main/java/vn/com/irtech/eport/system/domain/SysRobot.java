@@ -76,6 +76,9 @@ public class SysRobot extends BaseEntity {
 	@Excel(name = "Oversize remark order")
 	private Boolean isOverSizeRemarkOrder;
 
+	@Excel(name = "Gate out order")
+	private Boolean isGateOutOrder;
+
 	/** ip address */
 	@Excel(name = "ip address")
 	private String ipAddress;
@@ -263,6 +266,14 @@ public class SysRobot extends BaseEntity {
 		this.isOverSizeRemarkOrder = isOverSizeRemarkOrder;
 	}
 
+	public Boolean getIsGateOutOrder() {
+		return isGateOutOrder;
+	}
+
+	public void setIsGateOutOrder(Boolean isGateOutOrder) {
+		this.isGateOutOrder = isGateOutOrder;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -283,6 +294,6 @@ public class SysRobot extends BaseEntity {
 				.append("createTime", getCreateTime()).append("updateBy", getUpdateBy())
 				.append("updateTime", getUpdateTime()).append("remark", getRemark())
 				.append("responseTime", getResponseTime()).append("isOverSizeRemarkOrder", getIsOverSizeRemarkOrder())
-				.toString();
+				.append("isGateOutOrder", getIsGateOutOrder()).toString();
 	}
 }

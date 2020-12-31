@@ -48,6 +48,8 @@ public interface EportConstants {
 	public static final int SERVICE_UNLOADING_CARGO_WAREHOUSE = 19;
 	/** Remark cont qua kho */
 	public static final int SERVICE_OVERSIZE_REMARK_ORDER = 20;
+	/** Gate out */
+	public static final int SERVICE_GATE_OUT = 21;
 	/** Update booking */
 	public static final int BOOKING_UPDATE = 1;
 	/** Update booking */
@@ -251,9 +253,9 @@ public interface EportConstants {
 	/** High priority notificaiton app window */
 	public static final Integer NOTIFICATION_PRIORITY_HIGH = 1;
 	/** Medium priority notificaiton app window */
-	public static final Integer NOTIFICATION_PRIORITY_MEDIUM = 3;
+	public static final Integer NOTIFICATION_PRIORITY_MEDIUM = 2;
 	/** Low priority notificaiton app window */
-	public static final Integer NOTIFICATION_PRIORITY_LOW = 2;
+	public static final Integer NOTIFICATION_PRIORITY_LOW = 3;
 
 	// plate number type for logistic truck type
 	/** loai xe dau keo */
