@@ -30,10 +30,12 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.GateDetection;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.RfidTruck;
+import vn.com.irtech.eport.logistic.domain.TruckEntrance;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IGateDetectionService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IRfidTruckService;
+import vn.com.irtech.eport.logistic.service.ITruckEntranceService;
 import vn.com.irtech.eport.system.dto.ContainerInfoDto;
 import vn.com.irtech.eport.system.dto.NotificationReq;
 import vn.com.irtech.eport.system.service.ISysConfigService;
@@ -63,6 +65,9 @@ public class AdminGateController extends BaseController {
 
 	@Autowired
 	private ISysConfigService sysConfigService;
+
+	@Autowired
+	private ITruckEntranceService truckEntranceService;
 
 	@PostMapping("/pickup/yard-position")
 	public AjaxResult updateYardPosition(@RequestBody List<PickupHistory> pickupHistories) {
@@ -253,9 +258,13 @@ public class AdminGateController extends BaseController {
 		String truckNo = "";
 		String chassisNo = "";
 		Long logisticId = null;
-
+		String rfidss = "";
+		Long truckWgt = null;
+		Long chassisWgt = null;
+		Long loadableWgt = null;
 		// Get truck no, chassis no, logistic id from rfid
 		for (String rfid : rfids) {
+			rfidss += rfid + ",";
 			// Get info plate number from rfid
 			RfidTruck rfidTruckParam = new RfidTruck();
 			rfidTruckParam.setRfid(rfid);
@@ -267,12 +276,35 @@ public class AdminGateController extends BaseController {
 				// Truck no
 				if ("T".equalsIgnoreCase(rfidTruck.getTruckType())) {
 					truckNo = rfidTruck.getPlateNumber();
+					truckWgt = rfidTruck.getWgt();
+					loadableWgt = rfidTruck.getLoadableWgt();
 				} else if ("C".equalsIgnoreCase(rfidTruck.getTruckType())) {
 					// Chassis no
 					chassisNo = rfidTruck.getPlateNumber();
+					chassisWgt = rfidTruck.getWgt();
 				}
 			}
 		}
+		
+		if (chassisWgt == null) {
+			chassisWgt = 0L;
+		}
+		if (truckWgt == null) {
+			truckWgt = 0L;
+		}
+		
+		TruckEntrance truckEntrance = new TruckEntrance();
+		truckEntrance.setActive(true);
+		truckEntrance.setTruckNo(truckNo);
+		truckEntrance.setChassisNo(chassisNo);
+		truckEntrance.setCreateBy(EportConstants.USER_NAME_SYSTEM);
+		truckEntrance.setWgt(truckWgt + chassisWgt);
+		truckEntrance.setLoadableWgt(loadableWgt);
+		truckEntrance.setLogisticGroupId(logisticId);
+		if (StringUtils.isNotEmpty(rfidss)) {
+			truckEntrance.setRfid(rfidss.substring(0, rfidss.length() - 1));
+		}
+		truckEntranceService.insertTruckEntrance(truckEntrance);
 
 		// Search for pickup history available in eport
 		PickupHistory pickupHistoryParam = new PickupHistory();

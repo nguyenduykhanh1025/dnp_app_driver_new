@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -318,12 +319,26 @@ public class LogisticGroupController extends BaseController
     @PostMapping("/delegate")
     @ResponseBody
     public AjaxResult addLogisticDelegate(@RequestBody @Validated LogisticDelegated delegatedLogistic) {
+		Date validUntil = delegatedLogistic.getValidUntil();
+		if (validUntil != null) {
+			validUntil.setHours(23);
+			validUntil.setMinutes(59);
+			validUntil.setSeconds(59);
+			delegatedLogistic.setValidUntil(validUntil);
+		}
     	return toAjax(logisticDelegatedService.insertLogisticDelegated(delegatedLogistic));
     }
     
     @PostMapping("/delegate/edit")
     @ResponseBody
     public AjaxResult updateLogisticDelegate(@RequestBody LogisticDelegated logisticDelegated) {
+		Date validUntil = logisticDelegated.getValidUntil();
+		if (validUntil != null) {
+			validUntil.setHours(23);
+			validUntil.setMinutes(59);
+			validUntil.setSeconds(59);
+			logisticDelegated.setValidUntil(validUntil);
+		}
     	return toAjax(logisticDelegatedService.updateLogisticDelegated(logisticDelegated));
     }
     

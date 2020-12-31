@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.TruckEntranceMapper">
+    
+    <resultMap type="TruckEntrance" id="TruckEntranceResult">
+        <result property="id"    column="id"    />
+        <result property="rfid"    column="rfid"    />
+        <result property="truckNo"    column="truck_no"    />
+        <result property="chassisNo"    column="chassis_no"    />
+        <result property="active"    column="active"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="logisticGroupId"    column="logistic_group_id"    />
+        <result property="loadableWgt"    column="loadable_wgt"    />
+        <result property="wgt"    column="wgt"    />
+    </resultMap>
+
+    <sql id="selectTruckEntranceVo">
+        select id, rfid, truck_no, chassis_no, active, create_time, create_by, update_time, update_by, logistic_group_id, loadable_wgt, wgt from truck_entrance
+    </sql>
+
+    <select id="selectTruckEntranceList" parameterType="TruckEntrance" resultMap="TruckEntranceResult">
+        <include refid="selectTruckEntranceVo"/>
+        <where>  
+            <if test="rfid != null  and rfid != ''"> and rfid = #{rfid}</if>
+            <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
+            <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+            <if test="active != null "> and active = #{active}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="loadableWgt != null"> and loadable_wgt = #{loadableWgt}</if>
+            <if test="wgt != null"> and wgt = #{wgt}</if>
+            <if test="params.expireTime != null"> and create_time &gt;= #{params.expireTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectTruckEntranceById" parameterType="Long" resultMap="TruckEntranceResult">
+        <include refid="selectTruckEntranceVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTruckEntrance" parameterType="TruckEntrance">
+        insert into truck_entrance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="rfid != null">rfid,</if>
+            <if test="truckNo != null">truck_no,</if>
+            <if test="chassisNo != null">chassis_no,</if>
+            <if test="active != null">active,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="logisticGroupId != null">logistic_group_id,</if>
+            <if test="loadableWgt != null">loadable_wgt,</if>
+            <if test="wgt != null">wgt,</if>
+            create_time,
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="rfid != null">#{rfid},</if>
+            <if test="truckNo != null">#{truckNo},</if>
+            <if test="chassisNo != null">#{chassisNo},</if>
+            <if test="active != null">#{active},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="logisticGroupId != null">#{logisticGroupId},</if>
+            <if test="loadableWgt != null">#{loadableWgt},</if>
+            <if test="wgt != null">#{wgt},</if>
+            sysdate,
+         </trim>
+    </insert>
+
+    <update id="updateTruckEntrance" parameterType="TruckEntrance">
+        update truck_entrance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="rfid != null">rfid = #{rfid},</if>
+            <if test="truckNo != null">truck_no = #{truckNo},</if>
+            <if test="chassisNo != null">chassis_no = #{chassisNo},</if>
+            <if test="active != null">active = #{active},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="logisticGroupId != null">logistic_group_id = #{logisticGroupId},</if>
+            <if test="loadableWgt != null">loadable_wgt = #{loadableWgt},</if>
+            <if test="wgt != null">wgt = #{wgt},</if>
+            update_time = sysdate,
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTruckEntranceById" parameterType="Long">
+        delete from truck_entrance where id = #{id}
+    </delete>
+
+    <delete id="deleteTruckEntranceByIds" parameterType="String">
+        delete from truck_entrance where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
