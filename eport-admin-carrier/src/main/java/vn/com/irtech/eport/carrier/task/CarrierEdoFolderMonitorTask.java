@@ -307,8 +307,8 @@ public class CarrierEdoFolderMonitorTask {
 								SysSyncQueue sysSyncQueue = new SysSyncQueue();
 								sysSyncQueue.setSyncType(EportConstants.SYNC_QUEUE_DEM);
 								sysSyncQueue.setExpiredDem(edoUpdate.getExpiredDem());
-								sysSyncQueue.setBlNo(edoUpdate.getBillOfLading());
-								sysSyncQueue.setCntrNo(edoUpdate.getContainerNumber());
+								sysSyncQueue.setBlNo(edoCheck.getBillOfLading());
+								sysSyncQueue.setCntrNo(edoCheck.getContainerNumber());
 								sysSyncQueue.setJobOdrNo(cntrFull.getJobOdrNo2());
 								sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
 								sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
@@ -350,8 +350,8 @@ public class CarrierEdoFolderMonitorTask {
 									sysSyncQueue.setOldRemark(cntrEmty.getRemark());
 									sysSyncQueue.setNewRemark(
 											getRemarkAfterUpdateDet(edoUpdate.getDetFreeTime(), cntrEmty.getRemark()));
-									sysSyncQueue.setBlNo(edoUpdate.getBillOfLading());
-									sysSyncQueue.setCntrNo(edoUpdate.getContainerNumber());
+									sysSyncQueue.setBlNo(edoCheck.getBillOfLading());
+									sysSyncQueue.setCntrNo(edoCheck.getContainerNumber());
 									sysSyncQueue.setJobOdrNo(cntrEmty.getJobOdrNo());
 									sysSyncQueue.setStatus(EportConstants.SYNC_QUEUE_STATUS_WAITING);
 									sysSyncQueueService.insertSysSyncQueue(sysSyncQueue);
