@@ -85,12 +85,10 @@ public class CarrierEdiController {
 		}
 
 		try {
-			ediService.executeListEdi(ediReq.getData(), ediReq.getPartnerCode(), carrierApi.getGroupId(),
-					transactionId);
+			ediService.executeListEdi(ediReq.getData(), ediReq.getPartnerCode(), carrierApi.getGroupId(), transactionId);
 		} catch (Exception e) {
 			logger.error("Error while call EDI API", e);
-			throw new EdiApiException(
-					EdiRes.error(HttpServletResponse.SC_BAD_REQUEST, e.getMessage(), transactionId, ediReq.getData()));
+			throw new EdiApiException(EdiRes.error(HttpServletResponse.SC_BAD_REQUEST, e.getMessage(), transactionId, ediReq.getData()));
 		}
 
 		EdiRes ediRes = EdiRes.success("", transactionId, ediReq.getData());
