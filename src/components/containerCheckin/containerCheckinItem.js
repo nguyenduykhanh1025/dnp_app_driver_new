@@ -7,21 +7,19 @@ import {
 	heightPercentageToDP as hs,
 	fontSizeValue as fs,
 } from '@/commons';
-import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 class ContainerCheckinItem extends Component {
 	render() {
-		var { data, onPress, onSelectCont } = this.props;
-		var date = moment(data.gateInDate).format('DD-MM-YYYY');
-
+		const { data, onSelectCont, isDisable } = this.props;
+		const { containerNo, sztp, checked, block, bay, row, tier } = data;
 		return (
-			<TouchableOpacity onPress={() => onSelectCont(data)}>
+			<TouchableOpacity onPress={() => onSelectCont(data)} disabled={isDisable}  >
 				<View>
 					<View style={styles.Container}>
-						<View style={styles.ItemContainer}>
-							<View style={[styles.checkbox, data.selected ? styles.checkboxActive : '']}>
-								{data.selected ?
+						<View style={[styles.ItemContainer]}>
+							<View style={[styles.checkbox, checked ? styles.checkboxActive : '', isDisable ? styles.disabledContainer : null]}>
+								{checked ?
 									<Icon name="check" size={15} color='#fff' />
 									: null
 								}
@@ -34,7 +32,7 @@ class ContainerCheckinItem extends Component {
 												Container
                       </Text>
 											<Text style={styles.ItemLineValue}>
-												{data.containerNo}
+												{containerNo}
 											</Text>
 										</View>
 										<View style={[styles.ItemLineText, { marginTop: hs(10) }]}>
@@ -42,7 +40,14 @@ class ContainerCheckinItem extends Component {
 												Kích thước
                         </Text>
 											<Text style={styles.ItemLineDate}>
-												{date}
+												{sztp}
+											</Text>
+
+											<Text style={[styles.ItemLineLabel, styles.coordinatesLabel]}>
+												Tọa độ
+                        </Text>
+											<Text style={styles.ItemLineDate}>
+												{block} - {bay} - {row} - {tier}
 											</Text>
 										</View>
 									</View>
@@ -62,6 +67,9 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		marginBottom: hs(15),
+	},
+	disabledContainer: {
+		backgroundColor: '#d3d3d3',
 	},
 	ItemContainer: {
 		width: ws(345),
@@ -140,6 +148,9 @@ const styles = StyleSheet.create({
 	checkboxActive: {
 		backgroundColor: Colors.blue,
 		borderColor: Colors.blue,
+	},
+	coordinatesLabel: {
+		marginLeft: ws(7)
 	}
 })
 

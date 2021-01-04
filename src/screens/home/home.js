@@ -38,7 +38,7 @@ import {
   cont5_icon
 } from '@/assets/icons'
 import HomeButton from './home_button'
-import { callApi } from '@/requests'
+import { callApi } from '@/requests';
 import { signOut } from '@/modules/auth/action';
 import { getToken, saveUpEnable, saveDownEnable } from '@/stores';
 import { hasSystemFeature } from 'react-native-device-info';
@@ -234,7 +234,7 @@ class HomeScreen extends Component {
     // const params = {
     //   api: 'checkin',
     //   param: {
-    //     pickupHistoryIds: pickupHistoryIds
+    //     pickupHistoryIds: pickupHistoryIds,
     //   },
     //   token: this.token,
     //   method: 'POST'
@@ -258,6 +258,35 @@ class HomeScreen extends Component {
     })
   }
 
+  onSuccessCheckin = async (pickupHistories) => {
+    this.hideModalCheckin();
+
+    Toast.showLoading('Đang lấy dữ liệu check in!')
+    var pickupHistoryIds = [];
+    this.state.PickupList.map((item, index) => {
+      pickupHistoryIds = pickupHistoryIds.concat(item.pickupId)
+    })
+    const params = {
+      api: 'checkin',
+      param: {
+        pickupHistoryIds: pickupHistoryIds,
+        pickupHistories: pickupHistories
+      },
+      token: this.token,
+      method: 'POST'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    if (result.code == 0) {
+      Toast.hide()
+      NavigationService.navigate(mainStack.qr_code, { dataQR: result })
+    }
+    else {
+      Toast.hide()
+      Alert.alert('Thông báo!', result.msg)
+    }
+
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -517,7 +546,7 @@ class HomeScreen extends Component {
           onClose={() => this.setState({ profileVisible: false })}
         />
         <Modal visible={this.state.visibleModalCheckin} onDismiss={this.hideModalCheckin} contentContainerStyle={styles.containerStyleModal}>
-          <ContainerCheckinList onClose={this.hideModalCheckin} />
+          <ContainerCheckinList onClose={this.hideModalCheckin} onSuccess={this.onSuccessCheckin} />
         </Modal>
       </View>
     )
