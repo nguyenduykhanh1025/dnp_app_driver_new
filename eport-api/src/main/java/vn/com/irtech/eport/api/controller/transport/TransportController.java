@@ -273,6 +273,8 @@ public class TransportController extends BaseController {
 			pickupHistory.setShipmentId(shipmentDetail.getShipmentId());
 			pickupHistory.setDriverPhoneNumber(driverAccount.getMobileNumber());
 			pickupHistory.setServiceType(shipment.getServiceType());
+			pickupHistory.setBlNo(shipment.getBlNo());
+			pickupHistory.setBookingNo(shipment.getBookingNo());
 		} else {
 			// pickup assign id
 			Long pickupAssignId = idSecret / 10;
@@ -338,6 +340,8 @@ public class TransportController extends BaseController {
 			pickupHistory.setDriverPhoneNumber(pickupAssign.getPhoneNumber());
 			pickupHistory.setPickupAssignId(pickupAssign.getId());
 			pickupHistory.setServiceType(shipment.getServiceType());
+			pickupHistory.setBlNo(shipment.getBlNo());
+			pickupHistory.setBookingNo(shipment.getBookingNo());
 		}
 
 		pickupHistory.setDriverId(userId);

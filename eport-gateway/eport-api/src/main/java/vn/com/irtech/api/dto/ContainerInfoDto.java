@@ -2,6 +2,7 @@ package vn.com.irtech.api.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @author GiapHD
@@ -164,6 +165,21 @@ public class ContainerInfoDto implements Serializable {
 	/** Airvent catos AIRVENT */
 	private String airvent;
 	
+	/** Params */
+	private Map<String, Object> params;
+
+	/** Block */
+	private String block;
+
+	/** Bay */
+	private String bay;
+
+	/** Row */
+	private Integer roww;
+
+	/** Tier */
+	private Integer tier;
+
 	public String getCntrNo() {
 		return cntrNo;
 	}
@@ -538,6 +554,46 @@ public class ContainerInfoDto implements Serializable {
 
 	public void setAirvent(String airvent) {
 		this.airvent = airvent;
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
+	}
+
+	public String getBlock() {
+		return block;
+	}
+
+	public void setBlock(String block) {
+		this.block = block;
+	}
+
+	public String getBay() {
+		return bay;
+	}
+
+	public void setBay(String bay) {
+		this.bay = bay;
+	}
+
+	public Integer getRoww() {
+		return roww;
+	}
+
+	public void setRoww(Integer roww) {
+		this.roww = roww;
+	}
+
+	public Integer getTier() {
+		return tier;
+	}
+
+	public void setTier(Integer tier) {
+		this.tier = tier;
 	}
 	
 }
