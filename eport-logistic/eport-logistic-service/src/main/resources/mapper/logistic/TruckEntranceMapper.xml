@@ -42,7 +42,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
         
-    <insert id="insertTruckEntrance" parameterType="TruckEntrance">
+    <insert id="insertTruckEntrance" parameterType="TruckEntrance" useGeneratedKeys="true" keyProperty="id">
+    	<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_truck_entrance.nextval as id from DUAL
+		</selectKey>
         insert into truck_entrance
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>

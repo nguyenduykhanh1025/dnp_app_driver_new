@@ -9,6 +9,8 @@ public class GateInFormData  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private Long id = 0L;
+
 	private List<PickupHistory> pickupIn;
 	
 	private List<PickupHistory> pickupOut;
@@ -32,6 +34,19 @@ public class GateInFormData  implements Serializable {
 	private String sessionId;
 	
 	private Long receiptId;
+
+	/** B: begin, C: continue */
+	private String type;
+
+	private Boolean isPrint;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public List<PickupHistory> getPickupIn() {
 		return pickupIn;
@@ -127,6 +142,22 @@ public class GateInFormData  implements Serializable {
 
 	public void setReceiptId(Long receiptId) {
 		this.receiptId = receiptId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Boolean getIsPrint() {
+		return isPrint;
+	}
+
+	public void setIsPrint(Boolean isPrint) {
+		this.isPrint = isPrint;
 	}
 
 }

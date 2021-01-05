@@ -356,9 +356,25 @@ public class TransportController extends BaseController {
 		logisticTruck.setPlateNumber(pickupHistoryTemp.getTruckNo());
 		List<LogisticTruck> logisticTrucks = logisticTruckService.selectLogisticTruckList(logisticTruck);
 		if (CollectionUtils.isNotEmpty(logisticTrucks)) {
-			pickupHistory.setGatePass(logisticTrucks.get(0).getGatepass());
-			pickupHistory.setLoadableWgt(logisticTrucks.get(0).getSelfWgt());
+			LogisticTruck logisticTruckRef = logisticTrucks.get(0);
+			if (StringUtils.isNotEmpty(logisticTruckRef.getGatepass())) {
+				pickupHistory.setGatePass(logisticTruckRef.getGatepass());
+			} else if (pickupHistory.getTruckNo().length() >= 5) {
+				pickupHistory.setGatePass(pickupHistory.getTruckNo().substring(pickupHistory.getTruckNo().length() - 5,
+						pickupHistory.getTruckNo().length()));
+			}
+
+			pickupHistory.setLoadableWgt(logisticTrucks.get(0).getWgt());
 		}
+
+		logisticTruck = new LogisticTruck();
+		logisticTruck.setPlateNumber(pickupHistoryTemp.getChassisNo());
+		logisticTrucks = logisticTruckService.selectLogisticTruckList(logisticTruck);
+		if (CollectionUtils.isNotEmpty(logisticTrucks)) {
+			LogisticTruck logisticTruckRef = logisticTrucks.get(0);
+			pickupHistory.setLoadableWgt(logisticTrucks.get(0).getWgt());
+		}
+
 		pickupHistory.setStatus(EportConstants.PICKUP_HISTORY_STATUS_WAITING);
 		pickupHistoryService.insertPickupHistory(pickupHistory);
 		return success();
@@ -565,6 +581,9 @@ public class TransportController extends BaseController {
 		ajaxResult.put("domain", configService.selectConfigByKey("driver.connection.domain"));
 		ajaxResult.put("port", configService.selectConfigByKey("driver.connection.port"));
 		ajaxResult.put("topic", configService.selectConfigByKey("driver.topic").replace("+", getSession().getId()));
+//		ajaxResult.put("domain", "ws://192.168.1.70");
+//		ajaxResult.put("port", "1883");
+//		ajaxResult.put("topic", "eport/driver/+/response".replace("+", getSession().getId()));
 		ajaxResult.put("locationUpdatePeriod", configService.selectConfigByKey("driver.location.period"));
 		return ajaxResult;
 	}
@@ -629,12 +648,23 @@ public class TransportController extends BaseController {
 		pickupHistoryParam.setDriverId(userId);
 		pickupHistoryParam.setStatus(EportConstants.PICKUP_HISTORY_STATUS_WAITING);
 		List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
+
+		List<LogisticTruck> logisticTrucks = null;
+		if (StringUtils.isNotEmpty(pickupHistoryReq.getChassisNo())) {
+			LogisticTruck logisticTruckParam = new LogisticTruck();
+			logisticTruckParam.setPlateNumber(pickupHistoryReq.getChassisNo());
+			logisticTrucks = logisticTruckService.selectLogisticTruckList(logisticTruckParam);
+		}
+
 		if (CollectionUtils.isNotEmpty(pickupHistories)) {
 			for (PickupHistory pickupHistory : pickupHistories) {
 				if (StringUtils.isNotEmpty(pickupHistoryReq.getTruckNo())) {
 					pickupHistory.setTruckNo(pickupHistoryReq.getTruckNo());
 				}
 				if (StringUtils.isNotEmpty(pickupHistoryReq.getChassisNo())) {
+					if (CollectionUtils.isNotEmpty(logisticTrucks)) {
+						pickupHistory.setLoadableWgt(logisticTrucks.get(0).getWgt());
+					}
 					pickupHistory.setTruckNo(pickupHistoryReq.getChassisNo());
 				}
 				pickupHistoryService.updatePickupHistory(pickupHistory);

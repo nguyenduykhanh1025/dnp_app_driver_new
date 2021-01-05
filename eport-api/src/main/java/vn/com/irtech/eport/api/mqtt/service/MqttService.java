@@ -137,9 +137,9 @@ public class MqttService implements MqttCallback {
 
 	private void subscribeToTopics() throws MqttException {
 		List<IMqttToken> tokens = new ArrayList<>();
-		tokens.add(mqttClient.subscribe(MqttConsts.SMART_GATE_REQ_TOPIC, 1, checkinHandler));
-		tokens.add(mqttClient.subscribe(MqttConsts.GATE_ROBOT_RES_TOPIC, 1, gatePassHandler));
-		tokens.add(mqttClient.subscribe(MqttConsts.NOTIFICATION_GATE_RES_TOPIC, 1, gateCheckInHandler));
+//		tokens.add(mqttClient.subscribe(MqttConsts.SMART_GATE_REQ_TOPIC, 1, checkinHandler));
+//		tokens.add(mqttClient.subscribe(MqttConsts.GATE_ROBOT_RES_TOPIC, 1, gatePassHandler));
+//		tokens.add(mqttClient.subscribe(MqttConsts.NOTIFICATION_GATE_RES_TOPIC, 1, gateCheckInHandler));
 		for (IMqttToken token : tokens) {
 			token.waitForCompletion();
 		}

@@ -97,7 +97,9 @@ public class LogisticTruckController extends LogisticBaseController
 		// Rfid update
 		RfidTruck rfidTruckUpdate = new RfidTruck();
 		rfidTruckUpdate.setGatePass(logisticTruck.getGatepass());
-		rfidTruckUpdate.setLoadableWgt(Long.parseLong(logisticTruck.getWgt().toString()));
+		if (logisticTruck.getWgt() != null) {
+			rfidTruckUpdate.setLoadableWgt(Long.parseLong(logisticTruck.getWgt().toString()));
+		}
 		rfidTruckUpdate.setWgt(Long.parseLong(logisticTruck.getSelfWgt().toString()));
 		rfidTruckUpdate.setPlateNumber(logisticTruck.getPlateNumber());
 		rfidTruckUpdate.setRfid(logisticTruck.getRfid());
@@ -162,7 +164,9 @@ public class LogisticTruckController extends LogisticBaseController
 		RfidTruck rfidTruckUpdate = new RfidTruck();
 		rfidTruckUpdate.setGatePass(logisticTruck.getGatepass());
 		rfidTruckUpdate.setLoadableWgt(Long.parseLong(logisticTruck.getWgt().toString()));
-		rfidTruckUpdate.setWgt(Long.parseLong(logisticTruck.getSelfWgt().toString()));
+		if (logisticTruck.getWgt() != null) {
+			rfidTruckUpdate.setWgt(Long.parseLong(logisticTruck.getSelfWgt().toString()));
+		}
 		rfidTruckUpdate.setPlateNumber(logisticTruck.getPlateNumber());
 		rfidTruckUpdate.setRfid(logisticTruck.getRfid());
 		rfidTruckUpdate.setLogisticGroupId(user.getGroupId());

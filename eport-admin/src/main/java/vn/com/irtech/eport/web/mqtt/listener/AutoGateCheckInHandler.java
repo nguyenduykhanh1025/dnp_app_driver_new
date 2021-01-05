@@ -198,28 +198,131 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 			gateInFormData.setType(EportConstants.GATE_REQ_TYPE_BEGIN);
 			List<PickupHistory> pickupIn = new ArrayList<>();
 			String containerNos = "";
+			PickupHistory pickup1 = null;
+			PickupHistory pickup2 = null;
+
+			PickupHistory pickupHistoryParam = new PickupHistory();
+			pickupHistoryParam.setStatus(EportConstants.PICKUP_HISTORY_STATUS_WAITING);
+			Map<String, Object> params = new HashMap<>();
+			params.put("params.serviceTypes",
+					Convert.toStrArray(EportConstants.SERVICE_DROP_EMPTY + "," + EportConstants.SERVICE_DROP_FULL));
+			pickupHistoryParam.setParams(params);
+			List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
+			if (CollectionUtils.isNotEmpty(pickupHistories)) {
+				pickup1 = pickupHistories.get(0);
+				if (pickupHistories.size() >= 2) {
+					pickup2 = pickupHistories.get(1);
+				}
+			}
+
 
 			// Container 1
 			if (StringUtils.isNotEmpty(gateDetection.getContainerNo1())) {
-				PickupHistory pickupHistory = new PickupHistory();
-				pickupHistory.setId(gateDetection.getId() * 10 + 1);
-				pickupHistory.setContainerNo(gateDetection.getContainerNo1());
-				pickupHistory.setBlock("");
-				pickupHistory.setArea("");
-				pickupHistory.setLocationUpdate(false);
-				pickupIn.add(pickupHistory);
+				boolean locationUpdate = false;
+				if (pickup1 == null) {
+					pickup1 = new PickupHistory();
+				}
+				pickup1.setId(gateDetection.getId() * 10 + 1);
+				pickup1.setContainerNo(gateDetection.getContainerNo1());
+
+				if (StringUtils.isEmpty(pickup1.getBlock())) {
+					pickup1.setBlock("");
+				} else {
+					locationUpdate = true;
+				}
+				if (StringUtils.isEmpty(pickup1.getArea())) {
+					pickup1.setArea("");
+				} else {
+					locationUpdate = true;
+				}
+
+				// Set bay to fit format of catos (02 -> 01/02)
+				if (StringUtils.isNotEmpty(pickup1.getBay())) {
+					try {
+						Integer bay = Integer.parseInt(pickup1.getBay());
+
+						// Check bay is even then need to add odd number before current bay (02 -> even
+						// -> 01/02)
+						if (bay % 2 == 0) {
+							Integer oddNumber = bay - 1;
+							String oddString = "";
+							if (oddNumber < 10) {
+								oddString = "0" + oddNumber.toString();
+							} else {
+								oddString = oddNumber.toString();
+							}
+							pickup1.setBay(oddString + "/" + pickup1.getBay());
+						} else {
+							Integer evenNumber = bay + 1;
+							String evenString = "";
+							if (evenNumber < 10) {
+								evenString = "0" + evenNumber.toString();
+							} else {
+								evenString = evenNumber.toString();
+							}
+							pickup1.setBay(pickup1.getBay() + "/" + evenString);
+						}
+					} catch (Exception e) {
+						logger.error("Failed to parsing bay string to Integer: " + pickup1.getBay());
+					}
+				}
+
+				pickupIn.add(pickup1);
 				containerNos += gateDetection.getContainerNo1();
 			}
 
 			// Container 2
 			if (StringUtils.isNotEmpty(gateDetection.getContainerNo2())) {
-				PickupHistory pickupHistory = new PickupHistory();
-				pickupHistory.setId(gateDetection.getId() * 10 + 2);
-				pickupHistory.setContainerNo(gateDetection.getContainerNo2());
-				pickupHistory.setBlock("");
-				pickupHistory.setArea("");
-				pickupHistory.setLocationUpdate(false);
-				pickupIn.add(pickupHistory);
+				boolean locationUpdate = false;
+				if (pickup2 == null) {
+					pickup2 = new PickupHistory();
+				}
+				pickup2.setId(gateDetection.getId() * 10 + 2);
+				pickup2.setContainerNo(gateDetection.getContainerNo2());
+
+				if (StringUtils.isEmpty(pickup2.getBlock())) {
+					pickup2.setBlock("");
+				} else {
+					locationUpdate = true;
+				}
+				if (StringUtils.isEmpty(pickup2.getArea())) {
+					pickup2.setArea("");
+				} else {
+					locationUpdate = true;
+				}
+
+				// Set bay to fit format of catos (02 -> 01/02)
+				if (StringUtils.isNotEmpty(pickup2.getBay())) {
+					try {
+						Integer bay = Integer.parseInt(pickup2.getBay());
+
+						// Check bay is even then need to add odd number before current bay (02 -> even
+						// -> 01/02)
+						if (bay % 2 == 0) {
+							Integer oddNumber = bay - 1;
+							String oddString = "";
+							if (oddNumber < 10) {
+								oddString = "0" + oddNumber.toString();
+							} else {
+								oddString = oddNumber.toString();
+							}
+							pickup2.setBay(oddString + "/" + pickup2.getBay());
+						} else {
+							Integer evenNumber = bay + 1;
+							String evenString = "";
+							if (evenNumber < 10) {
+								evenString = "0" + evenNumber.toString();
+							} else {
+								evenString = evenNumber.toString();
+							}
+							pickup2.setBay(pickup2.getBay() + "/" + evenString);
+						}
+					} catch (Exception e) {
+						logger.error("Failed to parsing bay string to Integer: " + pickup2.getBay());
+					}
+				}
+				pickup2.setLocationUpdate(locationUpdate);
+				pickupIn.add(pickup2);
 				containerNos += "," + gateDetection.getContainerNo2();
 			}
 

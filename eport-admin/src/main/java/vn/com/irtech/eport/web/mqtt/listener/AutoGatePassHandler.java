@@ -756,7 +756,6 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 						pickupHistoryService.updatePickupHistory(pickupHistory);
 					}
 				}
-
 				if (driverId != null) {
 					// Send sms yard position result to driver
 					DriverAccount driverAccount = driverAccountService.selectDriverAccountById(driverId);
@@ -777,7 +776,8 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 								List<String> failedTokens = new ArrayList<>();
 								for (int i = 0; i < responses.size(); i++) {
 									if (!responses.get(i).isSuccessful()) {
-										// The order of responses corresponds to the order of the registration tokens.
+										// The order of responses corresponds to the order of the registration
+										// tokens.
 										failedTokens.add(sysUserTokens.get(i));
 									}
 								}
