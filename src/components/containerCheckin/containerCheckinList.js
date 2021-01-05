@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { getToken } from '@/stores';
 import { ContainerCheckinItem } from '@/components/containerCheckin';
 import { callApi } from '@/requests';
-
+import Toast from 'react-native-tiny-toast';
 export default class ContainerCheckinList extends Component {
 
 	constructor(props) {
@@ -39,6 +39,7 @@ export default class ContainerCheckinList extends Component {
 			method: 'GET'
 		}
 		var payload = undefined;
+
 		payload = await callApi(params);
 		if (payload.code == 0) {
 			const { listContAvailable } = payload;
@@ -47,7 +48,6 @@ export default class ContainerCheckinList extends Component {
 				containerList: listContAvailable,
 				checkedAbleLenght
 			});
-
 
 			// contStateMap giup nhan dien disable hay ko?
 			let payoadContStateMap = {};
@@ -59,8 +59,8 @@ export default class ContainerCheckinList extends Component {
 			})
 			this.getContTierUnderNotChecked(null);
 		} else {
-			Toast.hide()
-			Alert.alert('Thông báo!', result.msg)
+			Alert.alert('Thông báo!', payload.msg);
+			this.props.onClose();
 		}
 
 	}
@@ -281,7 +281,7 @@ export default class ContainerCheckinList extends Component {
 				arrChecked.push(cont.checked);
 			}
 		});
-		
+
 		this.setState({
 			containerList: containerList.map((item, index) => {
 				item.checked = arrChecked[index];
