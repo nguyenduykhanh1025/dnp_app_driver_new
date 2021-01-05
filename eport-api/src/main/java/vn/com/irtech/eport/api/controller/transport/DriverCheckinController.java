@@ -332,7 +332,7 @@ public class DriverCheckinController extends BaseController  {
 		pickupHistoryParam.setDriverId(driverId);
 		pickupHistoryParam.setStatus(EportConstants.PICKUP_HISTORY_STATUS_WAITING);
 		Map<String, Object> params = new HashMap<>();
-		params.put("params.serviceTypes",
+		params.put("serviceTypes",
 				Convert.toStrArray(EportConstants.SERVICE_PICKUP_FULL + "," + EportConstants.SERVICE_PICKUP_EMPTY));
 		pickupHistoryParam.setParams(params);
 		List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);

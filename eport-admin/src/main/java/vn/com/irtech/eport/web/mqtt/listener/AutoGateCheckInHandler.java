@@ -204,7 +204,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 			PickupHistory pickupHistoryParam = new PickupHistory();
 			pickupHistoryParam.setStatus(EportConstants.PICKUP_HISTORY_STATUS_WAITING);
 			Map<String, Object> params = new HashMap<>();
-			params.put("params.serviceTypes",
+			params.put("serviceTypes",
 					Convert.toStrArray(EportConstants.SERVICE_DROP_EMPTY + "," + EportConstants.SERVICE_DROP_FULL));
 			pickupHistoryParam.setParams(params);
 			List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
