@@ -224,23 +224,49 @@ export default class ContainerCheckinList extends Component {
 		})[0];
 	}
 
+	isDisableFollowContAbrove(contStateMap, cont) {
+		const { block, bay, row, tier } = cont;
+
+		let contAbroveFloorTwo = contStateMap[`${block}${bay}${row}${tier + 1}`];
+		let contAbroveFloorThree = contStateMap[`${block}${bay}${row}${tier + 2}`];
+		let contAbroveFloorFour = contStateMap[`${block}${bay}${row}${tier + 3}`];
+		let contAbroveFloorFive = contStateMap[`${block}${bay}${row}${tier + 4}`];
+
+		let flag = false;
+
+		if (contAbroveFloorTwo != null && !this.getContAbove(block, bay, row, tier + 1).checked) {
+			flag = true;
+		} else if (contAbroveFloorThree != null && !this.getContAbove(block, bay, row, tier + 2).checked) {
+			flag = true;
+		} else if (contAbroveFloorFour != null && !this.getContAbove(block, bay, row, tier + 3).checked) {
+			flag = true;
+		} else if (contAbroveFloorFive != null && !this.getContAbove(block, bay, row, tier + 4).checked) {
+			flag = true;
+		}
+
+		if (flag && !cont.checked) {
+			return true;
+		}
+		return false;
+	}
+
 	getContTierUnderNotChecked(value) {
 		const { contStateMap, containerList } = this.state;
 		let contActiveList = {};
 
+		// disable nhung cont neu tren dau no chua duoc check va ban than no chua duoc check
 		containerList.forEach((cont, index) => {
 			const { block, bay, row, tier } = cont;
 			let contBelow = contStateMap[`${cont.block}${cont.bay}${cont.row}${cont.tier + 1}`];
-			if (contBelow != null && !this.getContAbove(block, bay, row, tier + 1).checked && !cont.checked) {
-				// disable contBelow
+			if (this.isDisableFollowContAbrove(contStateMap, cont)) {
 				contActiveList[`${cont.block}${cont.bay}${cont.row}${cont.tier}`] = false;
-			} else {
+			}
+			else {
 				contActiveList[`${cont.block}${cont.bay}${cont.row}${cont.tier}`] = true;
 			}
 		});
 
-
-		// // Iterate by job order no
+		//disable nhung cont neu chua du so luong cont trong cung 1 so tham chieu (so luong ban dau do server tra ve)
 		this.state.checkedAbleLenght.forEach(checkedAbleItem => {
 			// Get current checked containers
 			let contCounter = containerList.filter(item => checkedAbleItem.key === item.jobOrderNo && (item.checked === true)).length;
@@ -255,6 +281,7 @@ export default class ContainerCheckinList extends Component {
 			}
 		});
 
+		// disable neu tren dau no van chua duoc check
 		containerList.forEach(cont => {
 			let contBelow = contStateMap[`${cont.block}${cont.bay}${cont.row}${cont.tier + 1}`];
 			if (contBelow != null && value && cont.shipmentDetailId === value.shipmentDetailId) {
@@ -266,18 +293,47 @@ export default class ContainerCheckinList extends Component {
 		this.setState({
 			contStateMap: contActiveList
 		})
+
+		// xoa check cua cont phia duoi, neu cont phia tren no vua bo checked
 		this.removeCheckedIfAboveNotChecked(contActiveList, containerList);
+	}
+
+	isRemoveFollowContAbrove(contStateMap, cont) {
+		const { block, bay, row, tier } = cont;
+
+		let contAbroveFloorTwo = contStateMap[`${block}${bay}${row}${tier + 1}`];
+		let contAbroveFloorThree = contStateMap[`${block}${bay}${row}${tier + 2}`];
+		let contAbroveFloorFour = contStateMap[`${block}${bay}${row}${tier + 3}`];
+		let contAbroveFloorFive = contStateMap[`${block}${bay}${row}${tier + 4}`];
+
+		let flag = false;
+
+		if (contAbroveFloorTwo != null && !this.getContAbove(block, bay, row, tier + 1).checked) {
+			flag = true;
+		} else if (contAbroveFloorThree != null && !this.getContAbove(block, bay, row, tier + 2).checked) {
+			flag = true;
+		} else if (contAbroveFloorFour != null && !this.getContAbove(block, bay, row, tier + 3).checked) {
+			flag = true;
+		} else if (contAbroveFloorFive != null && !this.getContAbove(block, bay, row, tier + 4).checked) {
+			flag = true;
+		}
+
+		if (flag) {
+			return true;
+		}
+
+		return false;
 	}
 
 	removeCheckedIfAboveNotChecked(contStateMap, containerList) {
 		let arrChecked = [];
 		containerList.forEach((cont, index) => {
 			const { block, bay, row, tier } = cont;
-			let contBelow = contStateMap[`${block}${bay}${row}${tier + 1}`];
-			if (contBelow != null && this.getContAbove(block, bay, row, tier + 1).checked === false) {
+			if (this.isRemoveFollowContAbrove(contStateMap, cont)) {
 				arrChecked.push(false);
 				contStateMap[`${block}${bay}${row}${tier}`] = false;
-			} else {
+			}
+			else {
 				arrChecked.push(cont.checked);
 			}
 		});

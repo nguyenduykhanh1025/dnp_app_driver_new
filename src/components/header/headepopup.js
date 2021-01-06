@@ -4,9 +4,9 @@ import { Colors } from '@/commons'
 class HeaderPopUp extends Component {
 
     render() {
-        const {title, iconR, iconL, onClose } = this.props;
+        const {title, iconR, iconL, onClose , style} = this.props;
         return (
-            <View style={styles.container} >
+            <View style={[styles.container,style]} >
                 <Text style={styles.center}>{title}</Text>
             </View>
         );
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection:'row',
         alignItems: 'center',
-        backgroundColor: Colors.mainColor,
+        backgroundColor: Colors.subColor,
         height:50,
         borderBottomColor:'#ddd',
         borderBottomWidth:1,

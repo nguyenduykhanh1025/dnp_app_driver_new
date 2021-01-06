@@ -66,7 +66,9 @@ export default class DetailScreen extends Component {
       refreshing: false,
       container: '',
       douCont: false,
+      checkTypeVisible: false,
       cont4: 0,
+      checkType: 0,
     };
     this.token = null;
     this.upEnable = null;
@@ -106,13 +108,20 @@ export default class DetailScreen extends Component {
         const a = result.data.map(e => e.sztp.slice(0, 1) == dataCheck)
         const b = a.find(e => e == false)
         if (b == undefined && dataCheck == '2') {
-          this.setState({ container: 'Container 20' })
+          this.setState({
+            container: 'Container 20',
+            checkType: 2
+          })
         } else if (b == undefined && dataCheck == '4') {
-          this.setState({ container: 'Container 40' })
+          this.setState({
+            container: 'Container 40',
+            checkType: 4
+          })
         } else {
           this.setState({
             container: 'Container 20/40',
-            douCont: true
+            douCont: true,
+            checkType: 2
           })
         }
       }
@@ -137,36 +146,46 @@ export default class DetailScreen extends Component {
 
   onAutoPickup = async () => {
     const params = {
-      api: 'shipment/' + this.props.navigation.state.params.shipmentId + '/auto-pickup',
+      api: 'shipment/' + this.props.navigation.state.params.shipmentId + '/sztp/' + this.state.checkType + '/pickup-info',
       param: '',
       token: this.token,
       method: 'GET'
     }
     var result = undefined;
     result = await callApi(params);
-    console.log('resultonAutoPickup', result)
     if (result.code == 0) {
-      // NavigationService.navigate(homeTab.home)
-      NavigationService.navigate(mainStack.detail2, {
-        data: {
-          "containerNo": null,
-          "pickupAssignId": result.pickupAssignId,
-          "sztp": null,
-          "wgt": null,
-        }
-      })
+      var data = result.data
+      this.upEnable == '1' && data.sztp.slice(0, 1) != '2' ? Alert.alert('Thông báo', 'Đã chọn container 20 không thể chọn container 40') : await this.Continue(data, result)
     }
     else {
       Alert.alert('Thông báo!', result.msg)
     }
   }
 
+
+  Continue = async (data, result) => {
+    await this.setState({ checkTypeVisible: false })
+    NavigationService.navigate(mainStack.detail2, {
+      data: {
+        containerNo: data.containerNo,
+        pickupAssignId: result.pickupAssignId,
+        sztp: data.sztp,
+        wgt: data.wgt,
+        consignee: data.consignee,
+        address: data.address,
+        mobileNumber: data.mobileNumber,
+        remark: data.remark,
+        cargoType: data.cargoType,
+      }
+    })
+  }
+
   renderItem = (item, index) => (
     <Item
       data={item.item}
       onPress={() => {
-        this.DownEnable == '1' || this.upEnable == '1' && item.item.sztp.slice(0, 1) != '2' ?
-          Alert.alert('Thông báo !', 'Không thể chọn.')
+        this.upEnable == '1' && item.item.sztp.slice(0, 1) != '2' ?
+          Alert.alert('Thông báo !', 'Đã chọn container 20 không thể chọn container 40.')
           :
           NavigationService.navigate(mainStack.detail2, { data: item.item })
       }}
@@ -176,17 +195,19 @@ export default class DetailScreen extends Component {
 
   onSelectCont = async () => {
     this.setState({
-      cont4: (this.state.cont4 + 1) % 2
+      cont4: (this.state.cont4 + 1) % 2,
+      checkType: this.state.cont4 == 1 ? 2 : 4
     })
   }
 
   closePopupCheckBox = async () => {
     await this.setState({
-      douCont: false,
+      checkTypeVisible: false,
     })
   }
 
   render() {
+    console.log('this.tyures', this.state.checkType)
     return (
       <View style={styles.Container}>
 
@@ -211,7 +232,7 @@ export default class DetailScreen extends Component {
           >
             <Text style={styles.TextMaster}>Số bill: <Text style={{ color: Colors.subColor, fontWeight: 'bold', }}> {this.props.navigation.state.params.blNo} </Text></Text>
             <Text style={[styles.TextMaster, { marginTop: hs(5) }]}>Chủ hàng: <Text style={{ color: Colors.subColor, fontWeight: 'bold', }}> {this.props.navigation.state.params.consignee} </Text></Text>
-            <Text style={{ position: 'absolute', right: ws(20), top: hs(20), color: Colors.blue, fontSize: fs(16), fontWeight: 'bold'}}>{this.state.container}</Text>
+            <Text style={{ position: 'absolute', right: ws(20), top: hs(20), color: Colors.blue, fontSize: fs(16), fontWeight: 'bold' }}>{this.state.container}</Text>
             {/* <ItemSingle
               data={this.state.data[0]}
               onPress={() => {
@@ -251,7 +272,7 @@ export default class DetailScreen extends Component {
                       if (this.state.douCont == false) {
                         this.onAutoPickup()
                       } else {
-                        this.setState({ SelectContainer: true })
+                        this.setState({ checkTypeVisible: true })
                       }
                     }
                   }
@@ -262,7 +283,7 @@ export default class DetailScreen extends Component {
           }
         </View>
         {
-          this.state.douCont ?
+          this.state.checkTypeVisible ?
             <View style={{ backgroundColor: 'red', height: hs(812), width: ws(375), position: 'absolute', bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)', }}>
               <View style={{ backgroundColor: '#fff', height: hs(250), width: ws(375), position: 'absolute', bottom: 0, borderRadius: hs(20), padding: hs(10) }}>
                 <View style={{ flexDirection: 'row' }}>

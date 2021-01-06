@@ -40,7 +40,7 @@ class AppAppContainer extends React.Component {
             isConnected: true,
             appState: AppState.currentState,
             GPSEnable: false,
-            timerLocation: 10000,
+            timerLocation: 30000,
         };
         this.token = null;
     }

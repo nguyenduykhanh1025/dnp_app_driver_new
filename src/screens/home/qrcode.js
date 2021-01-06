@@ -12,6 +12,7 @@ import {
     ImageBackground,
     AsyncStorage,
     StatusBar,
+    ActivityIndicator,
     TextInput,
     Alert,
     ScrollView,
@@ -56,7 +57,7 @@ import DeviceInfo from 'react-native-device-info';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { callApi } from '@/requests';
 import { getToken } from '@/stores';
-
+// import { Spinner, Content } from 'native-base'
 const bg_qrcode = require('../../assets/images/qr-code.png');
 
 class HomeScreen extends PureComponent {
@@ -67,29 +68,29 @@ class HomeScreen extends PureComponent {
             getLocationEnable: false,
             loading: false,
             result: false,
-            msg: 'Đang xử lý',
+            msg: 'Đang gửi yêu cầu ...',
             data: [],
+            PickupList: [],
+            DataResult: '',
             deviceId: '',
             sessionId: '',
             "domain": "",
             "port": "",
-            "topic": ""
+            "topic": "",
         };
         this.token = null;
+        this.client = null;
     }
 
     componentDidMount = async () => {
         this.getId()
         this.token = await getToken();
         this.onGetURLMqtt()
-        var qrString = this.props.navigation.state.params.dataQR.qrString;
-        qrString = qrString.slice(0, qrString.length - 1);
-        var dataQR = JSON.parse(qrString.replace(/'/g, '"'))
-        // console.log('data', dataQR.data)
+        // var qrString = this.props.navigation.state.params.dataQR.qrString;
+        // qrString = qrString.slice(0, qrString.length - 1);
+        // var dataQR = JSON.parse(qrString.replace(/'/g, '"'))
         await this.setState({
-            qrvalue: this.props.navigation.state.params.dataQR.qrString,
-            sessionId: this.props.navigation.state.params.dataQR.sessionId,
-            data: dataQR.data
+            PickupList: this.props.navigation.state.params.data
         })
     }
 
@@ -104,6 +105,58 @@ class HomeScreen extends PureComponent {
 
     }
 
+    onGoCheckIn = async () => {
+        var pickupHistoryIds = [];
+        this.state.PickupList.map((item, index) => {
+            pickupHistoryIds = pickupHistoryIds.concat(item.pickupId)
+        })
+        const params = {
+            api: 'checkin',
+            param: {
+                pickupHistoryIds: pickupHistoryIds
+            },
+            token: this.token,
+            method: 'POST'
+        }
+        var result = undefined;
+        result = await callApi(params);
+        // console.log('result')
+        if (result.code == 0) {
+            this.setState({
+                qrvalue: result.qrString,
+                sessionId: result.sessionId,
+                data: result.data,
+            })
+        }
+        else {
+            result.msg ?
+                Alert.alert(
+                    'Lỗi!!!',
+                    result.msg,
+                    [
+                        {
+                            text: 'OK', onPress: () => {
+                                this.props.navigation.goBack()
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                ) :
+                Alert.alert(
+                    'Lỗi!!!',
+                    'Đường truyền mạng không ổn định vui lòng kiểm tra lại đường truyền',
+                    [
+                        {
+                            text: 'OK', onPress: () => {
+                                this.props.navigation.goBack()
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                );
+        }
+    }
+
     onGetURLMqtt = async () => {
         const params = {
             api: 'connection/info',
@@ -113,16 +166,41 @@ class HomeScreen extends PureComponent {
         }
         var result = undefined;
         result = await callApi(params);
-        // console.log('resultonGetURLMqtt', result.domain)
+        
         if (result.code == 0) {
             this.setState({
                 "domain": result.domain,
                 "port": result.port,
                 "topic": result.topic,
             })
+            console.log(this.state);
         }
         else {
-            Alert.alert('Thông báo!', result.msg)
+            result.msg ?
+                Alert.alert(
+                    'Lỗi!!!',
+                    result.msg,
+                    [
+                        {
+                            text: 'OK', onPress: () => {
+                                this.props.navigation.goBack()
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                ) :
+                Alert.alert(
+                    'Lỗi!!!',
+                    'Đường truyền mạng không ổn định vui lòng kiểm tra lại đường truyền',
+                    [
+                        {
+                            text: 'OK', onPress: () => {
+                                this.props.navigation.goBack()
+                            }
+                        }
+                    ],
+                    { cancelable: false }
+                );
         }
         this.onTestMqtt()
     }
@@ -131,77 +209,66 @@ class HomeScreen extends PureComponent {
         var settings = {
             mqttServerUrl: this.state.domain,
             port: this.state.port,
-            topic: "eport/driver/" + this.state.sessionId + "/res",
+            topic: this.state.topic,
         }
-
         mqtt.createClient({
             uri: settings.mqttServerUrl + ":" + settings.port,
-            clientId: this.state.deviceId,
+            clientId: "DriverApp-" + this.state.topic,
         }).then((client) => {
-            client.on('closed', () => {
-                console.log('closed');
-            });
+            client.on('closed', () => { });
             client.unsubscribe(settings.topic)
             client.disconnect();
-        }).catch((err) => {
-            Alert.alert(
-                'Lỗi!!!',
-                'Liên hệ người phụ trách!',
-                [
-                    {
-                        text: 'OK', onPress: () => {
-                            this.props.navigation.goBack()
-                        }
-                    }
-                ],
-                { cancelable: false }
-            );
-        });
+        })
     }
 
     onTestMqtt = async () => {
+        // const client = new mqtt.Client('[SCHEME]://[URL]:[PORT]');
+
         var settings = {
             mqttServerUrl: this.state.domain,
             port: this.state.port,
-            topic: "eport/driver/" + this.state.sessionId + "/res",
-            // topic: "eport/driver/ado3709Adlfj/res"
+            topic: this.state.topic,
         }
-        // var settings = {
-        //     mqttServerUrl: '113.176.195.221',
-        //     port: 1883,
-        //     topic: "eport/driver/" + this.state.sessionId + "/res",
-        //     // topic: "eport/driver/ado3709Adlfj/res"
-        // }
-
         mqtt.createClient({
-            // uri: 'mqtt://' + settings.mqttServerUrl + ":" + settings.port,
             uri: settings.mqttServerUrl + ":" + settings.port,
-            clientId: "DriverApp-" + this.state.sessionId,
+            clientId: "DriverApp-" + this.state.topic,
         }).then((client) => {
+            this.client = client
             client.on('connect', () => {
-                // console.log('connected');
-                client.subscribe(settings.topic, 0);
+                this.onGoCheckIn()
+                client.subscribe(settings.topic, 1);
             });
             client.on('message', (msg) => {
-                var message = JSON.parse(msg.data);
-                console.log('message', message)
-                this.setState({
-                    loading: message.status == 'PROCESSING' ? true : message.status == 'FINISH' ? false : this.state.loading,
-                    msg: message.msg,
-                    Data: message.data
-                })
-                if (message.status == 'FINISH' && message.result == 'PASS') {
-                    client.unsubscribe(settings.topic)
-                    client.disconnect();
-                    this.setState({ loading: false })
-                    NavigationService.navigate(mainStack.result, { Data: message.data })
-                }
-                if (message.status == 'FINISH' && message.result == 'FAIL') {
+                try {
+                    var message = JSON.parse(msg.data);
+
+                    this.setState({
+                        // loading: message.status == 'PROCESSING' ? true : message.status == 'FINISH' ? false : this.state.loading,
+                        msg: message.msg,
+                        DataResult: message
+                    })
+                    if (message.status == 'FINISH' && message.result == 'PASS') {
+                        client.unsubscribe(settings.topic)
+                        client.disconnect();
+                        this.setState({
+                            result: true,
+                        })
+                        // NavigationService.navigate(mainStack.result, { Data: message.result })
+                    }
+                    if (message.status == 'FINISH' && message.result == 'FAIL') {
+                        client.unsubscribe(settings.topic)
+                        client.disconnect();
+                        this.setState({
+                            result: true,
+                            loading: false,
+                        })
+                    }
+                } catch (error) {
                     client.unsubscribe(settings.topic)
                     client.disconnect();
                     Alert.alert(
-                        'Thông báo!',
-                        'Checkin thất bại!',
+                        'Thông báo',
+                        'Thông tin từ ePort lỗi vui lòng liên hệ người phụ trách!',
                         [
                             {
                                 text: 'OK', onPress: () => {
@@ -262,19 +329,6 @@ class HomeScreen extends PureComponent {
         )
     }
 
-    testLoading = async () => {
-        await this.setState({
-            loading: true,
-        })
-
-        await setTimeout(() => {
-            this.setState({
-                result:true,
-                loading: false,
-            })
-        },3000)
-    }
-
     render() {
         return (
             <View style={[commonStyles.containerClass,]}>
@@ -287,9 +341,13 @@ class HomeScreen extends PureComponent {
                     onPressLeft={() => {
                         Alert.alert(
                             "Thông báo xác nhận!",
-                            "Bạn chưa quét mã, bạn chắc chắn muốn thoát?",
+                            "Bạn đang thực hiện check-in, bạn chắc chắn muốn thoát không?",
                             [
-                                { text: "Có", onPress: () => this.props.navigation.goBack() },
+                                {
+                                    text: "Có", onPress: () => {
+                                        this.props.navigation.goBack()
+                                    }
+                                },
                                 {
                                     text: "Không",
                                     style: "cancel"
@@ -336,10 +394,14 @@ class HomeScreen extends PureComponent {
                             />
                         </ImageBackground>
                     </View>
-                    <TouchableOpacity
+                    <View style={styles.Loading}>
+                        <ActivityIndicator size={fs(70)} color={Colors.subColor} />
+                        <Text style={{ textAlign: 'center', marginTop: hs(10), fontSize: fs(17), color: Colors.blue }}>{this.state.msg}</Text>
+                    </View>
+                    {/* <TouchableOpacity
                         onPress={() => this.testLoading()}
-                    >
-                        <ScrollView
+                    > */}
+                    {/* <ScrollView
                             horizontal={true}
                         >
                             {
@@ -373,17 +435,17 @@ class HomeScreen extends PureComponent {
                                     </View>
                                 ))
                             }
-                        </ScrollView>
-                    </TouchableOpacity>
+                        </ScrollView> */}
+                    {/* </TouchableOpacity> */}
                 </View>
-                <WaitingModal
+                {/* <WaitingModal
                     visible={this.state.loading}
                     msg={this.state.msg}
                     onModalClose={() => { this.onModalClose() }}
-                />
+                /> */}
                 <ModalQRResult
                     visible={this.state.result}
-                    data={SearchQRCode}
+                    data={this.state.DataResult}
                     onClose={() => { this.onCloseResult() }}
                 />
                 {/* <View style={{ height: '100%', width: '100%', backgroundColor: '#fff', position: 'absolute' }}>
@@ -407,6 +469,11 @@ const styles = StyleSheet.create({
     scroll: {
         height: hs(721),
     },
+    Loading: {
+        height: hs(320),
+        paddingTop: hs(40),
+    }
+    ,
     outline: {
         alignItems: 'center',
         justifyContent: 'center',

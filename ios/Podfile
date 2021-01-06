@@ -21,8 +21,8 @@ def flipper_post_install(installer)
   end
 end
 
-target 'vn.com.irtech.mobile.eport.driver' do
-  # Pods for vn.com.irtech.mobile.eport.driver
+target 'Dnp_Driver' do
+  # Pods for Dnp_Driver
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
@@ -79,7 +79,7 @@ target 'vn.com.irtech.mobile.eport.driver' do
 end
 
 target 'Dnp_Driver-tvOS' do
-  # Pods for vn.com.irtech.mobile.eport.driver-tvOS
+  # Pods for Dnp_Driver-tvOS
 
   target 'Dnp_Driver-tvOSTests' do
     inherit! :search_paths

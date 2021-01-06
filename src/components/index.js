@@ -28,6 +28,7 @@ import HeaderMain from './header/header-main';
 import DropDown from './dropdown/dropdown';
 import DropDownProfile from './dropdown/dropdown.profile';
 import Button from './button/button';
+import TruckNoModal from './modalPopUp/truckNoModal.js'
 
 export {
     Input,
@@ -68,4 +69,5 @@ export {
     DropDown,
     DropDownProfile,
     Button,
+    TruckNoModal
 }

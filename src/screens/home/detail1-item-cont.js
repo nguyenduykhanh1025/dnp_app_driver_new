@@ -58,8 +58,8 @@ export default class Item extends Component {
                                     alignItems: 'center'
                                 }}>
                                     <Text style={[styles.TextLabel]}>Chủ hàng</Text>
-                                    <Text style={styles.TextValue1}>
-                                        {data.consignee}
+                                    <Text style={[styles.TextValue1,{width: ws(220)}]}>
+                                        {data.consignee.length > 24 ? data.consignee.slice(0,22)+'...' : data.consignee }
                                     </Text>
                                 </View>
                             </View>

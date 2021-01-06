@@ -135,8 +135,8 @@ android {
         applicationId "vn.com.irtech.mobile.eport.driver"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 10
+        versionName "1.0.0"
         missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true
     }
@@ -195,7 +195,7 @@ android {
 }
 
 dependencies {
-    compile(project(':react-native-firebase')) {   
+    implementation(project(':react-native-firebase')) {   
        transitive = false
     }
     implementation fileTree(dir: "libs", include: ["*.jar"])

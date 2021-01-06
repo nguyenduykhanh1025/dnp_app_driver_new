@@ -59,7 +59,7 @@ export default class ResultScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    // console.log('resultonGetDetailInfo', result)
+    console.log('resultonGetDetailInfo', result)
     if (result.code == 0) {
       await this.setState({
         data: result.data
@@ -146,15 +146,12 @@ export default class ResultScreen extends Component {
             paddingVertical: 2
           }}>{
             this.state.data.status == 0 ?
-              'Chưa có tọa độ'
+              'Sẵn sàng'
               :
               this.state.data.status == 1 ?
-                'Sẵn sàng'
+                'Gate in'
                 :
-                this.state.data.status == 2 ?
-                  'Gate in'
-                  :
-                  ''
+                ''
           }</Text>
       </View>
     )
@@ -342,7 +339,7 @@ export default class ResultScreen extends Component {
                 }}
               >
                 <Button
-                  styleBtn={{ fontSize: fs(22)}}
+                  styleBtn={{ fontSize: fs(22) }}
                   value={
                     this.state.data.status == 0 ?
                       'Hủy'
