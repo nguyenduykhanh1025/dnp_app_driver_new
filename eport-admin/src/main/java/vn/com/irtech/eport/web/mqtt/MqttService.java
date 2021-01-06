@@ -41,6 +41,7 @@ import vn.com.irtech.eport.system.service.ISysRobotService;
 import vn.com.irtech.eport.web.dto.GateRes;
 import vn.com.irtech.eport.web.mqtt.listener.AutoGateCheckInHandler;
 import vn.com.irtech.eport.web.mqtt.listener.AutoGatePassHandler;
+import vn.com.irtech.eport.web.mqtt.listener.GatePassHandler;
 import vn.com.irtech.eport.web.mqtt.listener.MCRequestHandler;
 import vn.com.irtech.eport.web.mqtt.listener.RobotResponseHandler;
 import vn.com.irtech.eport.web.mqtt.listener.ScaleResultHandler;
@@ -73,6 +74,10 @@ public class MqttService implements MqttCallback {
 	private static final String NOTIFICATION_GATE_PROGRESS = "eport/notification/gate/+/progress";
 	/** Topic to receive result of scale at gate */
 	private static final String SCALE_RESULT_TOPIC = BASE + "/gate/+/scale/result";
+	/** Topic request robot gate out */
+	private static final String GATE_OUT_ROBOT_REQ_TOPIC = ROBOT_BASE + "/gate/out/+/request";
+	/** Topic response robot gate out */
+	private static final String GATE_OUT_RESPONSE = ROBOT_BASE + "/gate/out/+/response";
 
 	@Autowired
 	private MqttAsyncClient mqttClient;
@@ -100,6 +105,9 @@ public class MqttService implements MqttCallback {
 
 	@Autowired
 	private IProcessOrderService processOrderService;
+
+	@Autowired
+	private GatePassHandler gatePassHandler;
 
 	@Autowired
 	private ISysRobotService robotService;
@@ -163,6 +171,7 @@ public class MqttService implements MqttCallback {
 		tokens.add(mqttClient.subscribe(GATE_DETECTION_RESPONSE, 1, autoGateCheckInHandler));
 		tokens.add(mqttClient.subscribe(GATE_DETECTION_ROBOT_RESPONSE, 1, autoGatePassHandler));
 		tokens.add(mqttClient.subscribe(SCALE_RESULT_TOPIC, 1, scaleResultResult));
+		tokens.add(mqttClient.subscribe(GATE_OUT_RESPONSE, 1, gatePassHandler));
 		// subscribe default topics when connect
 //		tokens.add(mqttClient.subscribe(BASE, 0, robotUpdateStatusHandler));
 		// Wait for subscribe complete

@@ -27,8 +27,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectTruckEntranceVo"/>
         <where>  
             <if test="rfid != null  and rfid != ''"> and rfid = #{rfid}</if>
-            <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
-            <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+            <if test="truckNo != null  and truckNo != ''"> and (truck_no = #{truckNo}</if>
+            <if test="chassisNo != null  and chassisNo != ''"> or chassis_no = #{chassisNo})</if>
             <if test="active != null "> and active = #{active}</if>
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="loadableWgt != null"> and loadable_wgt = #{loadableWgt}</if>
@@ -42,7 +42,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
         
-    <insert id="insertTruckEntrance" parameterType="TruckEntrance">
+    <insert id="insertTruckEntrance" parameterType="TruckEntrance" useGeneratedKeys="true" keyProperty="id">
+    	<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_truck_entrance.nextval as id from DUAL
+		</selectKey>
         insert into truck_entrance
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>

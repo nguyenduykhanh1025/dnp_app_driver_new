@@ -282,6 +282,7 @@ public class AdminGateController extends BaseController {
 					// Chassis no
 					chassisNo = rfidTruck.getPlateNumber();
 					chassisWgt = rfidTruck.getWgt();
+					loadableWgt = rfidTruck.getLoadableWgt();
 				}
 			}
 		}

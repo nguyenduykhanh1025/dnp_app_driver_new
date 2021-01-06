@@ -12,7 +12,7 @@ public class MqttConsts {
 	
 	public static String MC_REQ_TOPIC = BASE_TOPIC + "/mc/plan/request";
 	
-	public static String GATE_ROBOT_REQ_TOPIC = BASE_TOPIC + "/robot/gate/+/request";
+	public static String GATE_ROBOT_REQ_TOPIC = BASE_TOPIC + "/robot/gate/out/+/request";
 	
 	public static String GATE_ROBOT_RES_TOPIC = BASE_TOPIC + "/robot/gate/+/response";
 	

@@ -42,6 +42,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="updateBy" column="update_by" />
 		<result property="updateTime" column="update_time" />
 		<result property="serviceType" column="service_type" />
+		<result property="blNo" column="bl_no" />
+		<result property="bookingNo" column="booking_no" />
 		<association property="shipment" column="shipment_id" javaType="Shipment" select="selectShipment" />
 		<association property="shipmentDetail" column="shipment_detail_id" javaType="ShipmentDetail" select="selectShipmentDetail" />
 		<association property="logisticGroup" column="logistic_group_id" javaType="LogisticGroup" select="selectLogisticGroup" />
@@ -207,6 +209,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateLocationTime != null">update_location_time,</if>
 			<if test="serviceType != null">service_type,</if>
 			<if test="entranceScan != null ">entrance_scan,</if>
+			<if test="blNo != null and blNo != ''">bl_no,</if>
+			<if test="bookingNo != null and bookingNo != ''">booking_no,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -242,6 +246,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateLocationTime != null">#{update_location_time},</if>
 			<if test="serviceType != null">#{serviceType},</if>
 			<if test="entranceScan != null ">#{entranceScan},</if>
+			<if test="blNo != null and blNo != ''">#{blNo},</if>
+			<if test="bookingNo != null and bookingNo != ''">#{bookingNo},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -280,6 +286,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateLocationTime != null">update_location_time = #{updateLocationTime},</if>
 			<if test="serviceType != null">service_type = #{serviceType},</if>
 			<if test="entranceScan != null ">entrance_scan = #{entranceScan},</if>
+			<if test="blNo != null and blNo != ''">bl_no = #{blNo},</if>
+			<if test="bookingNo != null and bookingNo != ''">booking_no = #{bookingNo},</if>
 			<if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
