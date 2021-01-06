@@ -29,9 +29,6 @@ import vn.com.irtech.eport.api.config.MqttConfig;
 import vn.com.irtech.eport.api.consts.MqttConsts;
 import vn.com.irtech.eport.api.form.DriverRes;
 import vn.com.irtech.eport.api.form.GateRes;
-import vn.com.irtech.eport.api.mqtt.listener.CheckinHandler;
-import vn.com.irtech.eport.api.mqtt.listener.GateCheckInHandler;
-import vn.com.irtech.eport.api.mqtt.listener.GatePassHandler;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
@@ -52,14 +49,14 @@ public class MqttService implements MqttCallback {
 	public static String BASE_TOPIC;
 	public static String ROBOT_TOPIC = "eport/robot/+/request";
 
-	@Autowired
-	private CheckinHandler checkinHandler;
+//	@Autowired
+//	private CheckinHandler checkinHandler;
 
-	@Autowired
-	private GatePassHandler gatePassHandler;
+//	@Autowired
+//	private GatePassHandler gatePassHandler;
 
-	@Autowired
-	private GateCheckInHandler gateCheckInHandler;
+//	@Autowired
+//	private GateCheckInHandler gateCheckInHandler;
 
 	@Autowired
 	private IProcessOrderService processOrderService;

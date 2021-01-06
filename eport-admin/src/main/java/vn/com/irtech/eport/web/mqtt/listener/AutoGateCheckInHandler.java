@@ -216,15 +216,14 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 				}
 			}
 
-
 			// Container 1
 			if (StringUtils.isNotEmpty(gateDetection.getContainerNo1())) {
 				boolean locationUpdate = false;
 				if (pickup1 == null) {
 					pickup1 = new PickupHistory();
+					pickup1.setContainerNo(gateDetection.getContainerNo1());
 				}
 				pickup1.setId(gateDetection.getId() * 10 + 1);
-				pickup1.setContainerNo(gateDetection.getContainerNo1());
 
 				if (StringUtils.isEmpty(pickup1.getBlock())) {
 					pickup1.setBlock("");
@@ -261,7 +260,14 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 							} else {
 								evenString = evenNumber.toString();
 							}
-							pickup1.setBay(pickup1.getBay() + "/" + evenString);
+							String bay1 = pickup1.getBay();
+							if (bay1.length() == 1) {
+								bay1 = "0" + bay1;
+							}
+							if (evenString.length() == 1) {
+								evenString = "0" + evenString;
+							}
+							pickup1.setBay(bay1 + "/" + evenString);
 						}
 					} catch (Exception e) {
 						logger.error("Failed to parsing bay string to Integer: " + pickup1.getBay());
@@ -278,9 +284,9 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 				boolean locationUpdate = false;
 				if (pickup2 == null) {
 					pickup2 = new PickupHistory();
+					pickup2.setContainerNo(gateDetection.getContainerNo2());
 				}
 				pickup2.setId(gateDetection.getId() * 10 + 2);
-				pickup2.setContainerNo(gateDetection.getContainerNo2());
 
 				if (StringUtils.isEmpty(pickup2.getBlock())) {
 					pickup2.setBlock("");
@@ -317,7 +323,14 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 							} else {
 								evenString = evenNumber.toString();
 							}
-							pickup2.setBay(pickup2.getBay() + "/" + evenString);
+							String bay2 = pickup2.getBay();
+							if (bay2.length() == 1) {
+								bay2 = "0" + bay2;
+							}
+							if (evenString.length() == 1) {
+								evenString = "0" + evenString;
+							}
+							pickup2.setBay(bay2 + "/" + evenString);
 						}
 					} catch (Exception e) {
 						logger.error("Failed to parsing bay string to Integer: " + pickup2.getBay());
