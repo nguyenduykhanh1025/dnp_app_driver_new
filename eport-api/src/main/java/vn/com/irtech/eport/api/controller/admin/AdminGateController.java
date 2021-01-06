@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.api.controller.admin;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -338,6 +339,7 @@ public class AdminGateController extends BaseController {
 						pickupHistoriesRequest.add(pickupHistory);
 					} else {
 						pickupHistory.setStatus(EportConstants.PICKUP_HISTORY_STATUS_FINISH);
+						pickupHistory.setGateinDate(new Date());
 						pickupHistoryService.updatePickupHistory(pickupHistory);
 					}
 				}
@@ -494,7 +496,7 @@ public class AdminGateController extends BaseController {
 		if (CollectionUtils.isNotEmpty(containerInfoDtos)) {
 			// Mapping container info object to map data
 			for (ContainerInfoDto cntrInfo : containerInfoDtos) {
-				if (EportConstants.CATOS_CONT_STACKING.equalsIgnoreCase(cntrInfo.getCntrState())
+				if (!EportConstants.CATOS_CONT_STACKING.equalsIgnoreCase(cntrInfo.getCntrState())
 						&& StringUtils.isNotEmpty(cntrInfo.getJobOdrNo())) {
 					contMap.put(cntrInfo.getCntrNo(), cntrInfo);
 				}

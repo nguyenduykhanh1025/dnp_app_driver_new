@@ -140,7 +140,8 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 		String status = map.get("status") == null ? null : map.get("status").toString();
 		String result = map.get("result") == null ? null : map.get("result").toString();
 		String dataString = map.get("data") == null ? null : new Gson().toJson(map.get("data"));
-		String pickupInResult = map.get("pickupInResult") == null ? null : new Gson().toJson(map.get("pickupInResult"));
+		String pickupInResult = map.get("pickupInResult") == null ? null
+				: new Gson().toJson(map.get("pickupInResult"), Object.class);
 
 		GateInFormData gateInFormData = new Gson().fromJson(dataString, GateInFormData.class);
 		if (gateInFormData != null && gateInFormData.getReceiptId() != null) {
@@ -753,6 +754,7 @@ public class AutoGatePassHandler implements IMqttMessageListener {
 							pickupHistory.setTier(locationArr[3]);
 						}
 						pickupHistory.setStatus(EportConstants.PICKUP_HISTORY_STATUS_GATE_IN);
+						pickupHistory.setGateinDate(new Date());
 						pickupHistoryService.updatePickupHistory(pickupHistory);
 					}
 				}
