@@ -269,6 +269,7 @@ class HomeScreen extends Component {
     this.state.PickupList.map((item, index) => {
       pickupHistoryIds = pickupHistoryIds.concat(item.pickupId)
     })
+    // NavigationService.navigate(mainStack.qr_code, { dataQR: "112" })
     const params = {
       api: 'checkin',
       param: {

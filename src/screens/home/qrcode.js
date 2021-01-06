@@ -228,14 +228,15 @@ class HomeScreen extends PureComponent {
             mqttServerUrl: this.state.domain,
             port: this.state.port,
             topic: this.state.topic,
-        }
+				}
+
         mqtt.createClient({
             uri: settings.mqttServerUrl + ":" + settings.port,
             clientId: "DriverApp-" + this.state.topic,
         }).then((client) => {
             this.client = client
             client.on('connect', () => {
-                this.onGoCheckIn()
+								// this.onGoCheckIn();
                 client.subscribe(settings.topic, 1);
             });
             client.on('message', (msg) => {
