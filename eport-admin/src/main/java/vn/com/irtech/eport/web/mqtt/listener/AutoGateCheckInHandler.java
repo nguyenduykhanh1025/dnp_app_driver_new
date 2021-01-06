@@ -96,7 +96,8 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 
 		String msg = map.get("msg") == null ? null : map.get("msg").toString();
 
-		String gateInData = map.get("gateInData") == null ? null : map.get("gateInData").toString();
+		String gateInData = map.get("gateInData") == null ? null
+				: new Gson().toJson(map.get("gateInData"), Object.class);
 
 		GateNotificationCheckInReq gateNotificationCheckInReq = new Gson().fromJson(gateInData,
 				GateNotificationCheckInReq.class);
@@ -267,6 +268,7 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 					}
 				}
 
+				pickup1.setLocationUpdate(locationUpdate);
 				pickupIn.add(pickup1);
 				containerNos += gateDetection.getContainerNo1();
 			}

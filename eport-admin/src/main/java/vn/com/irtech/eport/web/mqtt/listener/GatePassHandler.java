@@ -124,7 +124,8 @@ public class GatePassHandler implements IMqttMessageListener {
 		String status = map.get("status") == null ? null : map.get("status").toString();
 		String result = map.get("result") == null ? null : map.get("result").toString();
 		String dataString = map.get("data") == null ? null : new Gson().toJson(map.get("data"));
-		String pickupOutResult = map.get("pickupOutResult") == null ? null : new Gson().toJson(map.get("pickupOutResult"));
+		String pickupOutResult = map.get("pickupOutResult") == null ? null
+				: new Gson().toJson(map.get("pickupOutResult"), Object.class);
 		
 		GateInFormData gateInFormData = new Gson().fromJson(dataString, GateInFormData.class);
 		if (gateInFormData != null && gateInFormData.getReceiptId() != null) {
