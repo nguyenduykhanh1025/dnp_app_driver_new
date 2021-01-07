@@ -208,6 +208,8 @@ public class AutoGateCheckInHandler implements IMqttMessageListener {
 			params.put("serviceTypes",
 					Convert.toStrArray(EportConstants.SERVICE_DROP_EMPTY + "," + EportConstants.SERVICE_DROP_FULL));
 			pickupHistoryParam.setParams(params);
+			pickupHistoryParam.setTruckNo(gateDetection.getTruckNo());
+			pickupHistoryParam.setChassisNo(gateDetection.getChassisNo());
 			List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
 			if (CollectionUtils.isNotEmpty(pickupHistories)) {
 				pickup1 = pickupHistories.get(0);
