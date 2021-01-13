@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+	<meta charset="UTF-8" />
+	<th:block th:include="include :: header('Notification bulletin list')" />
+	<th:block th:include="include :: easyui-css" />
+	<link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+</head>
+
+<body class="grey-background">
+	<span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+	<span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+	<div class="main-body">
+		<div class="main-body__search-wrapper mb-2">
+			<div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+				<div class="flex__left w-20">
+					<h3 class="mt-10">Quản lý danh sách xe tại bãi</h3>
+				</div>
+				<div class="flex__right w-80">
+					<div class="justify-content-around align-items-center" id="ff">
+						<div class="d-inline">
+							<select id="car-category" class="easyui-combobox" panelHeight="auto" editable="false"
+								style="width: 130px">
+								<option value="" selected>Tất cả</option>
+								<option value="TRUCK_NO">Xe đầu kéo</option>
+								<option value="CHASSIS_NO">Xe rơ móc</option>
+							</select>
+						</div>
+						<div class="d-inline">
+							<input class="easyui-textbox" id="truckNo" data-options="prompt:'Biển số xe'" />
+						</div>
+						<div class="d-inline">
+							<input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
+						</div>
+						<div class="d-inline">
+							<input id="fromDate" class="easyui-datebox" style="width: 100px"
+								data-options="prompt:'Từ ngày', formatter:dateformatter, parser:dateparser" />
+						</div>
+						<div class="d-inline">
+							<input id="toDate" class="easyui-datebox" style="width: 100px"
+								data-options="prompt:'Đến ngày', formatter:dateformatter, parser:dateparser" />
+						</div>
+						<div class="d-inline">
+							<button class="btn btn-success btn-customs" onclick="search()"
+								style="margin-bottom: 5px">Tìm kiếm</button>
+						</div>
+						<div class="d-inline">
+							<button class="btn btn-success btn-outline btn-customs" onclick="clearInput()"
+								style="margin-bottom: 5px">Làm mới</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="main-body__table-wrapper">
+			<div class="easyui-layout" id="main-layout" style="width: 100%">
+				<table id="dg" style="width: 100%" pageList="[20,50,100,150,200]" fitColumn="true">
+					<thead>
+						<tr>
+							<!-- <th field="ck" checkbox="true"></th> -->
+							<th data-options="field:'index, data', align:'left', halign:'center', fixed:true, formatter: formatLicenseNo"
+								width="200">Biển số xe</th>
+							<th data-options="field:'indexz, data', align:'left', halign:'center', resizable:true, fixed:true, formatter: formatCarCategory"
+								width="200">Loại xe</th>
+							<th data-options="field:'containerNoFirst', align:'left', halign:'center', resizable:true, fixed:true"
+								width="200">Container 1</th>
+							<th data-options="field:'containerNoSecond', align:'left', halign:'center', resizable:true, fixed:true"
+								width="200">Container 2</th>
+							<th data-options="field:'createTime', align:'left', halign:'center', resizable:true, fixed:true"
+								width="200">Thời gian xe vào cảng</th>
+							<th data-options="field:'rfid', align:'left', halign:'center', resizable:true, fixed:true"
+								width="200">RFID</th>
+							<th data-options="field:'wgt', align:'left', halign:'center', resizable:true, fixed:true"
+								width="200">Trọng lượng</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: easyui-js" />
+	<script th:inline="javascript">
+		$(".main-body").height($(document).height() - 10);
+		$(".easyui-layout").height($('.main-body').height() - 40);
+	</script>
+	<script th:src="@{/eport/js/modules/listCar/listCar.js?v=20202912}"></script>
+</body>
+
+</html>

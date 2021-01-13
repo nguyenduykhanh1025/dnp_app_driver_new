@@ -434,6 +434,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<select id="selectPickupHistoryListForHistory" resultMap="PickupHistoryResult">
 		SELECT p.id, p.logistic_group_id, p.shipment_id, p.shipment_detail_id, p.driver_id, p.container_no, p.truck_no, p.chassis_no, p.gatein_date, p.create_time,
+		p.status, p.bay, p.block, p.line, p.tier, p.job_order_flg, p.job_order_no, p.gate_pass,
 		s.service_type, s.bl_no, s.booking_no, d.full_name, d.mobile_number
 		FROM pickup_history p 
 		left join shipment s on p.shipment_id = s.id
@@ -453,8 +454,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="logisticGroupName != null  and logisticGroupName != ''"> or upper(l.group_name) like concat(concat('%', #{logisticGroupName}), '%')</if>
 			<if test="blNo != null  and blNo != ''"> or upper(s.bl_no) like concat (concat('%', #{blNo}), '%')</if>
 			<if test="bookingNo != null  and bookingNo != ''"> or upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%'))</if>
+			
+			<if test="params.containerNo != null  and params.containerNo != ''">
+				and upper(p.container_no) like concat(concat('%',#{params.containerNo}), '%')
+			</if>
+			<if test="params.carNumber != null  and params.carNumber != ''">
+				and upper(p.truck_no) like concat(concat('%',#{params.carNumber}), '%')
+				or upper(p.chassis_no) like concat(concat('%',#{params.carNumber}), '%')
+			</if>
+			<if test="params.mobileNumber != null  and params.mobileNumber != ''">
+				and upper(d.mobile_number) like concat(concat('%',#{params.mobileNumber}), '%')
+			</if>
+			<if test="params.boBlNo != null  and params.boBlNo != ''">
+				and upper(p.bl_no) like concat(concat('%',#{params.boBlNo}), '%')
+				or upper(p.booking_no) like concat(concat('%',#{params.boBlNo}), '%')
+			</if>
+			<if test="params.status != null">
+				and p.status = #{params.status}
+			</if>
+			<if test="params.fromDate != null">and p.gatein_date &gt;=
+				to_date(#{params.fromDate},'dd/MM/yyyy
+				HH24:mi:ss')
+			</if>
+			<if test="params.toDate != null">and p.gatein_date &lt;=
+				to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')
+			</if>
 		</where>
 		group by p.id, p.logistic_group_id, p.shipment_id, p.shipment_detail_id, p.driver_id, p.container_no, p.truck_no, p.chassis_no, p.gatein_date, p.create_time,
+		p.status, p.bay, p.block, p.line, p.tier, p.job_order_flg, p.job_order_no, p.gate_pass,
 		s.service_type, s.bl_no, s.booking_no, d.full_name, d.mobile_number
 		order by p.create_time desc
 	</select>

@@ -28,6 +28,22 @@ public interface TruckEntranceMapper
     public List<TruckEntrance> selectTruckEntranceList(TruckEntrance truckEntrance);
 
     /**
+     * Get Truck Entrance List
+     * 
+     * @param truckEntrance Truck Entrance
+     * @return Truck Entrance List
+     */
+    public List<TruckEntrance> selectTruckEntranceFollowTruckNoList(TruckEntrance truckEntrance);
+    
+    /**
+     * Get Truck Entrance List
+     * 
+     * @param truckEntrance Truck Entrance
+     * @return Truck Entrance List
+     */
+    public List<TruckEntrance> selectTruckEntranceListOderByCreateTime(TruckEntrance truckEntrance);
+    
+    /**
      * Add Truck Entrance
      * 
      * @param truckEntrance Truck Entrance

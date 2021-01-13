@@ -75,18 +75,21 @@ public class AdminGateController extends BaseController {
 		if (CollectionUtils.isEmpty(pickupHistories)) {
 			return error("Không tìm thấy dữ liệu.");
 		}
+		boolean isEntrance = false;
+		Map<String, String> locationMap = new HashMap<>();
 		for (PickupHistory pickupHistory : pickupHistories) {
 			if (pickupHistory.getId() == null) {
 				return error("id không được để trống.");
 			}
-			
-			String position ="";
+
+			String position = "";
 			if (StringUtils.isNotEmpty(pickupHistory.getArea())) {
 				position = pickupHistory.getArea();
 			} else {
-				position = pickupHistory.getBlock() + "-" + pickupHistory.getBay() + "-" + pickupHistory.getLine() + "-" + pickupHistory.getTier();
+				position = pickupHistory.getBlock() + "-" + pickupHistory.getBay() + "-" + pickupHistory.getLine() + "-"
+						+ pickupHistory.getTier();
 			}
-			
+
 			// Decode id
 			// To differentiate with case real pickup history : 0,
 			// gate detection container 1 : 1, gate detection container 2 : 2.
@@ -126,10 +129,38 @@ public class AdminGateController extends BaseController {
 				pickupHistoryUpdate.setTier(pickupHistory.getTier());
 				pickupHistoryUpdate.setArea(pickupHistory.getArea());
 				pickupHistoryService.updatePickupHistory(pickupHistoryUpdate);
+
+				// Update location for truck entrance
+				isEntrance = true;
+				locationMap.put(pickupHistory.getContainerNo(), position);
+			}
+		}
+		if (isEntrance) {
+			PickupHistory pickupHistoryRef = pickupHistories.get(0);
+			// TODO: save to truck entrance
+			TruckEntrance truckEntranceParam = new TruckEntrance();
+			truckEntranceParam.setTruckNo(pickupHistoryRef.getTruckNo());
+			truckEntranceParam.setChassisNo(pickupHistoryRef.getChassisNo());
+			List<TruckEntrance> entrancesFromDB = this.truckEntranceService
+					.selectTruckEntranceFollowTruckNoList(truckEntranceParam);
+
+			if (CollectionUtils.isNotEmpty(entrancesFromDB)) {
+				// get truck entrance recent follow create time;
+				TruckEntrance truckEntranceRecent = entrancesFromDB.get(0);
+				if (StringUtils.isNotEmpty(truckEntranceRecent.getContainerNoFirst())) {
+					truckEntranceRecent
+							.setPositionFirst(locationMap.get(truckEntranceRecent.getContainerNoFirst()));
+				}
+				if (StringUtils.isNotEmpty(truckEntranceRecent.getContainerNoFirst())) {
+					truckEntranceRecent
+							.setPositionSecond(locationMap.get(truckEntranceRecent.getContainerNoSecond()));
+				}
+				this.truckEntranceService.updateTruckEntrance(truckEntranceRecent);
 			}
 		}
 		return success();
 	}
+	
 
 	@PostMapping("/rfid/truck-info")
 	public AjaxResult getTruckInfoByRfid(@RequestBody List<String> rfids) {
@@ -287,14 +318,14 @@ public class AdminGateController extends BaseController {
 				}
 			}
 		}
-		
+
 		if (chassisWgt == null) {
 			chassisWgt = 0L;
 		}
 		if (truckWgt == null) {
 			truckWgt = 0L;
 		}
-		
+
 		TruckEntrance truckEntrance = new TruckEntrance();
 		truckEntrance.setActive(true);
 		truckEntrance.setTruckNo(truckNo);
@@ -306,7 +337,6 @@ public class AdminGateController extends BaseController {
 		if (StringUtils.isNotEmpty(rfidss)) {
 			truckEntrance.setRfid(rfidss.substring(0, rfidss.length() - 1));
 		}
-		truckEntranceService.insertTruckEntrance(truckEntrance);
 
 		// Search for pickup history available in eport
 		PickupHistory pickupHistoryParam = new PickupHistory();
@@ -317,16 +347,30 @@ public class AdminGateController extends BaseController {
 		pickupHistoryParam.setStatus(EportConstants.PICKUP_HISTORY_STATUS_WAITING);
 		List<PickupHistory> pickupHistoriesTemp = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
 		List<PickupHistory> pickupHistories = new ArrayList<>();
+		List<PickupHistory> pickupHistoriesDropEmpty = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(pickupHistoriesTemp)) {
 			for (PickupHistory pickupHistory : pickupHistoriesTemp) {
 				if (EportConstants.SERVICE_DROP_EMPTY == pickupHistory.getServiceType()
 						|| EportConstants.SERVICE_DROP_FULL == pickupHistory.getServiceType()) {
 					pickupHistories.add(pickupHistory);
+
+					if (EportConstants.SERVICE_DROP_EMPTY == pickupHistory.getServiceType()) {
+						pickupHistoriesDropEmpty.add(pickupHistory);
+					}
 				}
 				pickupHistory.setEntranceScan(true);
 				pickupHistoryService.updatePickupHistory(pickupHistory);
 			}
 		}
+
+		// Add container 1 || container 2 to truckEntrance
+		if (CollectionUtils.isNotEmpty(pickupHistoriesDropEmpty)) {
+			truckEntrance.setContainerNoFirst(pickupHistoriesDropEmpty.get(0).getContainerNo());
+			if (pickupHistoriesDropEmpty.size() >= 2) {
+				truckEntrance.setContainerNoSecond(pickupHistoriesDropEmpty.get(1).getContainerNo());
+			}
+		}
+		truckEntranceService.insertTruckEntrance(truckEntrance);
 
 		// If exists pickup history -> get container stacking in catos
 		// -> request to mc

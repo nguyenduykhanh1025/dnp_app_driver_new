@@ -502,17 +502,16 @@ public class ShipmentDetail extends BaseEntity {
 
 	private Date powerDrawDate;
 	private String powerDrawDateStatus;
-	
+
 	private String dateReceiptStatus;
 	private Date dateReceipt;
-	
+
 	private String truckNo;
-	private String chassisNo; 
-	private String path;  
+	private String chassisNo;
+	private String path;
 	private String fileType;
 	private String edoFlg;
-	
-	 
+
 	public String getPath() {
 		return path;
 	}
@@ -556,10 +555,12 @@ public class ShipmentDetail extends BaseEntity {
 	private String humidity;
 
 	private String ventilation;
-	
+
 	private String supportStatus;
-	
+
 	private String userMobilePhone;
+
+	private String jobOrderNo;
 
 	public Long getId() {
 		return id;
@@ -1441,7 +1442,6 @@ public class ShipmentDetail extends BaseEntity {
 		this.ventilation = ventilation;
 	}
 
-	
 	public String getSupportStatus() {
 		return supportStatus;
 	}
@@ -1457,13 +1457,21 @@ public class ShipmentDetail extends BaseEntity {
 	public void setUserMobilePhone(String userMobilePhone) {
 		this.userMobilePhone = userMobilePhone;
 	}
-	
+
 	public String getEdoFlg() {
 		return edoFlg;
 	}
 
 	public void setEdoFlg(String edoFlg) {
 		this.edoFlg = edoFlg;
+	}
+
+	public String getJobOrderNo() {
+		return jobOrderNo;
+	}
+
+	public void setJobOrderNo(String jobOrderNo) {
+		this.jobOrderNo = jobOrderNo;
 	}
 
 	@Override
@@ -1514,7 +1522,7 @@ public class ShipmentDetail extends BaseEntity {
 				.append("humidity", getHumidity()).append("ventilation", getVentilation())
 				.append("powerDrawDate", getPowerDrawDate()).append("powerDrawDateStatus", getPowerDrawDateStatus())
 				.append("supportStatus", getSupportStatus()).append("userMobilePhone", getUserMobilePhone())
-				.append("edoFlg", getEdoFlg()).toString();
-		
+				.append("edoFlg", getEdoFlg()).append("job order no", getJobOrderNo()).toString();
+
 	}
 }

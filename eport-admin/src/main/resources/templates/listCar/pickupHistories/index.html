@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+	<meta charset="UTF-8" />
+	<th:block th:include="include :: header('Notification bulletin list')" />
+	<th:block th:include="include :: easyui-css" />
+	<link th:href="@{/eport/css/common/style.css}" rel="stylesheet" />
+</head>
+
+<body class="grey-background">
+	<span class="btn-collapse collapse"><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+	<span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+	<div class="main-body">
+		<div class="main-body__search-wrapper mb-2">
+			<div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+				<div class="flex__left w-20">
+					<h3 class="mt-10">Quản lý danh sách xe tại bãi</h3>
+				</div>
+				<div class="flex__right w-80">
+					<div class="justify-content-around align-items-center" id="ff">
+						<div class="d-inline">
+							<select id="car-category" class="easyui-combobox" panelHeight="auto" editable="false"
+								style="width: 130px">
+								<option value="" selected>Tất cả</option>
+								<option value="0">Sẵn sàng</option>
+								<option value="1">Đã làm </option>
+								<option value="2">Hoàn Thành</option>
+							</select>
+						</div>
+						<div class="d-inline">
+							<input class="easyui-textbox" id="carNumber" data-options="prompt:'Biển số xe'" />
+						</div>
+						<div class="d-inline">
+							<input class="easyui-textbox" id="boBlNo" data-options="prompt:'Booking/Bl no'" />
+						</div>
+						<div class="d-inline">
+							<input class="easyui-textbox" id="containerNo" data-options="prompt:'Container No'" />
+						</div>
+						<div class="d-inline">
+							<input class="easyui-textbox" id="mobileNumber" data-options="prompt:'SDT'" />
+						</div>
+						<div class="d-inline">
+							<input id="fromDate" class="easyui-datebox" style="width: 100px"
+								data-options="prompt:'Từ ngày', formatter:dateformatter, parser:dateparser" />
+						</div>
+						<div class="d-inline">
+							<input id="toDate" class="easyui-datebox" style="width: 100px"
+								data-options="prompt:'Đến ngày', formatter:dateformatter, parser:dateparser" />
+						</div>
+						<div class="d-inline">
+							<button class="btn btn-success btn-customs" onclick="search()"
+								style="margin-bottom: 5px">Tìm
+								kiếm</button>
+						</div>
+						<div class="d-inline">
+							<button class="btn btn-success btn-outline btn-customs" onclick="clearInput()"
+								style="margin-bottom: 5px">Làm mới</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="main-body__table-wrapper">
+			<div class="easyui-layout" id="main-layout" style="width: 100%">
+
+				<div class="btn-group-sm" id="toolbar" role="group">
+					<a class="btn btn-danger multiple" onclick="onClickAdd()"
+						shiro:hasPermission="monitor:operlog:remove">
+						<i class="fa fa-remove">Thêm</i>
+					</a>
+					<a class="btn btn-danger" onclick="onClickEdit()" shiro:hasPermission="monitor:operlog:remove">
+						<i class="fa fa-trash">Sửa</i>
+					</a>
+					<button class="btn btn-danger" onclick="onClickDelete()"
+						shiro:hasPermission="monitor:operlog:remove">
+						<i class="fa fa-trash">Xóa</i>
+					</button>
+				</div>
+
+				<table id="dg" style="width: 100%" pageList="[20,50,100,150,200]" fitColumn="true">
+					<thead>
+						<tr>
+							<!-- <th field="ck" checkbox="true"></th> -->
+							<th data-options="field:'logisticGroup', align:'left', halign:'center', fixed:true, formatter: formatLogisticGroup"
+								width="200">Logistics</th>
+							<th data-options="field:'Bl-Booking', align:'left', halign:'center', fixed:true, formatter: formatBLBookingNo"
+								width="200">Bl/Booking No</th>
+							<th data-options="field:'driverName', align:'left', halign:'center', fixed:true, formatter: formatDriverName"
+								width="200">Tên tài xế</th>
+							<th data-options="field:'driverPhoneName', align:'left', halign:'center', fixed:true, formatter: formatDriverPhoneName"
+								width="200">Số DT</th>
+							<th data-options="field:'containerNo', align:'left', halign:'center', fixed:true"
+								width="200">Container No
+							</th>
+							<th data-options="field:'truckNo', align:'left', halign:'center', fixed:true" width="200">
+								Biển số xe đầu
+								kéo</th>
+							<th data-options="field:'chassisNo', align:'left', halign:'center', fixed:true" width="200">
+								Biển số xe ro
+								moc</th>
+							<th data-options="field:'area', align:'left', halign:'center', fixed:true, formatter: formatArea"
+								width="200">Tọa độ</th>
+							<th data-options="field:'status', align:'left', halign:'center', fixed:true, formatter: formatStatusArea"
+								width="200">Trạng thái</th>
+							<th data-options="field:'gateinDate', align:'left', halign:'center', fixed:true"
+								width="200">Ngày vào cảng
+							</th>
+							<th data-options="field:'jobOrderNo', align:'left', halign:'center', fixed:true"
+								width="200">Job Order No
+							</th>
+							<th data-options="field:'jobOrderFlg', align:'left', halign:'center', fixed:true"
+								width="200">Job Order Flg
+							</th>
+							<th data-options="field:'gatePass', align:'left', halign:'center', fixed:true" width="200">
+								Gate Pass
+							</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: easyui-js" />
+	<script th:inline="javascript">
+		$(".main-body").height($(document).height() - 10);
+		$(".easyui-layout").height($('.main-body').height() - 40);
+	</script>
+	<script th:src="@{/eport/js/modules/listCar/pickupHistories/index.js?v=20202913}"></script>
+</body>
+
+</html>

@@ -17,10 +17,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="logisticGroupId"    column="logistic_group_id"    />
         <result property="loadableWgt"    column="loadable_wgt"    />
         <result property="wgt"    column="wgt"    />
+        <result property="containerNoFirst"    column="container_no_first"    />
+        <result property="containerNoSecond"    column="container_no_second"    />
+        <result property="positionFirst" column="position_first" />
+		<result property="positionSecond" column="position_second" />
     </resultMap>
 
     <sql id="selectTruckEntranceVo">
-        select id, rfid, truck_no, chassis_no, active, create_time, create_by, update_time, update_by, logistic_group_id, loadable_wgt, wgt from truck_entrance
+        select id, rfid, truck_no, chassis_no, active, create_time, create_by, update_time, update_by, logistic_group_id, loadable_wgt, wgt, container_no_first, container_no_second, position_first, position_second from truck_entrance
     </sql>
 
     <select id="selectTruckEntranceList" parameterType="TruckEntrance" resultMap="TruckEntranceResult">
@@ -34,7 +38,93 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="loadableWgt != null"> and loadable_wgt = #{loadableWgt}</if>
             <if test="wgt != null"> and wgt = #{wgt}</if>
             <if test="params.expireTime != null"> and create_time &gt;= #{params.expireTime}</if>
+            <if test="params.fromDate != null">and create_time &gt;=
+				to_date(#{params.fromDate},'dd/MM/yyyy
+				HH24:mi:ss')
+			</if>
+			<if test="params.toDate != null">and create_time &lt;=
+				to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')
+			</if>
+			<if test="params.containerNo != null  and params.containerNo != ''">or upper(container_no_first) like concat(concat('%',
+				#{params.containerNo}), '%')
+			</if>
+			<if test="params.containerNo != null  and params.containerNo != ''">or upper(container_no_second) like concat(concat('%',
+				#{params.containerNo}), '%')
+			</if>
+			<if test="params.truckNo != null  and params.truckNo != ''">and upper(truck_no) like concat(concat('%',
+				#{params.truckNo}), '%')
+			</if>
+			<if test="params.truckNo != null  and params.truckNo != ''">or upper(chassis_no) like concat(concat('%',
+				#{params.truckNo}), '%')
+			</if>
         </where>
+    </select>
+    
+    <select id="selectTruckEntranceFollowTruckNoList" parameterType="TruckEntrance" resultMap="TruckEntranceResult">
+        <include refid="selectTruckEntranceVo"/>
+        <where>  
+            <if test="rfid != null  and rfid != ''"> and rfid = #{rfid}</if>
+            <if test="active != null "> and active = #{active}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="loadableWgt != null"> and loadable_wgt = #{loadableWgt}</if>
+            <if test="wgt != null"> and wgt = #{wgt}</if>
+            <if test="params.expireTime != null"> and create_time &gt;= #{params.expireTime}</if>
+            <if test="truckNo == 'TRUCK_NO'">and truck_no IS NOT NULL</if>
+            <if test="truckNo == 'CHASSIS_NO'">and chassis_no IS NOT NULL</if>
+            <if test="params.fromDate != null">and create_time &gt;=
+				to_date(#{params.fromDate},'dd/MM/yyyy
+				HH24:mi:ss')
+			</if>
+			<if test="params.toDate != null">and create_time &lt;=
+				to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')
+			</if>
+			<if test="params.containerNo != null  and params.containerNo != ''">and upper(container_no_first) like concat(concat('%',
+				#{params.containerNo}), '%')
+			</if>
+			<if test="params.containerNo != null  and params.containerNo != ''">or upper(container_no_second) like concat(concat('%',
+				#{params.containerNo}), '%')
+			</if>
+			<if test="params.truckNo != null  and params.truckNo != ''">and upper(truck_no) like concat(concat('%',
+				#{params.truckNo}), '%')
+			</if>
+			<if test="params.truckNo != null  and params.truckNo != ''">or upper(chassis_no) like concat(concat('%',
+				#{params.truckNo}), '%')
+			</if>
+        </where>
+    </select>
+    
+    <select id="selectTruckEntranceListOderByCreateTime" parameterType="TruckEntrance" resultMap="TruckEntranceResult">
+        <include refid="selectTruckEntranceVo"/>
+        <where>  
+            <if test="rfid != null  and rfid != ''"> and rfid = #{rfid}</if>
+            <if test="truckNo != null  and truckNo != ''"> and (truck_no = #{truckNo}</if>
+            <if test="chassisNo != null  and chassisNo != ''"> or chassis_no = #{chassisNo})</if>
+            <if test="active != null "> and active = #{active}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="loadableWgt != null"> and loadable_wgt = #{loadableWgt}</if>
+            <if test="wgt != null"> and wgt = #{wgt}</if>
+            <if test="params.expireTime != null"> and create_time &gt;= #{params.expireTime}</if>
+            <if test="params.fromDate != null">and create_time &gt;=
+				to_date(#{params.fromDate},'dd/MM/yyyy
+				HH24:mi:ss')
+			</if>
+			<if test="params.toDate != null">and create_time &lt;=
+				to_date(#{params.toDate},'dd/MM/yyyy HH24:mi:ss')
+			</if>
+			<if test="params.containerNo != null  and params.containerNo != ''">or upper(container_no_first) like concat(concat('%',
+				#{params.containerNo}), '%')
+			</if>
+			<if test="params.containerNo != null  and params.containerNo != ''">or upper(container_no_second) like concat(concat('%',
+				#{params.containerNo}), '%')
+			</if>
+			<if test="params.truckNo != null  and params.truckNo != ''">and upper(truck_no) like concat(concat('%',
+				#{params.truckNo}), '%')
+			</if>
+			<if test="params.truckNo != null  and params.truckNo != ''">or upper(chassis_no) like concat(concat('%',
+				#{params.truckNo}), '%')
+			</if>
+        </where>
+        order by create_time
     </select>
     
     <select id="selectTruckEntranceById" parameterType="Long" resultMap="TruckEntranceResult">
@@ -59,6 +149,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null">logistic_group_id,</if>
             <if test="loadableWgt != null">loadable_wgt,</if>
             <if test="wgt != null">wgt,</if>
+            <if test="containerNoFirst != null and containerNoFirst != ''">container_no_first,</if>
+            <if test="containerNoSecond != null and containerNoSecond != ''">container_no_second,</if>
             create_time,
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -73,6 +165,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null">#{logisticGroupId},</if>
             <if test="loadableWgt != null">#{loadableWgt},</if>
             <if test="wgt != null">#{wgt},</if>
+            <if test="containerNoFirst != null and containerNoFirst != ''">#{containerNoFirst},</if>
+            <if test="containerNoSecond != null and containerNoSecond != ''">#{containerNoSecond},</if>
             sysdate,
          </trim>
     </insert>
@@ -90,6 +184,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null">logistic_group_id = #{logisticGroupId},</if>
             <if test="loadableWgt != null">loadable_wgt = #{loadableWgt},</if>
             <if test="wgt != null">wgt = #{wgt},</if>
+            <if test="positionFirst != null and positionFirst != ''">position_first = #{positionFirst},</if>
+            <if test="positionSecond != null and positionSecond != ''">position_second = #{positionSecond},</if>
             update_time = sysdate,
         </trim>
         where id = #{id}

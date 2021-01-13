@@ -46,6 +46,30 @@ public class TruckEntranceServiceImpl implements ITruckEntranceService
     }
 
     /**
+     * Get Truck Entrance List
+     * 
+     * @param truckEntrance Truck Entrance
+     * @return Truck Entrance
+     */
+    @Override
+    public List<TruckEntrance> selectTruckEntranceFollowTruckNoList(TruckEntrance truckEntrance)
+    {
+        return truckEntranceMapper.selectTruckEntranceFollowTruckNoList(truckEntrance);
+    }
+
+    /**
+     * Get Truck Entrance List
+     * 
+     * @param truckEntrance Truck Entrance
+     * @return Truck Entrance
+     */
+    @Override
+    public List<TruckEntrance> selectTruckEntranceListOderByCreateTime(TruckEntrance truckEntrance)
+    {
+        return truckEntranceMapper.selectTruckEntranceListOderByCreateTime(truckEntrance);
+    }
+    
+    /**
      * Add Truck Entrance
      * 
      * @param truckEntrance Truck Entrance
