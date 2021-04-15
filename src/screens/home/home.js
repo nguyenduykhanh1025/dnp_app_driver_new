@@ -485,6 +485,8 @@ class HomeScreen extends Component {
 
                           <View style={styles.PortersHeader}>
                             <View style={styles.PorterHeaderUp}>
+                              <Text>ASDDADDADDA</Text>
+                              <Text>{item.serviceType}</Text>
                               <Text style={styles.PorterHeaderTitle}>
                                 {
                                   item.serviceType == 1 ?

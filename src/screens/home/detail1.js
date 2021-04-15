@@ -182,6 +182,7 @@ class DetailScreen extends Component {
     result = await callApi(params);
     if (result.code == 0) {
       var data = result.data
+      
       NavigationService.navigate(mainStack.detail2, {
         data: {
           containerNo: data.containerNo,
