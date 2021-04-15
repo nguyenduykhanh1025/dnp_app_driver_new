@@ -37,3 +37,4 @@ export const user_icon = require('@/assets/icons/user_icon.png');
 export const icon_pass = require('@/assets/icons/icon_pass.png'); 
 export const righticon = require('@/assets/icons/right-icon.png'); 
 export const visible = require('@/assets/icons/visible.png'); 
+export const license_plate_icon = require('@/assets/icons/license-plate.png');

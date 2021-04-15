@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">DNP Driver 7073</string>
+    <string name="app_name">DNP Driver</string>
     <string name="default_notification_channel_id" translatable="false">irnbase_channel</string>
 </resources>
