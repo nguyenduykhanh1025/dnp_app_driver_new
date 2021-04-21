@@ -83,7 +83,6 @@ export default class ResultScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    // console.log('resultonCancel', result)
     if (result.code == 0) {
       NavigationService.navigate(homeTab.home, { update: 1 })
     }
@@ -117,7 +116,7 @@ export default class ResultScreen extends Component {
           marginLeft: ws(29.54)
         }}
       >
-        <Icon name={'close'} size={20} />
+        <Icon name={'arrowleft'} size={20} />
       </View>
     )
   }

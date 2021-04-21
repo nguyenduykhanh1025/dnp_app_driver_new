@@ -106,6 +106,7 @@ export default class SignUpScreen extends Component {
 	};
 
 	render() {
+		const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0
 		return (
 			// <KeyboardAvoidingView
 			//   behavior={Platform.OS == 'ios' ? 'padding' : null}
@@ -129,11 +130,13 @@ export default class SignUpScreen extends Component {
 					<View style={styles.Frame2}>
 						<View style={styles.Frame3}>
 							<View style={styles.titleContainer}>
-								<Text style={styles.title}>Đăng ký</Text>
+								<Text style={styles.title}>Đăng Ký</Text>
 							</View>
 							<ScrollView style={styles.scrollView}>
 								<KeyboardAvoidingView
-									behavior={Platform.OS == 'ios' ? 'padding' : null}>
+									behavior={Platform.OS === "ios" ? "padding" : null}
+									keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+									>
 									<AuthInput
 										title="Họ và tên"
 										placeholder={
@@ -255,8 +258,8 @@ export default class SignUpScreen extends Component {
 										returnKeyType="done"
 										inputRef={ref => (this.romoocLicensePlateRef = ref)}
 										onSubmitEditing={() => {
-										  Keyboard.dismiss();
-										  this.onRegister();
+											Keyboard.dismiss();
+											this.onRegister();
 										}}
 										focusValue={this.state.romoocLicensePlate}
 									/>
@@ -341,7 +344,7 @@ const styles = StyleSheet.create({
 	},
 	Frame2: {
 		width: ws(375),
-		height: hs(624),
+		height: hs(441),
 		backgroundColor: Colors.white,
 		borderTopLeftRadius: 20,
 		borderTopRightRadius: 20,
@@ -365,6 +368,8 @@ const styles = StyleSheet.create({
 	titleContainer: {
 		marginTop: hs(35),
 		marginLeft: ws(8),
+		textAlign: 'right',
+		width: '100%',
 	},
 	text: {
 		color: Colors.tinyTextGrey,

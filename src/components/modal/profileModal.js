@@ -157,7 +157,8 @@ class ProfileModal extends Component {
                         <View style={styles.bgContainer}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
                                 <TouchableOpacity onPress={() => this.props.onClose()} style={{ width: ws(70), height: hs(30), alignItems: 'center', justifyContent: 'center' }} >
-                                    <Icon name="arrowleft" size={fs(25)} color={Colors.white} />
+                                    {/* <Icon name="arrowleft" size={fs(25)} color={Colors.white} /> */}
+                                    <Icon name={'close'} size={25} color={Colors.white}/>
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     onPress={() => {
